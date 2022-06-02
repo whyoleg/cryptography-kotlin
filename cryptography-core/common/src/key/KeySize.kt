@@ -1,4 +1,4 @@
-package dev.whyoleg.cryptography.hm.key
+package dev.whyoleg.cryptography.key
 
 import dev.whyoleg.vio.*
 import kotlin.jvm.*

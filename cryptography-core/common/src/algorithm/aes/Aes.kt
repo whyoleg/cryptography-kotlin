@@ -1,8 +1,8 @@
-package dev.whyoleg.cryptography.hm.algorithm.aes
+package dev.whyoleg.cryptography.algorithm.aes
 
-import dev.whyoleg.cryptography.hm.*
-import dev.whyoleg.cryptography.hm.cipher.*
-import dev.whyoleg.cryptography.hm.mac.*
+import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.key.*
+import dev.whyoleg.cryptography.operation.*
 import dev.whyoleg.vio.*
 
 //encryption AES GCM: (CTR - no tag size and auth tag)
@@ -19,14 +19,15 @@ import dev.whyoleg.vio.*
 //
 
 public interface Aes : CryptographyAlgorithm {
-    public fun generateKey(keySize: BinarySize): AesKey
-    public fun importKey(key: BufferView): AesKey //TODO: other imports
+    public val generate: KeyGenerate<KeySize, AesKey>
+    public val import: KeyImport<Unit, AesKey>
 }
 
 //TODO: add defaults
 //TODO: key wrap/unwrap; KW mode
 //TODO: naming of modes
-public interface AesKey {
+public interface AesKey : SecretKey {
+    public val export: KeyExport<Unit>
     public fun ctr(): AesCtrPrimitive
     public fun gcm(
         padding: Boolean,
@@ -34,29 +35,25 @@ public interface AesKey {
     ): AesGcmPrimitive
 
     public fun cbc(padding: Boolean): AesCbcPrimitive
-
-    public fun export(output: BufferView)
-    public fun export(): BufferView
-
-}
-
-public interface AesCbcPrimitive {
-    public val encrypt: CipherPrimitive<Unit>
-    public val decrypt: CipherPrimitive<Unit>
-    public val cmac: MacPrimitive<Unit>
 }
 
 //cipher + cmac // + wrap + unwrap
 public interface AesCtrPrimitive {
-    public val encrypt: CipherPrimitive<Unit>
-    public val decrypt: CipherPrimitive<Unit>
+    public val encrypt: CipherOperation<Unit>
+    public val decrypt: CipherOperation<Unit>
+}
+
+public interface AesCbcPrimitive {
+    public val encrypt: CipherOperation<Unit>
+    public val decrypt: CipherOperation<Unit>
+    public val cmac: MacOperation<Unit>
 }
 
 //cipher + gmac // + wrap + unwrap
 public interface AesGcmPrimitive {
-    public val encrypt: CipherPrimitive<AssociatedData>
-    public val decrypt: CipherPrimitive<AssociatedData>
-    public val mac: MacPrimitive<Unit> //TODO: input parameters
+    public val encrypt: CipherOperation<AssociatedData>
+    public val decrypt: CipherOperation<AssociatedData>
+    public val gmac: MacOperation<Unit> //TODO: input parameters
 }
 
 public class AssociatedData(
@@ -64,7 +61,7 @@ public class AssociatedData(
 )
 
 private suspend fun test(aes: Aes) {
-    aes.generateKey(10.bytes).gcm(padding = true).encrypt.async(AssociatedData(ByteArray(0).view())) {
+    aes.generate(KeySize(10.bytes)).gcm(padding = true).encrypt.async(AssociatedData(ByteArray(0).view())) {
         transform(ByteArray(12).view())
     }
 }

@@ -1,9 +1,9 @@
-package dev.whyoleg.cryptography.hm.algorithm.hash.sha
+package dev.whyoleg.cryptography.algorithm.hash.sha
 
-import dev.whyoleg.cryptography.hm.*
-import dev.whyoleg.cryptography.hm.algorithm.hash.*
+import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.algorithm.hash.*
 
-public interface Sha : HashAlgorithm<Unit> {
+public interface Sha : HashAlgorithm<Unit, Unit, Unit> {
     public companion object {
         public val SHA1: CryptographyAlgorithmIdentifier<Sha> = CryptographyAlgorithmIdentifier("SHA-1")
         public val SHA256: CryptographyAlgorithmIdentifier<Sha> = CryptographyAlgorithmIdentifier("SHA-256")

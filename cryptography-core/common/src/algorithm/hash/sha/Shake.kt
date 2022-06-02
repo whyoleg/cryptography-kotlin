@@ -1,11 +1,11 @@
-package dev.whyoleg.cryptography.hm.algorithm.hash.sha
+package dev.whyoleg.cryptography.algorithm.hash.sha
 
-import dev.whyoleg.cryptography.hm.*
-import dev.whyoleg.cryptography.hm.algorithm.hash.*
+import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.algorithm.hash.*
 import dev.whyoleg.vio.*
 import kotlin.jvm.*
 
-public interface Shake : HashAlgorithm<Shake.DigestSize> {
+public interface Shake : HashAlgorithm<Unit, Shake.DigestSize, Shake.DigestSize> {
     @JvmInline
     public value class DigestSize(public val size: BinarySize)
 

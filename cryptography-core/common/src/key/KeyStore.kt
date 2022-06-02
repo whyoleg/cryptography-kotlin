@@ -1,4 +1,4 @@
-package dev.whyoleg.cryptography.hm.key
+package dev.whyoleg.cryptography.key
 
 //TODO: also add possibility to import key from key store or file
 //just marker interface for now

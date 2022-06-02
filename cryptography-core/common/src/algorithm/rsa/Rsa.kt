@@ -1,10 +1,7 @@
-package dev.whyoleg.cryptography.hm.algorithm.rsa
+package dev.whyoleg.cryptography.algorithm.rsa
 
-import dev.whyoleg.cryptography.hm.*
-import dev.whyoleg.cryptography.hm.algorithm.*
-import dev.whyoleg.cryptography.hm.algorithm.aes.*
-import dev.whyoleg.cryptography.hm.algorithm.sha.*
-import dev.whyoleg.cryptography.hm.cipher.*
+import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.algorithm.aes.*
 import dev.whyoleg.vio.*
 
 public interface Rsa : CryptographyAlgorithm {

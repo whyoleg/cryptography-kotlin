@@ -1,4 +1,4 @@
-package dev.whyoleg.cryptography.hm
+package dev.whyoleg.cryptography
 
 //TODO: is it needed at all?
 public interface CryptographyAlgorithm

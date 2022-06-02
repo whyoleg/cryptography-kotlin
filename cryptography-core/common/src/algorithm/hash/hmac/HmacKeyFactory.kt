@@ -1,12 +1,13 @@
-package dev.whyoleg.cryptography.hm.algorithm.hash.hmac
+package dev.whyoleg.cryptography.algorithm.hash.hmac
 
+import dev.whyoleg.cryptography.key.*
 import dev.whyoleg.vio.*
 
 public interface HmacKeyFactory<P> {
     public val async: Async<P>
 
-    public fun generate(keySize: BinarySize): HmacKey<P>
-    public fun import(input: BufferView): HmacKey<P>
+    public val generate: KeyGenerate<Unit, HmacKey<P>>
+    public val import: KeyImport<Unit, HmacKey<P>>
 
     public interface Async<P> {
         public suspend fun generate(keySize: BinarySize): HmacKey.Async<P>
