@@ -2,7 +2,8 @@ package dev.whyoleg.cryptography.operation
 
 import dev.whyoleg.vio.*
 
-public interface CipherOperation<C, OP, CP> : BufferChunkableOperation<C, OP, CP, CipherFunction>
+public interface CipherOperation<C, OP, CP> :
+    BufferChunkableOperation<C, OP, CP, CipherFunction>
 
 public interface CipherFunction : ChunkedOperation {
     public fun transformOutputSize(inputSize: BinarySize): BinarySize

@@ -2,7 +2,8 @@ package dev.whyoleg.cryptography.operation
 
 import dev.whyoleg.vio.*
 
-public interface SignOperation<C, OP, CP> : BufferChunkableOperation<C, OP, CP, SignFunction>
+public interface SignOperation<C, OP, CP> :
+    BufferChunkableOperation<C, OP, CP, SignFunction>
 
 public interface SignFunction : ChunkedOperation {
     public fun update(input: BufferView)

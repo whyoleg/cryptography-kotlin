@@ -2,7 +2,8 @@ package dev.whyoleg.cryptography.operation
 
 import dev.whyoleg.vio.*
 
-public interface HashOperation<C, OP, CP> : BufferChunkableOperation<C, OP, CP, HashFunction>
+public interface HashOperation<C, OP, CP> :
+    BufferChunkableOperation<C, OP, CP, HashFunction>
 
 public interface HashFunction : ChunkedOperation {
     public fun update(input: BufferView)
