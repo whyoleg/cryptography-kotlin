@@ -1,4 +1,4 @@
-package dev.whyoleg.cryptography.operation
+package dev.whyoleg.cryptography.cipher
 
 import dev.whyoleg.vio.*
 
@@ -11,7 +11,7 @@ public interface DecryptBoxOperation<C, OP, B : CipherBox, CP, F : CipherBoxFunc
 //TODO: proper name
 public abstract class CipherBox(public val ciphertext: BufferView)
 
-public interface CipherBoxFunction<CP, CR> : ChunkedOperation {
+public interface CipherBoxFunction<CP, CR> : Closeable {
     public fun transformOutputSize(inputSize: BinarySize): BinarySize
     public fun transform(input: BufferView, output: BufferView)
 
