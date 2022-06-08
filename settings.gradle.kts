@@ -52,6 +52,8 @@ include("cryptography-algorithms") //deps: primitives
 //include("cryptography-primitives-async") //deps: core, api + coroutines
 //include("cryptography-algorithms-async") //deps: primitives-async
 
+//TODO: for async add encryption integration for GCP KMS or AWS KMG
+
 //TODO: is it needed?
 //include("cryptography-primitives-async-wrapper") //deps: async + primitives - can be used in providers
 //include("cryptography-algorithms-async-wrapper") //deps: async + primitives - can be used in providers

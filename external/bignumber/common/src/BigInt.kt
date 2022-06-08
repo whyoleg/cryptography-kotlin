@@ -1,6 +1,6 @@
 package dev.whyoleg.bignumber
 
-public expect class BigInt : Number, Comparable<BigInt> {
+public expect class BigInt {
     //TODO: decide on API, for now I need only strings and bytearrays
     public constructor(value: Int)
     public constructor(value: Long)
