@@ -33,7 +33,6 @@ public expect class ByteArrayBufferView(
     public val arraySize: Int
 }
 
-//TODO: name? view? bufferView? etc
 public fun ByteArray.view(
     arrayOffset: Int = 0,
     arraySize: Int = this.size,

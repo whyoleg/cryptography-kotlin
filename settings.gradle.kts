@@ -19,11 +19,37 @@ dependencyResolutionManagement {
     }
 }
 
+//decide on dependencies:
+// * need some IO or use basic VIO
+// * need BigInt(f.e. for RSA) implementation
+// * need Instant(f.e. for JWT) from kx.datetime
+// * need Json(f.e. for JWK/JWT) from kx.serialization
+// * DER encoding also can use kx.serialization
+
+
 //super minimal buffer view api over ByteArray and platform specific implementations
 include("vio")
-//TODO: may be need something like vio, but for BigIntegers - not sure
+//super minimal biginteger implementation to support string/arrays of bytes as big integers representation
+include("bignumber")
 
+//pem and der encoding
+//include("asn1")
+
+//jwt, jwk, etc.
+//include("jose")
+
+//TODO: may be rename to api?
+//API to create cryptography primitives
 include("cryptography-core")
+
+//base algorithms
+//TODO: may be split by algorithms? like: hash, aes, rsa, ec, etc.
+//include("cryptography-TBD")
+
+//cryptography primitives for asn1 encoding
+//include("cryptography-asn1")
+
+
 //TODO: move algorithms out of cryptography-core
 //include("cryptography-tests")
 
