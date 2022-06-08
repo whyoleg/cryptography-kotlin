@@ -29,26 +29,47 @@ dependencyResolutionManagement {
 //external libraries, are those, which should be later extracted to separate projects/artifacts not related to cryptography at all
 
 //super minimal buffer view api over ByteArray and platform specific implementations
-include("external:vio")
+include("external:vio") //deps: no
 //super minimal biginteger implementation to support string/arrays of bytes as big integers representation
-include("external:bignumber")
-
+include("external:bignumber") //deps: no
+//super minimal mpp provider api (kotlin provider interface)
+include("external:kpi") //deps: no
 //pem and der encoding
-include("external:asn1")
+//include("external:asn1") //deps: kx.serialization
+//jwt, jwk, etc. TODO: decide on name
+//include("external:jose") //deps: kx.serialization, kx.datetime
 
-//jwt, jwk, etc.
-//TODO: decide on name
-include("external:jose")
+//contains common properties/builders
+include("cryptography-core") //deps: vio, bn
 
-//TODO: may be rename to api?
+//functions
+include("cryptography-primitives") //deps: core, kpi
+
+//something what can be created
+include("cryptography-algorithms") //deps: primitives
+
+
+//include("cryptography-primitives-async") //deps: core, api + coroutines
+//include("cryptography-algorithms-async") //deps: primitives-async
+
+//TODO: is it needed?
+//include("cryptography-primitives-async-wrapper") //deps: async + primitives - can be used in providers
+//include("cryptography-algorithms-async-wrapper") //deps: async + primitives - can be used in providers
+
+//include("cryptography-api") //deps: vio, bignumber
+//include("cryptography-provider-api") //deps: vio, bignumber
+
 //API to create cryptography primitives
-include("cryptography-core")
+//include("cryptography-core") //deps: api
+
+//API to create cryptography primitives but in async way (like webcrypto api)
+//include("cryptography-core-async") //deps: api
 
 //base algorithms
-//include("cryptography-TBD")
+//include("cryptography-algorithms")
 
 //cryptography primitives for asn1 encoding
-//include("cryptography-asn1")
+//include("cryptography-asn1") //deps: core, asn1
 
 
 //TODO: move algorithms out of cryptography-core
@@ -57,9 +78,9 @@ include("cryptography-core")
 //try to use openssl at all parts
 
 //Part 1 JVM + JS:
-//include("cryptography-provider-jce") //jvm only
-//include("cryptography-provider-webcrypto") //js only
-//include("cryptography-provider-nodejs") //nodejs only
+//include("cryptography-providers:cryptography-providers-jce") //jvm only
+//include("cryptography-providers:cryptography-providers-webcrypto") //js only
+//include("cryptography-providers:cryptography-providers-nodejs") //nodejs only
 
 //Part 2 Native:
 //include("cryptography-provider-cng") //mingw only
