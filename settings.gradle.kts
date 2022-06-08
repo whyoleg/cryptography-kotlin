@@ -26,24 +26,25 @@ dependencyResolutionManagement {
 // * need Json(f.e. for JWK/JWT) from kx.serialization
 // * DER encoding also can use kx.serialization
 
+//external libraries, are those, which should be later extracted to separate projects/artifacts not related to cryptography at all
 
 //super minimal buffer view api over ByteArray and platform specific implementations
-include("vio")
+include("external:vio")
 //super minimal biginteger implementation to support string/arrays of bytes as big integers representation
-include("bignumber")
+include("external:bignumber")
 
 //pem and der encoding
-//include("asn1")
+include("external:asn1")
 
 //jwt, jwk, etc.
-//include("jose")
+//TODO: decide on name
+include("external:jose")
 
 //TODO: may be rename to api?
 //API to create cryptography primitives
 include("cryptography-core")
 
 //base algorithms
-//TODO: may be split by algorithms? like: hash, aes, rsa, ec, etc.
 //include("cryptography-TBD")
 
 //cryptography primitives for asn1 encoding

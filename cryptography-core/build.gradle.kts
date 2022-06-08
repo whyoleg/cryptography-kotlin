@@ -6,7 +6,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                api(projects.vio)
+                api(projects.external.vio)
             }
         }
     }
