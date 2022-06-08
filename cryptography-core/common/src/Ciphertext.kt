@@ -8,7 +8,7 @@ import kotlin.jvm.*
 @JvmInline
 public value class Ciphertext(public val value: BufferView)
 
-public abstract class CipherBox(public val ciphertext: Ciphertext)
+public open class CipherBox(public val ciphertext: Ciphertext)
 
 @JvmInline
 public value class AuthTag(public val value: BufferView)

@@ -20,6 +20,7 @@ import dev.whyoleg.vio.*
 
 //TODO: create keyStore - keychain, jce keystore, file, pkcs12, etc
 //TODO: import from keyStore?
+//TODO: key protection - usages
 
 //marker interfaces
 

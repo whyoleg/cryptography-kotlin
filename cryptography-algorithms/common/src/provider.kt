@@ -6,7 +6,7 @@ import dev.whyoleg.vio.*
 
 //add just create (f.e. hash, random)
 //add derive key - !!!!!!!!!!
-//add import key - apple keychain, android, remote keystore, etc.
+//add import key - apple keychain, android keychain, remote keystore???, etc.
 public sealed interface CryptographyProvider {
     public fun <
             Primitive : Any,

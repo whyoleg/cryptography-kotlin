@@ -33,46 +33,18 @@ include("external:vio") //deps: no
 //super minimal biginteger implementation to support string/arrays of bytes as big integers representation
 include("external:bignumber") //deps: no
 //super minimal mpp provider api (kotlin provider interface)
-include("external:kpi") //deps: no
+//include("external:kpi") //deps: no
 //pem and der encoding
 //include("external:asn1") //deps: kx.serialization
+//include("external:asn1-cryptography") //deps: asn1 (cryptography primitives, per pkcs)
 //jwt, jwk, etc. TODO: decide on name
 //include("external:jose") //deps: kx.serialization, kx.datetime
 
 //contains common properties/builders
 include("cryptography-core") //deps: vio, bn
 
-//functions
-include("cryptography-primitives") //deps: core, kpi
-
 //something what can be created
-include("cryptography-algorithms") //deps: primitives
-
-
-//include("cryptography-primitives-async") //deps: core, api + coroutines
-//include("cryptography-algorithms-async") //deps: primitives-async
-
-//TODO: for async add encryption integration for GCP KMS or AWS KMG
-
-//TODO: is it needed?
-//include("cryptography-primitives-async-wrapper") //deps: async + primitives - can be used in providers
-//include("cryptography-algorithms-async-wrapper") //deps: async + primitives - can be used in providers
-
-//include("cryptography-api") //deps: vio, bignumber
-//include("cryptography-provider-api") //deps: vio, bignumber
-
-//API to create cryptography primitives
-//include("cryptography-core") //deps: api
-
-//API to create cryptography primitives but in async way (like webcrypto api)
-//include("cryptography-core-async") //deps: api
-
-//base algorithms
-//include("cryptography-algorithms")
-
-//cryptography primitives for asn1 encoding
-//include("cryptography-asn1") //deps: core, asn1
-
+include("cryptography-algorithms-builtin") //deps: core
 
 //TODO: move algorithms out of cryptography-core
 //include("cryptography-tests")
@@ -100,6 +72,8 @@ include("cryptography-algorithms") //deps: primitives
 //include("cryptography-provider-wolfcrypto") //all - same as openssl
 //include("cryptography-provider-boringssl") //all - same as openssl
 //include("cryptography-provider-tink") //is it needed?
+//include("cryptography-provider-aws") //remote AWS KMS provider
+//include("cryptography-provider-gcp") //remote GCP KMS provider
 
 //TODO: DECIDE ON ASYNC!!! (WebCrypto uses promises)
 

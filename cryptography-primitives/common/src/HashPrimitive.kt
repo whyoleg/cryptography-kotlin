@@ -3,6 +3,18 @@ package dev.whyoleg.cryptography.primitives
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.vio.*
 
+public interface HPrimitive {
+    public val digestSize: DigestSize
+
+    public fun hash(input: BufferView): BufferView
+    public fun hash(input: BufferView, output: BufferView): BufferView
+
+    public suspend fun hashSuspend(input: BufferView): BufferView
+    public suspend fun hashSuspend(input: BufferView, output: BufferView): BufferView
+
+    public fun hashFunction(): HashFunction
+}
+
 //TODO: better name?
 public interface HashPrimitive {
     public val digestSize: DigestSize

@@ -3,6 +3,7 @@ package dev.whyoleg.cryptography
 import dev.whyoleg.cryptography.key.*
 import dev.whyoleg.vio.*
 
+//TODO: may be we need to split aes per key size right here, instead of field keySize!!!
 public sealed interface AesParameters : CryptographyParameters {
     public val keySize: KeySize
 }
