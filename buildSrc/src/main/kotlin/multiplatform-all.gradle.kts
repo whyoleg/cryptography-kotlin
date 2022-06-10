@@ -5,7 +5,13 @@ plugins {
 }
 
 kotlin {
-    jvm()
+    jvm {
+        compilations.all {
+            kotlinOptions {
+                this.freeCompilerArgs += "-Xjdk-release"
+            }
+        }
+    }
     js {
         browser()
         nodejs()

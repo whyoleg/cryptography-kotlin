@@ -25,12 +25,14 @@ kotlin {
             languageSettings {
                 progressiveMode = true
 
-                optIn("kotlin.RequiresOptIn")
-
                 if (suffix == "test") {
                     optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
                 }
             }
         }
+    }
+
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of(8))
     }
 }

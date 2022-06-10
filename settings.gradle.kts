@@ -29,6 +29,7 @@ dependencyResolutionManagement {
 //external libraries, are those, which should be later extracted to separate projects/artifacts not related to cryptography at all
 
 //super minimal buffer view api over ByteArray and platform specific implementations
+//TODO: replace with NEW ktor-io if released soon
 include("external:vio") //deps: no
 //super minimal biginteger implementation to support string/arrays of bytes as big integers representation
 include("external:bignumber") //deps: no

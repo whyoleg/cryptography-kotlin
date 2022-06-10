@@ -1,5 +1,6 @@
 package dev.whyoleg.vio
 
+import java.net.http.HttpClient
 import java.nio.*
 
 public actual sealed class BufferView {

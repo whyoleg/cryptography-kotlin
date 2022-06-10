@@ -10,6 +10,8 @@ public value class BinarySize internal constructor(private val value: Int) {
 
     }
 
+    //TODO: rename it similar to like in Duration
+
     public val bits: Int get() = value
     public val bytes: Int get() = value / 8
 
