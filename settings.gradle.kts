@@ -44,8 +44,11 @@ include("external:bignumber") //deps: no
 //contains common properties/builders
 include("cryptography-core") //deps: vio, bn
 
-//something what can be created
-include("cryptography-algorithms-builtin") //deps: core
+//default algorithms are those, which supported by default on ALL platforms: RSA(OAEP), AES(CBC, CTR, CBC), HMAC, ECDSA etc
+//default - all algorithms that are supported in WebCrypto API
+//TODO: decide on name and decide on algorithms providability
+//let's leave it for now just `algorithms`
+include("cryptography-algorithms") //deps: core
 
 //TODO: move algorithms out of cryptography-core
 //include("cryptography-tests")
@@ -53,9 +56,9 @@ include("cryptography-algorithms-builtin") //deps: core
 //try to use openssl at all parts
 
 //Part 1 JVM + JS:
-//include("cryptography-providers:cryptography-providers-jce") //jvm only
-//include("cryptography-providers:cryptography-providers-webcrypto") //js only
-//include("cryptography-providers:cryptography-providers-nodejs") //nodejs only
+//include("cryptography-providers:cryptography-provider-jce") //jvm only
+//include("cryptography-providers:cryptography-provider-webcrypto") //js only
+//include("cryptography-providers:cryptography-provider-nodejs") //nodejs only
 
 //Part 2 Native:
 //include("cryptography-provider-cng") //mingw only
@@ -75,12 +78,6 @@ include("cryptography-algorithms-builtin") //deps: core
 //include("cryptography-provider-tink") //is it needed?
 //include("cryptography-provider-aws") //remote AWS KMS provider
 //include("cryptography-provider-gcp") //remote GCP KMS provider
-
-//TODO: DECIDE ON ASYNC!!! (WebCrypto uses promises)
-
-//IN PROGRESS: RSA API
-//NEXT: ECDSA API, ECDH/DH, PBKDF2
-//RESEARCH: JWK, JWT, random, certification, key store
 
 /*
     encryption/decryption: AES(CTR, CBC, GCM) +, RSA(OAEP)

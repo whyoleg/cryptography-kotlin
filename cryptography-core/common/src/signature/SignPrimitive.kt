@@ -3,14 +3,14 @@ package dev.whyoleg.cryptography.signature
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.vio.*
 
-public interface SignPrimitive: CryptographyPrimitive {
+public interface SignPrimitive : CryptographyPrimitive {
     public val signatureSize: BinarySize
 
     public fun sign(input: BufferView): Signature
-    public fun sign(input: BufferView, output: BufferView): Signature
+    public fun sign(input: BufferView, output: Signature): Signature
 
     public suspend fun signSuspend(input: BufferView): Signature
-    public suspend fun signSuspend(input: BufferView, output: BufferView): Signature
+    public suspend fun signSuspend(input: BufferView, output: Signature): Signature
 
     public fun signFunction(): SignFunction
 }

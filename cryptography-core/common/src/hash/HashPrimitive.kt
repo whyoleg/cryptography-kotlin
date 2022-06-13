@@ -7,10 +7,10 @@ public interface HashPrimitive : CryptographyPrimitive {
     public val digestSize: BinarySize
 
     public fun hash(input: BufferView): Digest
-    public fun hash(input: BufferView, output: BufferView): Digest
+    public fun hash(input: BufferView, output: Digest): Digest
 
     public suspend fun hashSuspend(input: BufferView): Digest
-    public suspend fun hashSuspend(input: BufferView, output: BufferView): Digest
+    public suspend fun hashSuspend(input: BufferView, output: Digest): Digest
 
     public fun hashFunction(): HashFunction
 }

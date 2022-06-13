@@ -25,8 +25,8 @@ import dev.whyoleg.vio.*
 
 //TODO: rename to KeyEncodePrimitive?
 
-public sealed interface KeyPrimitive<Format : KeyFormat> : CryptographyPrimitive {
-    public fun encode(format: Format): BufferView
+public sealed interface KeyPrimitive2<Format : KeyFormat> : CryptographyPrimitive {
+    public fun encode(data: KeyData<Format>): BufferView
     public fun encode(format: Format, output: BufferView): BufferView
 
     public suspend fun encodeSuspend(format: Format): BufferView

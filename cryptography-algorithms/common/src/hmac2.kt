@@ -7,7 +7,7 @@ import dev.whyoleg.cryptography.signature.*
 import dev.whyoleg.vio.*
 
 public object Hmac :
-    CreateParametersProvider<
+    CryptographyParametersProvider<
             HmacPrimitive,
             HmacParameters,
             HmacParametersBuilder,
@@ -20,7 +20,7 @@ public object Hmac :
             HmacParametersBuilder,
             Hmac.Parameters
             > {
-    override val create: Parameters get() = Parameters
+    override val factory: Parameters get() = Parameters
     override val decodeKey: Parameters get() = Parameters
 
     public object Parameters : CryptographyParametersFactory<HmacParameters, HmacParametersBuilder> {
@@ -48,7 +48,7 @@ public fun <
         Builder : CryptographyParametersBuilder<Parameters>,
         Factory : CryptographyParametersFactory<Parameters, Builder>
         > HmacParametersBuilder.hash(
-    provider: CreateParametersProvider<Primitive, Parameters, Builder, Factory>,
+    provider: CryptographyParametersProvider<Primitive, Parameters, Builder, Factory>,
     configure: Builder.() -> Unit = {}
 ) {
     val parameters = provider.create(configure)
@@ -81,11 +81,11 @@ private fun s(provider: CryptographyProvider) {
         }
     }
 
-    provider.create(parameters)
+    provider.get(parameters)
 
-    provider.create(Hmac)
+    provider.get(Hmac)
 
-    provider.create(Hmac) {
+    provider.get(Hmac) {
 
     }
 }

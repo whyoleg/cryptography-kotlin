@@ -12,3 +12,4 @@ public inline fun <C : Closeable, R> C.use(block: (C) -> R): R {
         close()
     }
 }
+
