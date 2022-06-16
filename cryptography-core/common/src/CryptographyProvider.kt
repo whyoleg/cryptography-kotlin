@@ -1,63 +1,39 @@
 package dev.whyoleg.cryptography
 
-import kotlin.reflect.*
-
-//rename to init and initFromKey, add deriveFromKey? add exchangeKey(DH, ECDH), etc
-//decodeKey, etc
 public interface CryptographyProvider {
-    public infix fun <
+    public fun <
             Primitive : CryptographyPrimitive,
-            Parameters : CryptographyParameters<Primitive>
-            > get(parameters: Parameters): Primitive
-
-    public suspend infix fun <
-            Primitive : CryptographyPrimitive,
-            Parameters : CryptographyParameters<Primitive>
-            > getSuspend(parameters: Parameters): Primitive
-}
-
-public fun CryptographyProvider(block: CryptographyProviderBuilder.() -> Unit): CryptographyProvider {
-    return CryptographyProviderImpl().apply(block)
-}
-
-public sealed interface CryptographyProviderBuilder {
+            Material : CryptographyMaterial,
+            Parameters : ProviderParameters<Primitive, Material>
+            > from(
+        material: Material,
+        parameters: Parameters
+    ): Primitive
 
     public fun <
             Primitive : CryptographyPrimitive,
-            Parameters : CryptographyParameters<Primitive>
-            > provide(
-        cls: KClass<Parameters>,
-        handle: (parameters: Parameters) -> Primitive
-    )
-}
-
-public inline fun <
-        Primitive : CryptographyPrimitive,
-        reified Parameters : CryptographyParameters<Primitive>
-        > CryptographyProviderBuilder.provide(
-    noinline handle: (parameters: Parameters) -> Primitive
-) {
-    provide(Parameters::class, handle)
-}
-
-@Suppress("UNCHECKED_CAST")
-private class CryptographyProviderImpl : CryptographyProvider, CryptographyProviderBuilder {
-    private val handlers =
-        mutableMapOf<KClass<out CryptographyParameters<*>>, (parameters: CryptographyParameters<*>) -> CryptographyPrimitive>()
-
-    override fun <Primitive : CryptographyPrimitive, Parameters : CryptographyParameters<Primitive>> get(
+            Parameters : ProviderParameters<Primitive, EmptyMaterial>
+            > CryptographyProvider.from(
         parameters: Parameters
-    ): Primitive {
-        val handler =
-            handlers[parameters::class] ?: throw NotSupportedAlgorithmException(parameters::class.simpleName ?: "")
+    ): Primitive = from(EmptyMaterial, parameters)
 
-        return handler(parameters) as Primitive
-    }
+    //when context receivers will be ready, can be moved out of interface and made inline
+    public /*inline*/ operator fun <
+            Primitive : CryptographyPrimitive,
+            Material : CryptographyMaterial,
+            Parameters : ProviderParameters<Primitive, Material>,
+            Builder
+            > ProviderParametersFactory<Primitive, Material, Parameters, Builder>.invoke(
+        material: Material,
+        block: Builder.() -> Unit = {}
+    ): Primitive = from(material, Parameters(block))
 
-    override fun <Primitive : CryptographyPrimitive, Parameters : CryptographyParameters<Primitive>> provide(
-        cls: KClass<Parameters>,
-        handle: (parameters: Parameters) -> Primitive
-    ) {
-        handlers[cls] = handle as (parameters: CryptographyParameters<*>) -> CryptographyPrimitive
-    }
+    //when context receivers will be ready, can be moved out of interface and made inline
+    public /*inline*/ operator fun <
+            Primitive : CryptographyPrimitive,
+            Parameters : ProviderParameters<Primitive, EmptyMaterial>,
+            Builder
+            > ProviderParametersFactory<Primitive, EmptyMaterial, Parameters, Builder>.invoke(
+        block: Builder.() -> Unit = {}
+    ): Primitive = invoke(EmptyMaterial, block)
 }

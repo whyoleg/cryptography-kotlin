@@ -1,7 +1,9 @@
 package dev.whyoleg.cryptography.signature
 
-import dev.whyoleg.vio.*
-import kotlin.jvm.*
+import dev.whyoleg.cryptography.new.*
 
-@JvmInline
-public value class Signature(public val value: BufferView)
+public interface Signature : CryptographyPrimitive, Signer, Verifier {
+    public interface Sync : Signature, Signer.Sync, Verifier.Sync
+    public interface Async : Signature, Signer.Async, Verifier.Async
+    public interface Stream : Signature, Signer.Stream, Verifier.Stream
+}
