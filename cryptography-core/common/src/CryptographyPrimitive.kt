@@ -4,9 +4,18 @@ import kotlin.jvm.*
 
 //interface in core, implementation in provider: perform some operations
 public interface CryptographyPrimitive
+
+//instance check
 public interface CryptographyPrimitiveId<Primitive : CryptographyPrimitive>
 
-public interface CryptographyAlgorithm<BasePrimitive : CryptographyPrimitive, Parameters : CryptographyParameters>
+public class CryptographyAlgorithm<
+        BasePrimitive : CryptographyPrimitive,
+        Parameters : CryptographyParameters,
+        Builder,
+        >(
+    public val name: String, //unique name of algorithm
+    public val parametersFactory: CryptographyParametersFactory<Parameters, Builder>,
+)
 
 //TODO: make all getters inline in algorithms???
 

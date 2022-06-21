@@ -1,15 +1,28 @@
 package dev.whyoleg.cryptography
 
-public interface CP {
-    public fun <
+import kotlin.experimental.*
+
+public abstract class CP {
+    public abstract operator fun <
             BasePrimitive : CryptographyPrimitive,
             Primitive : BasePrimitive,
             Parameters : CryptographyParameters,
-            > get(
-        algorithm: CryptographyAlgorithm<BasePrimitive, Parameters>,
+            Builder,
+            > CryptographyAlgorithm<BasePrimitive, Parameters, Builder>.invoke(
         id: CryptographyPrimitiveId<Primitive>,
         parameters: Parameters,
-    )
+    ): Primitive
+
+    public inline operator fun <
+            BasePrimitive : CryptographyPrimitive,
+            Primitive : BasePrimitive,
+            Parameters : CryptographyParameters,
+            Builder,
+            > CryptographyAlgorithm<BasePrimitive, Parameters, Builder>.invoke(
+        id: CryptographyPrimitiveId<Primitive>,
+        block: Builder.() -> Unit = {},
+    ): Primitive = invoke(id, parametersFactory.invoke(block))
+
 }
 
 public sealed class CryptographyProvider {
