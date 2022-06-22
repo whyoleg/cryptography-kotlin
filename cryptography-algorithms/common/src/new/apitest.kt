@@ -3,54 +3,9 @@ package dev.whyoleg.cryptography.algorithms.new
 import dev.whyoleg.cryptography.key.*
 import kotlin.reflect.*
 
-private fun test() {
-    val keyPair = Rsa.KeyPairGenerator.Sync { //builder
-
-    }.generateKeyPair()
-
-    //or async
-    RsaOaep.Encryptor.Sync(keyPair.publicKey) {
-
-    }
-
-    val key = Aes.KeyGenerator.Sync {
-
-    }.generateKey()
-
-    //both parameters and builder
-    AesGcm.Encryptor.Sync(key)
-    AesGcm.Encryptor.Async(key)
-    AesGcm.Decryptor.Sync(key)
-    AesGcm.Decryptor.Async(key)
-    AesGcm.Cipher.Sync(key)
-    AesGcm.Cipher.Async(key)
-
-    AesGcm.StreamEncryptor(key)
-    AesGcm.StreamDecryptor(key)
-    AesGcm.StreamCipher(key)
-
-    AesGcm.BoxEncryptor.Sync(key)
-    AesGcm.BoxEncryptor.Async(key)
-    AesGcm.BoxDecryptor.Sync(key)
-    AesGcm.BoxDecryptor.Async(key)
-    AesGcm.BoxCipher.Sync(key)
-    AesGcm.BoxCipher.Async(key)
-
-    val key2 = Hmac.KeyGenerator.Async {
-
-    }.generateKey
-
-    Hmac.Signature.Async(key2)
-    Hmac.Signer.Async(key2)
-    Hmac.Verifier.Sync(key2)
-
-    //or digest?
-    Sha1.Hasher.Async()
-}
-
 private inline fun <C : Any, B : BaseBoxEncryptor<C>> func(
     cls: KClass<C>,
-    block: () -> Id<B>
+    block: () -> Id<B>,
 ): B {
     TODO()
 }
@@ -58,7 +13,8 @@ private inline fun <C : Any, B : BaseBoxEncryptor<C>> func(
 private fun test2() {
     val s = Encryptor::Sync
 
-    val r = func(String::class, BoxEncryptor::Sync)
+    val r = func(String::class, BoxEncryptor::sync)
+    val r2 = func(String::class, BoxEncryptor::async)
 
     val keyPair = Rsa(KeyPairGenerator::Sync) {
 
@@ -85,22 +41,24 @@ public object Aes {
 
 public interface Id<C>
 
-public interface Encryptor {
-    public interface Sync : Encryptor
-    public companion object {
-        public inline fun Sync(): Id<Sync> = TODO()
-    }
+public object Encryptor {
+    public inline fun sync(): Id<SyncEncryptor> = TODO()
+    public inline fun async(): Id<AsyncEncryptor> = TODO()
 }
 
-public object SBEID : Id<SyncBoxEncryptor<Any?>>
+public interface BaseEncryptor
+public interface SyncEncryptor : BaseEncryptor
+public interface AsyncEncryptor : BaseEncryptor
 
 public object BoxEncryptor {
-    public inline fun <C> Sync(): Id<SyncBoxEncryptor<C>> = SBEID
+    public inline fun <C> sync(): Id<SyncBoxEncryptor<C>> = TODO()
+    public inline fun <C> async(): Id<AsyncBoxEncryptor<C>> = TODO()
 }
 
 public interface BaseBoxEncryptor<C>
 
 public interface SyncBoxEncryptor<C> : BaseBoxEncryptor<C>
+public interface AsyncBoxEncryptor<C> : BaseBoxEncryptor<C>
 
 
 
