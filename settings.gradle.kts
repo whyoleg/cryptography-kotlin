@@ -43,12 +43,20 @@ include("external:bignumber") //deps: no
 
 //contains common properties/builders
 include("cryptography-core") //deps: vio, bn
+include("cryptography-engines:cryptography-engine-jdk")
+include("cryptography-engines:cryptography-engine-corecrypto")
+include("cryptography-engines:cryptography-engine-nodejs")
+include("cryptography-engines:cryptography-engine-webcrypto")
+include("cryptography-engines:cryptography-engine-cng")
+include("cryptography-engines:cryptography-engine-openssl3-dynamic")
+include("cryptography-engines:cryptography-engine-openssl3-static")
+
 
 //default algorithms are those, which supported by default on ALL platforms: RSA(OAEP), AES(CBC, CTR, CBC), HMAC, ECDSA etc
 //default - all algorithms that are supported in WebCrypto API
 //TODO: decide on name and decide on algorithms providability
 //let's leave it for now just `algorithms`
-include("cryptography-algorithms") //deps: core
+//include("cryptography-algorithms") //deps: core
 
 //TODO: move algorithms out of cryptography-core
 //include("cryptography-tests")

@@ -8,7 +8,7 @@ kotlin {
     jvm {
         compilations.all {
             kotlinOptions {
-                this.freeCompilerArgs += "-Xjdk-release"
+                this.freeCompilerArgs += "-Xjdk-release=1.8" //TODO
             }
         }
     }
