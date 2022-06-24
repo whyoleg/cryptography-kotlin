@@ -45,3 +45,43 @@ public actual class PlatformBufferView(
 }
 
 public fun ByteBuffer.view(): PlatformBufferView = PlatformBufferView(this)
+
+public inline fun <T> BufferView.read(
+    block: (ByteBuffer) -> T
+): T {
+    return when (this) {
+        is ByteArrayBufferView -> {
+            val buffer = ByteBuffer.wrap(
+                array,
+                arrayOffset + readIndex,
+                arraySize - arrayOffset - readIndex
+            )
+            val result = block(buffer)
+
+            return result
+        }
+
+        is PlatformBufferView -> block(byteBuffer)
+        else -> TODO()
+    }
+}
+
+public inline fun <T> BufferView.write(
+    block: (ByteBuffer) -> T
+): T {
+    return when (this) {
+        is ByteArrayBufferView -> {
+            val buffer = ByteBuffer.wrap(
+                array,
+                arrayOffset + readIndex,
+                arraySize - arrayOffset - readIndex
+            )
+            val result = block(buffer)
+
+            return result
+        }
+
+        is PlatformBufferView -> block(byteBuffer)
+        else -> TODO()
+    }
+}
