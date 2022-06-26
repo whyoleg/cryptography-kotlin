@@ -10,8 +10,6 @@ import javax.crypto.spec.*
 import kotlin.reflect.*
 
 private val ivSize = 96.bits
-
-internal inline operator fun <T> ThreadLocal<T>.getValue(thisRef: Any?, property: KProperty<*>): T = get()
 internal inline fun <T> threadLocal(crossinline block: () -> T): ThreadLocal<T> = object : ThreadLocal<T>() {
     override fun initialValue(): T = block()
 }
@@ -21,7 +19,7 @@ internal val EmptyByteBuffer = ByteBuffer.allocate(0)
 public class AesGcmCipherImpl(
     private val key: SecretKey, //TODO
     private val padding: Boolean = false, //TODO
-    private val authTagSize: BinarySize = 16.bytes, //TODO
+    private val authTagSize: BinarySize = 128.bits, //TODO
     private val secureRandom: SecureRandom
 ) :
     SyncAeadCipher, AsyncAeadCipher, StreamAeadCipher,

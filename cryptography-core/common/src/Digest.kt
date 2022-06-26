@@ -6,6 +6,26 @@ import kotlin.jvm.*
 @JvmInline
 public value class Digest(public val value: BufferView)
 
+public interface HasherProvider {
+    public fun <B : BaseHasher, P : HasherParameters> hasher(
+        algorithm: HasherAlgorithm<P>,
+        id: HasherId<B>,
+        parameters: P
+    ): B
+
+}
+
+public interface HasherAlgorithm<P : HasherParameters>
+public interface HasherParameters
+
+public interface HasherId<B : BaseHasher>
+
+public object Hasher {
+    public inline fun sync(): HasherId<SyncHasher> = TODO()
+    public inline fun async(): HasherId<AsyncHasher> = TODO()
+    public inline fun stream(): HasherId<StreamHasher> = TODO()
+}
+
 //TODO: naming
 public interface BaseHasher
 

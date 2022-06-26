@@ -24,3 +24,36 @@ creating primitive:
 * provide parameters - via parameters instance or via builder
     * required parameters - should be provided in place - like KEY
     * optional parameters - provided in builder - like key size of AES with default to 256
+
+
+testing:
+* hash:
+  * random input generated
+  * every engine creates digest from random input and store it to some file/server
+  * check that all digests has the same digest
+  * tests of predefined digests
+* symmetric cipher:
+  * random input generated
+  * every engine encrypts data with random key and store it to some file/server
+  * every engine decrypts data with that key
+* mac:
+  * generate
+* asymmetric cipher:
+  * generate
+  * encrypt
+  * decrypt
+* signature:
+  * generate
+  * sign
+  * verify
+
+
+
+
+- from key
+symmetric encryption - encryptor|boxEncryptor, decryptor|boxDecryptor, cipher|boxCipher (sync, async stream)
+asymmetric - encryptor (public), decryptor (private)
+signature|mac - same as symmetric vs asymmetric
+
+hash(digest) - no key
+random - no key, just parameters
