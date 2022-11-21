@@ -11,8 +11,11 @@ dependencyResolutionManagement {
     }
 
     versionCatalogs {
-        create("buildLibs") {
+        create("libs") {
             from(files("../libs.versions.toml"))
         }
     }
 }
+
+
+rootProject.name = "buildx"

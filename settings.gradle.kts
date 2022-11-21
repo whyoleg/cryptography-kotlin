@@ -5,19 +5,22 @@ pluginManagement {
         gradlePluginPortal()
         mavenCentral()
     }
+    includeBuild("gradle/buildx") {
+        name = "cryptography-buildx"
+    }
 }
 
 dependencyResolutionManagement {
     repositories {
         mavenCentral()
     }
-
-    versionCatalogs {
-        create("libs") {
-            from(files("libs.versions.toml"))
-        }
-    }
 }
+
+rootProject.name = "cryptography-kotlin"
+
+include("cryptography-api")
+include("cryptography-algorithms")
+
 
 //decide on dependencies:
 // * need some IO or use basic VIO
@@ -30,9 +33,9 @@ dependencyResolutionManagement {
 
 //super minimal buffer view api over ByteArray and platform specific implementations
 //TODO: replace with NEW ktor-io if released soon
-include("external:vio") //deps: no
+//include("external:vio") //deps: no
 //super minimal biginteger implementation to support string/arrays of bytes as big integers representation
-include("external:bignumber") //deps: no
+//include("external:bignumber") //deps: no
 //super minimal mpp provider api (kotlin provider interface)
 //include("external:kpi") //deps: no
 //pem and der encoding
@@ -42,14 +45,14 @@ include("external:bignumber") //deps: no
 //include("external:jose") //deps: kx.serialization, kx.datetime
 
 //contains common properties/builders
-include("cryptography-core") //deps: vio, bn
-include("cryptography-engines:cryptography-engine-jdk")
-include("cryptography-engines:cryptography-engine-corecrypto")
-include("cryptography-engines:cryptography-engine-nodejs")
-include("cryptography-engines:cryptography-engine-webcrypto")
-include("cryptography-engines:cryptography-engine-cng")
-include("cryptography-engines:cryptography-engine-openssl3-dynamic")
-include("cryptography-engines:cryptography-engine-openssl3-static")
+//include("cryptography-core") //deps: vio, bn
+//include("cryptography-engines:cryptography-engine-jdk")
+//include("cryptography-engines:cryptography-engine-corecrypto")
+//include("cryptography-engines:cryptography-engine-nodejs")
+//include("cryptography-engines:cryptography-engine-webcrypto")
+//include("cryptography-engines:cryptography-engine-cng")
+//include("cryptography-engines:cryptography-engine-openssl3-dynamic")
+//include("cryptography-engines:cryptography-engine-openssl3-static")
 
 
 //default algorithms are those, which supported by default on ALL platforms: RSA(OAEP), AES(CBC, CTR, CBC), HMAC, ECDSA etc
