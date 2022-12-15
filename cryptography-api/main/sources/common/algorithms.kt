@@ -4,6 +4,7 @@ package dev.whyoleg.cryptography.api
 // - JDK (jvm/android)
 // - JS WebCrypto (js) - only async support, small subset of algorithms
 // - CoreCrypto (darwin/iOS)
+// - CryptoKit (swift) - at least try to use it and check which algorithms are supported
 // - OpenSSL (linux)
 // - CNG (windows)
 // + some additional popular algorithms that are supported by JDK/OpenSSL
