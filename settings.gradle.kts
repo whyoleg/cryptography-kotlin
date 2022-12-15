@@ -19,7 +19,8 @@ dependencyResolutionManagement {
 rootProject.name = "cryptography-kotlin"
 
 include("cryptography-api")
-include("cryptography-algorithms")
+
+//include("cryptography-algorithms")
 
 
 //decide on dependencies:
