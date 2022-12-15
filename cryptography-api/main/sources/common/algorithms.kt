@@ -7,6 +7,7 @@ package dev.whyoleg.cryptography.api
 // - CryptoKit (swift) - at least try to use it and check which algorithms are supported
 // - OpenSSL (linux)
 // - CNG (windows)
+// - Rust Crypto - check on supported algorithms
 // + some additional popular algorithms that are supported by JDK/OpenSSL
 
 /** Algorithms examples:
