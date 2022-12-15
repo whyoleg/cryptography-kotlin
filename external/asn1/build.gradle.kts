@@ -1,3 +1,0 @@
-plugins {
-    `multiplatform-all`
-}
