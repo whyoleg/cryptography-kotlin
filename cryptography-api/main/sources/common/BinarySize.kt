@@ -1,7 +1,8 @@
-package dev.whyoleg.vio
+package dev.whyoleg.cryptography.api
 
 import kotlin.jvm.*
 
+//TODO: is it needed - very useful for size representation, as some algorithms easier to use with bytes, other with bits
 @JvmInline
 public value class BinarySize internal constructor(private val value: Int) {
     init {
