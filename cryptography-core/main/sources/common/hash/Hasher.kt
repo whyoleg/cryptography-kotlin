@@ -2,8 +2,6 @@ package dev.whyoleg.cryptography.hash
 
 import dev.whyoleg.cryptography.*
 
-public interface HashAlgorithm
-
 public interface Hasher {
     public val digestSize: Int
 
@@ -22,13 +20,4 @@ public interface SyncHasher : Hasher {
 public interface AsyncHasher : Hasher {
     public suspend fun hash(dataInput: Buffer): Buffer
     public suspend fun hash(dataInput: Buffer, digestOutput: Buffer): Buffer
-}
-
-public interface HashFunction : Closeable {
-    public val digestSize: Int
-    public fun update(dataInput: Buffer)
-
-    //TODO: name - finalize?
-    public fun finish(): Buffer
-    public fun finish(digestOutput: Buffer): Buffer
 }
