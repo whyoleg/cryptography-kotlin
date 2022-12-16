@@ -1,4 +1,6 @@
-package dev.whyoleg.cryptography.api
+package dev.whyoleg.cryptography.cipher
+
+import dev.whyoleg.cryptography.*
 
 public interface Decryptor {
     public fun plaintextSize(ciphertextSize: Int): Int

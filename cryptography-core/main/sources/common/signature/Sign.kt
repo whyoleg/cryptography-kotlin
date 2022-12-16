@@ -1,4 +1,6 @@
-package dev.whyoleg.cryptography.api
+package dev.whyoleg.cryptography.signature
+
+import dev.whyoleg.cryptography.*
 
 public interface Signer {
     public val signatureSize: Int
@@ -17,8 +19,8 @@ public interface AsyncSigner : Signer {
 public interface SignFunction : Closeable {
     public val signatureSize: Int
 
-    public fun update(inputData: Buffer)
+    public fun update(dataInput: Buffer)
 
-    public fun finish(inputData: Buffer): Buffer
-    public fun finish(inputData: Buffer, signatureOutput: Buffer): Buffer
+    public fun finish(): Buffer
+    public fun finish(signatureOutput: Buffer): Buffer
 }

@@ -18,14 +18,27 @@ dependencyResolutionManagement {
 
 rootProject.name = "cryptography-kotlin"
 
-include("cryptography-api")
 
-//contains common properties/builders
-//include("cryptography-algorithms")
-//TODO: is it needed?
-//include("cryptography-tests")
+//interfaces for engines and users
+include("cryptography-core")
+
 //mapping from sync to async via dispatcher or channel
 //include("cryptography-coroutines")
+
+//TODO: how to test that all engines have same output for same input - cross-engine tests
+//include("cryptography-tests")
+
+//high-level API for users
+//we need to have separate modules/packages/annotations for algorithms:
+// - legacy - for old algorithms, which are not secure anymore, but still used in some cases (e.g. MD5, compatibility, etc)
+// - modern - for modern algorithms, which are secure and recommended to use (like in CryptoKit and WebCrypto)
+// - other - implemented in different engines, but not in all of them (e.g. ChaCha20, Poly1305, etc)
+include("cryptography-algorithms")
+
+//low level API for creating engines and using them
+//include("cryptography-engine-api") //TODO: name?
+//low level parameters for algorithms
+//include("cryptography-engine-algorithms") //TODO: name?
 
 //first engines:
 //include("cryptography-engines:cryptography-engine-jdk") //jvm only
@@ -36,11 +49,11 @@ include("cryptography-api")
 //include("cryptography-engines:cryptography-engine-cng") //windows only
 
 //future engines:
-//include("cryptography-provider-aws") //remote AWS KMS provider
-//include("cryptography-provider-gcp") //remote GCP KMS provider
-//include("cryptography-provider-boringssl") //same as openssl
-//include("cryptography-provider-wolfcrypto") //same as openssl
-//include("cryptography-provider-tink") //is it needed?
+//include("cryptography-engines:cryptography-engine-aws") //remote AWS KMS provider
+//include("cryptography-engines:cryptography-engine-gcp") //remote GCP KMS provider
+//include("cryptography-engines:cryptography-engine-boringssl") //same as openssl
+//include("cryptography-engines:cryptography-engine-wolfcrypto") //same as openssl
+//include("cryptography-engines:cryptography-engine-tink") //is it needed?
 
 //future features:
 // - JWK/JWT support (JOSE)

@@ -1,4 +1,4 @@
-package dev.whyoleg.cryptography.api
+package dev.whyoleg.cryptography.key
 
 /**
  * TODO
@@ -15,3 +15,10 @@ package dev.whyoleg.cryptography.api
  *  - key formats
  *  - key usages
  */
+
+public sealed interface KeyFormat
+public sealed interface KeyPairFormat
+public sealed interface SymmetricKeyFormat
+public sealed interface PublicKeyFormat
+public sealed interface PrivateKeyFormat
+

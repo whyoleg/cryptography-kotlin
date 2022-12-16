@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.targets.native.tasks.*
-
 plugins {
     id("buildx-multiplatform")
 }
@@ -13,4 +11,12 @@ kotlin {
     macosX64()
     macosArm64()
     mingwX64()
+
+    sourceSets {
+        commonMain {
+            dependencies {
+                api(projects.cryptographyCore)
+            }
+        }
+    }
 }

@@ -1,4 +1,6 @@
-package dev.whyoleg.cryptography.api
+package dev.whyoleg.cryptography.random
+
+import dev.whyoleg.cryptography.*
 
 public interface Randomizer
 

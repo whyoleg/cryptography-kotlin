@@ -1,4 +1,6 @@
-package dev.whyoleg.cryptography.api
+package dev.whyoleg.cryptography.signature
+
+import dev.whyoleg.cryptography.*
 
 public interface Verifier {
     public val signatureSize: Int
@@ -15,7 +17,7 @@ public interface AsyncVerifier : Verifier {
 public interface VerifyFunction : Closeable {
     public val signatureSize: Int
 
-    public fun update(inputData: Buffer)
+    public fun update(signatureInput: Buffer)
 
-    public fun finish(inputData: Buffer): Boolean
+    public fun finish(): Boolean
 }

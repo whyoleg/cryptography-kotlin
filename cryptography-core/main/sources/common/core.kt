@@ -1,4 +1,4 @@
-package dev.whyoleg.cryptography.api
+package dev.whyoleg.cryptography
 
 public typealias Buffer = ByteArray
 
