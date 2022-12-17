@@ -1,8 +1,5 @@
 package dev.whyoleg.cryptography
 
-import dev.whyoleg.cryptography.cipher.*
-import dev.whyoleg.cryptography.hash.*
-import dev.whyoleg.cryptography.key.*
 import dev.whyoleg.cryptography.signature.*
 
 //need to support ALL algorithms that are shared between:
@@ -27,60 +24,6 @@ import dev.whyoleg.cryptography.signature.*
 
 //get can be sync and async; primitive can be sync and async
 
-private fun test() {
-    with(AES.GCM) {
-        val generator = KeyPairGenerator.Async(engine) {
-            //parameters
-        }
-
-        val keyPair = generator.generateKeyPair()
-
-        val encryptor = Encryptor.Sync(keyPair.publicKey) {
-            //parameters
-        }
-    }
-
-    engine.syncHasher(SHA256)
-    engine.syncHasher(SHA512)
-    engine.syncHasher(SHA3.B512)
-    engine.syncHasher(SHAKE.B128) {
-        //parameters
-    }
-
-
-    engine.asyncKeyPairGenerator(EC.P256)
-    val generator = engine.syncKeyPairGenerator(EC.P256) {
-        //parameters
-    }
-
-    //suspend
-    val keyPair = generator.generateKey {
-        //parameters
-    }
-
-    keyPair.privateKey.syncEncryptor {
-        //parameters
-    }
-
-    val provider: KeyGenerator.Provider
-
-
-    val generator = provider.syncKeyGenerator(AES.GCM)
-
-    val key = generator.generateKey(SymmetricKeyParameters(SymmetricKeySize.B256))
-
-    val cipher = key.syncCipher(AES.GCM.CipherParameters(128.bits))
-
-    key.syncCipher {
-        tagLength = 128.bits
-    }
-
-    AES.GCM.CipherParameters(128.bits).copy {
-        tagLength = 128.bits
-    }
-
-}
-
 public object EC {
     public object P256 {
         public interface PublicKey
@@ -101,16 +44,6 @@ public object EC {
             public val privateKey: PrivateKey
         }
     }
-}
-
-public class SymmetricKeyParameters(
-    public val size: SymmetricKeySize,
-) : CopyableCryptographyParameters<SymmetricKeyParameters, SymmetricKeyParameters.Builder>() {
-    override fun builder(): Builder = Builder(size)
-    override fun build(builder: Builder): SymmetricKeyParameters = SymmetricKeyParameters(builder.size)
-    public class Builder internal constructor(
-        public var size: SymmetricKeySize,
-    )
 }
 
 public object RSA {

@@ -11,9 +11,3 @@ public abstract class CopyableCryptographyParameters<P : CopyableCryptographyPar
     //TODO: inline
     public fun copy(block: B.() -> Unit): P = builder().apply(block).let(::build)
 }
-
-public interface CryptographyAlgorithm<T>
-
-public interface CryptographyEngine {
-    public fun <T> get(algorithm: CryptographyAlgorithm<T>): T
-}
