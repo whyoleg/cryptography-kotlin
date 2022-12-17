@@ -1,5 +1,5 @@
 plugins {
-    `multiplatform-base`
+    id("buildx-multiplatform")
 }
 
 kotlin {
@@ -8,7 +8,7 @@ kotlin {
     sourceSets {
         val jvmMain by getting {
             dependencies {
-                api(projects.cryptographyCore)
+                api(projects.cryptographyAlgorithms)
             }
         }
     }

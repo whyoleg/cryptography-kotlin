@@ -36,9 +36,9 @@ include("cryptography-core")
 include("cryptography-algorithms")
 
 //first engines:
-//include("cryptography-engines:cryptography-engine-jdk") //jvm only
-//include("cryptography-engines:cryptography-engine-corecrypto") //darwin only
-//include("cryptography-engines:cryptography-engine-webcrypto") //js(nodejs/browser) only
+include("cryptography-engines:cryptography-engine-jdk") //jvm only
+include("cryptography-engines:cryptography-engine-corecrypto") //darwin only
+include("cryptography-engines:cryptography-engine-webcrypto") //js(nodejs/browser) only
 //include("cryptography-engines:cryptography-engine-nodejs") //nodejs only
 //include("cryptography-engines:cryptography-engine-openssl3") //all platforms, starting from linux/macos/windows
 //include("cryptography-engines:cryptography-engine-cng") //windows only

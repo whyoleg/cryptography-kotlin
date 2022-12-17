@@ -1,6 +1,7 @@
 package dev.whyoleg.cryptography.algorithms.aes
 
 import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.BinarySize.Companion.bits
 import dev.whyoleg.cryptography.cipher.*
 import dev.whyoleg.cryptography.key.*
 
@@ -9,7 +10,7 @@ private fun tests(engine: CryptographyEngine) {
     engine.get(AES.GCM).syncKeyGenerator {
         size = SymmetricKeySize.B256
     }.generateKey().syncCipher {
-        tagLength = 128.bits
+        tagSize = 128.bits
     }.encrypt("Hello, World!".encodeToByteArray())
 
     val gcm = engine.get(AES.GCM)
@@ -20,15 +21,15 @@ private fun tests(engine: CryptographyEngine) {
 
     val key = generator.generateKey()
 
-    val exporter = key.syncKeyExporter {
-
-    }
-
-    exporter.exportKey(format.PEM, output)
-    exporter.exportKey(format.DER, output)
+//    val exporter = key.syncKeyExporter {
+//
+//    }
+//
+//    exporter.exportKey(format.PEM, output)
+//    exporter.exportKey(format.DER, output)
 
     val cipher = key.syncCipher {
-        tagLength = 128.bits
+        tagSize = 128.bits
     }
 
     cipher.encrypt("Hello, World!".encodeToByteArray())
@@ -46,32 +47,39 @@ public object AES {
 
         final override val defaultKeyGeneratorParameters: SymmetricKeyParameters get() = SymmetricKeyParameters(SymmetricKeySize.B256)
 
-
-        //sync and async
-        public fun importKey(format: SymmetricKeyFormat, data: Buffer): Key = TODO()
-
-        //sync and async
-        public fun generateKey(size: SymmetricKeySize): Key = TODO()
+//
+//        //sync and async
+//        public fun importKey(format: SymmetricKeyFormat, data: Buffer): Key = TODO()
+//
+//        //sync and async
+//        public fun generateKey(size: SymmetricKeySize): Key = TODO()
 
         public class CipherParameters(
-            public val tagLength: BinarySize = 128.bits,
+            public val tagSize: BinarySize = 128.bits,
         ) : CopyableCryptographyParameters<CipherParameters, CipherParameters.Builder>() {
-            override fun builder(): Builder = Builder(tagLength)
-            override fun build(builder: Builder): CipherParameters = CipherParameters(builder.tagLength)
+            override fun builder(): Builder = Builder(tagSize)
+            override fun build(builder: Builder): CipherParameters = CipherParameters(builder.tagSize)
 
             public class Builder internal constructor(
-                public var tagLength: BinarySize,
+                public var tagSize: BinarySize,
             )
+
+            public companion object {
+                public val Default: CipherParameters = CipherParameters()
+            }
         }
 
-        public interface Key : CipherProvider<CipherParameters> {
-            //boxed
-            //boxed async
-            //encryp/decrypt function
+
+        //boxed
+        //boxed async
+        //encryp/decrypt function
+        public abstract class Key : CipherProvider<CipherParameters> {
+            final override val defaultCipherParameters: CipherParameters get() = CipherParameters.Default
+
 
             //expoort sync and async
-            public fun export(format: SymmetricKeyFormat): Buffer
-            public fun export(format: SymmetricKeyFormat, output: Buffer): Buffer
+//            public fun export(format: SymmetricKeyFormat): Buffer
+//            public fun export(format: SymmetricKeyFormat, output: Buffer): Buffer
         }
         //create from key?
     }

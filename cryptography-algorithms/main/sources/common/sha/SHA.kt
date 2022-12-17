@@ -9,7 +9,6 @@ public abstract class SHA : HashProvider<CryptographyParameters.Empty> {
 }
 
 public object SHA1 : CryptographyAlgorithm<SHA>
-public object SHA2 : CryptographyAlgorithm<SHA>
 public object SHA512 : CryptographyAlgorithm<SHA>
 
 public object SHA3 {
