@@ -1,4 +1,4 @@
-package dev.whyoleg.cryptography.engine.webcrypto.external
+package dev.whyoleg.cryptography.webcrypto.external
 
 import org.khronos.webgl.*
 
