@@ -10,11 +10,13 @@ import java.security.*
 public class JdkCryptographyEngine(
     private val secureRandom: SecureRandom = SecureRandom(),
 ) : CryptographyEngine {
+
+    @Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST")
     override fun <T> get(algorithm: CryptographyAlgorithm<T>): T = when (algorithm) {
-        AES.GCM -> AesGcm(secureRandom) as T
-        AES.CBC -> AesCbc(secureRandom) as T
-        SHA1    -> Sha("SHA-1") as T
-        SHA512  -> Sha("SHA-512") as T
+        AES.GCM -> AesGcm(secureRandom)
+        AES.CBC -> AesCbc(secureRandom)
+        SHA1    -> Sha("SHA-1")
+        SHA512  -> Sha("SHA-512")
         else    -> throw CryptographyAlgorithmNotFoundException(algorithm)
-    }
+    } as T
 }

@@ -86,7 +86,7 @@ internal class AesCbcCipher(
     override suspend fun decrypt(associatedData: Buffer?, ciphertextInput: Buffer): Buffer {
         val result = WebCrypto.subtle.decrypt(
             AesCbcParams {
-                this.iv = iv.copyOfRange(0, ivSizeBytes)
+                this.iv = ciphertextInput.copyOfRange(0, ivSizeBytes)
             },
             key,
             ciphertextInput.copyOfRange(ivSizeBytes, ciphertextInput.size)

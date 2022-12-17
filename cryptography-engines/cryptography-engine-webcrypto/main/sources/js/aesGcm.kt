@@ -85,7 +85,7 @@ internal class AesGcmCipher(
     override suspend fun decrypt(associatedData: Buffer?, ciphertextInput: Buffer): Buffer {
         val result = WebCrypto.subtle.decrypt(
             AesGcmParams {
-                this.iv = iv.copyOfRange(0, ivSizeBytes)
+                this.iv = ciphertextInput.copyOfRange(0, ivSizeBytes)
                 this.additionalData = associatedData
                 this.tagLength = tagSizeBits
             },
