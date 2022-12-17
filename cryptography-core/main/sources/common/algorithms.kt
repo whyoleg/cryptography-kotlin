@@ -1,7 +1,5 @@
 package dev.whyoleg.cryptography
 
-import dev.whyoleg.cryptography.signature.*
-
 //need to support ALL algorithms that are shared between:
 // - JDK (jvm/android)
 // - JS WebCrypto (js) - only async support, small subset of algorithms
@@ -23,28 +21,6 @@ import dev.whyoleg.cryptography.signature.*
  */
 
 //get can be sync and async; primitive can be sync and async
-
-public object EC {
-    public object P256 {
-        public interface PublicKey
-
-        public fun generateKeyPair(
-            parameters: Unit,
-        ): KeyPair = TODO()
-
-        public interface PrivateKey {
-            public val publicKey: PublicKey
-
-            public fun signer(hasher: Int): SyncSigner
-            public fun asyncSigner(hasher: Int): AsyncSigner
-        }
-
-        public interface KeyPair {
-            public val publicKey: PublicKey
-            public val privateKey: PrivateKey
-        }
-    }
-}
 
 public object RSA {
     public object OAEP {

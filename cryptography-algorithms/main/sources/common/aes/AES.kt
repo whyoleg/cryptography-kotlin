@@ -35,7 +35,7 @@ private fun tests(engine: CryptographyEngine) {
 }
 
 public object AES {
-    public abstract class GCM : KeyGeneratorProvider<SymmetricKeyParameters, GCM.Key> {
+    public abstract class GCM : KeyGeneratorProvider<GCM.Key, SymmetricKeyParameters> {
         public companion object : CryptographyAlgorithm<GCM>
 
         public class Box(

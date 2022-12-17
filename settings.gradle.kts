@@ -35,11 +35,6 @@ include("cryptography-core")
 // - other - implemented in different engines, but not in all of them (e.g. ChaCha20, Poly1305, etc)
 include("cryptography-algorithms")
 
-//low level API for creating engines and using them
-//include("cryptography-engine-api") //TODO: name?
-//low level parameters for algorithms
-//include("cryptography-engine-algorithms") //TODO: name?
-
 //first engines:
 //include("cryptography-engines:cryptography-engine-jdk") //jvm only
 //include("cryptography-engines:cryptography-engine-corecrypto") //darwin only
