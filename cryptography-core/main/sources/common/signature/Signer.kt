@@ -15,12 +15,3 @@ public interface AsyncSigner : Signer {
     public suspend fun sign(dataInput: Buffer): Buffer
     public suspend fun sign(dataInput: Buffer, signatureOutput: Buffer): Buffer
 }
-
-public interface SignFunction : Closeable {
-    public val signatureSize: Int
-
-    public fun update(dataInput: Buffer)
-
-    public fun finish(): Buffer
-    public fun finish(signatureOutput: Buffer): Buffer
-}

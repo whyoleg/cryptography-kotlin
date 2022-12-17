@@ -3,16 +3,7 @@ package dev.whyoleg.cryptography.cipher.aead
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.cipher.*
 
-public interface AeadEncryptor : Encryptor {
-
-    public interface Provider<P> : Encryptor.Provider<P> {
-        public override val defaultParameters: P
-
-        public override fun syncEncryptor(parameters: P): SyncAeadEncryptor
-        public override fun asyncEncryptor(parameters: P): AsyncAeadEncryptor
-        public override fun encryptFunction(parameters: P): AeadEncryptFunction
-    }
-}
+public interface AeadEncryptor : Encryptor
 
 public interface SyncAeadEncryptor : SyncEncryptor, AeadEncryptor {
     public fun encrypt(associatedData: Buffer?, plaintextInput: Buffer): Buffer

@@ -14,10 +14,3 @@ public interface AsyncVerifier : Verifier {
     public suspend fun verify(signatureInput: Buffer): Boolean
 }
 
-public interface VerifyFunction : Closeable {
-    public val signatureSize: Int
-
-    public fun update(signatureInput: Buffer)
-
-    public fun finish(): Boolean
-}

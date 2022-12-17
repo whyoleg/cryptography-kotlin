@@ -1,6 +1,7 @@
 package dev.whyoleg.cryptography.algorithms.sha
 
 import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.BinarySize.Companion.bytes
 import dev.whyoleg.cryptography.hash.*
 
 public sealed interface SHA3 : HashProvider<SHA3.Parameters> {

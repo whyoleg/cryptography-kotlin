@@ -13,6 +13,3 @@ public interface AsyncRandomizer : Randomizer {
     public suspend fun random(size: Int): Buffer
     public suspend fun random(output: Buffer): Buffer
 }
-
-//TODO: convert SynncRandomizer to kotlin.random.Random
-//TODO: seed
