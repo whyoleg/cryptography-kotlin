@@ -3,13 +3,7 @@ package dev.whyoleg.cryptography.hash
 import dev.whyoleg.cryptography.*
 
 public interface Hasher {
-    public val digestSize: Int
-
-    public interface Provider {
-        public fun syncHasher(algorithm: HashAlgorithm): SyncHasher
-        public fun asyncHasher(algorithm: HashAlgorithm): AsyncHasher
-        public fun hashFunction(algorithm: HashAlgorithm): HashFunction
-    }
+    public val digestSize: BinarySize
 }
 
 public interface SyncHasher : Hasher {

@@ -1,18 +1,23 @@
 package dev.whyoleg.cryptography.key
 
-public interface KeyGenerator<K, KP> {
-    public val defaultParameters: KP
+import dev.whyoleg.cryptography.*
 
-    public interface Provider {
-        public fun <K, KP> syncKeyGenerator(algorithm: KeyAlgorithm<K, KP>): SyncKeyGenerator<K, KP>
-        public fun <K, KP> asyncKeyGenerator(algorithm: KeyAlgorithm<K, KP>): AsyncKeyGenerator<K, KP>
-    }
+public interface KeyGenerator<K>
+
+public interface SyncKeyGenerator<K> : KeyGenerator<K> {
+    public fun generateKey(): K
 }
 
-public interface SyncKeyGenerator<K, KP> : KeyGenerator<K, KP> {
-    public fun generateKey(parameters: KP = defaultParameters): K
+public interface AsyncKeyGenerator<K> : KeyGenerator<K> {
+    public suspend fun generateKey(): K
 }
 
-public interface AsyncKeyGenerator<K, KP> : KeyGenerator<K, KP> {
-    public suspend fun generateKey(parameters: KP = defaultParameters): K
+
+public interface SyncKeyDecoder<K> {
+    public fun decodeKey(format: String, keyDataInput: Buffer): K
+}
+
+public interface SyncKeyEncoder {
+    public fun encodeKey(format: String): Buffer
+    public fun encodeKey(format: String, keyDataOutput: Buffer): Buffer
 }

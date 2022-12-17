@@ -13,6 +13,6 @@ public interface AeadCipher : Cipher, AeadEncryptor, AeadDecryptor {
 public interface AeadSyncCipher : AeadCipher, SyncCipher, SyncAeadEncryptor, SyncAeadDecryptor
 public interface AeadAsyncCipher : AeadCipher, AsyncCipher, AsyncAeadEncryptor, AsyncAeadDecryptor
 
-public fun <P : CryptographyParameters<P, B>, B> AeadCipher.Provider<P>.syncCipher(
+public fun <P : CopyableCryptographyParameters<P, B>, B> AeadCipher.Provider<P>.syncCipher(
     block: B.() -> Unit,
 ): AeadSyncCipher = syncCipher(defaultParameters.copy(block))
