@@ -10,4 +10,8 @@ public class SymmetricKeyParameters(
     public class Builder internal constructor(
         public var size: SymmetricKeySize,
     )
+
+    public companion object {
+        public val Default: SymmetricKeyParameters = SymmetricKeyParameters(SymmetricKeySize.B256)
+    }
 }

@@ -9,6 +9,10 @@ internal external interface AesCtrParams : CipherAlgorithm {
     var length: Int
 }
 
+internal external interface AesCbcParams : CipherAlgorithm {
+    var iv: ByteArray
+}
+
 internal external interface RsaOaepParams : CipherAlgorithm {
     var label: ByteArray //TODO: type
 }
@@ -20,6 +24,7 @@ internal external interface AesGcmParams : CipherAlgorithm {
 }
 
 internal inline fun AesCtrParams(block: AesCtrParams.() -> Unit): AesCtrParams = CipherAlgorithm("AES-CTR", block)
+internal inline fun AesCbcParams(block: AesCbcParams.() -> Unit): AesCbcParams = CipherAlgorithm("AES-CBC", block)
 internal inline fun AesGcmParams(block: AesGcmParams.() -> Unit): AesGcmParams = CipherAlgorithm("AES-GCM", block)
 internal inline fun RsaOaepParams(block: RsaOaepParams.() -> Unit): RsaOaepParams = CipherAlgorithm("RSA-OAEP", block)
 

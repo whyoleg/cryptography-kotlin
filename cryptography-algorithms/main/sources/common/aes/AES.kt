@@ -36,6 +36,31 @@ private fun tests(engine: CryptographyEngine) {
 }
 
 public object AES {
+    public abstract class CBC : KeyGeneratorProvider<CBC.Key, SymmetricKeyParameters> {
+        public companion object : CryptographyAlgorithm<CBC>
+
+        final override val defaultKeyGeneratorParameters: SymmetricKeyParameters get() = SymmetricKeyParameters.Default
+
+        public abstract class Key : CipherProvider<CipherParameters> {
+            final override val defaultCipherParameters: CipherParameters get() = CipherParameters.Default
+        }
+
+        public class CipherParameters(
+            public val padding: Boolean = true,
+        ) : CopyableCryptographyParameters<CipherParameters, CipherParameters.Builder>() {
+            override fun builder(): Builder = Builder(padding)
+            override fun build(builder: Builder): CipherParameters = CipherParameters(builder.padding)
+
+            public class Builder internal constructor(
+                public var padding: Boolean,
+            )
+
+            public companion object {
+                public val Default: CipherParameters = CipherParameters()
+            }
+        }
+    }
+
     public abstract class GCM : KeyGeneratorProvider<GCM.Key, SymmetricKeyParameters> {
         public companion object : CryptographyAlgorithm<GCM>
 

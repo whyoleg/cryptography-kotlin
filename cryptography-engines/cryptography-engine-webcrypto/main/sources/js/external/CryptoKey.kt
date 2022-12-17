@@ -34,6 +34,9 @@ internal external interface RsaHashedKeyGenParams : AsymmetricKeyAlgorithm {
 internal inline fun AesCtrKeyAlgorithm(block: AesKeyAlgorithm.() -> Unit = {}): AesKeyAlgorithm =
     KeyAlgorithm("AES-CTR", block)
 
+internal inline fun AesCbcKeyAlgorithm(block: AesKeyAlgorithm.() -> Unit = {}): AesKeyAlgorithm =
+    KeyAlgorithm("AES-CBC", block)
+
 internal inline fun AesGcmKeyAlgorithm(block: AesKeyAlgorithm.() -> Unit = {}): AesKeyAlgorithm =
     KeyAlgorithm("AES-GCM", block)
 

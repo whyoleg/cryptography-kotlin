@@ -15,3 +15,14 @@ internal class AesGcm(
     }
 }
 
+internal class AesCbc(
+    private val secureRandom: SecureRandom,
+) : AES.CBC() {
+    override fun syncKeyGenerator(parameters: SymmetricKeyParameters): SyncKeyGenerator<Key> =
+        AesCbcKeyGenerator(parameters.size.value.bits, secureRandom)
+
+    override fun asyncKeyGenerator(parameters: SymmetricKeyParameters): AsyncKeyGenerator<Key> {
+        TODO("Not yet implemented")
+    }
+}
+
