@@ -2,6 +2,7 @@ package dev.whyoleg.cryptography.corecrypto
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.aes.*
+import dev.whyoleg.cryptography.algorithms.mac.*
 import dev.whyoleg.cryptography.algorithms.sha.*
 
 public object CoreCryptoCryptographyEngine : CryptographyEngine {
@@ -11,6 +12,7 @@ public object CoreCryptoCryptographyEngine : CryptographyEngine {
         AES.CBC -> AesCbc
 //        SHA1    -> Sha("SHA-1")
         SHA512  -> Sha512
+        HMAC    -> Hmac
         else    -> throw CryptographyAlgorithmNotFoundException(algorithm)
     } as T
 }
