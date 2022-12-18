@@ -1,14 +1,15 @@
 package dev.whyoleg.cryptography.jdk.aes
 
 import dev.whyoleg.cryptography.algorithms.aes.*
+import dev.whyoleg.cryptography.jdk.*
 import dev.whyoleg.cryptography.key.*
 import java.security.*
 
 internal class AesGcm(
-    private val secureRandom: SecureRandom,
+    private val state: JdkCryptographyState,
 ) : AES.GCM() {
     override fun syncKeyGenerator(parameters: SymmetricKeyParameters): SyncKeyGenerator<Key> =
-        AesGcmKeyGenerator(parameters.size.value.bits, secureRandom)
+        AesGcmKeyGenerator(state, parameters.size.value.bits)
 
     override fun asyncKeyGenerator(parameters: SymmetricKeyParameters): AsyncKeyGenerator<Key> {
         TODO("Not yet implemented")
@@ -16,10 +17,10 @@ internal class AesGcm(
 }
 
 internal class AesCbc(
-    private val secureRandom: SecureRandom,
+    private val state: JdkCryptographyState,
 ) : AES.CBC() {
     override fun syncKeyGenerator(parameters: SymmetricKeyParameters): SyncKeyGenerator<Key> =
-        AesCbcKeyGenerator(parameters.size.value.bits, secureRandom)
+        AesCbcKeyGenerator(state, parameters.size.value.bits)
 
     override fun asyncKeyGenerator(parameters: SymmetricKeyParameters): AsyncKeyGenerator<Key> {
         TODO("Not yet implemented")

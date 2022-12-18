@@ -18,7 +18,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "cryptography-kotlin"
 
-
 //interfaces for engines and users
 include("cryptography-core")
 
@@ -26,7 +25,12 @@ include("cryptography-core")
 //include("cryptography-coroutines")
 
 //TODO: how to test that all engines have same output for same input - cross-engine tests
-//include("cryptography-tests")
+// 1. generate random input (per engine) (different data sizes / key sizes)
+// 2. run all engines on it's own plaintext/data
+// 3. save plaintext + ciphertext (for ciphers) and data + hash (for hashes)
+// 4. run all engines on other engines plaintext/data
+
+include("cryptography-tests")
 
 //high-level API for users
 //we need to have separate modules/packages/annotations for algorithms:

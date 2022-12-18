@@ -2,14 +2,14 @@ package dev.whyoleg.cryptography.jdk.aes
 
 import dev.whyoleg.cryptography.algorithms.aes.*
 import dev.whyoleg.cryptography.cipher.*
-import java.security.*
+import dev.whyoleg.cryptography.jdk.*
 import javax.crypto.*
 
 internal class AesGcmKey(
+    private val state: JdkCryptographyState,
     private val key: SecretKey,
-    private val secureRandom: SecureRandom,
 ) : AES.GCM.Key() {
-    override fun syncCipher(parameters: AES.GCM.CipherParameters): SyncCipher = AesGcmCipher(parameters.tagSize.bits, key, secureRandom)
+    override fun syncCipher(parameters: AES.GCM.CipherParameters): SyncCipher = AesGcmCipher(state, key, parameters.tagSize.bits)
 
     override fun asyncCipher(parameters: AES.GCM.CipherParameters): AsyncCipher {
         TODO("Not yet implemented")

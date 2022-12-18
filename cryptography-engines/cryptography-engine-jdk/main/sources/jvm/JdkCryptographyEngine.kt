@@ -8,13 +8,15 @@ import java.security.*
 
 //TODO: add provider support
 public class JdkCryptographyEngine(
-    private val secureRandom: SecureRandom = SecureRandom(),
+    secureRandom: SecureRandom = SecureRandom(),
+    provider: JdkProvider = JdkProvider.Default,
 ) : CryptographyEngine {
+    private val state = JdkCryptographyState(provider, secureRandom)
 
     @Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST")
     override fun <T> get(algorithm: CryptographyAlgorithm<T>): T = when (algorithm) {
-        AES.GCM -> AesGcm(secureRandom)
-        AES.CBC -> AesCbc(secureRandom)
+        AES.GCM -> AesGcm(state)
+        AES.CBC -> AesCbc(state)
         SHA1    -> Sha("SHA-1")
         SHA512  -> Sha("SHA-512")
         else    -> throw CryptographyAlgorithmNotFoundException(algorithm)

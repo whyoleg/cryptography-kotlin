@@ -2,14 +2,14 @@ package dev.whyoleg.cryptography.jdk.aes
 
 import dev.whyoleg.cryptography.algorithms.aes.*
 import dev.whyoleg.cryptography.cipher.*
-import java.security.*
+import dev.whyoleg.cryptography.jdk.*
 import javax.crypto.*
 
 internal class AesCbcKey(
+    private val state: JdkCryptographyState,
     private val key: SecretKey,
-    private val secureRandom: SecureRandom,
 ) : AES.CBC.Key() {
-    override fun syncCipher(parameters: AES.CBC.CipherParameters): SyncCipher = AesCbcCipher(parameters.padding, key, secureRandom)
+    override fun syncCipher(parameters: AES.CBC.CipherParameters): SyncCipher = AesCbcCipher(state, key, parameters.padding)
 
     override fun asyncCipher(parameters: AES.CBC.CipherParameters): AsyncCipher {
         TODO("Not yet implemented")
