@@ -5,7 +5,7 @@ import org.khronos.webgl.*
 internal external interface CryptoKey {
     val type: String // "secret", "private", "public"
     val extractable: Boolean
-    val algorithm: KeyAlgorithm
+    val algorithm: KeyGenerationAlgorithm
     val usages: Array<String> // "encrypt" | "decrypt" | "sign" | "verify" | "deriveKey" | "deriveBits" | "wrapKey" | "unwrapKey"
 }
 
@@ -14,36 +14,31 @@ internal external interface CryptoKeyPair {
     val publicKey: CryptoKey
 }
 
-internal external interface KeyAlgorithm {
-    var name: String
-}
+internal sealed external interface AsymmetricKeyGenAlgorithm : KeyGenerationAlgorithm
 
-internal external interface SymmetricKeyAlgorithm : KeyAlgorithm
-internal external interface AsymmetricKeyAlgorithm : KeyAlgorithm
-
-internal external interface AesKeyAlgorithm : SymmetricKeyAlgorithm {
+internal external interface AesKeyGenAlgorithm : SymmetricKeyGenerationAlgorithm {
     var length: Int
 }
 
-internal external interface RsaHashedKeyGenParams : AsymmetricKeyAlgorithm {
+internal external interface RsaHashedKeyGenParamsGen : AsymmetricKeyGenAlgorithm {
     var modulusLength: Int
     var publicExponent: Uint8Array
     var hash: String
 }
 
-internal inline fun AesCtrKeyAlgorithm(block: AesKeyAlgorithm.() -> Unit = {}): AesKeyAlgorithm =
+internal inline fun AesCtrKeyAlgorithm(block: AesKeyGenAlgorithm.() -> Unit = {}): AesKeyGenAlgorithm =
     KeyAlgorithm("AES-CTR", block)
 
-internal inline fun AesCbcKeyAlgorithm(block: AesKeyAlgorithm.() -> Unit = {}): AesKeyAlgorithm =
+internal inline fun AesCbcKeyAlgorithm(block: AesKeyGenAlgorithm.() -> Unit = {}): AesKeyGenAlgorithm =
     KeyAlgorithm("AES-CBC", block)
 
-internal inline fun AesGcmKeyAlgorithm(block: AesKeyAlgorithm.() -> Unit = {}): AesKeyAlgorithm =
+internal inline fun AesGcmKeyAlgorithm(block: AesKeyGenAlgorithm.() -> Unit = {}): AesKeyGenAlgorithm =
     KeyAlgorithm("AES-GCM", block)
 
-internal inline fun RsaOaepKeyGenParams(block: RsaHashedKeyGenParams.() -> Unit = {}): RsaHashedKeyGenParams =
+internal inline fun RsaOaepKeyGenParams(block: RsaHashedKeyGenParamsGen.() -> Unit = {}): RsaHashedKeyGenParamsGen =
     KeyAlgorithm("RSA-OAEP", block)
 
-private inline fun <T : KeyAlgorithm> KeyAlgorithm(name: String, block: T.() -> Unit): T =
+private inline fun <T : KeyGenerationAlgorithm> KeyAlgorithm(name: String, block: T.() -> Unit): T =
     js("{}").unsafeCast<T>().apply {
         this.name = name
         block()

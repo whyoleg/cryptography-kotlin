@@ -2,6 +2,7 @@ package dev.whyoleg.cryptography.webcrypto
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.aes.*
+import dev.whyoleg.cryptography.algorithms.mac.*
 import dev.whyoleg.cryptography.algorithms.sha.*
 
 public object WebCryptoCryptographyEngine : CryptographyEngine {
@@ -11,6 +12,7 @@ public object WebCryptoCryptographyEngine : CryptographyEngine {
         AES.GCM -> AesCbc
         SHA1    -> Sha("SHA-1")
         SHA512  -> Sha("SHA-512")
+        HMAC    -> Hmac
         else    -> throw CryptographyAlgorithmNotFoundException(algorithm)
     } as T
 }

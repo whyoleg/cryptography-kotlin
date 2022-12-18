@@ -14,24 +14,27 @@ internal external interface SubtleCrypto {
     fun decrypt(algorithm: CipherAlgorithm, key: CryptoKey, data: ByteArray): Promise<ArrayBuffer>
 
     fun importKey(
-        format: String /*"raw" | "pkcs8" | "spki"*/,
+        format: String, /*"raw" | "pkcs8" | "spki"*/
         keyData: ByteArray,
-        algorithm: KeyAlgorithm,
+        algorithm: KeyGenerationAlgorithm,
         extractable: Boolean,
-        keyUsages: Array<String>
+        keyUsages: Array<String>,
     ): Promise<CryptoKey>
 
     fun generateKey(
-        algorithm: SymmetricKeyAlgorithm,
+        algorithm: SymmetricKeyGenerationAlgorithm,
         extractable: Boolean,
-        keyUsages: Array<String>
+        keyUsages: Array<String>,
     ): Promise<CryptoKey>
 
     fun generateKey(
-        algorithm: AsymmetricKeyAlgorithm,
+        algorithm: AsymmetricKeyGenAlgorithm,
         extractable: Boolean,
-        keyUsages: Array<String>
+        keyUsages: Array<String>,
     ): Promise<CryptoKeyPair>
+
+    fun sign(algorithm: SignatureAlgorithm, key: CryptoKey, data: ByteArray): Promise<ByteArray>
+    fun verify(algorithm: SignatureAlgorithm, key: CryptoKey, signature: ByteArray, data: ByteArray): Promise<Boolean>
 }
 
 internal val WebCrypto: Crypto by lazy {
