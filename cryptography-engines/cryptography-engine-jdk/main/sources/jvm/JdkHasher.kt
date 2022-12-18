@@ -2,10 +2,12 @@ package dev.whyoleg.cryptography.jdk
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.hash.*
-import java.security.*
 
-internal class JdkHasher(algorithm: String) : SyncHasher {
-    private val messageDigest = threadLocal { MessageDigest.getInstance(algorithm) }
+internal class JdkHasher(
+    private val state: JdkCryptographyState,
+    algorithm: String,
+) : SyncHasher {
+    private val messageDigest = threadLocal { state.provider.messageDigest(algorithm) }
     override val digestSize: Int get() = messageDigest.get().digestLength
 
     override fun hash(dataInput: Buffer): Buffer {

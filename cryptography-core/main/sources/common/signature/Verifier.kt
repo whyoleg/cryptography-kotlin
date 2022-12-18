@@ -7,10 +7,10 @@ public interface Verifier {
 }
 
 public interface SyncVerifier : Verifier {
-    public fun verify(signatureInput: Buffer): Boolean
+    public fun verify(dataInput: Buffer, signatureInput: Buffer): Boolean
 }
 
 public interface AsyncVerifier : Verifier {
-    public suspend fun verify(signatureInput: Buffer): Boolean
+    public suspend fun verify(dataInput: Buffer, signatureInput: Buffer): Boolean
 }
 

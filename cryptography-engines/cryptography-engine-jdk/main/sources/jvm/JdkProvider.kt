@@ -26,5 +26,8 @@ internal fun JdkProvider.cipher(algorithm: String): Cipher =
 internal fun JdkProvider.messageDigest(algorithm: String): MessageDigest =
     get(algorithm, MessageDigest::getInstance, MessageDigest::getInstance, MessageDigest::getInstance)
 
+internal fun JdkProvider.mac(algorithm: String): Mac =
+    get(algorithm, Mac::getInstance, Mac::getInstance, Mac::getInstance)
+
 internal fun JdkProvider.keyGenerator(algorithm: String): KeyGenerator =
     get(algorithm, KeyGenerator::getInstance, KeyGenerator::getInstance, KeyGenerator::getInstance)

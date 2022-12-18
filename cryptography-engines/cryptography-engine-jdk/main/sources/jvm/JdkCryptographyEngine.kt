@@ -2,6 +2,7 @@ package dev.whyoleg.cryptography.jdk
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.aes.*
+import dev.whyoleg.cryptography.algorithms.mac.*
 import dev.whyoleg.cryptography.algorithms.sha.*
 import dev.whyoleg.cryptography.jdk.aes.*
 import java.security.*
@@ -13,12 +14,14 @@ public class JdkCryptographyEngine(
 ) : CryptographyEngine {
     private val state = JdkCryptographyState(provider, secureRandom)
 
+    //TODO: use map?
     @Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST")
     override fun <T> get(algorithm: CryptographyAlgorithm<T>): T = when (algorithm) {
         AES.GCM -> AesGcm(state)
         AES.CBC -> AesCbc(state)
-        SHA1    -> Sha("SHA-1")
-        SHA512  -> Sha("SHA-512")
+        SHA1    -> Sha(state, "SHA-1")
+        SHA512  -> Sha(state, "SHA-512")
+        HMAC    -> Hmac(state)
         else    -> throw CryptographyAlgorithmNotFoundException(algorithm)
     } as T
 }
