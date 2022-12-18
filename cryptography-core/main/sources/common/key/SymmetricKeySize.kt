@@ -1,6 +1,7 @@
 package dev.whyoleg.cryptography.key
 
 import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.BinarySize.Companion.bytes
 import kotlin.jvm.*
 
 //TODO: or SecretKeySize?

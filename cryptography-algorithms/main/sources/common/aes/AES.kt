@@ -94,7 +94,6 @@ public object AES {
             }
         }
 
-
         //boxed
         //boxed async
         //encryp/decrypt function
