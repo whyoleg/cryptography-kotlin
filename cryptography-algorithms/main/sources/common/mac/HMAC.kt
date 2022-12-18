@@ -29,6 +29,8 @@ public class ParameterizedAlgorithm private constructor(
     public val parameters: CryptographyParameters,
 ) {
     public companion object {
+        //TODO: untie hash here, but allow to use hash for HMAC and something other for other algorithms
+        // f.e. implement CMAC
         public operator fun <T : HashProvider<HP>, HP : CryptographyParameters> invoke(
             algorithm: CryptographyAlgorithm<T>,
             parameters: HP,
