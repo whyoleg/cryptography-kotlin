@@ -91,7 +91,7 @@ public abstract class AES<K>(
         }
     }
 
-    public abstract class GCM(
+    public class GCM(
         keyGeneratorProvider: KeyGeneratorProvider<SymmetricKeyParameters, Key>,
         keyDecoderProvider: KeyDecoderProvider<CryptographyParameters.Empty, Key>,
     ) : AES<GCM.Key>(keyGeneratorProvider, keyDecoderProvider) {

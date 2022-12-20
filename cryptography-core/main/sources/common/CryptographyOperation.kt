@@ -1,6 +1,7 @@
 package dev.whyoleg.cryptography
 
 import kotlin.jvm.*
+import kotlin.reflect.*
 
 //TODO: decide on contract, what should be mentioned here
 // good candidates: ECDSA, ECDH, DH, AES-CBC, RSA-OAEP
@@ -10,8 +11,8 @@ public value class CryptographyOperationId(public val name: String)
 
 public interface CryptographyOperation {
     //TODO: is it needed here?
-    public val engineId: CryptographyEngineId
-    public val operationId: CryptographyOperationId
+//    public val engineId: CryptographyEngineId
+//    public val operationId: CryptographyOperationId
 }
 
 public class CryptographyOperationFactory<P : CryptographyParameters, O : CryptographyOperation> internal constructor(
@@ -32,11 +33,38 @@ public inline operator fun <P : CopyableCryptographyParameters<P, B>, B, O : Cry
 public abstract class CryptographyOperationProvider<P : CryptographyParameters, O : CryptographyOperation>(
     internal val engineId: CryptographyEngineId,
 ) {
-    //TODO: rename?
+    //TODO: rename? make protected?
     public abstract fun provideOperation(parameters: P): O
+
+    public fun factory(
+        operationId: CryptographyOperationId,
+        defaultParameters: P,
+    ): CryptographyOperationFactory<P, O> = CryptographyOperationFactory(operationId, defaultParameters, this)
 }
 
-public fun <P : CryptographyParameters, O : CryptographyOperation> CryptographyOperationProvider<P, O>.factory(
-    operationId: CryptographyOperationId,
-    defaultParameters: P,
-): CryptographyOperationFactory<P, O> = CryptographyOperationFactory(operationId, defaultParameters, this)
+public inline fun <P : CryptographyParameters, reified O : CryptographyOperation> NotSupportedProvider(
+    engineId: CryptographyEngineId,
+    description: String? = null,
+): CryptographyOperationProvider<P, O> =
+    notSupportedProvider(engineId, O::class, description)
+
+@PublishedApi
+internal fun <P : CryptographyParameters, O : CryptographyOperation> notSupportedProvider(
+    engineId: CryptographyEngineId,
+    operationClass: KClass<O>,
+    description: String?,
+): CryptographyOperationProvider<P, O> = NotSupportedProvider(engineId, operationClass, description)
+
+private class NotSupportedProvider<P : CryptographyParameters, O : CryptographyOperation>(
+    engineId: CryptographyEngineId,
+    private val operationClass: KClass<O>,
+    private val description: String?,
+) : CryptographyOperationProvider<P, O>(engineId) {
+    override fun provideOperation(parameters: P): O {
+        throw CryptographyOperationNotSupportedException(
+            "Operation '${operationClass.simpleName}' is not supported by engine '${engineId.name}'".let { message ->
+                if (description != null) "$message: $description" else message
+            }
+        )
+    }
+}

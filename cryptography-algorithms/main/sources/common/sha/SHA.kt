@@ -4,6 +4,11 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.BinarySize.Companion.bytes
 import dev.whyoleg.cryptography.hash.*
 
+public fun SHA(hasherProvider: HasherProvider<CryptographyParameters.Empty>): HashAlgorithm = HashAlgorithm(
+    hasherProvider = hasherProvider,
+    operationId = CryptographyOperationId("SHA"),
+)
+
 public object SHA1 : CryptographyAlgorithmIdentifier<HashAlgorithm>
 public object SHA256 : CryptographyAlgorithmIdentifier<HashAlgorithm>
 public object SHA512 : CryptographyAlgorithmIdentifier<HashAlgorithm>

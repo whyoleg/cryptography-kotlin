@@ -15,7 +15,6 @@ public inline fun <C : Closeable, R> C.use(block: (C) -> R): R {
     }
 }
 
-
 //TODO
 public fun interface BlockingAdaptor<T> {
     public fun run(block: suspend () -> T): T

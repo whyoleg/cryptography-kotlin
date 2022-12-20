@@ -4,30 +4,57 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.aes.*
 import dev.whyoleg.cryptography.algorithms.mac.*
 import dev.whyoleg.cryptography.algorithms.sha.*
+import dev.whyoleg.cryptography.hash.*
 import dev.whyoleg.cryptography.jdk.aes.*
 import java.security.*
 
-//TODO: add provider support
+internal val ENGINE_ID get() = CryptographyEngineId("JDK")
+
 public class JdkCryptographyEngine(
     secureRandom: SecureRandom = SecureRandom(),
     provider: JdkProvider = JdkProvider.Default,
-) : CryptographyEngine {
+) : CryptographyEngine(ENGINE_ID) {
     private val state = JdkCryptographyState(provider, secureRandom)
 
+    private val cache = mutableMapOf<CryptographyAlgorithmIdentifier<*>, CryptographyAlgorithm>()
+
+    private inline fun <A : CryptographyAlgorithm, X : CryptographyAlgorithm> CryptographyAlgorithmIdentifier<A>.registerIf(
+        identifier: CryptographyAlgorithmIdentifier<X>,
+        return2: (X) -> Nothing,
+        block: () -> X,
+    ) {
+        if (this !== identifier) return
+        val algorithm = block()
+        cache[identifier] = algorithm
+        return2(algorithm)
+    }
+
     //TODO: use map?
-    @Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST")
-    override fun <T> get(id: CryptographyAlgorithmIdentifier<T>): T = when (id) {
-        AES.GCM -> AesGcm(state)
-        AES.CBC -> AesCbc(state)
-        SHA1    -> Sha(state, "SHA-1")
-        SHA512  -> Sha(state, "SHA-512")
-        HMAC    -> Hmac(state)
-        else    -> throw CryptographyAlgorithmNotFoundException(id)
-    } as T
+    @Suppress("UNCHECKED_CAST")
+    override fun <A : CryptographyAlgorithm> get(identifier: CryptographyAlgorithmIdentifier<A>): A {
+        return when (identifier) {
+            AES.GCM -> AES.GCM(
+                AesGcmKeyGeneratorProvider(state),
+                NotSupportedProvider(ENGINE_ID)
+            )
+            AES.CBC -> AES.CBC(
+                AesCbcKeyGeneratorProvider(state),
+                NotSupportedProvider(ENGINE_ID)
+            )
+            SHA1    -> SHA(JdkHasherProvider(state, "SHA-1"))
+            SHA512  -> SHA(JdkHasherProvider(state, "SHA-512"))
+            HMAC    -> HMAC(
+                HmacKeyGeneratorProvider(state),
+                NotSupportedProvider(ENGINE_ID)
+            )
+            else    -> throw CryptographyAlgorithmNotFoundException(identifier)
+        } as A
+    }
+
 }
 
-private fun CryptographyEngineBuilder.test(state: JdkCryptographyState) {
-    register(AES.CBC) {
-        aesCbc(state)
-    }
-}
+//private fun CryptographyEngineBuilder.test(state: JdkCryptographyState) {
+//    register(AES.CBC) {
+//        aesCbc(state)
+//    }
+//}
