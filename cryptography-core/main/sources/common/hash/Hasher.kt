@@ -2,16 +2,14 @@ package dev.whyoleg.cryptography.hash
 
 import dev.whyoleg.cryptography.*
 
-public interface Hasher {
+public typealias HasherProvider<P> = CryptographyOperationProvider<P, Hasher>
+public typealias HasherFactory<P> = CryptographyOperationFactory<P, Hasher>
+
+public interface Hasher : CryptographyOperation {
     public val digestSize: Int
-}
-
-public interface SyncHasher : Hasher {
-    public fun hash(dataInput: Buffer): Buffer
-    public fun hash(dataInput: Buffer, digestOutput: Buffer): Buffer
-}
-
-public interface AsyncHasher : Hasher {
     public suspend fun hash(dataInput: Buffer): Buffer
     public suspend fun hash(dataInput: Buffer, digestOutput: Buffer): Buffer
+    public fun hashBlocking(dataInput: Buffer): Buffer
+    public fun hashBlocking(dataInput: Buffer, digestOutput: Buffer): Buffer
+    public fun hashFunction(): HashFunction
 }

@@ -10,6 +10,8 @@ import kotlin.random.*
 
 private const val ivSizeBytes = 16 //bytes for GCM
 
+internal fun aesCbc(): AES.CBC {}
+
 internal object AesCbc : AES.CBC() {
     override fun syncKeyGenerator(parameters: SymmetricKeyParameters): SyncKeyGenerator<Key> =
         AesCbcKeyGenerator(parameters.size.value.bytes)

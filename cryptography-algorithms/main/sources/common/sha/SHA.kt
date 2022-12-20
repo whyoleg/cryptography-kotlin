@@ -4,24 +4,21 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.BinarySize.Companion.bytes
 import dev.whyoleg.cryptography.hash.*
 
-public abstract class SHA : HashProvider<CryptographyParameters.Empty> {
-    override val defaultHashParameters: CryptographyParameters.Empty get() = CryptographyParameters.Empty
-}
-
-public object SHA1 : CryptographyAlgorithm<SHA>
-public object SHA512 : CryptographyAlgorithm<SHA>
+public object SHA1 : CryptographyAlgorithmIdentifier<HashAlgorithm>
+public object SHA256 : CryptographyAlgorithmIdentifier<HashAlgorithm>
+public object SHA512 : CryptographyAlgorithmIdentifier<HashAlgorithm>
 
 public object SHA3 {
-    public object B224 : CryptographyAlgorithm<SHA>
-    public object B512 : CryptographyAlgorithm<SHA>
+    public object B224 : CryptographyAlgorithmIdentifier<HashAlgorithm>
+    public object B512 : CryptographyAlgorithmIdentifier<HashAlgorithm>
 }
 
 private fun test(engine: CryptographyEngine) {
     val shake = engine.get(SHAKE.B128)
 
-    val hasher = shake.syncHasher {
+    val hasher = shake.hasher {
         digestSize = 256.bytes
     }
 
-    hasher.hash(ByteArray(10))
+    hasher.hashBlocking(ByteArray(10))
 }

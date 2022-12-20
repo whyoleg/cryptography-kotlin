@@ -1,11 +1,11 @@
 package dev.whyoleg.cryptography.key
 
-public interface KeyGenerator<K>
+import dev.whyoleg.cryptography.*
 
-public interface SyncKeyGenerator<K> : KeyGenerator<K> {
-    public fun generateKey(): K
-}
+public typealias KeyGeneratorFactory<P, K> = CryptographyOperationFactory<P, KeyGenerator<K>>
+public typealias KeyGeneratorProvider<P, K> = CryptographyOperationProvider<P, KeyGenerator<K>>
 
-public interface AsyncKeyGenerator<K> : KeyGenerator<K> {
+public interface KeyGenerator<K> : CryptographyOperation {
     public suspend fun generateKey(): K
+    public fun generateKeyBlocking(): K
 }

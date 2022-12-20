@@ -4,11 +4,16 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.BinarySize.Companion.bytes
 import dev.whyoleg.cryptography.hash.*
 
-public abstract class SHAKE : HashProvider<SHAKE.Parameters> {
-    public object B128 : CryptographyAlgorithm<SHAKE>
-    public object B256 : CryptographyAlgorithm<SHAKE>
+public class SHAKE(
+    hasherProvider: HasherProvider<Parameters>,
+) : CryptographyAlgorithm {
+    public object B128 : CryptographyAlgorithmIdentifier<SHAKE>
+    public object B256 : CryptographyAlgorithmIdentifier<SHAKE>
 
-    final override val defaultHashParameters: Parameters get() = Parameters.Default
+    public val hasher: HasherFactory<Parameters> = hasherProvider.factory(
+        operationId = CryptographyOperationId("SHAKE"),
+        defaultParameters = Parameters.Default,
+    )
 
     public class Parameters(
         public val digestSize: BinarySize = 128.bytes,

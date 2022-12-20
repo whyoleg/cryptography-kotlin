@@ -7,43 +7,81 @@ import dev.whyoleg.cryptography.key.*
 import dev.whyoleg.cryptography.signature.*
 import kotlin.jvm.*
 
+//private fun test() {
+//    val key1 = engine.get(EC).keyGenerator().generateKey()
+//    val key2 = engine.get(EC).keyGenerator().generateKey()
+//
+//    val encoded1 = key1.public.encode(format)
+//    val encoded2 = key2.public.encode(format)
+//
+//    key1.private.keyAgreement().agreeKey(format, encoded2)
+//}
+
 //ECDSA and ECDH
-public interface EC : KeyGeneratorProvider<EC.KeyPair, EC.KeyGeneratorParameters> {
-    override val defaultKeyGeneratorParameters: KeyGeneratorParameters get() = KeyGeneratorParameters.Default
+public class EC(
+    keyPairGeneratorProvider: KeyGeneratorProvider<KeyPairGeneratorParameters, EC.KeyPair>,
+) : CryptographyAlgorithm {
+    public companion object : CryptographyAlgorithmIdentifier<EC> //EC
 
-    public companion object : CryptographyAlgorithm<EC>
+    public val keyPairGenerator: KeyGeneratorFactory<KeyPairGeneratorParameters, KeyPair> = keyPairGeneratorProvider.factory(
+        operationId = CryptographyOperationId("EC"),
+        defaultParameters = KeyPairGeneratorParameters.Default,
+    )
 
-    public interface KeyPair {
-        public val publicKey: PublicKey
-        public val privateKey: PrivateKey
+    public class KeyPair(
+        public val publicKey: PublicKey,
+        public val privateKey: PrivateKey,
+        keyEncoderProvider: KeyEncoderProvider<CryptographyParameters.Empty>,
+    ) {
+        public val encoder: KeyEncoderFactory<CryptographyParameters.Empty> = keyEncoderProvider.factory(
+            operationId = CryptographyOperationId("EC"),
+            defaultParameters = CryptographyParameters.Empty,
+        )
     }
 
-    public interface PublicKey : VerifierProvider<SignatureParameters<*, *>> {
-        override val defaultVerifyParameters: SignatureParameters<*, *> get() = SignatureParameters.Default
+    public class PublicKey(
+        verifierProvider: VerifierProvider<SignatureParameters>,
+        keyEncoderProvider: KeyEncoderProvider<CryptographyParameters.Empty>,
+    ) {
+        public val verifier: VerifierFactory<SignatureParameters> = verifierProvider.factory(
+            operationId = CryptographyOperationId("ECDSA"),
+            defaultParameters = SignatureParameters.Default,
+        )
+        public val encoder: KeyEncoderFactory<CryptographyParameters.Empty> = keyEncoderProvider.factory(
+            operationId = CryptographyOperationId("EC"),
+            defaultParameters = CryptographyParameters.Empty,
+        )
     }
 
-    public interface PrivateKey : SignerProvider<SignatureParameters<*, *>> {
-        override val defaultSignParameters: SignatureParameters<*, *> get() = SignatureParameters.Default
-
-        public val publicKey: PublicKey //TODO: is it needed?
+    //TODO: Decide on how to get PublicKey from PrivateKey
+    public class PrivateKey(
+        signerProvider: SignerProvider<SignatureParameters>,
+        keyEncoderProvider: KeyEncoderProvider<CryptographyParameters.Empty>,
+    ) {
+        public val verifier: SignerFactory<SignatureParameters> = signerProvider.factory(
+            operationId = CryptographyOperationId("ECDSA"),
+            defaultParameters = SignatureParameters.Default,
+        )
+        public val encoder: KeyEncoderFactory<CryptographyParameters.Empty> = keyEncoderProvider.factory(
+            operationId = CryptographyOperationId("EC"),
+            defaultParameters = CryptographyParameters.Empty,
+        )
     }
 
-    public class KeyGeneratorParameters(
+    public class KeyPairGeneratorParameters(
         public val curve: Curve = Curve.P521, //TODO: default curve?
     ) : CryptographyParameters {
         public companion object {
-            public val Default: KeyGeneratorParameters = KeyGeneratorParameters()
+            public val Default: KeyPairGeneratorParameters = KeyPairGeneratorParameters()
         }
     }
 
     //TODO: drop generics and enforce it's contract via custom constructor?
-    //ECDSA
-    public class SignatureParameters<T : HashProvider<HP>, HP : CryptographyParameters>(
-        public val algorithm: CryptographyAlgorithm<T>,
-        public val parameters: HP,
+    public class SignatureParameters(
+        public val hashAlgorithmIdentifier: HashAlgorithmIdentifier = SHA512,
     ) : CryptographyParameters {
         public companion object {
-            public val Default: SignatureParameters<*, *> = SignatureParameters(SHA512, CryptographyParameters.Empty)
+            public val Default: SignatureParameters = SignatureParameters()
         }
     }
 
@@ -54,6 +92,8 @@ public interface EC : KeyGeneratorProvider<EC.KeyPair, EC.KeyGeneratorParameters
             public val P521: Curve get() = Curve("P521")
             public val P384: Curve get() = Curve("P384")
             public val P256: Curve get() = Curve("P256")
+
+            //Curve25519 should be separate
 //        public val Curve25519: ECCurve get() = ECCurve("Curve25519")
         }
     }

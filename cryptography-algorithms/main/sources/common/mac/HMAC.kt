@@ -6,34 +6,43 @@ import dev.whyoleg.cryptography.hash.*
 import dev.whyoleg.cryptography.key.*
 import dev.whyoleg.cryptography.signature.*
 
-public interface HMAC : KeyGeneratorProvider<HMAC.Key, HMAC.KeyGeneratorParameters> {
-    override val defaultKeyGeneratorParameters: KeyGeneratorParameters get() = KeyGeneratorParameters.Default
+//TODO: decide on how we can support CMAC/GMAC
 
-    public companion object : CryptographyAlgorithm<HMAC>
+public class HMAC(
+    keyGeneratorProvider: KeyGeneratorProvider<KeyGeneratorParameters, Key>,
+    keyDecoderProvider: KeyDecoderProvider<CryptographyParameters.Empty, Key>,
+) : CryptographyAlgorithm {
+    public companion object : CryptographyAlgorithmIdentifier<HMAC>
 
-    public interface Key : SignatureProvider<CryptographyParameters.Empty> {
-        override val defaultSignatureParameters: CryptographyParameters.Empty get() = CryptographyParameters.Empty
+    public val keyGenerator: KeyGeneratorFactory<KeyGeneratorParameters, Key> = keyGeneratorProvider.factory(
+        operationId = CryptographyOperationId("HMAC"),
+        defaultParameters = KeyGeneratorParameters.Default,
+    )
+
+    public val keyDecoder: KeyDecoderFactory<CryptographyParameters.Empty, Key> = keyDecoderProvider.factory(
+        operationId = CryptographyOperationId("HMAC"),
+        defaultParameters = CryptographyParameters.Empty,
+    )
+
+    public class Key(
+        signatureProvider: SignatureProvider<CryptographyParameters.Empty>,
+        keyEncoderProvider: KeyEncoderProvider<CryptographyParameters.Empty>,
+    ) {
+        public val signature: SignatureFactory<CryptographyParameters.Empty> = signatureProvider.factory(
+            operationId = CryptographyOperationId("HMAC-SHA"), //TODO: Sha
+            defaultParameters = CryptographyParameters.Empty,
+        )
+        public val encoder: KeyEncoderFactory<CryptographyParameters.Empty> = keyEncoderProvider.factory(
+            operationId = CryptographyOperationId("HMAC"),
+            defaultParameters = CryptographyParameters.Empty,
+        )
     }
 
     public class KeyGeneratorParameters(
-        public val algorithm: ParameterizedAlgorithm = ParameterizedAlgorithm(SHA512, CryptographyParameters.Empty),
+        public val hashAlgorithmIdentifier: HashAlgorithmIdentifier = SHA512,
     ) : CryptographyParameters {
         public companion object {
             public val Default: KeyGeneratorParameters = KeyGeneratorParameters()
         }
-    }
-}
-
-public class ParameterizedAlgorithm private constructor(
-    public val algorithm: CryptographyAlgorithm<*>,
-    public val parameters: CryptographyParameters,
-) {
-    public companion object {
-        //TODO: untie hash here, but allow to use hash for HMAC and something other for other algorithms
-        // f.e. implement CMAC
-        public operator fun <T : HashProvider<HP>, HP : CryptographyParameters> invoke(
-            algorithm: CryptographyAlgorithm<T>,
-            parameters: HP,
-        ): ParameterizedAlgorithm = ParameterizedAlgorithm(algorithm, parameters)
     }
 }

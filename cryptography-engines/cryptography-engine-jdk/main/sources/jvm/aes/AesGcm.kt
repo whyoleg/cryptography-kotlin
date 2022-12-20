@@ -5,6 +5,7 @@ import dev.whyoleg.cryptography.jdk.*
 import dev.whyoleg.cryptography.key.*
 import java.security.*
 
+
 internal class AesGcm(
     private val state: JdkCryptographyState,
 ) : AES.GCM() {
@@ -15,6 +16,8 @@ internal class AesGcm(
         TODO("Not yet implemented")
     }
 }
+
+internal fun aesCbc(state: JdkCryptographyState): AES.CBC = AesCbc(state)
 
 internal class AesCbc(
     private val state: JdkCryptographyState,

@@ -2,15 +2,12 @@ package dev.whyoleg.cryptography.signature
 
 import dev.whyoleg.cryptography.*
 
-public interface Verifier {
+public typealias VerifierProvider<P> = CryptographyOperationProvider<P, Verifier>
+public typealias VerifierFactory<P> = CryptographyOperationFactory<P, Verifier>
+
+public interface Verifier : CryptographyOperation {
     public val signatureSize: Int
-}
-
-public interface SyncVerifier : Verifier {
-    public fun verify(dataInput: Buffer, signatureInput: Buffer): Boolean
-}
-
-public interface AsyncVerifier : Verifier {
     public suspend fun verify(dataInput: Buffer, signatureInput: Buffer): Boolean
+    public fun verifyBlocking(dataInput: Buffer, signatureInput: Buffer): Boolean
+    public fun verifyFunction(): VerifyFunction
 }
-

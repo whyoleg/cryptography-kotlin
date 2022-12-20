@@ -7,7 +7,7 @@ import dev.whyoleg.cryptography.hash.*
 internal class Sha(
     state: JdkCryptographyState,
     algorithm: String,
-) : SHA() {
+) : HashAlgorithm() {
     private val hasher = JdkHasher(state, algorithm)
     override fun syncHasher(parameters: CryptographyParameters.Empty): SyncHasher = hasher
 

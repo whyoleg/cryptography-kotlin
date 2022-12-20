@@ -6,7 +6,7 @@ import dev.whyoleg.cryptography.hash.*
 import kotlinx.cinterop.*
 import platform.CoreCrypto.*
 
-internal object Sha512 : SHA() {
+internal object Sha512 : HashAlgorithm() {
     override fun syncHasher(parameters: CryptographyParameters.Empty): SyncHasher = CCHasher.SHA512
 
     override fun asyncHasher(parameters: CryptographyParameters.Empty): AsyncHasher {

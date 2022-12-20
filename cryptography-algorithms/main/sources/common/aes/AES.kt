@@ -3,46 +3,76 @@ package dev.whyoleg.cryptography.algorithms.aes
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.BinarySize.Companion.bits
 import dev.whyoleg.cryptography.cipher.*
+import dev.whyoleg.cryptography.cipher.aead.*
 import dev.whyoleg.cryptography.key.*
 
-private fun tests(engine: CryptographyEngine) {
+private suspend fun tests(engine: CryptographyEngine) {
 
-    engine.get(AES.GCM).syncKeyGenerator {
+    engine.get(AES.CBC).apply {
+        keyDecoder().decodeKeyBlocking("", ByteArray(2))
+            .cipher()
+    }.keyGenerator {
         size = SymmetricKeySize.B256
-    }.generateKey().syncCipher {
+    }.generateKeyBlocking()
+
+
+
+    engine.get(AES.GCM).keyGenerator {
+        size = SymmetricKeySize.B256
+    }.generateKey().cipher {
         tagSize = 128.bits
     }.encrypt("Hello, World!".encodeToByteArray())
 
     val gcm = engine.get(AES.GCM)
 
-    val generator = gcm.syncKeyGenerator {
+    val generator = gcm.keyGenerator {
         size = SymmetricKeySize.B256
     }
 
     val key = generator.generateKey()
 
-//    val exporter = key.syncKeyExporter {
-//
-//    }
-//
-//    exporter.exportKey(format.PEM, output)
-//    exporter.exportKey(format.DER, output)
-
-    val cipher = key.syncCipher {
+    val cipher = key.cipher {
         tagSize = 128.bits
     }
 
     cipher.encrypt("Hello, World!".encodeToByteArray())
+
+    key.encoder().encodeKeyBlocking("", ByteArray(1))
 }
 
-public object AES {
-    public abstract class CBC : KeyGeneratorProvider<CBC.Key, SymmetricKeyParameters> {
-        public companion object : CryptographyAlgorithm<CBC>
+public abstract class AES<K>(
+    keyGeneratorProvider: KeyGeneratorProvider<SymmetricKeyParameters, K>,
+    keyDecoderProvider: KeyDecoderProvider<CryptographyParameters.Empty, K>,
+) : CryptographyAlgorithm {
 
-        final override val defaultKeyGeneratorParameters: SymmetricKeyParameters get() = SymmetricKeyParameters.Default
+    public val keyGenerator: KeyGeneratorFactory<SymmetricKeyParameters, K> = keyGeneratorProvider.factory(
+        operationId = CryptographyOperationId("AES"),
+        defaultParameters = SymmetricKeyParameters.Default,
+    )
 
-        public abstract class Key : CipherProvider<CipherParameters> {
-            final override val defaultCipherParameters: CipherParameters get() = CipherParameters.Default
+    public val keyDecoder: KeyDecoderFactory<CryptographyParameters.Empty, K> = keyDecoderProvider.factory(
+        operationId = CryptographyOperationId("AES"),
+        defaultParameters = CryptographyParameters.Empty,
+    )
+
+    public class CBC(
+        keyGeneratorProvider: KeyGeneratorProvider<SymmetricKeyParameters, Key>,
+        keyDecoderProvider: KeyDecoderProvider<CryptographyParameters.Empty, Key>,
+    ) : AES<CBC.Key>(keyGeneratorProvider, keyDecoderProvider) {
+        public companion object : CryptographyAlgorithmIdentifier<CBC>
+
+        public class Key(
+            cipherProvider: CipherProvider<CipherParameters>,
+            keyEncoderProvider: KeyEncoderProvider<CryptographyParameters.Empty>,
+        ) {
+            public val cipher: CipherFactory<CipherParameters> = cipherProvider.factory(
+                operationId = CryptographyOperationId("AES-CBC"),
+                defaultParameters = CipherParameters.Default,
+            )
+            public val encoder: KeyEncoderFactory<CryptographyParameters.Empty> = keyEncoderProvider.factory(
+                operationId = CryptographyOperationId("AES"),
+                defaultParameters = CryptographyParameters.Empty,
+            )
         }
 
         public class CipherParameters(
@@ -61,23 +91,25 @@ public object AES {
         }
     }
 
-    public abstract class GCM : KeyGeneratorProvider<GCM.Key, SymmetricKeyParameters> {
-        public companion object : CryptographyAlgorithm<GCM>
+    public abstract class GCM(
+        keyGeneratorProvider: KeyGeneratorProvider<SymmetricKeyParameters, Key>,
+        keyDecoderProvider: KeyDecoderProvider<CryptographyParameters.Empty, Key>,
+    ) : AES<GCM.Key>(keyGeneratorProvider, keyDecoderProvider) {
+        public companion object : CryptographyAlgorithmIdentifier<GCM>
 
-        public class Box(
-            public val nonce: Buffer,
-            public val ciphertext: Buffer,
-            public val tag: Buffer,
-        )
-
-        final override val defaultKeyGeneratorParameters: SymmetricKeyParameters get() = SymmetricKeyParameters(SymmetricKeySize.B256)
-
-//
-//        //sync and async
-//        public fun importKey(format: SymmetricKeyFormat, data: Buffer): Key = TODO()
-//
-//        //sync and async
-//        public fun generateKey(size: SymmetricKeySize): Key = TODO()
+        public class Key(
+            cipherProvider: AeadCipherProvider<CipherParameters>,
+            keyEncoderProvider: KeyEncoderProvider<CryptographyParameters.Empty>,
+        ) {
+            public val cipher: AeadCipherFactory<CipherParameters> = cipherProvider.factory(
+                operationId = CryptographyOperationId("AES-GCM"),
+                defaultParameters = CipherParameters.Default,
+            )
+            public val encoder: KeyEncoderFactory<CryptographyParameters.Empty> = keyEncoderProvider.factory(
+                operationId = CryptographyOperationId("AES"),
+                defaultParameters = CryptographyParameters.Empty,
+            )
+        }
 
         public class CipherParameters(
             public val tagSize: BinarySize = 128.bits,
@@ -94,17 +126,11 @@ public object AES {
             }
         }
 
-        //boxed
-        //boxed async
-        //encryp/decrypt function
-        public abstract class Key : CipherProvider<CipherParameters> {
-            final override val defaultCipherParameters: CipherParameters get() = CipherParameters.Default
+//        public class Box(
+//            public val nonce: Buffer,
+//            public val ciphertext: Buffer,
+//            public val tag: Buffer,
+//        )
 
-
-            //expoort sync and async
-//            public fun export(format: SymmetricKeyFormat): Buffer
-//            public fun export(format: SymmetricKeyFormat, output: Buffer): Buffer
-        }
-        //create from key?
     }
 }

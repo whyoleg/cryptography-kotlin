@@ -1,4 +1,4 @@
 package dev.whyoleg.cryptography
 
-// TODO: T - CryptographyPrimitive - do we need interface?
-public interface CryptographyAlgorithm<T>
+public interface CryptographyAlgorithm //abstract class?
+public interface CryptographyAlgorithmIdentifier<A : CryptographyAlgorithm>

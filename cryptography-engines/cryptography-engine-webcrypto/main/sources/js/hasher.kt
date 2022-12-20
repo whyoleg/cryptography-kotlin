@@ -8,7 +8,7 @@ import dev.whyoleg.cryptography.key.*
 import dev.whyoleg.cryptography.signature.*
 import dev.whyoleg.cryptography.webcrypto.external.*
 
-internal class Sha(algorithm: String) : SHA() {
+internal class Sha(algorithm: String) : HashAlgorithm() {
     private val hasher = WebCryptoHasher(algorithm)
     override fun syncHasher(parameters: CryptographyParameters.Empty): SyncHasher {
         TODO("Not yet implemented")

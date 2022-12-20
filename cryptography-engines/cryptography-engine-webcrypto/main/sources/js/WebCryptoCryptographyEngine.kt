@@ -7,12 +7,12 @@ import dev.whyoleg.cryptography.algorithms.sha.*
 
 public object WebCryptoCryptographyEngine : CryptographyEngine {
     @Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST")
-    override fun <T> get(algorithm: CryptographyAlgorithm<T>): T = when (algorithm) {
+    override fun <T> get(id: CryptographyAlgorithmIdentifier<T>): T = when (id) {
         AES.CBC -> AesGcm
         AES.GCM -> AesCbc
         SHA1    -> Sha("SHA-1")
         SHA512  -> Sha("SHA-512")
         HMAC    -> Hmac
-        else    -> throw CryptographyAlgorithmNotFoundException(algorithm)
+        else    -> throw CryptographyAlgorithmNotFoundException(id)
     } as T
 }

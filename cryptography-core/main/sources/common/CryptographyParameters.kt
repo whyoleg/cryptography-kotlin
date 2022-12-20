@@ -1,5 +1,6 @@
 package dev.whyoleg.cryptography
 
+//TODO: may be merge CopyableCryptographyParameters and CryptographyParameters and make it abstract class?
 public interface CryptographyParameters {
     //TODO: naming?
     public object Empty : CryptographyParameters
