@@ -32,6 +32,6 @@ internal class AesCbcKeyGenerator(
     }
 
     override suspend fun generateKey(): AES.CBC.Key {
-        TODO("Not yet implemented")
+        return state.execute { generateKeyBlocking() }
     }
 }

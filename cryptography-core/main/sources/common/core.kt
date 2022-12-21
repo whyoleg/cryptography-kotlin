@@ -16,10 +16,10 @@ public inline fun <C : Closeable, R> C.use(block: (C) -> R): R {
 }
 
 //TODO
-public fun interface BlockingAdaptor<T> {
-    public fun run(block: suspend () -> T): T
+public interface BlockingAdaptor {
+    public fun <T> execute(block: suspend () -> T): T
 }
 
-public fun interface SuspendAdaptor<T> {
-    public suspend fun run(block: () -> T): T
+public interface SuspendAdaptor {
+    public suspend fun <T> execute(block: () -> T): T
 }

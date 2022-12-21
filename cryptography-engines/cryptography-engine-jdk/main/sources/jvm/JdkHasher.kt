@@ -31,15 +31,15 @@ internal class JdkHasher(
         return digestOutput
     }
 
-    override suspend fun hash(dataInput: Buffer): Buffer {
+    override fun hashFunction(): HashFunction {
         TODO("Not yet implemented")
+    }
+
+    override suspend fun hash(dataInput: Buffer): Buffer {
+        return state.execute { hashBlocking(dataInput) }
     }
 
     override suspend fun hash(dataInput: Buffer, digestOutput: Buffer): Buffer {
-        TODO("Not yet implemented")
-    }
-
-    override fun hashFunction(): HashFunction {
-        TODO("Not yet implemented")
+        return state.execute { hashBlocking(dataInput, digestOutput) }
     }
 }

@@ -11,19 +11,18 @@ import java.security.*
 internal val ENGINE_ID get() = CryptographyEngineId("JDK")
 
 public val CryptographyEngine.Companion.JDK: CryptographyEngine by lazy {
-    JdkCryptographyEngine()
+    CryptographyEngine.JDK()
 }
 
 public fun CryptographyEngine.Companion.JDK(
     secureRandom: SecureRandom = SecureRandom(),
     provider: JdkProvider = JdkProvider.Default,
-): CryptographyEngine = JdkCryptographyEngine(secureRandom, provider)
+    adaptor: SuspendAdaptor? = null,
+): CryptographyEngine = JdkCryptographyEngine(JdkCryptographyState(provider, secureRandom, adaptor))
 
 internal class JdkCryptographyEngine(
-    secureRandom: SecureRandom = SecureRandom(),
-    provider: JdkProvider = JdkProvider.Default,
+    private val state: JdkCryptographyState,
 ) : CryptographyEngine(ENGINE_ID) {
-    private val state = JdkCryptographyState(provider, secureRandom)
 
     private val cache = mutableMapOf<CryptographyAlgorithmIdentifier<*>, CryptographyAlgorithm>()
 

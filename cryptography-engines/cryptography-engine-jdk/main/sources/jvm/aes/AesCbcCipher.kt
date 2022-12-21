@@ -1,7 +1,7 @@
 package dev.whyoleg.cryptography.jdk.aes
 
 import dev.whyoleg.cryptography.*
-import dev.whyoleg.cryptography.algorithms.aes.*
+import dev.whyoleg.cryptography.algorithms.aes.AES.CBC.*
 import dev.whyoleg.cryptography.cipher.*
 import dev.whyoleg.cryptography.jdk.*
 import javax.crypto.*
@@ -13,15 +13,15 @@ private const val ivSizeBytes = 16 //bytes for CBC
 internal class AesCbcCipherProvider(
     private val state: JdkCryptographyState,
     private val key: SecretKey,
-) : CipherProvider<AES.CBC.CipherParameters>(ENGINE_ID) {
-    override fun provideOperation(parameters: AES.CBC.CipherParameters): Cipher = AesCbcCipher(state, key, parameters.padding)
+) : BoxCipherProvider<CipherParameters, Box>(ENGINE_ID) {
+    override fun provideOperation(parameters: CipherParameters): BoxCipher<Box> = AesCbcCipher(state, key, parameters.padding)
 }
 
 internal class AesCbcCipher(
     private val state: JdkCryptographyState,
     private val key: SecretKey,
     padding: Boolean,
-) : Cipher {
+) : BoxCipher<Box> {
     private val cipher: ThreadLocal<JdkCipher> = threadLocal {
         state.provider.cipher(
             when {
@@ -52,6 +52,21 @@ internal class AesCbcCipher(
         return iv + ciphertextOutput
     }
 
+    override fun encryptBoxBlocking(plaintextInput: Buffer): Box {
+        val cipher = cipher.get()
+        val iv = ByteArray(ivSizeBytes).also(state.secureRandom::nextBytes)
+        cipher.init(JdkCipher.ENCRYPT_MODE, key, IvParameterSpec(iv), state.secureRandom)
+        return Box(iv, cipher.doFinal(plaintextInput))
+    }
+
+    override fun encryptBoxBlocking(plaintextInput: Buffer, boxOutput: Box): Box {
+        TODO("Not yet implemented")
+    }
+
+    override fun encryptFunction(): EncryptFunction {
+        TODO("Not yet implemented")
+    }
+
     override fun decryptBlocking(ciphertextInput: Buffer): Buffer {
         val cipher = cipher.get()
         cipher.init(JdkCipher.DECRYPT_MODE, key, IvParameterSpec(ciphertextInput, 0, ivSizeBytes), state.secureRandom)
@@ -65,11 +80,13 @@ internal class AesCbcCipher(
         return plaintextOutput
     }
 
-    override suspend fun decrypt(ciphertextInput: Buffer): Buffer {
-        TODO("Not yet implemented")
+    override fun decryptBoxBlocking(boxInput: Box): Buffer {
+        val cipher = cipher.get()
+        cipher.init(JdkCipher.DECRYPT_MODE, key, IvParameterSpec(boxInput.nonce), state.secureRandom)
+        return cipher.doFinal(boxInput.ciphertext)
     }
 
-    override suspend fun decrypt(ciphertextInput: Buffer, plaintextOutput: Buffer): Buffer {
+    override fun decryptBoxBlocking(boxInput: Box, plaintextOutput: Buffer): Buffer {
         TODO("Not yet implemented")
     }
 
@@ -77,15 +94,36 @@ internal class AesCbcCipher(
         TODO("Not yet implemented")
     }
 
+    override suspend fun decrypt(ciphertextInput: Buffer): Buffer {
+        return state.execute { decryptBlocking(ciphertextInput) }
+    }
+
+    override suspend fun decrypt(ciphertextInput: Buffer, plaintextOutput: Buffer): Buffer {
+        return state.execute { decryptBlocking(ciphertextInput, plaintextOutput) }
+    }
+
     override suspend fun encrypt(plaintextInput: Buffer): Buffer {
-        TODO("Not yet implemented")
+        return state.execute { encryptBlocking(plaintextInput) }
     }
 
     override suspend fun encrypt(plaintextInput: Buffer, ciphertextOutput: Buffer): Buffer {
-        TODO("Not yet implemented")
+        return state.execute { encryptBlocking(plaintextInput, ciphertextOutput) }
     }
 
-    override fun encryptFunction(): EncryptFunction {
-        TODO("Not yet implemented")
+    override suspend fun decryptBox(boxInput: Box): Buffer {
+        return state.execute { decryptBoxBlocking(boxInput) }
     }
+
+    override suspend fun decryptBox(boxInput: Box, plaintextOutput: Buffer): Buffer {
+        return state.execute { decryptBoxBlocking(boxInput, plaintextOutput) }
+    }
+
+    override suspend fun encryptBox(plaintextInput: Buffer): Box {
+        return state.execute { encryptBoxBlocking(plaintextInput) }
+    }
+
+    override suspend fun encryptBox(plaintextInput: Buffer, boxOutput: Box): Box {
+        return state.execute { encryptBoxBlocking(plaintextInput, boxOutput) }
+    }
+
 }

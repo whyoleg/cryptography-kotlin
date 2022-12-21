@@ -6,6 +6,105 @@ import dev.whyoleg.cryptography.cipher.*
 import dev.whyoleg.cryptography.cipher.aead.*
 import dev.whyoleg.cryptography.key.*
 
+public abstract class AES<K>(
+    keyGeneratorProvider: KeyGeneratorProvider<SymmetricKeyParameters, K>,
+    keyDecoderProvider: KeyDecoderProvider<CryptographyParameters.Empty, K>,
+) : CryptographyAlgorithm {
+
+    public val keyGenerator: KeyGeneratorFactory<SymmetricKeyParameters, K> = keyGeneratorProvider.factory(
+        operationId = CryptographyOperationId("AES"),
+        defaultParameters = SymmetricKeyParameters.Default,
+    )
+
+    public val keyDecoder: KeyDecoderFactory<CryptographyParameters.Empty, K> = keyDecoderProvider.factory(
+        operationId = CryptographyOperationId("AES"),
+        defaultParameters = CryptographyParameters.Empty,
+    )
+
+    public class CBC(
+        keyGeneratorProvider: KeyGeneratorProvider<SymmetricKeyParameters, Key>,
+        keyDecoderProvider: KeyDecoderProvider<CryptographyParameters.Empty, Key>,
+    ) : AES<CBC.Key>(keyGeneratorProvider, keyDecoderProvider) {
+        public companion object : CryptographyAlgorithmIdentifier<CBC>
+
+        public class Key(
+            cipherProvider: BoxCipherProvider<CipherParameters, Box>,
+            keyEncoderProvider: KeyEncoderProvider<CryptographyParameters.Empty>,
+        ) {
+            public val cipher: BoxCipherFactory<CipherParameters, Box> = cipherProvider.factory(
+                operationId = CryptographyOperationId("AES-CBC"),
+                defaultParameters = CipherParameters.Default,
+            )
+            public val encoder: KeyEncoderFactory<CryptographyParameters.Empty> = keyEncoderProvider.factory(
+                operationId = CryptographyOperationId("AES"),
+                defaultParameters = CryptographyParameters.Empty,
+            )
+        }
+
+        public class CipherParameters(
+            public val padding: Boolean = true,
+        ) : CopyableCryptographyParameters<CipherParameters, CipherParameters.Builder>() {
+            override fun builder(): Builder = Builder(padding)
+            override fun build(builder: Builder): CipherParameters = CipherParameters(builder.padding)
+
+            public class Builder internal constructor(
+                public var padding: Boolean,
+            )
+
+            public companion object {
+                public val Default: CipherParameters = CipherParameters()
+            }
+        }
+
+        public class Box(
+            public val nonce: Buffer,
+            public val ciphertext: Buffer,
+        )
+    }
+
+    public class GCM(
+        keyGeneratorProvider: KeyGeneratorProvider<SymmetricKeyParameters, Key>,
+        keyDecoderProvider: KeyDecoderProvider<CryptographyParameters.Empty, Key>,
+    ) : AES<GCM.Key>(keyGeneratorProvider, keyDecoderProvider) {
+        public companion object : CryptographyAlgorithmIdentifier<GCM>
+
+        public class Key(
+            cipherProvider: AeadBoxCipherProvider<CipherParameters, Box>,
+            keyEncoderProvider: KeyEncoderProvider<CryptographyParameters.Empty>,
+        ) {
+            public val cipher: AeadBoxCipherFactory<CipherParameters, Box> = cipherProvider.factory(
+                operationId = CryptographyOperationId("AES-GCM"),
+                defaultParameters = CipherParameters.Default,
+            )
+            public val encoder: KeyEncoderFactory<CryptographyParameters.Empty> = keyEncoderProvider.factory(
+                operationId = CryptographyOperationId("AES"),
+                defaultParameters = CryptographyParameters.Empty,
+            )
+        }
+
+        public class CipherParameters(
+            public val tagSize: BinarySize = 128.bits,
+        ) : CopyableCryptographyParameters<CipherParameters, CipherParameters.Builder>() {
+            override fun builder(): Builder = Builder(tagSize)
+            override fun build(builder: Builder): CipherParameters = CipherParameters(builder.tagSize)
+
+            public class Builder internal constructor(
+                public var tagSize: BinarySize,
+            )
+
+            public companion object {
+                public val Default: CipherParameters = CipherParameters()
+            }
+        }
+
+        public class Box(
+            public val nonce: Buffer,
+            public val ciphertext: Buffer,
+            public val tag: Buffer,
+        )
+    }
+}
+
 private suspend fun tests(engine: CryptographyEngine) {
 
     engine.get(AES.CBC).apply {
@@ -38,99 +137,4 @@ private suspend fun tests(engine: CryptographyEngine) {
     cipher.encrypt("Hello, World!".encodeToByteArray())
 
     key.encoder().encodeKeyBlocking("", ByteArray(1))
-}
-
-public abstract class AES<K>(
-    keyGeneratorProvider: KeyGeneratorProvider<SymmetricKeyParameters, K>,
-    keyDecoderProvider: KeyDecoderProvider<CryptographyParameters.Empty, K>,
-) : CryptographyAlgorithm {
-
-    public val keyGenerator: KeyGeneratorFactory<SymmetricKeyParameters, K> = keyGeneratorProvider.factory(
-        operationId = CryptographyOperationId("AES"),
-        defaultParameters = SymmetricKeyParameters.Default,
-    )
-
-    public val keyDecoder: KeyDecoderFactory<CryptographyParameters.Empty, K> = keyDecoderProvider.factory(
-        operationId = CryptographyOperationId("AES"),
-        defaultParameters = CryptographyParameters.Empty,
-    )
-
-    public class CBC(
-        keyGeneratorProvider: KeyGeneratorProvider<SymmetricKeyParameters, Key>,
-        keyDecoderProvider: KeyDecoderProvider<CryptographyParameters.Empty, Key>,
-    ) : AES<CBC.Key>(keyGeneratorProvider, keyDecoderProvider) {
-        public companion object : CryptographyAlgorithmIdentifier<CBC>
-
-        public class Key(
-            cipherProvider: CipherProvider<CipherParameters>,
-            keyEncoderProvider: KeyEncoderProvider<CryptographyParameters.Empty>,
-        ) {
-            public val cipher: CipherFactory<CipherParameters> = cipherProvider.factory(
-                operationId = CryptographyOperationId("AES-CBC"),
-                defaultParameters = CipherParameters.Default,
-            )
-            public val encoder: KeyEncoderFactory<CryptographyParameters.Empty> = keyEncoderProvider.factory(
-                operationId = CryptographyOperationId("AES"),
-                defaultParameters = CryptographyParameters.Empty,
-            )
-        }
-
-        public class CipherParameters(
-            public val padding: Boolean = true,
-        ) : CopyableCryptographyParameters<CipherParameters, CipherParameters.Builder>() {
-            override fun builder(): Builder = Builder(padding)
-            override fun build(builder: Builder): CipherParameters = CipherParameters(builder.padding)
-
-            public class Builder internal constructor(
-                public var padding: Boolean,
-            )
-
-            public companion object {
-                public val Default: CipherParameters = CipherParameters()
-            }
-        }
-    }
-
-    public class GCM(
-        keyGeneratorProvider: KeyGeneratorProvider<SymmetricKeyParameters, Key>,
-        keyDecoderProvider: KeyDecoderProvider<CryptographyParameters.Empty, Key>,
-    ) : AES<GCM.Key>(keyGeneratorProvider, keyDecoderProvider) {
-        public companion object : CryptographyAlgorithmIdentifier<GCM>
-
-        public class Key(
-            cipherProvider: AeadCipherProvider<CipherParameters>,
-            keyEncoderProvider: KeyEncoderProvider<CryptographyParameters.Empty>,
-        ) {
-            public val cipher: AeadCipherFactory<CipherParameters> = cipherProvider.factory(
-                operationId = CryptographyOperationId("AES-GCM"),
-                defaultParameters = CipherParameters.Default,
-            )
-            public val encoder: KeyEncoderFactory<CryptographyParameters.Empty> = keyEncoderProvider.factory(
-                operationId = CryptographyOperationId("AES"),
-                defaultParameters = CryptographyParameters.Empty,
-            )
-        }
-
-        public class CipherParameters(
-            public val tagSize: BinarySize = 128.bits,
-        ) : CopyableCryptographyParameters<CipherParameters, CipherParameters.Builder>() {
-            override fun builder(): Builder = Builder(tagSize)
-            override fun build(builder: Builder): CipherParameters = CipherParameters(builder.tagSize)
-
-            public class Builder internal constructor(
-                public var tagSize: BinarySize,
-            )
-
-            public companion object {
-                public val Default: CipherParameters = CipherParameters()
-            }
-        }
-
-//        public class Box(
-//            public val nonce: Buffer,
-//            public val ciphertext: Buffer,
-//            public val tag: Buffer,
-//        )
-
-    }
 }

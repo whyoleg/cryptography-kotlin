@@ -32,6 +32,6 @@ internal class AesGcmKeyGenerator(
     }
 
     override suspend fun generateKey(): AES.GCM.Key {
-        TODO("Not yet implemented")
+        return state.execute { generateKeyBlocking() }
     }
 }

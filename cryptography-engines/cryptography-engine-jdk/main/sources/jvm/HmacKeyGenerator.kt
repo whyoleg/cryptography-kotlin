@@ -39,6 +39,6 @@ internal class HmacKeyGenerator(
     }
 
     override suspend fun generateKey(): HMAC.Key {
-        TODO("Not yet implemented")
+        return state.execute { generateKeyBlocking() }
     }
 }

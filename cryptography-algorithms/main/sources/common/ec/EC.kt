@@ -7,16 +7,6 @@ import dev.whyoleg.cryptography.key.*
 import dev.whyoleg.cryptography.signature.*
 import kotlin.jvm.*
 
-//private fun test() {
-//    val key1 = engine.get(EC).keyGenerator().generateKey()
-//    val key2 = engine.get(EC).keyGenerator().generateKey()
-//
-//    val encoded1 = key1.public.encode(format)
-//    val encoded2 = key2.public.encode(format)
-//
-//    key1.private.keyAgreement().agreeKey(format, encoded2)
-//}
-
 //ECDSA and ECDH
 public class EC(
     keyPairGeneratorProvider: KeyGeneratorProvider<KeyPairGeneratorParameters, EC.KeyPair>,
@@ -98,3 +88,13 @@ public class EC(
         }
     }
 }
+
+//private fun test() {
+//    val key1 = engine.get(EC).keyGenerator().generateKey()
+//    val key2 = engine.get(EC).keyGenerator().generateKey()
+//
+//    val encoded1 = key1.public.encode(format)
+//    val encoded2 = key2.public.encode(format)
+//
+//    key1.private.keyAgreement().agreeKey(format, encoded2)
+//}

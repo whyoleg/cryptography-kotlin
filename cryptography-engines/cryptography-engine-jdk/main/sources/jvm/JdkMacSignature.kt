@@ -35,27 +35,27 @@ internal class JdkMacSignature(
         return signatureOutput
     }
 
-    override fun verifyBlocking(dataInput: Buffer, signatureInput: Buffer): Boolean {
-        return signBlocking(dataInput).contentEquals(signatureInput)
-    }
-
-    override suspend fun sign(dataInput: Buffer): Buffer {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun sign(dataInput: Buffer, signatureOutput: Buffer): Buffer {
-        TODO("Not yet implemented")
-    }
-
     override fun signFunction(): SignFunction {
         TODO("Not yet implemented")
     }
 
-    override suspend fun verify(dataInput: Buffer, signatureInput: Buffer): Boolean {
-        TODO("Not yet implemented")
+    override fun verifyBlocking(dataInput: Buffer, signatureInput: Buffer): Boolean {
+        return signBlocking(dataInput).contentEquals(signatureInput)
     }
 
     override fun verifyFunction(): VerifyFunction {
         TODO("Not yet implemented")
+    }
+
+    override suspend fun sign(dataInput: Buffer): Buffer {
+        return state.execute { signBlocking(dataInput) }
+    }
+
+    override suspend fun sign(dataInput: Buffer, signatureOutput: Buffer): Buffer {
+        return state.execute { signBlocking(dataInput, signatureOutput) }
+    }
+
+    override suspend fun verify(dataInput: Buffer, signatureInput: Buffer): Boolean {
+        return state.execute { verifyBlocking(dataInput, signatureInput) }
     }
 }
