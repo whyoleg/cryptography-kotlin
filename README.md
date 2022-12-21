@@ -7,20 +7,22 @@ TODO until 0.1.0:
     * [ ] EC (ECDSA/ECDH)
     * [ ] RSA OAEP
     * [ ] MD5
+    * [ ] Decide on algorithms package structure - flatten?
 * [ ] Operations
     * [ ] Key encode/decode
     * [ ] Key derive/exchange
     * [ ] Key wrap/unwrap
+* [ ] Add tests (for JVM: JDK and Android tests)
 * [ ] Engines
     * [ ] OpenSSL(1/3) engine (dynamic)
     * [ ] Default engine
     * [ ] Replace thread local in JDK with super simple pooling
     * [ ] Engine builder
-* [ ] Add tests (for JVM: JDK and Android tests)
 * [ ] Coroutines integration (for JDK engine to run on other dispatcher)
 * [ ] OptIn for not secure algorithms (like MD5)
-* [ ] README
+* [ ] OptIn for declarations, that should be used from engines only!!!
 * [ ] Maven Central
+* [ ] README
 
 0.2.0 plans:
 
