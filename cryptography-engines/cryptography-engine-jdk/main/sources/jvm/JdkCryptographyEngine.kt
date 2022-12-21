@@ -10,7 +10,16 @@ import java.security.*
 
 internal val ENGINE_ID get() = CryptographyEngineId("JDK")
 
-public class JdkCryptographyEngine(
+public val CryptographyEngine.Companion.JDK: CryptographyEngine by lazy {
+    JdkCryptographyEngine()
+}
+
+public fun CryptographyEngine.Companion.JDK(
+    secureRandom: SecureRandom = SecureRandom(),
+    provider: JdkProvider = JdkProvider.Default,
+): CryptographyEngine = JdkCryptographyEngine(secureRandom, provider)
+
+internal class JdkCryptographyEngine(
     secureRandom: SecureRandom = SecureRandom(),
     provider: JdkProvider = JdkProvider.Default,
 ) : CryptographyEngine(ENGINE_ID) {

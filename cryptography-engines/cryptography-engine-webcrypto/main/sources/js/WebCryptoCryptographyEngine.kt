@@ -7,7 +7,9 @@ import dev.whyoleg.cryptography.algorithms.sha.*
 
 internal val ENGINE_ID get() = CryptographyEngineId("WebCrypto")
 
-public object WebCryptoCryptographyEngine : CryptographyEngine(ENGINE_ID) {
+public val CryptographyEngine.Companion.WebCrypto: CryptographyEngine get() = WebCryptoCryptographyEngine
+
+internal object WebCryptoCryptographyEngine : CryptographyEngine(ENGINE_ID) {
 
     @Suppress("UNCHECKED_CAST")
     override fun <A : CryptographyAlgorithm> get(identifier: CryptographyAlgorithmIdentifier<A>): A = when (identifier) {

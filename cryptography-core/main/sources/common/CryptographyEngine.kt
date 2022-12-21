@@ -9,6 +9,8 @@ public abstract class CryptographyEngine(
     public val engineId: CryptographyEngineId,
 ) {
     public abstract fun <A : CryptographyAlgorithm> get(identifier: CryptographyAlgorithmIdentifier<A>): A
+
+    public companion object
 }
 
 //TODO before release
