@@ -18,8 +18,11 @@ dependencyResolutionManagement {
 
 rootProject.name = "cryptography-kotlin"
 
-//interfaces for engines and users
+//core interfaces
 include("cryptography-core")
+
+//default algorithms APIs
+include("cryptography-algorithms")
 
 //mapping from sync to async via dispatcher or channel
 //include("cryptography-coroutines")
@@ -29,37 +32,11 @@ include("cryptography-core")
 // 2. run all engines on it's own plaintext/data
 // 3. save plaintext + ciphertext (for ciphers) and data + hash (for hashes)
 // 4. run all engines on other engines plaintext/data
-
 include("cryptography-tests")
 
-//high-level API for users
-//we need to have separate modules/packages/annotations for algorithms:
-// - legacy - for old algorithms, which are not secure anymore, but still used in some cases (e.g. MD5, compatibility, etc)
-// - modern - for modern algorithms, which are secure and recommended to use (like in CryptoKit and WebCrypto)
-// - other - implemented in different engines, but not in all of them (e.g. ChaCha20, Poly1305, etc)
-include("cryptography-algorithms")
-
-//first engines:
+//include("cryptography-engines:cryptography-engine-default") //all platforms - use best fit for every platform
 include("cryptography-engines:cryptography-engine-jdk") //jvm only
 include("cryptography-engines:cryptography-engine-corecrypto") //darwin only
 include("cryptography-engines:cryptography-engine-webcrypto") //js(nodejs/browser) only
-//include("cryptography-engines:cryptography-engine-nodejs") //nodejs only
+//include("cryptography-engines:cryptography-engine-openssl") //all platforms, starting from linux/macos/windows
 //include("cryptography-engines:cryptography-engine-openssl3") //all platforms, starting from linux/macos/windows
-//include("cryptography-engines:cryptography-engine-cng") //windows only
-
-//future engines:
-//include("cryptography-engines:cryptography-engine-aws") //remote AWS KMS provider
-//include("cryptography-engines:cryptography-engine-gcp") //remote GCP KMS provider
-//include("cryptography-engines:cryptography-engine-boringssl") //same as openssl
-//include("cryptography-engines:cryptography-engine-wolfcrypto") //same as openssl
-//include("cryptography-engines:cryptography-engine-tink") //is it needed?
-
-//future features:
-// - JWK/JWT support (JOSE)
-// - ASN.1/X.509/DER/PEM support (via kx.serialization)
-
-//need:
-// - BigInt
-// - some new IO
-// - auto provider API - not really needed for now
-// - C API wrapper

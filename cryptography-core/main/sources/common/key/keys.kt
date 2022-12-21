@@ -3,7 +3,6 @@ package dev.whyoleg.cryptography.key
 /**
  * TODO
  *  - key / keypair / symmetric(secret) key / asymmetric (private + public) key
- *  - generate key
  *  - derive key
  *  - key agreement (?)
  *  - key exchange (?)
@@ -15,6 +14,9 @@ package dev.whyoleg.cryptography.key
  *  - key formats
  *  - key usages
  */
+
+//Key format: RAW (Bytes), PEM, DER, JWK, PKCS-12
+//Destination: java key store, key chain, file, secure enclave (?)
 
 public sealed interface KeyFormat
 public sealed interface KeyPairFormat
