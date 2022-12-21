@@ -8,7 +8,7 @@ import dev.whyoleg.cryptography.key.*
 
 public abstract class AES<K>(
     keyGeneratorProvider: KeyGeneratorProvider<SymmetricKeyParameters, K>,
-    keyDecoderProvider: KeyDecoderProvider<CryptographyParameters.Empty, K>,
+    keyDecoderProvider: KeyDecoderProvider<CryptographyParameters.Empty, K, Key.Format>,
 ) : CryptographyAlgorithm {
 
     public val keyGenerator: KeyGeneratorFactory<SymmetricKeyParameters, K> = keyGeneratorProvider.factory(
@@ -16,28 +16,38 @@ public abstract class AES<K>(
         defaultParameters = SymmetricKeyParameters.Default,
     )
 
-    public val keyDecoder: KeyDecoderFactory<CryptographyParameters.Empty, K> = keyDecoderProvider.factory(
+    public val keyDecoder: KeyDecoderFactory<CryptographyParameters.Empty, K, Key.Format> = keyDecoderProvider.factory(
         operationId = CryptographyOperationId("AES"),
         defaultParameters = CryptographyParameters.Empty,
     )
 
+    public abstract class Key(
+        keyEncoderProvider: KeyEncoderProvider<CryptographyParameters.Empty, Format>,
+    ) {
+        public val encoder: KeyEncoderFactory<CryptographyParameters.Empty, Format> = keyEncoderProvider.factory(
+            operationId = CryptographyOperationId("AES"),
+            defaultParameters = CryptographyParameters.Empty,
+        )
+
+        public sealed class Format : KeyFormat {
+            public object RAW : Format(), KeyFormat.RAW
+            public object JWK : Format(), KeyFormat.JWK
+        }
+    }
+
     public class CBC(
         keyGeneratorProvider: KeyGeneratorProvider<SymmetricKeyParameters, Key>,
-        keyDecoderProvider: KeyDecoderProvider<CryptographyParameters.Empty, Key>,
+        keyDecoderProvider: KeyDecoderProvider<CryptographyParameters.Empty, Key, AES.Key.Format>,
     ) : AES<CBC.Key>(keyGeneratorProvider, keyDecoderProvider) {
         public companion object : CryptographyAlgorithmIdentifier<CBC>
 
         public class Key(
             cipherProvider: BoxCipherProvider<CipherParameters, Box>,
-            keyEncoderProvider: KeyEncoderProvider<CryptographyParameters.Empty>,
-        ) {
+            keyEncoderProvider: KeyEncoderProvider<CryptographyParameters.Empty, Format>,
+        ) : AES.Key(keyEncoderProvider) {
             public val cipher: BoxCipherFactory<CipherParameters, Box> = cipherProvider.factory(
                 operationId = CryptographyOperationId("AES-CBC"),
                 defaultParameters = CipherParameters.Default,
-            )
-            public val encoder: KeyEncoderFactory<CryptographyParameters.Empty> = keyEncoderProvider.factory(
-                operationId = CryptographyOperationId("AES"),
-                defaultParameters = CryptographyParameters.Empty,
             )
         }
 
@@ -64,21 +74,17 @@ public abstract class AES<K>(
 
     public class GCM(
         keyGeneratorProvider: KeyGeneratorProvider<SymmetricKeyParameters, Key>,
-        keyDecoderProvider: KeyDecoderProvider<CryptographyParameters.Empty, Key>,
+        keyDecoderProvider: KeyDecoderProvider<CryptographyParameters.Empty, Key, AES.Key.Format>,
     ) : AES<GCM.Key>(keyGeneratorProvider, keyDecoderProvider) {
         public companion object : CryptographyAlgorithmIdentifier<GCM>
 
         public class Key(
             cipherProvider: AeadBoxCipherProvider<CipherParameters, Box>,
-            keyEncoderProvider: KeyEncoderProvider<CryptographyParameters.Empty>,
-        ) {
+            keyEncoderProvider: KeyEncoderProvider<CryptographyParameters.Empty, Format>,
+        ) : AES.Key(keyEncoderProvider) {
             public val cipher: AeadBoxCipherFactory<CipherParameters, Box> = cipherProvider.factory(
                 operationId = CryptographyOperationId("AES-GCM"),
                 defaultParameters = CipherParameters.Default,
-            )
-            public val encoder: KeyEncoderFactory<CryptographyParameters.Empty> = keyEncoderProvider.factory(
-                operationId = CryptographyOperationId("AES"),
-                defaultParameters = CryptographyParameters.Empty,
             )
         }
 
@@ -108,7 +114,7 @@ public abstract class AES<K>(
 private suspend fun tests(engine: CryptographyEngine) {
 
     engine.get(AES.CBC).apply {
-        keyDecoder().decodeKeyBlocking("", ByteArray(2))
+        keyDecoder().decodeKeyBlocking(AES.Key.Format.RAW, ByteArray(2))
             .cipher()
     }.keyGenerator {
         size = SymmetricKeySize.B256
@@ -136,5 +142,5 @@ private suspend fun tests(engine: CryptographyEngine) {
 
     cipher.encrypt("Hello, World!".encodeToByteArray())
 
-    key.encoder().encodeKeyBlocking("", ByteArray(1))
+    key.encoder().encodeKeyBlocking(AES.Key.Format.JWK, ByteArray(1))
 }

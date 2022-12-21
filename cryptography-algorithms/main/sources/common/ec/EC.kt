@@ -21,41 +21,48 @@ public class EC(
     public class KeyPair(
         public val publicKey: PublicKey,
         public val privateKey: PrivateKey,
-        keyEncoderProvider: KeyEncoderProvider<CryptographyParameters.Empty>,
-    ) {
-        public val encoder: KeyEncoderFactory<CryptographyParameters.Empty> = keyEncoderProvider.factory(
-            operationId = CryptographyOperationId("EC"),
-            defaultParameters = CryptographyParameters.Empty,
-        )
-    }
+    )
 
     public class PublicKey(
         verifierProvider: VerifierProvider<SignatureParameters>,
-        keyEncoderProvider: KeyEncoderProvider<CryptographyParameters.Empty>,
+        keyEncoderProvider: KeyEncoderProvider<CryptographyParameters.Empty, Format>,
     ) {
         public val verifier: VerifierFactory<SignatureParameters> = verifierProvider.factory(
             operationId = CryptographyOperationId("ECDSA"),
             defaultParameters = SignatureParameters.Default,
         )
-        public val encoder: KeyEncoderFactory<CryptographyParameters.Empty> = keyEncoderProvider.factory(
+        public val encoder: KeyEncoderFactory<CryptographyParameters.Empty, Format> = keyEncoderProvider.factory(
             operationId = CryptographyOperationId("EC"),
             defaultParameters = CryptographyParameters.Empty,
         )
+
+        public sealed class Format : KeyFormat {
+            public object RAW : Format(), KeyFormat.RAW
+            public object PEM : Format(), KeyFormat.PEM
+            public object DER : Format(), KeyFormat.DER
+            public object JWK : Format(), KeyFormat.JWK
+        }
     }
 
     //TODO: Decide on how to get PublicKey from PrivateKey
     public class PrivateKey(
         signerProvider: SignerProvider<SignatureParameters>,
-        keyEncoderProvider: KeyEncoderProvider<CryptographyParameters.Empty>,
+        keyEncoderProvider: KeyEncoderProvider<CryptographyParameters.Empty, Format>,
     ) {
         public val verifier: SignerFactory<SignatureParameters> = signerProvider.factory(
             operationId = CryptographyOperationId("ECDSA"),
             defaultParameters = SignatureParameters.Default,
         )
-        public val encoder: KeyEncoderFactory<CryptographyParameters.Empty> = keyEncoderProvider.factory(
+        public val encoder: KeyEncoderFactory<CryptographyParameters.Empty, Format> = keyEncoderProvider.factory(
             operationId = CryptographyOperationId("EC"),
             defaultParameters = CryptographyParameters.Empty,
         )
+
+        public sealed class Format : KeyFormat {
+            public object PEM : Format(), KeyFormat.PEM
+            public object DER : Format(), KeyFormat.DER
+            public object JWK : Format(), KeyFormat.JWK
+        }
     }
 
     public class KeyPairGeneratorParameters(

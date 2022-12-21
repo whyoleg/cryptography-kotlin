@@ -10,7 +10,7 @@ import dev.whyoleg.cryptography.signature.*
 
 public class HMAC(
     keyGeneratorProvider: KeyGeneratorProvider<KeyGeneratorParameters, Key>,
-    keyDecoderProvider: KeyDecoderProvider<CryptographyParameters.Empty, Key>,
+    keyDecoderProvider: KeyDecoderProvider<CryptographyParameters.Empty, Key, Key.Format>,
 ) : CryptographyAlgorithm {
     public companion object : CryptographyAlgorithmIdentifier<HMAC>
 
@@ -19,23 +19,28 @@ public class HMAC(
         defaultParameters = KeyGeneratorParameters.Default,
     )
 
-    public val keyDecoder: KeyDecoderFactory<CryptographyParameters.Empty, Key> = keyDecoderProvider.factory(
+    public val keyDecoder: KeyDecoderFactory<CryptographyParameters.Empty, Key, Key.Format> = keyDecoderProvider.factory(
         operationId = CryptographyOperationId("HMAC"),
         defaultParameters = CryptographyParameters.Empty,
     )
 
     public class Key(
         signatureProvider: SignatureProvider<CryptographyParameters.Empty>,
-        keyEncoderProvider: KeyEncoderProvider<CryptographyParameters.Empty>,
+        keyEncoderProvider: KeyEncoderProvider<CryptographyParameters.Empty, Format>,
     ) {
         public val signature: SignatureFactory<CryptographyParameters.Empty> = signatureProvider.factory(
             operationId = CryptographyOperationId("HMAC-SHA"), //TODO: Sha
             defaultParameters = CryptographyParameters.Empty,
         )
-        public val encoder: KeyEncoderFactory<CryptographyParameters.Empty> = keyEncoderProvider.factory(
+        public val encoder: KeyEncoderFactory<CryptographyParameters.Empty, Format> = keyEncoderProvider.factory(
             operationId = CryptographyOperationId("HMAC"),
             defaultParameters = CryptographyParameters.Empty,
         )
+
+        public sealed class Format : KeyFormat {
+            public object RAW : Format(), KeyFormat.RAW
+            public object JWK : Format(), KeyFormat.JWK
+        }
     }
 
     public class KeyGeneratorParameters(

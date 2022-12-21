@@ -2,12 +2,12 @@ package dev.whyoleg.cryptography.key
 
 import dev.whyoleg.cryptography.*
 
-public typealias KeyEncoderFactory<P> = CryptographyOperationFactory<P, KeyEncoder>
-public typealias KeyEncoderProvider<P> = CryptographyOperationProvider<P, KeyEncoder>
+public typealias KeyEncoderFactory<P, KF> = CryptographyOperationFactory<P, KeyEncoder<KF>>
+public typealias KeyEncoderProvider<P, KF> = CryptographyOperationProvider<P, KeyEncoder<KF>>
 
-public interface KeyEncoder : CryptographyOperation {
-    public suspend fun encodeKey(format: String): Buffer
-    public suspend fun encodeKey(format: String, keyDataOutput: Buffer): Buffer
-    public fun encodeKeyBlocking(format: String): Buffer
-    public fun encodeKeyBlocking(format: String, keyDataOutput: Buffer): Buffer
+public interface KeyEncoder<KF : KeyFormat> : CryptographyOperation {
+    public suspend fun encodeKey(format: KF): Buffer
+    public suspend fun encodeKey(format: KF, keyDataOutput: Buffer): Buffer
+    public fun encodeKeyBlocking(format: KF): Buffer
+    public fun encodeKeyBlocking(format: KF, keyDataOutput: Buffer): Buffer
 }
