@@ -7,3 +7,4 @@ public typealias AeadCipherFactory<P> = CryptographyOperationFactory<P, AeadCiph
 public typealias AeadCipherProvider<P> = CryptographyOperationProvider<P, AeadCipher>
 
 public interface AeadCipher : Cipher, AeadEncryptor, AeadDecryptor
+

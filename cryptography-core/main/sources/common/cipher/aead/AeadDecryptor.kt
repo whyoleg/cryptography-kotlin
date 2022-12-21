@@ -19,3 +19,4 @@ public interface AeadDecryptor : Decryptor {
 
     override fun decryptFunction(): AeadDecryptFunction
 }
+
