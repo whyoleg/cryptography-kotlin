@@ -2,27 +2,22 @@ package dev.whyoleg.cryptography.webcrypto
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.aes.*
-import dev.whyoleg.cryptography.cipher.*
 import dev.whyoleg.cryptography.cipher.aead.*
 import dev.whyoleg.cryptography.key.*
 import dev.whyoleg.cryptography.webcrypto.external.*
 
 private const val ivSizeBytes = 12 //bytes for GCM
 
-internal object AesGcm : AES.GCM() {
-    override fun syncKeyGenerator(parameters: SymmetricKeyParameters): SyncKeyGenerator<Key> {
-        TODO("Not yet implemented")
-    }
-
-    override fun asyncKeyGenerator(parameters: SymmetricKeyParameters): AsyncKeyGenerator<Key> =
+internal object AesGcmKeyGeneratorProvider : KeyGeneratorProvider<SymmetricKeyParameters, AES.GCM.Key>(ENGINE_ID) {
+    override fun provideOperation(parameters: SymmetricKeyParameters): KeyGenerator<AES.GCM.Key> =
         AesGcmKeyGenerator(parameters.size.value.bits)
 }
 
 internal class AesGcmKeyGenerator(
     private val keySizeBits: Int,
-) : AsyncKeyGenerator<AES.GCM.Key> {
+) : KeyGenerator<AES.GCM.Key> {
     override suspend fun generateKey(): AES.GCM.Key {
-        val result = WebCrypto.subtle.generateKey(
+        val key = WebCrypto.subtle.generateKey(
             AesGcmKeyAlgorithm {
                 this.length = keySizeBits
             },
@@ -30,32 +25,27 @@ internal class AesGcmKeyGenerator(
             true,
             arrayOf("encrypt", "decrypt")
         ).await()
-        return AesGcmKey(result)
+        return AES.GCM.Key(
+            AesGcmCipherProvider(key),
+            NotSupportedProvider(ENGINE_ID)
+        )
+    }
+
+    override fun generateKeyBlocking(): AES.GCM.Key {
+        TODO("Not yet implemented")
     }
 }
 
-internal class AesGcmKey(
+internal class AesGcmCipherProvider(
     private val key: CryptoKey,
-) : AES.GCM.Key() {
-    override fun syncCipher(parameters: AES.GCM.CipherParameters): SyncCipher {
-        TODO("Not yet implemented")
-    }
-
-    override fun asyncCipher(parameters: AES.GCM.CipherParameters): AsyncCipher = AesGcmCipher(parameters.tagSize.bits, key)
-
-    override fun decryptFunction(parameters: AES.GCM.CipherParameters): DecryptFunction {
-        TODO("Not yet implemented")
-    }
-
-    override fun encryptFunction(parameters: AES.GCM.CipherParameters): EncryptFunction {
-        TODO("Not yet implemented")
-    }
+) : AeadCipherProvider<AES.GCM.CipherParameters>(ENGINE_ID) {
+    override fun provideOperation(parameters: AES.GCM.CipherParameters): AeadCipher = AesGcmCipher(key, parameters.tagSize.bits)
 }
 
 internal class AesGcmCipher(
-    private val tagSizeBits: Int,
     private val key: CryptoKey,
-) : AeadAsyncCipher {
+    private val tagSizeBits: Int,
+) : AeadCipher {
     override fun ciphertextSize(plaintextSize: Int): Int = plaintextSize + ivSizeBytes + tagSizeBits / 8
 
     override fun plaintextSize(ciphertextSize: Int): Int = ciphertextSize - ivSizeBytes - tagSizeBits / 8
@@ -99,5 +89,29 @@ internal class AesGcmCipher(
     override suspend fun decrypt(associatedData: Buffer?, ciphertextInput: Buffer, plaintextOutput: Buffer): Buffer {
         decrypt(associatedData, ciphertextInput).copyInto(plaintextOutput)
         return plaintextOutput
+    }
+
+    override fun decryptFunction(): AeadDecryptFunction {
+        TODO("Not yet implemented")
+    }
+
+    override fun encryptFunction(): AeadEncryptFunction {
+        TODO("Not yet implemented")
+    }
+
+    override fun decryptBlocking(associatedData: Buffer?, ciphertextInput: Buffer): Buffer {
+        TODO("Not yet implemented")
+    }
+
+    override fun decryptBlocking(associatedData: Buffer?, ciphertextInput: Buffer, plaintextOutput: Buffer): Buffer {
+        TODO("Not yet implemented")
+    }
+
+    override fun encryptBlocking(associatedData: Buffer?, plaintextInput: Buffer): Buffer {
+        TODO("Not yet implemented")
+    }
+
+    override fun encryptBlocking(associatedData: Buffer?, plaintextInput: Buffer, ciphertextOutput: Buffer): Buffer {
+        TODO("Not yet implemented")
     }
 }

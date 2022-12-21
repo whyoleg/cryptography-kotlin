@@ -20,6 +20,6 @@ public fun interface BlockingAdaptor<T> {
     public fun run(block: suspend () -> T): T
 }
 
-public fun interface AsyncAdaptor<T> {
+public fun interface SuspendAdaptor<T> {
     public suspend fun run(block: () -> T): T
 }
