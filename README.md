@@ -6,6 +6,7 @@ TODO until 0.1.0:
     * [ ] AES Box ciphers
     * [ ] EC (ECDSA/ECDH)
     * [ ] RSA OAEP
+    * [ ] RSA PSS
     * [X] MD5
     * [x] Decide on algorithms package structure - per kind of algorithm (digest, asymmetric, symmetric, etc)
     * [ ] Default Randomizer algorithm
@@ -13,6 +14,7 @@ TODO until 0.1.0:
     * [ ] Key encode/decode
     * [ ] Key derive/exchange
     * [ ] Key wrap/unwrap
+    * [ ] Cipher encrypt/decrypt functions for RSA-like algorithms
 * [ ] Add tests (for JVM: JDK and Android tests)
 * [ ] Engines
     * [ ] OpenSSL(1/3) engine (dynamic)

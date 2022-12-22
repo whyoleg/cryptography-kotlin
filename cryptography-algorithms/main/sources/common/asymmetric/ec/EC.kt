@@ -20,7 +20,27 @@ public class EC @ProviderApi constructor(
         defaultParameters = KeyPairGeneratorParameters.Default,
     )
 
-    public class KeyPair(
+    public class KeyPairGeneratorParameters(
+        public val curve: Curve = Curve.P521, //TODO: default curve?
+    ) : CryptographyOperationParameters() {
+        public companion object {
+            public val Default: KeyPairGeneratorParameters = KeyPairGeneratorParameters()
+        }
+    }
+
+    @JvmInline
+    public value class Curve(public val name: String) {
+        public companion object {
+            public val P521: Curve get() = Curve("P521")
+            public val P384: Curve get() = Curve("P384")
+            public val P256: Curve get() = Curve("P256")
+
+            //Curve25519 should be separate
+//        public val Curve25519: ECCurve get() = ECCurve("Curve25519")
+        }
+    }
+
+    public class KeyPair @ProviderApi constructor(
         public val publicKey: PublicKey,
         public val privateKey: PrivateKey,
     )
@@ -67,32 +87,12 @@ public class EC @ProviderApi constructor(
         }
     }
 
-    public class KeyPairGeneratorParameters(
-        public val curve: Curve = Curve.P521, //TODO: default curve?
-    ) : CryptographyOperationParameters() {
-        public companion object {
-            public val Default: KeyPairGeneratorParameters = KeyPairGeneratorParameters()
-        }
-    }
-
     //TODO: drop generics and enforce it's contract via custom constructor?
     public class SignatureParameters(
         public val digest: CryptographyAlgorithmIdentifier<Digest> = SHA512,
     ) : CryptographyOperationParameters() {
         public companion object {
             public val Default: SignatureParameters = SignatureParameters()
-        }
-    }
-
-    @JvmInline
-    public value class Curve(public val name: String) {
-        public companion object {
-            public val P521: Curve get() = Curve("P521")
-            public val P384: Curve get() = Curve("P384")
-            public val P256: Curve get() = Curve("P256")
-
-            //Curve25519 should be separate
-//        public val Curve25519: ECCurve get() = ECCurve("Curve25519")
         }
     }
 }
