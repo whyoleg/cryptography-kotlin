@@ -15,8 +15,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                api(projects.cryptographyEngine)
-                api(projects.cryptographyOperations)
+                api(projects.cryptographyCore)
             }
         }
     }

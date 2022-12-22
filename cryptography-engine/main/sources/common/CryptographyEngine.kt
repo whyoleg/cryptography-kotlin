@@ -1,4 +1,4 @@
-package dev.whyoleg.cryptography
+package dev.whyoleg.cryptography.engine
 
 import kotlin.jvm.*
 

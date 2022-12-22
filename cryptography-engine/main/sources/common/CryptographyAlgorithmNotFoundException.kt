@@ -1,4 +1,6 @@
-package dev.whyoleg.cryptography
+package dev.whyoleg.cryptography.engine
+
+import dev.whyoleg.cryptography.*
 
 public class CryptographyAlgorithmNotFoundException(
     algorithm: CryptographyAlgorithmIdentifier<*>,

@@ -1,6 +1,6 @@
 package dev.whyoleg.cryptography.jdk
 
-import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.engine.*
 import java.security.*
 
 //candidate for context receivers
