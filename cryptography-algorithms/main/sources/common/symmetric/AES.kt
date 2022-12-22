@@ -1,18 +1,20 @@
+@file:OptIn(ProviderApi::class)
+
 package dev.whyoleg.cryptography.algorithms.symmetric
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.BinarySize.Companion.bits
-import dev.whyoleg.cryptography.engine.*
 import dev.whyoleg.cryptography.io.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.operations.cipher.*
 import dev.whyoleg.cryptography.operations.cipher.aead.*
 import dev.whyoleg.cryptography.operations.key.*
+import dev.whyoleg.cryptography.provider.*
 
-public abstract class AES<K>(
+public abstract class AES<K> @ProviderApi constructor(
     keyGeneratorProvider: KeyGeneratorProvider<SymmetricKeyParameters, K>,
     keyDecoderProvider: KeyDecoderProvider<CryptographyOperationParameters.Empty, K, Key.Format>,
-) : CryptographyAlgorithm {
+) : CryptographyAlgorithm() {
 
     public val keyGenerator: KeyGeneratorFactory<SymmetricKeyParameters, K> = keyGeneratorProvider.factory(
         operationId = CryptographyOperationId("AES"),
@@ -24,7 +26,7 @@ public abstract class AES<K>(
         defaultParameters = CryptographyOperationParameters.Empty,
     )
 
-    public abstract class Key(
+    public abstract class Key @ProviderApi constructor(
         keyEncoderProvider: KeyEncoderProvider<CryptographyOperationParameters.Empty, Format>,
     ) {
         public val encoder: KeyEncoderFactory<CryptographyOperationParameters.Empty, Format> = keyEncoderProvider.factory(
@@ -38,13 +40,14 @@ public abstract class AES<K>(
         }
     }
 
-    public class CBC(
+    public class CBC @ProviderApi constructor(
         keyGeneratorProvider: KeyGeneratorProvider<SymmetricKeyParameters, Key>,
         keyDecoderProvider: KeyDecoderProvider<CryptographyOperationParameters.Empty, Key, AES.Key.Format>,
     ) : AES<CBC.Key>(keyGeneratorProvider, keyDecoderProvider) {
-        public companion object : CryptographyAlgorithmIdentifier<CBC>
+        public companion object : CryptographyAlgorithmIdentifier<CBC>()
 
-        public class Key(
+
+        public class Key @ProviderApi constructor(
             cipherProvider: BoxCipherProvider<CipherParameters, Box>,
             keyEncoderProvider: KeyEncoderProvider<CryptographyOperationParameters.Empty, Format>,
         ) : AES.Key(keyEncoderProvider) {
@@ -75,13 +78,13 @@ public abstract class AES<K>(
         )
     }
 
-    public class GCM(
+    public class GCM @ProviderApi constructor(
         keyGeneratorProvider: KeyGeneratorProvider<SymmetricKeyParameters, Key>,
         keyDecoderProvider: KeyDecoderProvider<CryptographyOperationParameters.Empty, Key, AES.Key.Format>,
     ) : AES<GCM.Key>(keyGeneratorProvider, keyDecoderProvider) {
-        public companion object : CryptographyAlgorithmIdentifier<GCM>
+        public companion object : CryptographyAlgorithmIdentifier<GCM>()
 
-        public class Key(
+        public class Key @ProviderApi constructor(
             cipherProvider: AeadBoxCipherProvider<CipherParameters, Box>,
             keyEncoderProvider: KeyEncoderProvider<CryptographyOperationParameters.Empty, Format>,
         ) : AES.Key(keyEncoderProvider) {
@@ -114,7 +117,7 @@ public abstract class AES<K>(
     }
 }
 
-private suspend fun tests(engine: CryptographyEngine) {
+private suspend fun tests(engine: CryptographyProvider) {
 
     engine.get(AES.CBC).apply {
         keyDecoder().decodeKeyBlocking(AES.Key.Format.RAW, ByteArray(2))

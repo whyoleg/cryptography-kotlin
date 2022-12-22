@@ -20,8 +20,8 @@ TODO until 0.1.0:
     * [ ] Replace thread local in JDK with super simple pooling
     * [ ] Engine builder
 * [ ] Coroutines integration (for JDK engine to run on other dispatcher)
-* [ ] OptIn for not secure algorithms (like MD5)
-* [ ] OptIn for declarations, that should be used from engines only!!!
+* [X] OptIn for not secure algorithms (like MD5)
+* [X] OptIn for declarations, that should be used from engines only!!!
 * [ ] Maven Central
 * [ ] README
 

@@ -4,7 +4,6 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.BinarySize.Companion.bytes
 import kotlin.jvm.*
 
-//TODO: or SecretKeySize?
 @JvmInline
 public value class SymmetricKeySize(public val value: BinarySize) {
     public companion object {

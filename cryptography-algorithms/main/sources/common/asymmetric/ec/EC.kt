@@ -1,17 +1,19 @@
+@file:OptIn(ProviderApi::class)
+
 package dev.whyoleg.cryptography.algorithms.asymmetric.ec
 
 import dev.whyoleg.cryptography.algorithms.digest.*
-import dev.whyoleg.cryptography.engine.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.operations.key.*
 import dev.whyoleg.cryptography.operations.signature.*
+import dev.whyoleg.cryptography.provider.*
 import kotlin.jvm.*
 
 //ECDSA and ECDH
-public class EC(
+public class EC @ProviderApi constructor(
     keyPairGeneratorProvider: KeyGeneratorProvider<KeyPairGeneratorParameters, KeyPair>,
-) : CryptographyAlgorithm {
-    public companion object : CryptographyAlgorithmIdentifier<EC> //EC
+) : CryptographyAlgorithm() {
+    public companion object : CryptographyAlgorithmIdentifier<EC>()
 
     public val keyPairGenerator: KeyGeneratorFactory<KeyPairGeneratorParameters, KeyPair> = keyPairGeneratorProvider.factory(
         operationId = CryptographyOperationId("EC"),
@@ -23,7 +25,7 @@ public class EC(
         public val privateKey: PrivateKey,
     )
 
-    public class PublicKey(
+    public class PublicKey @ProviderApi constructor(
         verifierProvider: VerifierProvider<SignatureParameters>,
         keyEncoderProvider: KeyEncoderProvider<CryptographyOperationParameters.Empty, Format>,
     ) {
@@ -45,7 +47,7 @@ public class EC(
     }
 
     //TODO: Decide on how to get PublicKey from PrivateKey
-    public class PrivateKey(
+    public class PrivateKey @ProviderApi constructor(
         signerProvider: SignerProvider<SignatureParameters>,
         keyEncoderProvider: KeyEncoderProvider<CryptographyOperationParameters.Empty, Format>,
     ) {
@@ -67,7 +69,7 @@ public class EC(
 
     public class KeyPairGeneratorParameters(
         public val curve: Curve = Curve.P521, //TODO: default curve?
-    ) : CryptographyOperationParameters {
+    ) : CryptographyOperationParameters() {
         public companion object {
             public val Default: KeyPairGeneratorParameters = KeyPairGeneratorParameters()
         }
@@ -76,12 +78,11 @@ public class EC(
     //TODO: drop generics and enforce it's contract via custom constructor?
     public class SignatureParameters(
         public val digest: CryptographyAlgorithmIdentifier<Digest> = SHA512,
-    ) : CryptographyOperationParameters {
+    ) : CryptographyOperationParameters() {
         public companion object {
             public val Default: SignatureParameters = SignatureParameters()
         }
     }
-
 
     @JvmInline
     public value class Curve(public val name: String) {

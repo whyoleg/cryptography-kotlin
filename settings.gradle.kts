@@ -24,8 +24,8 @@ include("cryptography-io")
 //What is core? may be api?
 include("cryptography-core")
 
-//operation / algorithms injection (TODO: rename to something different?)
-include("cryptography-engine")
+//operation / algorithms injection
+include("cryptography-provider")
 
 //default operations APIs
 // divided in packages per kind of operation (hash, signature, encryption, random, etc)

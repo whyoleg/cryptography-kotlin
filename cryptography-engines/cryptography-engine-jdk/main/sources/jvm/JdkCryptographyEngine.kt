@@ -11,23 +11,24 @@ import dev.whyoleg.cryptography.engine.*
 import dev.whyoleg.cryptography.hash.*
 import dev.whyoleg.cryptography.jdk.aes.*
 import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.provider.*
 import java.security.*
 
-internal val ENGINE_ID get() = CryptographyEngineId("JDK")
+internal val ENGINE_ID get() = CryptographyProviderId("JDK")
 
-public val CryptographyEngine.Companion.JDK: CryptographyEngine by lazy {
-    CryptographyEngine.JDK()
+public val CryptographyProvider.Companion.JDK: CryptographyProvider by lazy {
+    CryptographyProvider.JDK()
 }
 
-public fun CryptographyEngine.Companion.JDK(
+public fun CryptographyProvider.Companion.JDK(
     secureRandom: SecureRandom = SecureRandom(),
     provider: JdkProvider = JdkProvider.Default,
     adaptor: SuspendAdaptor? = null,
-): CryptographyEngine = JdkCryptographyEngine(JdkCryptographyState(provider, secureRandom, adaptor))
+): CryptographyProvider = JdkCryptographyEngine(JdkCryptographyState(provider, secureRandom, adaptor))
 
 internal class JdkCryptographyEngine(
     private val state: JdkCryptographyState,
-) : CryptographyEngine(ENGINE_ID) {
+) : CryptographyProvider(ENGINE_ID) {
 
     private val cache = mutableMapOf<CryptographyAlgorithmIdentifier<*>, CryptographyAlgorithm>()
 

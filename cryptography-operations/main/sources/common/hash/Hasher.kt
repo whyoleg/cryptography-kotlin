@@ -1,3 +1,5 @@
+@file:OptIn(ProviderApi::class)
+
 package dev.whyoleg.cryptography.operations.hash
 
 import dev.whyoleg.cryptography.io.*

@@ -9,12 +9,13 @@ import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.algorithms.symmetric.mac.*
 import dev.whyoleg.cryptography.engine.*
 import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.provider.*
 
-internal val ENGINE_ID get() = CryptographyEngineId("WebCrypto")
+internal val ENGINE_ID get() = CryptographyProviderId("WebCrypto")
 
-public val CryptographyEngine.Companion.WebCrypto: CryptographyEngine get() = WebCryptoCryptographyEngine
+public val CryptographyProvider.Companion.WebCrypto: CryptographyProvider get() = WebCryptoCryptographyEngine
 
-internal object WebCryptoCryptographyEngine : CryptographyEngine(ENGINE_ID) {
+internal object WebCryptoCryptographyEngine : CryptographyProvider(ENGINE_ID) {
 
     @Suppress("UNCHECKED_CAST")
     override fun <A : CryptographyAlgorithm> get(identifier: CryptographyAlgorithmIdentifier<A>): A = when (identifier) {

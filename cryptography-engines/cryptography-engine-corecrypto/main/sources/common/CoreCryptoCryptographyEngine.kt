@@ -3,9 +3,9 @@ package dev.whyoleg.cryptography.corecrypto
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.algorithms.symmetric.mac.*
-import dev.whyoleg.cryptography.engine.*
+import dev.whyoleg.cryptography.provider.*
 
-public object CoreCryptoCryptographyEngine : CryptographyEngine {
+public object CoreCryptoCryptographyEngine : CryptographyProvider {
 
     @Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST")
     override fun <T> get(id: CryptographyAlgorithmIdentifier<T>): T = when (id) {
@@ -17,8 +17,8 @@ public object CoreCryptoCryptographyEngine : CryptographyEngine {
     } as T
 }
 
-private fun CryptographyEngineBuilder.test() {
-    register(AES.CBC) {
-        aesCbc()
-    }
-}
+//private fun CryptographyEngineBuilder.test() {
+//    register(AES.CBC) {
+//        aesCbc()
+//    }
+//}

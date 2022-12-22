@@ -1,18 +1,20 @@
+@file:OptIn(ProviderApi::class)
+
 package dev.whyoleg.cryptography.algorithms.symmetric.mac
 
 import dev.whyoleg.cryptography.algorithms.digest.*
-import dev.whyoleg.cryptography.engine.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.operations.key.*
 import dev.whyoleg.cryptography.operations.signature.*
+import dev.whyoleg.cryptography.provider.*
 
 //TODO: decide on how we can support CMAC/GMAC
 
-public class HMAC(
+public class HMAC @ProviderApi constructor(
     keyGeneratorProvider: KeyGeneratorProvider<KeyGeneratorParameters, Key>,
     keyDecoderProvider: KeyDecoderProvider<CryptographyOperationParameters.Empty, Key, Key.Format>,
-) : CryptographyAlgorithm {
-    public companion object : CryptographyAlgorithmIdentifier<HMAC>
+) : CryptographyAlgorithm() {
+    public companion object : CryptographyAlgorithmIdentifier<HMAC>()
 
     public val keyGenerator: KeyGeneratorFactory<KeyGeneratorParameters, Key> = keyGeneratorProvider.factory(
         operationId = CryptographyOperationId("HMAC"),
@@ -24,7 +26,7 @@ public class HMAC(
         defaultParameters = CryptographyOperationParameters.Empty,
     )
 
-    public class Key(
+    public class Key @ProviderApi constructor(
         signatureProvider: SignatureProvider<CryptographyOperationParameters.Empty>,
         keyEncoderProvider: KeyEncoderProvider<CryptographyOperationParameters.Empty, Format>,
     ) {
@@ -45,7 +47,7 @@ public class HMAC(
 
     public class KeyGeneratorParameters(
         public val digest: CryptographyAlgorithmIdentifier<Digest> = SHA512,
-    ) : CryptographyOperationParameters {
+    ) : CryptographyOperationParameters() {
         public companion object {
             public val Default: KeyGeneratorParameters = KeyGeneratorParameters()
         }

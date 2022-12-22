@@ -1,4 +1,4 @@
-package dev.whyoleg.cryptography.engine
+package dev.whyoleg.cryptography.provider
 
 //TODO
 public interface BlockingAdaptor {

@@ -10,10 +10,10 @@ import kotlin.reflect.*
 public value class CryptographyOperationId(public val name: String)
 
 public interface CryptographyOperation {
-    //TODO: is it needed here?
-//    public val operationId: CryptographyOperationId
+    public val operationId: CryptographyOperationId
 }
 
+@OptIn(ProviderApi::class)
 public class CryptographyOperationFactory<P : CryptographyOperationParameters, O : CryptographyOperation> internal constructor(
     public val operationId: CryptographyOperationId,
     @PublishedApi
@@ -27,6 +27,7 @@ public inline operator fun <P : CryptographyOperationParameters.Copyable<P, B>, 
     block: B.() -> Unit,
 ): O = invoke(defaultParameters.copy(block))
 
+@ProviderApi
 public abstract class CryptographyOperationProvider<P : CryptographyOperationParameters, O : CryptographyOperation> {
     protected abstract fun provideOperation(parameters: P): O
 
@@ -39,17 +40,20 @@ public abstract class CryptographyOperationProvider<P : CryptographyOperationPar
     internal fun provideOperationInternal(parameters: P): O = provideOperation(parameters)
 }
 
+@Suppress("FunctionName")
+@ProviderApi
 public inline fun <P : CryptographyOperationParameters, reified O : CryptographyOperation> NotSupportedProvider(
     description: String? = null,
-): CryptographyOperationProvider<P, O> = notSupportedProvider(O::class, description)
+): CryptographyOperationProvider<P, O> = NotSupportedProvider(O::class, description)
 
-@PublishedApi
-internal fun <P : CryptographyOperationParameters, O : CryptographyOperation> notSupportedProvider(
+@ProviderApi
+public fun <P : CryptographyOperationParameters, O : CryptographyOperation> NotSupportedProvider(
     operationClass: KClass<O>,
-    description: String?,
-): CryptographyOperationProvider<P, O> = NotSupportedProvider(operationClass, description)
+    description: String? = null,
+): CryptographyOperationProvider<P, O> = NotSupportedProviderImpl(operationClass, description)
 
-private class NotSupportedProvider<P : CryptographyOperationParameters, O : CryptographyOperation>(
+@ProviderApi
+private class NotSupportedProviderImpl<P : CryptographyOperationParameters, O : CryptographyOperation>(
     private val operationClass: KClass<O>,
     private val description: String?,
 ) : CryptographyOperationProvider<P, O>() {
