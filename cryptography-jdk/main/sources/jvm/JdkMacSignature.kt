@@ -9,7 +9,7 @@ internal class JdkMacSignatureProvider(
     private val state: JdkCryptographyState,
     private val key: SecretKey,
     private val algorithm: String,
-) : SignatureProvider<CryptographyOperationParameters.Empty>(ENGINE_ID) {
+) : SignatureProvider<CryptographyOperationParameters.Empty>() {
     override fun provideOperation(parameters: CryptographyOperationParameters.Empty): Signature = JdkMacSignature(state, key, algorithm)
 }
 

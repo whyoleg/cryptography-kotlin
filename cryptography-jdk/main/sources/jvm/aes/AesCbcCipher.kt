@@ -13,7 +13,7 @@ private const val ivSizeBytes = 16 //bytes for CBC
 internal class AesCbcCipherProvider(
     private val state: JdkCryptographyState,
     private val key: SecretKey,
-) : BoxCipherProvider<CipherParameters, Box>(ENGINE_ID) {
+) : BoxCipherProvider<CipherParameters, Box>() {
     override fun provideOperation(parameters: CipherParameters): BoxCipher<Box> = AesCbcCipher(state, key, parameters.padding)
 }
 

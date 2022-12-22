@@ -9,8 +9,9 @@ import kotlin.reflect.*
 @JvmInline
 public value class CryptographyOperationId(public val name: String)
 
+//TODO: decide on how it will be better to provide `operationId` consistently between all providers
 public interface CryptographyOperation {
-    public val operationId: CryptographyOperationId
+//    public val operationId: CryptographyOperationId
 }
 
 @OptIn(ProviderApi::class)

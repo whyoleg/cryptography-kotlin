@@ -7,7 +7,7 @@ import dev.whyoleg.cryptography.operations.hash.*
 internal class JdkHasherProvider(
     private val state: JdkCryptographyState,
     private val algorithm: String,
-) : HasherProvider<CryptographyOperationParameters.Empty>(ENGINE_ID) {
+) : HasherProvider<CryptographyOperationParameters.Empty>() {
     override fun provideOperation(parameters: CryptographyOperationParameters.Empty): Hasher = JdkHasher(state, algorithm)
 }
 

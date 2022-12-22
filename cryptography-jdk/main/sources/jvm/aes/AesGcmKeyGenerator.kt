@@ -6,32 +6,32 @@ import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.operations.key.*
 import javax.crypto.KeyGenerator as JdkKeyGenerator
 
-internal class AesCbcKeyGeneratorProvider(
+internal class AesGcmKeyGeneratorProvider(
     private val state: JdkCryptographyState,
-) : KeyGeneratorProvider<SymmetricKeyParameters, AES.CBC.Key>(ENGINE_ID) {
-    override fun provideOperation(parameters: SymmetricKeyParameters): KeyGenerator<AES.CBC.Key> =
-        AesCbcKeyGenerator(state, parameters.size.value.bits)
+) : KeyGeneratorProvider<SymmetricKeyParameters, AES.GCM.Key>() {
+    override fun provideOperation(parameters: SymmetricKeyParameters): KeyGenerator<AES.GCM.Key> =
+        AesGcmKeyGenerator(state, parameters.size.value.bits)
 }
 
-internal class AesCbcKeyGenerator(
+internal class AesGcmKeyGenerator(
     private val state: JdkCryptographyState,
     private val keySizeBits: Int,
-) : KeyGenerator<AES.CBC.Key> {
+) : KeyGenerator<AES.GCM.Key> {
     private val keyGenerator: ThreadLocal<JdkKeyGenerator> = threadLocal {
         state.provider.keyGenerator("AES").apply {
             init(keySizeBits, state.secureRandom)
         }
     }
 
-    override fun generateKeyBlocking(): AES.CBC.Key {
+    override fun generateKeyBlocking(): AES.GCM.Key {
         val key = keyGenerator.get().generateKey()
-        return AES.CBC.Key(
-            AesCbcCipherProvider(state, key),
-            NotSupportedProvider(ENGINE_ID)
+        return AES.GCM.Key(
+            AesGcmCipherProvider(state, key),
+            NotSupportedProvider()
         )
     }
 
-    override suspend fun generateKey(): AES.CBC.Key {
+    override suspend fun generateKey(): AES.GCM.Key {
         return state.execute { generateKeyBlocking() }
     }
 }

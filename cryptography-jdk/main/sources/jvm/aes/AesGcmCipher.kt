@@ -14,7 +14,7 @@ private const val ivSizeBytes = 12 //bytes for GCM
 internal class AesGcmCipherProvider(
     private val state: JdkCryptographyState,
     private val key: SecretKey,
-) : AeadBoxCipherProvider<CipherParameters, Box>(ENGINE_ID) {
+) : AeadBoxCipherProvider<CipherParameters, Box>() {
     override fun provideOperation(parameters: CipherParameters): AeadBoxCipher<Box> = AesGcmCipher(state, key, parameters.tagSize)
 }
 
