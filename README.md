@@ -6,7 +6,7 @@ TODO until 0.1.0:
     * [ ] AES Box ciphers
     * [ ] EC (ECDSA/ECDH)
     * [ ] RSA OAEP
-    * [ ] MD5
+    * [X] MD5
     * [x] Decide on algorithms package structure - per kind of algorithm (digest, asymmetric, symmetric, etc)
     * [ ] Default Randomizer algorithm
 * [ ] Operations

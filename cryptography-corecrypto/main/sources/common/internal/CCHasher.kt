@@ -7,30 +7,6 @@ import dev.whyoleg.cryptography.operations.hash.*
 import kotlinx.cinterop.*
 import platform.CoreCrypto.*
 
-internal sealed class CCHashAlgorithm {
-    abstract fun ccHash(
-        data: CValuesRef<ByteVar>,
-        dataLength: CC_LONG,
-        digest: CValuesRef<UByteVar>,
-    ): CPointer<UByteVar>?
-
-    object SHA512 : CCHashAlgorithm() {
-        override fun ccHash(
-            data: CValuesRef<ByteVar>,
-            dataLength: CC_LONG,
-            digest: CValuesRef<UByteVar>,
-        ): CPointer<UByteVar>? = CC_SHA512(data, dataLength, digest)
-    }
-
-    object SHA1 : CCHashAlgorithm() {
-        override fun ccHash(
-            data: CValuesRef<ByteVar>,
-            dataLength: CC_LONG,
-            digest: CValuesRef<UByteVar>,
-        ): CPointer<UByteVar>? = CC_SHA1(data, dataLength, digest)
-    }
-}
-
 internal class CCHasherProvider(
     private val state: CoreCryptoState,
     private val algorithm: CCHashAlgorithm,

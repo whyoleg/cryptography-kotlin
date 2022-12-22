@@ -16,6 +16,7 @@ internal class CoreCryptoCryptographyProvider(
             AesCbcKeyGeneratorProvider(state),
             NotSupportedProvider()
         )
+        MD5     -> MD5(CCHasherProvider(state, CCHashAlgorithm.MD5))
         SHA1    -> SHA(CCHasherProvider(state, CCHashAlgorithm.SHA1))
         SHA512  -> SHA(CCHasherProvider(state, CCHashAlgorithm.SHA512))
         HMAC    -> HMAC(

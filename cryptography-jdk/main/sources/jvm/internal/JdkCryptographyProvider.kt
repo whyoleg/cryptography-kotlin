@@ -25,6 +25,7 @@ internal class JdkCryptographyProvider(
                 AesCbcKeyGeneratorProvider(state),
                 NotSupportedProvider()
             )
+            MD5     -> MD5(JdkHasherProvider(state, "MD5"))
             SHA1    -> SHA(JdkHasherProvider(state, "SHA-1"))
             SHA512  -> SHA(JdkHasherProvider(state, "SHA-512"))
             HMAC    -> HMAC(
