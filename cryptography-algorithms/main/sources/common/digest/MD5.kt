@@ -4,7 +4,7 @@ import dev.whyoleg.cryptography.engine.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.operations.hash.*
 
-public fun MD5(hasherProvider: HasherProvider<CryptographyParameters.Empty>): Digest = Digest(
+public fun MD5(hasherProvider: HasherProvider<CryptographyOperationParameters.Empty>): Digest = Digest(
     hasherProvider = hasherProvider,
     operationId = CryptographyOperationId("MD5"),
 )

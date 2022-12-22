@@ -10,7 +10,7 @@ import dev.whyoleg.cryptography.operations.signature.*
 
 public class HMAC(
     keyGeneratorProvider: KeyGeneratorProvider<KeyGeneratorParameters, Key>,
-    keyDecoderProvider: KeyDecoderProvider<CryptographyParameters.Empty, Key, Key.Format>,
+    keyDecoderProvider: KeyDecoderProvider<CryptographyOperationParameters.Empty, Key, Key.Format>,
 ) : CryptographyAlgorithm {
     public companion object : CryptographyAlgorithmIdentifier<HMAC>
 
@@ -19,22 +19,22 @@ public class HMAC(
         defaultParameters = KeyGeneratorParameters.Default,
     )
 
-    public val keyDecoder: KeyDecoderFactory<CryptographyParameters.Empty, Key, Key.Format> = keyDecoderProvider.factory(
+    public val keyDecoder: KeyDecoderFactory<CryptographyOperationParameters.Empty, Key, Key.Format> = keyDecoderProvider.factory(
         operationId = CryptographyOperationId("HMAC"),
-        defaultParameters = CryptographyParameters.Empty,
+        defaultParameters = CryptographyOperationParameters.Empty,
     )
 
     public class Key(
-        signatureProvider: SignatureProvider<CryptographyParameters.Empty>,
-        keyEncoderProvider: KeyEncoderProvider<CryptographyParameters.Empty, Format>,
+        signatureProvider: SignatureProvider<CryptographyOperationParameters.Empty>,
+        keyEncoderProvider: KeyEncoderProvider<CryptographyOperationParameters.Empty, Format>,
     ) {
-        public val signature: SignatureFactory<CryptographyParameters.Empty> = signatureProvider.factory(
+        public val signature: SignatureFactory<CryptographyOperationParameters.Empty> = signatureProvider.factory(
             operationId = CryptographyOperationId("HMAC-SHA"), //TODO: Sha
-            defaultParameters = CryptographyParameters.Empty,
+            defaultParameters = CryptographyOperationParameters.Empty,
         )
-        public val encoder: KeyEncoderFactory<CryptographyParameters.Empty, Format> = keyEncoderProvider.factory(
+        public val encoder: KeyEncoderFactory<CryptographyOperationParameters.Empty, Format> = keyEncoderProvider.factory(
             operationId = CryptographyOperationId("HMAC"),
-            defaultParameters = CryptographyParameters.Empty,
+            defaultParameters = CryptographyOperationParameters.Empty,
         )
 
         public sealed class Format : KeyFormat {
@@ -45,7 +45,7 @@ public class HMAC(
 
     public class KeyGeneratorParameters(
         public val digest: CryptographyAlgorithmIdentifier<Digest> = SHA512,
-    ) : CryptographyParameters {
+    ) : CryptographyOperationParameters {
         public companion object {
             public val Default: KeyGeneratorParameters = KeyGeneratorParameters()
         }

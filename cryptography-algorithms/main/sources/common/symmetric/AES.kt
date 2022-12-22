@@ -11,7 +11,7 @@ import dev.whyoleg.cryptography.operations.key.*
 
 public abstract class AES<K>(
     keyGeneratorProvider: KeyGeneratorProvider<SymmetricKeyParameters, K>,
-    keyDecoderProvider: KeyDecoderProvider<CryptographyParameters.Empty, K, Key.Format>,
+    keyDecoderProvider: KeyDecoderProvider<CryptographyOperationParameters.Empty, K, Key.Format>,
 ) : CryptographyAlgorithm {
 
     public val keyGenerator: KeyGeneratorFactory<SymmetricKeyParameters, K> = keyGeneratorProvider.factory(
@@ -19,17 +19,17 @@ public abstract class AES<K>(
         defaultParameters = SymmetricKeyParameters.Default,
     )
 
-    public val keyDecoder: KeyDecoderFactory<CryptographyParameters.Empty, K, Key.Format> = keyDecoderProvider.factory(
+    public val keyDecoder: KeyDecoderFactory<CryptographyOperationParameters.Empty, K, Key.Format> = keyDecoderProvider.factory(
         operationId = CryptographyOperationId("AES"),
-        defaultParameters = CryptographyParameters.Empty,
+        defaultParameters = CryptographyOperationParameters.Empty,
     )
 
     public abstract class Key(
-        keyEncoderProvider: KeyEncoderProvider<CryptographyParameters.Empty, Format>,
+        keyEncoderProvider: KeyEncoderProvider<CryptographyOperationParameters.Empty, Format>,
     ) {
-        public val encoder: KeyEncoderFactory<CryptographyParameters.Empty, Format> = keyEncoderProvider.factory(
+        public val encoder: KeyEncoderFactory<CryptographyOperationParameters.Empty, Format> = keyEncoderProvider.factory(
             operationId = CryptographyOperationId("AES"),
-            defaultParameters = CryptographyParameters.Empty,
+            defaultParameters = CryptographyOperationParameters.Empty,
         )
 
         public sealed class Format : KeyFormat {
@@ -40,13 +40,13 @@ public abstract class AES<K>(
 
     public class CBC(
         keyGeneratorProvider: KeyGeneratorProvider<SymmetricKeyParameters, Key>,
-        keyDecoderProvider: KeyDecoderProvider<CryptographyParameters.Empty, Key, AES.Key.Format>,
+        keyDecoderProvider: KeyDecoderProvider<CryptographyOperationParameters.Empty, Key, AES.Key.Format>,
     ) : AES<CBC.Key>(keyGeneratorProvider, keyDecoderProvider) {
         public companion object : CryptographyAlgorithmIdentifier<CBC>
 
         public class Key(
             cipherProvider: BoxCipherProvider<CipherParameters, Box>,
-            keyEncoderProvider: KeyEncoderProvider<CryptographyParameters.Empty, Format>,
+            keyEncoderProvider: KeyEncoderProvider<CryptographyOperationParameters.Empty, Format>,
         ) : AES.Key(keyEncoderProvider) {
             public val cipher: BoxCipherFactory<CipherParameters, Box> = cipherProvider.factory(
                 operationId = CryptographyOperationId("AES-CBC"),
@@ -56,9 +56,9 @@ public abstract class AES<K>(
 
         public class CipherParameters(
             public val padding: Boolean = true,
-        ) : CopyableCryptographyParameters<CipherParameters, CipherParameters.Builder>() {
-            override fun builder(): Builder = Builder(padding)
-            override fun build(builder: Builder): CipherParameters = CipherParameters(builder.padding)
+        ) : CryptographyOperationParameters.Copyable<CipherParameters, CipherParameters.Builder>() {
+            override fun createBuilder(): Builder = Builder(padding)
+            override fun buildFrom(builder: Builder): CipherParameters = CipherParameters(builder.padding)
 
             public class Builder internal constructor(
                 public var padding: Boolean,
@@ -77,13 +77,13 @@ public abstract class AES<K>(
 
     public class GCM(
         keyGeneratorProvider: KeyGeneratorProvider<SymmetricKeyParameters, Key>,
-        keyDecoderProvider: KeyDecoderProvider<CryptographyParameters.Empty, Key, AES.Key.Format>,
+        keyDecoderProvider: KeyDecoderProvider<CryptographyOperationParameters.Empty, Key, AES.Key.Format>,
     ) : AES<GCM.Key>(keyGeneratorProvider, keyDecoderProvider) {
         public companion object : CryptographyAlgorithmIdentifier<GCM>
 
         public class Key(
             cipherProvider: AeadBoxCipherProvider<CipherParameters, Box>,
-            keyEncoderProvider: KeyEncoderProvider<CryptographyParameters.Empty, Format>,
+            keyEncoderProvider: KeyEncoderProvider<CryptographyOperationParameters.Empty, Format>,
         ) : AES.Key(keyEncoderProvider) {
             public val cipher: AeadBoxCipherFactory<CipherParameters, Box> = cipherProvider.factory(
                 operationId = CryptographyOperationId("AES-GCM"),
@@ -93,9 +93,9 @@ public abstract class AES<K>(
 
         public class CipherParameters(
             public val tagSize: BinarySize = 128.bits,
-        ) : CopyableCryptographyParameters<CipherParameters, CipherParameters.Builder>() {
-            override fun builder(): Builder = Builder(tagSize)
-            override fun build(builder: Builder): CipherParameters = CipherParameters(builder.tagSize)
+        ) : CryptographyOperationParameters.Copyable<CipherParameters, CipherParameters.Builder>() {
+            override fun createBuilder(): Builder = Builder(tagSize)
+            override fun buildFrom(builder: Builder): CipherParameters = CipherParameters(builder.tagSize)
 
             public class Builder internal constructor(
                 public var tagSize: BinarySize,

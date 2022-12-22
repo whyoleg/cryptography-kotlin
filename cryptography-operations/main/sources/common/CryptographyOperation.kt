@@ -14,40 +14,42 @@ public interface CryptographyOperation {
 //    public val operationId: CryptographyOperationId
 }
 
-public class CryptographyOperationFactory<P : CryptographyParameters, O : CryptographyOperation> internal constructor(
+public class CryptographyOperationFactory<P : CryptographyOperationParameters, O : CryptographyOperation> internal constructor(
     public val operationId: CryptographyOperationId,
     @PublishedApi
     internal val defaultParameters: P,
     private val provider: CryptographyOperationProvider<P, O>,
 ) {
-    public operator fun invoke(parameters: P = defaultParameters): O = provider.provideOperation(parameters)
+    public operator fun invoke(parameters: P = defaultParameters): O = provider.provideOperationInternal(parameters)
 }
 
-public inline operator fun <P : CopyableCryptographyParameters<P, B>, B, O : CryptographyOperation> CryptographyOperationFactory<P, O>.invoke(
+public inline operator fun <P : CryptographyOperationParameters.Copyable<P, B>, B, O : CryptographyOperation> CryptographyOperationFactory<P, O>.invoke(
     block: B.() -> Unit,
 ): O = invoke(defaultParameters.copy(block))
 
-public abstract class CryptographyOperationProvider<P : CryptographyParameters, O : CryptographyOperation> {
-    //TODO: rename? make protected?
-    public abstract fun provideOperation(parameters: P): O
+public abstract class CryptographyOperationProvider<P : CryptographyOperationParameters, O : CryptographyOperation> {
+    protected abstract fun provideOperation(parameters: P): O
 
     public fun factory(
         operationId: CryptographyOperationId,
         defaultParameters: P,
     ): CryptographyOperationFactory<P, O> = CryptographyOperationFactory(operationId, defaultParameters, this)
+
+    @PublishedApi
+    internal fun provideOperationInternal(parameters: P): O = provideOperation(parameters)
 }
 
-public inline fun <P : CryptographyParameters, reified O : CryptographyOperation> NotSupportedProvider(
+public inline fun <P : CryptographyOperationParameters, reified O : CryptographyOperation> NotSupportedProvider(
     description: String? = null,
 ): CryptographyOperationProvider<P, O> = notSupportedProvider(O::class, description)
 
 @PublishedApi
-internal fun <P : CryptographyParameters, O : CryptographyOperation> notSupportedProvider(
+internal fun <P : CryptographyOperationParameters, O : CryptographyOperation> notSupportedProvider(
     operationClass: KClass<O>,
     description: String?,
 ): CryptographyOperationProvider<P, O> = NotSupportedProvider(operationClass, description)
 
-private class NotSupportedProvider<P : CryptographyParameters, O : CryptographyOperation>(
+private class NotSupportedProvider<P : CryptographyOperationParameters, O : CryptographyOperation>(
     private val operationClass: KClass<O>,
     private val description: String?,
 ) : CryptographyOperationProvider<P, O>() {

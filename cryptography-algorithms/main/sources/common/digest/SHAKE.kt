@@ -19,9 +19,9 @@ public class SHAKE(
 
     public class Parameters(
         public val digestSize: BinarySize = 128.bytes,
-    ) : CopyableCryptographyParameters<Parameters, Parameters.Builder>() {
-        override fun builder(): Builder = Builder(digestSize)
-        override fun build(builder: Builder): Parameters = Parameters(builder.digestSize)
+    ) : CryptographyOperationParameters.Copyable<Parameters, Parameters.Builder>() {
+        override fun createBuilder(): Builder = Builder(digestSize)
+        override fun buildFrom(builder: Builder): Parameters = Parameters(builder.digestSize)
         public class Builder internal constructor(
             public var digestSize: BinarySize,
         )

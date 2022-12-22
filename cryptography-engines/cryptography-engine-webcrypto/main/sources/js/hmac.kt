@@ -47,8 +47,8 @@ internal class HmacKeyGenerator(
 
 internal class WebCryptoHmacSignatureProvider(
     private val key: CryptoKey,
-) : SignatureProvider<CryptographyParameters.Empty>(ENGINE_ID) {
-    override fun provideOperation(parameters: CryptographyParameters.Empty): Signature = WebCryptoHmacSignature(key)
+) : SignatureProvider<CryptographyOperationParameters.Empty>(ENGINE_ID) {
+    override fun provideOperation(parameters: CryptographyOperationParameters.Empty): Signature = WebCryptoHmacSignature(key)
 }
 
 

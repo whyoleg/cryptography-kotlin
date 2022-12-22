@@ -7,8 +7,8 @@ import dev.whyoleg.cryptography.webcrypto.external.*
 
 internal class WebCryptoHasherProvider(
     private val algorithm: String,
-) : HasherProvider<CryptographyParameters.Empty>(ENGINE_ID) {
-    override fun provideOperation(parameters: CryptographyParameters.Empty): Hasher = WebCryptoHasher(algorithm)
+) : HasherProvider<CryptographyOperationParameters.Empty>(ENGINE_ID) {
+    override fun provideOperation(parameters: CryptographyOperationParameters.Empty): Hasher = WebCryptoHasher(algorithm)
 }
 
 internal class WebCryptoHasher(

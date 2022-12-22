@@ -25,15 +25,15 @@ public class EC(
 
     public class PublicKey(
         verifierProvider: VerifierProvider<SignatureParameters>,
-        keyEncoderProvider: KeyEncoderProvider<CryptographyParameters.Empty, Format>,
+        keyEncoderProvider: KeyEncoderProvider<CryptographyOperationParameters.Empty, Format>,
     ) {
         public val verifier: VerifierFactory<SignatureParameters> = verifierProvider.factory(
             operationId = CryptographyOperationId("ECDSA"),
             defaultParameters = SignatureParameters.Default,
         )
-        public val encoder: KeyEncoderFactory<CryptographyParameters.Empty, Format> = keyEncoderProvider.factory(
+        public val encoder: KeyEncoderFactory<CryptographyOperationParameters.Empty, Format> = keyEncoderProvider.factory(
             operationId = CryptographyOperationId("EC"),
-            defaultParameters = CryptographyParameters.Empty,
+            defaultParameters = CryptographyOperationParameters.Empty,
         )
 
         public sealed class Format : KeyFormat {
@@ -47,15 +47,15 @@ public class EC(
     //TODO: Decide on how to get PublicKey from PrivateKey
     public class PrivateKey(
         signerProvider: SignerProvider<SignatureParameters>,
-        keyEncoderProvider: KeyEncoderProvider<CryptographyParameters.Empty, Format>,
+        keyEncoderProvider: KeyEncoderProvider<CryptographyOperationParameters.Empty, Format>,
     ) {
         public val verifier: SignerFactory<SignatureParameters> = signerProvider.factory(
             operationId = CryptographyOperationId("ECDSA"),
             defaultParameters = SignatureParameters.Default,
         )
-        public val encoder: KeyEncoderFactory<CryptographyParameters.Empty, Format> = keyEncoderProvider.factory(
+        public val encoder: KeyEncoderFactory<CryptographyOperationParameters.Empty, Format> = keyEncoderProvider.factory(
             operationId = CryptographyOperationId("EC"),
-            defaultParameters = CryptographyParameters.Empty,
+            defaultParameters = CryptographyOperationParameters.Empty,
         )
 
         public sealed class Format : KeyFormat {
@@ -67,7 +67,7 @@ public class EC(
 
     public class KeyPairGeneratorParameters(
         public val curve: Curve = Curve.P521, //TODO: default curve?
-    ) : CryptographyParameters {
+    ) : CryptographyOperationParameters {
         public companion object {
             public val Default: KeyPairGeneratorParameters = KeyPairGeneratorParameters()
         }
@@ -76,7 +76,7 @@ public class EC(
     //TODO: drop generics and enforce it's contract via custom constructor?
     public class SignatureParameters(
         public val digest: CryptographyAlgorithmIdentifier<Digest> = SHA512,
-    ) : CryptographyParameters {
+    ) : CryptographyOperationParameters {
         public companion object {
             public val Default: SignatureParameters = SignatureParameters()
         }

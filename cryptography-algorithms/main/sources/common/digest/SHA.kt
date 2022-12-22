@@ -5,7 +5,7 @@ import dev.whyoleg.cryptography.engine.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.operations.hash.*
 
-public fun SHA(hasherProvider: HasherProvider<CryptographyParameters.Empty>): Digest = Digest(
+public fun SHA(hasherProvider: HasherProvider<CryptographyOperationParameters.Empty>): Digest = Digest(
     hasherProvider = hasherProvider,
     operationId = CryptographyOperationId("SHA"),
 )

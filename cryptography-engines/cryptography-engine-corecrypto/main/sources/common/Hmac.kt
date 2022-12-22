@@ -48,17 +48,17 @@ internal class HmacKey(
     private val key: Buffer,
     private val hmacAlgorithm: CCHmacAlgorithm,
 ) : HMAC.Key {
-    override fun syncSignature(parameters: CryptographyParameters.Empty): SyncSignature = HmacSignature(key, hmacAlgorithm)
+    override fun syncSignature(parameters: CryptographyOperationParameters.Empty): SyncSignature = HmacSignature(key, hmacAlgorithm)
 
-    override fun asyncSignature(parameters: CryptographyParameters.Empty): AsyncSignature {
+    override fun asyncSignature(parameters: CryptographyOperationParameters.Empty): AsyncSignature {
         TODO("Not yet implemented")
     }
 
-    override fun signFunction(parameters: CryptographyParameters.Empty): SignFunction {
+    override fun signFunction(parameters: CryptographyOperationParameters.Empty): SignFunction {
         TODO("Not yet implemented")
     }
 
-    override fun verifyFunction(parameters: CryptographyParameters.Empty): VerifyFunction {
+    override fun verifyFunction(parameters: CryptographyOperationParameters.Empty): VerifyFunction {
         TODO("Not yet implemented")
     }
 }

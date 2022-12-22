@@ -10,13 +10,13 @@ import kotlinx.cinterop.*
 import platform.CoreCrypto.*
 
 internal object Sha512 : HashAlgorithm() {
-    override fun syncHasher(parameters: CryptographyParameters.Empty): SyncHasher = CCHasher.SHA512
+    override fun syncHasher(parameters: CryptographyOperationParameters.Empty): SyncHasher = CCHasher.SHA512
 
-    override fun asyncHasher(parameters: CryptographyParameters.Empty): AsyncHasher {
+    override fun asyncHasher(parameters: CryptographyOperationParameters.Empty): AsyncHasher {
         TODO("Not yet implemented")
     }
 
-    override fun hashFunction(parameters: CryptographyParameters.Empty): HashFunction {
+    override fun hashFunction(parameters: CryptographyOperationParameters.Empty): HashFunction {
         TODO("Not yet implemented")
     }
 }
