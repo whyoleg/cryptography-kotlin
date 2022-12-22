@@ -1,6 +1,6 @@
 package dev.whyoleg.cryptography.hash
 
-import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.io.*
 
 public interface HashFunction : Closeable {
     public val digestSize: Int

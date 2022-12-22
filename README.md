@@ -7,7 +7,7 @@ TODO until 0.1.0:
     * [ ] EC (ECDSA/ECDH)
     * [ ] RSA OAEP
     * [ ] MD5
-    * [ ] Decide on algorithms package structure - flatten?
+    * [x] Decide on algorithms package structure - per kind of algorithm (digest, asymmetric, symmetric, etc)
     * [ ] Default Randomizer algorithm
 * [ ] Operations
     * [ ] Key encode/decode

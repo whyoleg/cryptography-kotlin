@@ -4,6 +4,7 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.BinarySize.Companion.bits
 import dev.whyoleg.cryptography.cipher.*
 import dev.whyoleg.cryptography.cipher.aead.*
+import dev.whyoleg.cryptography.io.*
 import dev.whyoleg.cryptography.key.*
 
 public abstract class AES<K>(

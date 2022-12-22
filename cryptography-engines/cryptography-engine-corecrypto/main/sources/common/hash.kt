@@ -3,6 +3,7 @@ package dev.whyoleg.cryptography.corecrypto
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.sha.*
 import dev.whyoleg.cryptography.hash.*
+import dev.whyoleg.cryptography.io.*
 import kotlinx.cinterop.*
 import platform.CoreCrypto.*
 

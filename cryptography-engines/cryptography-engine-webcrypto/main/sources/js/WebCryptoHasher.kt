@@ -2,6 +2,7 @@ package dev.whyoleg.cryptography.webcrypto
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.hash.*
+import dev.whyoleg.cryptography.io.*
 import dev.whyoleg.cryptography.webcrypto.external.*
 
 internal class WebCryptoHasherProvider(

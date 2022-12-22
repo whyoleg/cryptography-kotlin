@@ -1,6 +1,6 @@
 package dev.whyoleg.cryptography.cipher
 
-import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.io.*
 
 public interface EncryptFunction : Closeable {
     public fun ciphertextPartSize(plaintextPartSize: Int): Int

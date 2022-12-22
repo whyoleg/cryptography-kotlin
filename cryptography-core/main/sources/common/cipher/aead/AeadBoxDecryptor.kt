@@ -2,6 +2,7 @@ package dev.whyoleg.cryptography.cipher.aead
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.cipher.*
+import dev.whyoleg.cryptography.io.*
 
 public typealias AeadBoxDecryptorProvider<P, B> = CryptographyOperationProvider<P, AeadBoxDecryptor<B>>
 public typealias AeadBoxDecryptorFactory<P, B> = CryptographyOperationFactory<P, AeadBoxDecryptor<B>>

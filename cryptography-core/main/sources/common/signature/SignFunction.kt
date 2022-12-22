@@ -1,6 +1,6 @@
 package dev.whyoleg.cryptography.signature
 
-import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.io.*
 
 public interface SignFunction : Closeable {
     public val signatureSize: Int

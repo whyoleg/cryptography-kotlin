@@ -18,12 +18,14 @@ dependencyResolutionManagement {
 
 rootProject.name = "cryptography-kotlin"
 
+//Buffer + Closeable - this module should be removed later
+include("cryptography-io")
+
 //core interfaces
 // divided in packages per kind of operation (hash, signature, encryption, random, etc)
 include("cryptography-core")
-//TODO:
-// - extract `cryptography-operations` from core
-// - extract `cryptography-io` from core: Buffer + Closeable - this module should be removed later
+
+include("cryptography-operations")
 
 //default algorithms APIs
 // divided in packages per algorithms kind (digest, asymmetric, symmetric, etc)

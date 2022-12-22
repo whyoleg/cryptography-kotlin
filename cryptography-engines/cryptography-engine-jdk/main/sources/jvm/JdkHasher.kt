@@ -2,6 +2,7 @@ package dev.whyoleg.cryptography.jdk
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.hash.*
+import dev.whyoleg.cryptography.io.*
 
 internal class JdkHasherProvider(
     private val state: JdkCryptographyState,

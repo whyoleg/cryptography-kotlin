@@ -1,6 +1,7 @@
 package dev.whyoleg.cryptography.cipher
 
 import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.io.*
 
 public typealias EncryptorProvider<P> = CryptographyOperationProvider<P, Encryptor>
 public typealias EncryptorFactory<P> = CryptographyOperationFactory<P, Encryptor>

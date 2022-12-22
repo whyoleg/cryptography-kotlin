@@ -1,6 +1,7 @@
 package dev.whyoleg.cryptography.hash
 
 import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.io.*
 
 public typealias HasherProvider<P> = CryptographyOperationProvider<P, Hasher>
 public typealias HasherFactory<P> = CryptographyOperationFactory<P, Hasher>
