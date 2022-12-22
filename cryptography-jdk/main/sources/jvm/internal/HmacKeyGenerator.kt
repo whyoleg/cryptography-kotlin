@@ -1,8 +1,9 @@
-package dev.whyoleg.cryptography.jdk
+package dev.whyoleg.cryptography.jdk.internal
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.symmetric.mac.*
+import dev.whyoleg.cryptography.jdk.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.operations.key.*
 import javax.crypto.KeyGenerator as JdkKeyGenerator

@@ -1,7 +1,8 @@
-package dev.whyoleg.cryptography.jdk.aes
+package dev.whyoleg.cryptography.jdk.internal.aes
 
 import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.jdk.*
+import dev.whyoleg.cryptography.jdk.internal.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.operations.key.*
 import javax.crypto.KeyGenerator as JdkKeyGenerator

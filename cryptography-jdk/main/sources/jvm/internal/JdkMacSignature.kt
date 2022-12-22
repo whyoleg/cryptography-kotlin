@@ -1,6 +1,7 @@
-package dev.whyoleg.cryptography.jdk
+package dev.whyoleg.cryptography.jdk.internal
 
 import dev.whyoleg.cryptography.io.*
+import dev.whyoleg.cryptography.jdk.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.operations.signature.*
 import javax.crypto.*
