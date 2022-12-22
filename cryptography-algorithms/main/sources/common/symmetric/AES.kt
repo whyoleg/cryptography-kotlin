@@ -2,10 +2,11 @@ package dev.whyoleg.cryptography.algorithms.symmetric
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.BinarySize.Companion.bits
-import dev.whyoleg.cryptography.cipher.*
-import dev.whyoleg.cryptography.cipher.aead.*
 import dev.whyoleg.cryptography.io.*
-import dev.whyoleg.cryptography.key.*
+import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.operations.cipher.*
+import dev.whyoleg.cryptography.operations.cipher.aead.*
+import dev.whyoleg.cryptography.operations.key.*
 
 public abstract class AES<K>(
     keyGeneratorProvider: KeyGeneratorProvider<SymmetricKeyParameters, K>,

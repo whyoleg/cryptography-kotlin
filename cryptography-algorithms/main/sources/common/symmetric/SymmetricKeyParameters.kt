@@ -1,6 +1,6 @@
 package dev.whyoleg.cryptography.algorithms.symmetric
 
-import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.operations.*
 
 public class SymmetricKeyParameters(
     public val size: SymmetricKeySize,

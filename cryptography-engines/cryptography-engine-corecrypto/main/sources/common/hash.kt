@@ -4,6 +4,8 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.sha.*
 import dev.whyoleg.cryptography.hash.*
 import dev.whyoleg.cryptography.io.*
+import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.operations.hash.*
 import kotlinx.cinterop.*
 import platform.CoreCrypto.*
 

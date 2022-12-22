@@ -9,6 +9,7 @@ import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.algorithms.symmetric.mac.*
 import dev.whyoleg.cryptography.hash.*
 import dev.whyoleg.cryptography.jdk.aes.*
+import dev.whyoleg.cryptography.operations.*
 import java.security.*
 
 internal val ENGINE_ID get() = CryptographyEngineId("JDK")

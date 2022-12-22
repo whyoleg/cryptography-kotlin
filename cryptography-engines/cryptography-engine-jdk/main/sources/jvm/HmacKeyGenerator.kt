@@ -4,6 +4,8 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.symmetric.mac.*
 import dev.whyoleg.cryptography.key.*
+import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.operations.key.*
 import javax.crypto.KeyGenerator as JdkKeyGenerator
 
 internal class HmacKeyGeneratorProvider(

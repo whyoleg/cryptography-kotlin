@@ -1,7 +1,8 @@
 package dev.whyoleg.cryptography.algorithms.digest
 
 import dev.whyoleg.cryptography.*
-import dev.whyoleg.cryptography.hash.*
+import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.operations.hash.*
 
 public fun MD5(hasherProvider: HasherProvider<CryptographyParameters.Empty>): Digest = Digest(
     hasherProvider = hasherProvider,

@@ -1,10 +1,10 @@
 package dev.whyoleg.cryptography.webcrypto
 
-import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
-import dev.whyoleg.cryptography.cipher.aead.*
 import dev.whyoleg.cryptography.io.*
-import dev.whyoleg.cryptography.key.*
+import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.operations.cipher.aead.*
+import dev.whyoleg.cryptography.operations.key.*
 import dev.whyoleg.cryptography.webcrypto.external.*
 
 private const val ivSizeBytes = 12 //bytes for GCM

@@ -2,8 +2,9 @@ package dev.whyoleg.cryptography.algorithms.symmetric.mac
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.digest.*
-import dev.whyoleg.cryptography.key.*
-import dev.whyoleg.cryptography.signature.*
+import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.operations.key.*
+import dev.whyoleg.cryptography.operations.signature.*
 
 //TODO: decide on how we can support CMAC/GMAC
 

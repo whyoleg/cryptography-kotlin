@@ -2,9 +2,9 @@ package dev.whyoleg.cryptography.jdk.aes
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.symmetric.AES.GCM.*
-import dev.whyoleg.cryptography.cipher.aead.*
 import dev.whyoleg.cryptography.io.*
 import dev.whyoleg.cryptography.jdk.*
+import dev.whyoleg.cryptography.operations.cipher.aead.*
 import javax.crypto.*
 import javax.crypto.spec.*
 import javax.crypto.Cipher as JdkCipher

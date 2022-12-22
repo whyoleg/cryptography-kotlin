@@ -21,15 +21,16 @@ rootProject.name = "cryptography-kotlin"
 //Buffer + Closeable - this module should be removed later
 include("cryptography-io")
 
-//core interfaces
+//default operations APIs
 // divided in packages per kind of operation (hash, signature, encryption, random, etc)
-include("cryptography-core")
-
 include("cryptography-operations")
 
 //default algorithms APIs
 // divided in packages per algorithms kind (digest, asymmetric, symmetric, etc)
 include("cryptography-algorithms")
+
+//What is core?
+include("cryptography-core")
 
 //mapping from sync to async via dispatcher or channel
 //include("cryptography-coroutines")

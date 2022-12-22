@@ -1,9 +1,9 @@
 package dev.whyoleg.cryptography.jdk.aes
 
 import dev.whyoleg.cryptography.algorithms.symmetric.AES.CBC.*
-import dev.whyoleg.cryptography.cipher.*
 import dev.whyoleg.cryptography.io.*
 import dev.whyoleg.cryptography.jdk.*
+import dev.whyoleg.cryptography.operations.cipher.*
 import javax.crypto.*
 import javax.crypto.spec.*
 import javax.crypto.Cipher as JdkCipher

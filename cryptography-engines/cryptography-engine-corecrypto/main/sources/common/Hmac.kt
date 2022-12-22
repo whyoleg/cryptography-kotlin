@@ -7,6 +7,8 @@ import dev.whyoleg.cryptography.algorithms.sha.*
 import dev.whyoleg.cryptography.algorithms.symmetric.mac.*
 import dev.whyoleg.cryptography.io.*
 import dev.whyoleg.cryptography.key.*
+import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.operations.signature.*
 import dev.whyoleg.cryptography.signature.*
 import kotlinx.cinterop.*
 import platform.CoreCrypto.*
