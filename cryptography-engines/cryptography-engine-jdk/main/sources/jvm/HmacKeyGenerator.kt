@@ -1,8 +1,8 @@
 package dev.whyoleg.cryptography.jdk
 
 import dev.whyoleg.cryptography.*
-import dev.whyoleg.cryptography.algorithms.mac.*
-import dev.whyoleg.cryptography.algorithms.sha.*
+import dev.whyoleg.cryptography.algorithms.digest.*
+import dev.whyoleg.cryptography.algorithms.symmetric.mac.*
 import dev.whyoleg.cryptography.key.*
 import javax.crypto.KeyGenerator as JdkKeyGenerator
 
@@ -10,10 +10,10 @@ internal class HmacKeyGeneratorProvider(
     private val state: JdkCryptographyState,
 ) : KeyGeneratorProvider<HMAC.KeyGeneratorParameters, HMAC.Key>(ENGINE_ID) {
     override fun provideOperation(parameters: HMAC.KeyGeneratorParameters): KeyGenerator<HMAC.Key> {
-        val hashAlgorithm = when (parameters.hashAlgorithmIdentifier) {
+        val hashAlgorithm = when (parameters.digestIdentifier) {
             SHA1   -> "SHA1"
             SHA512 -> "SHA512"
-            else   -> throw CryptographyException("Unsupported hash algorithm: ${parameters.hashAlgorithmIdentifier}")
+            else   -> throw CryptographyException("Unsupported hash algorithm: ${parameters.digestIdentifier}")
         }
         return HmacKeyGenerator(state, hashAlgorithm)
     }

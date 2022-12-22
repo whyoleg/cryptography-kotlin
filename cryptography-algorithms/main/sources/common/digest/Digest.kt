@@ -1,11 +1,10 @@
-package dev.whyoleg.cryptography.hash
+package dev.whyoleg.cryptography.algorithms.digest
 
 import dev.whyoleg.cryptography.*
-
-public typealias HashAlgorithmIdentifier = CryptographyAlgorithmIdentifier<HashAlgorithm>
+import dev.whyoleg.cryptography.hash.*
 
 //simple hash algorithms, that can be used in HMAC/ECDSA contexts
-public class HashAlgorithm(
+public class Digest(
     hasherProvider: HasherProvider<CryptographyParameters.Empty>,
     operationId: CryptographyOperationId,
 ) : CryptographyAlgorithm {

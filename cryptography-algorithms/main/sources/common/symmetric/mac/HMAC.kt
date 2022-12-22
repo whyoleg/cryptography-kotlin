@@ -1,8 +1,7 @@
-package dev.whyoleg.cryptography.algorithms.mac
+package dev.whyoleg.cryptography.algorithms.symmetric.mac
 
 import dev.whyoleg.cryptography.*
-import dev.whyoleg.cryptography.algorithms.sha.*
-import dev.whyoleg.cryptography.hash.*
+import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.key.*
 import dev.whyoleg.cryptography.signature.*
 
@@ -44,7 +43,7 @@ public class HMAC(
     }
 
     public class KeyGeneratorParameters(
-        public val hashAlgorithmIdentifier: HashAlgorithmIdentifier = SHA512,
+        public val digest: CryptographyAlgorithmIdentifier<Digest> = SHA512,
     ) : CryptographyParameters {
         public companion object {
             public val Default: KeyGeneratorParameters = KeyGeneratorParameters()

@@ -8,6 +8,7 @@ TODO until 0.1.0:
     * [ ] RSA OAEP
     * [ ] MD5
     * [ ] Decide on algorithms package structure - flatten?
+    * [ ] Default Randomizer algorithm
 * [ ] Operations
     * [ ] Key encode/decode
     * [ ] Key derive/exchange
@@ -37,7 +38,7 @@ TODO until 0.1.0:
 
 future plans:
 
-* [ ] AWS/GCM KMS provider
+* [ ] AWS/GCP KMS provider
 * [ ] BorringSSL engine
 * [ ] NodeJS engine
 * [ ] JWT/JWK support (JOSE)

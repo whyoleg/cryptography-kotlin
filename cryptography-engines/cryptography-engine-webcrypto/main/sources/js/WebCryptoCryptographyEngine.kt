@@ -2,8 +2,11 @@ package dev.whyoleg.cryptography.webcrypto
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.aes.*
+import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.mac.*
 import dev.whyoleg.cryptography.algorithms.sha.*
+import dev.whyoleg.cryptography.algorithms.symmetric.*
+import dev.whyoleg.cryptography.algorithms.symmetric.mac.*
 
 internal val ENGINE_ID get() = CryptographyEngineId("WebCrypto")
 

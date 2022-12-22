@@ -1,4 +1,4 @@
-package dev.whyoleg.cryptography.key
+package dev.whyoleg.cryptography.algorithms.symmetric
 
 import dev.whyoleg.cryptography.*
 

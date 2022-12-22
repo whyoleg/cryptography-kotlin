@@ -1,7 +1,7 @@
 package dev.whyoleg.cryptography.jdk.aes
 
 import dev.whyoleg.cryptography.*
-import dev.whyoleg.cryptography.algorithms.aes.AES.GCM.*
+import dev.whyoleg.cryptography.algorithms.symmetric.AES.GCM.*
 import dev.whyoleg.cryptography.cipher.aead.*
 import dev.whyoleg.cryptography.jdk.*
 import javax.crypto.*

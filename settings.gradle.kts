@@ -19,9 +19,13 @@ dependencyResolutionManagement {
 rootProject.name = "cryptography-kotlin"
 
 //core interfaces
+// divided in packages per kind of operation (hash, signature, encryption, random, etc)
 include("cryptography-core")
+//TODO:
+// may be extract `cryptography-operations` from core?
 
 //default algorithms APIs
+// divided in packages per algorithms kind (digest, asymmetric, symmetric, etc)
 include("cryptography-algorithms")
 
 //mapping from sync to async via dispatcher or channel

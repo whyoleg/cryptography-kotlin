@@ -1,7 +1,7 @@
 package dev.whyoleg.cryptography.webcrypto
 
 import dev.whyoleg.cryptography.*
-import dev.whyoleg.cryptography.algorithms.aes.*
+import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.cipher.*
 import dev.whyoleg.cryptography.key.*
 import dev.whyoleg.cryptography.webcrypto.external.*

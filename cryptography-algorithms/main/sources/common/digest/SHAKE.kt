@@ -1,4 +1,4 @@
-package dev.whyoleg.cryptography.algorithms.sha
+package dev.whyoleg.cryptography.algorithms.digest
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.BinarySize.Companion.bytes

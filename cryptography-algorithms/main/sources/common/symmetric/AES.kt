@@ -1,4 +1,4 @@
-package dev.whyoleg.cryptography.algorithms.aes
+package dev.whyoleg.cryptography.algorithms.symmetric
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.BinarySize.Companion.bits

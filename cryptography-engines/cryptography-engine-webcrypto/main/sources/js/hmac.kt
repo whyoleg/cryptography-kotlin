@@ -1,18 +1,18 @@
 package dev.whyoleg.cryptography.webcrypto
 
 import dev.whyoleg.cryptography.*
-import dev.whyoleg.cryptography.algorithms.mac.*
-import dev.whyoleg.cryptography.algorithms.sha.*
+import dev.whyoleg.cryptography.algorithms.digest.*
+import dev.whyoleg.cryptography.algorithms.symmetric.mac.*
 import dev.whyoleg.cryptography.key.*
 import dev.whyoleg.cryptography.signature.*
 import dev.whyoleg.cryptography.webcrypto.external.*
 
 internal object HmacKeyGeneratorProvider : KeyGeneratorProvider<HMAC.KeyGeneratorParameters, HMAC.Key>(ENGINE_ID) {
     override fun provideOperation(parameters: HMAC.KeyGeneratorParameters): KeyGenerator<HMAC.Key> {
-        val hashAlgorithm = when (parameters.hashAlgorithmIdentifier) {
+        val hashAlgorithm = when (parameters.digestIdentifier) {
             SHA1   -> "SHA-1"
             SHA512 -> "SHA-512"
-            else   -> throw CryptographyException("Unsupported hash algorithm: ${parameters.hashAlgorithmIdentifier}")
+            else   -> throw CryptographyException("Unsupported hash algorithm: ${parameters.digestIdentifier}")
         }
         return HmacKeyGenerator(hashAlgorithm)
     }

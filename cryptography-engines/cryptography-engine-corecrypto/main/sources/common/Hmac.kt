@@ -1,8 +1,10 @@
 package dev.whyoleg.cryptography.corecrypto
 
 import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.mac.*
 import dev.whyoleg.cryptography.algorithms.sha.*
+import dev.whyoleg.cryptography.algorithms.symmetric.mac.*
 import dev.whyoleg.cryptography.key.*
 import dev.whyoleg.cryptography.signature.*
 import kotlinx.cinterop.*

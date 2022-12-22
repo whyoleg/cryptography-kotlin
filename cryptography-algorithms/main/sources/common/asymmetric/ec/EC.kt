@@ -1,15 +1,14 @@
-package dev.whyoleg.cryptography.algorithms.ec
+package dev.whyoleg.cryptography.algorithms.asymmetric.ec
 
 import dev.whyoleg.cryptography.*
-import dev.whyoleg.cryptography.algorithms.sha.*
-import dev.whyoleg.cryptography.hash.*
+import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.key.*
 import dev.whyoleg.cryptography.signature.*
 import kotlin.jvm.*
 
 //ECDSA and ECDH
 public class EC(
-    keyPairGeneratorProvider: KeyGeneratorProvider<KeyPairGeneratorParameters, EC.KeyPair>,
+    keyPairGeneratorProvider: KeyGeneratorProvider<KeyPairGeneratorParameters, KeyPair>,
 ) : CryptographyAlgorithm {
     public companion object : CryptographyAlgorithmIdentifier<EC> //EC
 
@@ -75,7 +74,7 @@ public class EC(
 
     //TODO: drop generics and enforce it's contract via custom constructor?
     public class SignatureParameters(
-        public val hashAlgorithmIdentifier: HashAlgorithmIdentifier = SHA512,
+        public val digest: CryptographyAlgorithmIdentifier<Digest> = SHA512,
     ) : CryptographyParameters {
         public companion object {
             public val Default: SignatureParameters = SignatureParameters()
