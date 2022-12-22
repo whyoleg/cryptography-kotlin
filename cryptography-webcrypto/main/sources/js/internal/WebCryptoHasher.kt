@@ -1,4 +1,4 @@
-package dev.whyoleg.cryptography.webcrypto
+package dev.whyoleg.cryptography.webcrypto.internal
 
 import dev.whyoleg.cryptography.io.*
 import dev.whyoleg.cryptography.operations.*
@@ -7,7 +7,7 @@ import dev.whyoleg.cryptography.webcrypto.external.*
 
 internal class WebCryptoHasherProvider(
     private val algorithm: String,
-) : HasherProvider<CryptographyOperationParameters.Empty>(ENGINE_ID) {
+) : HasherProvider<CryptographyOperationParameters.Empty>() {
     override fun provideOperation(parameters: CryptographyOperationParameters.Empty): Hasher = WebCryptoHasher(algorithm)
 }
 
@@ -25,15 +25,7 @@ internal class WebCryptoHasher(
         return hash(dataInput).copyInto(digestOutput)
     }
 
-    override fun hashBlocking(dataInput: Buffer): Buffer {
-        TODO("Not yet implemented")
-    }
-
-    override fun hashBlocking(dataInput: Buffer, digestOutput: Buffer): Buffer {
-        TODO("Not yet implemented")
-    }
-
-    override fun hashFunction(): HashFunction {
-        TODO("Not yet implemented")
-    }
+    override fun hashBlocking(dataInput: Buffer): Buffer = nonBlocking()
+    override fun hashBlocking(dataInput: Buffer, digestOutput: Buffer): Buffer = nonBlocking()
+    override fun hashFunction(): HashFunction = noFunction()
 }

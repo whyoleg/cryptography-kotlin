@@ -46,13 +46,16 @@ include("cryptography-algorithms")
 // 4. run all engines on other engines plaintext/data
 include("cryptography-tests")
 
-//include("cryptography-engines:cryptography-engine-default") //all platforms - use best fit for every platform
-include("cryptography-engines:cryptography-engine-jdk") //jvm only
-include("cryptography-engines:cryptography-engine-corecrypto") //darwin only
-include("cryptography-engines:cryptography-engine-webcrypto") //js(nodejs/browser) only
-//include("cryptography-engines:cryptography-engine-openssl") //all platforms, starting from linux/macos/windows
-//include("cryptography-engines:cryptography-engine-openssl3") //all platforms, starting from linux/macos/windows
+//providers
 
+include("cryptography-jdk") //jvm only
+include("cryptography-corecrypto") //darwin only
+include("cryptography-webcrypto") //js(nodejs/browser) only
+//include("cryptography-openssl") //all platforms, starting from linux/macos/windows
+//include("cryptography-openssl3") //all platforms, starting from linux/macos/windows
+
+//TODO: decide on name
+//include("cryptography-engines:cryptography-engine-default") //all platforms - use best fit for every platform
 
 //WIP
 

@@ -1,22 +1,20 @@
-package dev.whyoleg.cryptography.webcrypto
+package dev.whyoleg.cryptography.webcrypto.internal
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.symmetric.mac.*
 import dev.whyoleg.cryptography.io.*
-import dev.whyoleg.cryptography.key.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.operations.key.*
 import dev.whyoleg.cryptography.operations.signature.*
-import dev.whyoleg.cryptography.signature.*
 import dev.whyoleg.cryptography.webcrypto.external.*
 
-internal object HmacKeyGeneratorProvider : KeyGeneratorProvider<HMAC.KeyGeneratorParameters, HMAC.Key>(ENGINE_ID) {
+internal object HmacKeyGeneratorProvider : KeyGeneratorProvider<HMAC.KeyGeneratorParameters, HMAC.Key>() {
     override fun provideOperation(parameters: HMAC.KeyGeneratorParameters): KeyGenerator<HMAC.Key> {
-        val hashAlgorithm = when (parameters.digestIdentifier) {
+        val hashAlgorithm = when (parameters.digest) {
             SHA1   -> "SHA-1"
             SHA512 -> "SHA-512"
-            else   -> throw CryptographyException("Unsupported hash algorithm: ${parameters.digestIdentifier}")
+            else   -> throw CryptographyException("Unsupported hash algorithm: ${parameters.digest}")
         }
         return HmacKeyGenerator(hashAlgorithm)
     }
@@ -25,10 +23,6 @@ internal object HmacKeyGeneratorProvider : KeyGeneratorProvider<HMAC.KeyGenerato
 internal class HmacKeyGenerator(
     private val hashAlgorithm: String,
 ) : KeyGenerator<HMAC.Key> {
-
-    override fun generateKeyBlocking(): HMAC.Key {
-        TODO("Not yet implemented")
-    }
 
     override suspend fun generateKey(): HMAC.Key {
         val key = WebCrypto.subtle.generateKey(
@@ -40,14 +34,16 @@ internal class HmacKeyGenerator(
         ).await()
         return HMAC.Key(
             WebCryptoHmacSignatureProvider(key),
-            NotSupportedProvider(ENGINE_ID)
+            NotSupportedProvider()
         )
     }
+
+    override fun generateKeyBlocking(): HMAC.Key = nonBlocking()
 }
 
 internal class WebCryptoHmacSignatureProvider(
     private val key: CryptoKey,
-) : SignatureProvider<CryptographyOperationParameters.Empty>(ENGINE_ID) {
+) : SignatureProvider<CryptographyOperationParameters.Empty>() {
     override fun provideOperation(parameters: CryptographyOperationParameters.Empty): Signature = WebCryptoHmacSignature(key)
 }
 
@@ -70,23 +66,10 @@ internal class WebCryptoHmacSignature(
         return WebCrypto.subtle.verify(Algorithm("HMAC"), key, signatureInput, dataInput).await()
     }
 
-    override fun signBlocking(dataInput: Buffer): Buffer {
-        TODO("Not yet implemented")
-    }
+    override fun signBlocking(dataInput: Buffer): Buffer = nonBlocking()
+    override fun signBlocking(dataInput: Buffer, signatureOutput: Buffer): Buffer = nonBlocking()
+    override fun verifyBlocking(dataInput: Buffer, signatureInput: Buffer): Boolean = nonBlocking()
 
-    override fun signBlocking(dataInput: Buffer, signatureOutput: Buffer): Buffer {
-        TODO("Not yet implemented")
-    }
-
-    override fun signFunction(): SignFunction {
-        TODO("Not yet implemented")
-    }
-
-    override fun verifyBlocking(dataInput: Buffer, signatureInput: Buffer): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override fun verifyFunction(): VerifyFunction {
-        TODO("Not yet implemented")
-    }
+    override fun signFunction(): SignFunction = noFunction()
+    override fun verifyFunction(): VerifyFunction = noFunction()
 }
