@@ -2,6 +2,9 @@
 
 package dev.whyoleg.cryptography.algorithms.asymmetric
 
+import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.BinarySize.Companion.bits
+import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.operations.cipher.aead.*
 import dev.whyoleg.cryptography.operations.key.*
@@ -18,12 +21,27 @@ public abstract class RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP
     )
 
     public class KeyPairGeneratorParameters(
-        //modulusLength: Number
-        //publicExponent: BigInt
-        //hash
+        public val keySize: BinarySize = 2048.bits,
+        public val publicExponent: PublicExponent = PublicExponent.F4,
+        public val digest: CryptographyAlgorithmIdentifier<Digest> = SHA512,
     ) : CryptographyOperationParameters() {
         public companion object {
             public val Default: KeyPairGeneratorParameters = KeyPairGeneratorParameters()
+        }
+    }
+
+    //TODO: replace with some kind of MPP BigInt
+    public sealed class PublicExponent {
+        public object F4 : PublicExponent()
+        public class Number internal constructor(internal val value: Long) : PublicExponent()
+        public class Bytes internal constructor(internal val value: ByteArray) : PublicExponent()
+        public class Text internal constructor(internal val value: String) : PublicExponent()
+
+        public companion object {
+            public operator fun invoke(value: Int): PublicExponent = Number(value.toLong())
+            public operator fun invoke(value: Long): PublicExponent = Number(value)
+            public operator fun invoke(value: ByteArray): PublicExponent = Bytes(value)
+            public operator fun invoke(value: String): PublicExponent = Text(value)
         }
     }
 
