@@ -15,6 +15,7 @@ public fun SHA(hasherProvider: HasherProvider<CryptographyOperationParameters.Em
 @InsecureAlgorithm
 public object SHA1 : CryptographyAlgorithmIdentifier<Digest>()
 public object SHA256 : CryptographyAlgorithmIdentifier<Digest>()
+public object SHA384 : CryptographyAlgorithmIdentifier<Digest>()
 public object SHA512 : CryptographyAlgorithmIdentifier<Digest>()
 
 public object SHA3 {

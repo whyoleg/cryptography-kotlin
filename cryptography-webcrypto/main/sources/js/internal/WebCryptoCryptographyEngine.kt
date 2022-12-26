@@ -12,6 +12,11 @@ internal object WebCryptoCryptographyEngine : CryptographyProvider("WebCrypto") 
 
     @Suppress("UNCHECKED_CAST")
     override fun <A : CryptographyAlgorithm> get(identifier: CryptographyAlgorithmIdentifier<A>): A = when (identifier) {
+        SHA1                    -> WebCryptoHasher.SHA1
+        SHA256                  -> WebCryptoHasher.SHA256
+        SHA384                  -> WebCryptoHasher.SHA384
+        SHA512                  -> WebCryptoHasher.SHA512
+        PlatformDependantRandom -> WebCryptoRandom.algorithm
         AES.GCM                 -> AES.GCM(
             AesGcmKeyGeneratorProvider,
             NotSupportedProvider()
@@ -20,14 +25,10 @@ internal object WebCryptoCryptographyEngine : CryptographyProvider("WebCrypto") 
             AesCbcKeyGeneratorProvider,
             NotSupportedProvider()
         )
-        SHA1                    -> SHA(WebCryptoHasherProvider("SHA-1"))
-        SHA512                  -> SHA(WebCryptoHasherProvider("SHA-512"))
+
         HMAC                    -> HMAC(
             HmacKeyGeneratorProvider,
             NotSupportedProvider()
-        )
-        PlatformDependantRandom -> PlatformDependantRandom(
-            WebCryptoRandom
         )
         else                    -> throw CryptographyAlgorithmNotFoundException(identifier)
     } as A

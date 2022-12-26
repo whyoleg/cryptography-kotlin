@@ -116,37 +116,3 @@ public abstract class AES<K> @ProviderApi constructor(
         )
     }
 }
-
-private suspend fun tests(engine: CryptographyProvider) {
-
-    engine.get(AES.CBC).apply {
-        keyDecoder().decodeKeyBlocking(AES.Key.Format.RAW, ByteArray(2))
-            .cipher()
-    }.keyGenerator {
-        size = SymmetricKeySize.B256
-    }.generateKeyBlocking()
-
-
-
-    engine.get(AES.GCM).keyGenerator {
-        size = SymmetricKeySize.B256
-    }.generateKey().cipher {
-        tagSize = 128.bits
-    }.encrypt("Hello, World!".encodeToByteArray())
-
-    val gcm = engine.get(AES.GCM)
-
-    val generator = gcm.keyGenerator {
-        size = SymmetricKeySize.B256
-    }
-
-    val key = generator.generateKey()
-
-    val cipher = key.cipher {
-        tagSize = 128.bits
-    }
-
-    cipher.encrypt("Hello, World!".encodeToByteArray())
-
-    key.encoder().encodeKeyBlocking(AES.Key.Format.JWK, ByteArray(1))
-}

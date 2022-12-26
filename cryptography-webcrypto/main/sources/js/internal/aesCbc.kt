@@ -15,24 +15,17 @@ internal object AesCbcKeyGeneratorProvider : KeyGeneratorProvider<SymmetricKeyPa
 }
 
 internal class AesCbcKeyGenerator(
-    private val keySizeBits: Int,
-) : KeyGenerator<AES.CBC.Key> {
-    override suspend fun generateKey(): AES.CBC.Key {
-        val key = WebCrypto.subtle.generateKey(
-            AesCbcKeyAlgorithm {
-                this.length = keySizeBits
-            },
-            //TODO?
-            true,
-            arrayOf("encrypt", "decrypt")
-        ).await()
+    keySizeBits: Int,
+) : WebCryptoSymmetricKeyGenerator<AES.CBC.Key>(
+    AesKeyGenerationAlgorithm("AES-CBC", keySizeBits),
+    arrayOf("encrypt", "decrypt")
+) {
+    override fun wrap(key: CryptoKey): AES.CBC.Key {
         return AES.CBC.Key(
             AesCbcCipherProvider(key),
             NotSupportedProvider()
         )
     }
-
-    override fun generateKeyBlocking(): AES.CBC.Key = nonBlocking()
 }
 
 internal class AesCbcCipherProvider(

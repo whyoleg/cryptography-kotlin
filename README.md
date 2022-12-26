@@ -4,12 +4,25 @@ TODO until 0.1.0:
 
 * [ ] Algorithms (+/- covered WebCrypto)
     * [ ] AES CBC/GCM (CTR?)
+        * [x] algorithms
+        * [x] implementations
+        * [ ] box ciphers
+        * [ ] function ciphers
     * [ ] EC (ECDSA/ECDH)
+        * [x] algorithms
+        * [ ] implementations
     * [ ] RSA OAEP
+        * [x] algorithms
+        * [ ] implementations
     * [ ] RSA PSS
+        * [x] algorithms
+        * [ ] implementations
     * [ ] PBKDF2
     * [ ] HKDF
-    * [X] MD5
+    * [x] Digest
+        * [x] MD5, SHA-1, SHA-2
+        * [ ] SHA-3
+        * [ ] Hash functions
     * [x] Decide on algorithms package structure - per kind of algorithm (digest, asymmetric, symmetric, etc)
     * [x] Default Random
 * [ ] Operations
@@ -18,6 +31,9 @@ TODO until 0.1.0:
     * [ ] Key wrap/unwrap
     * [ ] Decide on cipher encrypt/decrypt functions for RSA-like algorithms
 * [ ] Add tests
+    * [ ] Encryption/decryption
+    * [ ] Signing/verification
+    * [ ] Key encode/decode
 * [ ] Engines
     * [ ] OpenSSL(1/3) engine (dynamic)
     * [ ] Default engine

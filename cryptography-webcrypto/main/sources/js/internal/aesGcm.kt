@@ -15,24 +15,17 @@ internal object AesGcmKeyGeneratorProvider : KeyGeneratorProvider<SymmetricKeyPa
 }
 
 internal class AesGcmKeyGenerator(
-    private val keySizeBits: Int,
-) : KeyGenerator<AES.GCM.Key> {
-    override suspend fun generateKey(): AES.GCM.Key {
-        val key = WebCrypto.subtle.generateKey(
-            AesGcmKeyAlgorithm {
-                this.length = keySizeBits
-            },
-            //TODO?
-            true,
-            arrayOf("encrypt", "decrypt")
-        ).await()
+    keySizeBits: Int,
+) : WebCryptoSymmetricKeyGenerator<AES.GCM.Key>(
+    AesKeyGenerationAlgorithm("AES-GCM", keySizeBits),
+    arrayOf("encrypt", "decrypt")
+) {
+    override fun wrap(key: CryptoKey): AES.GCM.Key {
         return AES.GCM.Key(
             AesGcmCipherProvider(key),
             NotSupportedProvider()
         )
     }
-
-    override fun generateKeyBlocking(): AES.GCM.Key = nonBlocking()
 }
 
 internal class AesGcmCipherProvider(

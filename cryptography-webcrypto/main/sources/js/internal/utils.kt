@@ -1,8 +1,9 @@
 package dev.whyoleg.cryptography.webcrypto.internal
 
 import dev.whyoleg.cryptography.*
+import org.khronos.webgl.*
 import kotlin.coroutines.*
-import kotlin.js.*
+import kotlin.js.Promise
 
 internal suspend fun <T> Promise<T>.await() = suspendCoroutine<T> { continuation ->
     then(
@@ -14,3 +15,5 @@ internal suspend fun <T> Promise<T>.await() = suspendCoroutine<T> { continuation
 internal fun nonBlocking(): Nothing = throw CryptographyException("Only non-blocking(suspend) calls are supported in WebCrypto")
 
 internal fun noFunction(): Nothing = throw CryptographyException("Function operations are not supported in WebCrypto")
+
+internal fun ArrayBuffer.toByteArray(): ByteArray = Int8Array(this).unsafeCast<ByteArray>()
