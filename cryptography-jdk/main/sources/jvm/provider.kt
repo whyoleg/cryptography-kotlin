@@ -8,7 +8,7 @@ public val CryptographyProvider.Companion.JDK: CryptographyProvider by lazy(Cryp
 
 @Suppress("FunctionName")
 public fun CryptographyProvider.Companion.JDK(
-    secureRandom: SecureRandom = SecureRandom(),
+    secureRandom: SecureRandom = DefaultSecureRandom,
     provider: JdkProvider = JdkProvider.Default,
     adaptor: SuspendAdaptor? = null,
 ): CryptographyProvider = JdkCryptographyProvider(JdkCryptographyState(provider, secureRandom, adaptor))

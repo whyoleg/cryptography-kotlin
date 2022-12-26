@@ -35,7 +35,6 @@ include("cryptography-operations")
 // divided in packages per algorithms kind (digest, asymmetric, symmetric, etc)
 include("cryptography-algorithms")
 
-
 //mapping from sync to async via dispatcher or channel
 //include("cryptography-coroutines")
 
@@ -55,7 +54,7 @@ include("cryptography-webcrypto") //js(nodejs/browser) only
 //include("cryptography-openssl3") //all platforms, starting from linux/macos/windows
 
 //TODO: decide on name
-//include("cryptography-engines:cryptography-engine-default") //all platforms - use best fit for every platform
+//include("cryptography-default") //all platforms - use best fit for every platform
 
 //WIP
 

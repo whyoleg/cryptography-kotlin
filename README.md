@@ -11,7 +11,7 @@ TODO until 0.1.0:
     * [ ] HKDF
     * [X] MD5
     * [x] Decide on algorithms package structure - per kind of algorithm (digest, asymmetric, symmetric, etc)
-    * [ ] Default Randomizer algorithm
+    * [x] Default Random
 * [ ] Operations
     * [ ] Key encode/decode
     * [ ] Key derive/exchange/agreement
@@ -22,7 +22,6 @@ TODO until 0.1.0:
     * [ ] OpenSSL(1/3) engine (dynamic)
     * [ ] Default engine
     * [ ] Replace thread local in JDK with super simple pooling
-    * [ ] Engine builder
 * [ ] Coroutines integration (for JDK engine to run on other dispatcher)
 * [X] OptIn for not secure algorithms (like MD5)
 * [X] OptIn for declarations, that should be used from engines only!!!
@@ -36,6 +35,7 @@ TODO until 0.1.0:
 * [ ] Security framework engine
 * [ ] Windows CNG engine
 * [ ] OpenSSL(1/3) engine (static)
+* [ ] Engine builder DSL + decide on how to better handle providers inside engine (lazy, cache, etc)
 * [ ] X.509 Certificates
 * [ ] JDK Untyped support (using javax.crypto algorithms spec) - is it needed?
 * [ ] JDK KeyStore
