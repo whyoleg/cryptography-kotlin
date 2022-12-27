@@ -46,7 +46,7 @@ internal class AesCbcCipher(
     override fun plaintextSize(ciphertextSize: Int): Int = ciphertextSize - ivSizeBytes //- tagSizeBits / 8
 
     override suspend fun encrypt(plaintextInput: Buffer): Buffer {
-        val iv = WebCrypto.getRandomValues(ByteArray(ivSizeBytes))
+        val iv = WebCryptoRandom.random(ivSizeBytes)
 
         val result = WebCrypto.subtle.encrypt(
             AesCbcParams {

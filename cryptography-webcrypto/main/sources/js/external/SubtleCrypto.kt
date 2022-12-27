@@ -5,8 +5,8 @@ import kotlin.js.*
 
 internal external interface SubtleCrypto {
     fun digest(algorithmName: String, data: ByteArray): Promise<ArrayBuffer>
-    fun encrypt(algorithm: CipherAlgorithm, key: CryptoKey, data: ByteArray): Promise<ArrayBuffer>
-    fun decrypt(algorithm: CipherAlgorithm, key: CryptoKey, data: ByteArray): Promise<ArrayBuffer>
+    fun encrypt(algorithm: EncryptAlgorithm, key: CryptoKey, data: ByteArray): Promise<ArrayBuffer>
+    fun decrypt(algorithm: DecryptAlgorithm, key: CryptoKey, data: ByteArray): Promise<ArrayBuffer>
 
     fun importKey(
         format: String, /*"raw" | "pkcs8" | "spki"*/

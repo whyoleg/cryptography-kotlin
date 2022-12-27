@@ -4,6 +4,7 @@ package dev.whyoleg.cryptography.algorithms.asymmetric
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.BinarySize.Companion.bits
+import dev.whyoleg.cryptography.BinarySize.Companion.bytes
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.operations.cipher.aead.*
@@ -33,9 +34,9 @@ public abstract class RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP
     //TODO: replace with some kind of MPP BigInt
     public sealed class PublicExponent {
         public object F4 : PublicExponent()
-        public class Number internal constructor(internal val value: Long) : PublicExponent()
-        public class Bytes internal constructor(internal val value: ByteArray) : PublicExponent()
-        public class Text internal constructor(internal val value: String) : PublicExponent()
+        public class Number internal constructor(public val value: Long) : PublicExponent()
+        public class Bytes internal constructor(public val value: ByteArray) : PublicExponent()
+        public class Text internal constructor(public val value: String) : PublicExponent()
 
         public companion object {
             public operator fun invoke(value: Int): PublicExponent = Number(value.toLong())
@@ -83,6 +84,8 @@ public abstract class RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP
     public class OAEP @ProviderApi constructor(
         keyPairGeneratorProvider: KeyGeneratorProvider<KeyPairGeneratorParameters, KeyPair>,
     ) : RSA<OAEP.PublicKey, OAEP.PrivateKey, OAEP.KeyPair>(keyPairGeneratorProvider) {
+        public companion object : CryptographyAlgorithmIdentifier<OAEP>()
+
         public class KeyPair @ProviderApi constructor(
             publicKey: PublicKey,
             privateKey: PrivateKey,
@@ -113,6 +116,8 @@ public abstract class RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP
     public class PSS @ProviderApi constructor(
         keyPairGeneratorProvider: KeyGeneratorProvider<KeyPairGeneratorParameters, KeyPair>,
     ) : RSA<PSS.PublicKey, PSS.PrivateKey, PSS.KeyPair>(keyPairGeneratorProvider) {
+        public companion object : CryptographyAlgorithmIdentifier<PSS>()
+
         public class KeyPair @ProviderApi constructor(
             publicKey: PublicKey,
             privateKey: PrivateKey,
@@ -120,22 +125,30 @@ public abstract class RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP
 
         public class PublicKey @ProviderApi constructor(
             keyEncoderProvider: KeyEncoderProvider<CryptographyOperationParameters.Empty, Format>,
-            verifierProvider: VerifierProvider<CryptographyOperationParameters.Empty>,
+            verifierProvider: VerifierProvider<SignatureParameters>,
         ) : RSA.PublicKey(keyEncoderProvider) {
-            public val verifier: VerifierFactory<CryptographyOperationParameters.Empty> = verifierProvider.factory(
+            public val verifier: VerifierFactory<SignatureParameters> = verifierProvider.factory(
                 operationId = CryptographyOperationId("RSA-PSS"),
-                defaultParameters = CryptographyOperationParameters.Empty,
+                defaultParameters = SignatureParameters.Default,
             )
         }
 
         public class PrivateKey @ProviderApi constructor(
             keyEncoderProvider: KeyEncoderProvider<CryptographyOperationParameters.Empty, Format>,
-            signerProvider: SignerProvider<CryptographyOperationParameters.Empty>,
+            signerProvider: SignerProvider<SignatureParameters>,
         ) : RSA.PrivateKey(keyEncoderProvider) {
-            public val signer: SignerFactory<CryptographyOperationParameters.Empty> = signerProvider.factory(
+            public val signer: SignerFactory<SignatureParameters> = signerProvider.factory(
                 operationId = CryptographyOperationId("RSA-PSS"),
-                defaultParameters = CryptographyOperationParameters.Empty,
+                defaultParameters = SignatureParameters.Default,
             )
+        }
+
+        public class SignatureParameters(
+            public val saltLength: BinarySize = 0.bytes,
+        ) : CryptographyOperationParameters() {
+            public companion object {
+                public val Default: SignatureParameters = SignatureParameters()
+            }
         }
     }
 }

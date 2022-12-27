@@ -1,7 +1,5 @@
 package dev.whyoleg.cryptography.webcrypto.external
 
-import org.khronos.webgl.*
-
 internal sealed external interface KeyGenerationAlgorithm : Algorithm
 internal sealed external interface SymmetricKeyGenerationAlgorithm : KeyGenerationAlgorithm
 internal sealed external interface AsymmetricKeyGenerationAlgorithm : KeyGenerationAlgorithm
@@ -26,9 +24,17 @@ internal fun AesKeyGenerationAlgorithm(name: String, length: Int): AesKeyGenerat
 
 internal external interface RsaHashedKeyGenerationAlgorithm : AsymmetricKeyGenerationAlgorithm {
     var modulusLength: Int
-    var publicExponent: Uint8Array
+    var publicExponent: ByteArray
     var hash: String
 }
 
-internal inline fun RsaHashedKeyGenerationAlgorithm(block: RsaHashedKeyGenerationAlgorithm.() -> Unit = {}): RsaHashedKeyGenerationAlgorithm =
-    Algorithm("RSA-OAEP", block)
+internal fun RsaHashedKeyGenerationAlgorithm(
+    name: String, //RSA-PSS | RSA-OAEP
+    modulusLength: Int,
+    publicExponent: ByteArray,
+    hash: String,
+): RsaHashedKeyGenerationAlgorithm = Algorithm(name) {
+    this.modulusLength = modulusLength
+    this.publicExponent = publicExponent
+    this.hash = hash
+}

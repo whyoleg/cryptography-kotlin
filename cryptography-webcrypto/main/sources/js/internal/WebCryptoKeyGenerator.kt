@@ -19,7 +19,7 @@ internal abstract class WebCryptoAsymmetricKeyGenerator<K>(
     private val algorithm: AsymmetricKeyGenerationAlgorithm,
     private val keyUsages: Array<String>,
 ) : KeyGenerator<K> {
-    protected abstract fun wrap(key: CryptoKeyPair): K
+    protected abstract fun wrap(keyPair: CryptoKeyPair): K
     final override suspend fun generateKey(): K {
         return wrap(WebCrypto.subtle.generateKey(algorithm, true, keyUsages).await())
     }

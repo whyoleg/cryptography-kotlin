@@ -44,7 +44,7 @@ internal class AesGcmCipher(
     override fun plaintextSize(ciphertextSize: Int): Int = ciphertextSize - ivSizeBytes - tagSizeBits / 8
 
     override suspend fun encrypt(associatedData: Buffer?, plaintextInput: Buffer): Buffer {
-        val iv = WebCrypto.getRandomValues(ByteArray(ivSizeBytes))
+        val iv = WebCryptoRandom.random(ivSizeBytes)
 
         val result = WebCrypto.subtle.encrypt(
             AesGcmParams {

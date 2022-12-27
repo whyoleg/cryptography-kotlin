@@ -1,6 +1,5 @@
 package dev.whyoleg.cryptography.webcrypto.internal
 
-import dev.whyoleg.cryptography.algorithms.random.*
 import dev.whyoleg.cryptography.io.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.operations.random.*
@@ -8,7 +7,6 @@ import dev.whyoleg.cryptography.webcrypto.external.*
 import kotlin.random.*
 
 internal object WebCryptoRandom : RandomizerProvider<CryptographyOperationParameters.Empty>(), Randomizer {
-    val algorithm = PlatformDependantRandom(this)
     override fun provideOperation(parameters: CryptographyOperationParameters.Empty): Randomizer = this
 
     override suspend fun random(size: Int): Buffer {
