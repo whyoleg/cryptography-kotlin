@@ -9,6 +9,6 @@ public typealias KeyDecoderProvider<P, K, KF> = CryptographyOperationProvider<P,
 public typealias KeyDecoderFactory<P, K, KF> = CryptographyOperationFactory<P, KeyDecoder<K, KF>>
 
 public interface KeyDecoder<K, KF : KeyFormat> : CryptographyOperation {
-    public suspend fun decodeKey(format: KF, keyDataInput: Buffer): K
-    public fun decodeKeyBlocking(format: KF, keyDataInput: Buffer): K
+    public suspend fun decodeFrom(keyFormat: KF, keyInput: Buffer): K
+    public fun decodeFromBlocking(keyFormat: KF, keyInput: Buffer): K
 }

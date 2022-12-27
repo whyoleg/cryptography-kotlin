@@ -44,14 +44,14 @@ internal class RsaPssKeyGenerator(
 
 private class RsaPssVerifierProvider(
     private val key: CryptoKey,
-) : VerifierProvider<SignatureParameters>() {
-    override fun provideOperation(parameters: SignatureParameters): Verifier =
-        WebCryptoVerifier(RsaPssParams(parameters.saltLength.bytes), key, 0)
+) : SignatureVerifierProvider<SignatureParameters>() {
+    override fun provideOperation(parameters: SignatureParameters): SignatureVerifier =
+        WebCryptoSignatureVerifier(RsaPssParams(parameters.saltLength.bytes), key, 0)
 }
 
 private class RsaPssSignerProvider(
     private val key: CryptoKey,
-) : SignerProvider<SignatureParameters>() {
-    override fun provideOperation(parameters: SignatureParameters): Signer =
-        WebCryptoSigner(RsaPssParams(parameters.saltLength.bytes), key, 0)
+) : SignatureGeneratorProvider<SignatureParameters>() {
+    override fun provideOperation(parameters: SignatureParameters): SignatureGenerator =
+        WebCryptoSignatureGenerator(RsaPssParams(parameters.saltLength.bytes), key, 0)
 }

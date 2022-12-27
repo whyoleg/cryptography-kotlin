@@ -9,8 +9,8 @@ public typealias KeyEncoderProvider<P, KF> = CryptographyOperationProvider<P, Ke
 public typealias KeyEncoderFactory<P, KF> = CryptographyOperationFactory<P, KeyEncoder<KF>>
 
 public interface KeyEncoder<KF : KeyFormat> : CryptographyOperation {
-    public suspend fun encodeKey(format: KF): Buffer
-    public suspend fun encodeKey(format: KF, keyDataOutput: Buffer): Buffer
-    public fun encodeKeyBlocking(format: KF): Buffer
-    public fun encodeKeyBlocking(format: KF, keyDataOutput: Buffer): Buffer
+    public suspend fun encodeTo(keyFormat: KF): Buffer
+    public suspend fun encodeTo(keyFormat: KF, keyOutput: Buffer): Buffer
+    public fun encodeToBlocking(keyFormat: KF): Buffer
+    public fun encodeToBlocking(keyFormat: KF, keyOutput: Buffer): Buffer
 }

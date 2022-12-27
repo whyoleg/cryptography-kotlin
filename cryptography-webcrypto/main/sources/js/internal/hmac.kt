@@ -27,8 +27,8 @@ internal class HmacKeyGenerator(
 
     private class HmacSignature(key: CryptoKey) : SignatureProvider<CryptographyOperationParameters.Empty>(),
         Signature,
-        Signer by WebCryptoSigner(Algorithm("HMAC"), key, 0),
-        Verifier by WebCryptoVerifier(Algorithm("HMAC"), key, 0) {
+        SignatureGenerator by WebCryptoSignatureGenerator(Algorithm("HMAC"), key, 0),
+        SignatureVerifier by WebCryptoSignatureVerifier(Algorithm("HMAC"), key, 0) {
         override val signatureSize: Int
             get() = 0
 

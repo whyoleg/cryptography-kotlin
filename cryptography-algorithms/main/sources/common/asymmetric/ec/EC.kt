@@ -46,15 +46,20 @@ public class EC @ProviderApi constructor(
     )
 
     public class PublicKey @ProviderApi constructor(
-        verifierProvider: VerifierProvider<SignatureParameters>,
         keyEncoderProvider: KeyEncoderProvider<CryptographyOperationParameters.Empty, Format>,
+        signatureVerifierProvider: SignatureVerifierProvider<SignatureParameters>,
+        keyAgreementProvider: KeyAgreementProvider<CryptographyOperationParameters.Empty, PrivateKey.Format>,
     ) {
-        public val verifier: VerifierFactory<SignatureParameters> = verifierProvider.factory(
+        public val verifier: SignatureVerifierFactory<SignatureParameters> = signatureVerifierProvider.factory(
             operationId = CryptographyOperationId("ECDSA"),
             defaultParameters = SignatureParameters.Default,
         )
         public val encoder: KeyEncoderFactory<CryptographyOperationParameters.Empty, Format> = keyEncoderProvider.factory(
             operationId = CryptographyOperationId("EC"),
+            defaultParameters = CryptographyOperationParameters.Empty,
+        )
+        public val agreement: KeyAgreementFactory<CryptographyOperationParameters.Empty, PrivateKey.Format> = keyAgreementProvider.factory(
+            operationId = CryptographyOperationId("ECDH"),
             defaultParameters = CryptographyOperationParameters.Empty,
         )
 
@@ -68,15 +73,20 @@ public class EC @ProviderApi constructor(
 
     //TODO: Decide on how to get PublicKey from PrivateKey
     public class PrivateKey @ProviderApi constructor(
-        signerProvider: SignerProvider<SignatureParameters>,
         keyEncoderProvider: KeyEncoderProvider<CryptographyOperationParameters.Empty, Format>,
+        signatureGeneratorProvider: SignatureGeneratorProvider<SignatureParameters>,
+        keyAgreementProvider: KeyAgreementProvider<CryptographyOperationParameters.Empty, PublicKey.Format>,
     ) {
-        public val verifier: SignerFactory<SignatureParameters> = signerProvider.factory(
+        public val verifier: SignatureGeneratorFactory<SignatureParameters> = signatureGeneratorProvider.factory(
             operationId = CryptographyOperationId("ECDSA"),
             defaultParameters = SignatureParameters.Default,
         )
         public val encoder: KeyEncoderFactory<CryptographyOperationParameters.Empty, Format> = keyEncoderProvider.factory(
             operationId = CryptographyOperationId("EC"),
+            defaultParameters = CryptographyOperationParameters.Empty,
+        )
+        public val agreement: KeyAgreementFactory<CryptographyOperationParameters.Empty, PublicKey.Format> = keyAgreementProvider.factory(
+            operationId = CryptographyOperationId("ECDH"),
             defaultParameters = CryptographyOperationParameters.Empty,
         )
 
@@ -96,13 +106,3 @@ public class EC @ProviderApi constructor(
         }
     }
 }
-
-//private fun test() {
-//    val key1 = engine.get(EC).keyGenerator().generateKey()
-//    val key2 = engine.get(EC).keyGenerator().generateKey()
-//
-//    val encoded1 = key1.public.encode(format)
-//    val encoded2 = key2.public.encode(format)
-//
-//    key1.private.keyAgreement().agreeKey(format, encoded2)
-//}

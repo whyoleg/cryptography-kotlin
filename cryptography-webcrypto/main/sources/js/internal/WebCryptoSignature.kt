@@ -4,33 +4,33 @@ import dev.whyoleg.cryptography.io.*
 import dev.whyoleg.cryptography.operations.signature.*
 import dev.whyoleg.cryptography.webcrypto.external.*
 
-internal class WebCryptoSigner(
+internal class WebCryptoSignatureGenerator(
     private val algorithm: SignAlgorithm,
     private val key: CryptoKey,
     override val signatureSize: Int,
-) : Signer {
-    final override suspend fun sign(dataInput: Buffer): Buffer {
+) : SignatureGenerator {
+    final override suspend fun generateSignature(dataInput: Buffer): Buffer {
         return WebCrypto.subtle.sign(algorithm, key, dataInput).await()
     }
 
-    final override suspend fun sign(dataInput: Buffer, signatureOutput: Buffer): Buffer {
-        return sign(dataInput).copyInto(signatureOutput)
+    final override suspend fun generateSignature(dataInput: Buffer, signatureOutput: Buffer): Buffer {
+        return generateSignature(dataInput).copyInto(signatureOutput)
     }
 
-    final override fun signBlocking(dataInput: Buffer): Buffer = nonBlocking()
-    final override fun signBlocking(dataInput: Buffer, signatureOutput: Buffer): Buffer = nonBlocking()
-    final override fun signFunction(): SignFunction = noFunction()
+    final override fun generateSignatureBlocking(dataInput: Buffer): Buffer = nonBlocking()
+    final override fun generateSignatureBlocking(dataInput: Buffer, signatureOutput: Buffer): Buffer = nonBlocking()
+    final override fun signatureGenerationFunction(): SignatureGenerationFunction = noFunction()
 }
 
-internal class WebCryptoVerifier(
+internal class WebCryptoSignatureVerifier(
     private val algorithm: VerifyAlgorithm,
     private val key: CryptoKey,
     override val signatureSize: Int,
-) : Verifier {
-    final override suspend fun verify(dataInput: Buffer, signatureInput: Buffer): Boolean {
+) : SignatureVerifier {
+    final override suspend fun verifySignature(dataInput: Buffer, signatureInput: Buffer): Boolean {
         return WebCrypto.subtle.verify(algorithm, key, signatureInput, dataInput).await()
     }
 
-    final override fun verifyBlocking(dataInput: Buffer, signatureInput: Buffer): Boolean = nonBlocking()
-    final override fun verifyFunction(): VerifyFunction = noFunction()
+    final override fun verifySignatureBlocking(dataInput: Buffer, signatureInput: Buffer): Boolean = nonBlocking()
+    final override fun signatureVerificationFunction(): SignatureVerificationFunction = noFunction()
 }

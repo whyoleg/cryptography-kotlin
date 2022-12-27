@@ -26,10 +26,11 @@ TODO until 0.1.0:
     * [x] Decide on algorithms package structure - per kind of algorithm (digest, asymmetric, symmetric, etc)
     * [x] Default Random
 * [ ] Operations
-    * [ ] Key encode/decode
+    * [ ] Key encode/decode (or import/export?)
     * [ ] Key derive/exchange/agreement
     * [ ] Key wrap/unwrap
     * [ ] Decide on cipher encrypt/decrypt functions for RSA-like algorithms
+    * [ ] unsafe encrypt operations for cases when f.e. AES nonce/iv provided by user
 * [ ] Add tests
     * [ ] Encryption/decryption
     * [ ] Signing/verification
@@ -42,6 +43,7 @@ TODO until 0.1.0:
 * [X] OptIn for not secure algorithms (like MD5)
 * [X] OptIn for declarations, that should be used from engines only!!!
 * [ ] Decide on NoArg factories - may be make them lazy instances?
+* [ ] Public api validator (?)
 * [ ] Maven Central
 * [ ] README
 
@@ -65,3 +67,5 @@ future plans:
 * [ ] NodeJS engine
 * [ ] JWT/JWK support (JOSE)
 * [ ] MPP ASN.1/X.509/DER/PEM encoder/decoder (via kx.serialization ?)
+* [ ] Design multi-key derive support
+* [ ] Streaming encryption/decryption (look at google/tink)

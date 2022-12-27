@@ -125,9 +125,9 @@ public abstract class RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP
 
         public class PublicKey @ProviderApi constructor(
             keyEncoderProvider: KeyEncoderProvider<CryptographyOperationParameters.Empty, Format>,
-            verifierProvider: VerifierProvider<SignatureParameters>,
+            signatureVerifierProvider: SignatureVerifierProvider<SignatureParameters>,
         ) : RSA.PublicKey(keyEncoderProvider) {
-            public val verifier: VerifierFactory<SignatureParameters> = verifierProvider.factory(
+            public val verifier: SignatureVerifierFactory<SignatureParameters> = signatureVerifierProvider.factory(
                 operationId = CryptographyOperationId("RSA-PSS"),
                 defaultParameters = SignatureParameters.Default,
             )
@@ -135,9 +135,9 @@ public abstract class RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP
 
         public class PrivateKey @ProviderApi constructor(
             keyEncoderProvider: KeyEncoderProvider<CryptographyOperationParameters.Empty, Format>,
-            signerProvider: SignerProvider<SignatureParameters>,
+            signatureGeneratorProvider: SignatureGeneratorProvider<SignatureParameters>,
         ) : RSA.PrivateKey(keyEncoderProvider) {
-            public val signer: SignerFactory<SignatureParameters> = signerProvider.factory(
+            public val signer: SignatureGeneratorFactory<SignatureParameters> = signatureGeneratorProvider.factory(
                 operationId = CryptographyOperationId("RSA-PSS"),
                 defaultParameters = SignatureParameters.Default,
             )

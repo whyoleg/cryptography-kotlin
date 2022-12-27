@@ -2,7 +2,7 @@ package dev.whyoleg.cryptography.operations.signature
 
 import dev.whyoleg.cryptography.io.*
 
-public interface SignFunction : Closeable {
+public interface SignatureGenerationFunction : Closeable {
     public val signatureSize: Int
 
     public fun update(dataInput: Buffer)

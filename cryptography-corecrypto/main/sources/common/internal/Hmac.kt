@@ -61,7 +61,7 @@ internal class HmacSignature(
     override val signatureSize: Int
         get() = TODO("Not yet implemented")
 
-    override fun signBlocking(dataInput: Buffer): Buffer {
+    override fun generateSignatureBlocking(dataInput: Buffer): Buffer {
         val macOutput = ByteArray(signatureSize) //TODO: size!!!
         val result = CCHmac(
             algorithm = hmacAlgorithm,
@@ -75,31 +75,31 @@ internal class HmacSignature(
         return macOutput
     }
 
-    override fun signBlocking(dataInput: Buffer, signatureOutput: Buffer): Buffer {
+    override fun generateSignatureBlocking(dataInput: Buffer, signatureOutput: Buffer): Buffer {
         TODO("Not yet implemented")
     }
 
-    override fun verifyBlocking(dataInput: Buffer, signatureInput: Buffer): Boolean {
-        return signBlocking(dataInput).contentEquals(signatureInput)
+    override fun verifySignatureBlocking(dataInput: Buffer, signatureInput: Buffer): Boolean {
+        return generateSignatureBlocking(dataInput).contentEquals(signatureInput)
     }
 
-    override suspend fun sign(dataInput: Buffer): Buffer {
-        return state.execute { signBlocking(dataInput) }
+    override suspend fun generateSignature(dataInput: Buffer): Buffer {
+        return state.execute { generateSignatureBlocking(dataInput) }
     }
 
-    override suspend fun sign(dataInput: Buffer, signatureOutput: Buffer): Buffer {
-        return state.execute { signBlocking(dataInput, signatureOutput) }
+    override suspend fun generateSignature(dataInput: Buffer, signatureOutput: Buffer): Buffer {
+        return state.execute { generateSignatureBlocking(dataInput, signatureOutput) }
     }
 
-    override suspend fun verify(dataInput: Buffer, signatureInput: Buffer): Boolean {
-        return state.execute { verifyBlocking(dataInput, signatureInput) }
+    override suspend fun verifySignature(dataInput: Buffer, signatureInput: Buffer): Boolean {
+        return state.execute { verifySignatureBlocking(dataInput, signatureInput) }
     }
 
-    override fun signFunction(): SignFunction {
+    override fun signatureGenerationFunction(): SignatureGenerationFunction {
         TODO("Not yet implemented")
     }
 
-    override fun verifyFunction(): VerifyFunction {
+    override fun signatureVerificationFunction(): SignatureVerificationFunction {
         TODO("Not yet implemented")
     }
 }

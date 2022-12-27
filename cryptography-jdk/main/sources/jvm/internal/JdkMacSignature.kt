@@ -23,13 +23,13 @@ internal class JdkMacSignature(
 
     override val signatureSize: Int get() = mac.get().macLength
 
-    override fun signBlocking(dataInput: Buffer): Buffer {
+    override fun generateSignatureBlocking(dataInput: Buffer): Buffer {
         val mac = mac.get()
         mac.init(key)
         return mac.doFinal(dataInput)
     }
 
-    override fun signBlocking(dataInput: Buffer, signatureOutput: Buffer): Buffer {
+    override fun generateSignatureBlocking(dataInput: Buffer, signatureOutput: Buffer): Buffer {
         val mac = mac.get()
         mac.init(key)
         mac.update(dataInput)
@@ -37,27 +37,27 @@ internal class JdkMacSignature(
         return signatureOutput
     }
 
-    override fun signFunction(): SignFunction {
+    override fun signatureGenerationFunction(): SignatureGenerationFunction {
         TODO("Not yet implemented")
     }
 
-    override fun verifyBlocking(dataInput: Buffer, signatureInput: Buffer): Boolean {
-        return signBlocking(dataInput).contentEquals(signatureInput)
+    override fun verifySignatureBlocking(dataInput: Buffer, signatureInput: Buffer): Boolean {
+        return generateSignatureBlocking(dataInput).contentEquals(signatureInput)
     }
 
-    override fun verifyFunction(): VerifyFunction {
+    override fun signatureVerificationFunction(): SignatureVerificationFunction {
         TODO("Not yet implemented")
     }
 
-    override suspend fun sign(dataInput: Buffer): Buffer {
-        return state.execute { signBlocking(dataInput) }
+    override suspend fun generateSignature(dataInput: Buffer): Buffer {
+        return state.execute { generateSignatureBlocking(dataInput) }
     }
 
-    override suspend fun sign(dataInput: Buffer, signatureOutput: Buffer): Buffer {
-        return state.execute { signBlocking(dataInput, signatureOutput) }
+    override suspend fun generateSignature(dataInput: Buffer, signatureOutput: Buffer): Buffer {
+        return state.execute { generateSignatureBlocking(dataInput, signatureOutput) }
     }
 
-    override suspend fun verify(dataInput: Buffer, signatureInput: Buffer): Boolean {
-        return state.execute { verifyBlocking(dataInput, signatureInput) }
+    override suspend fun verifySignature(dataInput: Buffer, signatureInput: Buffer): Boolean {
+        return state.execute { verifySignatureBlocking(dataInput, signatureInput) }
     }
 }

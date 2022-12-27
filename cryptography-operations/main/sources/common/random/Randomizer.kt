@@ -10,6 +10,7 @@ public typealias RandomizerProvider<P> = CryptographyOperationProvider<P, Random
 public typealias RandomizerFactory<P> = CryptographyOperationFactory<P, Randomizer>
 
 public interface Randomizer : CryptographyOperation {
+    //TODO: rename to randomBytes?
     public suspend fun random(size: Int): Buffer
     public suspend fun random(output: Buffer): Buffer
     public fun randomBlocking(size: Int): Buffer
