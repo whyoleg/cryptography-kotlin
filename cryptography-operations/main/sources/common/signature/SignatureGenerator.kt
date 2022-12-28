@@ -14,5 +14,4 @@ public interface SignatureGenerator : CryptographyOperation {
     public suspend fun generateSignature(dataInput: Buffer, signatureOutput: Buffer): Buffer
     public fun generateSignatureBlocking(dataInput: Buffer): Buffer
     public fun generateSignatureBlocking(dataInput: Buffer, signatureOutput: Buffer): Buffer
-    public fun signatureGenerationFunction(): SignatureGenerationFunction
 }

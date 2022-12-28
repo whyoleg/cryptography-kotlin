@@ -37,16 +37,8 @@ internal class JdkMacSignature(
         return signatureOutput
     }
 
-    override fun signatureGenerationFunction(): SignatureGenerationFunction {
-        TODO("Not yet implemented")
-    }
-
     override fun verifySignatureBlocking(dataInput: Buffer, signatureInput: Buffer): Boolean {
         return generateSignatureBlocking(dataInput).contentEquals(signatureInput)
-    }
-
-    override fun signatureVerificationFunction(): SignatureVerificationFunction {
-        TODO("Not yet implemented")
     }
 
     override suspend fun generateSignature(dataInput: Buffer): Buffer {

@@ -65,10 +65,6 @@ internal class AesGcmCipher(
         TODO("Not yet implemented")
     }
 
-    override fun encryptFunction(): AeadEncryptFunction {
-        TODO("Not yet implemented")
-    }
-
     override fun decryptBlocking(associatedData: Buffer?, ciphertextInput: Buffer): Buffer {
         val cipher = cipher.get()
         cipher.init(JdkCipher.DECRYPT_MODE, key, GCMParameterSpec(tagSize.bits, ciphertextInput, 0, ivSizeBytes), state.secureRandom)
@@ -92,10 +88,6 @@ internal class AesGcmCipher(
     }
 
     override fun decryptBoxBlocking(associatedData: Buffer?, boxInput: Box, plaintextOutput: Buffer): Buffer {
-        TODO("Not yet implemented")
-    }
-
-    override fun decryptFunction(): AeadDecryptFunction {
         TODO("Not yet implemented")
     }
 

@@ -94,12 +94,4 @@ internal class HmacSignature(
     override suspend fun verifySignature(dataInput: Buffer, signatureInput: Buffer): Boolean {
         return state.execute { verifySignatureBlocking(dataInput, signatureInput) }
     }
-
-    override fun signatureGenerationFunction(): SignatureGenerationFunction {
-        TODO("Not yet implemented")
-    }
-
-    override fun signatureVerificationFunction(): SignatureVerificationFunction {
-        TODO("Not yet implemented")
-    }
 }

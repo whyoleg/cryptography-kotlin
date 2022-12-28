@@ -19,7 +19,6 @@ internal class WebCryptoSignatureGenerator(
 
     final override fun generateSignatureBlocking(dataInput: Buffer): Buffer = nonBlocking()
     final override fun generateSignatureBlocking(dataInput: Buffer, signatureOutput: Buffer): Buffer = nonBlocking()
-    final override fun signatureGenerationFunction(): SignatureGenerationFunction = noFunction()
 }
 
 internal class WebCryptoSignatureVerifier(
@@ -32,5 +31,4 @@ internal class WebCryptoSignatureVerifier(
     }
 
     final override fun verifySignatureBlocking(dataInput: Buffer, signatureInput: Buffer): Boolean = nonBlocking()
-    final override fun signatureVerificationFunction(): SignatureVerificationFunction = noFunction()
 }

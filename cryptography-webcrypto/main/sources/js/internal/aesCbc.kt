@@ -106,8 +106,4 @@ internal class AesCbcCipher(
     override fun decryptBoxBlocking(boxInput: AES.CBC.Box, plaintextOutput: Buffer): Buffer = nonBlocking()
     override fun encryptBoxBlocking(plaintextInput: Buffer): AES.CBC.Box = nonBlocking()
     override fun encryptBoxBlocking(plaintextInput: Buffer, boxOutput: AES.CBC.Box): AES.CBC.Box = nonBlocking()
-
-    override fun encryptFunction(): EncryptFunction = noFunction()
-    override fun decryptFunction(): DecryptFunction = noFunction()
-
 }

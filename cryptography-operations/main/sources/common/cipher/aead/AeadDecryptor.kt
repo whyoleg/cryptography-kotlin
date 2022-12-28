@@ -19,7 +19,5 @@ public interface AeadDecryptor : Decryptor {
     override fun decryptBlocking(ciphertextInput: Buffer): Buffer = decryptBlocking(null, ciphertextInput)
     override fun decryptBlocking(ciphertextInput: Buffer, plaintextOutput: Buffer): Buffer =
         decryptBlocking(null, ciphertextInput, plaintextOutput)
-
-    override fun decryptFunction(): AeadDecryptFunction
 }
 

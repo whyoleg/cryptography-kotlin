@@ -33,10 +33,6 @@ internal class JdkHasher(
         return digestOutput
     }
 
-    override fun hashFunction(): HashFunction {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun hash(dataInput: Buffer): Buffer {
         return state.execute { hashBlocking(dataInput) }
     }

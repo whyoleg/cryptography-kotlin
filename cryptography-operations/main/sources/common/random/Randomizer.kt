@@ -9,6 +9,7 @@ import kotlin.random.*
 public typealias RandomizerProvider<P> = CryptographyOperationProvider<P, Randomizer>
 public typealias RandomizerFactory<P> = CryptographyOperationFactory<P, Randomizer>
 
+//seed support
 public interface Randomizer : CryptographyOperation {
     //TODO: rename to randomBytes?
     public suspend fun random(size: Int): Buffer
@@ -16,5 +17,6 @@ public interface Randomizer : CryptographyOperation {
     public fun randomBlocking(size: Int): Buffer
     public fun randomBlocking(output: Buffer): Buffer
 
-    public fun randomInstance(): Random //TODO
+    //TODO name
+    public fun randomInstance(): Random
 }

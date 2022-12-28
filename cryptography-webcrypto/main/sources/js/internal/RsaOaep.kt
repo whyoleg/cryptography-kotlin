@@ -66,7 +66,6 @@ private class RsaOaepEncryptor(
 
     override fun encryptBlocking(associatedData: Buffer?, plaintextInput: Buffer): Buffer = nonBlocking()
     override fun encryptBlocking(associatedData: Buffer?, plaintextInput: Buffer, ciphertextOutput: Buffer): Buffer = nonBlocking()
-    override fun encryptFunction(): AeadEncryptFunction = noFunction()
 }
 
 private class RsaOaepDecryptor(
@@ -91,5 +90,4 @@ private class RsaOaepDecryptor(
 
     override fun decryptBlocking(associatedData: Buffer?, ciphertextInput: Buffer): Buffer = nonBlocking()
     override fun decryptBlocking(associatedData: Buffer?, ciphertextInput: Buffer, plaintextOutput: Buffer): Buffer = nonBlocking()
-    override fun decryptFunction(): AeadDecryptFunction = noFunction()
 }

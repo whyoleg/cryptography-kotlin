@@ -20,5 +20,4 @@ public interface AeadEncryptor : Encryptor {
     override fun encryptBlocking(plaintextInput: Buffer, ciphertextOutput: Buffer): Buffer =
         encryptBlocking(null, plaintextInput, ciphertextOutput)
 
-    override fun encryptFunction(): AeadEncryptFunction
 }

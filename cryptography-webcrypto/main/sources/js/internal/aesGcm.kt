@@ -108,7 +108,4 @@ internal class AesGcmCipher(
     override fun decryptBoxBlocking(associatedData: Buffer?, boxInput: AES.GCM.Box, plaintextOutput: Buffer): Buffer = nonBlocking()
     override fun encryptBoxBlocking(associatedData: Buffer?, plaintextInput: Buffer): AES.GCM.Box = nonBlocking()
     override fun encryptBoxBlocking(associatedData: Buffer?, plaintextInput: Buffer, boxOutput: AES.GCM.Box): AES.GCM.Box = nonBlocking()
-
-    override fun decryptFunction(): AeadDecryptFunction = noFunction()
-    override fun encryptFunction(): AeadEncryptFunction = noFunction()
 }

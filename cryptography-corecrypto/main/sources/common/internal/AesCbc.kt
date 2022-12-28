@@ -126,14 +126,6 @@ internal class AesCbcCipher(
         TODO("Not yet implemented")
     }
 
-    override fun encryptFunction(): EncryptFunction {
-        TODO("Not yet implemented")
-    }
-
-    override fun decryptFunction(): DecryptFunction {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun decryptBox(boxInput: AES.CBC.Box): Buffer {
         return state.execute { decryptBoxBlocking(boxInput) }
     }

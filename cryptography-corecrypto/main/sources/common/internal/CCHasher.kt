@@ -45,8 +45,4 @@ internal class CCHasher(
     override suspend fun hash(dataInput: Buffer, digestOutput: Buffer): Buffer {
         return state.execute { hashBlocking(dataInput, digestOutput) }
     }
-
-    override fun hashFunction(): HashFunction {
-        TODO("Not yet implemented")
-    }
 }

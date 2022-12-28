@@ -14,5 +14,4 @@ public interface Decryptor : CryptographyOperation {
     public suspend fun decrypt(ciphertextInput: Buffer, plaintextOutput: Buffer): Buffer
     public fun decryptBlocking(ciphertextInput: Buffer): Buffer
     public fun decryptBlocking(ciphertextInput: Buffer, plaintextOutput: Buffer): Buffer
-    public fun decryptFunction(): DecryptFunction
 }

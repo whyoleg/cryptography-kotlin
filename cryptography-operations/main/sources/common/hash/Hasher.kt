@@ -14,5 +14,4 @@ public interface Hasher : CryptographyOperation {
     public suspend fun hash(dataInput: Buffer, digestOutput: Buffer): Buffer
     public fun hashBlocking(dataInput: Buffer): Buffer
     public fun hashBlocking(dataInput: Buffer, digestOutput: Buffer): Buffer
-    public fun hashFunction(): HashFunction
 }

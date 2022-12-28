@@ -14,6 +14,4 @@ internal suspend fun <T> Promise<T>.await() = suspendCoroutine<T> { continuation
 
 internal fun nonBlocking(): Nothing = throw CryptographyException("Only non-blocking(suspend) calls are supported in WebCrypto")
 
-internal fun noFunction(): Nothing = throw CryptographyException("Function operations are not supported in WebCrypto")
-
 internal fun ArrayBuffer.toByteArray(): ByteArray = Int8Array(this).unsafeCast<ByteArray>()

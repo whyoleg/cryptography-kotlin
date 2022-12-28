@@ -42,5 +42,4 @@ internal class WebCryptoHasher private constructor(
 
     override fun hashBlocking(dataInput: Buffer): Buffer = nonBlocking()
     override fun hashBlocking(dataInput: Buffer, digestOutput: Buffer): Buffer = nonBlocking()
-    override fun hashFunction(): HashFunction = noFunction()
 }

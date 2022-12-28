@@ -64,10 +64,6 @@ internal class AesCbcCipher(
         TODO("Not yet implemented")
     }
 
-    override fun encryptFunction(): EncryptFunction {
-        TODO("Not yet implemented")
-    }
-
     override fun decryptBlocking(ciphertextInput: Buffer): Buffer {
         val cipher = cipher.get()
         cipher.init(JdkCipher.DECRYPT_MODE, key, IvParameterSpec(ciphertextInput, 0, ivSizeBytes), state.secureRandom)
@@ -88,10 +84,6 @@ internal class AesCbcCipher(
     }
 
     override fun decryptBoxBlocking(boxInput: Box, plaintextOutput: Buffer): Buffer {
-        TODO("Not yet implemented")
-    }
-
-    override fun decryptFunction(): DecryptFunction {
         TODO("Not yet implemented")
     }
 
