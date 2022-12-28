@@ -22,7 +22,7 @@
     * [x] Decide on algorithms package structure - per kind of algorithm (digest, asymmetric, symmetric, etc)
     * [x] Default Random
 * [ ] Operations
-    * [ ] Drop functions operations for now
+    * [x] Drop functions operations for now
     * [ ] Key encode/decode (or import/export?)
     * [ ] Unsafe encrypt operations for cases when f.e. AES nonce/iv provided by user
 * [ ] Add tests
@@ -30,6 +30,9 @@
     * [ ] Signing/verification
     * [ ] Key encode/decode
 * [ ] Engines
+    * [ ] WebCrypto
+    * [ ] JDK
+    * [ ] CoreCrypto
     * [ ] OpenSSL(1/3) engine (dynamic)
     * [ ] Default engine
     * [ ] Replace thread local in JDK with super simple pooling
