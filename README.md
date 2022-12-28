@@ -3,10 +3,6 @@
 0.1.0 plans:
 
 * [ ] Algorithms (+/- covered WebCrypto)
-    * [ ] AES CBC/GCM (CTR?)
-        * [x] algorithms
-        * [x] implementations
-        * [ ] box ciphers
     * [ ] EC (ECDSA/ECDH)
         * [x] algorithms
         * [ ] implementations
@@ -16,16 +12,11 @@
     * [ ] RSA PSS
         * [x] algorithms
         * [ ] implementations
-    * [x] Digest
-        * [x] MD5, SHA-1, SHA-2
-        * [ ] SHA-3
     * [x] Decide on algorithms package structure - per kind of algorithm (digest, asymmetric, symmetric, etc)
     * [x] Default Random
 * [ ] Operations
-    * [x] Drop functions operations for now
     * [ ] Key encode/decode (or import/export?)
-    * [ ] Unsafe encrypt operations for cases when f.e. AES nonce/iv provided by user
-* [ ] Add tests
+* [ ] Tests
     * [ ] Encryption/decryption
     * [ ] Signing/verification
     * [ ] Key encode/decode
@@ -44,14 +35,23 @@
 
 0.2.0 plans:
 
+* [ ] Algorithms
+    * [ ] SHA-3
+    * [ ] AES-CTR (?)
+    * [ ] PBKDF2
+    * [ ] HKDF
+    * [ ] RSA-SSA-PKCS1
+    * [ ] CMAC
 * [ ] Operations
-    * [ ] Key derive
-        * [ ] PBKDF2
-        * [ ] HKDF
-    * [ ] Design multi-key derive support
-    * [ ] Decide on cipher encrypt/decrypt functions for RSA-like algorithms
     * [ ] Function operations (cipher, signature, hash)
-    * [ ] Streaming encryption/decryption (look at google/tink)
+    * [ ] Key derive (kdf/prf)
+        * [ ] Multi-key derive support
+    * [ ] encrypt/decrypt
+        * [ ] Box ciphers
+        * [ ] Unsafe encrypt operations for cases when f.e. AES nonce/iv provided by user
+        * [ ] Decide on cipher encrypt/decrypt functions for RSA-like algorithms
+        * [ ] Streaming encryption/decryption (look at google/tink)
+        * [ ] File encryption/decryption (function operations)
     * [ ] Key wrap/unwrap
 * [ ] Engines
     * [ ] CryptoKit engine
@@ -65,11 +65,13 @@
 * [ ] PKCS12 support
 * [ ] Android integration tests
 
-POSSIBLE future plans:
+0.x.y plans:
 
+* [ ] CryptographyException hierarchy
 * [ ] AWS/GCP KMS provider
 * [ ] BorringSSL engine
 * [ ] NodeJS engine
 * [ ] JWT/JWK support (JOSE)
 * [ ] MPP ASN.1/X.509/DER/PEM encoder/decoder (via kx.serialization ?)
 * [ ] JDK Untyped support (using javax.crypto algorithms spec) - is it needed?
+* [ ] Hybrid Encryption
