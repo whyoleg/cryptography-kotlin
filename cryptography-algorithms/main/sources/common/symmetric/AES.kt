@@ -48,10 +48,10 @@ public abstract class AES<K> @ProviderApi constructor(
 
 
         public class Key @ProviderApi constructor(
-            cipherProvider: BoxCipherProvider<CipherParameters, Box>,
+            cipherProvider: CipherProvider<CipherParameters>,
             keyEncoderProvider: KeyEncoderProvider<CryptographyOperationParameters.Empty, Format>,
         ) : AES.Key(keyEncoderProvider) {
-            public val cipher: BoxCipherFactory<CipherParameters, Box> = cipherProvider.factory(
+            public val cipher: CipherFactory<CipherParameters> = cipherProvider.factory(
                 operationId = CryptographyOperationId("AES-CBC"),
                 defaultParameters = CipherParameters.Default,
             )
@@ -71,11 +71,6 @@ public abstract class AES<K> @ProviderApi constructor(
                 public val Default: CipherParameters = CipherParameters()
             }
         }
-
-        public class Box(
-            public val nonce: Buffer,
-            public val ciphertext: Buffer,
-        )
     }
 
     public class GCM @ProviderApi constructor(
@@ -85,10 +80,10 @@ public abstract class AES<K> @ProviderApi constructor(
         public companion object : CryptographyAlgorithmIdentifier<GCM>()
 
         public class Key @ProviderApi constructor(
-            cipherProvider: AeadBoxCipherProvider<CipherParameters, Box>,
+            cipherProvider: AeadCipherProvider<CipherParameters>,
             keyEncoderProvider: KeyEncoderProvider<CryptographyOperationParameters.Empty, Format>,
         ) : AES.Key(keyEncoderProvider) {
-            public val cipher: AeadBoxCipherFactory<CipherParameters, Box> = cipherProvider.factory(
+            public val cipher: AeadCipherFactory<CipherParameters> = cipherProvider.factory(
                 operationId = CryptographyOperationId("AES-GCM"),
                 defaultParameters = CipherParameters.Default,
             )
@@ -108,11 +103,5 @@ public abstract class AES<K> @ProviderApi constructor(
                 public val Default: CipherParameters = CipherParameters()
             }
         }
-
-        public class Box(
-            public val nonce: Buffer,
-            public val ciphertext: Buffer,
-            public val tag: Buffer,
-        )
     }
 }

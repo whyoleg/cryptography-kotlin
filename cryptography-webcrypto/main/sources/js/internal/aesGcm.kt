@@ -30,15 +30,15 @@ internal class AesGcmKeyGenerator(
 
 internal class AesGcmCipherProvider(
     private val key: CryptoKey,
-) : AeadBoxCipherProvider<AES.GCM.CipherParameters, AES.GCM.Box>() {
-    override fun provideOperation(parameters: AES.GCM.CipherParameters): AeadBoxCipher<AES.GCM.Box> =
+) : AeadCipherProvider<AES.GCM.CipherParameters>() {
+    override fun provideOperation(parameters: AES.GCM.CipherParameters): AeadCipher =
         AesGcmCipher(key, parameters.tagSize.bits)
 }
 
 internal class AesGcmCipher(
     private val key: CryptoKey,
     private val tagSizeBits: Int,
-) : AeadBoxCipher<AES.GCM.Box> {
+) : AeadCipher {
     override fun ciphertextSize(plaintextSize: Int): Int = plaintextSize + ivSizeBytes + tagSizeBits / 8
 
     override fun plaintextSize(ciphertextSize: Int): Int = ciphertextSize - ivSizeBytes - tagSizeBits / 8
@@ -65,14 +65,6 @@ internal class AesGcmCipher(
         return ciphertextOutput
     }
 
-    override suspend fun encryptBox(associatedData: Buffer?, plaintextInput: Buffer): AES.GCM.Box {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun encryptBox(associatedData: Buffer?, plaintextInput: Buffer, boxOutput: AES.GCM.Box): AES.GCM.Box {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun decrypt(associatedData: Buffer?, ciphertextInput: Buffer): Buffer {
         val result = WebCrypto.subtle.decrypt(
             AesGcmParams {
@@ -92,20 +84,8 @@ internal class AesGcmCipher(
         return plaintextOutput
     }
 
-    override suspend fun decryptBox(associatedData: Buffer?, boxInput: AES.GCM.Box): Buffer {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun decryptBox(associatedData: Buffer?, boxInput: AES.GCM.Box, plaintextOutput: Buffer): Buffer {
-        TODO("Not yet implemented")
-    }
-
     override fun decryptBlocking(associatedData: Buffer?, ciphertextInput: Buffer): Buffer = nonBlocking()
     override fun decryptBlocking(associatedData: Buffer?, ciphertextInput: Buffer, plaintextOutput: Buffer): Buffer = nonBlocking()
     override fun encryptBlocking(associatedData: Buffer?, plaintextInput: Buffer): Buffer = nonBlocking()
     override fun encryptBlocking(associatedData: Buffer?, plaintextInput: Buffer, ciphertextOutput: Buffer): Buffer = nonBlocking()
-    override fun decryptBoxBlocking(associatedData: Buffer?, boxInput: AES.GCM.Box): Buffer = nonBlocking()
-    override fun decryptBoxBlocking(associatedData: Buffer?, boxInput: AES.GCM.Box, plaintextOutput: Buffer): Buffer = nonBlocking()
-    override fun encryptBoxBlocking(associatedData: Buffer?, plaintextInput: Buffer): AES.GCM.Box = nonBlocking()
-    override fun encryptBoxBlocking(associatedData: Buffer?, plaintextInput: Buffer, boxOutput: AES.GCM.Box): AES.GCM.Box = nonBlocking()
 }

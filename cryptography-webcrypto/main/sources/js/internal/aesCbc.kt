@@ -30,8 +30,8 @@ internal class AesCbcKeyGenerator(
 
 internal class AesCbcCipherProvider(
     private val key: CryptoKey,
-) : BoxCipherProvider<AES.CBC.CipherParameters, AES.CBC.Box>() {
-    override fun provideOperation(parameters: AES.CBC.CipherParameters): BoxCipher<AES.CBC.Box> {
+) : CipherProvider<AES.CBC.CipherParameters>() {
+    override fun provideOperation(parameters: AES.CBC.CipherParameters): Cipher {
         require(parameters.padding) { "NoPadding is not supported" }
         return AesCbcCipher(key)
     }
@@ -39,7 +39,7 @@ internal class AesCbcCipherProvider(
 
 internal class AesCbcCipher(
     private val key: CryptoKey,
-) : BoxCipher<AES.CBC.Box> {
+) : Cipher {
     //todo
     override fun ciphertextSize(plaintextSize: Int): Int = plaintextSize + ivSizeBytes //+ tagSizeBits / 8
 
@@ -65,14 +65,6 @@ internal class AesCbcCipher(
         return ciphertextOutput
     }
 
-    override suspend fun encryptBox(plaintextInput: Buffer): AES.CBC.Box {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun encryptBox(plaintextInput: Buffer, boxOutput: AES.CBC.Box): AES.CBC.Box {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun decrypt(ciphertextInput: Buffer): Buffer {
         val result = WebCrypto.subtle.decrypt(
             AesCbcParams {
@@ -90,20 +82,8 @@ internal class AesCbcCipher(
         return plaintextOutput
     }
 
-    override suspend fun decryptBox(boxInput: AES.CBC.Box): Buffer {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun decryptBox(boxInput: AES.CBC.Box, plaintextOutput: Buffer): Buffer {
-        TODO("Not yet implemented")
-    }
-
     override fun decryptBlocking(ciphertextInput: Buffer): Buffer = nonBlocking()
     override fun decryptBlocking(ciphertextInput: Buffer, plaintextOutput: Buffer): Buffer = nonBlocking()
     override fun encryptBlocking(plaintextInput: Buffer): Buffer = nonBlocking()
     override fun encryptBlocking(plaintextInput: Buffer, ciphertextOutput: Buffer): Buffer = nonBlocking()
-    override fun decryptBoxBlocking(boxInput: AES.CBC.Box): Buffer = nonBlocking()
-    override fun decryptBoxBlocking(boxInput: AES.CBC.Box, plaintextOutput: Buffer): Buffer = nonBlocking()
-    override fun encryptBoxBlocking(plaintextInput: Buffer): AES.CBC.Box = nonBlocking()
-    override fun encryptBoxBlocking(plaintextInput: Buffer, boxOutput: AES.CBC.Box): AES.CBC.Box = nonBlocking()
 }
