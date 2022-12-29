@@ -7,8 +7,6 @@ import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.operations.cipher.*
-import dev.whyoleg.cryptography.operations.cipher.aead.*
-import dev.whyoleg.cryptography.operations.key.*
 import dev.whyoleg.cryptography.operations.signature.*
 import dev.whyoleg.cryptography.provider.*
 
@@ -69,10 +67,10 @@ public interface RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP : RS
         public abstract class KeyPair : RSA.KeyPair<PublicKey, PrivateKey>
 
         @SubclassOptInRequired(ProviderApi::class)
-        public abstract class PublicKey : RSA.PublicKey, AeadEncryptor
+        public abstract class PublicKey : RSA.PublicKey, AuthenticatedEncryptor
 
         @SubclassOptInRequired(ProviderApi::class)
-        public abstract class PrivateKey : RSA.PrivateKey, AeadDecryptor
+        public abstract class PrivateKey : RSA.PrivateKey, AuthenticatedDecryptor
     }
 
     @SubclassOptInRequired(ProviderApi::class)

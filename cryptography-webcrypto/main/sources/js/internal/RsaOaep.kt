@@ -4,6 +4,7 @@ import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.RSA.OAEP.*
 import dev.whyoleg.cryptography.io.*
 import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.operations.cipher.*
 import dev.whyoleg.cryptography.operations.cipher.aead.*
 import dev.whyoleg.cryptography.operations.key.*
 import dev.whyoleg.cryptography.webcrypto.external.*
@@ -45,8 +46,8 @@ internal class RsaOaepKeyGenerator(
 
 private class RsaOaepEncryptor(
     private val key: CryptoKey,
-) : AeadEncryptor, AeadEncryptorProvider<CryptographyOperationParameters.Empty>() {
-    override fun provideOperation(parameters: CryptographyOperationParameters.Empty): AeadEncryptor = this
+) : AuthenticatedEncryptor, AeadEncryptorProvider<CryptographyOperationParameters.Empty>() {
+    override fun provideOperation(parameters: CryptographyOperationParameters.Empty): AuthenticatedEncryptor = this
 
     override fun ciphertextSize(plaintextSize: Int): Int {
         TODO("Not yet implemented")
@@ -70,8 +71,8 @@ private class RsaOaepEncryptor(
 
 private class RsaOaepDecryptor(
     private val key: CryptoKey,
-) : AeadDecryptor, AeadDecryptorProvider<CryptographyOperationParameters.Empty>() {
-    override fun provideOperation(parameters: CryptographyOperationParameters.Empty): AeadDecryptor = this
+) : AuthenticatedDecryptor, AeadDecryptorProvider<CryptographyOperationParameters.Empty>() {
+    override fun provideOperation(parameters: CryptographyOperationParameters.Empty): AuthenticatedDecryptor = this
     override fun plaintextSize(ciphertextSize: Int): Int {
         TODO("Not yet implemented")
     }

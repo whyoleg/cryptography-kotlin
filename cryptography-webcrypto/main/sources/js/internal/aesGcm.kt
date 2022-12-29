@@ -3,6 +3,7 @@ package dev.whyoleg.cryptography.webcrypto.internal
 import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.io.*
 import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.operations.cipher.*
 import dev.whyoleg.cryptography.operations.cipher.aead.*
 import dev.whyoleg.cryptography.operations.key.*
 import dev.whyoleg.cryptography.webcrypto.external.*
@@ -31,14 +32,14 @@ internal class AesGcmKeyGenerator(
 internal class AesGcmCipherProvider(
     private val key: CryptoKey,
 ) : AeadCipherProvider<AES.GCM.CipherParameters>() {
-    override fun provideOperation(parameters: AES.GCM.CipherParameters): AeadCipher =
+    override fun provideOperation(parameters: AES.GCM.CipherParameters): AuthenticatedCipher =
         AesGcmCipher(key, parameters.tagSize.bits)
 }
 
 internal class AesGcmCipher(
     private val key: CryptoKey,
     private val tagSizeBits: Int,
-) : AeadCipher {
+) : AuthenticatedCipher {
     override fun ciphertextSize(plaintextSize: Int): Int = plaintextSize + ivSizeBytes + tagSizeBits / 8
 
     override fun plaintextSize(ciphertextSize: Int): Int = ciphertextSize - ivSizeBytes - tagSizeBits / 8

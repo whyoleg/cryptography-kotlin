@@ -5,6 +5,7 @@ import dev.whyoleg.cryptography.algorithms.symmetric.AES.GCM.*
 import dev.whyoleg.cryptography.io.*
 import dev.whyoleg.cryptography.jdk.*
 import dev.whyoleg.cryptography.jdk.internal.*
+import dev.whyoleg.cryptography.operations.cipher.*
 import dev.whyoleg.cryptography.operations.cipher.aead.*
 import javax.crypto.*
 import javax.crypto.spec.*
@@ -16,14 +17,14 @@ internal class AesGcmCipherProvider(
     private val state: JdkCryptographyState,
     private val key: SecretKey,
 ) : AeadCipherProvider<CipherParameters>() {
-    override fun provideOperation(parameters: CipherParameters): AeadCipher = AesGcmCipher(state, key, parameters.tagSize)
+    override fun provideOperation(parameters: CipherParameters): AuthenticatedCipher = AesGcmCipher(state, key, parameters.tagSize)
 }
 
 internal class AesGcmCipher(
     private val state: JdkCryptographyState,
     private val key: SecretKey,
     private val tagSize: BinarySize,
-) : AeadCipher {
+) : AuthenticatedCipher {
     private val cipher: ThreadLocal<JdkCipher> = threadLocal { state.provider.cipher("AES/GCM/NoPadding") }
 
     override fun ciphertextSize(plaintextSize: Int): Int = plaintextSize + ivSizeBytes + tagSize.bytes

@@ -7,8 +7,6 @@ import dev.whyoleg.cryptography.io.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.operations.cipher.*
-import dev.whyoleg.cryptography.operations.cipher.aead.*
-import dev.whyoleg.cryptography.operations.key.*
 import dev.whyoleg.cryptography.provider.*
 
 @SubclassOptInRequired(ProviderApi::class)
@@ -39,7 +37,7 @@ public interface AES<K : AES.Key> : CryptographyAlgorithm, KeyDecoder<AES.Key.Fo
 
         @SubclassOptInRequired(ProviderApi::class)
         public abstract class Key : AES.Key {
-            public abstract fun cipher(tagSize: BinarySize = 128.bits): AeadCipher
+            public abstract fun cipher(tagSize: BinarySize = 128.bits): AuthenticatedCipher
         }
     }
 }
