@@ -12,14 +12,11 @@ import dev.whyoleg.cryptography.operations.key.*
 import dev.whyoleg.cryptography.provider.*
 
 @SubclassOptInRequired(ProviderApi::class)
-public interface AES<K : AES.Key> : CryptographyAlgorithm {
-    public val keyImporter: KeyImporter<Key.Format, K> //TODO: may be inherit from it?
+public interface AES<K : AES.Key> : CryptographyAlgorithm, KeyDecoder<AES.Key.Format, K> {
     public fun keyGenerator(keySize: SymmetricKeySize): KeyGenerator<K>
 
     @SubclassOptInRequired(ProviderApi::class)
-    public interface Key : ExportableKey<Key.Format> {
-        public val size: SymmetricKeySize
-
+    public interface Key : EncodableKey<Key.Format> {
         public sealed class Format : KeyFormat {
             public object RAW : Format(), KeyFormat.RAW
             public object JWK : Format(), KeyFormat.JWK

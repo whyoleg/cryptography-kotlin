@@ -1,36 +1,26 @@
-@file:OptIn(ProviderApi::class)
-
 package dev.whyoleg.cryptography.algorithms.asymmetric
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.BinarySize.Companion.bits
-import dev.whyoleg.cryptography.BinarySize.Companion.bytes
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.digest.*
+import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.operations.cipher.*
 import dev.whyoleg.cryptography.operations.cipher.aead.*
 import dev.whyoleg.cryptography.operations.key.*
 import dev.whyoleg.cryptography.operations.signature.*
 import dev.whyoleg.cryptography.provider.*
 
-public abstract class RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP : RSA.KeyPair<PublicK, PrivateK>> @ProviderApi constructor(
-    keyPairGeneratorProvider: KeyGeneratorProvider<KeyPairGeneratorParameters, KP>,
-) : CryptographyAlgorithm() {
-
-    public val keyPairGenerator: KeyGeneratorFactory<KeyPairGeneratorParameters, KP> = keyPairGeneratorProvider.factory(
-        operationId = CryptographyOperationId("RSA"),
-        defaultParameters = KeyPairGeneratorParameters.Default,
-    )
-
-    public class KeyPairGeneratorParameters(
-        public val keySize: BinarySize = 2048.bits,
-        public val publicExponent: PublicExponent = PublicExponent.F4,
-        public val digest: CryptographyAlgorithmId<Digest> = SHA512,
-    ) : CryptographyOperationParameters() {
-        public companion object {
-            public val Default: KeyPairGeneratorParameters = KeyPairGeneratorParameters()
-        }
-    }
+@SubclassOptInRequired(ProviderApi::class)
+public interface RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP : RSA.KeyPair<PublicK, PrivateK>> : CryptographyAlgorithm {
+    public val publicKeyDecoder: KeyDecoder<PublicKey.Format, PublicKey>
+    public val privateKeyDecoder: KeyDecoder<PrivateKey.Format, PrivateKey>
+    public fun keyPairGenerator(
+        keySize: BinarySize = 2048.bits,
+        publicExponent: PublicExponent = PublicExponent.F4,
+        digest: CryptographyAlgorithmId<Digest> = SHA512,
+    ): KeyGenerator<KP>
 
     //TODO: replace with some kind of MPP BigInt
     public sealed class PublicExponent {
@@ -47,19 +37,14 @@ public abstract class RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP
         }
     }
 
-    public abstract class KeyPair<PublicK : PublicKey, PrivateK : PrivateKey> @ProviderApi constructor(
-        public val publicKey: PublicK,
-        public val privateKey: PrivateK,
-    )
+    @SubclassOptInRequired(ProviderApi::class)
+    public interface KeyPair<PublicK : PublicKey, PrivateK : PrivateKey> : Key {
+        public val publicKey: PublicK
+        public val privateKey: PrivateK
+    }
 
-    public abstract class PublicKey @ProviderApi constructor(
-        keyEncoderProvider: KeyEncoderProvider<CryptographyOperationParameters.Empty, Format>,
-    ) {
-        public val encoder: KeyEncoderFactory<CryptographyOperationParameters.Empty, Format> = keyEncoderProvider.factory(
-            operationId = CryptographyOperationId("RSA"),
-            defaultParameters = CryptographyOperationParameters.Empty,
-        )
-
+    @SubclassOptInRequired(ProviderApi::class)
+    public interface PublicKey : EncodableKey<PublicKey.Format> {
         public sealed class Format : KeyFormat {
             public object PEM : Format(), KeyFormat.PEM
             public object DER : Format(), KeyFormat.DER
@@ -67,14 +52,8 @@ public abstract class RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP
         }
     }
 
-    public abstract class PrivateKey @ProviderApi constructor(
-        keyEncoderProvider: KeyEncoderProvider<CryptographyOperationParameters.Empty, Format>,
-    ) {
-        public val encoder: KeyEncoderFactory<CryptographyOperationParameters.Empty, Format> = keyEncoderProvider.factory(
-            operationId = CryptographyOperationId("RSA"),
-            defaultParameters = CryptographyOperationParameters.Empty,
-        )
-
+    @SubclassOptInRequired(ProviderApi::class)
+    public interface PrivateKey : EncodableKey<PrivateKey.Format> {
         public sealed class Format : KeyFormat {
             public object PEM : Format(), KeyFormat.PEM
             public object DER : Format(), KeyFormat.DER
@@ -82,74 +61,35 @@ public abstract class RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP
         }
     }
 
-    public class OAEP @ProviderApi constructor(
-        keyPairGeneratorProvider: KeyGeneratorProvider<KeyPairGeneratorParameters, KeyPair>,
-    ) : RSA<OAEP.PublicKey, OAEP.PrivateKey, OAEP.KeyPair>(keyPairGeneratorProvider) {
+    @SubclassOptInRequired(ProviderApi::class)
+    public abstract class OAEP : RSA<OAEP.PublicKey, OAEP.PrivateKey, OAEP.KeyPair> {
         public companion object : CryptographyAlgorithmId<OAEP>()
 
-        public class KeyPair @ProviderApi constructor(
-            publicKey: PublicKey,
-            privateKey: PrivateKey,
-        ) : RSA.KeyPair<PublicKey, PrivateKey>(publicKey, privateKey)
+        @SubclassOptInRequired(ProviderApi::class)
+        public abstract class KeyPair : RSA.KeyPair<PublicKey, PrivateKey>
 
-        public class PublicKey @ProviderApi constructor(
-            keyEncoderProvider: KeyEncoderProvider<CryptographyOperationParameters.Empty, Format>,
-            encryptorProvider: AeadEncryptorProvider<CryptographyOperationParameters.Empty>,
-        ) : RSA.PublicKey(keyEncoderProvider) {
-            public val encryptor: AeadEncryptorFactory<CryptographyOperationParameters.Empty> = encryptorProvider.factory(
-                operationId = CryptographyOperationId("RSA-OAEP"),
-                defaultParameters = CryptographyOperationParameters.Empty,
-            )
-        }
+        @SubclassOptInRequired(ProviderApi::class)
+        public abstract class PublicKey : RSA.PublicKey, AeadEncryptor
 
-        public class PrivateKey @ProviderApi constructor(
-            keyEncoderProvider: KeyEncoderProvider<CryptographyOperationParameters.Empty, Format>,
-            decryptorProvider: AeadDecryptorProvider<CryptographyOperationParameters.Empty>,
-        ) : RSA.PrivateKey(keyEncoderProvider) {
-            public val decryptor: AeadDecryptorFactory<CryptographyOperationParameters.Empty> = decryptorProvider.factory(
-                operationId = CryptographyOperationId("RSA-OAEP"),
-                defaultParameters = CryptographyOperationParameters.Empty,
-            )
-        }
+        @SubclassOptInRequired(ProviderApi::class)
+        public abstract class PrivateKey : RSA.PrivateKey, AeadDecryptor
     }
 
-    //TODO: signature parameters (saltLength)
-    public class PSS @ProviderApi constructor(
-        keyPairGeneratorProvider: KeyGeneratorProvider<KeyPairGeneratorParameters, KeyPair>,
-    ) : RSA<PSS.PublicKey, PSS.PrivateKey, PSS.KeyPair>(keyPairGeneratorProvider) {
+    @SubclassOptInRequired(ProviderApi::class)
+    public abstract class PSS : RSA<PSS.PublicKey, PSS.PrivateKey, PSS.KeyPair> {
         public companion object : CryptographyAlgorithmId<PSS>()
 
-        public class KeyPair @ProviderApi constructor(
-            publicKey: PublicKey,
-            privateKey: PrivateKey,
-        ) : RSA.KeyPair<PublicKey, PrivateKey>(publicKey, privateKey)
+        @SubclassOptInRequired(ProviderApi::class)
+        public abstract class KeyPair : RSA.KeyPair<PublicKey, PrivateKey>
 
-        public class PublicKey @ProviderApi constructor(
-            keyEncoderProvider: KeyEncoderProvider<CryptographyOperationParameters.Empty, Format>,
-            signatureVerifierProvider: SignatureVerifierProvider<SignatureParameters>,
-        ) : RSA.PublicKey(keyEncoderProvider) {
-            public val verifier: SignatureVerifierFactory<SignatureParameters> = signatureVerifierProvider.factory(
-                operationId = CryptographyOperationId("RSA-PSS"),
-                defaultParameters = SignatureParameters.Default,
-            )
+        @SubclassOptInRequired(ProviderApi::class)
+        public abstract class PublicKey : RSA.PublicKey {
+            public abstract fun signatureVerifier(saltLength: BinarySize): SignatureVerifier
         }
 
-        public class PrivateKey @ProviderApi constructor(
-            keyEncoderProvider: KeyEncoderProvider<CryptographyOperationParameters.Empty, Format>,
-            signatureGeneratorProvider: SignatureGeneratorProvider<SignatureParameters>,
-        ) : RSA.PrivateKey(keyEncoderProvider) {
-            public val signer: SignatureGeneratorFactory<SignatureParameters> = signatureGeneratorProvider.factory(
-                operationId = CryptographyOperationId("RSA-PSS"),
-                defaultParameters = SignatureParameters.Default,
-            )
-        }
-
-        public class SignatureParameters(
-            public val saltLength: BinarySize = 0.bytes,
-        ) : CryptographyOperationParameters() {
-            public companion object {
-                public val Default: SignatureParameters = SignatureParameters()
-            }
+        @SubclassOptInRequired(ProviderApi::class)
+        public abstract class PrivateKey : RSA.PrivateKey {
+            public abstract fun signatureGenerator(saltLength: BinarySize): SignatureGenerator
         }
     }
 }

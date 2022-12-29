@@ -2,6 +2,7 @@ package dev.whyoleg.cryptography.algorithms.asymmetric.ec
 
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.digest.*
+import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.operations.key.*
 import dev.whyoleg.cryptography.operations.signature.*
@@ -14,8 +15,8 @@ import kotlin.jvm.*
 public abstract class EC : CryptographyAlgorithm {
     public companion object : CryptographyAlgorithmId<EC>()
 
-    public abstract val publicKeyImporter: KeyImporter<PublicKey.Format, PublicKey>
-    public abstract val privateKeyImporter: KeyImporter<PrivateKey.Format, PrivateKey>
+    public abstract val publicKeyDecoder: KeyDecoder<PublicKey.Format, PublicKey>
+    public abstract val privateKeyDecoder: KeyDecoder<PrivateKey.Format, PrivateKey>
     public abstract fun keyPairGenerator(curve: Curve): KeyGenerator<KeyPair>
 
     @JvmInline
@@ -32,14 +33,13 @@ public abstract class EC : CryptographyAlgorithm {
 
     //TODO: support key pair import/export
     @SubclassOptInRequired(ProviderApi::class)
-    public abstract class KeyPair {
+    public abstract class KeyPair : Key {
         public abstract val publicKey: PublicKey
         public abstract val privateKey: PrivateKey
     }
 
     @SubclassOptInRequired(ProviderApi::class)
-    public abstract class PublicKey : ExportableKey<PublicKey.Format>, KeyAgreement<PrivateKey.Format> {
-        public abstract val curve: Curve
+    public abstract class PublicKey : EncodableKey<PublicKey.Format>, KeyAgreement<PrivateKey.Format> {
         public abstract fun signatureVerifier(digest: CryptographyAlgorithmId<Digest>): SignatureVerifier
 
         public sealed class Format : KeyFormat {
@@ -51,8 +51,8 @@ public abstract class EC : CryptographyAlgorithm {
     }
 
     @SubclassOptInRequired(ProviderApi::class)
-    public abstract class PrivateKey : ExportableKey<PrivateKey.Format>, KeyAgreement<PublicKey.Format> {
-        public abstract val curve: Curve
+    public abstract class PrivateKey : EncodableKey<PrivateKey.Format>, KeyAgreement<PublicKey.Format> {
+        //        public abstract val publicKey: PublicKey //TODO: is it needed?
         public abstract fun signatureGenerator(digest: CryptographyAlgorithmId<Digest>): SignatureGenerator
 
         public sealed class Format : KeyFormat {

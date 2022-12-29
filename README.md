@@ -40,7 +40,7 @@
 * [ ] Operations
     * [ ] Function operations (cipher, signature, hash)
     * [ ] Key derive (kdf/prf)
-        * [ ] Multi-key derive support
+    * [ ] Multi-key agreement support
     * [ ] encrypt/decrypt
         * [ ] Box ciphers
         * [ ] Unsafe encrypt operations for cases when f.e. AES nonce/iv provided by user
@@ -71,3 +71,4 @@
 * [ ] MPP ASN.1/X.509/DER/PEM encoder/decoder (via kx.serialization ?)
 * [ ] JDK Untyped support (using javax.crypto algorithms spec) - is it needed?
 * [ ] Hybrid Encryption
+* [ ] Double Ratchet Algorithm (?)

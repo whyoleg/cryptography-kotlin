@@ -1,13 +1,7 @@
-@file:OptIn(ProviderApi::class)
-
 package dev.whyoleg.cryptography.operations.cipher.aead
 
 import dev.whyoleg.cryptography.io.*
-import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.operations.cipher.*
-
-public typealias AeadDecryptorProvider<P> = CryptographyOperationProvider<P, AeadDecryptor>
-public typealias AeadDecryptorFactory<P> = CryptographyOperationFactory<P, AeadDecryptor>
 
 public interface AeadDecryptor : Decryptor {
     public suspend fun decrypt(associatedData: Buffer?, ciphertextInput: Buffer): Buffer
