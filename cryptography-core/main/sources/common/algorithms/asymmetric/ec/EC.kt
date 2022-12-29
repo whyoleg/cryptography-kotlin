@@ -4,7 +4,7 @@ import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.*
-import dev.whyoleg.cryptography.operations.key.*
+import dev.whyoleg.cryptography.operations.derive.*
 import dev.whyoleg.cryptography.operations.signature.*
 import dev.whyoleg.cryptography.provider.*
 import kotlin.jvm.*
@@ -39,7 +39,7 @@ public abstract class EC : CryptographyAlgorithm {
     }
 
     @SubclassOptInRequired(ProviderApi::class)
-    public abstract class PublicKey : EncodableKey<PublicKey.Format>, KeyAgreement<PrivateKey.Format> {
+    public abstract class PublicKey : EncodableKey<PublicKey.Format>, SharedSecretDerivative<PrivateKey.Format> {
         public abstract fun signatureVerifier(digest: CryptographyAlgorithmId<Digest>): SignatureVerifier
 
         public sealed class Format : KeyFormat {
@@ -51,7 +51,7 @@ public abstract class EC : CryptographyAlgorithm {
     }
 
     @SubclassOptInRequired(ProviderApi::class)
-    public abstract class PrivateKey : EncodableKey<PrivateKey.Format>, KeyAgreement<PublicKey.Format> {
+    public abstract class PrivateKey : EncodableKey<PrivateKey.Format>, SharedSecretDerivative<PublicKey.Format> {
         //        public abstract val publicKey: PublicKey //TODO: is it needed?
         public abstract fun signatureGenerator(digest: CryptographyAlgorithmId<Digest>): SignatureGenerator
 
