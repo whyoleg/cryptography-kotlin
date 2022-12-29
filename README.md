@@ -1,25 +1,20 @@
 # cryptography-kotlin
 
-0.1.0 plans:
+0.1.0 TODO:
 
 * [ ] Algorithms (+/- covered WebCrypto)
     * [ ] EC (ECDSA/ECDH)
-        * [x] algorithms
         * [ ] implementations
     * [ ] RSA OAEP
-        * [x] algorithms
         * [ ] implementations
     * [ ] RSA PSS
-        * [x] algorithms
         * [ ] implementations
-    * [x] Decide on algorithms package structure - per kind of algorithm (digest, asymmetric, symmetric, etc)
-    * [x] Default Random
-* [ ] Operations
-    * [ ] Key import/export
 * [ ] Tests
+    * [ ] Hash
     * [ ] Encryption/decryption
     * [ ] Signing/verification
     * [ ] Key import/export
+    * [ ] Key agreement
 * [ ] Engines
     * [ ] WebCrypto
     * [ ] JDK
@@ -28,22 +23,20 @@
     * [ ] Default engine
     * [ ] Replace thread local in JDK with super simple pooling
 * [ ] Coroutines integration (for JDK engine to run on other dispatcher)
-* [X] OptIn for not secure algorithms (like MD5)
-* [X] OptIn for declarations, that should be used from engines only!!!
 * [ ] Maven Central
 * [ ] README
 
 0.2.0 plans:
 
 * [ ] Algorithms
-    * [ ] SHA-3
-    * [ ] AES-CTR (?)
-    * [ ] ChaCha20-Poly1305
-    * [ ] PBKDF2
-    * [ ] HKDF
-    * [ ] RSA-SSA-PKCS1
-    * [ ] CMAC
-    * [ ] Blowfish, Blake - try to find some implementations
+    * [ ] SHA-3 (hash)
+    * [ ] AES-CTR (?) (cipher)
+    * [ ] ChaCha20-Poly1305 (stream cipher)
+    * [ ] PBKDF2 (prf)
+    * [ ] HKDF (kdf)
+    * [ ] RSA-SSA-PKCS1 (signature)
+    * [ ] CMAC (mac)
+    * [ ] Blowfish (cipher), Blake (hash)- try to find some implementations
 * [ ] Operations
     * [ ] Function operations (cipher, signature, hash)
     * [ ] Key derive (kdf/prf)
@@ -55,16 +48,17 @@
         * [ ] Streaming encryption/decryption (look at google/tink)
         * [ ] File encryption/decryption (function operations)
     * [ ] Key wrap/unwrap
+* [ ] Materials
+    * [ ] introduce materials: key, key pair, certificate, certificate chain, certificate+key pair etc
+    * [ ] X.509 Certificates
+    * [ ] JDK KeyStore
+    * [ ] PKCS12 support
 * [ ] Engines
     * [ ] CryptoKit engine
     * [ ] Security framework engine
     * [ ] Windows CNG engine
     * [ ] OpenSSL(1/3) engine (static)
     * [ ] Engine builder DSL + decide on how to better handle providers inside engine (lazy, cache, etc)
-* [ ] Decide on NoArg factories - may be make them lazy instances?
-* [ ] X.509 Certificates (introduce materials: key, key pair, certificate, certificate chain, certificate+key pair etc)
-* [ ] JDK KeyStore
-* [ ] PKCS12 support
 * [ ] Android integration tests
 
 0.x.y plans:
