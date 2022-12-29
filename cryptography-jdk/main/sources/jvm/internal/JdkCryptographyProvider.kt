@@ -1,6 +1,7 @@
 package dev.whyoleg.cryptography.jdk.internal
 
 import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.random.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
@@ -16,7 +17,7 @@ internal class JdkCryptographyProvider(
 ) : CryptographyProvider("JDK") {
     //TODO: use map?
     @Suppress("UNCHECKED_CAST")
-    override fun <A : CryptographyAlgorithm> get(identifier: CryptographyAlgorithmIdentifier<A>): A {
+    override fun <A : CryptographyAlgorithm> get(identifier: CryptographyAlgorithmId<A>): A {
         return when (identifier) {
             AES.GCM                 -> AES.GCM(
                 AesGcmKeyGeneratorProvider(state),

@@ -1,6 +1,7 @@
 package dev.whyoleg.cryptography.webcrypto.internal
 
 import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.random.*
@@ -12,7 +13,7 @@ import dev.whyoleg.cryptography.provider.*
 internal object WebCryptoCryptographyEngine : CryptographyProvider("WebCrypto") {
 
     @Suppress("UNCHECKED_CAST")
-    override fun <A : CryptographyAlgorithm> get(identifier: CryptographyAlgorithmIdentifier<A>): A = when (identifier) {
+    override fun <A : CryptographyAlgorithm> get(identifier: CryptographyAlgorithmId<A>): A = when (identifier) {
         SHA1                    -> WebCryptoHasher.SHA1
         SHA256                  -> WebCryptoHasher.SHA256
         SHA384                  -> WebCryptoHasher.SHA384

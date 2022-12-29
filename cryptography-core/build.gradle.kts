@@ -11,4 +11,12 @@ kotlin {
     macosX64()
     macosArm64()
     mingwX64()
+
+    sourceSets {
+        commonMain {
+            dependencies {
+                api(projects.cryptographyIo)
+            }
+        }
+    }
 }

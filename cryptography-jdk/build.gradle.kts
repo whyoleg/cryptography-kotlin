@@ -12,7 +12,7 @@ kotlin {
         }
         val jvmMain by getting {
             dependencies {
-                api(projects.cryptographyAlgorithms)
+                api(projects.cryptographyCore)
             }
         }
     }

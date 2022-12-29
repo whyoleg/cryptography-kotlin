@@ -21,19 +21,11 @@ rootProject.name = "cryptography-kotlin"
 //Buffer + Closeable - this module should be removed later
 include("cryptography-io")
 
-//What is core? may be api?
-include("cryptography-core")
-
-//operation / algorithms injection
-include("cryptography-provider")
-
-//default operations APIs
+//materials API: key management, import, export, key chain
+//operations APIs
 // divided in packages per kind of operation (hash, signature, encryption, random, etc)
-include("cryptography-operations")
-
-//default algorithms APIs
-// divided in packages per algorithms kind (digest, asymmetric, symmetric, etc)
-include("cryptography-algorithms")
+// operation by algorithms injection
+include("cryptography-core")
 
 //mapping from sync to async via dispatcher or channel
 //include("cryptography-coroutines")
@@ -98,3 +90,10 @@ include("cryptography-webcrypto") //js(nodejs/browser) only
 
 //Key format: RAW (Bytes), PEM, DER, JWK, PKCS-12
 //Destination: java key store, key chain, file, secure enclave (?)
+
+//TODO: structure
+//TODO: is random an operation, or something different, something more core-ish?
+
+//materials(keys) : keys, certificates, etc (where key chain, key store support should be?)
+//operations: ciphers, hashes, prf, kdf, mac, signatures, key agreement (DH, ECDH) (what it' really is???)
+//algorithms: AES (AES-CBC, AES-GCM), EC (ECDH, ECDSA), RSA, etc

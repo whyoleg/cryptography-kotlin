@@ -13,7 +13,7 @@ kotlin {
         }
         val commonMain by getting {
             dependencies {
-                api(projects.cryptographyAlgorithms)
+                api(projects.cryptographyCore)
             }
         }
     }

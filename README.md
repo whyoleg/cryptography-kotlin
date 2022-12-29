@@ -15,11 +15,11 @@
     * [x] Decide on algorithms package structure - per kind of algorithm (digest, asymmetric, symmetric, etc)
     * [x] Default Random
 * [ ] Operations
-    * [ ] Key encode/decode (or import/export?)
+    * [ ] Key import/export
 * [ ] Tests
     * [ ] Encryption/decryption
     * [ ] Signing/verification
-    * [ ] Key encode/decode
+    * [ ] Key import/export
 * [ ] Engines
     * [ ] WebCrypto
     * [ ] JDK
@@ -38,10 +38,12 @@
 * [ ] Algorithms
     * [ ] SHA-3
     * [ ] AES-CTR (?)
+    * [ ] ChaCha20-Poly1305
     * [ ] PBKDF2
     * [ ] HKDF
     * [ ] RSA-SSA-PKCS1
     * [ ] CMAC
+    * [ ] Blowfish, Blake - try to find some implementations
 * [ ] Operations
     * [ ] Function operations (cipher, signature, hash)
     * [ ] Key derive (kdf/prf)
@@ -60,7 +62,7 @@
     * [ ] OpenSSL(1/3) engine (static)
     * [ ] Engine builder DSL + decide on how to better handle providers inside engine (lazy, cache, etc)
 * [ ] Decide on NoArg factories - may be make them lazy instances?
-* [ ] X.509 Certificates
+* [ ] X.509 Certificates (introduce materials: key, key pair, certificate, certificate chain, certificate+key pair etc)
 * [ ] JDK KeyStore
 * [ ] PKCS12 support
 * [ ] Android integration tests

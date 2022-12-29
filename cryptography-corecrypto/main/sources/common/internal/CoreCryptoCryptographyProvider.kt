@@ -1,5 +1,6 @@
 package dev.whyoleg.cryptography.corecrypto.internal
 
+import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.random.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
@@ -12,7 +13,7 @@ internal class CoreCryptoCryptographyProvider(
     private val state: CoreCryptoState,
 ) : CryptographyProvider("CoreCrypto") {
     @Suppress("UNCHECKED_CAST")
-    override fun <A : CryptographyAlgorithm> get(identifier: CryptographyAlgorithmIdentifier<A>): A = when (identifier) {
+    override fun <A : CryptographyAlgorithm> get(identifier: CryptographyAlgorithmId<A>): A = when (identifier) {
         AES.CBC                 -> AES.CBC(
             AesCbcKeyGeneratorProvider(state),
             NotSupportedProvider()

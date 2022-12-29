@@ -1,6 +1,7 @@
 package dev.whyoleg.cryptography.webcrypto.internal
 
 import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.io.*
 import dev.whyoleg.cryptography.operations.*
@@ -8,7 +9,7 @@ import dev.whyoleg.cryptography.operations.hash.*
 import dev.whyoleg.cryptography.provider.*
 import dev.whyoleg.cryptography.webcrypto.external.*
 
-internal fun CryptographyAlgorithmIdentifier<Digest>.hashAlgorithmName(): String = when (this) {
+internal fun CryptographyAlgorithmId<Digest>.hashAlgorithmName(): String = when (this) {
     SHA1   -> "SHA-1"
     SHA256 -> "SHA-256"
     SHA384 -> "SHA-384"
