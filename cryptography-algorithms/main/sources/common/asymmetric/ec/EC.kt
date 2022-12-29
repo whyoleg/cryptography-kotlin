@@ -50,13 +50,13 @@ public class EC @ProviderApi constructor(
         signatureVerifierProvider: SignatureVerifierProvider<SignatureParameters>,
         keyAgreementProvider: KeyAgreementProvider<CryptographyOperationParameters.Empty, PrivateKey.Format>,
     ) {
-        public val verifier: SignatureVerifierFactory<SignatureParameters> = signatureVerifierProvider.factory(
-            operationId = CryptographyOperationId("ECDSA"),
-            defaultParameters = SignatureParameters.Default,
-        )
         public val encoder: KeyEncoderFactory<CryptographyOperationParameters.Empty, Format> = keyEncoderProvider.factory(
             operationId = CryptographyOperationId("EC"),
             defaultParameters = CryptographyOperationParameters.Empty,
+        )
+        public val verifier: SignatureVerifierFactory<SignatureParameters> = signatureVerifierProvider.factory(
+            operationId = CryptographyOperationId("ECDSA"),
+            defaultParameters = SignatureParameters.Default,
         )
         public val agreement: KeyAgreementFactory<CryptographyOperationParameters.Empty, PrivateKey.Format> = keyAgreementProvider.factory(
             operationId = CryptographyOperationId("ECDH"),

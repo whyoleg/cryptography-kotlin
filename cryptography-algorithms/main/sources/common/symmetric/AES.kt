@@ -11,7 +11,7 @@ import dev.whyoleg.cryptography.operations.cipher.aead.*
 import dev.whyoleg.cryptography.operations.key.*
 import dev.whyoleg.cryptography.provider.*
 
-public abstract class AES<K> @ProviderApi constructor(
+public abstract class AES<K : AES.Key> @ProviderApi constructor(
     keyGeneratorProvider: KeyGeneratorProvider<SymmetricKeyParameters, K>,
     keyDecoderProvider: KeyDecoderProvider<CryptographyOperationParameters.Empty, K, Key.Format>,
 ) : CryptographyAlgorithm() {
