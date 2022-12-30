@@ -50,3 +50,14 @@ internal fun RsaHashedKeyImportAlgorithm(
 ): RsaHashedKeyImportAlgorithm = Algorithm(name) {
     this.hash = hash
 }
+
+internal sealed external interface EcKeyAlgorithm : AsymmetricKeyGenerationAlgorithm, KeyImportAlgorithm {
+    var namedCurve: String
+}
+
+internal fun EcKeyAlgorithm(
+    name: String, //ECDSA | ECDH
+    namedCurve: String, //P-256, P-384, P-521
+): EcKeyAlgorithm = Algorithm(name) {
+    this.namedCurve = namedCurve
+}

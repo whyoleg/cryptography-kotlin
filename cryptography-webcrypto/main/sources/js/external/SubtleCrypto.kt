@@ -5,8 +5,14 @@ import kotlin.js.Promise
 
 internal external interface SubtleCrypto {
     fun digest(algorithmName: String, data: ByteArray): Promise<ArrayBuffer>
+
     fun encrypt(algorithm: EncryptAlgorithm, key: CryptoKey, data: ByteArray): Promise<ArrayBuffer>
     fun decrypt(algorithm: DecryptAlgorithm, key: CryptoKey, data: ByteArray): Promise<ArrayBuffer>
+
+    fun sign(algorithm: SignAlgorithm, key: CryptoKey, data: ByteArray): Promise<ByteArray>
+    fun verify(algorithm: VerifyAlgorithm, key: CryptoKey, signature: ByteArray, data: ByteArray): Promise<Boolean>
+
+    fun deriveBits(algorithm: DerivationAlgorithm, baseKey: CryptoKey, length: Int): Promise<ArrayBuffer>
 
     fun importKey(
         format: String, /*"raw" | "pkcs8" | "spki"*/
@@ -32,9 +38,6 @@ internal external interface SubtleCrypto {
         extractable: Boolean,
         keyUsages: Array<String>,
     ): Promise<CryptoKeyPair>
-
-    fun sign(algorithm: SignAlgorithm, key: CryptoKey, data: ByteArray): Promise<ByteArray>
-    fun verify(algorithm: VerifyAlgorithm, key: CryptoKey, signature: ByteArray, data: ByteArray): Promise<Boolean>
 }
 
 internal fun SubtleCrypto.exportKeyBinary(format: String, key: CryptoKey): Promise<ByteArray> = exportKey(format, key).then { keyData ->

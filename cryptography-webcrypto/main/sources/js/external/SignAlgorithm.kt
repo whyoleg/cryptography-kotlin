@@ -11,3 +11,11 @@ internal sealed external interface RsaPssParams : SignatureAlgorithm {
 internal fun RsaPssParams(saltLength: Int): RsaPssParams = Algorithm("RSA-PSS") {
     this.saltLength = saltLength
 }
+
+internal sealed external interface EcdsaParams : SignatureAlgorithm {
+    var hash: String
+}
+
+internal fun EcdsaParams(hash: String): EcdsaParams = Algorithm("ECDSA") {
+    this.hash = hash
+}

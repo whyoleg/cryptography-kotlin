@@ -3,6 +3,7 @@ package dev.whyoleg.cryptography.webcrypto
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
+import dev.whyoleg.cryptography.algorithms.asymmetric.ec.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.random.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
@@ -27,6 +28,8 @@ internal object WebCryptoCryptographyEngine : CryptographyProvider("WebCrypto") 
         AES.GCM                 -> WebCryptoAesGcm
         RSA.OAEP                -> WebCryptoRsaOaep
         RSA.PSS                 -> WebCryptoRsaPss
+        ECDH                    -> WebCryptoEcdh
+        ECDSA                   -> WebCryptoEcdsa
         else                    -> null
     } as A?
 }

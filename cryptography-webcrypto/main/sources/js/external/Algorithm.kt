@@ -9,3 +9,4 @@ internal inline fun <T : Algorithm> Algorithm(name: String, block: T.() -> Unit 
         this.name = name
         block()
     }
+
