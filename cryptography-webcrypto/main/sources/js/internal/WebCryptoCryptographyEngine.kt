@@ -13,31 +13,17 @@ import dev.whyoleg.cryptography.provider.*
 internal object WebCryptoCryptographyEngine : CryptographyProvider("WebCrypto") {
 
     @Suppress("UNCHECKED_CAST")
-    override fun <A : CryptographyAlgorithm> get(identifier: CryptographyAlgorithmId<A>): A = when (identifier) {
-        SHA1                    -> WebCryptoHasher.SHA1
-        SHA256                  -> WebCryptoHasher.SHA256
-        SHA384                  -> WebCryptoHasher.SHA384
-        SHA512                  -> WebCryptoHasher.SHA512
-        PlatformDependantRandom -> PlatformDependantRandom(WebCryptoRandom)
-        AES.GCM                 -> AES.GCM(
-            AesGcmKeyGeneratorProvider,
-            NotSupportedProvider()
-        )
-        AES.CBC                 -> AES.CBC(
-            AesCbcKeyGeneratorProvider,
-            NotSupportedProvider()
-        )
-
-        HMAC                    -> HMAC(
-            HmacKeyGeneratorProvider,
-            NotSupportedProvider()
-        )
-        RSA.OAEP                -> RSA.OAEP(
-            RsaOaepKeyGeneratorProvider
-        )
-        RSA.PSS                 -> RSA.PSS(
-            RsaPssKeyGeneratorProvider
-        )
-        else                    -> throw CryptographyAlgorithmNotFoundException(identifier)
-    } as A
+    override fun <A : CryptographyAlgorithm> getOrNull(identifier: CryptographyAlgorithmId<A>): A? = when (identifier) {
+        PlatformDependantRandom -> WebCryptoRandom
+        SHA1                    -> WebCryptoDigest.SHA1
+        SHA256                  -> WebCryptoDigest.SHA256
+        SHA384                  -> WebCryptoDigest.SHA384
+        SHA512                  -> WebCryptoDigest.SHA512
+        HMAC                    -> WebCryptoHmac
+        AES.CBC                 -> WebCryptoAesCbc
+        AES.GCM                 -> WebCryptoAesGcm
+        RSA.OAEP                -> WebCryptoRsaOaep
+        RSA.PSS                 -> WebCryptoRsaPss
+        else                    -> null
+    } as A?
 }

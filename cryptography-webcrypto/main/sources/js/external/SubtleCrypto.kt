@@ -1,7 +1,7 @@
 package dev.whyoleg.cryptography.webcrypto.external
 
 import org.khronos.webgl.*
-import kotlin.js.*
+import kotlin.js.Promise
 
 internal external interface SubtleCrypto {
     fun digest(algorithmName: String, data: ByteArray): Promise<ArrayBuffer>
@@ -11,10 +11,15 @@ internal external interface SubtleCrypto {
     fun importKey(
         format: String, /*"raw" | "pkcs8" | "spki"*/
         keyData: ByteArray,
-        algorithm: KeyGenerationAlgorithm,
+        algorithm: KeyImportAlgorithm,
         extractable: Boolean,
         keyUsages: Array<String>,
     ): Promise<CryptoKey>
+
+    fun exportKey(
+        format: String, /*"raw" | "pkcs8" | "spki"*/
+        key: CryptoKey,
+    ): Promise<Any /*JSON if jwk, ByteArray otherwise*/>
 
     fun generateKey(
         algorithm: SymmetricKeyGenerationAlgorithm,
@@ -30,4 +35,11 @@ internal external interface SubtleCrypto {
 
     fun sign(algorithm: SignAlgorithm, key: CryptoKey, data: ByteArray): Promise<ByteArray>
     fun verify(algorithm: VerifyAlgorithm, key: CryptoKey, signature: ByteArray, data: ByteArray): Promise<Boolean>
+}
+
+internal fun SubtleCrypto.exportKeyBinary(format: String, key: CryptoKey): Promise<ByteArray> = exportKey(format, key).then { keyData ->
+    when (format) {
+        "jwk" -> JSON.stringify(keyData).encodeToByteArray()
+        else  -> keyData.unsafeCast<ByteArray>()
+    }
 }

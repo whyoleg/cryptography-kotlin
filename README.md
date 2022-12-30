@@ -26,7 +26,7 @@
 * [ ] Maven Central
 * [ ] README
 
-0.2.0 plans:
+0.2.0-0.3.0 plans:
 
 * [ ] Algorithms
     * [ ] SHA-3 (hash)
@@ -34,6 +34,9 @@
     * [ ] ChaCha20-Poly1305 (stream cipher)
     * [ ] PBKDF2 (prf)
     * [ ] HKDF (kdf)
+    * [ ] Agron2 (prf)
+    * [ ] scrypt (prf)
+    * [ ] brcypt (prf)
     * [ ] RSA-SSA-PKCS1 (signature)
     * [ ] CMAC (mac)
     * [ ] Blowfish (cipher), Blake (hash)- try to find some implementations
@@ -72,3 +75,4 @@
 * [ ] JDK Untyped support (using javax.crypto algorithms spec) - is it needed?
 * [ ] Hybrid Encryption
 * [ ] Double Ratchet Algorithm (?)
+* [ ] no-dependencies cryptogrpahy-random module with platform-specific implementations (?)
