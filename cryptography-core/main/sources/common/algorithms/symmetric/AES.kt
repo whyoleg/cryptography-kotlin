@@ -10,7 +10,8 @@ import dev.whyoleg.cryptography.operations.cipher.*
 import dev.whyoleg.cryptography.provider.*
 
 @SubclassOptInRequired(ProviderApi::class)
-public interface AES<K : AES.Key> : CryptographyAlgorithm, KeyDecoder<AES.Key.Format, K> {
+public interface AES<K : AES.Key> : CryptographyAlgorithm {
+    public fun keyDecoder(): KeyDecoder<Key.Format, K>
     public fun keyGenerator(keySize: SymmetricKeySize): KeyGenerator<K>
 
     @SubclassOptInRequired(ProviderApi::class)
@@ -22,22 +23,22 @@ public interface AES<K : AES.Key> : CryptographyAlgorithm, KeyDecoder<AES.Key.Fo
     }
 
     @SubclassOptInRequired(ProviderApi::class)
-    public abstract class CBC : AES<CBC.Key> {
+    public interface CBC : AES<CBC.Key> {
         public companion object : CryptographyAlgorithmId<CBC>()
 
         @SubclassOptInRequired(ProviderApi::class)
-        public abstract class Key : AES.Key {
-            public abstract fun cipher(padding: Boolean = true): Cipher
+        public interface Key : AES.Key {
+            public fun cipher(padding: Boolean = true): Cipher
         }
     }
 
     @SubclassOptInRequired(ProviderApi::class)
-    public abstract class GCM : AES<GCM.Key> {
+    public interface GCM : AES<GCM.Key> {
         public companion object : CryptographyAlgorithmId<GCM>()
 
         @SubclassOptInRequired(ProviderApi::class)
-        public abstract class Key : AES.Key {
-            public abstract fun cipher(tagSize: BinarySize = 128.bits): AuthenticatedCipher
+        public interface Key : AES.Key {
+            public fun cipher(tagSize: BinarySize = 128.bits): AuthenticatedCipher
         }
     }
 }

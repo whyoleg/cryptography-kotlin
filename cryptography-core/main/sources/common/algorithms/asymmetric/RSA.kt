@@ -12,8 +12,9 @@ import dev.whyoleg.cryptography.provider.*
 
 @SubclassOptInRequired(ProviderApi::class)
 public interface RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP : RSA.KeyPair<PublicK, PrivateK>> : CryptographyAlgorithm {
-    public val publicKeyDecoder: KeyDecoder<PublicKey.Format, PublicKey>
-    public val privateKeyDecoder: KeyDecoder<PrivateKey.Format, PrivateKey>
+    public fun publicKeyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<PublicKey.Format, PublicKey>
+    public fun privateKeyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<PrivateKey.Format, PrivateKey>
+
     public fun keyPairGenerator(
         keySize: BinarySize = 2048.bits,
         publicExponent: PublicExponent = PublicExponent.F4,
@@ -60,34 +61,38 @@ public interface RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP : RS
     }
 
     @SubclassOptInRequired(ProviderApi::class)
-    public abstract class OAEP : RSA<OAEP.PublicKey, OAEP.PrivateKey, OAEP.KeyPair> {
+    public interface OAEP : RSA<OAEP.PublicKey, OAEP.PrivateKey, OAEP.KeyPair> {
         public companion object : CryptographyAlgorithmId<OAEP>()
 
         @SubclassOptInRequired(ProviderApi::class)
-        public abstract class KeyPair : RSA.KeyPair<PublicKey, PrivateKey>
+        public interface KeyPair : RSA.KeyPair<PublicKey, PrivateKey>
 
         @SubclassOptInRequired(ProviderApi::class)
-        public abstract class PublicKey : RSA.PublicKey, AuthenticatedEncryptor
-
-        @SubclassOptInRequired(ProviderApi::class)
-        public abstract class PrivateKey : RSA.PrivateKey, AuthenticatedDecryptor
-    }
-
-    @SubclassOptInRequired(ProviderApi::class)
-    public abstract class PSS : RSA<PSS.PublicKey, PSS.PrivateKey, PSS.KeyPair> {
-        public companion object : CryptographyAlgorithmId<PSS>()
-
-        @SubclassOptInRequired(ProviderApi::class)
-        public abstract class KeyPair : RSA.KeyPair<PublicKey, PrivateKey>
-
-        @SubclassOptInRequired(ProviderApi::class)
-        public abstract class PublicKey : RSA.PublicKey {
-            public abstract fun signatureVerifier(saltLength: BinarySize): SignatureVerifier
+        public interface PublicKey : RSA.PublicKey {
+            public fun encryptor(): AuthenticatedEncryptor
         }
 
         @SubclassOptInRequired(ProviderApi::class)
-        public abstract class PrivateKey : RSA.PrivateKey {
-            public abstract fun signatureGenerator(saltLength: BinarySize): SignatureGenerator
+        public interface PrivateKey : RSA.PrivateKey {
+            public fun decryptor(): AuthenticatedDecryptor
+        }
+    }
+
+    @SubclassOptInRequired(ProviderApi::class)
+    public interface PSS : RSA<PSS.PublicKey, PSS.PrivateKey, PSS.KeyPair> {
+        public companion object : CryptographyAlgorithmId<PSS>()
+
+        @SubclassOptInRequired(ProviderApi::class)
+        public interface KeyPair : RSA.KeyPair<PublicKey, PrivateKey>
+
+        @SubclassOptInRequired(ProviderApi::class)
+        public interface PublicKey : RSA.PublicKey {
+            public fun signatureVerifier(saltLength: BinarySize): SignatureVerifier
+        }
+
+        @SubclassOptInRequired(ProviderApi::class)
+        public interface PrivateKey : RSA.PrivateKey {
+            public fun signatureGenerator(saltLength: BinarySize): SignatureGenerator
         }
     }
 }

@@ -8,8 +8,8 @@ import dev.whyoleg.cryptography.operations.hash.*
 import dev.whyoleg.cryptography.provider.*
 
 @SubclassOptInRequired(ProviderApi::class)
-public abstract class SHAKE : CryptographyAlgorithm {
-    public abstract fun hasher(digestSize: BinarySize): Hasher
+public interface SHAKE : CryptographyAlgorithm {
+    public fun hasher(digestSize: BinarySize): Hasher
 
     public object B128 : CryptographyAlgorithmId<SHAKE>()
     public object B256 : CryptographyAlgorithmId<SHAKE>()

@@ -11,13 +11,17 @@ import dev.whyoleg.cryptography.provider.*
 //TODO: decide on how we can support CMAC/GMAC
 
 @SubclassOptInRequired(ProviderApi::class)
-public abstract class HMAC : CryptographyAlgorithm, KeyDecoder<HMAC.Key.Format, HMAC.Key> {
+public interface HMAC : CryptographyAlgorithm {
     public companion object : CryptographyAlgorithmId<HMAC>()
 
-    public abstract fun keyGenerator(digest: Digest): KeyGenerator<Key>
+    public fun keyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<Key.Format, Key>
+    public fun keyGenerator(digest: CryptographyAlgorithmId<Digest> = SHA512): KeyGenerator<Key>
 
     @SubclassOptInRequired(ProviderApi::class)
-    public abstract class Key : EncodableKey<Key.Format>, SignatureGenerator, SignatureVerifier {
+    public interface Key : EncodableKey<Key.Format> {
+        public fun signatureGenerator(): SignatureGenerator
+        public fun signatureVerifier(): SignatureVerifier
+
         public sealed class Format : KeyFormat {
             public object RAW : Format(), KeyFormat.RAW
             public object JWK : Format(), KeyFormat.JWK

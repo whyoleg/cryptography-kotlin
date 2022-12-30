@@ -9,15 +9,15 @@ import dev.whyoleg.cryptography.operations.signature.*
 import dev.whyoleg.cryptography.provider.*
 import kotlin.jvm.*
 
-//TODO: Decide on how to get PublicKey from PrivateKey
+//TODO: Decide on how to get PublicKey from PrivateKey (if needed)
 //ECDSA and ECDH
 @SubclassOptInRequired(ProviderApi::class)
-public abstract class EC : CryptographyAlgorithm {
+public interface EC : CryptographyAlgorithm {
     public companion object : CryptographyAlgorithmId<EC>()
 
-    public abstract val publicKeyDecoder: KeyDecoder<PublicKey.Format, PublicKey>
-    public abstract val privateKeyDecoder: KeyDecoder<PrivateKey.Format, PrivateKey>
-    public abstract fun keyPairGenerator(curve: Curve): KeyGenerator<KeyPair>
+    public fun publicKeyDecoder(curve: Curve): KeyDecoder<PublicKey.Format, PublicKey>
+    public fun privateKeyDecoder(curve: Curve): KeyDecoder<PrivateKey.Format, PrivateKey>
+    public fun keyPairGenerator(curve: Curve): KeyGenerator<KeyPair>
 
     @JvmInline
     public value class Curve(public val name: String) {
@@ -33,14 +33,15 @@ public abstract class EC : CryptographyAlgorithm {
 
     //TODO: support key pair import/export
     @SubclassOptInRequired(ProviderApi::class)
-    public abstract class KeyPair : Key {
-        public abstract val publicKey: PublicKey
-        public abstract val privateKey: PrivateKey
+    public interface KeyPair : Key {
+        public val publicKey: PublicKey
+        public val privateKey: PrivateKey
     }
 
     @SubclassOptInRequired(ProviderApi::class)
-    public abstract class PublicKey : EncodableKey<PublicKey.Format>, SharedSecretDerivative<PrivateKey.Format> {
-        public abstract fun signatureVerifier(digest: CryptographyAlgorithmId<Digest>): SignatureVerifier
+    public interface PublicKey : EncodableKey<PublicKey.Format> {
+        public fun derivative(): SharedSecretDerivative<PrivateKey.Format>
+        public fun signatureVerifier(digest: CryptographyAlgorithmId<Digest>): SignatureVerifier
 
         public sealed class Format : KeyFormat {
             public object RAW : Format(), KeyFormat.RAW
@@ -51,9 +52,9 @@ public abstract class EC : CryptographyAlgorithm {
     }
 
     @SubclassOptInRequired(ProviderApi::class)
-    public abstract class PrivateKey : EncodableKey<PrivateKey.Format>, SharedSecretDerivative<PublicKey.Format> {
-        //        public abstract val publicKey: PublicKey //TODO: is it needed?
-        public abstract fun signatureGenerator(digest: CryptographyAlgorithmId<Digest>): SignatureGenerator
+    public interface PrivateKey : EncodableKey<PrivateKey.Format> {
+        public fun derivative(): SharedSecretDerivative<PublicKey.Format>
+        public fun signatureGenerator(digest: CryptographyAlgorithmId<Digest>): SignatureGenerator
 
         public sealed class Format : KeyFormat {
             public object PEM : Format(), KeyFormat.PEM

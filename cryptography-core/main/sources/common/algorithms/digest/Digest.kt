@@ -9,7 +9,9 @@ import dev.whyoleg.cryptography.provider.*
 
 //simple hash algorithms, that can be used in HMAC/ECDSA contexts
 @SubclassOptInRequired(ProviderApi::class)
-public abstract class Digest : CryptographyAlgorithm, Hasher
+public interface Digest : CryptographyAlgorithm {
+    public fun hasher(): Hasher
+}
 
 @InsecureAlgorithm
 public object MD5 : CryptographyAlgorithmId<Digest>()
