@@ -76,3 +76,4 @@
 * [ ] Hybrid Encryption
 * [ ] Double Ratchet Algorithm (?)
 * [ ] no-dependencies cryptogrpahy-random module with platform-specific implementations (?)
+* [ ] Decide on algorithms access in code. f.e. AES.CBC, RSA.OAEP vs ECDSA, ECDH, etc.
