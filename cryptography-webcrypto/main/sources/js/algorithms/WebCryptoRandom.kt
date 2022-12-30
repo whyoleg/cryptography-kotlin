@@ -1,4 +1,4 @@
-package dev.whyoleg.cryptography.webcrypto.internal
+package dev.whyoleg.cryptography.webcrypto.algorithms
 
 import dev.whyoleg.cryptography.algorithms.random.*
 import dev.whyoleg.cryptography.io.*

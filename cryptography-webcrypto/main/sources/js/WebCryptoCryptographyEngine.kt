@@ -1,4 +1,4 @@
-package dev.whyoleg.cryptography.webcrypto.internal
+package dev.whyoleg.cryptography.webcrypto
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
@@ -9,6 +9,9 @@ import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.algorithms.symmetric.mac.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.provider.*
+import dev.whyoleg.cryptography.webcrypto.algorithms.*
+
+public val CryptographyProvider.Companion.WebCrypto: CryptographyProvider get() = WebCryptoCryptographyEngine
 
 internal object WebCryptoCryptographyEngine : CryptographyProvider("WebCrypto") {
 

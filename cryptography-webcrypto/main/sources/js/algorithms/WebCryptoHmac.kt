@@ -1,12 +1,14 @@
-package dev.whyoleg.cryptography.webcrypto.internal
+package dev.whyoleg.cryptography.webcrypto.algorithms
 
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.symmetric.mac.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.signature.*
+import dev.whyoleg.cryptography.webcrypto.*
 import dev.whyoleg.cryptography.webcrypto.external.*
-import dev.whyoleg.cryptography.webcrypto.internal.key.*
+import dev.whyoleg.cryptography.webcrypto.materials.*
+import dev.whyoleg.cryptography.webcrypto.operations.*
 
 internal object WebCryptoHmac : HMAC {
     private val keyUsages = arrayOf("sign", "verify")

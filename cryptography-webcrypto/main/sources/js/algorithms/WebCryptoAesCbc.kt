@@ -1,11 +1,12 @@
-package dev.whyoleg.cryptography.webcrypto.internal
+package dev.whyoleg.cryptography.webcrypto.algorithms
 
 import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.io.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.cipher.*
+import dev.whyoleg.cryptography.webcrypto.*
 import dev.whyoleg.cryptography.webcrypto.external.*
-import dev.whyoleg.cryptography.webcrypto.internal.key.*
+import dev.whyoleg.cryptography.webcrypto.materials.*
 
 private const val ivSizeBytes = 16 //bytes for CBC
 

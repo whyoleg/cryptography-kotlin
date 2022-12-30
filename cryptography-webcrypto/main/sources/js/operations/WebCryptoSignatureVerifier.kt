@@ -1,7 +1,8 @@
-package dev.whyoleg.cryptography.webcrypto.internal
+package dev.whyoleg.cryptography.webcrypto.operations
 
 import dev.whyoleg.cryptography.io.*
 import dev.whyoleg.cryptography.operations.signature.*
+import dev.whyoleg.cryptography.webcrypto.*
 import dev.whyoleg.cryptography.webcrypto.external.*
 
 internal class WebCryptoSignatureVerifier(

@@ -1,9 +1,9 @@
-package dev.whyoleg.cryptography.webcrypto.internal.key
+package dev.whyoleg.cryptography.webcrypto.materials
 
 import dev.whyoleg.cryptography.io.*
 import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.webcrypto.*
 import dev.whyoleg.cryptography.webcrypto.external.*
-import dev.whyoleg.cryptography.webcrypto.internal.*
 
 internal class WebCryptoKeyDecoder<KF : KeyFormat, K : Key>(
     private val algorithm: KeyImportAlgorithm,
