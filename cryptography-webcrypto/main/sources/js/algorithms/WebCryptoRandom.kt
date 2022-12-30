@@ -5,7 +5,7 @@ import dev.whyoleg.cryptography.io.*
 import dev.whyoleg.cryptography.webcrypto.external.*
 import kotlin.random.*
 
-internal object WebCryptoRandom : PlatformDependantRandom() {
+internal object WebCryptoRandom : PlatformDependantRandom {
 
     override suspend fun random(size: Int): Buffer {
         return WebCrypto.getRandomValues(ByteArray(size))

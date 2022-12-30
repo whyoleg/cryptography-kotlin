@@ -16,7 +16,6 @@
     * [ ] Key import/export
     * [ ] Key agreement
 * [ ] Engines
-    * [ ] WebCrypto
     * [ ] JDK
     * [ ] CoreCrypto
     * [ ] OpenSSL(1/3) engine (dynamic)

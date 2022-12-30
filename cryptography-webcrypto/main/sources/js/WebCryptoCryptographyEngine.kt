@@ -14,6 +14,8 @@ import dev.whyoleg.cryptography.webcrypto.algorithms.*
 
 public val CryptographyProvider.Companion.WebCrypto: CryptographyProvider get() = WebCryptoCryptographyEngine
 
+//Not yet implemented: HKDF, PBKDF2, RSASSA-PKCS1-v1_5, AES-KW
+//PEM support
 internal object WebCryptoCryptographyEngine : CryptographyProvider("WebCrypto") {
 
     @Suppress("UNCHECKED_CAST")

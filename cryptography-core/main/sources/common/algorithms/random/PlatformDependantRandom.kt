@@ -6,6 +6,6 @@ import dev.whyoleg.cryptography.operations.random.*
 import dev.whyoleg.cryptography.provider.*
 
 @SubclassOptInRequired(ProviderApi::class)
-public abstract class PlatformDependantRandom : CryptographyAlgorithm, Randomizer {
+public interface PlatformDependantRandom : CryptographyAlgorithm, Randomizer {
     public companion object : CryptographyAlgorithmId<PlatformDependantRandom>()
 }
