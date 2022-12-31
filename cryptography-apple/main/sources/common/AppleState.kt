@@ -1,8 +1,8 @@
-package dev.whyoleg.cryptography.apple.internal
+package dev.whyoleg.cryptography.apple
 
 import dev.whyoleg.cryptography.provider.*
 
-internal class CoreCryptoState(
+internal class AppleState(
     val adaptor: SuspendAdaptor?,
 ) {
     suspend inline fun <T> execute(crossinline block: () -> T): T = adaptor?.execute { block() } ?: block()

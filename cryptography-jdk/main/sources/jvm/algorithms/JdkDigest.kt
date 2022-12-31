@@ -1,4 +1,4 @@
-package dev.whyoleg.cryptography.jdk.operations
+package dev.whyoleg.cryptography.jdk.algorithms
 
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.io.*

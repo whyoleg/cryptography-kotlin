@@ -2,6 +2,7 @@ package dev.whyoleg.cryptography.apple.internal
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
+import dev.whyoleg.cryptography.apple.*
 import dev.whyoleg.cryptography.io.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.operations.cipher.*
@@ -13,14 +14,14 @@ import kotlin.random.*
 private const val ivSizeBytes = 16 //bytes for GCM
 
 internal class AesCbcKeyGeneratorProvider(
-    private val state: CoreCryptoState,
+    private val state: AppleState,
 ) : KeyGeneratorProvider<SymmetricKeyParameters, AES.CBC.Key>() {
     override fun provideOperation(parameters: SymmetricKeyParameters): KeyGenerator<AES.CBC.Key> =
         AesCbcKeyGenerator(state, parameters.size.value.bits)
 }
 
 internal class AesCbcKeyGenerator(
-    private val state: CoreCryptoState,
+    private val state: AppleState,
     private val keySizeBytes: Int,
 ) : KeyGenerator<AES.CBC.Key> {
     override fun generateKeyBlocking(): AES.CBC.Key {
@@ -40,7 +41,7 @@ internal class AesCbcKeyGenerator(
 }
 
 internal class AesCbcCipherProvider(
-    private val state: CoreCryptoState,
+    private val state: AppleState,
     private val key: Buffer,
 ) : CipherProvider<AES.CBC.CipherParameters>() {
     override fun provideOperation(parameters: AES.CBC.CipherParameters): Cipher =
@@ -48,7 +49,7 @@ internal class AesCbcCipherProvider(
 }
 
 internal class AesCbcCipher(
-    private val state: CoreCryptoState,
+    private val state: AppleState,
     private val key: Buffer,
     private val padding: Boolean,
 ) : Cipher {

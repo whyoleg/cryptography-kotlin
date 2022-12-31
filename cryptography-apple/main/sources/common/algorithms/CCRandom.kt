@@ -1,17 +1,16 @@
-package dev.whyoleg.cryptography.apple.internal
+package dev.whyoleg.cryptography.apple.algorithms
 
 import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.algorithms.random.*
+import dev.whyoleg.cryptography.apple.*
 import dev.whyoleg.cryptography.io.*
-import dev.whyoleg.cryptography.operations.*
-import dev.whyoleg.cryptography.operations.random.*
 import kotlinx.cinterop.*
 import platform.CoreCrypto.*
 import kotlin.random.*
 
 internal class CCRandom(
-    private val state: CoreCryptoState,
-) : RandomizerProvider<CryptographyOperationParameters.Empty>(), Randomizer {
-    override fun provideOperation(parameters: CryptographyOperationParameters.Empty): Randomizer = this
+    private val state: AppleState,
+) : PlatformDependantRandom {
 
     override fun randomBlocking(size: Int): Buffer {
         return randomBlocking(ByteArray(size))
