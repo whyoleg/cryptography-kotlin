@@ -1,0 +1,46 @@
+package dev.whyoleg.cryptography.jdk
+
+import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.algorithms.*
+import dev.whyoleg.cryptography.algorithms.digest.*
+import dev.whyoleg.cryptography.algorithms.random.*
+import dev.whyoleg.cryptography.algorithms.symmetric.*
+import dev.whyoleg.cryptography.algorithms.symmetric.mac.*
+import dev.whyoleg.cryptography.jdk.*
+import dev.whyoleg.cryptography.jdk.algorithms.*
+import dev.whyoleg.cryptography.jdk.operations.*
+import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.provider.*
+import java.security.*
+import java.util.concurrent.*
+
+public val CryptographyProvider.Companion.JDK: CryptographyProvider by lazy(CryptographyProvider.Companion::JDK)
+
+@Suppress("FunctionName")
+public fun CryptographyProvider.Companion.JDK(
+    provider: JdkProvider = JdkProvider.Default,
+    secureRandom: SecureRandom = DefaultSecureRandom,
+    adaptor: SuspendAdaptor? = null,
+): CryptographyProvider = JdkCryptographyProvider(JdkCryptographyState(provider, secureRandom, adaptor))
+
+internal class JdkCryptographyProvider(
+    private val state: JdkCryptographyState,
+) : CryptographyProvider("JDK") {
+    private val cache = ConcurrentHashMap<CryptographyAlgorithmId<*>, CryptographyAlgorithm>()
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <A : CryptographyAlgorithm> getOrNull(identifier: CryptographyAlgorithmId<A>): A? = cache.getOrPut(identifier) {
+        when (identifier) {
+            PlatformDependantRandom -> JdkPlatformRandom(state)
+            MD5                     -> JdkDigest(state, "MD5")
+            SHA1                    -> JdkDigest(state, "SHA-1")
+            SHA256                  -> JdkDigest(state, "SHA-256")
+            SHA384                  -> JdkDigest(state, "SHA-384")
+            SHA512                  -> JdkDigest(state, "SHA-512")
+            HMAC                    -> JdkHmac(state)
+            AES.CBC                 -> JdkAesCbc(state)
+            AES.GCM                 -> JdkAesGcm(state)
+            else                    -> return null
+        }
+    } as A
+}

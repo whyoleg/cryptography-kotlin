@@ -1,40 +1,29 @@
-package dev.whyoleg.cryptography.jdk.internal
+package dev.whyoleg.cryptography.jdk.operations
 
 import dev.whyoleg.cryptography.io.*
 import dev.whyoleg.cryptography.jdk.*
-import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.operations.signature.*
 import javax.crypto.*
-
-internal class JdkMacSignatureProvider(
-    private val state: JdkCryptographyState,
-    private val key: SecretKey,
-    private val algorithm: String,
-) : SignatureProvider<CryptographyOperationParameters.Empty>() {
-    override fun provideOperation(parameters: CryptographyOperationParameters.Empty): Signature = JdkMacSignature(state, key, algorithm)
-}
 
 internal class JdkMacSignature(
     private val state: JdkCryptographyState,
     private val key: SecretKey,
     algorithm: String,
-) : Signature {
-    private val mac = threadLocal { state.provider.mac(algorithm) }
+) : SignatureGenerator, SignatureVerifier {
+    private val mac = state.mac(algorithm)
 
-    override val signatureSize: Int get() = mac.get().macLength
+    override val signatureSize: Int get() = mac.use { it.macLength }
 
-    override fun generateSignatureBlocking(dataInput: Buffer): Buffer {
-        val mac = mac.get()
+    override fun generateSignatureBlocking(dataInput: Buffer): Buffer = mac.use { mac ->
         mac.init(key)
-        return mac.doFinal(dataInput)
+        mac.doFinal(dataInput)
     }
 
-    override fun generateSignatureBlocking(dataInput: Buffer, signatureOutput: Buffer): Buffer {
-        val mac = mac.get()
+    override fun generateSignatureBlocking(dataInput: Buffer, signatureOutput: Buffer): Buffer = mac.use { mac ->
         mac.init(key)
         mac.update(dataInput)
         mac.doFinal(signatureOutput, 0)
-        return signatureOutput
+        signatureOutput
     }
 
     override fun verifySignatureBlocking(dataInput: Buffer, signatureInput: Buffer): Boolean {

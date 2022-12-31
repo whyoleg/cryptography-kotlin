@@ -1,17 +1,13 @@
-package dev.whyoleg.cryptography.jdk.internal
+package dev.whyoleg.cryptography.jdk.algorithms
 
+import dev.whyoleg.cryptography.algorithms.random.*
 import dev.whyoleg.cryptography.io.*
-import dev.whyoleg.cryptography.operations.*
-import dev.whyoleg.cryptography.operations.random.*
-import java.security.*
+import dev.whyoleg.cryptography.jdk.*
 import kotlin.random.*
 
-internal val DefaultSecureRandom: SecureRandom = SecureRandom()
-
-internal class JdkRandomProvider(
+internal class JdkPlatformRandom(
     private val state: JdkCryptographyState,
-) : RandomizerProvider<CryptographyOperationParameters.Empty>(), Randomizer {
-    override fun provideOperation(parameters: CryptographyOperationParameters.Empty): Randomizer = this
+) : PlatformDependantRandom {
 
     override fun randomBlocking(size: Int): Buffer {
         return ByteArray(size).also(DefaultSecureRandom::nextBytes)

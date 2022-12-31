@@ -12,11 +12,11 @@ import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.provider.*
 import dev.whyoleg.cryptography.webcrypto.algorithms.*
 
-public val CryptographyProvider.Companion.WebCrypto: CryptographyProvider get() = WebCryptoCryptographyEngine
+public val CryptographyProvider.Companion.WebCrypto: CryptographyProvider get() = WebCryptoCryptographyProvider
 
 //Not yet implemented: HKDF, PBKDF2, RSASSA-PKCS1-v1_5, AES-KW
 //PEM support
-internal object WebCryptoCryptographyEngine : CryptographyProvider("WebCrypto") {
+internal object WebCryptoCryptographyProvider : CryptographyProvider("WebCrypto") {
 
     @Suppress("UNCHECKED_CAST")
     override fun <A : CryptographyAlgorithm> getOrNull(identifier: CryptographyAlgorithmId<A>): A? = when (identifier) {
