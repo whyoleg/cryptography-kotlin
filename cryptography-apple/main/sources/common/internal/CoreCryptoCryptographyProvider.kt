@@ -1,13 +1,21 @@
-package dev.whyoleg.cryptography.corecrypto.internal
+package dev.whyoleg.cryptography.apple.internal
 
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.random.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.algorithms.symmetric.mac.*
-import dev.whyoleg.cryptography.corecrypto.internal.*
+import dev.whyoleg.cryptography.apple.internal.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.provider.*
+
+//CoreCrypto support
+// MD5, SHA1, SHA2 +
+// HMAC over SHA +
+// AES-CBC (CTR) +
+
+//Not yet implemented: PBKDF2, AES-KW
+//https://opensource.apple.com/source/CommonCrypto/CommonCrypto-36064/CommonCrypto/CommonCryptor.h.auto.html
 
 internal class CoreCryptoCryptographyProvider(
     private val state: CoreCryptoState,

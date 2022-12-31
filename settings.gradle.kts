@@ -40,7 +40,7 @@ include("cryptography-tests")
 //providers
 
 include("cryptography-jdk") //jvm only
-include("cryptography-corecrypto") //darwin only
+include("cryptography-apple") //darwin only
 include("cryptography-webcrypto") //js(nodejs/browser) only
 //include("cryptography-openssl") //all platforms, starting from linux/macos/windows
 //include("cryptography-openssl3") //all platforms, starting from linux/macos/windows

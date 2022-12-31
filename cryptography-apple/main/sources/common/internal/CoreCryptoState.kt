@@ -1,4 +1,4 @@
-package dev.whyoleg.cryptography.corecrypto.internal
+package dev.whyoleg.cryptography.apple.internal
 
 import dev.whyoleg.cryptography.provider.*
 

@@ -1,4 +1,4 @@
-package dev.whyoleg.cryptography.corecrypto.internal
+package dev.whyoleg.cryptography.apple.internal
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.io.*
@@ -6,6 +6,7 @@ import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.operations.hash.*
 import kotlinx.cinterop.*
 import platform.CoreCrypto.*
+import platform.Security.*
 
 internal class CCHasherProvider(
     private val state: CoreCryptoState,
