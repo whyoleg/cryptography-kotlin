@@ -1,11 +1,8 @@
 package dev.whyoleg.cryptography.apple.algorithms
 
-import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.random.*
 import dev.whyoleg.cryptography.apple.*
 import dev.whyoleg.cryptography.io.*
-import kotlinx.cinterop.*
-import platform.CoreCrypto.*
 import kotlin.random.*
 
 internal class CCRandom(
@@ -17,10 +14,7 @@ internal class CCRandom(
     }
 
     override fun randomBlocking(output: Buffer): Buffer {
-        if (
-            CCRandomGenerateBytes(output.refTo(0), output.size.convert()) != kCCSuccess
-        ) throw CryptographyException("CCRandomGenerateBytes failed")
-        return output
+        return randomBytes(output)
     }
 
     override suspend fun random(size: Int): Buffer {

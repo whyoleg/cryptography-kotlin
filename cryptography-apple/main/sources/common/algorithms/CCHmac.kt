@@ -13,7 +13,6 @@ import platform.CoreCrypto.*
 
 internal class CCHmac(
     private val state: AppleState,
-    private val random: CCRandom,
 ) : HMAC {
     override fun keyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<HMAC.Key.Format, HMAC.Key> {
         TODO("Not yet implemented")
@@ -27,7 +26,7 @@ internal class CCHmac(
             SHA512 -> kCCHmacAlgSHA512 to CC_SHA512_DIGEST_LENGTH
             else   -> throw CryptographyException("Unsupported hash algorithm: $digest")
         }
-        return HmacKeyGenerator(state, keySize, hmacAlgorithm, random)
+        return HmacKeyGenerator(state, keySize, hmacAlgorithm)
     }
 }
 
@@ -35,10 +34,9 @@ private class HmacKeyGenerator(
     private val state: AppleState,
     private val keySizeBytes: Int,
     private val hmacAlgorithm: CCHmacAlgorithm,
-    private val random: CCRandom,
 ) : KeyGenerator<HMAC.Key> {
     override fun generateKeyBlocking(): HMAC.Key {
-        val key = random.randomBlocking(keySizeBytes)
+        val key = randomBytes(keySizeBytes)
         return object : HMAC.Key {
             private val signature = HmacSignature(state, key, hmacAlgorithm)
             override fun signatureGenerator(): SignatureGenerator = signature

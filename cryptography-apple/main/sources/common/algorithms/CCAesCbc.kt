@@ -1,38 +1,44 @@
-package dev.whyoleg.cryptography.apple.internal
+package dev.whyoleg.cryptography.apple.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.apple.*
 import dev.whyoleg.cryptography.io.*
-import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.cipher.*
-import dev.whyoleg.cryptography.operations.key.*
 import kotlinx.cinterop.*
 import platform.CoreCrypto.*
 import kotlin.random.*
 
-private const val ivSizeBytes = 16 //bytes for GCM
-
-internal class AesCbcKeyGeneratorProvider(
+internal class CCAesCbc(
     private val state: AppleState,
-) : KeyGeneratorProvider<SymmetricKeyParameters, AES.CBC.Key>() {
-    override fun provideOperation(parameters: SymmetricKeyParameters): KeyGenerator<AES.CBC.Key> =
-        AesCbcKeyGenerator(state, parameters.size.value.bits)
+) : AES.CBC {
+    private val keyDecoder = AesCbcKeyDecoder(state)
+    override fun keyDecoder(): KeyDecoder<AES.Key.Format, AES.CBC.Key> = keyDecoder
+
+    override fun keyGenerator(keySize: SymmetricKeySize): KeyGenerator<AES.CBC.Key> =
+        AesCbcKeyGenerator(state, keySize.value.bytes)
 }
 
-internal class AesCbcKeyGenerator(
+private class AesCbcKeyDecoder(
+    private val state: AppleState,
+) : KeyDecoder<AES.Key.Format, AES.CBC.Key> {
+    override fun decodeFromBlocking(format: AES.Key.Format, input: Buffer): AES.CBC.Key {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun decodeFrom(format: AES.Key.Format, input: Buffer): AES.CBC.Key {
+        return state.execute { decodeFromBlocking(format, input) }
+    }
+}
+
+private class AesCbcKeyGenerator(
     private val state: AppleState,
     private val keySizeBytes: Int,
 ) : KeyGenerator<AES.CBC.Key> {
     override fun generateKeyBlocking(): AES.CBC.Key {
-        val key = ByteArray(keySizeBytes)
-        if (
-            CCRandomGenerateBytes(key.refTo(0), keySizeBytes.convert()) != kCCSuccess
-        ) throw CryptographyException("CCRandomGenerateBytes failed")
-        return AES.CBC.Key(
-            AesCbcCipherProvider(state, key),
-            NotSupportedProvider()
-        )
+        val key = randomBytes(keySizeBytes)
+        return wrapKey(state, key)
     }
 
     override suspend fun generateKey(): AES.CBC.Key {
@@ -40,15 +46,29 @@ internal class AesCbcKeyGenerator(
     }
 }
 
-internal class AesCbcCipherProvider(
-    private val state: AppleState,
-    private val key: Buffer,
-) : CipherProvider<AES.CBC.CipherParameters>() {
-    override fun provideOperation(parameters: AES.CBC.CipherParameters): Cipher =
-        AesCbcCipher(state, key, parameters.padding)
+private fun wrapKey(state: AppleState, key: ByteArray): AES.CBC.Key = object : AES.CBC.Key {
+    override fun cipher(padding: Boolean): Cipher = AesCbcCipher(state, key, padding)
+
+    override suspend fun encodeTo(format: AES.Key.Format): Buffer {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun encodeTo(format: AES.Key.Format, output: Buffer): Buffer {
+        TODO("Not yet implemented")
+    }
+
+    override fun encodeToBlocking(format: AES.Key.Format): Buffer {
+        TODO("Not yet implemented")
+    }
+
+    override fun encodeToBlocking(format: AES.Key.Format, output: Buffer): Buffer {
+        TODO("Not yet implemented")
+    }
 }
 
-internal class AesCbcCipher(
+private const val ivSizeBytes = 16 //bytes for GCM
+
+private class AesCbcCipher(
     private val state: AppleState,
     private val key: Buffer,
     private val padding: Boolean,

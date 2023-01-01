@@ -6,7 +6,6 @@ import dev.whyoleg.cryptography.algorithms.random.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.algorithms.symmetric.mac.*
 import dev.whyoleg.cryptography.apple.algorithms.*
-import dev.whyoleg.cryptography.apple.internal.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.provider.*
 
@@ -36,11 +35,8 @@ internal class AppleCryptographyProvider(
         SHA256                  -> CCDigest(state, CCHashAlgorithm.SHA256)
         SHA384                  -> CCDigest(state, CCHashAlgorithm.SHA384)
         SHA512                  -> CCDigest(state, CCHashAlgorithm.SHA512)
-        HMAC                    -> CCHmac(state, CCRandom(state)) //TODO
-//        AES.CBC                 -> AES.CBC(
-//            AesCbcKeyGeneratorProvider(state),
-//            NotSupportedProvider()
-//        )
+        HMAC                    -> CCHmac(state)
+        AES.CBC                 -> CCAesCbc(state)
         else                    -> throw CryptographyAlgorithmNotFoundException(identifier)
     } as A?
 }
