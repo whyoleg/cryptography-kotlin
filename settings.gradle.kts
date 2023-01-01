@@ -18,13 +18,8 @@ dependencyResolutionManagement {
 
 rootProject.name = "cryptography-kotlin"
 
-//Buffer + Closeable - this module should be removed later
-include("cryptography-io")
 
-//materials API: key management, import, export, key chain
-//operations APIs
-// divided in packages per kind of operation (hash, signature, encryption, random, etc)
-// operation by algorithms injection
+include("cryptography-io")
 include("cryptography-core")
 
 //mapping from sync to async via dispatcher or channel
@@ -44,56 +39,3 @@ include("cryptography-apple") //darwin only
 include("cryptography-webcrypto") //js(nodejs/browser) only
 //include("cryptography-openssl") //all platforms, starting from linux/macos/windows
 //include("cryptography-openssl3") //all platforms, starting from linux/macos/windows
-
-//TODO: decide on name
-//include("cryptography-default") //all platforms - use best fit for every platform
-
-//WIP
-
-//need to support ALL algorithms that are shared between:
-// - JDK (jvm/android)
-// - JS WebCrypto (js) - only async support, small subset of algorithms
-// - CoreCrypto (darwin/iOS)
-// - CryptoKit (swift) - at least try to use it and check which algorithms are supported
-// - OpenSSL (linux)
-// - CNG (windows)
-// - Rust Crypto - check on supported algorithms
-// + some additional popular algorithms that are supported by JDK/OpenSSL
-
-/** Algorithms examples:
- * - encryption/decryption: AES(CTR, CBC, GCM) +, RSA(OAEP)
- * - hash: SHA(1, 2, 3) +, SHAKE(128, 256) +
- * - mac: HMAC(ANY HASH) +, CMAC(AES-CBC) +, GMAC(AES-GCM) +
- * - sing/verify: RSA(SSA, PSS), ECDSA
- * - key wrap/unwrap: AES(all + KW), RSA(OAEP)
- * - derive key: ECDH, HKDF, PBKDF2
- * - importing key formats: RAW, JWK, PKCS-XXX
- */
-
-//get can be sync and async; primitive can be sync and async
-
-
-/**
- * TODO
- *  - key / keypair / symmetric(secret) key / asymmetric (private + public) key
- *  - derive key
- *  - key agreement (?)
- *  - key exchange (?)
- *  - keystore/keymanager/keychain/keyring
- *  - import key
- *  - export key
- *  - wrap key
- *  - unwrap key
- *  - key formats
- *  - key usages
- */
-
-//Key format: RAW (Bytes), PEM, DER, JWK, PKCS-12
-//Destination: java key store, key chain, file, secure enclave (?)
-
-//TODO: structure
-//TODO: is random an operation, or something different, something more core-ish?
-
-//materials(keys) : keys, certificates, etc (where key chain, key store support should be?)
-//operations: ciphers, hashes, prf, kdf, mac, signatures, key agreement (DH, ECDH) (what it' really is???)
-//algorithms: AES (AES-CBC, AES-GCM), EC (ECDH, ECDSA), RSA, etc

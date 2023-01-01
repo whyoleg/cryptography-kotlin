@@ -51,8 +51,11 @@
 * [ ] Materials
     * [ ] introduce materials: key, key pair, certificate, certificate chain, certificate+key pair etc
     * [ ] X.509 Certificates
-    * [ ] JDK KeyStore
     * [ ] PKCS12 support
+    * [ ] Keys
+        * [ ] keystore/keymanager/keychain/keyring?
+        * [ ] Destination: java key store, key chain, file, secure enclave (?)
+        * [ ] JDK KeyStore
 * [ ] Engines
     * [ ] CryptoKit engine
     * [ ] Windows CNG engine
@@ -73,3 +76,4 @@
 * [ ] Double Ratchet Algorithm (?)
 * [ ] no-dependencies cryptogrpahy-random module with platform-specific implementations (?)
 * [ ] Decide on algorithms access in code. f.e. AES.CBC, RSA.OAEP vs ECDSA, ECDH, etc.
+* [ ] key usages (like in WebCrypto) - is it needed?
