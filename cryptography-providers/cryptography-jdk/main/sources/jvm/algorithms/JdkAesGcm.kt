@@ -50,41 +50,17 @@ private class AesGcmCipher(
         iv + cipher.doFinal(plaintextInput)
     }
 
-    override fun encryptBlocking(associatedData: Buffer?, plaintextInput: Buffer, ciphertextOutput: Buffer): Buffer = cipher.use { cipher ->
-        val iv = ByteArray(ivSizeBytes).also(state.secureRandom::nextBytes)
-        cipher.init(JdkCipher.ENCRYPT_MODE, key, GCMParameterSpec(tagSize.bits, iv), state.secureRandom)
-        associatedData?.let(cipher::updateAAD)
-        cipher.doFinal(plaintextInput, 0, plaintextInput.size, ciphertextOutput)
-        iv + ciphertextOutput
-    }
-
     override fun decryptBlocking(associatedData: Buffer?, ciphertextInput: Buffer): Buffer = cipher.use { cipher ->
         cipher.init(JdkCipher.DECRYPT_MODE, key, GCMParameterSpec(tagSize.bits, ciphertextInput, 0, ivSizeBytes), state.secureRandom)
         associatedData?.let(cipher::updateAAD)
         cipher.doFinal(ciphertextInput, ivSizeBytes, ciphertextInput.size - ivSizeBytes)
     }
 
-    override fun decryptBlocking(associatedData: Buffer?, ciphertextInput: Buffer, plaintextOutput: Buffer): Buffer = cipher.use { cipher ->
-        cipher.init(JdkCipher.DECRYPT_MODE, key, GCMParameterSpec(tagSize.bits, ciphertextInput, 0, ivSizeBytes), state.secureRandom)
-        associatedData?.let(cipher::updateAAD)
-        cipher.doFinal(ciphertextInput, ivSizeBytes, ciphertextInput.size - ivSizeBytes, plaintextOutput, 0)
-        plaintextOutput
-    }
-
     override suspend fun decrypt(associatedData: Buffer?, ciphertextInput: Buffer): Buffer {
         return state.execute { decryptBlocking(associatedData, ciphertextInput) }
-    }
-
-    override suspend fun decrypt(associatedData: Buffer?, ciphertextInput: Buffer, plaintextOutput: Buffer): Buffer {
-        return state.execute { decryptBlocking(associatedData, ciphertextInput, plaintextOutput) }
     }
 
     override suspend fun encrypt(associatedData: Buffer?, plaintextInput: Buffer): Buffer {
         return state.execute { encryptBlocking(associatedData, plaintextInput) }
     }
-
-    override suspend fun encrypt(associatedData: Buffer?, plaintextInput: Buffer, ciphertextOutput: Buffer): Buffer {
-        return state.execute { encryptBlocking(associatedData, plaintextInput, ciphertextOutput) }
-    }
-
 }

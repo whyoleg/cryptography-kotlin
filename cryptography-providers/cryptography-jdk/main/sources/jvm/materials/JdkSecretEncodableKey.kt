@@ -14,14 +14,8 @@ internal class JdkSecretEncodableKey<KF : KeyFormat>(
         TODO("$format is not yet supported")
     }
 
-    override fun encodeToBlocking(format: KF, output: Buffer): Buffer = encodeToBlocking(format).copyInto(output)
-
     override suspend fun encodeTo(format: KF): Buffer {
         return state.execute { encodeToBlocking(format) }
-    }
-
-    override suspend fun encodeTo(format: KF, output: Buffer): Buffer {
-        return state.execute { encodeToBlocking(format, output) }
     }
 }
 

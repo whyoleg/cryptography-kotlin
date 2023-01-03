@@ -25,10 +25,5 @@ internal class WebCryptoDigest private constructor(
         return WebCrypto.subtle.digest(algorithm, dataInput).await().toByteArray()
     }
 
-    override suspend fun hash(dataInput: Buffer, digestOutput: Buffer): Buffer {
-        return hash(dataInput).copyInto(digestOutput)
-    }
-
     override fun hashBlocking(dataInput: Buffer): Buffer = nonBlocking()
-    override fun hashBlocking(dataInput: Buffer, digestOutput: Buffer): Buffer = nonBlocking()
 }

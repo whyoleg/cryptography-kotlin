@@ -46,15 +46,7 @@ private class HmacKeyGenerator(
                 TODO("Not yet implemented")
             }
 
-            override suspend fun encodeTo(format: HMAC.Key.Format, output: Buffer): Buffer {
-                TODO("Not yet implemented")
-            }
-
             override fun encodeToBlocking(format: HMAC.Key.Format): Buffer {
-                TODO("Not yet implemented")
-            }
-
-            override fun encodeToBlocking(format: HMAC.Key.Format, output: Buffer): Buffer {
                 TODO("Not yet implemented")
             }
         }
@@ -87,20 +79,12 @@ private class HmacSignature(
         return macOutput
     }
 
-    override fun generateSignatureBlocking(dataInput: Buffer, signatureOutput: Buffer): Buffer {
-        TODO("Not yet implemented")
-    }
-
     override fun verifySignatureBlocking(dataInput: Buffer, signatureInput: Buffer): Boolean {
         return generateSignatureBlocking(dataInput).contentEquals(signatureInput)
     }
 
     override suspend fun generateSignature(dataInput: Buffer): Buffer {
         return state.execute { generateSignatureBlocking(dataInput) }
-    }
-
-    override suspend fun generateSignature(dataInput: Buffer, signatureOutput: Buffer): Buffer {
-        return state.execute { generateSignatureBlocking(dataInput, signatureOutput) }
     }
 
     override suspend fun verifySignature(dataInput: Buffer, signatureInput: Buffer): Boolean {

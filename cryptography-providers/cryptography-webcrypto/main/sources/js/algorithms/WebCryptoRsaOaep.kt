@@ -93,12 +93,7 @@ private class RsaOaepEncryptor(private val key: CryptoKey) : AuthenticatedEncryp
         ).await().toByteArray()
     }
 
-    override suspend fun encrypt(associatedData: Buffer?, plaintextInput: Buffer, ciphertextOutput: Buffer): Buffer {
-        return encrypt(associatedData, plaintextInput).copyInto(ciphertextOutput)
-    }
-
     override fun encryptBlocking(associatedData: Buffer?, plaintextInput: Buffer): Buffer = nonBlocking()
-    override fun encryptBlocking(associatedData: Buffer?, plaintextInput: Buffer, ciphertextOutput: Buffer): Buffer = nonBlocking()
 }
 
 private class RsaOaepDecryptor(private val key: CryptoKey) : AuthenticatedDecryptor {
@@ -114,10 +109,5 @@ private class RsaOaepDecryptor(private val key: CryptoKey) : AuthenticatedDecryp
         ).await().toByteArray()
     }
 
-    override suspend fun decrypt(associatedData: Buffer?, ciphertextInput: Buffer, plaintextOutput: Buffer): Buffer {
-        return decrypt(associatedData, ciphertextInput).copyInto(plaintextOutput)
-    }
-
     override fun decryptBlocking(associatedData: Buffer?, ciphertextInput: Buffer): Buffer = nonBlocking()
-    override fun decryptBlocking(associatedData: Buffer?, ciphertextInput: Buffer, plaintextOutput: Buffer): Buffer = nonBlocking()
 }

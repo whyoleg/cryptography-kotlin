@@ -17,7 +17,5 @@ internal class WebCryptoEncodableKey<KF : KeyFormat>(
         ).await()
     }
 
-    override suspend fun encodeTo(format: KF, output: Buffer): Buffer = encodeTo(format).copyInto(output)
     override fun encodeToBlocking(format: KF): Buffer = nonBlocking()
-    override fun encodeToBlocking(format: KF, output: Buffer): Buffer = nonBlocking()
 }

@@ -56,38 +56,16 @@ private class AesCbcCipher(
         iv + cipher.doFinal(plaintextInput)
     }
 
-    override fun encryptBlocking(plaintextInput: Buffer, ciphertextOutput: Buffer): Buffer = cipher.use { cipher ->
-        val iv = ByteArray(ivSizeBytes).also(state.secureRandom::nextBytes)
-        cipher.init(JavaxCipher.ENCRYPT_MODE, key, IvParameterSpec(iv), state.secureRandom)
-        cipher.doFinal(plaintextInput, 0, plaintextInput.size, ciphertextOutput)
-        iv + ciphertextOutput
-    }
-
     override fun decryptBlocking(ciphertextInput: Buffer): Buffer = cipher.use { cipher ->
         cipher.init(JavaxCipher.DECRYPT_MODE, key, IvParameterSpec(ciphertextInput, 0, ivSizeBytes), state.secureRandom)
         cipher.doFinal(ciphertextInput, ivSizeBytes, ciphertextInput.size - ivSizeBytes)
-    }
-
-    override fun decryptBlocking(ciphertextInput: Buffer, plaintextOutput: Buffer): Buffer = cipher.use { cipher ->
-        cipher.init(JavaxCipher.DECRYPT_MODE, key, IvParameterSpec(ciphertextInput, 0, ivSizeBytes), state.secureRandom)
-        cipher.doFinal(ciphertextInput, ivSizeBytes, ciphertextInput.size - ivSizeBytes, plaintextOutput, 0)
-        plaintextOutput
     }
 
     override suspend fun decrypt(ciphertextInput: Buffer): Buffer {
         return state.execute { decryptBlocking(ciphertextInput) }
     }
 
-    override suspend fun decrypt(ciphertextInput: Buffer, plaintextOutput: Buffer): Buffer {
-        return state.execute { decryptBlocking(ciphertextInput, plaintextOutput) }
-    }
-
     override suspend fun encrypt(plaintextInput: Buffer): Buffer {
         return state.execute { encryptBlocking(plaintextInput) }
     }
-
-    override suspend fun encrypt(plaintextInput: Buffer, ciphertextOutput: Buffer): Buffer {
-        return state.execute { encryptBlocking(plaintextInput, ciphertextOutput) }
-    }
-
 }

@@ -51,12 +51,6 @@ private class AesCbcCipher(private val key: CryptoKey) : Cipher {
         return iv + result.toByteArray()
     }
 
-    override suspend fun encrypt(plaintextInput: Buffer, ciphertextOutput: Buffer): Buffer {
-        //TODO: check if correct
-        encrypt(plaintextInput).copyInto(ciphertextOutput)
-        return ciphertextOutput
-    }
-
     override suspend fun decrypt(ciphertextInput: Buffer): Buffer {
         val result = WebCrypto.subtle.decrypt(
             AesCbcParams(ciphertextInput.copyOfRange(0, ivSizeBytes)),
@@ -67,13 +61,6 @@ private class AesCbcCipher(private val key: CryptoKey) : Cipher {
         return result.toByteArray()
     }
 
-    override suspend fun decrypt(ciphertextInput: Buffer, plaintextOutput: Buffer): Buffer {
-        decrypt(ciphertextInput).copyInto(plaintextOutput)
-        return plaintextOutput
-    }
-
     override fun decryptBlocking(ciphertextInput: Buffer): Buffer = nonBlocking()
-    override fun decryptBlocking(ciphertextInput: Buffer, plaintextOutput: Buffer): Buffer = nonBlocking()
     override fun encryptBlocking(plaintextInput: Buffer): Buffer = nonBlocking()
-    override fun encryptBlocking(plaintextInput: Buffer, ciphertextOutput: Buffer): Buffer = nonBlocking()
 }

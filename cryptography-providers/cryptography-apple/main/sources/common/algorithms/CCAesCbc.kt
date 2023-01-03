@@ -53,15 +53,7 @@ private fun wrapKey(state: AppleState, key: ByteArray): AES.CBC.Key = object : A
         TODO("Not yet implemented")
     }
 
-    override suspend fun encodeTo(format: AES.Key.Format, output: Buffer): Buffer {
-        TODO("Not yet implemented")
-    }
-
     override fun encodeToBlocking(format: AES.Key.Format): Buffer {
-        TODO("Not yet implemented")
-    }
-
-    override fun encodeToBlocking(format: AES.Key.Format, output: Buffer): Buffer {
         TODO("Not yet implemented")
     }
 }
@@ -103,10 +95,6 @@ private class AesCbcCipher(
         return iv + ciphertextOutput
     }
 
-    override fun encryptBlocking(plaintextInput: Buffer, ciphertextOutput: Buffer): Buffer {
-        return encryptBlocking(plaintextInput).copyInto(ciphertextOutput)
-    }
-
     override fun decryptBlocking(ciphertextInput: Buffer): Buffer {
         //TODO: padding
         val plaintextOutput = ByteArray(ciphertextInput.size - ivSizeBytes)
@@ -127,23 +115,12 @@ private class AesCbcCipher(
         return plaintextOutput
     }
 
-    override fun decryptBlocking(ciphertextInput: Buffer, plaintextOutput: Buffer): Buffer {
-        return decryptBlocking(ciphertextInput).copyInto(plaintextOutput)
-    }
-
     override suspend fun decrypt(ciphertextInput: Buffer): Buffer {
         return state.execute { decryptBlocking(ciphertextInput) }
-    }
-
-    override suspend fun decrypt(ciphertextInput: Buffer, plaintextOutput: Buffer): Buffer {
-        return state.execute { decryptBlocking(ciphertextInput, plaintextOutput) }
     }
 
     override suspend fun encrypt(plaintextInput: Buffer): Buffer {
         return state.execute { encryptBlocking(plaintextInput) }
     }
 
-    override suspend fun encrypt(plaintextInput: Buffer, ciphertextOutput: Buffer): Buffer {
-        return state.execute { encryptBlocking(plaintextInput, ciphertextOutput) }
-    }
 }

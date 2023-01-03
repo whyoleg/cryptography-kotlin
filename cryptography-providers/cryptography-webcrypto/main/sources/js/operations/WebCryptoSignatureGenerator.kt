@@ -14,10 +14,5 @@ internal class WebCryptoSignatureGenerator(
         return WebCrypto.subtle.sign(algorithm, key, dataInput).await()
     }
 
-    override suspend fun generateSignature(dataInput: Buffer, signatureOutput: Buffer): Buffer {
-        return generateSignature(dataInput).copyInto(signatureOutput)
-    }
-
     override fun generateSignatureBlocking(dataInput: Buffer): Buffer = nonBlocking()
-    override fun generateSignatureBlocking(dataInput: Buffer, signatureOutput: Buffer): Buffer = nonBlocking()
 }

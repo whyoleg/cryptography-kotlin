@@ -49,10 +49,5 @@ private class EcdhDerivative<KF : KeyFormat>(
         }.await().toByteArray()
     }
 
-    override suspend fun deriveSharedSecretFrom(keyFormat: KF, keyInput: Buffer, sharedSecretOutput: Buffer): Buffer =
-        deriveSharedSecretFrom(keyFormat, keyInput).copyInto(sharedSecretOutput)
-
     override fun deriveSharedSecretFromBlocking(keyFormat: KF, keyInput: Buffer): Buffer = nonBlocking()
-
-    override fun deriveSharedSecretFromBlocking(keyFormat: KF, keyInput: Buffer, sharedSecretOutput: Buffer): Buffer = nonBlocking()
 }

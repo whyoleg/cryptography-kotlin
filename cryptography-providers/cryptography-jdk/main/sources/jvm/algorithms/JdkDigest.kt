@@ -19,18 +19,7 @@ internal class JdkDigest(
         messageDigest.digest(dataInput)
     }
 
-    override fun hashBlocking(dataInput: Buffer, digestOutput: Buffer): Buffer = messageDigest.use { messageDigest ->
-        messageDigest.reset()
-        messageDigest.update(dataInput)
-        messageDigest.digest(digestOutput, 0, digestOutput.size)
-        digestOutput
-    }
-
     override suspend fun hash(dataInput: Buffer): Buffer {
         return state.execute { hashBlocking(dataInput) }
-    }
-
-    override suspend fun hash(dataInput: Buffer, digestOutput: Buffer): Buffer {
-        return state.execute { hashBlocking(dataInput, digestOutput) }
     }
 }
