@@ -20,6 +20,7 @@
     * [ ] Default engine
     * [ ] Replace thread local in JDK with super simple pooling
 * [ ] Coroutines integration (for JDK engine to run on other dispatcher)
+* [ ] no-dependencies cryptogrpahy-random module with platform-specific implementations (?)
 * [ ] Maven Central
 * [ ] README
 
@@ -37,8 +38,9 @@
     * [ ] RSA-SSA-PKCS1 (signature)
     * [ ] CMAC (mac)
     * [ ] Blowfish (cipher), Blake (hash)- try to find some implementations
-* [ ] Operations
+* [ ] Operations (some things can depend on IO library - if so, design or postpone)
     * [ ] Function operations (cipher, signature, hash)
+    * [ ] Operations with provided output buffer
     * [ ] Key derive (kdf/prf)
     * [ ] Multi-key agreement support
     * [ ] encrypt/decrypt
@@ -74,6 +76,6 @@
 * [ ] JDK Untyped support (using javax.crypto algorithms spec) - is it needed?
 * [ ] Hybrid Encryption
 * [ ] Double Ratchet Algorithm (?)
-* [ ] no-dependencies cryptogrpahy-random module with platform-specific implementations (?)
 * [ ] Decide on algorithms access in code. f.e. AES.CBC, RSA.OAEP vs ECDSA, ECDH, etc.
 * [ ] key usages (like in WebCrypto) - is it needed?
+* [ ] migrate to some IO library
