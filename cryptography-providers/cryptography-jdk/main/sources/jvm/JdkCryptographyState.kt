@@ -8,8 +8,6 @@ import java.security.*
 import java.util.concurrent.*
 import javax.crypto.*
 
-internal val DefaultSecureRandom: SecureRandom = SecureRandom()
-
 //candidate for context receivers
 internal class JdkCryptographyState(
     private val provider: JdkProvider,

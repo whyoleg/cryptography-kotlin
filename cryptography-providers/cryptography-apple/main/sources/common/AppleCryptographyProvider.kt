@@ -2,7 +2,6 @@ package dev.whyoleg.cryptography.apple
 
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.digest.*
-import dev.whyoleg.cryptography.algorithms.random.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.algorithms.symmetric.mac.*
 import dev.whyoleg.cryptography.apple.algorithms.*
@@ -29,7 +28,6 @@ internal class AppleCryptographyProvider(
 ) : CryptographyProvider("CoreCrypto") {
     @Suppress("UNCHECKED_CAST")
     override fun <A : CryptographyAlgorithm> getOrNull(identifier: CryptographyAlgorithmId<A>): A? = when (identifier) {
-        PlatformDependantRandom -> CCRandom(state)
         MD5                     -> CCDigest(state, CCHashAlgorithm.MD5)
         SHA1                    -> CCDigest(state, CCHashAlgorithm.SHA1)
         SHA256                  -> CCDigest(state, CCHashAlgorithm.SHA256)

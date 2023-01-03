@@ -6,6 +6,7 @@ import dev.whyoleg.cryptography.apple.*
 import dev.whyoleg.cryptography.io.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.cipher.*
+import dev.whyoleg.cryptography.random.*
 import kotlinx.cinterop.*
 import platform.CoreCrypto.*
 import kotlin.random.*
@@ -37,7 +38,7 @@ private class AesCbcKeyGenerator(
     private val keySizeBytes: Int,
 ) : KeyGenerator<AES.CBC.Key> {
     override fun generateKeyBlocking(): AES.CBC.Key {
-        val key = randomBytes(keySizeBytes)
+        val key = CryptographyRandom.nextBytes(keySizeBytes)
         return wrapKey(state, key)
     }
 

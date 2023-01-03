@@ -5,6 +5,7 @@ import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.io.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.cipher.*
+import dev.whyoleg.cryptography.random.*
 import dev.whyoleg.cryptography.webcrypto.*
 import dev.whyoleg.cryptography.webcrypto.external.*
 import dev.whyoleg.cryptography.webcrypto.materials.*
@@ -40,7 +41,7 @@ private class AesGcmCipher(
     override fun plaintextSize(ciphertextSize: Int): Int = ciphertextSize - ivSizeBytes - tagSizeBits / 8
 
     override suspend fun encrypt(plaintextInput: Buffer, associatedData: Buffer?): Buffer {
-        val iv = WebCryptoRandom.random(ivSizeBytes)
+        val iv = CryptographyRandom.nextBytes(ivSizeBytes)
 
         val ciphertext = WebCrypto.subtle.encrypt(
             AesGcmParams(additionalData = associatedData, iv = iv, tagLength = tagSizeBits),

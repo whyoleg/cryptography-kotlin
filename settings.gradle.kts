@@ -20,6 +20,7 @@ rootProject.name = "cryptography-kotlin"
 
 
 include("cryptography-io")
+include("cryptography-random")
 include("cryptography-core")
 
 //mapping from sync to async via dispatcher or channel

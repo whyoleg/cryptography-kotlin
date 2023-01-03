@@ -8,6 +8,7 @@ import dev.whyoleg.cryptography.apple.*
 import dev.whyoleg.cryptography.io.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.signature.*
+import dev.whyoleg.cryptography.random.*
 import kotlinx.cinterop.*
 import platform.CoreCrypto.*
 
@@ -36,7 +37,7 @@ private class HmacKeyGenerator(
     private val hmacAlgorithm: CCHmacAlgorithm,
 ) : KeyGenerator<HMAC.Key> {
     override fun generateKeyBlocking(): HMAC.Key {
-        val key = randomBytes(keySizeBytes)
+        val key = CryptographyRandom.nextBytes(keySizeBytes)
         return object : HMAC.Key {
             private val signature = HmacSignature(state, key, hmacAlgorithm)
             override fun signatureGenerator(): SignatureGenerator = signature
