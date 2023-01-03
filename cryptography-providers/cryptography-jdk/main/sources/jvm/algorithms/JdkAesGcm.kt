@@ -43,24 +43,24 @@ private class AesGcmCipher(
     override fun plaintextSize(ciphertextSize: Int): Int = ciphertextSize - ivSizeBytes - tagSize.bytes
 
     //TODO: we can use single ByteArray for output (generate IV in place, and output it)
-    override fun encryptBlocking(associatedData: Buffer?, plaintextInput: Buffer): Buffer = cipher.use { cipher ->
+    override fun encryptBlocking(plaintextInput: Buffer, associatedData: Buffer?): Buffer = cipher.use { cipher ->
         val iv = ByteArray(ivSizeBytes).also(state.secureRandom::nextBytes)
         cipher.init(JdkCipher.ENCRYPT_MODE, key, GCMParameterSpec(tagSize.bits, iv), state.secureRandom)
         associatedData?.let(cipher::updateAAD)
         iv + cipher.doFinal(plaintextInput)
     }
 
-    override fun decryptBlocking(associatedData: Buffer?, ciphertextInput: Buffer): Buffer = cipher.use { cipher ->
+    override fun decryptBlocking(ciphertextInput: Buffer, associatedData: Buffer?): Buffer = cipher.use { cipher ->
         cipher.init(JdkCipher.DECRYPT_MODE, key, GCMParameterSpec(tagSize.bits, ciphertextInput, 0, ivSizeBytes), state.secureRandom)
         associatedData?.let(cipher::updateAAD)
         cipher.doFinal(ciphertextInput, ivSizeBytes, ciphertextInput.size - ivSizeBytes)
     }
 
-    override suspend fun decrypt(associatedData: Buffer?, ciphertextInput: Buffer): Buffer {
-        return state.execute { decryptBlocking(associatedData, ciphertextInput) }
+    override suspend fun decrypt(ciphertextInput: Buffer, associatedData: Buffer?): Buffer {
+        return state.execute { decryptBlocking(ciphertextInput, associatedData) }
     }
 
-    override suspend fun encrypt(associatedData: Buffer?, plaintextInput: Buffer): Buffer {
-        return state.execute { encryptBlocking(associatedData, plaintextInput) }
+    override suspend fun encrypt(plaintextInput: Buffer, associatedData: Buffer?): Buffer {
+        return state.execute { encryptBlocking(plaintextInput, associatedData) }
     }
 }

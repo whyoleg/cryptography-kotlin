@@ -85,7 +85,7 @@ private class RsaOaepEncryptor(private val key: CryptoKey) : AuthenticatedEncryp
         TODO("Not yet implemented")
     }
 
-    override suspend fun encrypt(associatedData: Buffer?, plaintextInput: Buffer): Buffer {
+    override suspend fun encrypt(plaintextInput: Buffer, associatedData: Buffer?): Buffer {
         return WebCrypto.subtle.encrypt(
             algorithm = RsaOaepParams(associatedData),
             key = key,
@@ -93,7 +93,7 @@ private class RsaOaepEncryptor(private val key: CryptoKey) : AuthenticatedEncryp
         ).await().toByteArray()
     }
 
-    override fun encryptBlocking(associatedData: Buffer?, plaintextInput: Buffer): Buffer = nonBlocking()
+    override fun encryptBlocking(plaintextInput: Buffer, associatedData: Buffer?): Buffer = nonBlocking()
 }
 
 private class RsaOaepDecryptor(private val key: CryptoKey) : AuthenticatedDecryptor {
@@ -101,7 +101,7 @@ private class RsaOaepDecryptor(private val key: CryptoKey) : AuthenticatedDecryp
         TODO("Not yet implemented")
     }
 
-    override suspend fun decrypt(associatedData: Buffer?, ciphertextInput: Buffer): Buffer {
+    override suspend fun decrypt(ciphertextInput: Buffer, associatedData: Buffer?): Buffer {
         return WebCrypto.subtle.decrypt(
             algorithm = RsaOaepParams(associatedData),
             key = key,
@@ -109,5 +109,5 @@ private class RsaOaepDecryptor(private val key: CryptoKey) : AuthenticatedDecryp
         ).await().toByteArray()
     }
 
-    override fun decryptBlocking(associatedData: Buffer?, ciphertextInput: Buffer): Buffer = nonBlocking()
+    override fun decryptBlocking(ciphertextInput: Buffer, associatedData: Buffer?): Buffer = nonBlocking()
 }

@@ -39,7 +39,7 @@ private class AesGcmCipher(
 
     override fun plaintextSize(ciphertextSize: Int): Int = ciphertextSize - ivSizeBytes - tagSizeBits / 8
 
-    override suspend fun encrypt(associatedData: Buffer?, plaintextInput: Buffer): Buffer {
+    override suspend fun encrypt(plaintextInput: Buffer, associatedData: Buffer?): Buffer {
         val iv = WebCryptoRandom.random(ivSizeBytes)
 
         val ciphertext = WebCrypto.subtle.encrypt(
@@ -51,7 +51,7 @@ private class AesGcmCipher(
         return iv + ciphertext.toByteArray()
     }
 
-    override suspend fun decrypt(associatedData: Buffer?, ciphertextInput: Buffer): Buffer {
+    override suspend fun decrypt(ciphertextInput: Buffer, associatedData: Buffer?): Buffer {
         val plaintext = WebCrypto.subtle.decrypt(
             AesGcmParams(additionalData = associatedData, iv = ciphertextInput.copyOfRange(0, ivSizeBytes), tagLength = tagSizeBits),
             key,
@@ -61,6 +61,6 @@ private class AesGcmCipher(
         return plaintext.toByteArray()
     }
 
-    override fun decryptBlocking(associatedData: Buffer?, ciphertextInput: Buffer): Buffer = nonBlocking()
-    override fun encryptBlocking(associatedData: Buffer?, plaintextInput: Buffer): Buffer = nonBlocking()
+    override fun decryptBlocking(ciphertextInput: Buffer, associatedData: Buffer?): Buffer = nonBlocking()
+    override fun encryptBlocking(plaintextInput: Buffer, associatedData: Buffer?): Buffer = nonBlocking()
 }
