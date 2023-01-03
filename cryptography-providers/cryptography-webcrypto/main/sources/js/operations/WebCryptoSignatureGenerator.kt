@@ -11,7 +11,7 @@ internal class WebCryptoSignatureGenerator(
     override val signatureSize: Int,
 ) : SignatureGenerator {
     override suspend fun generateSignature(dataInput: Buffer): Buffer {
-        return WebCrypto.subtle.sign(algorithm, key, dataInput).await()
+        return WebCrypto.subtle.sign(algorithm, key, dataInput).await().toByteArray()
     }
 
     override fun generateSignatureBlocking(dataInput: Buffer): Buffer = nonBlocking()

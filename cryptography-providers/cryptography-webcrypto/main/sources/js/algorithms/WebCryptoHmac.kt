@@ -20,7 +20,7 @@ internal object WebCryptoHmac : HMAC {
     }
     private val keyWrapper: (CryptoKey) -> HMAC.Key = { key ->
         val algorithm = Algorithm<SignatureAlgorithm>("HMAC")
-        val signatureSize = hashAlgorithmDigestSize(key.algorithm.unsafeCast<HmacKeyAlgorithm>().hash)
+        val signatureSize = hashAlgorithmDigestSize(key.algorithm.asDynamic().hash.name)
         object : HMAC.Key, EncodableKey<HMAC.Key.Format> by WebCryptoEncodableKey(key, keyFormat) {
             private val generator = WebCryptoSignatureGenerator(algorithm, key, signatureSize)
             private val verifier = WebCryptoSignatureVerifier(algorithm, key, signatureSize)

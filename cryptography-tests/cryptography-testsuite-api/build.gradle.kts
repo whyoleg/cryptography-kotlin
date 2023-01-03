@@ -5,7 +5,6 @@ plugins {
 kotlin {
     jvm()
     js {
-        browser()
         nodejs()
     }
     linuxX64()
@@ -16,7 +15,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                api(projects.cryptographyIo)
+                api(projects.cryptographyCore)
             }
         }
     }

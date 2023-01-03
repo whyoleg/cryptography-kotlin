@@ -16,7 +16,14 @@ internal class CCHmac(
     private val state: AppleState,
 ) : HMAC {
     override fun keyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<HMAC.Key.Format, HMAC.Key> {
-        TODO("Not yet implemented")
+        val (hmacAlgorithm, keySize) = when (digest) {
+            SHA1   -> kCCHmacAlgSHA1 to CC_SHA1_DIGEST_LENGTH
+            SHA256 -> kCCHmacAlgSHA256 to CC_SHA256_DIGEST_LENGTH
+            SHA384 -> kCCHmacAlgSHA384 to CC_SHA384_DIGEST_LENGTH
+            SHA512 -> kCCHmacAlgSHA512 to CC_SHA512_DIGEST_LENGTH
+            else   -> throw CryptographyException("Unsupported hash algorithm: $digest")
+        }
+        return HmacKeyDecoder(state, hmacAlgorithm)
     }
 
     override fun keyGenerator(digest: CryptographyAlgorithmId<Digest>): KeyGenerator<HMAC.Key> {
@@ -27,7 +34,22 @@ internal class CCHmac(
             SHA512 -> kCCHmacAlgSHA512 to CC_SHA512_DIGEST_LENGTH
             else   -> throw CryptographyException("Unsupported hash algorithm: $digest")
         }
+        println(keySize)
         return HmacKeyGenerator(state, keySize, hmacAlgorithm)
+    }
+}
+
+private class HmacKeyDecoder(
+    private val state: AppleState,
+    private val hmacAlgorithm: CCHmacAlgorithm,
+) : KeyDecoder<HMAC.Key.Format, HMAC.Key> {
+    override fun decodeFromBlocking(format: HMAC.Key.Format, input: Buffer): HMAC.Key {
+        if (format == HMAC.Key.Format.RAW) return wrapKey(state, input, hmacAlgorithm)
+        TODO("$format is not yet supported")
+    }
+
+    override suspend fun decodeFrom(format: HMAC.Key.Format, input: Buffer): HMAC.Key {
+        return state.execute { decodeFromBlocking(format, input) }
     }
 }
 
@@ -38,23 +60,30 @@ private class HmacKeyGenerator(
 ) : KeyGenerator<HMAC.Key> {
     override fun generateKeyBlocking(): HMAC.Key {
         val key = CryptographyRandom.nextBytes(keySizeBytes)
-        return object : HMAC.Key {
-            private val signature = HmacSignature(state, key, hmacAlgorithm)
-            override fun signatureGenerator(): SignatureGenerator = signature
-            override fun signatureVerifier(): SignatureVerifier = signature
-
-            override suspend fun encodeTo(format: HMAC.Key.Format): Buffer {
-                TODO("Not yet implemented")
-            }
-
-            override fun encodeToBlocking(format: HMAC.Key.Format): Buffer {
-                TODO("Not yet implemented")
-            }
-        }
+        return wrapKey(state, key, hmacAlgorithm)
     }
 
     override suspend fun generateKey(): HMAC.Key {
         return state.execute { generateKeyBlocking() }
+    }
+}
+
+private fun wrapKey(
+    state: AppleState,
+    key: Buffer,
+    hmacAlgorithm: CCHmacAlgorithm,
+): HMAC.Key = object : HMAC.Key {
+    private val signature = HmacSignature(state, key, hmacAlgorithm)
+    override fun signatureGenerator(): SignatureGenerator = signature
+    override fun signatureVerifier(): SignatureVerifier = signature
+
+    override fun encodeToBlocking(format: HMAC.Key.Format): Buffer {
+        if (format == HMAC.Key.Format.RAW) return key
+        TODO("$format is not yet supported")
+    }
+
+    override suspend fun encodeTo(format: HMAC.Key.Format): Buffer {
+        return state.execute { encodeToBlocking(format) }
     }
 }
 
@@ -63,8 +92,7 @@ private class HmacSignature(
     private val key: Buffer,
     private val hmacAlgorithm: CCHmacAlgorithm,
 ) : SignatureGenerator, SignatureVerifier {
-    override val signatureSize: Int
-        get() = TODO("Not yet implemented")
+    override val signatureSize: Int get() = key.size
 
     override fun generateSignatureBlocking(dataInput: Buffer): Buffer {
         val macOutput = ByteArray(signatureSize) //TODO: size!!!

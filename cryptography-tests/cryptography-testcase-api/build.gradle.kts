@@ -1,11 +1,11 @@
 plugins {
     id("buildx-multiplatform")
+    alias(libs.plugins.kotlin.serialization)
 }
 
 kotlin {
     jvm()
     js {
-        browser()
         nodejs()
     }
     linuxX64()
@@ -17,6 +17,7 @@ kotlin {
         commonMain {
             dependencies {
                 api(projects.cryptographyIo)
+                api(libs.kotlinx.serialization.protobuf)
             }
         }
     }

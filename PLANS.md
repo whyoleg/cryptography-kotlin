@@ -17,8 +17,6 @@
     * [ ] JDK
     * [ ] Apple (CoreCrypto + Security framework)
     * [ ] OpenSSL(1/3) engine (dynamic)
-    * [ ] Default engine
-    * [ ] Replace thread local in JDK with super simple pooling
 * [ ] Coroutines integration (for JDK engine to run on other dispatcher)
 * [ ] no-dependencies cryptogrpahy-random module with platform-specific implementations (?)
 * [ ] Maven Central
@@ -63,6 +61,7 @@
     * [ ] Windows CNG engine
     * [ ] OpenSSL(1/3) engine (static)
     * [ ] Engine builder DSL + decide on how to better handle providers inside engine (lazy, cache, etc)
+    * [ ] Default (auto provision) engine
 * [ ] Android integration tests
 
 0.x.y plans:

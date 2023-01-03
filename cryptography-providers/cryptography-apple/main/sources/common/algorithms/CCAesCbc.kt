@@ -9,7 +9,7 @@ import dev.whyoleg.cryptography.operations.cipher.*
 import dev.whyoleg.cryptography.random.*
 import kotlinx.cinterop.*
 import platform.CoreCrypto.*
-import kotlin.random.*
+import platform.posix.*
 
 internal class CCAesCbc(
     private val state: AppleState,
@@ -25,7 +25,8 @@ private class AesCbcKeyDecoder(
     private val state: AppleState,
 ) : KeyDecoder<AES.Key.Format, AES.CBC.Key> {
     override fun decodeFromBlocking(format: AES.Key.Format, input: Buffer): AES.CBC.Key {
-        TODO("Not yet implemented")
+        if (format == AES.Key.Format.RAW) return wrapKey(state, input)
+        TODO("$format is not yet supported")
     }
 
     override suspend fun decodeFrom(format: AES.Key.Format, input: Buffer): AES.CBC.Key {
@@ -50,12 +51,13 @@ private class AesCbcKeyGenerator(
 private fun wrapKey(state: AppleState, key: ByteArray): AES.CBC.Key = object : AES.CBC.Key {
     override fun cipher(padding: Boolean): Cipher = AesCbcCipher(state, key, padding)
 
-    override suspend fun encodeTo(format: AES.Key.Format): Buffer {
-        TODO("Not yet implemented")
+    override fun encodeToBlocking(format: AES.Key.Format): Buffer {
+        if (format == AES.Key.Format.RAW) return key
+        TODO("$format is not yet supported")
     }
 
-    override fun encodeToBlocking(format: AES.Key.Format): Buffer {
-        TODO("Not yet implemented")
+    override suspend fun encodeTo(format: AES.Key.Format): Buffer {
+        return state.execute { encodeToBlocking(format) }
     }
 }
 
@@ -75,45 +77,95 @@ private class AesCbcCipher(
         TODO("Not yet implemented")
     }
 
-    override fun encryptBlocking(plaintextInput: Buffer): Buffer {
-        val iv = ByteArray(ivSizeBytes).also { Random.nextBytes(it) }
-        //TODO: padding
-        val ciphertextOutput = ByteArray(plaintextInput.size)
-        val result = CCCrypt(
-            op = kCCEncrypt,
-            alg = kCCAlgorithmAES,
-            options = if (padding) kCCOptionPKCS7Padding else 0.convert(),
-            key = key.refTo(0),
-            keyLength = key.size.convert(),
-            iv = iv.refTo(0),
-            dataIn = plaintextInput.refTo(0),
-            dataInLength = plaintextInput.size.convert(),
-            dataOut = ciphertextOutput.refTo(ivSizeBytes),
-            dataOutAvailable = (ciphertextOutput.size - ivSizeBytes).convert(),
-            dataOutMoved = null
+    override fun encryptBlocking(plaintextInput: Buffer): Buffer = memScoped {
+        val iv = ByteArray(ivSizeBytes).also { CryptographyRandom.nextBytes(it) }
+        val cryptorRef = alloc<CCCryptorRefVar>()
+
+        checkResult(
+            CCCryptorCreate(
+                op = kCCEncrypt,
+                alg = kCCAlgorithmAES,
+                options = if (padding) kCCOptionPKCS7Padding else 0.convert(),
+                key = key.refTo(0),
+                keyLength = key.size.convert(),
+                iv = iv.refTo(0),
+                cryptorRef = cryptorRef.ptr,
+            )
         )
-        if (result != kCCSuccess) throw CryptographyException("CCCrypt failed with code $result")
-        return iv + ciphertextOutput
+
+        val ciphertextSize = CCCryptorGetOutputLength(
+            cryptorRef = cryptorRef.value,
+            inputLength = plaintextInput.size.convert(),
+            final = true
+        ).toInt()
+        val ciphertextOutput = ByteArray(ciphertextSize)
+
+        val dataOutMoved = alloc<size_tVar>()
+        checkResult(
+            CCCryptorUpdate(
+                cryptorRef = cryptorRef.value,
+                dataIn = plaintextInput.refTo(0),
+                dataInLength = plaintextInput.size.convert(),
+                dataOut = ciphertextOutput.refTo(0),
+                dataOutAvailable = ciphertextSize.convert(),
+                dataOutMoved = dataOutMoved.ptr
+            )
+        )
+        val moved = dataOutMoved.value.toInt()
+        checkResult(
+            CCCryptorFinal(
+                cryptorRef = cryptorRef.value,
+                dataOut = ciphertextOutput.refTo(moved),
+                dataOutAvailable = (ciphertextSize - moved).convert(),
+                dataOutMoved = null,
+            )
+        )
+        val ciphertext = iv + ciphertextOutput
+        ciphertext
     }
 
-    override fun decryptBlocking(ciphertextInput: Buffer): Buffer {
-        //TODO: padding
-        val plaintextOutput = ByteArray(ciphertextInput.size - ivSizeBytes)
-        val result = CCCrypt(
-            op = kCCDecrypt,
-            alg = kCCAlgorithmAES,
-            options = if (padding) kCCOptionPKCS7Padding else 0.convert(),
-            key = key.refTo(0),
-            keyLength = key.size.convert(),
-            iv = ciphertextInput.refTo(0),
-            dataIn = ciphertextInput.refTo(ivSizeBytes),
-            dataInLength = (ciphertextInput.size - ivSizeBytes).convert(),
-            dataOut = plaintextOutput.refTo(0),
-            dataOutAvailable = plaintextOutput.size.convert(),
-            dataOutMoved = null
+    override fun decryptBlocking(ciphertextInput: Buffer): Buffer = memScoped {
+        val cryptorRef = alloc<CCCryptorRefVar>()
+        checkResult(
+            CCCryptorCreate(
+                op = kCCDecrypt,
+                alg = kCCAlgorithmAES,
+                options = if (padding) kCCOptionPKCS7Padding else 0.convert(),
+                key = key.refTo(0),
+                keyLength = key.size.convert(),
+                iv = ciphertextInput.refTo(0),
+                cryptorRef = cryptorRef.ptr,
+            )
         )
-        if (result != kCCSuccess) throw CryptographyException("CCCrypt failed with code $result")
-        return plaintextOutput
+
+        val plaintextSize = CCCryptorGetOutputLength(
+            cryptorRef = cryptorRef.value,
+            inputLength = (ciphertextInput.size - ivSizeBytes).convert(),
+            final = true
+        ).toInt()
+        val plaintextOutput = ByteArray(plaintextSize)
+        val dataOutMoved = alloc<size_tVar>()
+        checkResult(
+            CCCryptorUpdate(
+                cryptorRef = cryptorRef.value,
+                dataIn = ciphertextInput.refTo(ivSizeBytes),
+                dataInLength = (ciphertextInput.size - ivSizeBytes).convert(),
+                dataOut = plaintextOutput.refTo(0),
+                dataOutAvailable = plaintextSize.convert(),
+                dataOutMoved = dataOutMoved.ptr
+            )
+        )
+        val moved = dataOutMoved.value.toInt()
+        checkResult(
+            CCCryptorFinal(
+                cryptorRef = cryptorRef.value,
+                dataOut = plaintextOutput.refTo(moved),
+                dataOutAvailable = (plaintextSize - moved).convert(),
+                dataOutMoved = dataOutMoved.ptr,
+            )
+        )
+        val ptMoved = moved + dataOutMoved.value.toInt()
+        plaintextOutput.copyOf(ptMoved)
     }
 
     override suspend fun decrypt(ciphertextInput: Buffer): Buffer {
@@ -124,4 +176,16 @@ private class AesCbcCipher(
         return state.execute { encryptBlocking(plaintextInput) }
     }
 
+    private fun checkResult(result: CCCryptorStatus) {
+        when (result) {
+            kCCSuccess        -> null
+            kCCParamError     -> "Illegal parameter value."
+            kCCBufferTooSmall -> "Insufficent buffer provided for specified operation."
+            kCCMemoryFailure  -> "Memory allocation failure."
+            kCCAlignmentError -> "Input size was not aligned properly."
+            kCCDecodeError    -> "Input data did not decode or decrypt properly."
+            kCCUnimplemented  -> "Function not implemented for the current algorithm."
+            else              -> "CCCrypt failed with code $result"
+        }?.let { throw CryptographyException(it) }
+    }
 }

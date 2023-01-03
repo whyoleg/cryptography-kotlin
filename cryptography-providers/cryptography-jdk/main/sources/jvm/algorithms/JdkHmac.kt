@@ -27,6 +27,13 @@ internal class JdkHmac(
     }
 
     override fun keyGenerator(digest: CryptographyAlgorithmId<Digest>): KeyGenerator<HMAC.Key> {
-        return JdkSecretKeyGenerator(state, "Hmac${digest.hashAlgorithmName()}", keyWrapper)
+        //sha1 key size
+        return JdkSecretKeyGenerator(state, "Hmac${digest.hashAlgorithmName()}", keyWrapper) {
+            if (digest == SHA1) {
+                init(160, state.secureRandom)
+            } else {
+                init(state.secureRandom)
+            }
+        }
     }
 }

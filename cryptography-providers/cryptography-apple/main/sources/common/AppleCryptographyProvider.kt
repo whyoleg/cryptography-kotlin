@@ -16,7 +16,7 @@ import dev.whyoleg.cryptography.provider.*
 //Not yet implemented: PBKDF2, AES-KW
 //https://opensource.apple.com/source/CommonCrypto/CommonCrypto-36064/CommonCrypto/CommonCryptor.h.auto.html
 
-public val CryptographyProvider.Companion.Apple: CryptographyProvider by lazy(CryptographyProvider.Companion::Apple)
+public val CryptographyProvider.Companion.Apple: CryptographyProvider by lazy { CryptographyProvider.Companion.Apple() }
 
 @Suppress("FunctionName")
 public fun CryptographyProvider.Companion.Apple(
@@ -25,16 +25,16 @@ public fun CryptographyProvider.Companion.Apple(
 
 internal class AppleCryptographyProvider(
     private val state: AppleState,
-) : CryptographyProvider("CoreCrypto") {
+) : CryptographyProvider("Apple") {
     @Suppress("UNCHECKED_CAST")
     override fun <A : CryptographyAlgorithm> getOrNull(identifier: CryptographyAlgorithmId<A>): A? = when (identifier) {
-        MD5                     -> CCDigest(state, CCHashAlgorithm.MD5)
-        SHA1                    -> CCDigest(state, CCHashAlgorithm.SHA1)
-        SHA256                  -> CCDigest(state, CCHashAlgorithm.SHA256)
-        SHA384                  -> CCDigest(state, CCHashAlgorithm.SHA384)
-        SHA512                  -> CCDigest(state, CCHashAlgorithm.SHA512)
-        HMAC                    -> CCHmac(state)
-        AES.CBC                 -> CCAesCbc(state)
-        else                    -> throw CryptographyAlgorithmNotFoundException(identifier)
+        MD5     -> CCDigest(state, CCHashAlgorithm.MD5)
+        SHA1    -> CCDigest(state, CCHashAlgorithm.SHA1)
+        SHA256  -> CCDigest(state, CCHashAlgorithm.SHA256)
+        SHA384  -> CCDigest(state, CCHashAlgorithm.SHA384)
+        SHA512  -> CCDigest(state, CCHashAlgorithm.SHA512)
+        HMAC    -> CCHmac(state)
+        AES.CBC -> CCAesCbc(state)
+        else    -> throw CryptographyAlgorithmNotFoundException(identifier)
     } as A?
 }

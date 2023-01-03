@@ -7,6 +7,7 @@ plugins {
 kotlin {
     jvm()
     js {
+        browser()
         nodejs()
     }
     val linuxTargets = listOf(linuxX64())
