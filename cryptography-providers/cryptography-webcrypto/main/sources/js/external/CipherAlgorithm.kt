@@ -8,7 +8,7 @@ internal sealed external interface RsaOaepParams : CipherAlgorithm {
 }
 
 internal fun RsaOaepParams(label: ByteArray?): RsaOaepParams = Algorithm("RSA-OAEP") {
-    this.label = label
+    this.label = label ?: undefined
 }
 
 internal external interface AesGcmParams : CipherAlgorithm {

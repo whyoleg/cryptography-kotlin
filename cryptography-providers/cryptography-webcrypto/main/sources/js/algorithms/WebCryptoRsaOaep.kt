@@ -49,19 +49,19 @@ internal object WebCryptoRsaOaep : RSA.OAEP {
     override fun publicKeyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<RSA.PublicKey.Format, RSA.OAEP.PublicKey> =
         WebCryptoKeyDecoder(
             RsaHashedKeyImportAlgorithm("RSA-OAEP", digest.hashAlgorithmName()),
-            keyUsages, publicKeyFormat, publicKeyWrapper
+            arrayOf("encrypt"), publicKeyFormat, publicKeyWrapper
         )
 
     override fun privateKeyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<RSA.PrivateKey.Format, RSA.OAEP.PrivateKey> =
         WebCryptoKeyDecoder(
             RsaHashedKeyImportAlgorithm("RSA-OAEP", digest.hashAlgorithmName()),
-            keyUsages, privateKeyFormat, privateKeyWrapper
+            arrayOf("decrypt"), privateKeyFormat, privateKeyWrapper
         )
 
     override fun keyPairGenerator(
         keySize: BinarySize,
-        publicExponent: RSA.PublicExponent,
         digest: CryptographyAlgorithmId<Digest>,
+        publicExponent: RSA.PublicExponent,
     ): KeyGenerator<RSA.OAEP.KeyPair> = WebCryptoAsymmetricKeyGenerator(
         algorithm = RsaHashedKeyGenerationAlgorithm(
             name = "RSA-OAEP",

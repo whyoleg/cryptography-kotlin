@@ -12,7 +12,7 @@ internal class WebCryptoKeyDecoder<KF : KeyFormat, K : Key>(
     private val keyWrapper: (CryptoKey) -> K,
 ) : KeyDecoder<KF, K> {
     override suspend fun decodeFrom(format: KF, input: Buffer): K {
-        return keyWrapper(WebCrypto.subtle.importKey(keyFormat(format), input, algorithm, true, keyUsages).await())
+        return keyWrapper(WebCrypto.subtle.importKeyBinary(keyFormat(format), input, algorithm, true, keyUsages).await())
     }
 
     override fun decodeFromBlocking(format: KF, input: Buffer): K = nonBlocking()

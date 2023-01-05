@@ -33,7 +33,7 @@ private class EcdhDerivative<KF : KeyFormat>(
     private val otherKeyIsPrivate: Boolean,
 ) : SharedSecretDerivative<KF> {
     override suspend fun deriveSharedSecretFrom(keyFormat: KF, keyInput: Buffer): Buffer {
-        val otherKey = WebCrypto.subtle.importKey(
+        val otherKey = WebCrypto.subtle.importKeyBinary(
             format = otherKeyFormat(keyFormat),
             keyData = keyInput,
             algorithm = thisKey.algorithm.unsafeCast<KeyImportAlgorithm>(),

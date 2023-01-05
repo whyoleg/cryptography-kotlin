@@ -66,8 +66,8 @@ internal object WebCryptoRsaPss : RSA.PSS {
 
     override fun keyPairGenerator(
         keySize: BinarySize,
-        publicExponent: RSA.PublicExponent,
         digest: CryptographyAlgorithmId<Digest>,
+        publicExponent: RSA.PublicExponent,
     ): KeyGenerator<RSA.PSS.KeyPair> = WebCryptoAsymmetricKeyGenerator(
         algorithm = RsaHashedKeyGenerationAlgorithm(
             name = "RSA-PSS",

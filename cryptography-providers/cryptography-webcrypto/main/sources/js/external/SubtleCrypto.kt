@@ -17,7 +17,7 @@ internal external interface SubtleCrypto {
 
     fun importKey(
         format: String, /*"raw" | "pkcs8" | "spki"*/
-        keyData: ByteArray,
+        keyData: Any, /*JSON if jwk, ArrayBuffer otherwise*/
         algorithm: KeyImportAlgorithm,
         extractable: Boolean,
         keyUsages: Array<String>,
@@ -46,4 +46,18 @@ internal fun SubtleCrypto.exportKeyBinary(format: String, key: CryptoKey): Promi
         "jwk" -> JSON.stringify(keyData).encodeToByteArray()
         else  -> keyData.unsafeCast<ArrayBuffer>().toByteArray()
     }
+}
+
+internal fun SubtleCrypto.importKeyBinary(
+    format: String, /*"raw" | "pkcs8" | "spki"*/
+    keyData: ByteArray, /*JSON if jwk, ArrayBuffer otherwise*/
+    algorithm: KeyImportAlgorithm,
+    extractable: Boolean,
+    keyUsages: Array<String>,
+): Promise<CryptoKey> {
+    val key = when (format) {
+        "jwk" -> JSON.parse<Any>(keyData.decodeToString())
+        else  -> keyData
+    }
+    return importKey(format, key, algorithm, extractable, keyUsages)
 }
