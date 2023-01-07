@@ -4,6 +4,7 @@ import dev.whyoleg.cryptography.BinarySize.Companion.bits
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.algorithms.digest.*
+import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.provider.*
 import dev.whyoleg.cryptography.random.*
 import kotlinx.coroutines.*
@@ -62,9 +63,9 @@ class RsaOaepTest {
                                         RsaOaepTestData(
                                             digest = digest,
                                             derPrivateKey = keyPair.privateKey.encodeTo(RSA.PrivateKey.Format.DER),
-                                            jwkPrivateKey = keyPair.privateKey.encodeTo(RSA.PrivateKey.Format.JWK),
+                                            jwkPrivateKey = keyPair.privateKey.encodeToIf(provider.isWebCrypto, RSA.PrivateKey.Format.JWK),
                                             derPublicKey = keyPair.publicKey.encodeTo(RSA.PublicKey.Format.DER),
-                                            jwkPublicKey = keyPair.publicKey.encodeTo(RSA.PublicKey.Format.JWK),
+                                            jwkPublicKey = keyPair.publicKey.encodeToIf(provider.isWebCrypto, RSA.PublicKey.Format.JWK),
                                             associatedData = associatedData,
                                             plaintext = plaintext,
                                             ciphertext = ciphertext
@@ -75,37 +76,41 @@ class RsaOaepTest {
                         }
                     }
                 }
-            }.collect {
-                val publicKeys = algorithm.publicKeyDecoder(it.digest).run {
+            }.collect { testData ->
+                val publicKeys = algorithm.publicKeyDecoder(testData.digest).run {
                     listOfNotNull(
-                        decodeFrom(RSA.PublicKey.Format.DER, it.derPublicKey),
-                        it.jwkPublicKey?.let { decodeFrom(RSA.PublicKey.Format.JWK, it) }
+                        decodeFrom(RSA.PublicKey.Format.DER, testData.derPublicKey),
+                        testData.jwkPublicKey?.let { decodeFromIf(provider.isWebCrypto, RSA.PublicKey.Format.JWK, it) }
                     )
                 }
 
-                val privateKeys = algorithm.privateKeyDecoder(it.digest).run {
+                val privateKeys = algorithm.privateKeyDecoder(testData.digest).run {
                     listOfNotNull(
-                        decodeFrom(RSA.PrivateKey.Format.DER, it.derPrivateKey),
-                        it.jwkPrivateKey?.let { decodeFrom(RSA.PrivateKey.Format.JWK, it) }
+                        decodeFrom(RSA.PrivateKey.Format.DER, testData.derPrivateKey),
+                        testData.jwkPrivateKey?.let { decodeFromIf(provider.isWebCrypto, RSA.PrivateKey.Format.JWK, it) }
                     )
                 }
 
                 privateKeys.forEach { privateKey ->
-                    privateKey.encodeTo(RSA.PrivateKey.Format.DER).assertContentEquals(it.derPrivateKey)
-                    it.jwkPrivateKey?.let { privateKey.encodeTo(RSA.PrivateKey.Format.JWK).assertContentEquals(it) }
+                    privateKey.encodeTo(RSA.PrivateKey.Format.DER).assertContentEquals(testData.derPrivateKey)
+                    testData.jwkPrivateKey?.let {
+                        privateKey.encodeToIf(provider.isWebCrypto, RSA.PrivateKey.Format.JWK)?.assertContentEquals(it)
+                    }
 
                     privateKey.decryptor()
-                        .decrypt(it.ciphertext, it.associatedData)
-                        .assertContentEquals(it.plaintext)
+                        .decrypt(testData.ciphertext, testData.associatedData)
+                        .assertContentEquals(testData.plaintext)
                 }
 
                 publicKeys.forEach { publicKey ->
-                    publicKey.encodeTo(RSA.PublicKey.Format.DER).assertContentEquals(it.derPublicKey)
-                    it.jwkPublicKey?.let { publicKey.encodeTo(RSA.PublicKey.Format.JWK).assertContentEquals(it) }
+                    publicKey.encodeTo(RSA.PublicKey.Format.DER).assertContentEquals(testData.derPublicKey)
+                    testData.jwkPublicKey?.let {
+                        publicKey.encodeToIf(provider.isWebCrypto, RSA.PublicKey.Format.JWK)?.assertContentEquals(it)
+                    }
 
-                    val ciphertext = publicKey.encryptor().encrypt(it.plaintext, it.associatedData)
+                    val ciphertext = publicKey.encryptor().encrypt(testData.plaintext, testData.associatedData)
                     privateKeys.forEach { privateKey ->
-                        privateKey.decryptor().decrypt(ciphertext, it.associatedData).assertContentEquals(it.plaintext)
+                        privateKey.decryptor().decrypt(ciphertext, testData.associatedData).assertContentEquals(testData.plaintext)
                     }
                 }
             }
@@ -123,3 +128,11 @@ class RsaOaepTestData(
     val plaintext: ByteArray,
     val ciphertext: ByteArray,
 )
+
+suspend fun <KF : KeyFormat> EncodableKey<KF>.encodeToIf(supported: Boolean, format: KF): ByteArray? {
+    return if (supported) encodeTo(format) else null
+}
+
+suspend fun <KF : KeyFormat, K : Key> KeyDecoder<KF, K>.decodeFromIf(supported: Boolean, format: KF, encoded: ByteArray): K? {
+    return if (supported) decodeFrom(format, encoded) else null
+}

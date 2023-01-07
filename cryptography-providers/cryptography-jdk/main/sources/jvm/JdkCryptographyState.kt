@@ -4,28 +4,28 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.provider.*
-import java.security.*
 import java.util.concurrent.*
-import javax.crypto.*
 
 //candidate for context receivers
 internal class JdkCryptographyState(
     private val provider: JdkProvider,
-    val secureRandom: SecureRandom,
+    val secureRandom: JSecureRandom,
     val adaptor: SuspendAdaptor?,
 ) {
     suspend inline fun <T> execute(crossinline block: () -> T): T = adaptor?.execute { block() } ?: block()
 
-    private val ciphers: ConcurrentHashMap<String, Pooled<Cipher>> = ConcurrentHashMap()
-    private val messageDigests: ConcurrentHashMap<String, Pooled<MessageDigest>> = ConcurrentHashMap()
-    private val macs: ConcurrentHashMap<String, Pooled<Mac>> = ConcurrentHashMap()
-    private val keyGenerators: ConcurrentHashMap<String, Pooled<KeyGenerator>> = ConcurrentHashMap()
+    private val ciphers: ConcurrentHashMap<String, Pooled<JCipher>> = ConcurrentHashMap()
+    private val messageDigests: ConcurrentHashMap<String, Pooled<JMessageDigest>> = ConcurrentHashMap()
+    private val macs: ConcurrentHashMap<String, Pooled<JMac>> = ConcurrentHashMap()
+    private val keyGenerators: ConcurrentHashMap<String, Pooled<JKeyGenerator>> = ConcurrentHashMap()
+    private val keyPairGenerators: ConcurrentHashMap<String, Pooled<JKeyPairGenerator>> = ConcurrentHashMap()
+    private val keyFactories: ConcurrentHashMap<String, Pooled<JKeyFactory>> = ConcurrentHashMap()
 
     private inline fun <T> ConcurrentHashMap<String, Pooled<T>>.get(
         algorithm: String,
         crossinline s: (String) -> T,
         crossinline s1: (String, String) -> T,
-        crossinline s2: (String, Provider) -> T,
+        crossinline s2: (String, JProvider) -> T,
         crossinline init: (T) -> Unit = {}, //TODO: drop?
     ): Pooled<T> = getOrPut(algorithm) {
         val instantiate = when (provider) {
@@ -42,17 +42,23 @@ internal class JdkCryptographyState(
         Pooled(instantiate)
     }
 
-    fun cipher(algorithm: String): Pooled<Cipher> =
-        ciphers.get(algorithm, Cipher::getInstance, Cipher::getInstance, Cipher::getInstance)
+    fun cipher(algorithm: String): Pooled<JCipher> =
+        ciphers.get(algorithm, JCipher::getInstance, JCipher::getInstance, JCipher::getInstance)
 
-    fun messageDigest(algorithm: String): Pooled<MessageDigest> =
-        messageDigests.get(algorithm, MessageDigest::getInstance, MessageDigest::getInstance, MessageDigest::getInstance)
+    fun messageDigest(algorithm: String): Pooled<JMessageDigest> =
+        messageDigests.get(algorithm, JMessageDigest::getInstance, JMessageDigest::getInstance, JMessageDigest::getInstance)
 
-    fun mac(algorithm: String): Pooled<Mac> =
-        macs.get(algorithm, Mac::getInstance, Mac::getInstance, Mac::getInstance)
+    fun mac(algorithm: String): Pooled<JMac> =
+        macs.get(algorithm, JMac::getInstance, JMac::getInstance, JMac::getInstance)
 
-    fun keyGenerator(algorithm: String): Pooled<KeyGenerator> =
-        keyGenerators.get(algorithm, KeyGenerator::getInstance, KeyGenerator::getInstance, KeyGenerator::getInstance)
+    fun keyGenerator(algorithm: String): Pooled<JKeyGenerator> =
+        keyGenerators.get(algorithm, JKeyGenerator::getInstance, JKeyGenerator::getInstance, JKeyGenerator::getInstance)
+
+    fun keyPairGenerator(algorithm: String): Pooled<JKeyPairGenerator> =
+        keyPairGenerators.get(algorithm, JKeyPairGenerator::getInstance, JKeyPairGenerator::getInstance, JKeyPairGenerator::getInstance)
+
+    fun keyFactory(algorithm: String): Pooled<JKeyFactory> =
+        keyFactories.get(algorithm, JKeyFactory::getInstance, JKeyFactory::getInstance, JKeyFactory::getInstance)
 
 }
 

@@ -18,7 +18,6 @@
     * [ ] Apple (CoreCrypto + Security framework)
     * [ ] OpenSSL(1/3) engine (dynamic)
 * [ ] Coroutines integration (for JDK engine to run on other dispatcher)
-* [ ] no-dependencies cryptogrpahy-random module with platform-specific implementations (?)
 * [ ] Maven Central
 * [ ] README
 

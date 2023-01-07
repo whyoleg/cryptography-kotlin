@@ -2,6 +2,7 @@ package dev.whyoleg.cryptography.jdk
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
+import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.algorithms.symmetric.mac.*
@@ -33,20 +34,21 @@ public fun CryptographyProvider.Companion.JDK(
 internal class JdkCryptographyProvider(
     private val state: JdkCryptographyState,
 ) : CryptographyProvider("JDK") {
-    private val cache = ConcurrentHashMap<CryptographyAlgorithmId<*>, CryptographyAlgorithm>()
+    private val cache = ConcurrentHashMap<CryptographyAlgorithmId<*>, CryptographyAlgorithm?>()
 
     @Suppress("UNCHECKED_CAST")
     override fun <A : CryptographyAlgorithm> getOrNull(identifier: CryptographyAlgorithmId<A>): A? = cache.getOrPut(identifier) {
         when (identifier) {
-            MD5     -> JdkDigest(state, "MD5")
-            SHA1    -> JdkDigest(state, "SHA-1")
-            SHA256  -> JdkDigest(state, "SHA-256")
-            SHA384  -> JdkDigest(state, "SHA-384")
-            SHA512  -> JdkDigest(state, "SHA-512")
-            HMAC    -> JdkHmac(state)
-            AES.CBC -> JdkAesCbc(state)
-            AES.GCM -> JdkAesGcm(state)
-            else    -> return null
+            MD5      -> JdkDigest(state, "MD5")
+            SHA1     -> JdkDigest(state, "SHA-1")
+            SHA256   -> JdkDigest(state, "SHA-256")
+            SHA384   -> JdkDigest(state, "SHA-384")
+            SHA512   -> JdkDigest(state, "SHA-512")
+            HMAC     -> JdkHmac(state)
+            AES.CBC  -> JdkAesCbc(state)
+            AES.GCM  -> JdkAesGcm(state)
+            RSA.OAEP -> JdkRsaOaep(state)
+            else     -> null
         }
-    } as A
+    } as A?
 }
