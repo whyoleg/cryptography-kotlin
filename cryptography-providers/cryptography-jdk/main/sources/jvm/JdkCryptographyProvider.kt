@@ -48,6 +48,7 @@ internal class JdkCryptographyProvider(
             AES.CBC  -> JdkAesCbc(state)
             AES.GCM  -> JdkAesGcm(state)
             RSA.OAEP -> JdkRsaOaep(state)
+            RSA.PSS  -> JdkRsaPss(state)
             else     -> null
         }
     } as A?

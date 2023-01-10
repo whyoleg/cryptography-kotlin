@@ -42,53 +42,23 @@ internal class JdkRsaOaep(
 }
 
 private class RsaOaepPublicKeyDecoder(
-    private val state: JdkCryptographyState,
+    state: JdkCryptographyState,
     private val hashAlgorithmName: String,
-) : KeyDecoder<RSA.PublicKey.Format, RSA.OAEP.PublicKey> {
-    private val keyFactory = state.keyFactory("RSA")
-    override fun decodeFromBlocking(format: RSA.PublicKey.Format, input: Buffer): RSA.OAEP.PublicKey {
-        when (format) {
-            RSA.PublicKey.Format.DER -> {
-                val spec = X509EncodedKeySpec(input)
-                val key = keyFactory.use { it.generatePublic(spec) }
-                return RsaOaepPublicKey(state, key, hashAlgorithmName)
-            }
-
-            RSA.PublicKey.Format.JWK -> TODO()
-            RSA.PublicKey.Format.PEM -> TODO()
-        }
-    }
-
-    override suspend fun decodeFrom(format: RSA.PublicKey.Format, input: Buffer): RSA.OAEP.PublicKey {
-        return state.execute { decodeFromBlocking(format, input) }
+) : JdkRsaPublicKeyDecoder<RSA.OAEP.PublicKey>(state) {
+    override fun JPublicKey.convert(): RSA.OAEP.PublicKey {
+        return RsaOaepPublicKey(state, this, hashAlgorithmName)
     }
 }
 
 private class RsaOaepPrivateKeyDecoder(
-    private val state: JdkCryptographyState,
+    state: JdkCryptographyState,
     private val hashAlgorithmName: String,
-) : KeyDecoder<RSA.PrivateKey.Format, RSA.OAEP.PrivateKey> {
-    private val keyFactory = state.keyFactory("RSA")
-    override fun decodeFromBlocking(format: RSA.PrivateKey.Format, input: Buffer): RSA.OAEP.PrivateKey {
-        when (format) {
-            RSA.PrivateKey.Format.DER -> {
-                val spec = PKCS8EncodedKeySpec(input)
-                val key = keyFactory.use { it.generatePrivate(spec) }
-                return RsaOaepPrivateKey(state, key, hashAlgorithmName)
-            }
-
-            RSA.PrivateKey.Format.JWK -> TODO()
-            RSA.PrivateKey.Format.PEM -> TODO()
-        }
-    }
-
-    override suspend fun decodeFrom(format: RSA.PrivateKey.Format, input: Buffer): RSA.OAEP.PrivateKey {
-        return state.execute { decodeFromBlocking(format, input) }
-    }
+) : JdkRsaPrivateKeyDecoder<RSA.OAEP.PrivateKey>(state) {
+    override fun JPrivateKey.convert(): RSA.OAEP.PrivateKey = RsaOaepPrivateKey(state, this, hashAlgorithmName)
 }
 
 private class RsaOaepKeyPairGenerator(
-    private val state: JdkCryptographyState,
+    state: JdkCryptographyState,
     private val keyGenParameters: RSAKeyGenParameterSpec,
     private val hashAlgorithmName: String,
 ) : JdkKeyPairGenerator<RSA.OAEP.KeyPair>(state, "RSA") {
@@ -116,12 +86,10 @@ private class RsaOaepPublicKey(
 ) : RSA.OAEP.PublicKey {
     private val encryptor = RsaOaepEncryptor(state, key, hashAlgorithmName)
     override fun encryptor(): AuthenticatedEncryptor = encryptor
-    override fun encodeToBlocking(format: RSA.PublicKey.Format): Buffer {
-        return when (format) {
-            RSA.PublicKey.Format.DER -> key.encoded
-            RSA.PublicKey.Format.JWK -> TODO()
-            RSA.PublicKey.Format.PEM -> TODO()
-        }
+    override fun encodeToBlocking(format: RSA.PublicKey.Format): Buffer = when (format) {
+        RSA.PublicKey.Format.DER -> key.encoded
+        RSA.PublicKey.Format.JWK -> TODO()
+        RSA.PublicKey.Format.PEM -> TODO()
     }
 
     override suspend fun encodeTo(format: RSA.PublicKey.Format): Buffer {
@@ -137,12 +105,10 @@ private class RsaOaepPrivateKey(
     private val decryptor = RsaOaepDecryptor(state, key, hashAlgorithmName)
     override fun decryptor(): AuthenticatedDecryptor = decryptor
 
-    override fun encodeToBlocking(format: RSA.PrivateKey.Format): Buffer {
-        return when (format) {
-            RSA.PrivateKey.Format.DER -> key.encoded
-            RSA.PrivateKey.Format.JWK -> TODO()
-            RSA.PrivateKey.Format.PEM -> TODO()
-        }
+    override fun encodeToBlocking(format: RSA.PrivateKey.Format): Buffer = when (format) {
+        RSA.PrivateKey.Format.DER -> key.encoded
+        RSA.PrivateKey.Format.JWK -> TODO()
+        RSA.PrivateKey.Format.PEM -> TODO()
     }
 
     override suspend fun encodeTo(format: RSA.PrivateKey.Format): Buffer {

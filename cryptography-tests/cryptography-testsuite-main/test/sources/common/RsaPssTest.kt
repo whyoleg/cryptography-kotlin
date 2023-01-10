@@ -1,6 +1,7 @@
 package dev.whyoleg.cryptography.testcase.main
 
 import dev.whyoleg.cryptography.BinarySize.Companion.bits
+import dev.whyoleg.cryptography.BinarySize.Companion.bytes
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.algorithms.digest.*
@@ -13,16 +14,16 @@ import kotlinx.coroutines.test.*
 import kotlin.test.*
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class RsaOaepTest {
+class RsaPssTest {
 
     @OptIn(InsecureAlgorithm::class)
     @Test
     fun test() = runTest {
         supportedProviders.forEach { provider ->
-            val algorithm = provider.get(RSA.OAEP)
+            val algorithm = provider.get(RSA.PSS)
 
             flow {
-                println("RSA.OAEP: ${provider.name}")
+                println("RSA.PSS: ${provider.name}")
                 listOf(
                     2048.bits,
                     3072.bits,
@@ -35,40 +36,39 @@ class RsaOaepTest {
                         SHA384,
                         SHA512,
                     ).forEach { digest ->
-                        //todo
-                        val maxPlaintextSize = keySize.bytes - 2 - 2 * provider.get(digest).hasher().digestSize
                         println("   |  digest=$digest")
                         val keyGenerator = algorithm.keyPairGenerator(keySize, digest)
 
-                        repeat(5) {
-                            println("      |  keyPair.index=$it")
+                        repeat(5) { keyIndex ->
+                            println("      |  keyPair.index=$keyIndex")
                             val keyPair = keyGenerator.generateKey()
 
-                            repeat(5) { adIndex ->
-                                val adSize = if (adIndex == 0) null else CryptographyRandom.nextInt(10000)
-                                println("         |  associatedData.index=$adIndex, size=$adSize")
+                            repeat(5) { saltIndex ->
+                                val saltSize = CryptographyRandom.nextInt(100)
+                                println("         |  salt.index=$saltIndex, size=$saltSize")
 
-                                val associatedData = adSize?.let(CryptographyRandom::nextBytes)
+                                val signer = keyPair.privateKey.signatureGenerator(saltSize.bytes)
+                                val verifier = keyPair.publicKey.signatureVerifier(saltSize.bytes)
 
-                                repeat(5) { plaintextIndex ->
-                                    val plaintextSize = CryptographyRandom.nextInt(maxPlaintextSize)
-                                    println("            |  plaintext.index=$plaintextIndex, size=$plaintextSize (max=$maxPlaintextSize)")
-                                    val plaintext = CryptographyRandom.nextBytes(plaintextSize)
+                                repeat(5) { dataIndex ->
+                                    val dataSize = CryptographyRandom.nextInt(10000)
+                                    println("            |  data.index=$dataIndex, size=$dataSize")
+                                    val data = CryptographyRandom.nextBytes(dataSize)
 
-                                    val ciphertext = keyPair.publicKey.encryptor().encrypt(plaintext, associatedData)
-                                    println("            |  ciphertext.index=$plaintextIndex, size=${ciphertext.size}")
-                                    keyPair.privateKey.decryptor().decrypt(ciphertext, associatedData).assertContentEquals(plaintext)
+                                    val signature = signer.generateSignature(data)
+                                    println("            |  signature.index=$dataIndex, size=${signature.size}")
+                                    verifier.verifySignature(data, signature).assertTrue()
 
                                     emit(
-                                        RsaOaepTestData(
+                                        RsaPssTestData(
                                             digest = digest,
                                             derPrivateKey = keyPair.privateKey.encodeTo(RSA.PrivateKey.Format.DER),
                                             jwkPrivateKey = keyPair.privateKey.encodeToIf(provider.isWebCrypto, RSA.PrivateKey.Format.JWK),
                                             derPublicKey = keyPair.publicKey.encodeTo(RSA.PublicKey.Format.DER),
                                             jwkPublicKey = keyPair.publicKey.encodeToIf(provider.isWebCrypto, RSA.PublicKey.Format.JWK),
-                                            associatedData = associatedData,
-                                            plaintext = plaintext,
-                                            ciphertext = ciphertext
+                                            saltSize = saltSize,
+                                            data = data,
+                                            signature = signature
                                         )
                                     )
                                 }
@@ -97,9 +97,10 @@ class RsaOaepTest {
                         privateKey.encodeToIf(provider.isWebCrypto, RSA.PrivateKey.Format.JWK)?.assertContentEquals(it)
                     }
 
-                    privateKey.decryptor()
-                        .decrypt(testData.ciphertext, testData.associatedData)
-                        .assertContentEquals(testData.plaintext)
+                    val signature = privateKey.signatureGenerator(testData.saltSize.bytes).generateSignature(testData.data)
+                    publicKeys.forEach { publicKey ->
+                        publicKey.signatureVerifier(testData.saltSize.bytes).verifySignature(testData.data, signature).assertTrue()
+                    }
                 }
 
                 publicKeys.forEach { publicKey ->
@@ -108,23 +109,22 @@ class RsaOaepTest {
                         publicKey.encodeToIf(provider.isWebCrypto, RSA.PublicKey.Format.JWK)?.assertContentEquals(it)
                     }
 
-                    val ciphertext = publicKey.encryptor().encrypt(testData.plaintext, testData.associatedData)
-                    privateKeys.forEach { privateKey ->
-                        privateKey.decryptor().decrypt(ciphertext, testData.associatedData).assertContentEquals(testData.plaintext)
-                    }
+                    publicKey.signatureVerifier(testData.saltSize.bytes)
+                        .verifySignature(testData.data, testData.signature)
+                        .assertTrue()
                 }
             }
         }
     }
 }
 
-class RsaOaepTestData(
+class RsaPssTestData(
     val digest: CryptographyAlgorithmId<Digest>,
     val derPrivateKey: ByteArray,
     val jwkPrivateKey: ByteArray?,
     val derPublicKey: ByteArray,
     val jwkPublicKey: ByteArray?,
-    val associatedData: ByteArray?,
-    val plaintext: ByteArray,
-    val ciphertext: ByteArray,
+    val saltSize: Int,
+    val data: ByteArray,
+    val signature: ByteArray,
 )

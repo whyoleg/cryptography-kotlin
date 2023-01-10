@@ -12,7 +12,6 @@ import dev.whyoleg.cryptography.webcrypto.materials.*
 import dev.whyoleg.cryptography.webcrypto.operations.*
 
 internal object WebCryptoRsaPss : RSA.PSS {
-    private val keyUsages = arrayOf("sign", "verify")
     private val publicKeyFormat: (RSA.PublicKey.Format) -> String = {
         when (it) {
             RSA.PublicKey.Format.DER -> "spki"
@@ -32,7 +31,7 @@ internal object WebCryptoRsaPss : RSA.PSS {
             override fun signatureVerifier(saltLength: BinarySize): SignatureVerifier = WebCryptoSignatureVerifier(
                 algorithm = RsaPssParams(saltLength.bytes),
                 key = key,
-                signatureSize = hashAlgorithmDigestSize(key.algorithm.unsafeCast<RsaHashedKeyImportAlgorithm>().hash)
+                signatureSize = hashAlgorithmDigestSize(key.algorithm.asDynamic().hash.name)
             )
         }
     }
@@ -41,7 +40,7 @@ internal object WebCryptoRsaPss : RSA.PSS {
             override fun signatureGenerator(saltLength: BinarySize): SignatureGenerator = WebCryptoSignatureGenerator(
                 algorithm = RsaPssParams(saltLength.bytes),
                 key = key,
-                signatureSize = hashAlgorithmDigestSize(key.algorithm.unsafeCast<RsaHashedKeyImportAlgorithm>().hash)
+                signatureSize = hashAlgorithmDigestSize(key.algorithm.asDynamic().hash.name)
             )
         }
     }
@@ -55,13 +54,13 @@ internal object WebCryptoRsaPss : RSA.PSS {
     override fun publicKeyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<RSA.PublicKey.Format, RSA.PSS.PublicKey> =
         WebCryptoKeyDecoder(
             RsaHashedKeyImportAlgorithm("RSA-PSS", digest.hashAlgorithmName()),
-            keyUsages, publicKeyFormat, publicKeyWrapper
+            arrayOf("verify"), publicKeyFormat, publicKeyWrapper
         )
 
     override fun privateKeyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<RSA.PrivateKey.Format, RSA.PSS.PrivateKey> =
         WebCryptoKeyDecoder(
             RsaHashedKeyImportAlgorithm("RSA-PSS", digest.hashAlgorithmName()),
-            keyUsages, privateKeyFormat, privateKeyWrapper
+            arrayOf("sign"), privateKeyFormat, privateKeyWrapper
         )
 
     override fun keyPairGenerator(
@@ -80,7 +79,7 @@ internal object WebCryptoRsaPss : RSA.PSS {
             },
             digest.hashAlgorithmName()
         ),
-        keyUsages = keyUsages,
+        keyUsages = arrayOf("sign", "verify"),
         keyPairWrapper = keyPairWrapper
     )
 }

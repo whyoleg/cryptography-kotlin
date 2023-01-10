@@ -17,6 +17,7 @@ internal class JdkCryptographyState(
     private val ciphers: ConcurrentHashMap<String, Pooled<JCipher>> = ConcurrentHashMap()
     private val messageDigests: ConcurrentHashMap<String, Pooled<JMessageDigest>> = ConcurrentHashMap()
     private val macs: ConcurrentHashMap<String, Pooled<JMac>> = ConcurrentHashMap()
+    private val signatures: ConcurrentHashMap<String, Pooled<JSignature>> = ConcurrentHashMap()
     private val keyGenerators: ConcurrentHashMap<String, Pooled<JKeyGenerator>> = ConcurrentHashMap()
     private val keyPairGenerators: ConcurrentHashMap<String, Pooled<JKeyPairGenerator>> = ConcurrentHashMap()
     private val keyFactories: ConcurrentHashMap<String, Pooled<JKeyFactory>> = ConcurrentHashMap()
@@ -50,6 +51,9 @@ internal class JdkCryptographyState(
 
     fun mac(algorithm: String): Pooled<JMac> =
         macs.get(algorithm, JMac::getInstance, JMac::getInstance, JMac::getInstance)
+
+    fun signature(algorithm: String): Pooled<JSignature> =
+        signatures.get(algorithm, JSignature::getInstance, JSignature::getInstance, JSignature::getInstance)
 
     fun keyGenerator(algorithm: String): Pooled<JKeyGenerator> =
         keyGenerators.get(algorithm, JKeyGenerator::getInstance, JKeyGenerator::getInstance, JKeyGenerator::getInstance)

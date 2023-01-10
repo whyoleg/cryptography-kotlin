@@ -3,11 +3,10 @@ package dev.whyoleg.cryptography.jdk.operations
 import dev.whyoleg.cryptography.io.*
 import dev.whyoleg.cryptography.jdk.*
 import dev.whyoleg.cryptography.operations.signature.*
-import javax.crypto.*
 
 internal class JdkMacSignature(
     private val state: JdkCryptographyState,
-    private val key: SecretKey,
+    private val key: JSecretKey,
     algorithm: String,
 ) : SignatureGenerator, SignatureVerifier {
     private val mac = state.mac(algorithm)

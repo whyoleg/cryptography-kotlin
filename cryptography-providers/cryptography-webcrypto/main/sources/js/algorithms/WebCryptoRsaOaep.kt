@@ -12,7 +12,6 @@ import dev.whyoleg.cryptography.webcrypto.external.*
 import dev.whyoleg.cryptography.webcrypto.materials.*
 
 internal object WebCryptoRsaOaep : RSA.OAEP {
-    private val keyUsages = arrayOf("encrypt", "decrypt")
     private val publicKeyFormat: (RSA.PublicKey.Format) -> String = {
         when (it) {
             RSA.PublicKey.Format.DER -> "spki"
@@ -74,7 +73,7 @@ internal object WebCryptoRsaOaep : RSA.OAEP {
             },
             digest.hashAlgorithmName()
         ),
-        keyUsages = keyUsages,
+        keyUsages = arrayOf("encrypt", "decrypt"),
         keyPairWrapper = keyPairWrapper
     )
 }

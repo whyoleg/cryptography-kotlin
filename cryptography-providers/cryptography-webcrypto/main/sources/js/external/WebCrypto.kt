@@ -1,5 +1,6 @@
 package dev.whyoleg.cryptography.webcrypto.external
 
+//TODO: Drop WebCrypto and leave only SubtleCrypto
 internal val WebCrypto: Crypto by lazy {
     val isNodeJs =
         js("typeof process !== 'undefined' && process.versions != null && process.versions.node != null").unsafeCast<Boolean>()

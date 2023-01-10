@@ -7,16 +7,13 @@ import dev.whyoleg.cryptography.jdk.*
 import dev.whyoleg.cryptography.jdk.algorithms.*
 import dev.whyoleg.cryptography.jdk.materials.*
 import dev.whyoleg.cryptography.materials.key.*
-import dev.whyoleg.cryptography.materials.key.KeyGenerator
 import dev.whyoleg.cryptography.operations.cipher.*
-import javax.crypto.*
 import javax.crypto.spec.*
-import javax.crypto.Cipher as JdkCipher
 
 internal class JdkAesGcm(
     private val state: JdkCryptographyState,
 ) : AES.GCM {
-    private val keyWrapper: (SecretKey) -> AES.GCM.Key = { key ->
+    private val keyWrapper: (JSecretKey) -> AES.GCM.Key = { key ->
         object : AES.GCM.Key, EncodableKey<AES.Key.Format> by JdkSecretEncodableKey(state, key) {
             override fun cipher(tagSize: BinarySize): AuthenticatedCipher = AesGcmCipher(state, key, tagSize)
         }
@@ -33,7 +30,7 @@ private const val ivSizeBytes = 12 //bytes for GCM
 
 private class AesGcmCipher(
     private val state: JdkCryptographyState,
-    private val key: SecretKey,
+    private val key: JSecretKey,
     private val tagSize: BinarySize,
 ) : AuthenticatedCipher {
     private val cipher = state.cipher("AES/GCM/NoPadding")
@@ -45,13 +42,13 @@ private class AesGcmCipher(
     //TODO: we can use single ByteArray for output (generate IV in place, and output it)
     override fun encryptBlocking(plaintextInput: Buffer, associatedData: Buffer?): Buffer = cipher.use { cipher ->
         val iv = ByteArray(ivSizeBytes).also(state.secureRandom::nextBytes)
-        cipher.init(JdkCipher.ENCRYPT_MODE, key, GCMParameterSpec(tagSize.bits, iv), state.secureRandom)
+        cipher.init(JCipher.ENCRYPT_MODE, key, GCMParameterSpec(tagSize.bits, iv), state.secureRandom)
         associatedData?.let(cipher::updateAAD)
         iv + cipher.doFinal(plaintextInput)
     }
 
     override fun decryptBlocking(ciphertextInput: Buffer, associatedData: Buffer?): Buffer = cipher.use { cipher ->
-        cipher.init(JdkCipher.DECRYPT_MODE, key, GCMParameterSpec(tagSize.bits, ciphertextInput, 0, ivSizeBytes), state.secureRandom)
+        cipher.init(JCipher.DECRYPT_MODE, key, GCMParameterSpec(tagSize.bits, ciphertextInput, 0, ivSizeBytes), state.secureRandom)
         associatedData?.let(cipher::updateAAD)
         cipher.doFinal(ciphertextInput, ivSizeBytes, ciphertextInput.size - ivSizeBytes)
     }

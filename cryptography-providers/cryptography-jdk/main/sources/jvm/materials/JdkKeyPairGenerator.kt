@@ -4,7 +4,7 @@ import dev.whyoleg.cryptography.jdk.*
 import dev.whyoleg.cryptography.materials.key.*
 
 internal abstract class JdkKeyPairGenerator<K : Key>(
-    private val state: JdkCryptographyState,
+    protected val state: JdkCryptographyState,
     algorithm: String,
 ) : KeyGenerator<K> {
     private val keyPairGenerator = state.keyPairGenerator(algorithm)

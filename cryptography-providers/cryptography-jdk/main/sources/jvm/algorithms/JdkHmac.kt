@@ -7,14 +7,12 @@ import dev.whyoleg.cryptography.jdk.*
 import dev.whyoleg.cryptography.jdk.materials.*
 import dev.whyoleg.cryptography.jdk.operations.*
 import dev.whyoleg.cryptography.materials.key.*
-import dev.whyoleg.cryptography.materials.key.KeyGenerator
 import dev.whyoleg.cryptography.operations.signature.*
-import javax.crypto.*
 
 internal class JdkHmac(
     private val state: JdkCryptographyState,
 ) : HMAC {
-    private val keyWrapper: (SecretKey) -> HMAC.Key = { key ->
+    private val keyWrapper: (JSecretKey) -> HMAC.Key = { key ->
         object : HMAC.Key, EncodableKey<HMAC.Key.Format> by JdkSecretEncodableKey(state, key) {
             private val signature = JdkMacSignature(state, key, key.algorithm)
             override fun signatureGenerator(): SignatureGenerator = signature
