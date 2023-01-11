@@ -1,11 +1,9 @@
-0.1.0 TODO:
+# Future versions planning
+
+## 0.1.0 TODO:
 
 * [ ] Algorithms (+/- covered WebCrypto)
     * [ ] EC (ECDSA/ECDH)
-        * [ ] implementations
-    * [ ] RSA OAEP
-        * [ ] implementations
-    * [ ] RSA PSS
         * [ ] implementations
 * [ ] Tests
     * [ ] Hash
@@ -18,10 +16,11 @@
     * [ ] Apple (CoreCrypto + Security framework)
     * [ ] OpenSSL(1/3) engine (dynamic)
 * [ ] Coroutines integration (for JDK engine to run on other dispatcher)
+* [ ] binary compatibility validator
 * [ ] Maven Central
 * [ ] README
 
-0.2.0-0.3.0 plans:
+## 0.2.0-0.3.0 plans:
 
 * [ ] Algorithms
     * [ ] SHA-3 (hash)
@@ -47,6 +46,10 @@
         * [ ] Streaming encryption/decryption (look at google/tink)
         * [ ] File encryption/decryption (function operations)
     * [ ] Key wrap/unwrap
+    * [ ] General way to define algorithms, that support something (like KeyGen)
+    * [ ] Decide on how someone can create custom algorithms, that need or ECDSA.Key or RSA.PSS.Key (like different signature algorithms in
+      ssh)
+    * [ ] Decode key from DER -> then decide on which algorithm it is (problems with WebCrypto)
 * [ ] Materials
     * [ ] introduce materials: key, key pair, certificate, certificate chain, certificate+key pair etc
     * [ ] X.509 Certificates
@@ -63,7 +66,7 @@
     * [ ] Default (auto provision) engine
 * [ ] Android integration tests
 
-0.x.y plans:
+## 0.x.y plans:
 
 * [ ] CryptographyException hierarchy
 * [ ] AWS/GCP KMS provider
@@ -77,3 +80,4 @@
 * [ ] Decide on algorithms access in code. f.e. AES.CBC, RSA.OAEP vs ECDSA, ECDH, etc.
 * [ ] key usages (like in WebCrypto) - is it needed?
 * [ ] migrate to some IO library
+* [ ] compiler plugin to generate declarations with flatten parameters
