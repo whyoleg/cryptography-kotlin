@@ -1,6 +1,6 @@
 # Future versions planning
 
-## 0.1.0 TODO:
+## 0.1.0: Initial release
 
 * [ ] Algorithms (+/- covered WebCrypto)
     * [ ] EC (ECDSA/ECDH)
@@ -14,16 +14,22 @@
 * [ ] Engines
     * [ ] JDK
     * [ ] Apple (CoreCrypto + Security framework)
-    * [ ] OpenSSL(1/3) engine (dynamic)
-* [ ] Coroutines integration (for JDK engine to run on other dispatcher)
+    * [ ] OpenSSL(1/3) engine (dynamic for desktop native targets)
+* [ ] Coroutines integration (for JDK engine to run on other dispatcher, to avoid blocking main thread)
 * [ ] binary compatibility validator
+* [ ] drop signature/digest/plaintext/etc sizes for now
 * [ ] Maven Central
 * [ ] README
 
-## 0.2.0-0.3.0 plans:
+## 0.2.0: New operations, algorithms, engines
 
+* [ ] Operations
+    * [ ] Key derive (kdf/prf)
+    * [ ] Multi-key agreement support
+    * [ ] Key wrap/unwrap
 * [ ] Algorithms
     * [ ] SHA-3 (hash)
+    * [ ] AES-KW (key wrap/unwrap)
     * [ ] AES-CTR (?) (cipher)
     * [ ] ChaCha20-Poly1305 (stream cipher)
     * [ ] PBKDF2 (prf)
@@ -33,51 +39,60 @@
     * [ ] brcypt (prf)
     * [ ] RSA-SSA-PKCS1 (signature)
     * [ ] CMAC (mac)
-    * [ ] Blowfish (cipher), Blake (hash)- try to find some implementations
-* [ ] Operations (some things can depend on IO library - if so, design or postpone)
-    * [ ] Function operations (cipher, signature, hash)
-    * [ ] Operations with provided output buffer
-    * [ ] Key derive (kdf/prf)
-    * [ ] Multi-key agreement support
-    * [ ] encrypt/decrypt
-        * [ ] Box ciphers
-        * [ ] Unsafe encrypt operations for cases when f.e. AES nonce/iv provided by user
-        * [ ] Decide on cipher encrypt/decrypt functions for RSA-like algorithms
-        * [ ] Streaming encryption/decryption (look at google/tink)
-        * [ ] File encryption/decryption (function operations)
-    * [ ] Key wrap/unwrap
-    * [ ] General way to define algorithms, that support something (like KeyGen)
-    * [ ] Decide on how someone can create custom algorithms, that need or ECDSA.Key or RSA.PSS.Key (like different signature algorithms in
-      ssh)
-    * [ ] Decode key from DER -> then decide on which algorithm it is (problems with WebCrypto)
+    * [ ] Blowfish (cipher), Blake (hash) - try to find some implementations (?)
+* [ ] Engines
+    * [ ] CryptoKit engine
+    * [ ] Windows CNG engine
+    * [ ] OpenSSL(1/3) engine (static for almost all native targets)
+    * [ ] Engine builder DSL + decide on how to better handle providers inside engine (lazy, cache, etc)
+    * [ ] Default (auto provision) engine
+* [ ] Android integration tests
+
+## 0.3.0: Certificates and Key management
+
 * [ ] Materials
     * [ ] introduce materials: key, key pair, certificate, certificate chain, certificate+key pair etc
     * [ ] X.509 Certificates
     * [ ] PKCS12 support
     * [ ] Keys
         * [ ] keystore/keymanager/keychain/keyring?
-        * [ ] Destination: java key store, key chain, file, secure enclave (?)
-        * [ ] JDK KeyStore
+        * [ ] Destination: java key store, keychain, file (?), secure enclave (?)
+        * [ ] JDK KeyStore (?)
+* [ ] General
+    * [ ] General way to define algorithms, that support something (like KeyGen, needed for certificates)
+    * [ ] Decide on how someone can create custom algorithms, that need or ECDSA.Key or RSA.PSS.Key
+      (like different signature algorithms in ssh, tls, certificate)
+    * [ ] Decode key from DER -> then decide on which algorithm it is (problems with WebCrypto)
+
+## 0.4.0: Enhanced operations for bigger data and streaming (some things can depend on IO library - if so, design or postpone)
+
+* [ ] Function operations (cipher, signature, hash)
+* [ ] Operations with provided output buffer + calculating signature/digest/plaintext/etc sizes
+* [ ] encrypt/decrypt
+    * [ ] Box ciphers
+    * [ ] Unsafe encrypt operations for cases when f.e. AES nonce/iv provided by user
+    * [ ] Decide on cipher encrypt/decrypt functions for RSA-like algorithms
+    * [ ] Streaming encryption/decryption (look at google/tink)
+    * [ ] File encryption/decryption (function operations)
+
+## x.y.z plans:
+
+* [ ] compiler plugin to generate declarations with flatten parameters (related to 'general way to define algorithms')
 * [ ] Engines
-    * [ ] CryptoKit engine
-    * [ ] Windows CNG engine
-    * [ ] OpenSSL(1/3) engine (static)
-    * [ ] Engine builder DSL + decide on how to better handle providers inside engine (lazy, cache, etc)
-    * [ ] Default (auto provision) engine
-* [ ] Android integration tests
+    * [ ] AWS/GCP KMS provider
+    * [ ] BorringSSL engine (MPP)
+    * [ ] NodeJS engine
+    * [ ] OpenSSL(1/3) engine for JVM (may be JS/WASM)
+* [ ] MPP encoding
+    * [ ] JWT/JWK support (JOSE)
+    * [ ] ASN.1/X.509/DER/PEM encoder/decoder (via kx.serialization ?)
+* [ ] Operations/Algorithms
+    * [ ] Hybrid Encryption
+    * [ ] Double Ratchet Algorithm (?)
+* [ ] Try to implement some TLS cipher suites (TLS 1.2/1.3) in sample or as a separate module
 
-## 0.x.y plans:
+## 1.0.0: Stable release
 
-* [ ] CryptographyException hierarchy
-* [ ] AWS/GCP KMS provider
-* [ ] BorringSSL engine
-* [ ] NodeJS engine
-* [ ] JWT/JWK support (JOSE)
-* [ ] MPP ASN.1/X.509/DER/PEM encoder/decoder (via kx.serialization ?)
-* [ ] JDK Untyped support (using javax.crypto algorithms spec) - is it needed?
-* [ ] Hybrid Encryption
-* [ ] Double Ratchet Algorithm (?)
+* [ ] Design CryptographyException hierarchy
+* [ ] Migrate to some IO library
 * [ ] Decide on algorithms access in code. f.e. AES.CBC, RSA.OAEP vs ECDSA, ECDH, etc.
-* [ ] key usages (like in WebCrypto) - is it needed?
-* [ ] migrate to some IO library
-* [ ] compiler plugin to generate declarations with flatten parameters
