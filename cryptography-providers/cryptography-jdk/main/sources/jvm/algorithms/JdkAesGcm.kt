@@ -14,7 +14,7 @@ internal class JdkAesGcm(
     private val state: JdkCryptographyState,
 ) : AES.GCM {
     private val keyWrapper: (JSecretKey) -> AES.GCM.Key = { key ->
-        object : AES.GCM.Key, EncodableKey<AES.Key.Format> by JdkSecretEncodableKey(state, key) {
+        object : AES.GCM.Key, EncodableKey<AES.Key.Format> by JdkEncodableKey(state, key) {
             override fun cipher(tagSize: BinarySize): AuthenticatedCipher = AesGcmCipher(state, key, tagSize)
         }
     }

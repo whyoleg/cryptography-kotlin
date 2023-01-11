@@ -15,7 +15,7 @@ internal class JdkAesCbc(
     private val state: JdkCryptographyState,
 ) : AES.CBC {
     private val keyWrapper: (JSecretKey) -> AES.CBC.Key = { key ->
-        object : AES.CBC.Key, EncodableKey<AES.Key.Format> by JdkSecretEncodableKey(state, key) {
+        object : AES.CBC.Key, EncodableKey<AES.Key.Format> by JdkEncodableKey(state, key) {
             override fun cipher(padding: Boolean): Cipher = AesCbcCipher(state, key, padding)
         }
     }

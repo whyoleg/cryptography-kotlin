@@ -21,6 +21,7 @@ internal class JdkCryptographyState(
     private val keyGenerators: ConcurrentHashMap<String, Pooled<JKeyGenerator>> = ConcurrentHashMap()
     private val keyPairGenerators: ConcurrentHashMap<String, Pooled<JKeyPairGenerator>> = ConcurrentHashMap()
     private val keyFactories: ConcurrentHashMap<String, Pooled<JKeyFactory>> = ConcurrentHashMap()
+    private val algorithmParameters: ConcurrentHashMap<String, Pooled<JAlgorithmParameters>> = ConcurrentHashMap()
 
     private inline fun <T> ConcurrentHashMap<String, Pooled<T>>.get(
         algorithm: String,
@@ -64,6 +65,13 @@ internal class JdkCryptographyState(
     fun keyFactory(algorithm: String): Pooled<JKeyFactory> =
         keyFactories.get(algorithm, JKeyFactory::getInstance, JKeyFactory::getInstance, JKeyFactory::getInstance)
 
+    fun algorithmParameters(algorithm: String): Pooled<JAlgorithmParameters> =
+        algorithmParameters.get(
+            algorithm,
+            JAlgorithmParameters::getInstance,
+            JAlgorithmParameters::getInstance,
+            JAlgorithmParameters::getInstance
+        )
 }
 
 internal fun CryptographyAlgorithmId<Digest>.hashAlgorithmName(): String = when (this) {

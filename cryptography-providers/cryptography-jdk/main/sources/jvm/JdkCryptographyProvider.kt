@@ -3,6 +3,7 @@ package dev.whyoleg.cryptography.jdk
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
+import dev.whyoleg.cryptography.algorithms.asymmetric.ec.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.algorithms.symmetric.mac.*
@@ -49,6 +50,7 @@ internal class JdkCryptographyProvider(
             AES.GCM  -> JdkAesGcm(state)
             RSA.OAEP -> JdkRsaOaep(state)
             RSA.PSS  -> JdkRsaPss(state)
+            ECDSA    -> JdkEcdsa(state)
             else     -> null
         }
     } as A?

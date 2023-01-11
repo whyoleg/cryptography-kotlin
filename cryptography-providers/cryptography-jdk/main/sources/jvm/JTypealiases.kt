@@ -17,3 +17,4 @@ internal typealias JProvider = Provider
 internal typealias JSignature = Signature
 internal typealias JSecureRandom = SecureRandom
 internal typealias JKeyFactory = KeyFactory
+internal typealias JAlgorithmParameters = AlgorithmParameters

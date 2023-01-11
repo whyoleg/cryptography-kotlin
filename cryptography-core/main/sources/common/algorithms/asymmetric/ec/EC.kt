@@ -12,8 +12,8 @@ import kotlin.jvm.*
 
 @SubclassOptInRequired(ProviderApi::class)
 public interface EC<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP : EC.KeyPair<PublicK, PrivateK>> : CryptographyAlgorithm {
-    public fun publicKeyDecoder(curve: Curve): KeyDecoder<PublicKey.Format, PublicK>
-    public fun privateKeyDecoder(curve: Curve): KeyDecoder<PrivateKey.Format, PrivateK>
+    public fun publicKeyDecoder(curve: Curve?): KeyDecoder<PublicKey.Format, PublicK>
+    public fun privateKeyDecoder(curve: Curve?): KeyDecoder<PrivateKey.Format, PrivateK>
     public fun keyPairGenerator(curve: Curve): KeyGenerator<KP>
 
     @JvmInline

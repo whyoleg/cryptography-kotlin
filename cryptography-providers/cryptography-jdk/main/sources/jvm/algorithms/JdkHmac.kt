@@ -13,7 +13,7 @@ internal class JdkHmac(
     private val state: JdkCryptographyState,
 ) : HMAC {
     private val keyWrapper: (JSecretKey) -> HMAC.Key = { key ->
-        object : HMAC.Key, EncodableKey<HMAC.Key.Format> by JdkSecretEncodableKey(state, key) {
+        object : HMAC.Key, EncodableKey<HMAC.Key.Format> by JdkEncodableKey(state, key) {
             private val signature = JdkMacSignature(state, key, key.algorithm)
             override fun signatureGenerator(): SignatureGenerator = signature
             override fun signatureVerifier(): SignatureVerifier = signature
