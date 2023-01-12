@@ -15,7 +15,6 @@
     * [ ] JDK
     * [ ] Apple (CoreCrypto + Security framework)
     * [ ] OpenSSL(1/3) engine (dynamic for desktop native targets)
-    * [ ] Default (auto provision) engine
 * [ ] Coroutines integration (for JDK engine to run on other dispatcher, to avoid blocking main thread)
 * [ ] binary compatibility validator
 * [ ] Maven Central

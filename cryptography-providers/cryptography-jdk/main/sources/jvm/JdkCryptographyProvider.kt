@@ -16,7 +16,9 @@ import dev.whyoleg.cryptography.random.*
 import java.security.*
 import java.util.concurrent.*
 
-public val CryptographyProvider.Companion.JDK: CryptographyProvider by lazy { CryptographyProvider.Companion.JDK() }
+private val defaultProvider = lazy { CryptographyProvider.Companion.JDK() }
+
+public val CryptographyProvider.Companion.JDK: CryptographyProvider by defaultProvider
 
 @Suppress("FunctionName")
 public fun CryptographyProvider.Companion.JDK(
@@ -34,7 +36,9 @@ public fun CryptographyProvider.Companion.JDK(
 
 internal class JdkCryptographyProvider(
     private val state: JdkCryptographyState,
-) : CryptographyProvider("JDK") {
+) : CryptographyProvider() {
+    override val name: String get() = "JDK"
+
     private val cache = ConcurrentHashMap<CryptographyAlgorithmId<*>, CryptographyAlgorithm?>()
 
     @Suppress("UNCHECKED_CAST")
@@ -54,4 +58,9 @@ internal class JdkCryptographyProvider(
             else     -> null
         }
     } as A?
+}
+
+@Suppress("DEPRECATION_ERROR")
+internal class JdkCryptographyProviderContainer : CryptographyProviderContainer {
+    override val provider: Lazy<CryptographyProvider> get() = defaultProvider
 }

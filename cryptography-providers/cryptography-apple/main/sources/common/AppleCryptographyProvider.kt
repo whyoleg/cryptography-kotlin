@@ -16,7 +16,9 @@ import dev.whyoleg.cryptography.provider.*
 //Not yet implemented: PBKDF2, AES-KW
 //https://opensource.apple.com/source/CommonCrypto/CommonCrypto-36064/CommonCrypto/CommonCryptor.h.auto.html
 
-public val CryptographyProvider.Companion.Apple: CryptographyProvider by lazy { CryptographyProvider.Companion.Apple() }
+private val defaultProvider = lazy { CryptographyProvider.Companion.Apple() }
+
+public val CryptographyProvider.Companion.Apple: CryptographyProvider by defaultProvider
 
 @Suppress("FunctionName")
 public fun CryptographyProvider.Companion.Apple(
@@ -25,7 +27,9 @@ public fun CryptographyProvider.Companion.Apple(
 
 internal class AppleCryptographyProvider(
     private val state: AppleState,
-) : CryptographyProvider("Apple") {
+) : CryptographyProvider() {
+    override val name: String get() = "Apple"
+
     @Suppress("UNCHECKED_CAST")
     override fun <A : CryptographyAlgorithm> getOrNull(identifier: CryptographyAlgorithmId<A>): A? = when (identifier) {
         MD5     -> CCDigest(state, CCHashAlgorithm.MD5)
@@ -38,3 +42,8 @@ internal class AppleCryptographyProvider(
         else    -> throw CryptographyAlgorithmNotFoundException(identifier)
     } as A?
 }
+
+@Suppress("DEPRECATION", "INVISIBLE_MEMBER")
+@OptIn(ExperimentalStdlibApi::class)
+@EagerInitialization
+private val initHook = registerProvider(defaultProvider)
