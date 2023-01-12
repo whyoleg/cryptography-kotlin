@@ -7,7 +7,7 @@ kotlin {
 
     sourceSets {
         all {
-            languageSettings.optIn("dev.whyoleg.cryptography.operations.ProviderApi")
+            languageSettings.optIn("dev.whyoleg.cryptography.provider.CryptographyProviderApi")
             languageSettings.optIn("dev.whyoleg.cryptography.algorithms.InsecureAlgorithm")
         }
         val jvmMain by getting {

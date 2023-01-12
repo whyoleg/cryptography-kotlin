@@ -4,19 +4,19 @@ import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.operations.derive.*
 import dev.whyoleg.cryptography.provider.*
 
-@SubclassOptInRequired(ProviderApi::class)
+@SubclassOptInRequired(CryptographyProviderApi::class)
 public interface ECDH : EC<ECDH.PublicKey, ECDH.PrivateKey, ECDH.KeyPair> {
     public companion object : CryptographyAlgorithmId<ECDH>()
 
-    @SubclassOptInRequired(ProviderApi::class)
+    @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface KeyPair : EC.KeyPair<PublicKey, PrivateKey>
 
-    @SubclassOptInRequired(ProviderApi::class)
+    @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface PublicKey : EC.PublicKey {
         public fun derivative(): SharedSecretDerivative<EC.PrivateKey.Format>
     }
 
-    @SubclassOptInRequired(ProviderApi::class)
+    @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface PrivateKey : EC.PrivateKey {
         public fun derivative(): SharedSecretDerivative<EC.PublicKey.Format>
     }

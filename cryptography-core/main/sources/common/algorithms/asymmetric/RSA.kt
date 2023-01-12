@@ -9,7 +9,7 @@ import dev.whyoleg.cryptography.operations.cipher.*
 import dev.whyoleg.cryptography.operations.signature.*
 import dev.whyoleg.cryptography.provider.*
 
-@SubclassOptInRequired(ProviderApi::class)
+@SubclassOptInRequired(CryptographyProviderApi::class)
 public interface RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP : RSA.KeyPair<PublicK, PrivateK>> : CryptographyAlgorithm {
     public fun publicKeyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<PublicKey.Format, PublicK>
     public fun privateKeyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<PrivateKey.Format, PrivateK>
@@ -35,13 +35,13 @@ public interface RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP : RS
         }
     }
 
-    @SubclassOptInRequired(ProviderApi::class)
+    @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface KeyPair<PublicK : PublicKey, PrivateK : PrivateKey> : Key {
         public val publicKey: PublicK
         public val privateKey: PrivateK
     }
 
-    @SubclassOptInRequired(ProviderApi::class)
+    @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface PublicKey : EncodableKey<PublicKey.Format> {
         public sealed class Format : KeyFormat {
             public object PEM : Format(), KeyFormat.PEM
@@ -50,7 +50,7 @@ public interface RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP : RS
         }
     }
 
-    @SubclassOptInRequired(ProviderApi::class)
+    @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface PrivateKey : EncodableKey<PrivateKey.Format> {
         public sealed class Format : KeyFormat {
             public object PEM : Format(), KeyFormat.PEM
@@ -59,37 +59,37 @@ public interface RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP : RS
         }
     }
 
-    @SubclassOptInRequired(ProviderApi::class)
+    @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface OAEP : RSA<OAEP.PublicKey, OAEP.PrivateKey, OAEP.KeyPair> {
         public companion object : CryptographyAlgorithmId<OAEP>()
 
-        @SubclassOptInRequired(ProviderApi::class)
+        @SubclassOptInRequired(CryptographyProviderApi::class)
         public interface KeyPair : RSA.KeyPair<PublicKey, PrivateKey>
 
-        @SubclassOptInRequired(ProviderApi::class)
+        @SubclassOptInRequired(CryptographyProviderApi::class)
         public interface PublicKey : RSA.PublicKey {
             public fun encryptor(): AuthenticatedEncryptor
         }
 
-        @SubclassOptInRequired(ProviderApi::class)
+        @SubclassOptInRequired(CryptographyProviderApi::class)
         public interface PrivateKey : RSA.PrivateKey {
             public fun decryptor(): AuthenticatedDecryptor
         }
     }
 
-    @SubclassOptInRequired(ProviderApi::class)
+    @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface PSS : RSA<PSS.PublicKey, PSS.PrivateKey, PSS.KeyPair> {
         public companion object : CryptographyAlgorithmId<PSS>()
 
-        @SubclassOptInRequired(ProviderApi::class)
+        @SubclassOptInRequired(CryptographyProviderApi::class)
         public interface KeyPair : RSA.KeyPair<PublicKey, PrivateKey>
 
-        @SubclassOptInRequired(ProviderApi::class)
+        @SubclassOptInRequired(CryptographyProviderApi::class)
         public interface PublicKey : RSA.PublicKey {
             public fun signatureVerifier(saltLength: BinarySize): SignatureVerifier
         }
 
-        @SubclassOptInRequired(ProviderApi::class)
+        @SubclassOptInRequired(CryptographyProviderApi::class)
         public interface PrivateKey : RSA.PrivateKey {
             public fun signatureGenerator(saltLength: BinarySize): SignatureGenerator
         }

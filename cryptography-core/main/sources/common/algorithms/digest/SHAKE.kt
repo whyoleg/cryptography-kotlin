@@ -7,7 +7,7 @@ import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.operations.hash.*
 import dev.whyoleg.cryptography.provider.*
 
-@SubclassOptInRequired(ProviderApi::class)
+@SubclassOptInRequired(CryptographyProviderApi::class)
 public interface SHAKE : CryptographyAlgorithm {
     public fun hasher(digestSize: BinarySize): Hasher
 

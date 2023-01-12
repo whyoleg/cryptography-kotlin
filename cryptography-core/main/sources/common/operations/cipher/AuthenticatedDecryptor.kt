@@ -1,7 +1,9 @@
 package dev.whyoleg.cryptography.operations.cipher
 
 import dev.whyoleg.cryptography.io.*
+import dev.whyoleg.cryptography.provider.*
 
+@SubclassOptInRequired(CryptographyProviderApi::class)
 public interface AuthenticatedDecryptor : Decryptor {
     public suspend fun decrypt(ciphertextInput: Buffer, associatedData: Buffer?): Buffer
     override suspend fun decrypt(ciphertextInput: Buffer): Buffer = decrypt(ciphertextInput, null)

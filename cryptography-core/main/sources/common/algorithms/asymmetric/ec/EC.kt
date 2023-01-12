@@ -10,7 +10,7 @@ import dev.whyoleg.cryptography.operations.signature.*
 import dev.whyoleg.cryptography.provider.*
 import kotlin.jvm.*
 
-@SubclassOptInRequired(ProviderApi::class)
+@SubclassOptInRequired(CryptographyProviderApi::class)
 public interface EC<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP : EC.KeyPair<PublicK, PrivateK>> : CryptographyAlgorithm {
     public fun publicKeyDecoder(curve: Curve?): KeyDecoder<PublicKey.Format, PublicK>
     public fun privateKeyDecoder(curve: Curve?): KeyDecoder<PrivateKey.Format, PrivateK>
@@ -28,13 +28,13 @@ public interface EC<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP : EC.Ke
         }
     }
 
-    @SubclassOptInRequired(ProviderApi::class)
+    @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface KeyPair<PublicK : PublicKey, PrivateK : PrivateKey> : Key {
         public val publicKey: PublicK
         public val privateKey: PrivateK
     }
 
-    @SubclassOptInRequired(ProviderApi::class)
+    @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface PublicKey : EncodableKey<PublicKey.Format> {
         public sealed class Format : KeyFormat {
             public object RAW : Format(), KeyFormat.RAW
@@ -44,7 +44,7 @@ public interface EC<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP : EC.Ke
         }
     }
 
-    @SubclassOptInRequired(ProviderApi::class)
+    @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface PrivateKey : EncodableKey<PrivateKey.Format> {
         public sealed class Format : KeyFormat {
             public object PEM : Format(), KeyFormat.PEM
