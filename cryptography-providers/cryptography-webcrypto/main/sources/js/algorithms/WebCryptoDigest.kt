@@ -19,8 +19,6 @@ internal class WebCryptoDigest private constructor(
 
     override fun hasher(): Hasher = this
 
-    override val digestSize: Int = hashAlgorithmDigestSize(algorithm)
-
     override suspend fun hash(dataInput: Buffer): Buffer {
         return WebCrypto.subtle.digest(algorithm, dataInput).await().toByteArray()
     }

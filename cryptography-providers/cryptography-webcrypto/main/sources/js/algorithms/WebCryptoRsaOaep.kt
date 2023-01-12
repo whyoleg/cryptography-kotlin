@@ -80,10 +80,6 @@ internal object WebCryptoRsaOaep : RSA.OAEP {
 
 private class RsaOaepEncryptor(private val key: CryptoKey) : AuthenticatedEncryptor {
 
-    override fun ciphertextSize(plaintextSize: Int): Int {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun encrypt(plaintextInput: Buffer, associatedData: Buffer?): Buffer {
         return WebCrypto.subtle.encrypt(
             algorithm = RsaOaepParams(associatedData),
@@ -96,9 +92,6 @@ private class RsaOaepEncryptor(private val key: CryptoKey) : AuthenticatedEncryp
 }
 
 private class RsaOaepDecryptor(private val key: CryptoKey) : AuthenticatedDecryptor {
-    override fun plaintextSize(ciphertextSize: Int): Int {
-        TODO("Not yet implemented")
-    }
 
     override suspend fun decrypt(ciphertextInput: Buffer, associatedData: Buffer?): Buffer {
         return WebCrypto.subtle.decrypt(

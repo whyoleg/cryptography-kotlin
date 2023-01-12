@@ -30,8 +30,7 @@ internal object WebCryptoRsaPss : RSA.PSS {
         object : RSA.PSS.PublicKey, EncodableKey<RSA.PublicKey.Format> by WebCryptoEncodableKey(key, publicKeyFormat) {
             override fun signatureVerifier(saltLength: BinarySize): SignatureVerifier = WebCryptoSignatureVerifier(
                 algorithm = RsaPssParams(saltLength.bytes),
-                key = key,
-                signatureSize = hashAlgorithmDigestSize(key.algorithm.asDynamic().hash.name)
+                key = key
             )
         }
     }
@@ -39,8 +38,7 @@ internal object WebCryptoRsaPss : RSA.PSS {
         object : RSA.PSS.PrivateKey, EncodableKey<RSA.PrivateKey.Format> by WebCryptoEncodableKey(key, privateKeyFormat) {
             override fun signatureGenerator(saltLength: BinarySize): SignatureGenerator = WebCryptoSignatureGenerator(
                 algorithm = RsaPssParams(saltLength.bytes),
-                key = key,
-                signatureSize = hashAlgorithmDigestSize(key.algorithm.asDynamic().hash.name)
+                key = key
             )
         }
     }

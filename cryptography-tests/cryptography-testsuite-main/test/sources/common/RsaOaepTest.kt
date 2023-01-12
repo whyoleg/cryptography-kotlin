@@ -1,5 +1,6 @@
 package dev.whyoleg.cryptography.testcase.main
 
+import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.BinarySize.Companion.bits
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
@@ -11,6 +12,16 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.test.*
 import kotlin.test.*
+
+//TODO: recheck
+@OptIn(InsecureAlgorithm::class)
+internal fun hashAlgorithmDigestSize(algorithm: CryptographyAlgorithmId<Digest>): Int = when (algorithm) {
+    SHA1 -> 20
+    SHA256 -> 32
+    SHA384 -> 48
+    SHA512 -> 64
+    else -> throw CryptographyException("Unsupported hash algorithm: $algorithm")
+}
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class RsaOaepTest {
@@ -36,7 +47,7 @@ class RsaOaepTest {
                         SHA512,
                     ).forEach { digest ->
                         //todo
-                        val maxPlaintextSize = keySize.bytes - 2 - 2 * provider.get(digest).hasher().digestSize
+                        val maxPlaintextSize = keySize.bytes - 2 - 2 * hashAlgorithmDigestSize(digest)
                         println("   |  digest=$digest")
                         val keyGenerator = algorithm.keyPairGenerator(keySize, digest)
 

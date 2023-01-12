@@ -41,11 +41,6 @@ private class AesCbcCipher(
         }
     )
 
-    //TODO: set values
-    override fun ciphertextSize(plaintextSize: Int): Int = plaintextSize + ivSizeBytes //+ tagSizeBits / 8
-
-    override fun plaintextSize(ciphertextSize: Int): Int = ciphertextSize - ivSizeBytes //- tagSizeBits / 8
-
     //TODO: we can use single ByteArray for output (generate IV in place, and output it)
     override fun encryptBlocking(plaintextInput: Buffer): Buffer = cipher.use { cipher ->
         val iv = ByteArray(ivSizeBytes).also(state.secureRandom::nextBytes)

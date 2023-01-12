@@ -15,9 +15,9 @@
     * [ ] JDK
     * [ ] Apple (CoreCrypto + Security framework)
     * [ ] OpenSSL(1/3) engine (dynamic for desktop native targets)
+    * [ ] Default (auto provision) engine
 * [ ] Coroutines integration (for JDK engine to run on other dispatcher, to avoid blocking main thread)
 * [ ] binary compatibility validator
-* [ ] drop signature/digest/plaintext/etc sizes for now
 * [ ] Maven Central
 * [ ] README
 
@@ -45,7 +45,6 @@
     * [ ] Windows CNG engine
     * [ ] OpenSSL(1/3) engine (static for almost all native targets)
     * [ ] Engine builder DSL + decide on how to better handle providers inside engine (lazy, cache, etc)
-    * [ ] Default (auto provision) engine
 * [ ] Android integration tests
 
 ## 0.3.0: Certificates and Key management
@@ -67,7 +66,8 @@
 ## 0.4.0: Enhanced operations for bigger data and streaming (some things can depend on IO library - if so, design or postpone)
 
 * [ ] Function operations (cipher, signature, hash)
-* [ ] Operations with provided output buffer + calculating signature/digest/plaintext/etc sizes
+* [ ] Operations with provided output buffer
+* [ ] funcitons for calculating signature/digest/plaintext/etc sizes
 * [ ] encrypt/decrypt
     * [ ] Box ciphers
     * [ ] Unsafe encrypt operations for cases when f.e. AES nonce/iv provided by user

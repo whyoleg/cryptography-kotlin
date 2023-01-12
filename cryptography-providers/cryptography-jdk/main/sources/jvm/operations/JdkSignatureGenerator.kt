@@ -13,8 +13,6 @@ internal class JdkSignatureGenerator(
 ) : SignatureGenerator {
     private val signature = state.signature(algorithm)
 
-    override val signatureSize: Int get() = TODO()
-
     override fun generateSignatureBlocking(dataInput: Buffer): Buffer = signature.use { signature ->
         signature.initSign(key, state.secureRandom)
         parameters?.let(signature::setParameter)

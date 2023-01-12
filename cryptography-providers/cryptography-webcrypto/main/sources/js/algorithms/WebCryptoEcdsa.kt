@@ -14,13 +14,13 @@ internal object WebCryptoEcdsa : ECDSA, WebCryptoEc<ECDSA.PublicKey, ECDSA.Priva
     override val publicKeyWrapper: (CryptoKey) -> ECDSA.PublicKey = { key ->
         object : ECDSA.PublicKey, EncodableKey<EC.PublicKey.Format> by WebCryptoEncodableKey(key, publicKeyFormat) {
             override fun signatureVerifier(digest: CryptographyAlgorithmId<Digest>): SignatureVerifier =
-                WebCryptoSignatureVerifier(EcdsaParams(digest.hashAlgorithmName()), key, 0)
+                WebCryptoSignatureVerifier(EcdsaParams(digest.hashAlgorithmName()), key)
         }
     }
     override val privateKeyWrapper: (CryptoKey) -> ECDSA.PrivateKey = { key ->
         object : ECDSA.PrivateKey, EncodableKey<EC.PrivateKey.Format> by WebCryptoEncodableKey(key, privateKeyFormat) {
             override fun signatureGenerator(digest: CryptographyAlgorithmId<Digest>): SignatureGenerator =
-                WebCryptoSignatureGenerator(EcdsaParams(digest.hashAlgorithmName()), key, 0)
+                WebCryptoSignatureGenerator(EcdsaParams(digest.hashAlgorithmName()), key)
         }
     }
     override val keyPairWrapper: (CryptoKeyPair) -> ECDSA.KeyPair = { keyPair ->

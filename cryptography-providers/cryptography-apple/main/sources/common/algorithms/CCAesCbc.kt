@@ -69,14 +69,6 @@ private class AesCbcCipher(
     private val padding: Boolean,
 ) : Cipher {
 
-    override fun ciphertextSize(plaintextSize: Int): Int {
-        TODO("Not yet implemented")
-    }
-
-    override fun plaintextSize(ciphertextSize: Int): Int {
-        TODO("Not yet implemented")
-    }
-
     override fun encryptBlocking(plaintextInput: Buffer): Buffer = memScoped {
         val iv = ByteArray(ivSizeBytes).also { CryptographyRandom.nextBytes(it) }
         val cryptorRef = alloc<CCCryptorRefVar>()

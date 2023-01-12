@@ -35,10 +35,6 @@ private class AesGcmCipher(
 ) : AuthenticatedCipher {
     private val cipher = state.cipher("AES/GCM/NoPadding")
 
-    override fun ciphertextSize(plaintextSize: Int): Int = plaintextSize + ivSizeBytes + tagSize.bytes
-
-    override fun plaintextSize(ciphertextSize: Int): Int = ciphertextSize - ivSizeBytes - tagSize.bytes
-
     //TODO: we can use single ByteArray for output (generate IV in place, and output it)
     override fun encryptBlocking(plaintextInput: Buffer, associatedData: Buffer?): Buffer = cipher.use { cipher ->
         val iv = ByteArray(ivSizeBytes).also(state.secureRandom::nextBytes)

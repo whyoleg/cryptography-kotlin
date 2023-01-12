@@ -13,7 +13,6 @@ internal class JdkSignatureVerifier(
 ) : SignatureVerifier {
     private val signature = state.signature(algorithm)
 
-    override val signatureSize: Int get() = TODO()
     override fun verifySignatureBlocking(dataInput: Buffer, signatureInput: Buffer): Boolean = signature.use { signature ->
         signature.initVerify(key)
         parameters?.let(signature::setParameter)

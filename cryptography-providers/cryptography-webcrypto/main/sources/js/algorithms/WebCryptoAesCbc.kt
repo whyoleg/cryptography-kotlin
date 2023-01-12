@@ -35,10 +35,6 @@ internal object WebCryptoAesCbc : AES.CBC {
 }
 
 private class AesCbcCipher(private val key: CryptoKey) : Cipher {
-    //todo
-    override fun ciphertextSize(plaintextSize: Int): Int = plaintextSize + ivSizeBytes //+ tagSizeBits / 8
-
-    override fun plaintextSize(ciphertextSize: Int): Int = ciphertextSize - ivSizeBytes //- tagSizeBits / 8
 
     override suspend fun encrypt(plaintextInput: Buffer): Buffer {
         val iv = CryptographyRandom.nextBytes(ivSizeBytes)

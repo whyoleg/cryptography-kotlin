@@ -12,7 +12,6 @@ internal class JdkDigest(
     override fun hasher(): Hasher = this
 
     private val messageDigest = state.messageDigest(algorithm)
-    override val digestSize: Int get() = messageDigest.use { it.digestLength }
 
     override fun hashBlocking(dataInput: Buffer): Buffer = messageDigest.use { messageDigest ->
         messageDigest.reset()

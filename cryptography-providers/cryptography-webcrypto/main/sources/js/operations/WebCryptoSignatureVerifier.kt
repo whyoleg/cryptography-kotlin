@@ -7,8 +7,7 @@ import dev.whyoleg.cryptography.webcrypto.external.*
 
 internal class WebCryptoSignatureVerifier(
     private val algorithm: VerifyAlgorithm,
-    private val key: CryptoKey,
-    override val signatureSize: Int,
+    private val key: CryptoKey
 ) : SignatureVerifier {
     override suspend fun verifySignature(dataInput: Buffer, signatureInput: Buffer): Boolean {
         return WebCrypto.subtle.verify(algorithm, key, signatureInput, dataInput).await()

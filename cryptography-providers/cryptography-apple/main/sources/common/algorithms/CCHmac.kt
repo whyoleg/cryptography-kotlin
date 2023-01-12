@@ -92,10 +92,8 @@ private class HmacSignature(
     private val key: Buffer,
     private val hmacAlgorithm: CCHmacAlgorithm,
 ) : SignatureGenerator, SignatureVerifier {
-    override val signatureSize: Int get() = key.size
-
     override fun generateSignatureBlocking(dataInput: Buffer): Buffer {
-        val macOutput = ByteArray(signatureSize) //TODO: size!!!
+        val macOutput = ByteArray(key.size) //TODO: size!!!
         val result = CCHmac(
             algorithm = hmacAlgorithm,
             key = key.refTo(0),

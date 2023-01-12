@@ -11,8 +11,6 @@ internal class JdkMacSignature(
 ) : SignatureGenerator, SignatureVerifier {
     private val mac = state.mac(algorithm)
 
-    override val signatureSize: Int get() = mac.use { it.macLength }
-
     override fun generateSignatureBlocking(dataInput: Buffer): Buffer = mac.use { mac ->
         mac.init(key)
         mac.doFinal(dataInput)

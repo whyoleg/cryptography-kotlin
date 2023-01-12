@@ -123,10 +123,6 @@ private class RsaOaepEncryptor(
 ) : AuthenticatedEncryptor {
     private val cipher = state.cipher("RSA/ECB/OAEPPadding")
 
-    override fun ciphertextSize(plaintextSize: Int): Int {
-        TODO("Not yet implemented")
-    }
-
     override fun encryptBlocking(plaintextInput: Buffer, associatedData: Buffer?): Buffer = cipher.use { cipher ->
         val parameters = OAEPParameterSpec(
             hashAlgorithmName,
@@ -149,9 +145,6 @@ private class RsaOaepDecryptor(
     private val hashAlgorithmName: String,
 ) : AuthenticatedDecryptor {
     private val cipher = state.cipher("RSA/ECB/OAEPPadding")
-    override fun plaintextSize(ciphertextSize: Int): Int {
-        TODO("Not yet implemented")
-    }
 
     override fun decryptBlocking(ciphertextInput: Buffer, associatedData: Buffer?): Buffer = cipher.use { cipher ->
         val parameters = OAEPParameterSpec(

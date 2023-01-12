@@ -36,9 +36,6 @@ private class AesGcmCipher(
     private val key: CryptoKey,
     private val tagSizeBits: Int,
 ) : AuthenticatedCipher {
-    override fun ciphertextSize(plaintextSize: Int): Int = plaintextSize + ivSizeBytes + tagSizeBits / 8
-
-    override fun plaintextSize(ciphertextSize: Int): Int = ciphertextSize - ivSizeBytes - tagSizeBits / 8
 
     override suspend fun encrypt(plaintextInput: Buffer, associatedData: Buffer?): Buffer {
         val iv = CryptographyRandom.nextBytes(ivSizeBytes)

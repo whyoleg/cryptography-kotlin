@@ -16,11 +16,9 @@ internal class CCDigest(
 ) : Hasher, Digest {
     override fun hasher(): Hasher = this
 
-    override val digestSize: Int get() = hashAlgorithm.digestSize
-
     @OptIn(ExperimentalUnsignedTypes::class)
     override fun hashBlocking(dataInput: Buffer): Buffer {
-        val output = ByteArray(digestSize)
+        val output = ByteArray(hashAlgorithm.digestSize)
         val result = hashAlgorithm.ccHash(
             dataInput.refTo(0),
             dataInput.size.convert(),
