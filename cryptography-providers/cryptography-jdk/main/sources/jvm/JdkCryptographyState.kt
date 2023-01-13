@@ -28,20 +28,23 @@ internal class JdkCryptographyState(
         crossinline s: (String) -> T,
         crossinline s1: (String, String) -> T,
         crossinline s2: (String, JProvider) -> T,
-        crossinline init: (T) -> Unit = {}, //TODO: drop?
+        cached: Boolean = true,
     ): Pooled<T> = getOrPut(algorithm) {
         val instantiate = when (provider) {
             JdkProvider.Default     -> {
-                { s(algorithm).also(init) }
+                { s(algorithm) }
             }
             is JdkProvider.Name     -> {
-                { s1(algorithm, provider.provider).also(init) }
+                { s1(algorithm, provider.provider) }
             }
             is JdkProvider.Instance -> {
-                { s2(algorithm, provider.provider).also(init) }
+                { s2(algorithm, provider.provider) }
             }
         }
-        Pooled(instantiate)
+        when (cached) {
+            true  -> Pooled.Cached(instantiate)
+            false -> Pooled.Empty(instantiate)
+        }
     }
 
     fun cipher(algorithm: String): Pooled<JCipher> =
@@ -70,7 +73,8 @@ internal class JdkCryptographyState(
             algorithm,
             JAlgorithmParameters::getInstance,
             JAlgorithmParameters::getInstance,
-            JAlgorithmParameters::getInstance
+            JAlgorithmParameters::getInstance,
+            cached = false
         )
 }
 

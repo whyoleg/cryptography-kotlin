@@ -40,6 +40,7 @@
     * [ ] CMAC (mac)
     * [ ] Blowfish (cipher), Blake (hash) - try to find some implementations (?)
 * [ ] Engines
+    * [ ] WebCrypto WASM support (need kotlin 1.8.20 stable (or at least beta))
     * [ ] CryptoKit engine
     * [ ] Windows CNG engine
     * [ ] OpenSSL(1/3) engine (static for almost all native targets)

@@ -2,24 +2,34 @@ package dev.whyoleg.cryptography.jdk
 
 private val maxPooled = Runtime.getRuntime().availableProcessors() + 2
 
-internal class Pooled<T>(private val instantiate: () -> T) {
-    private val pooled = ArrayDeque<T>()
-
-    private fun get(): T {
-        synchronized(this) {
-            pooled.firstOrNull()
-        }?.let { return it }
-
-        return instantiate()
+internal sealed class Pooled<T>(protected val instantiate: () -> T) {
+    class Empty<T>(instantiate: () -> T) : Pooled<T>(instantiate) {
+        override fun get(): T = instantiate()
+        override fun put(value: T) {}
     }
 
-    private fun put(value: T) {
-        synchronized(this) {
-            if (pooled.size < maxPooled) {
-                pooled.addLast(value)
+    class Cached<T>(instantiate: () -> T) : Pooled<T>(instantiate) {
+        private val pooled = ArrayDeque<T>()
+
+        override fun get(): T {
+            synchronized(this) {
+                pooled.firstOrNull()
+            }?.let { return it }
+
+            return instantiate()
+        }
+
+        override fun put(value: T) {
+            synchronized(this) {
+                if (pooled.size < maxPooled) {
+                    pooled.addLast(value)
+                }
             }
         }
     }
+
+    protected abstract fun get(): T
+    protected abstract fun put(value: T)
 
     inline fun <R> use(block: (T) -> R): R {
         val instance = get()
