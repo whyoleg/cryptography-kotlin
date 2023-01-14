@@ -16,7 +16,7 @@ fun NamedDomainObjectContainer<KotlinSourceSet>.shared(name: String, targets: Li
         dependsOn(getByName("commonMain"))
     }
     val test = create("${name}Test") {
-        dependsOn(getByName("commonMain"))
+        dependsOn(getByName("commonTest"))
     }
     targets.forEach {
         getByName("${it.name}Main").dependsOn(main)

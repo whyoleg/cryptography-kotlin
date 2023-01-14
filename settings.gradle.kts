@@ -8,6 +8,7 @@ pluginManagement {
     includeBuild("gradle/buildx") {
         name = "cryptography-buildx"
     }
+    includeBuild("gradle/plugins")
 }
 
 dependencyResolutionManagement {
@@ -38,17 +39,7 @@ listOf(
 }
 
 //test API
-listOf("api", "client", "server").forEach { name ->
+listOf("api", "client", "server", "suite").forEach { name ->
     include("cryptography-test-$name")
     project(":cryptography-test-$name").projectDir = file("cryptography-tests/cryptography-test-$name")
-}
-
-listOf(
-    "api",
-    "0-generate",
-    "1-compute",
-    "2-validate",
-).forEach { name ->
-    include("cryptography-test-step-$name")
-    project(":cryptography-test-step-$name").projectDir = file("cryptography-tests/cryptography-test-suite/step-$name")
 }
