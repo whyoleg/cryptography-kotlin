@@ -1,5 +1,5 @@
 plugins {
-    id("buildx-multiplatform")
+    id("buildx-multiplatform-library")
 }
 
 kotlin {

@@ -1,8 +1,7 @@
 [versions]
 
 kotlin = "1.8.0"
-ktor = "2.2.1"
-okio = "3.2.0"
+ktor = "2.2.2"
 
 kotlinx-serialization = "1.4.1"
 kotlinx-coroutines = "1.6.4"
@@ -16,17 +15,18 @@ kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-c
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 kotlinx-serialization-protobuf = { module = "org.jetbrains.kotlinx:kotlinx-serialization-protobuf", version.ref = "kotlinx-serialization" }
 
-okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
-
 ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
 ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor" }
-ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor" }
+ktor-server-websockets = { module = "io.ktor:ktor-server-websockets", version.ref = "ktor" }
+ktor-server-contentnegotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor" }
+ktor-server-calllogging = { module = "io.ktor:ktor-server-call-logging", version.ref = "ktor" }
 
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
-ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-client-websockets = { module = "io.ktor:ktor-client-websockets", version.ref = "ktor" }
+ktor-client-contentnegotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 
 ktor-serialization-kotlinx-protobuf = { module = "io.ktor:ktor-serialization-kotlinx-protobuf", version.ref = "ktor" }
 

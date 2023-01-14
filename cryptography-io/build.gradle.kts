@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.plugin.*
 
 plugins {
-    id("buildx-multiplatform")
+    id("buildx-multiplatform-library")
 }
 
 kotlin {

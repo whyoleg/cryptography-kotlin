@@ -95,7 +95,7 @@ class EcdhTest {
                                 EncodedKey("jwk", testData2.jwkPublicKey!!)
                             )
 
-                            val privK2 =
+//                            val privK2 =
 
 
                             val s1 = publicKeyDecoder.decodeFrom(EC.PublicKey.Format.DER, testData1.derPublicKey)

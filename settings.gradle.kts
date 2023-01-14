@@ -32,18 +32,11 @@ include("cryptography-core")
 // 4. run all engines on other engines plaintext/data
 
 //models to register engines, serialize, etc
-include("cryptography-tests:cryptography-testcase-api")
-//read/store results with local file system (f.e. desktop native targets, jvm, nodejs)
-include("cryptography-tests:cryptography-testcase-files")
-//read/store results with remote (f.e. browser, android, etc)
-include("cryptography-tests:cryptography-testcase-client")
-include("cryptography-tests:cryptography-testcase-server")
+include("cryptography-tests:cryptography-test-api")
+include("cryptography-tests:cryptography-test-client")
+include("cryptography-tests:cryptography-test-server")
 
-include("cryptography-tests:cryptography-testsuite-api")
-//first part, test implementations in place
 include("cryptography-tests:cryptography-testsuite-main")
-//secnod part, test implementations from other engines
-include("cryptography-tests:cryptography-testsuite-cross")
 
 //providers
 
