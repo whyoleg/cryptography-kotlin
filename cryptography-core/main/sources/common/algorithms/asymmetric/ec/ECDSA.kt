@@ -7,7 +7,9 @@ import dev.whyoleg.cryptography.provider.*
 
 @SubclassOptInRequired(CryptographyProviderApi::class)
 public interface ECDSA : EC<ECDSA.PublicKey, ECDSA.PrivateKey, ECDSA.KeyPair> {
-    public companion object : CryptographyAlgorithmId<ECDSA>()
+    override val id: CryptographyAlgorithmId<ECDSA> get() = Companion
+
+    public companion object : CryptographyAlgorithmId<ECDSA>("ECDSA")
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface KeyPair : EC.KeyPair<PublicKey, PrivateKey>

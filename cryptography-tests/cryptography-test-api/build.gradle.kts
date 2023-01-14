@@ -9,7 +9,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                api(libs.kotlinx.serialization.protobuf)
+                api(libs.kotlinx.serialization.core)
             }
         }
     }

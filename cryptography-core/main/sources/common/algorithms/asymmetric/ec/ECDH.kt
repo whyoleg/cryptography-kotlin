@@ -6,7 +6,9 @@ import dev.whyoleg.cryptography.provider.*
 
 @SubclassOptInRequired(CryptographyProviderApi::class)
 public interface ECDH : EC<ECDH.PublicKey, ECDH.PrivateKey, ECDH.KeyPair> {
-    public companion object : CryptographyAlgorithmId<ECDH>()
+    override val id: CryptographyAlgorithmId<ECDH> get() = Companion
+
+    public companion object : CryptographyAlgorithmId<ECDH>("ECDH")
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface KeyPair : EC.KeyPair<PublicKey, PrivateKey>

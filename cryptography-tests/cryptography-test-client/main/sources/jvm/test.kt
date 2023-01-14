@@ -5,9 +5,9 @@ import kotlinx.coroutines.*
 import kotlin.random.*
 
 fun main(): Unit = runBlocking {
-    val client = ApiClient(Platform.JVM, Engine.JDK)
+    val client = HttpApi(mapOf("engine" to "JDK", "platform" to "JVM"))
     val algorithm = "AES-GCM"
-    val key = EncodedKey(
+    val key = KeyData(
         mapOf(
             "RAW" to Random.nextBytes(256),
             "JWK" to Random.nextBytes(123),
@@ -20,17 +20,17 @@ fun main(): Unit = runBlocking {
     println(keyId2)
 
     val data2 = client.keys.get(algorithm, "B256", keyId1)
-    println(key.keys.values.first().contentToString())
-    println(data2.data.keys.values.first().contentToString())
+    println(key.formats.values.first().contentToString())
+    println(data2.data.formats.values.first().contentToString())
 
     val cipherId1 = client.ciphers.save(
         algorithm, "TAG-16",
-        EncodedCipher(keyId2, Random.nextBytes(256), Random.nextBytes(256))
+        CipherData(keyId2, Random.nextBytes(256), Random.nextBytes(256))
     )
 
     val cipherId2 = client.ciphers.save(
         algorithm, "TAG-32",
-        EncodedCipher(keyId1, Random.nextBytes(256), Random.nextBytes(256))
+        CipherData(keyId1, Random.nextBytes(256), Random.nextBytes(256))
     )
     println(cipherId1)
     println(cipherId2)

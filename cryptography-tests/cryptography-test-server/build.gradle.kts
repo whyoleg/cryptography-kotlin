@@ -1,6 +1,5 @@
 plugins {
     id("buildx-multiplatform")
-    alias(libs.plugins.kotlin.serialization)
 }
 
 kotlin {
@@ -9,16 +8,11 @@ kotlin {
     sourceSets {
         val jvmMain by getting {
             dependencies {
-                implementation(projects.cryptographyTests.cryptographyTestApi)
-
                 implementation(libs.ktor.server.core)
                 implementation(libs.ktor.server.netty)
-                implementation(libs.ktor.server.websockets)
-                implementation(libs.ktor.server.contentnegotiation)
                 implementation(libs.ktor.server.calllogging)
+                implementation(libs.ktor.server.cors)
 
-                implementation(libs.ktor.serialization.kotlinx.protobuf)
-                implementation(libs.kotlinx.serialization.protobuf)
                 implementation(libs.logback.classic)
             }
         }

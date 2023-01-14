@@ -15,14 +15,10 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(projects.cryptographyTests.cryptographyTestApi)
+                api(projects.cryptographyTests.cryptographyTestApi)
+                implementation(libs.kotlinx.serialization.json)
 
                 implementation(libs.ktor.client.core)
-                implementation(libs.ktor.client.websockets)
-                implementation(libs.ktor.client.contentnegotiation)
-
-                implementation(libs.ktor.serialization.kotlinx.protobuf)
-                implementation(libs.kotlinx.serialization.protobuf)
             }
         }
         val jvmMain by getting {
@@ -37,7 +33,7 @@ kotlin {
         }
         val darwinMain by getting {
             dependencies {
-                implementation(libs.ktor.client.darwin)
+                implementation(libs.ktor.client.cio)
             }
         }
         val mingwMain by getting {

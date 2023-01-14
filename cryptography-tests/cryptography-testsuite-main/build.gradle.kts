@@ -15,6 +15,7 @@ kotlin {
         commonMain {
             dependencies {
                 api(projects.cryptographyCore)
+                api(projects.cryptographyTests.cryptographyTestClient)
             }
         }
         commonTest {

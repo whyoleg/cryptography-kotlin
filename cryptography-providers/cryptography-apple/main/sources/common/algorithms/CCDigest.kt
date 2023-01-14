@@ -1,6 +1,7 @@
 package dev.whyoleg.cryptography.apple.algorithms
 
 import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.apple.*
 import dev.whyoleg.cryptography.io.*
@@ -13,6 +14,7 @@ import platform.Security.*
 internal class CCDigest(
     private val state: AppleState,
     private val hashAlgorithm: CCHashAlgorithm,
+    override val id: CryptographyAlgorithmId<Digest>,
 ) : Hasher, Digest {
     override fun hasher(): Hasher = this
 

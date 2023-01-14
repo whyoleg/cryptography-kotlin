@@ -12,7 +12,9 @@ import dev.whyoleg.cryptography.provider.*
 
 @SubclassOptInRequired(CryptographyProviderApi::class)
 public interface HMAC : CryptographyAlgorithm {
-    public companion object : CryptographyAlgorithmId<HMAC>()
+    override val id: CryptographyAlgorithmId<HMAC> get() = Companion
+
+    public companion object : CryptographyAlgorithmId<HMAC>("HMAC")
 
     public fun keyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<Key.Format, Key>
     public fun keyGenerator(digest: CryptographyAlgorithmId<Digest> = SHA512): KeyGenerator<Key>

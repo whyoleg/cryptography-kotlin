@@ -32,11 +32,11 @@ internal class AppleCryptographyProvider(
 
     @Suppress("UNCHECKED_CAST")
     override fun <A : CryptographyAlgorithm> getOrNull(identifier: CryptographyAlgorithmId<A>): A? = when (identifier) {
-        MD5     -> CCDigest(state, CCHashAlgorithm.MD5)
-        SHA1    -> CCDigest(state, CCHashAlgorithm.SHA1)
-        SHA256  -> CCDigest(state, CCHashAlgorithm.SHA256)
-        SHA384  -> CCDigest(state, CCHashAlgorithm.SHA384)
-        SHA512  -> CCDigest(state, CCHashAlgorithm.SHA512)
+        MD5     -> CCDigest(state, CCHashAlgorithm.MD5, MD5)
+        SHA1    -> CCDigest(state, CCHashAlgorithm.SHA1, SHA1)
+        SHA256  -> CCDigest(state, CCHashAlgorithm.SHA256, SHA256)
+        SHA384  -> CCDigest(state, CCHashAlgorithm.SHA384, SHA384)
+        SHA512  -> CCDigest(state, CCHashAlgorithm.SHA512, SHA512)
         HMAC    -> CCHmac(state)
         AES.CBC -> CCAesCbc(state)
         else    -> throw CryptographyAlgorithmNotFoundException(identifier)

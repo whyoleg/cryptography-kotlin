@@ -61,7 +61,9 @@ public interface RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP : RS
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface OAEP : RSA<OAEP.PublicKey, OAEP.PrivateKey, OAEP.KeyPair> {
-        public companion object : CryptographyAlgorithmId<OAEP>()
+        override val id: CryptographyAlgorithmId<OAEP> get() = Companion
+
+        public companion object : CryptographyAlgorithmId<OAEP>("RSA-OAEP")
 
         @SubclassOptInRequired(CryptographyProviderApi::class)
         public interface KeyPair : RSA.KeyPair<PublicKey, PrivateKey>
@@ -79,7 +81,9 @@ public interface RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP : RS
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface PSS : RSA<PSS.PublicKey, PSS.PrivateKey, PSS.KeyPair> {
-        public companion object : CryptographyAlgorithmId<PSS>()
+        override val id: CryptographyAlgorithmId<PSS> get() = Companion
+
+        public companion object : CryptographyAlgorithmId<PSS>("RSA-PSS")
 
         @SubclassOptInRequired(CryptographyProviderApi::class)
         public interface KeyPair : RSA.KeyPair<PublicKey, PrivateKey>

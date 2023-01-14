@@ -1,5 +1,6 @@
 package dev.whyoleg.cryptography.webcrypto.algorithms
 
+import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.io.*
 import dev.whyoleg.cryptography.operations.hash.*
@@ -8,13 +9,14 @@ import dev.whyoleg.cryptography.webcrypto.external.*
 
 internal class WebCryptoDigest private constructor(
     private val algorithm: String,
+    override val id: CryptographyAlgorithmId<Digest>,
 ) : Digest, Hasher {
     //TODO: lazy?
     companion object {
-        val SHA1 = WebCryptoDigest("SHA-1")
-        val SHA256 = WebCryptoDigest("SHA-256")
-        val SHA384 = WebCryptoDigest("SHA-384")
-        val SHA512 = WebCryptoDigest("SHA-512")
+        val sha1 = WebCryptoDigest("SHA-1", SHA1)
+        val sha256 = WebCryptoDigest("SHA-256", SHA256)
+        val sha384 = WebCryptoDigest("SHA-384", SHA384)
+        val sha512 = WebCryptoDigest("SHA-512", SHA512)
     }
 
     override fun hasher(): Hasher = this

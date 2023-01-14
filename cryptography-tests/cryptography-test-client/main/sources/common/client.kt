@@ -2,56 +2,84 @@ package dev.whyoleg.cryptography.test.client
 
 import dev.whyoleg.cryptography.test.api.*
 import io.ktor.client.*
-import io.ktor.client.call.*
 import io.ktor.client.plugins.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.plugins.websocket.*
 import io.ktor.client.request.*
-import io.ktor.http.*
-import io.ktor.serialization.kotlinx.*
-import io.ktor.serialization.kotlinx.protobuf.*
-import io.ktor.util.reflect.*
+import io.ktor.client.statement.*
+import io.ktor.http.content.*
+import io.ktor.util.*
+import io.ktor.utils.io.core.*
 import kotlinx.serialization.*
-import kotlinx.serialization.protobuf.*
+import kotlinx.serialization.descriptors.*
+import kotlinx.serialization.encoding.*
+import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.json.*
+import kotlinx.serialization.modules.*
 
-@OptIn(ExperimentalSerializationApi::class)
 private val client = HttpClient {
-    install(ContentNegotiation) {
-        protobuf()
-    }
-    install(WebSockets) {
-        contentConverter = KotlinxWebsocketSerializationConverter(ProtoBuf)
-    }
     install(DefaultRequest) {
         port = 9000
-        contentType(ContentType.Application.ProtoBuf)
     }
 }
 
-class ApiClient(
-    val platform: Platform,
-    val engine: Engine,
-) {
-    private inline fun <reified T> api(path: String) = SubApi<T>(path, typeInfo<EncodedData<T>>())
+private val json = Json {
+    encodeDefaults = true
+    prettyPrint = true
+    useAlternativeNames = false
+    serializersModule = SerializersModule {
+        contextual(Base64ByteArraySerializer)
+    }
+}
 
-    val keys = api<EncodedKey>("keys")
-    val keyPairs = api<EncodedKeyPair>("key-pairs")
-    val digests = api<EncodedDigest>("digests")
-    val signatures = api<EncodedSignature>("signatures")
-    val ciphers = api<EncodedCipher>("ciphers")
+private object Base64ByteArraySerializer : KSerializer<ByteArray> {
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Base64", PrimitiveKind.STRING)
 
-    inner class SubApi<T> internal constructor(
+    override fun deserialize(decoder: Decoder): ByteArray {
+        return decoder.decodeString().decodeBase64Bytes()
+    }
+
+    override fun serialize(encoder: Encoder, value: ByteArray) {
+        encoder.encodeString(value.encodeBase64())
+    }
+}
+
+class HttpApi(private val metadata: Map<String, String>) : Api {
+    private inline fun <reified T> api(path: String) = HttpSubApi<T>(path, serializer())
+
+    override val keys: Api.SubApi<KeyData> = api("keys")
+    override val keyPairs: Api.SubApi<KeyPairData> = api("key-pairs")
+    override val digests: Api.SubApi<DigestData> = api("digests")
+    override val signatures: Api.SubApi<SignatureData> = api("signatures")
+    override val ciphers: Api.SubApi<CipherData> = api("ciphers")
+
+    inner class HttpSubApi<T> internal constructor(
         private val path: String,
-        private val typeInfo: TypeInfo,
-    ) {
-        suspend fun save(algorithm: String, params: String, data: T): String {
+        private val serializer: KSerializer<Payload<T>>,
+    ) : Api.SubApi<T> {
+
+        override suspend fun save(algorithm: String, params: String, data: T, metadata: Map<String, String>): String {
+            val payload = Payload(this@HttpApi.metadata + metadata, data)
+            val bytes = json.encodeToString(serializer, payload).encodeToByteArray()
             return client.post("$path/$algorithm/$params") {
-                setBody(EncodedData(platform, engine, data), typeInfo)
-            }.body<EncodedId>().id
+                setBody(ByteArrayContent(bytes))
+            }.bodyAsText()
         }
 
-        suspend fun get(algorithm: String, params: String, id: String): EncodedData<T> {
-            return client.get("$path/$algorithm/$params/$id").body(typeInfo)
+        override suspend fun get(algorithm: String, params: String, id: String): Payload<T> {
+            val text = client.get("$path/$algorithm/$params/$id").bodyAsText()
+            return json.decodeFromString(serializer, text)
+        }
+
+        override suspend fun getAll(algorithm: String, params: String): List<Payload<T>> {
+            val channel = client.get("$path/$algorithm/$params").bodyAsChannel()
+            return buildList {
+                while (true) {
+                    val lengthPacket = channel.readRemaining(4)
+                    if (lengthPacket.remaining == 0L) break
+                    val length = lengthPacket.readInt()
+                    val bytes = channel.readPacket(length).readBytes().decodeToString()
+                    add(json.decodeFromString(serializer, bytes))
+                }
+            }
         }
     }
 }

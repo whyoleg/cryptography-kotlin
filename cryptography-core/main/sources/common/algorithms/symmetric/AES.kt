@@ -24,7 +24,9 @@ public interface AES<K : AES.Key> : CryptographyAlgorithm {
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface CBC : AES<CBC.Key> {
-        public companion object : CryptographyAlgorithmId<CBC>()
+        override val id: CryptographyAlgorithmId<CBC> get() = Companion
+
+        public companion object : CryptographyAlgorithmId<CBC>("AES-CBC")
 
         @SubclassOptInRequired(CryptographyProviderApi::class)
         public interface Key : AES.Key {
@@ -34,7 +36,9 @@ public interface AES<K : AES.Key> : CryptographyAlgorithm {
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface GCM : AES<GCM.Key> {
-        public companion object : CryptographyAlgorithmId<GCM>()
+        override val id: CryptographyAlgorithmId<GCM> get() = Companion
+
+        public companion object : CryptographyAlgorithmId<GCM>("AES-GCM")
 
         @SubclassOptInRequired(CryptographyProviderApi::class)
         public interface Key : AES.Key {

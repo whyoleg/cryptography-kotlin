@@ -20,10 +20,10 @@ internal object WebCryptoCryptographyProvider : CryptographyProvider() {
 
     @Suppress("UNCHECKED_CAST")
     override fun <A : CryptographyAlgorithm> getOrNull(identifier: CryptographyAlgorithmId<A>): A? = when (identifier) {
-        SHA1     -> WebCryptoDigest.SHA1
-        SHA256   -> WebCryptoDigest.SHA256
-        SHA384   -> WebCryptoDigest.SHA384
-        SHA512   -> WebCryptoDigest.SHA512
+        SHA1     -> WebCryptoDigest.sha1
+        SHA256   -> WebCryptoDigest.sha256
+        SHA384   -> WebCryptoDigest.sha384
+        SHA512   -> WebCryptoDigest.sha512
         HMAC     -> WebCryptoHmac
         AES.CBC  -> WebCryptoAesCbc
         AES.GCM  -> WebCryptoAesGcm

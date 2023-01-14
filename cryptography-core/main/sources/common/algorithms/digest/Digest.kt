@@ -10,19 +10,20 @@ import dev.whyoleg.cryptography.provider.*
 //simple hash algorithms, that can be used in HMAC/ECDSA contexts
 @SubclassOptInRequired(CryptographyProviderApi::class)
 public interface Digest : CryptographyAlgorithm {
+    override val id: CryptographyAlgorithmId<Digest>
     public fun hasher(): Hasher
 }
 
 @InsecureAlgorithm
-public object MD5 : CryptographyAlgorithmId<Digest>()
+public object MD5 : CryptographyAlgorithmId<Digest>("MD5")
 
 @InsecureAlgorithm
-public object SHA1 : CryptographyAlgorithmId<Digest>()
-public object SHA256 : CryptographyAlgorithmId<Digest>()
-public object SHA384 : CryptographyAlgorithmId<Digest>()
-public object SHA512 : CryptographyAlgorithmId<Digest>()
+public object SHA1 : CryptographyAlgorithmId<Digest>("SHA-1")
+public object SHA256 : CryptographyAlgorithmId<Digest>("SHA-256")
+public object SHA384 : CryptographyAlgorithmId<Digest>("SHA-384")
+public object SHA512 : CryptographyAlgorithmId<Digest>("SHA-512")
 
 public object SHA3 {
-    public object B224 : CryptographyAlgorithmId<Digest>()
-    public object B512 : CryptographyAlgorithmId<Digest>()
+    public object B224 : CryptographyAlgorithmId<Digest>("SHA3-224")
+    public object B512 : CryptographyAlgorithmId<Digest>("SHA3-512")
 }
