@@ -86,14 +86,15 @@ class AesCbcTest {
                     params = metadata["key.params"]!!,
                     id = encodedCipher.keyId
                 ).data
-                println(encodedCipher.keyId)
                 encodedKey.formats.forEach { (stringFormat, data) ->
-                    val format = when (stringFormat) {
-                        "RAW" -> AES.Key.Format.RAW
-                        "JWK" -> AES.Key.Format.JWK.takeIf { provider.supportsJwk }
-                        else  -> error("Unsupported key format: $stringFormat") //TODO
-                    }
-                    val key = keyDecoder.decodeFrom(format = format, input = data) ?: return@forEach
+                    val key = keyDecoder.decodeFrom(
+                        format = when (stringFormat) {
+                            "RAW" -> AES.Key.Format.RAW
+                            "JWK" -> AES.Key.Format.JWK.takeIf { provider.supportsJwk }
+                            else  -> error("Unsupported key format: $stringFormat") //TODO
+                        },
+                        input = data
+                    ) ?: return@forEach
 
                     encodedKey.formats["RAW"]?.let { bytes ->
                         key.encodeTo(AES.Key.Format.RAW).assertContentEquals(bytes)

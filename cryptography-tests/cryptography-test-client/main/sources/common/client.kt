@@ -43,6 +43,10 @@ private object Base64ByteArraySerializer : KSerializer<ByteArray> {
 }
 
 class HttpApi(private val metadata: Map<String, String>) : Api {
+    init {
+        println("init: $metadata")
+    }
+
     private inline fun <reified T> api(path: String) = HttpSubApi<T>(path, serializer())
 
     override val keys: Api.SubApi<KeyData> = api("keys")
@@ -57,19 +61,34 @@ class HttpApi(private val metadata: Map<String, String>) : Api {
     ) : Api.SubApi<T> {
 
         override suspend fun save(algorithm: String, params: String, data: T, metadata: Map<String, String>): String {
-            val payload = Payload(this@HttpApi.metadata + metadata, data)
-            val bytes = json.encodeToString(serializer, payload).encodeToByteArray()
-            return client.post("$path/$algorithm/$params") {
-                setBody(ByteArrayContent(bytes))
-            }.bodyAsText()
+            try {
+                val payload = Payload(this@HttpApi.metadata + metadata, data)
+                val bytes = json.encodeToString(serializer, payload).encodeToByteArray()
+                val id = client.post("$path/$algorithm/$params") {
+                    setBody(ByteArrayContent(bytes))
+                }.bodyAsText()
+                println("save: $path/$algorithm/$params -> $id | $metadata")
+                return id
+            } catch (cause: Throwable) {
+                println("save[FAILED]: $path/$algorithm/$params | $metadata")
+                throw cause
+            }
         }
 
         override suspend fun get(algorithm: String, params: String, id: String): Payload<T> {
-            val text = client.get("$path/$algorithm/$params/$id").bodyAsText()
-            return json.decodeFromString(serializer, text)
+            try {
+                val text = client.get("$path/$algorithm/$params/$id").bodyAsText()
+                val payload = json.decodeFromString(serializer, text)
+                println("get: $path/$algorithm/$params/$id | ${payload.metadata}")
+                return payload
+            } catch (cause: Throwable) {
+                println("get[FAILED]: $path/$algorithm/$params/$id")
+                throw cause
+            }
         }
 
         override suspend fun getAll(algorithm: String, params: String): List<Payload<T>> {
+            println("getAll: $path/$algorithm/$params")
             val channel = client.get("$path/$algorithm/$params").bodyAsChannel()
             return buildList {
                 while (true) {
