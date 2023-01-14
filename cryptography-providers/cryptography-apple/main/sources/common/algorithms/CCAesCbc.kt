@@ -68,96 +68,52 @@ private class AesCbcCipher(
     private val key: Buffer,
     private val padding: Boolean,
 ) : Cipher {
-
-    override fun encryptBlocking(plaintextInput: Buffer): Buffer = memScoped {
+    override fun encryptBlocking(plaintextInput: Buffer): Buffer = useCryptor { cryptorRef, dataOutMoved ->
         val iv = ByteArray(ivSizeBytes).also { CryptographyRandom.nextBytes(it) }
-        val cryptorRef = alloc<CCCryptorRefVar>()
 
-        checkResult(
-            CCCryptorCreate(
-                op = kCCEncrypt,
-                alg = kCCAlgorithmAES,
-                options = if (padding) kCCOptionPKCS7Padding else 0.convert(),
-                key = key.refTo(0),
-                keyLength = key.size.convert(),
-                iv = iv.refTo(0),
-                cryptorRef = cryptorRef.ptr,
-            )
+        cryptorRef.create(kCCEncrypt, iv.refTo(0))
+        val ciphertextOutput = ByteArray(cryptorRef.outputLength(plaintextInput.size))
+
+        var moved = cryptorRef.update(
+            dataIn = plaintextInput.refTo(0),
+            dataInLength = plaintextInput.size,
+            dataOut = ciphertextOutput.refTo(0),
+            dataOutAvailable = ciphertextOutput.size,
+            dataOutMoved = dataOutMoved,
         )
 
-        val ciphertextSize = CCCryptorGetOutputLength(
-            cryptorRef = cryptorRef.value,
-            inputLength = plaintextInput.size.convert(),
-            final = true
-        ).toInt()
-        val ciphertextOutput = ByteArray(ciphertextSize)
-
-        val dataOutMoved = alloc<size_tVar>()
-        checkResult(
-            CCCryptorUpdate(
-                cryptorRef = cryptorRef.value,
-                dataIn = plaintextInput.refTo(0),
-                dataInLength = plaintextInput.size.convert(),
-                dataOut = ciphertextOutput.refTo(0),
-                dataOutAvailable = ciphertextSize.convert(),
-                dataOutMoved = dataOutMoved.ptr
-            )
+        if (ciphertextOutput.size != moved) moved += cryptorRef.final(
+            dataOut = ciphertextOutput.refTo(moved),
+            dataOutAvailable = ciphertextOutput.size - moved,
+            dataOutMoved = dataOutMoved,
         )
-        val moved = dataOutMoved.value.toInt()
-        checkResult(
-            CCCryptorFinal(
-                cryptorRef = cryptorRef.value,
-                dataOut = ciphertextOutput.refTo(moved),
-                dataOutAvailable = (ciphertextSize - moved).convert(),
-                dataOutMoved = null,
-            )
-        )
-        val ciphertext = iv + ciphertextOutput
-        ciphertext
+        iv + ciphertextOutput
     }
 
-    override fun decryptBlocking(ciphertextInput: Buffer): Buffer = memScoped {
-        val cryptorRef = alloc<CCCryptorRefVar>()
-        checkResult(
-            CCCryptorCreate(
-                op = kCCDecrypt,
-                alg = kCCAlgorithmAES,
-                options = if (padding) kCCOptionPKCS7Padding else 0.convert(),
-                key = key.refTo(0),
-                keyLength = key.size.convert(),
-                iv = ciphertextInput.refTo(0),
-                cryptorRef = cryptorRef.ptr,
-            )
+    override fun decryptBlocking(ciphertextInput: Buffer): Buffer = useCryptor { cryptorRef, dataOutMoved ->
+        cryptorRef.create(kCCDecrypt, ciphertextInput.refTo(0))
+
+        val plaintextOutput = ByteArray(cryptorRef.outputLength(ciphertextInput.size - ivSizeBytes))
+
+        var moved = cryptorRef.update(
+            dataIn = ciphertextInput.refTo(ivSizeBytes),
+            dataInLength = ciphertextInput.size - ivSizeBytes,
+            dataOut = plaintextOutput.refTo(0),
+            dataOutAvailable = plaintextOutput.size,
+            dataOutMoved = dataOutMoved
         )
 
-        val plaintextSize = CCCryptorGetOutputLength(
-            cryptorRef = cryptorRef.value,
-            inputLength = (ciphertextInput.size - ivSizeBytes).convert(),
-            final = true
-        ).toInt()
-        val plaintextOutput = ByteArray(plaintextSize)
-        val dataOutMoved = alloc<size_tVar>()
-        checkResult(
-            CCCryptorUpdate(
-                cryptorRef = cryptorRef.value,
-                dataIn = ciphertextInput.refTo(ivSizeBytes),
-                dataInLength = (ciphertextInput.size - ivSizeBytes).convert(),
-                dataOut = plaintextOutput.refTo(0),
-                dataOutAvailable = plaintextSize.convert(),
-                dataOutMoved = dataOutMoved.ptr
-            )
+        if (plaintextOutput.size != moved) moved += cryptorRef.final(
+            dataOut = plaintextOutput.refTo(moved),
+            dataOutAvailable = plaintextOutput.size - moved,
+            dataOutMoved = dataOutMoved
         )
-        val moved = dataOutMoved.value.toInt()
-        checkResult(
-            CCCryptorFinal(
-                cryptorRef = cryptorRef.value,
-                dataOut = plaintextOutput.refTo(moved),
-                dataOutAvailable = (plaintextSize - moved).convert(),
-                dataOutMoved = dataOutMoved.ptr,
-            )
-        )
-        val ptMoved = moved + dataOutMoved.value.toInt()
-        plaintextOutput.copyOf(ptMoved)
+
+        if (plaintextOutput.size == moved) {
+            plaintextOutput
+        } else {
+            plaintextOutput.copyOf(moved)
+        }
     }
 
     override suspend fun decrypt(ciphertextInput: Buffer): Buffer {
@@ -166,6 +122,79 @@ private class AesCbcCipher(
 
     override suspend fun encrypt(plaintextInput: Buffer): Buffer {
         return state.execute { encryptBlocking(plaintextInput) }
+    }
+
+    private inline fun <T> useCryptor(
+        block: MemScope.(
+            cryptorRef: CCCryptorRefVar,
+            dataOutMoved: size_tVar,
+        ) -> T,
+    ): T = memScoped {
+        val cryptorRef = alloc<CCCryptorRefVar>()
+        val dataOutMoved = alloc<size_tVar>()
+        try {
+            block(cryptorRef, dataOutMoved)
+        } finally {
+            CCCryptorRelease(cryptorRef.value)
+        }
+    }
+
+    private fun CCCryptorRefVar.create(op: CCOperation, iv: CValuesRef<*>) {
+        checkResult(
+            CCCryptorCreate(
+                op = op,
+                alg = kCCAlgorithmAES,
+                options = if (padding) kCCOptionPKCS7Padding else 0.convert(),
+                key = key.refTo(0),
+                keyLength = key.size.convert(),
+                iv = iv,
+                cryptorRef = ptr,
+            )
+        )
+    }
+
+    private fun CCCryptorRefVar.outputLength(inputLength: Int): Int {
+        return CCCryptorGetOutputLength(
+            cryptorRef = value,
+            inputLength = inputLength.convert(),
+            final = true
+        ).convert()
+    }
+
+    private fun CCCryptorRefVar.update(
+        dataIn: CValuesRef<*>,
+        dataInLength: Int,
+        dataOut: CValuesRef<*>,
+        dataOutAvailable: Int,
+        dataOutMoved: size_tVar,
+    ): Int {
+        checkResult(
+            CCCryptorUpdate(
+                cryptorRef = value,
+                dataIn = dataIn,
+                dataInLength = dataInLength.convert(),
+                dataOut = dataOut,
+                dataOutAvailable = dataOutAvailable.convert(),
+                dataOutMoved = dataOutMoved.ptr
+            )
+        )
+        return dataOutMoved.value.convert()
+    }
+
+    private fun CCCryptorRefVar.final(
+        dataOut: CValuesRef<*>,
+        dataOutAvailable: Int,
+        dataOutMoved: size_tVar,
+    ): Int {
+        checkResult(
+            CCCryptorFinal(
+                cryptorRef = value,
+                dataOut = dataOut,
+                dataOutAvailable = dataOutAvailable.convert(),
+                dataOutMoved = dataOutMoved.ptr
+            )
+        )
+        return dataOutMoved.value.convert()
     }
 
     private fun checkResult(result: CCCryptorStatus) {
