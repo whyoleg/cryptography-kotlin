@@ -43,10 +43,6 @@ private object Base64ByteArraySerializer : KSerializer<ByteArray> {
 }
 
 class HttpApi(private val metadata: Map<String, String>) : Api {
-    init {
-        println("init: $metadata")
-    }
-
     private inline fun <reified T> api(path: String) = HttpSubApi<T>(path, serializer())
 
     override val keys: Api.SubApi<KeyData> = api("keys")

@@ -3,42 +3,42 @@ import org.jetbrains.kotlin.konan.target.*
 
 plugins {
     id("buildx-multiplatform")
-    alias(libs.plugins.kotlin.serialization)
 }
 
 kotlin {
     allTargets()
 
+    sharedSourceSet("native") { it is KotlinNativeTarget }
     sharedSourceSet("mingw") { (it as? KotlinNativeTarget)?.konanTarget?.family == Family.MINGW }
     sharedSourceSet("linux") { (it as? KotlinNativeTarget)?.konanTarget?.family == Family.LINUX }
     sharedSourceSet("darwin") { (it as? KotlinNativeTarget)?.konanTarget?.family?.isAppleFamily == true }
     sourceSets {
         commonMain {
             dependencies {
-                api(projects.cryptographyTestApi)
-                implementation(libs.kotlinx.serialization.json)
+                api(kotlin("test"))
+                api(libs.kotlinx.coroutines.test)
+                api(projects.cryptographyTestClient)
 
-                implementation(libs.ktor.client.core)
+                api(projects.cryptographyCore)
             }
         }
-        val jvmMain by getting {
+        val jsMain by getting {
             dependencies {
-                implementation(libs.ktor.client.okhttp)
-            }
-        }
-        val linuxMain by getting {
-            dependencies {
-                implementation(libs.ktor.client.cio)
+                api(kotlin("test-js"))
+
+                api(projects.cryptographyWebcrypto)
             }
         }
         val darwinMain by getting {
             dependencies {
-                implementation(libs.ktor.client.cio)
+                api(projects.cryptographyApple)
             }
         }
-        val mingwMain by getting {
+        val jvmMain by getting {
             dependencies {
-                implementation(libs.ktor.client.winhttp)
+                api(kotlin("test-junit"))
+
+                api(projects.cryptographyJdk)
             }
         }
     }

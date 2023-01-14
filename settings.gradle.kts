@@ -26,16 +26,29 @@ include("cryptography-core")
 //include("cryptography-coroutines")
 
 //providers
+listOf(
+    "jdk", //jvm only
+    "apple", //darwin only
+    "webcrypto", //js(nodejs/browser) only
+    //"openssl", //all platforms, starting from linux/macos/windows
+    //"openssl3", //all platforms, starting from linux/macos/windows
+).forEach { name ->
+    include("cryptography-$name")
+    project(":cryptography-$name").projectDir = file("cryptography-providers/cryptography-$name")
+}
 
-include("cryptography-providers:cryptography-jdk") //jvm only
-include("cryptography-providers:cryptography-apple") //darwin only
-include("cryptography-providers:cryptography-webcrypto") //js(nodejs/browser) only
-//include("cryptography-openssl") //all platforms, starting from linux/macos/windows
-//include("cryptography-openssl3") //all platforms, starting from linux/macos/windows
+//test API
+listOf("api", "client", "server").forEach { name ->
+    include("cryptography-test-$name")
+    project(":cryptography-test-$name").projectDir = file("cryptography-tests/cryptography-test-$name")
+}
 
-//tests
-include("cryptography-tests:cryptography-test-api")
-include("cryptography-tests:cryptography-test-client")
-include("cryptography-tests:cryptography-test-server")
-
-include("cryptography-tests:cryptography-testsuite-main")
+listOf(
+    "api",
+    "0-generate",
+    "1-compute",
+    "2-validate",
+).forEach { name ->
+    include("cryptography-test-step-$name")
+    project(":cryptography-test-step-$name").projectDir = file("cryptography-tests/cryptography-test-suite/step-$name")
+}
