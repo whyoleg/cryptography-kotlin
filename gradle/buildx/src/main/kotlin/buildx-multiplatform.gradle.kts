@@ -1,5 +1,5 @@
 plugins {
-    org.jetbrains.kotlin.multiplatform
+    kotlin("multiplatform")
 }
 
 kotlin {

@@ -1,34 +1,14 @@
-import org.jetbrains.kotlin.gradle.plugin.*
+import org.jetbrains.kotlin.gradle.plugin.mpp.*
+import org.jetbrains.kotlin.konan.target.*
 
 plugins {
     id("buildx-multiplatform-library")
 }
 
 kotlin {
-    jvm()
-    js {
-        browser()
-        nodejs()
-    }
-    val linuxTargets = listOf(linuxX64())
-    val darwinTargets = listOf(macosX64(), macosArm64())
-    val mingwTargets = listOf(mingwX64())
+    allTargets()
 
-    sourceSets {
-        fun shared(name: String, targets: List<KotlinTarget>) {
-            val main = create("${name}Main") {
-                dependsOn(commonMain.get())
-            }
-            val test = create("${name}Test") {
-                dependsOn(commonTest.get())
-            }
-            targets.forEach {
-                getByName("${it.name}Main").dependsOn(main)
-                getByName("${it.name}Test").dependsOn(test)
-            }
-        }
-        shared("linux", linuxTargets)
-        shared("darwin", darwinTargets)
-        shared("mingw", mingwTargets)
-    }
+    sharedSourceSet("mingw") { (it as? KotlinNativeTarget)?.konanTarget?.family == Family.MINGW }
+    sharedSourceSet("linux") { (it as? KotlinNativeTarget)?.konanTarget?.family == Family.LINUX }
+    sharedSourceSet("darwin") { (it as? KotlinNativeTarget)?.konanTarget?.family?.isAppleFamily == true }
 }

@@ -19,7 +19,7 @@ kotlin {
 
                 implementation(libs.ktor.serialization.kotlinx.protobuf)
                 implementation(libs.kotlinx.serialization.protobuf)
-                implementation("ch.qos.logback:logback-classic:1.2.11")
+                implementation(libs.logback.classic)
             }
         }
     }

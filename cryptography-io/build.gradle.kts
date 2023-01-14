@@ -5,29 +5,7 @@ plugins {
 }
 
 kotlin {
-    jvm()
-    js {
-        browser()
-        nodejs()
-    }
-    linuxX64()
-    macosX64()
-    macosArm64()
-    mingwX64()
+    allTargets()
 
-    sourceSets {
-        val nonJvmMain by creating {
-            dependsOn(commonMain.get())
-        }
-        val nonJvmTest by creating {
-            dependsOn(commonTest.get())
-        }
-
-        targets.all {
-            if (platformType != KotlinPlatformType.jvm && platformType != KotlinPlatformType.common) {
-                getByName("${name}Main").dependsOn(nonJvmMain)
-                getByName("${name}Test").dependsOn(nonJvmTest)
-            }
-        }
-    }
+    sharedSourceSet("nonJvm") { it.platformType != KotlinPlatformType.jvm && it.platformType != KotlinPlatformType.common }
 }
