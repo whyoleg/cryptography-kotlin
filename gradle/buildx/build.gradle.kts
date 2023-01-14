@@ -5,3 +5,7 @@ plugins {
 dependencies {
     implementation(libs.build.kotlin)
 }
+
+kotlin {
+    jvmToolchain(8)
+}
