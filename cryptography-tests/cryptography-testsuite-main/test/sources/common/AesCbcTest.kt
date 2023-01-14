@@ -59,9 +59,15 @@ class AesCbcTest {
 
                             cipher.decrypt(ciphertext).assertContentEquals(plaintext)
 
-                            val rawKey = key.encodeTo(AES.Key.Format.RAW)
-                            val jwkJey = key.encodeTo(AES.Key.Format.JWK)
-                            emit(AesCbcTestData(true, rawKey, jwkJey, plaintext, ciphertext))
+                            emit(
+                                AesCbcTestData(
+                                    padding = true,
+                                    rawKey = key.encodeTo(AES.Key.Format.RAW),
+                                    jwkKey = key.encodeToIf(provider.isWebCrypto, AES.Key.Format.JWK),
+                                    plaintext = plaintext,
+                                    ciphertext = ciphertext
+                                )
+                            )
                         }
                     }
                 }
@@ -72,7 +78,7 @@ class AesCbcTest {
 
                 listOfNotNull(
                     keyDecoder.decodeFrom(AES.Key.Format.RAW, it.rawKey),
-                    it.jwkKey?.let { keyDecoder.decodeFrom(AES.Key.Format.JWK, it) }
+                    it.jwkKey?.let { keyDecoder.decodeFromIf(provider.isWebCrypto, AES.Key.Format.JWK, it) }
                 ).forEach { key ->
                     key.encodeTo(AES.Key.Format.RAW).assertContentEquals(it.rawKey)
                     it.jwkKey?.let { key.encodeTo(AES.Key.Format.JWK).assertContentEquals(it) }
@@ -85,12 +91,4 @@ class AesCbcTest {
             }
         }
     }
-}
-
-fun ByteArray.assertContentEquals(expected: ByteArray) {
-    assertContentEquals(expected, this)
-}
-
-fun Boolean.assertTrue() {
-    assertTrue(this)
 }

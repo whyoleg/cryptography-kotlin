@@ -90,6 +90,8 @@
     * [ ] Hybrid Encryption
     * [ ] Double Ratchet Algorithm (?)
 * [ ] Try to implement some TLS cipher suites (TLS 1.2/1.3) in sample or as a separate module
+* [ ] Integrate with https://github.com/google/wycheproof to test against test vectors (more tests
+  here https://github.com/pyca/cryptography/blob/main/docs/development/test-vectors.rst)
 
 ## 1.0.0: Stable release
 

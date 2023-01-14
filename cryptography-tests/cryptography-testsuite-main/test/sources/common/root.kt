@@ -22,3 +22,11 @@ suspend fun <KF : KeyFormat> EncodableKey<KF>.encodeToIf(supported: Boolean, for
 suspend fun <KF : KeyFormat, K : Key> KeyDecoder<KF, K>.decodeFromIf(supported: Boolean, format: KF, encoded: ByteArray): K? {
     return if (supported) decodeFrom(format, encoded) else null
 }
+
+fun ByteArray.assertContentEquals(expected: ByteArray) {
+    kotlin.test.assertContentEquals(expected, this)
+}
+
+fun Boolean.assertTrue() {
+    kotlin.test.assertTrue(this)
+}

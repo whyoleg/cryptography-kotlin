@@ -11,6 +11,9 @@ import dev.whyoleg.cryptography.webcrypto.materials.*
 import dev.whyoleg.cryptography.webcrypto.operations.*
 
 internal object WebCryptoEcdsa : ECDSA, WebCryptoEc<ECDSA.PublicKey, ECDSA.PrivateKey, ECDSA.KeyPair>("ECDSA") {
+    override val publicKeyUsages: Array<String> get() = arrayOf("verify")
+    override val privateKeyUsages: Array<String> get() = arrayOf("sign")
+    override val keyPairUsages: Array<String> get() = arrayOf("sign", "verify")
     override val publicKeyWrapper: (CryptoKey) -> ECDSA.PublicKey = { key ->
         object : ECDSA.PublicKey, EncodableKey<EC.PublicKey.Format> by WebCryptoEncodableKey(key, publicKeyFormat) {
             override fun signatureVerifier(digest: CryptographyAlgorithmId<Digest>): SignatureVerifier =

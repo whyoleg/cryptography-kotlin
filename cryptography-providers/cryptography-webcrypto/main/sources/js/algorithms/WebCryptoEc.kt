@@ -8,7 +8,6 @@ import dev.whyoleg.cryptography.webcrypto.materials.*
 internal sealed class WebCryptoEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP : EC.KeyPair<PublicK, PrivateK>>(
     private val algorithmName: String,
 ) : EC<PublicK, PrivateK, KP> {
-    private val keyUsages: Array<String> = arrayOf("sign", "verify", "deriveBits")
     protected val publicKeyFormat: (EC.PublicKey.Format) -> String = {
         when (it) {
             EC.PublicKey.Format.RAW -> "raw"
@@ -24,8 +23,11 @@ internal sealed class WebCryptoEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateK
             EC.PrivateKey.Format.PEM -> TODO("PEM format is not supported yet")
         }
     }
+    protected abstract val publicKeyUsages: Array<String>
     protected abstract val publicKeyWrapper: (CryptoKey) -> PublicK
+    protected abstract val privateKeyUsages: Array<String>
     protected abstract val privateKeyWrapper: (CryptoKey) -> PrivateK
+    protected abstract val keyPairUsages: Array<String>
     protected abstract val keyPairWrapper: (CryptoKeyPair) -> KP
 
     private val EC.Curve?.webCryptoName
@@ -39,17 +41,17 @@ internal sealed class WebCryptoEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateK
 
     final override fun publicKeyDecoder(curve: EC.Curve?): KeyDecoder<EC.PublicKey.Format, PublicK> = WebCryptoKeyDecoder(
         EcKeyAlgorithm(algorithmName, curve.webCryptoName),
-        arrayOf("verify"), publicKeyFormat, publicKeyWrapper
+        publicKeyUsages, publicKeyFormat, publicKeyWrapper
     )
 
     final override fun privateKeyDecoder(curve: EC.Curve?): KeyDecoder<EC.PrivateKey.Format, PrivateK> = WebCryptoKeyDecoder(
         EcKeyAlgorithm(algorithmName, curve.webCryptoName),
-        arrayOf("sign"), privateKeyFormat, privateKeyWrapper
+        privateKeyUsages, privateKeyFormat, privateKeyWrapper
     )
 
     final override fun keyPairGenerator(curve: EC.Curve): KeyGenerator<KP> = WebCryptoAsymmetricKeyGenerator(
         algorithm = EcKeyAlgorithm(algorithmName, curve.webCryptoName),
-        keyUsages = arrayOf("sign", "verify"),
+        keyUsages = keyPairUsages,
         keyPairWrapper = keyPairWrapper
     )
 }

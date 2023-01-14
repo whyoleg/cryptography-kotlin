@@ -9,6 +9,10 @@ import dev.whyoleg.cryptography.webcrypto.external.*
 import dev.whyoleg.cryptography.webcrypto.materials.*
 
 internal object WebCryptoEcdh : ECDH, WebCryptoEc<ECDH.PublicKey, ECDH.PrivateKey, ECDH.KeyPair>("ECDH") {
+    override val publicKeyUsages: Array<String> get() = arrayOf("deriveBits")
+    override val privateKeyUsages: Array<String> get() = arrayOf("deriveBits")
+    override val keyPairUsages: Array<String> get() = arrayOf("deriveBits")
+
     override val publicKeyWrapper: (CryptoKey) -> ECDH.PublicKey = { key ->
         object : ECDH.PublicKey, EncodableKey<EC.PublicKey.Format> by WebCryptoEncodableKey(key, publicKeyFormat) {
             override fun derivative(): SharedSecretDerivative<EC.PrivateKey.Format> = EcdhDerivative(key, privateKeyFormat, true)

@@ -15,6 +15,19 @@ class EcdsaTest {
     @Test
     fun test() = runTest {
         supportedProviders.forEach { provider ->
+            //gen key1-1, key1-2
+            //gen key2-1, key2-2
+            //combine pairs
+            //derive shared
+            //compare shared
+
+//            provider.get(ECDH)
+//                .keyPairGenerator(EC.Curve.P521)
+//                .generateKey()
+//                .privateKey
+//                .derivative()
+//                .deriveSharedSecretFrom()
+
             val algorithm = provider.get(ECDSA)
 
             flow {
