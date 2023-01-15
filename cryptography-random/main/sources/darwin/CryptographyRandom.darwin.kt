@@ -7,6 +7,8 @@ internal actual fun defaultCryptographyRandom(): CryptographyRandom = CCCryptogr
 
 private object CCCryptographyRandom : PlatformRandom() {
     override fun nextBytes(array: ByteArray): ByteArray {
+        if (array.isEmpty()) return array
+
         val size = array.size
         array.usePinned { pinned ->
             val status = CCRandomGenerateBytes(

@@ -15,9 +15,12 @@ sealed class CryptographyTest(private val step: TestStep) {
     @Test
     fun aesCbc() = testIt(aesCbc)
 
-    private fun testIt(algorithm: TestAlgorithm) = runTest {
-        val run = algorithm.steps[step] ?: run {
-            println("No step '$step' for '${algorithm.name}'")
+    @Test
+    fun digest() = testIt(digest)
+
+    private fun testIt(suite: TestSuite) = runTest {
+        val run = suite.actions[step] ?: run {
+            println("No step '$step' for '${suite.algorithm}'")
             return@runTest
         }
         supportedProviders.forEach { provider ->
@@ -27,9 +30,9 @@ sealed class CryptographyTest(private val step: TestStep) {
                     "platform" to currentPlatform
                 )
             )
-            println("START: ${algorithm.name}, Step: $step, Provider: ${provider.name}, Platform: $currentPlatform")
+            println("START: ${suite.algorithm}, Step: $step, Provider: ${provider.name}, Platform: $currentPlatform")
             run.execute(api, provider)
-            println("END:   ${algorithm.name}, Step: $step, Provider: ${provider.name}, Platform: $currentPlatform")
+            println("END:   ${suite.algorithm}, Step: $step, Provider: ${provider.name}, Platform: $currentPlatform")
         }
     }
 }

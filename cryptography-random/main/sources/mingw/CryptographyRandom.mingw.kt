@@ -7,6 +7,8 @@ internal actual fun defaultCryptographyRandom(): CryptographyRandom = BCryptCryp
 
 private object BCryptCryptographyRandom : PlatformRandom() {
     override fun nextBytes(array: ByteArray): ByteArray {
+        if (array.isEmpty()) return array
+
         val size = array.size
         @OptIn(ExperimentalUnsignedTypes::class)
         array.asUByteArray().usePinned { pinned ->

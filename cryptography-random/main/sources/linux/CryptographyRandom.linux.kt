@@ -7,6 +7,9 @@ internal actual fun defaultCryptographyRandom(): CryptographyRandom = URandomCry
 
 private object URandomCryptographyRandom : PlatformRandom() {
     override fun nextBytes(array: ByteArray): ByteArray {
+        if (array.isEmpty()) return array
+
+        //TODO: handle null?
         val fd = fopen("/dev/urandom", "rb") ?: return array
         val size = array.size
         array.usePinned { pinned ->

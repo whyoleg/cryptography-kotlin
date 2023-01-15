@@ -21,7 +21,11 @@ private class CryptographyRandomImpl(
     override fun nextBoolean(): Boolean = secureRandom.nextBoolean()
     override fun nextDouble(): Double = secureRandom.nextDouble()
     override fun nextFloat(): Float = secureRandom.nextFloat()
-    override fun nextBytes(array: ByteArray): ByteArray = array.also { secureRandom.nextBytes(it) }
+    override fun nextBytes(array: ByteArray): ByteArray {
+        if (array.isEmpty()) return array
+
+        return array.also { secureRandom.nextBytes(it) }
+    }
 }
 
 private fun Int.takeUpperBits(bitCount: Int): Int =
@@ -39,6 +43,8 @@ private class SecureRandomSpiImpl(
     }
 
     override fun engineNextBytes(bytes: ByteArray) {
+        if (bytes.isEmpty()) return
+
         cryptographyRandom.nextBytes(bytes)
     }
 

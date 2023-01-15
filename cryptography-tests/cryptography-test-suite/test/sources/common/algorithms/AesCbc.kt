@@ -22,7 +22,7 @@ private inline fun paddings(block: (padding: Boolean, paddingParams: String) -> 
     block(true, "PKCS7Padding")
 }
 
-private val generate = TestRun { api, provider ->
+private val generate = TestAction { api, provider ->
     val algorithm = provider.get(AES.CBC)
     symmetricKeySizes { keySize, keyParams ->
         if (keySize == SymmetricKeySize.B192 && !provider.supports192BitKey) {
@@ -72,7 +72,7 @@ private val generate = TestRun { api, provider ->
     }
 }
 
-private val validate = TestRun { api, provider ->
+private val validate = TestAction { api, provider ->
     val algorithm = provider.get(AES.CBC)
     val keyDecoder = algorithm.keyDecoder()
 
@@ -114,7 +114,4 @@ private val validate = TestRun { api, provider ->
     }
 }
 
-internal val aesCbc = "AES-CBC".testAlgorithm(
-    generate = generate,
-    validate = validate,
-)
+val aesCbc = TestSuite("AES-CBC", generate = generate, validate = validate)

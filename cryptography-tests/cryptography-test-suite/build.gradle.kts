@@ -17,10 +17,11 @@ kotlin {
     sourceSets {
         commonTest {
             dependencies {
-                implementation(projects.cryptographyTestClient)
-                implementation(projects.cryptographyCore)
                 implementation(kotlin("test"))
                 implementation(libs.kotlinx.coroutines.test)
+
+                implementation(projects.cryptographyTestClient)
+                implementation(projects.cryptographyCore)
             }
         }
         val jsTest by getting {
@@ -35,6 +36,7 @@ kotlin {
         }
         val jvmTest by getting {
             dependencies {
+                implementation(kotlin("test-junit")) //TODO: why it's not added automatically?
                 implementation(projects.cryptographyJdk)
             }
         }

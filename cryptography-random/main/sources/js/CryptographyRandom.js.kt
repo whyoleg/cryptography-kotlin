@@ -13,6 +13,8 @@ private object WebCryptoCryptographyRandom : PlatformRandom() {
     }
 
     override fun nextBytes(array: ByteArray): ByteArray {
+        if (array.isEmpty()) return array
+
         crypto.getRandomValues(array)
         return array
     }
