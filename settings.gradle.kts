@@ -5,9 +5,6 @@ pluginManagement {
         gradlePluginPortal()
         mavenCentral()
     }
-    includeBuild("gradle/buildx") {
-        name = "cryptography-buildx"
-    }
     includeBuild("gradle/plugins")
 }
 

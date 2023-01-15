@@ -5,5 +5,5 @@ plugins {
 }
 
 plugins.withType<YarnPlugin> {
-    yarn.lockFileDirectory = rootDir.resolve("gradle")
+    yarn.lockFileDirectory = rootDir.resolve("gradle/js")
 }

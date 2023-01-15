@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    implementation(libs.build.kotlin)
+    implementation(kotlin("gradle-plugin"))
 }
 
 kotlin {

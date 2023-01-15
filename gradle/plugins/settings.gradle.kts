@@ -13,3 +13,4 @@ dependencyResolutionManagement {
 }
 
 include("build-parameters")
+include("buildx")

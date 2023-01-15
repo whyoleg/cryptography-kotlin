@@ -18,8 +18,8 @@ kotlin {
                 val index = indexOfLast { it.isUpperCase() }
                 take(index) to drop(index).lowercase()
             }
-            kotlin.dir("$compilationName/sources/$targetName")
-            resources.dir("$compilationName/resources/$targetName")
+            kotlin.setSrcDirs(listOf("$compilationName/sources/$targetName"))
+            resources.setSrcDirs(listOf("$compilationName/resources/$targetName"))
         }
     }
     targets.all {
