@@ -6,13 +6,12 @@
     * [ ] EC (ECDSA/ECDH)
         * [ ] implementations
 * [ ] Tests
-    * [ ] Encryption/decryption
-    * [ ] Signing/verification
     * [ ] Key agreement
+    * [ ] Optimize tests (cache keys?)
 * [ ] Engines
-    * [ ] JDK
-    * [ ] Apple (CoreCrypto + Security framework)
-    * [ ] OpenSSL(1/3) engine (dynamic for desktop native targets)
+    * [ ] JDK (ECDH left)
+    * [ ] Apple (CoreCrypto (done) + Security framework (not started))
+    * [ ] OpenSSL(1/3) engine (dynamic/static for desktop native targets)
 * [ ] Coroutines integration (for JDK engine to run on other dispatcher, to avoid blocking main thread)
 * [ ] binary compatibility validator
 * [ ] Maven Central

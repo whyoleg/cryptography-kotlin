@@ -28,7 +28,7 @@ private class InMemorySubApi<T>(
 ) : Api.SubApi<T> {
     override suspend fun save(algorithm: String, params: String, data: T, metadata: Map<String, String>): String {
         try {
-            val payload = Payload(this.metadata + metadata, data)
+            val payload = Payload(data, this.metadata + metadata)
             val id = storage.save(algorithm, params, payload)
             println("save: $path/$algorithm/$params -> $id | $metadata")
             return id

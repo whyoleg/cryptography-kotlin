@@ -27,7 +27,7 @@ interface Api {
 }
 
 @Serializable
-data class Payload<T>(val metadata: Map<String, String>, val data: T)
+data class Payload<T>(val data: T, val metadata: Map<String, String>)
 
 @Serializable
 data class KeyData(val formats: Map<String, SerializableBuffer>)
@@ -39,9 +39,19 @@ data class KeyPairData(val public: KeyData, val private: KeyData)
 class DigestData(val data: SerializableBuffer, val digest: SerializableBuffer)
 
 @Serializable
-class CipherData(val keyId: String, val plaintext: SerializableBuffer, val ciphertext: SerializableBuffer)
+class CipherData(
+    val keyId: String,
+    val keyParams: String,
+    val plaintext: SerializableBuffer,
+    val ciphertext: SerializableBuffer,
+)
 
 @Serializable
-class SignatureData(val keyId: String, val data: SerializableBuffer, val signature: SerializableBuffer)
+class SignatureData(
+    val keyId: String,
+    val keyParams: String,
+    val data: SerializableBuffer,
+    val signature: SerializableBuffer,
+)
 
 typealias SerializableBuffer = @Contextual ByteArray

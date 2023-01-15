@@ -23,6 +23,9 @@ sealed class CryptographyTest(vararg steps: TestStep) {
     @Test
     fun digest() = testIt(digest)
 
+    @Test
+    fun hmac() = testIt(hmac)
+
     private fun testIt(suite: TestSuite) = runTest {
         steps.forEach { step ->
             val action = suite.actions[step] ?: run {

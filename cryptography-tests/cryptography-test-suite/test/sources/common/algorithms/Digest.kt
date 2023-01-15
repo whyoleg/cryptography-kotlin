@@ -15,8 +15,8 @@ private val generate = TestAction { api, provider ->
 
         repeat(iterations) {
             val dataSize = CryptographyRandom.nextInt(maxDataSize)
-            val data = CryptographyRandom.nextBytes(dataSize)
             println("generate: data.size  = $dataSize")
+            val data = CryptographyRandom.nextBytes(dataSize)
             val digest = hasher.hash(data)
             println("generate: digest.size  = ${digest.size}")
             hasher.hash(data).assertContentEquals(digest)
@@ -38,7 +38,7 @@ private val validate = TestAction { api, provider ->
         api.digests.getAll(
             algorithm = algorithm.id.name,
             params = "x" //TODO
-        ).forEach { (_, digest) ->
+        ).forEach { (digest) ->
             hasher.hash(digest.data).assertContentEquals(digest.digest)
         }
     }

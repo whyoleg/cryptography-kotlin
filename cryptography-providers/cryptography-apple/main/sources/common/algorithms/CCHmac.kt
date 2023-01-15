@@ -34,7 +34,6 @@ internal class CCHmac(
             SHA512 -> kCCHmacAlgSHA512 to CC_SHA512_DIGEST_LENGTH
             else   -> throw CryptographyException("Unsupported hash algorithm: $digest")
         }
-        println(keySize)
         return HmacKeyGenerator(state, keySize, hmacAlgorithm)
     }
 }

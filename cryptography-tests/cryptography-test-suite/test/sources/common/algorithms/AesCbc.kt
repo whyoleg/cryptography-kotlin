@@ -63,8 +63,7 @@ private val generate = TestAction { api, provider ->
                     api.ciphers.save(
                         algorithm = algorithm.id.name,
                         params = paddingParams,
-                        data = CipherData(keyId, plaintext, ciphertext),
-                        metadata = mapOf("key.params" to keyParams)
+                        data = CipherData(keyId, keyParams, plaintext, ciphertext)
                     )
                 }
             }
@@ -82,12 +81,12 @@ private val validate = TestAction { api, provider ->
         api.ciphers.getAll(
             algorithm = algorithm.id.name,
             params = paddingParams,
-        ).forEach { (metadata, encodedCipher) ->
-            if (metadata["key.params"]!! == "192bits" && !provider.supports192BitKey) return@forEach //TODO
+        ).forEach { (encodedCipher) ->
+            if (encodedCipher.keyParams == "192bits" && !provider.supports192BitKey) return@forEach //TODO
 
             val encodedKey = api.keys.get(
                 algorithm = algorithm.id.name,
-                params = metadata["key.params"]!!,
+                params = encodedCipher.keyParams,
                 id = encodedCipher.keyId
             ).data
             encodedKey.formats.forEach { (stringFormat, data) ->

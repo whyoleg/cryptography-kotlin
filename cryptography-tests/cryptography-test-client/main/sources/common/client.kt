@@ -59,7 +59,7 @@ class HttpApi(override val metadata: Map<String, String>) : Api {
 
         override suspend fun save(algorithm: String, params: String, data: T, metadata: Map<String, String>): String {
             try {
-                val payload = Payload(this.metadata + metadata, data)
+                val payload = Payload(data, this.metadata + metadata)
                 val bytes = json.encodeToString(serializer, payload).encodeToByteArray()
                 val id = client.post("$path/$algorithm/$params") {
                     setBody(ByteArrayContent(bytes))
