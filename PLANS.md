@@ -6,10 +6,8 @@
     * [ ] EC (ECDSA/ECDH)
         * [ ] implementations
 * [ ] Tests
-    * [ ] Hash
     * [ ] Encryption/decryption
     * [ ] Signing/verification
-    * [ ] Key import/export
     * [ ] Key agreement
 * [ ] Engines
     * [ ] JDK

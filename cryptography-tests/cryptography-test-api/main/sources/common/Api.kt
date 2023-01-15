@@ -3,6 +3,8 @@ package dev.whyoleg.cryptography.test.api
 import kotlinx.serialization.*
 
 interface Api {
+    val metadata: Map<String, String>
+
     val keys: SubApi<KeyData>
     val keyPairs: SubApi<KeyPairData>
     val digests: SubApi<DigestData>

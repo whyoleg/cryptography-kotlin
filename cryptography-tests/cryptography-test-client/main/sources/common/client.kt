@@ -42,23 +42,24 @@ private object Base64ByteArraySerializer : KSerializer<ByteArray> {
     }
 }
 
-class HttpApi(private val metadata: Map<String, String>) : Api {
-    private inline fun <reified T> api(path: String) = HttpSubApi<T>(path, serializer())
-
+class HttpApi(override val metadata: Map<String, String>) : Api {
     override val keys: Api.SubApi<KeyData> = api("keys")
     override val keyPairs: Api.SubApi<KeyPairData> = api("key-pairs")
     override val digests: Api.SubApi<DigestData> = api("digests")
     override val signatures: Api.SubApi<SignatureData> = api("signatures")
     override val ciphers: Api.SubApi<CipherData> = api("ciphers")
 
-    inner class HttpSubApi<T> internal constructor(
+    private inline fun <reified T> api(path: String) = HttpSubApi<T>(path, metadata, serializer())
+
+    private class HttpSubApi<T>(
         private val path: String,
+        private val metadata: Map<String, String>,
         private val serializer: KSerializer<Payload<T>>,
     ) : Api.SubApi<T> {
 
         override suspend fun save(algorithm: String, params: String, data: T, metadata: Map<String, String>): String {
             try {
-                val payload = Payload(this@HttpApi.metadata + metadata, data)
+                val payload = Payload(this.metadata + metadata, data)
                 val bytes = json.encodeToString(serializer, payload).encodeToByteArray()
                 val id = client.post("$path/$algorithm/$params") {
                     setBody(ByteArrayContent(bytes))
