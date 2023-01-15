@@ -2,9 +2,8 @@
 
 ## 0.1.0: Initial release
 
-* [ ] Algorithms (+/- covered WebCrypto)
-    * [ ] EC (ECDSA/ECDH)
-        * [ ] implementations
+* [ ] Other
+    * [ ] drop blocking/suspend adaptors
 * [ ] Tests
     * [ ] Key agreement
     * [ ] Optimize tests (cache keys?)
@@ -12,10 +11,17 @@
     * [ ] JDK (ECDH left)
     * [ ] Apple (CoreCrypto (done) + Security framework (not started))
     * [ ] OpenSSL(1/3) engine (dynamic/static for desktop native targets)
-* [ ] Coroutines integration (for JDK engine to run on other dispatcher, to avoid blocking main thread)
-* [ ] binary compatibility validator
-* [ ] Maven Central
+* [ ] Build
+    * [ ] Binary compatibility validator
+    * [ ] GitHub Actions vis github-workflows-kt
+    * [ ] Samples (use knit?) (for each different kind of operation)
+    * [ ] Dokka (at least to generate public API)
+    * [ ] Kover (for coverage)
+    * [ ] Maven Central
 * [ ] README
+    * [ ] modules/dependencies
+    * [ ] supported algorithms/operations (+ not supported by some providers)
+    * [ ] some intro on what this library is and testing
 
 ## 0.2.0: New operations, algorithms, engines
 
@@ -25,6 +31,7 @@
     * [ ] Key wrap/unwrap
 * [ ] Algorithms
     * [ ] SHA-3 (hash)
+    * [ ] SHAKE (hash)
     * [ ] AES-KW (key wrap/unwrap)
     * [ ] AES-CTR (?) (cipher)
     * [ ] ChaCha20-Poly1305 (stream cipher)
@@ -43,6 +50,7 @@
     * [ ] OpenSSL(1/3) engine (static for almost all native targets)
     * [ ] Engine builder DSL + decide on how to better handle providers inside engine (lazy, cache, etc)
 * [ ] Android integration tests
+* [ ] JDK with BC tests
 
 ## 0.3.0: Certificates and Key management
 
@@ -75,6 +83,7 @@
 ## x.y.z plans:
 
 * [ ] compiler plugin to generate declarations with flatten parameters (related to 'general way to define algorithms')
+* [ ] Coroutines integration (for JDK engine to run on other dispatcher, to avoid blocking main thread) - is it needed?
 * [ ] Engines
     * [ ] AWS/GCP KMS provider
     * [ ] BorringSSL engine (MPP)
