@@ -44,6 +44,7 @@ class CipherData(
     val keyParams: String,
     val plaintext: SerializableBuffer,
     val ciphertext: SerializableBuffer,
+    val associatedData: SerializableBuffer?,
 )
 
 @Serializable

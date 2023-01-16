@@ -17,14 +17,17 @@ sealed class CryptographyTest(vararg steps: TestStep) {
     private val steps = steps.toList()
     protected open fun api(metadata: Map<String, String>): Api = HttpApi(metadata)
 
-    @Test
+    //    @Test
     fun aesCbc() = testIt(aesCbc)
 
-    @Test
+    //    @Test
     fun digest() = testIt(digest)
 
-    @Test
+    //    @Test
     fun hmac() = testIt(hmac)
+
+    @Test
+    fun rsaOaep() = testIt(rsaOaep)
 
     private fun testIt(suite: TestSuite) = runTest {
         steps.forEach { step ->

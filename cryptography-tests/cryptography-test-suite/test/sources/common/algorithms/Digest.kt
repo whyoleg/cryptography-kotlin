@@ -9,7 +9,7 @@ private const val iterations = 100
 private const val maxDataSize = 10000
 
 private val generate = TestAction { api, provider ->
-    digests { digestCryptographyAlgorithmId ->
+    digests { digestCryptographyAlgorithmId, _ ->
         val algorithm = provider.get(digestCryptographyAlgorithmId)
         val hasher = algorithm.hasher()
 
@@ -31,7 +31,7 @@ private val generate = TestAction { api, provider ->
 }
 
 private val validate = TestAction { api, provider ->
-    digests { digestCryptographyAlgorithmId ->
+    digests { digestCryptographyAlgorithmId, _ ->
         val algorithm = provider.get(digestCryptographyAlgorithmId)
         val hasher = algorithm.hasher()
 

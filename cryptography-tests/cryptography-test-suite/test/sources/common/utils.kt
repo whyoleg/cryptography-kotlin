@@ -20,9 +20,11 @@ fun Boolean.assertTrue() {
     kotlin.test.assertTrue(this)
 }
 
-inline fun EncodedKey(block: MutableMap<String, ByteArray>.() -> Unit): KeyData = KeyData(buildMap(block))
+inline fun KeyData(block: MutableMap<String, ByteArray>.() -> Unit): KeyData = KeyData(buildMap(block))
 
 object StringKeyFormat {
     val RAW = "RAW"
     val JWK = "JWK"
+    val DER = "DER"
+    val PEM = "PEM"
 }

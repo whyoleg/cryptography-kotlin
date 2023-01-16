@@ -4,9 +4,13 @@
 
 * [ ] Other
     * [ ] drop blocking/suspend adaptors
+    * [ ] Decide on algorithms access in code. f.e. AES.CBC, RSA.OAEP vs ECDSA, ECDH, etc.
+        * [ ] algorithms - AesBasedAlgorihm, RsaBasedAlgorithm, AesGcmAlgorithm
+        * [ ] ids -> AES.CBC, RSA.OAEP, RSA, etc.
 * [ ] Tests
     * [ ] Key agreement
     * [ ] Optimize tests (cache keys?)
+    * [ ] Simplify test api
 * [ ] Engines
     * [ ] JDK (ECDH left)
     * [ ] Apple (CoreCrypto (done) + Security framework (not started))
@@ -103,4 +107,3 @@
 
 * [ ] Design CryptographyException hierarchy
 * [ ] Migrate to some IO library
-* [ ] Decide on algorithms access in code. f.e. AES.CBC, RSA.OAEP vs ECDSA, ECDH, etc.

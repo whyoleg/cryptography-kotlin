@@ -36,7 +36,7 @@ private val generate = TestAction { api, provider ->
             val keyId = api.keys.save(
                 algorithm = algorithm.id.name,
                 params = keyParams,
-                data = EncodedKey {
+                data = KeyData {
                     put(StringKeyFormat.RAW, key.encodeTo(AES.Key.Format.RAW))
                     if (provider.supportsJwk) put(StringKeyFormat.JWK, key.encodeTo(AES.Key.Format.JWK))
                 }
@@ -63,7 +63,7 @@ private val generate = TestAction { api, provider ->
                     api.ciphers.save(
                         algorithm = algorithm.id.name,
                         params = paddingParams,
-                        data = CipherData(keyId, keyParams, plaintext, ciphertext)
+                        data = CipherData(keyId, keyParams, plaintext, ciphertext, null)
                     )
                 }
             }

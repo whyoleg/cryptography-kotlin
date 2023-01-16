@@ -13,14 +13,14 @@ private const val maxDataSize = 10000
 private val generate = TestAction { api, provider ->
     val algorithm = provider.get(HMAC)
 
-    digests { digest ->
+    digests { digest, _ ->
         val keyGenerator = algorithm.keyGenerator(digest)
         repeat(keyIterations) {
             val key = keyGenerator.generateKey()
             val keyId = api.keys.save(
                 algorithm = algorithm.id.name,
                 params = digest.name,
-                data = EncodedKey {
+                data = KeyData {
                     put(StringKeyFormat.RAW, key.encodeTo(HMAC.Key.Format.RAW))
                     if (provider.supportsJwk) put(StringKeyFormat.JWK, key.encodeTo(HMAC.Key.Format.JWK))
                 }
@@ -50,7 +50,7 @@ private val generate = TestAction { api, provider ->
 private val validate = TestAction { api, provider ->
     val algorithm = provider.get(HMAC)
 
-    digests { digest ->
+    digests { digest, _ ->
         val keyDecoder = algorithm.keyDecoder(digest)
         api.signatures.getAll(
             algorithm = algorithm.id.name,

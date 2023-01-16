@@ -1,5 +1,6 @@
 package dev.whyoleg.cryptography.test.suite.generators
 
+import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
@@ -11,6 +12,11 @@ inline fun symmetricKeySizes(block: (keySize: SymmetricKeySize, keyParams: Strin
 }
 
 @OptIn(InsecureAlgorithm::class)
-inline fun digests(block: (digest: CryptographyAlgorithmId<Digest>) -> Unit) {
-    listOf(SHA1, SHA256, SHA384, SHA512).forEach(block)
+inline fun digests(block: (digest: CryptographyAlgorithmId<Digest>, digestSize: Int) -> Unit) {
+    listOf(
+        SHA1 to 20,
+        SHA256 to 32,
+        SHA384 to 48,
+        SHA512 to 64,
+    ).forEach { block(it.first, it.second) }
 }
