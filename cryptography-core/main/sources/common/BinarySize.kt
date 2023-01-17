@@ -2,7 +2,6 @@ package dev.whyoleg.cryptography
 
 import kotlin.jvm.*
 
-//TODO: different name?
 @JvmInline
 public value class BinarySize internal constructor(private val value: Int) : Comparable<BinarySize> {
     init {
@@ -10,7 +9,6 @@ public value class BinarySize internal constructor(private val value: Int) : Com
         require(value % 8 == 0) { "Value must be a multiple of 8" }
     }
 
-    //TODO: rename it similar to like in Duration? inBits, inBytes
     public val bits: Int get() = value
     public val bytes: Int get() = value / 8
 

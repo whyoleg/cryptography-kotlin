@@ -2,18 +2,30 @@
 
 ## 0.1.0: Initial release
 
-* [ ] Other
+* [ ] Release preparation
     * [ ] drop blocking/suspend adaptors
     * [ ] Decide on algorithms access in code. f.e. AES.CBC, RSA.OAEP vs ECDSA, ECDH, etc.
         * [ ] algorithms - AesBasedAlgorihm, RsaBasedAlgorithm, AesGcmAlgorithm
         * [ ] ids -> AES.CBC, RSA.OAEP, RSA, etc.
+    * [ ] CryptographyAlgorithmId naming
+    * [ ] RSA PublicExponent BigInt
+    * [ ] BinarySize naming, factory functions and extension functions (like for Duration)
+    * [ ] JDK CryptographyProviderContainer is public
+    * [ ] Closeable impl
+    * [ ] Key Formats cleanup
+    * [ ] Support PEM encoding where DER is supported
+    * [ ] Drop key derivation (?) EC!!!
+    * [ ] Revisit Random implementations
 * [ ] Tests
     * [ ] Key agreement
     * [ ] Optimize tests (cache keys?)
     * [ ] Simplify test api
 * [ ] Engines
     * [ ] JDK (ECDH left)
+        * [ ] RSA/EC/AES shared implementation
     * [ ] Apple (CoreCrypto (done) + Security framework (not started))
+        * [ ] HMAC key size
+        * [ ] error reporting
     * [ ] OpenSSL(1/3) engine (dynamic/static for desktop native targets)
 * [ ] Build
     * [ ] Binary compatibility validator
@@ -31,6 +43,7 @@
 ## 0.2.0: New operations, algorithms, engines
 
 * [ ] Operations
+    * [ ] Key agreement
     * [ ] Key derive (kdf/prf)
     * [ ] Multi-key agreement support
     * [ ] Key wrap/unwrap
@@ -84,6 +97,7 @@
     * [ ] Decide on cipher encrypt/decrypt functions for RSA-like algorithms
     * [ ] Streaming encryption/decryption (look at google/tink)
     * [ ] File encryption/decryption (function operations)
+    * [ ] JDK in-place encryption/decryption (use single ByteArray for output (generate IV in place, and output it))
 
 ## x.y.z plans:
 

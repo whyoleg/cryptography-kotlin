@@ -1,6 +1,5 @@
 package dev.whyoleg.cryptography.provider
 
-//TODO
 public interface BlockingAdaptor {
     public fun <T> execute(block: suspend () -> T): T
 }

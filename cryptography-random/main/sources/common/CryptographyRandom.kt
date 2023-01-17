@@ -30,7 +30,6 @@ public abstract class CryptographyRandom : Random() {
     }
 }
 
-//TODO: revisit platform implementations
 internal expect fun defaultCryptographyRandom(): CryptographyRandom
 
 internal abstract class PlatformRandom : CryptographyRandom() {

@@ -4,7 +4,7 @@ import dev.whyoleg.cryptography.provider.*
 
 @SubclassOptInRequired(CryptographyProviderApi::class)
 public interface CryptographyAlgorithm {
-    public val id: CryptographyAlgorithmId<*> //TODO: rename?
+    public val id: CryptographyAlgorithmId<*>
 }
 
 @SubclassOptInRequired(CryptographyProviderApi::class)

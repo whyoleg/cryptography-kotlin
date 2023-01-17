@@ -35,7 +35,6 @@ private class AesGcmCipher(
 ) : AuthenticatedCipher {
     private val cipher = state.cipher("AES/GCM/NoPadding")
 
-    //TODO: we can use single ByteArray for output (generate IV in place, and output it)
     override fun encryptBlocking(plaintextInput: Buffer, associatedData: Buffer?): Buffer = cipher.use { cipher ->
         val iv = ByteArray(ivSizeBytes).also(state.secureRandom::nextBytes)
         cipher.init(JCipher.ENCRYPT_MODE, key, GCMParameterSpec(tagSize.bits, iv), state.secureRandom)

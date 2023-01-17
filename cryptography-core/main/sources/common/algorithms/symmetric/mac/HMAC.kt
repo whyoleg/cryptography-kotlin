@@ -8,8 +8,6 @@ import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.operations.signature.*
 import dev.whyoleg.cryptography.provider.*
 
-//TODO: decide on how we can support CMAC/GMAC
-
 @SubclassOptInRequired(CryptographyProviderApi::class)
 public interface HMAC : CryptographyAlgorithm {
     override val id: CryptographyAlgorithmId<HMAC> get() = Companion

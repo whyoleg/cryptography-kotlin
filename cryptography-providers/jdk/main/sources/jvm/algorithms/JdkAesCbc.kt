@@ -41,7 +41,6 @@ private class AesCbcCipher(
         }
     )
 
-    //TODO: we can use single ByteArray for output (generate IV in place, and output it)
     override fun encryptBlocking(plaintextInput: Buffer): Buffer = cipher.use { cipher ->
         val iv = ByteArray(ivSizeBytes).also(state.secureRandom::nextBytes)
         cipher.init(JCipher.ENCRYPT_MODE, key, IvParameterSpec(iv), state.secureRandom)

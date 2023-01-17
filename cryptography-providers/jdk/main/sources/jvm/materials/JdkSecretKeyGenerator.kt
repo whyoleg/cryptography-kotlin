@@ -3,8 +3,6 @@ package dev.whyoleg.cryptography.jdk.materials
 import dev.whyoleg.cryptography.jdk.*
 import dev.whyoleg.cryptography.materials.key.*
 
-//TODO: refactor to abstract classes
-
 internal class JdkSecretKeyGenerator<K : Key>(
     private val state: JdkCryptographyState,
     algorithm: String,

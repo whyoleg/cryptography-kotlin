@@ -20,7 +20,6 @@ public interface RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP : RS
         publicExponent: PublicExponent = PublicExponent.F4,
     ): KeyGenerator<KP>
 
-    //TODO: replace with some kind of MPP BigInt
     public sealed class PublicExponent {
         public object F4 : PublicExponent()
         public class Number internal constructor(public val value: Long) : PublicExponent()

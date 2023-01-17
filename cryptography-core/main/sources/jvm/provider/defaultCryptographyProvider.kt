@@ -2,7 +2,6 @@ package dev.whyoleg.cryptography.provider
 
 import java.util.*
 
-//TODO
 @Deprecated("", level = DeprecationLevel.ERROR)
 public interface CryptographyProviderContainer {
     public val provider: Lazy<CryptographyProvider>

@@ -5,7 +5,6 @@ import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.webcrypto.*
 import dev.whyoleg.cryptography.webcrypto.external.*
 
-//TODO: abstract class?
 internal class WebCryptoEncodableKey<KF : KeyFormat>(
     private val key: CryptoKey,
     private val keyFormat: (KF) -> String,

@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.*
 
 object TestVectorsClient {
 
-    //TODO: cache responses?
     private val client = HttpClient {
         install(DefaultRequest) {
             port = 9000

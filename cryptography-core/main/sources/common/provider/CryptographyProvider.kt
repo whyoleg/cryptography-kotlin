@@ -10,8 +10,6 @@ public abstract class CryptographyProvider {
     public open fun <A : CryptographyAlgorithm> get(identifier: CryptographyAlgorithmId<A>): A =
         getOrNull(identifier) ?: throw CryptographyAlgorithmNotFoundException(identifier)
 
-    //TODO: make it Companion or not?
-
     public object Default : CryptographyProvider() {
         private val defaultProvider = defaultCryptographyProvider()
         override val name: String get() = defaultProvider.name

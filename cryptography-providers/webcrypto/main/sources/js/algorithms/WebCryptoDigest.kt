@@ -11,7 +11,6 @@ internal class WebCryptoDigest private constructor(
     private val algorithm: String,
     override val id: CryptographyAlgorithmId<Digest>,
 ) : Digest, Hasher {
-    //TODO: lazy?
     companion object {
         val sha1 = WebCryptoDigest("SHA-1", SHA1)
         val sha256 = WebCryptoDigest("SHA-256", SHA256)

@@ -45,7 +45,7 @@ private class EcdhDerivative<KF : KeyFormat>(
             keyUsages = arrayOf("deriveBits")
         ).await()
 
-        val length = 256 //TODO
+        val length = 256
 
         return when {
             otherKeyIsPrivate -> WebCrypto.subtle.deriveBits(EcdhDerivationAlgorithm(public = thisKey), otherKey, length)
