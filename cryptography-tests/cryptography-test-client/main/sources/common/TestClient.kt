@@ -9,13 +9,15 @@ import io.ktor.utils.io.*
 import io.ktor.utils.io.core.*
 import kotlinx.coroutines.flow.*
 
-private val client = HttpClient {
-    install(DefaultRequest) {
-        port = 9000
-    }
-}
-
 object TestClient {
+
+    //TODO: cache responses?
+    private val client = HttpClient {
+        install(DefaultRequest) {
+            port = 9000
+        }
+    }
+
     suspend fun saveMeta(algorithm: String, path: String, bytes: ByteArray): String =
         save("$algorithm/$path", bytes)
 

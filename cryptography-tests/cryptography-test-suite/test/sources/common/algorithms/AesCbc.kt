@@ -30,9 +30,13 @@ private val generate = TestAction { api, provider ->
             return@symmetricKeySizes
         }
 
+        //save key paramaters
+
         val keyGenerator = algorithm.keyGenerator(keySize)
         repeat(keyIterations) {
             val key = keyGenerator.generateKey()
+
+            //save key
             val keyId = api.keys.save(
                 algorithm = algorithm.id.name,
                 params = keyParams,
@@ -47,6 +51,8 @@ private val generate = TestAction { api, provider ->
                     return@paddings
                 }
 
+                //save cipher paramaters
+
                 val cipher = key.cipher(padding)
                 repeat(cipherIterations) { //TODO: if padding, need to generate data with length % 16 == 0
                     val plaintextSize = CryptographyRandom.nextInt(maxPlaintextSize).let {
@@ -60,6 +66,7 @@ private val generate = TestAction { api, provider ->
                     //only simple check here to fail fast
                     cipher.decrypt(ciphertext).assertContentEquals(plaintext)
 
+                    //save cipher
                     api.ciphers.save(
                         algorithm = algorithm.id.name,
                         params = paddingParams,
@@ -74,6 +81,12 @@ private val generate = TestAction { api, provider ->
 private val validate = TestAction { api, provider ->
     val algorithm = provider.get(AES.CBC)
     val keyDecoder = algorithm.keyDecoder()
+
+    //get cipher params
+    //(process)
+    //get ciphers
+    //get key for cipher (with cache?)
+
 
     paddings { padding, paddingParams ->
         if (!padding && !provider.supportsNoPadding) return@paddings

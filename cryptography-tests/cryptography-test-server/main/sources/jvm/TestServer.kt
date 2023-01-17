@@ -18,7 +18,7 @@ import kotlin.io.path.*
 @OptIn(ExperimentalPathApi::class)
 fun main() {
     //TODO: get from args
-    val rootPath = Path("cryptography-tests/cryptography-test-vectors").also(Path::deleteRecursively)
+    val rootPath = Path("cryptography-tests/cryptography-test-vectors-storage").also(Path::deleteRecursively)
     val instanceId = "1"
 
     embeddedServer(Netty, port = 9000) {
