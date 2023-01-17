@@ -1,8 +1,8 @@
-package dev.whyoleg.cryptography.test.suite
+package dev.whyoleg.cryptography.test.support
 
 import dev.whyoleg.cryptography.provider.*
 
-internal expect val supportedProviders: List<CryptographyProvider>
+expect val availableProviders: List<CryptographyProvider>
 
 val CryptographyProvider.isWebCrypto: Boolean
     get() = name == "WebCrypto"
