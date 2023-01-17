@@ -31,8 +31,9 @@ listOf(
     //"openssl", //all platforms, starting from linux/macos/windows
     //"openssl3", //all platforms, starting from linux/macos/windows
 ).forEach { name ->
+    //TODO: cryptography-provider-jdk or cryptography-jdk ???
     include("cryptography-$name")
-    project(":cryptography-$name").projectDir = file("cryptography-providers/cryptography-$name")
+    project(":cryptography-$name").projectDir = file("cryptography-providers/$name")
 }
 
 //test API
