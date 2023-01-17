@@ -1,21 +1,13 @@
-import org.jetbrains.kotlin.gradle.plugin.mpp.*
-import org.jetbrains.kotlin.konan.target.*
-
 plugins {
     id("buildx-multiplatform")
-    alias(libs.plugins.kotlin.serialization)
 }
 
 kotlin {
     allTargets()
-
-    sharedSourceSet("mingw") { (it as? KotlinNativeTarget)?.konanTarget?.family == Family.MINGW }
-    sharedSourceSet("linux") { (it as? KotlinNativeTarget)?.konanTarget?.family == Family.LINUX }
-    sharedSourceSet("darwin") { (it as? KotlinNativeTarget)?.konanTarget?.family?.isAppleFamily == true }
     sourceSets {
         commonMain {
             dependencies {
-                api(libs.ktor.client.core)
+                implementation(libs.ktor.client.core)
             }
         }
         val jvmMain by getting {
