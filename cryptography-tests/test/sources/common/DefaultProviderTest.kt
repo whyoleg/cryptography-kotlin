@@ -1,14 +1,13 @@
-package dev.whyoleg.cryptography.test.suite
+package dev.whyoleg.cryptography.tests
 
 import dev.whyoleg.cryptography.provider.*
+import dev.whyoleg.cryptography.test.support.*
 import kotlin.test.*
 
-//TODO: move it somewhere else?
 class DefaultProviderTest {
     @Test
     fun test() {
         val defaultName = CryptographyProvider.Default.name
-        println(defaultName)
-        assertContains(supportedProviders.map { it.name }, defaultName)
+        assertContains(availableProviders.map { it.name }, defaultName)
     }
 }
