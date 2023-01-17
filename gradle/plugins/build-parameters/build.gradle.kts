@@ -6,11 +6,8 @@ buildParameters {
     group("testsuite") {
         enumeration("step") {
             description.set("Define which test step to execute")
-            values.addAll(
-                "GenerateTestStep",
-                "ComputeTestStep",
-                "ValidateTestStep",
-            )
+            defaultValue.set("Local")
+            values.addAll("Local", "Generate", "Compute", "Validate")
         }
     }
 }

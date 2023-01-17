@@ -36,8 +36,11 @@ listOf(
     project(":cryptography-$name").projectDir = file("cryptography-providers/$name")
 }
 
-//test API
-listOf("api", "client", "server", "suite").forEach { name ->
-    include("cryptography-test-$name")
-    project(":cryptography-test-$name").projectDir = file("cryptography-tests/cryptography-test-$name")
+//test modules
+include("cryptography-test-support")
+include("cryptography-tests") //TODO: move to providers folder
+listOf("client", "server", "suite").forEach { name ->
+    val fullName = "cryptography-test-vectors-$name"
+    include(fullName)
+    project(":$fullName").projectDir = file("cryptography-test-vectors/$name")
 }

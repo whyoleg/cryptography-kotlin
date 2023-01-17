@@ -1,0 +1,38 @@
+import buildparameters.testsuite.*
+import org.jetbrains.kotlin.gradle.plugin.*
+
+plugins {
+    id("buildx-multiplatform")
+    id("build-parameters")
+}
+
+kotlin {
+    allTargets()
+    sourceSets {
+        commonTest {
+            dependencies {
+                implementation(projects.cryptographyTestSupport)
+                implementation(projects.cryptographyTestVectorsClient)
+            }
+        }
+    }
+
+    //TESTS SHOULD BE ALWAYS ONLY IN `tests` folder
+    val testsPackage = "dev.whyoleg.cryptography.test.vectors.suite.tests.*."
+    val tests = mapOf(
+        Step.Local to "localTest",
+        Step.Generate to "generateTestStep",
+        Step.Compute to "validateTestStep",
+        Step.Validate to "computeTestStep",
+    )
+    val includedTest = tests[buildParameters.testsuite.step]!!
+    val excludedTests = tests.values.filter { it != includedTest }
+
+    val testFilter: TestFilter.() -> Unit = {
+        includeTestsMatching("${testsPackage}$includedTest")
+        excludedTests.forEach {
+            excludeTestsMatching("${testsPackage}$it")
+        }
+    }
+    targets.all { if (this is KotlinTargetWithTests<*, *>) testRuns.all { filter(testFilter) } }
+}
