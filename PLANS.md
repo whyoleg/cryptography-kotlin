@@ -3,6 +3,7 @@
 ## 0.1.0: Initial release
 
 * [ ] Release preparation
+    * [ ] DECIDE ON KEY AGREEMENT/DERIVATION IN THIS RELEASE!!!!!!!!
     * [ ] drop blocking/suspend adaptors
     * [ ] Decide on algorithms access in code. f.e. AES.CBC, RSA.OAEP vs ECDSA, ECDH, etc.
         * [ ] algorithms - AesBasedAlgorihm, RsaBasedAlgorithm, AesGcmAlgorithm
@@ -16,10 +17,9 @@
     * [ ] Support PEM encoding where DER is supported
     * [ ] Drop key derivation (?) EC!!!
     * [ ] Revisit Random implementations
+
 * [ ] Tests
     * [ ] Key agreement
-    * [ ] Optimize tests (cache keys?)
-    * [ ] Simplify test api
 * [ ] Engines
     * [ ] JDK (ECDH left)
         * [ ] RSA/EC/AES shared implementation
