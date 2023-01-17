@@ -19,17 +19,65 @@ private inline fun keySizes(block: (keySize: BinarySize, keyParams: String) -> U
     }
 }
 
+//key-pairs/RSA-PSS |2048bits+SHA-256| |salt=5, ad, data, signature|
+
+//RSA-PSS:
+// - key size - static
+// - digest - static
+// - publicExponent - dynamic
+
+// - salt size - dynamic
+// - associated data - dynamic
+
+// key-pairs
+//  - create
+//  - get by id + params
+//  - list params
+
+
+//filesystem:
+//rsa-pss | data.json - fake
+//rsa-pss | key-pairs/key-pair-params-1
+//rsa-pss | key-pairs/key-pair-params-1/meta.json
+//rsa-pss | key-pairs/key-pair-params-1/data/key-pair-1
+//rsa-pss | key-pairs/key-pair-params-1/data/key-pair-1 | data.json (provider, platform, data)
+//rsa-pss | key-pairs/key-pair-params-1/data/key-pair-1 | signatures/signature-params-1
+//rsa-pss | key-pairs/key-pair-params-1/data/key-pair-1 | signatures/signature-params-1/data.json
+//rsa-pss | key-pairs/key-pair-params-1/data/key-pair-1 | signatures/signature-params-1/signature-1/data.json
+
+//routes
+//POST | rsa-pss/key-pairs - create param - return id
+//GET  | rsa-pss/key-pairs - list params - return list of params
+//POST | rsa-pss/key-pairs/kpp-1/data - create key-pair - return id
+//GET  | rsa-pss/key-pairs/kpp-1/data - list key-pairs - return list of key-pairs
+
+//POST | rsa-pss/key-pairs/kpp-1/data/kp-1/signatures - create signature params - return id
+//GET  | rsa-pss/key-pairs/kpp-1/data/kp-1/signatures - list signature params- return list of signatures
+//POST | rsa-pss/key-pairs/kpp-1/data/kp-1/signatures/sp-1/data - create signature - return id
+//GET  | rsa-pss/key-pairs/kpp-1/data/kp-1/signatures/sp-1/data - get signature - return signature
+
+//RSA-PSS/
+//       /key-pairs/meta/ID
+//                         /ID - key id
+//                            /signatures/meta/ID
+//                         /signatures/data/
+
+/**
+ * requirements: (tree)
+ * - entities params (create, get-all)
+ * - entities data (create, get-all)
+ * - sub-entities params (create, get-all)
+ * - sub-entities data (create, get-all)
+ */
+
 private val generate = TestAction { api, provider ->
     val algorithm = provider.get(RSA.OAEP)
 
     keySizes { keySize, keyParams ->
         digests { digest, digestSize ->
             val maxPlaintextSize = keySize.bytes - 2 - 2 * digestSize
-            val keyGenerator = algorithm.keyPairGenerator(keySize, digest)
 
-            repeat(keyIterations) {
-                val keyPair = keyGenerator.generateKey()
-
+            algorithm.keyPairGenerator(keySize, digest).generateKeys(keyIterations) { keyPair ->
                 val keyId = api.keyPairs.save(
                     algorithm.id.name,
                     keyParams + digest.name,
@@ -63,8 +111,8 @@ private val generate = TestAction { api, provider ->
                             algorithm = algorithm.id.name,
                             params = keyParams + digest.name, //TODO!!!
                             data = CipherData(
-                                keyId,
-                                keyParams + digest.name,
+                                keyId = keyId,
+                                keyParams = keyParams + digest.name,
                                 associatedData = associatedData,
                                 plaintext = plaintext,
                                 ciphertext = ciphertext

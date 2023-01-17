@@ -15,10 +15,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                api(projects.cryptographyTestApi)
-                implementation(libs.kotlinx.serialization.json)
-
-                implementation(libs.ktor.client.core)
+                api(libs.ktor.client.core)
             }
         }
         val jvmMain by getting {
