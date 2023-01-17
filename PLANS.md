@@ -22,6 +22,7 @@
     * [ ] Dokka (at least to generate public API)
     * [ ] Kover (for coverage)
     * [ ] Maven Central
+    * [ ] rename buildx plugins
 * [ ] README
     * [ ] modules/dependencies
     * [ ] supported algorithms/operations (+ not supported by some providers)

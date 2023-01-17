@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.gradle.plugin.*
 plugins {
     id("buildx-multiplatform")
     id("build-parameters")
+    kotlin("plugin.serialization")
 }
 
 kotlin {
@@ -13,6 +14,7 @@ kotlin {
             dependencies {
                 implementation(projects.cryptographyTestSupport)
                 implementation(projects.cryptographyTestVectorsClient)
+                implementation(libs.kotlinx.serialization.json)
             }
         }
     }

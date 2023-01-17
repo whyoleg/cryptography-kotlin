@@ -1,8 +1,8 @@
-package dev.whyoleg.cryptography.test.suite
+package dev.whyoleg.cryptography.test.vectors.suite
 
 import dev.whyoleg.cryptography.io.*
 import dev.whyoleg.cryptography.materials.key.*
-import dev.whyoleg.cryptography.test.api.*
+import dev.whyoleg.cryptography.provider.*
 
 suspend fun <KF : KeyFormat> EncodableKey<KF>.encodeTo(format: KF?): Buffer? {
     return format?.let { encodeTo(it) }
@@ -20,11 +20,16 @@ fun Boolean.assertTrue() {
     kotlin.test.assertTrue(this)
 }
 
-inline fun KeyData(block: MutableMap<String, ByteArray>.() -> Unit): KeyData = KeyData(buildMap(block))
-
 object StringKeyFormat {
     val RAW = "RAW"
     val JWK = "JWK"
     val DER = "DER"
     val PEM = "PEM"
+}
+
+fun CryptographyProvider.skipUnsupported(feature: String, supports: Boolean): Boolean {
+    if (supports) return true
+
+    println("[TEST] SKIP: $feature is not supported by $name")
+    return false
 }

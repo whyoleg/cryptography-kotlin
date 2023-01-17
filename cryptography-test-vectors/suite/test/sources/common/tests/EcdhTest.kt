@@ -1,4 +1,4 @@
-package dev.whyoleg.cryptography.testcase.main
+package dev.whyoleg.cryptography.test.vectors.suite.tests
 
 //keys:
 //JS-BROWSER-WebCrypto-ECDH-P256-PUBLIC-JWK-1

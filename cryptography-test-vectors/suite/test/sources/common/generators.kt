@@ -1,4 +1,4 @@
-package dev.whyoleg.cryptography.test.suite.generators
+package dev.whyoleg.cryptography.test.vectors.suite
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
@@ -6,14 +6,12 @@ import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.materials.key.*
 
-inline fun symmetricKeySizes(block: (keySize: SymmetricKeySize, keyParams: String) -> Unit) {
-    listOf(SymmetricKeySize.B128, SymmetricKeySize.B192, SymmetricKeySize.B256).forEach { keySize ->
-        block(keySize, "${keySize.value.bits}bits")
-    }
+inline fun generateSymmetricKeySize(block: (keySize: SymmetricKeySize) -> Unit) {
+    generate(block, SymmetricKeySize.B128, SymmetricKeySize.B192, SymmetricKeySize.B256)
 }
 
 @OptIn(InsecureAlgorithm::class)
-inline fun digests(block: (digest: CryptographyAlgorithmId<Digest>, digestSize: Int) -> Unit) {
+inline fun generateDigests(block: (digest: CryptographyAlgorithmId<Digest>, digestSize: Int) -> Unit) {
     listOf(
         SHA1 to 20,
         SHA256 to 32,
@@ -24,4 +22,12 @@ inline fun digests(block: (digest: CryptographyAlgorithmId<Digest>, digestSize: 
 
 suspend inline fun <K : Key> KeyGenerator<K>.generateKeys(count: Int, block: (key: K) -> Unit) {
     repeat(count) { block(generateKey()) }
+}
+
+inline fun <T> generate(block: (value: T) -> Unit, vararg values: T) {
+    values.forEach { block(it) }
+}
+
+inline fun generateBoolean(block: (value: Boolean) -> Unit) {
+    generate(block, true, false)
 }

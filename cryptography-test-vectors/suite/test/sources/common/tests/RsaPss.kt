@@ -1,4 +1,4 @@
-package dev.whyoleg.cryptography.test.suite.algorithms
+package dev.whyoleg.cryptography.test.vectors.suite.tests
 
 //private const val keyIterations = 5
 //private const val saltIterations = 5
