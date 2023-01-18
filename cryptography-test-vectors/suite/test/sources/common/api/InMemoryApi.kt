@@ -1,8 +1,8 @@
-package dev.whyoleg.cryptography.test.vectors.suite
+package dev.whyoleg.cryptography.test.vectors.suite.api
 
 import kotlin.reflect.*
 
-object InMemoryApi : TestVectorApi() {
+class InMemoryApi : TestVectorApi() {
     override val keys: TestVectorStorageApi = InMemoryStorageApi()
     override val keyPairs: TestVectorStorageApi = InMemoryStorageApi()
     override val digests: TestVectorStorageApi = InMemoryStorageApi()

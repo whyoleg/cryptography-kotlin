@@ -1,6 +1,6 @@
 @file:Suppress("ArrayInDataClass")
 
-package dev.whyoleg.cryptography.test.vectors.suite
+package dev.whyoleg.cryptography.test.vectors.suite.api
 
 import kotlinx.serialization.*
 import kotlin.jvm.*
@@ -32,11 +32,13 @@ data class TestVectorReference(
 typealias SerializableBuffer = @Contextual ByteArray
 
 @Serializable
-data class DigestData(val data: SerializableBuffer, val digest: SerializableBuffer) : TestVectorData
+data class DigestData(val data: SerializableBuffer, val digest: SerializableBuffer) : TestVectorData {
+    override fun toString(): String = "DigestData(data.size=${data.size}, digest.size=${digest.size})"
+}
 
 @Serializable
 data class KeyData(val formats: Map<String, SerializableBuffer>) : TestVectorData {
-    override fun toString(): String = "KeyData(formats=${formats.mapValues { it.value.size.toString() }})"
+    override fun toString(): String = "KeyData(formats=${formats.mapValues { it.value.size }})"
 }
 
 inline fun KeyData(block: MutableMap<String, ByteArray>.() -> Unit): KeyData = KeyData(buildMap(block))
@@ -61,18 +63,15 @@ data class AuthenticatedCipherData(
     val associatedData: SerializableBuffer?,
     val plaintext: SerializableBuffer,
     val ciphertext: SerializableBuffer,
-) : TestVectorData
+) : TestVectorData {
+    override fun toString(): String {
+        return "AuthenticatedCipherData(keyReference=$keyReference, associatedData.size=${associatedData?.size}, plaintext.size=${plaintext.size}, ciphertext.size=${ciphertext.size})"
+    }
+}
 
 @Serializable
 data class SignatureData(
     val keyReference: TestVectorReference,
     val data: SerializableBuffer,
     val signature: SerializableBuffer,
-) : TestVectorData
-
-@Serializable
-data class KeyDerivationData(
-    val key1Reference: TestVectorReference,
-    val key2Reference: TestVectorReference,
-    val sharedSecret: SerializableBuffer,
 ) : TestVectorData

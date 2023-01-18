@@ -5,6 +5,7 @@ import dev.whyoleg.cryptography.provider.*
 import dev.whyoleg.cryptography.random.*
 import dev.whyoleg.cryptography.test.support.*
 import dev.whyoleg.cryptography.test.vectors.suite.*
+import dev.whyoleg.cryptography.test.vectors.suite.api.*
 import kotlinx.serialization.*
 
 private const val keyIterations = 10

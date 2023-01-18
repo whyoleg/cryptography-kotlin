@@ -1,4 +1,4 @@
-package dev.whyoleg.cryptography.test.vectors.suite
+package dev.whyoleg.cryptography.test.vectors.suite.api
 
 import kotlin.reflect.*
 

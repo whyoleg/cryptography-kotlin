@@ -1,4 +1,4 @@
-package dev.whyoleg.cryptography.test.vectors.suite
+package dev.whyoleg.cryptography.test.vectors.suite.api
 
 import dev.whyoleg.cryptography.BinarySize.Companion.bits
 import dev.whyoleg.cryptography.algorithms.symmetric.*
@@ -13,7 +13,7 @@ import kotlinx.serialization.json.*
 import kotlinx.serialization.modules.*
 import kotlin.reflect.*
 
-class RemoteApi(
+class ServerBasedApi(
     private val algorithm: String,
     private val metadata: Map<String, String>,
 ) : TestVectorApi() {
