@@ -10,6 +10,8 @@
     * [ ] Support PEM encoding where DER is supported
     * [ ] tests for empty arrays
     * [ ] Add assertion in test-vectors on amount of tested vectors
+    * [ ] investigate failure WebCrypto vs JDK with RSA, ECDSA
+    * [ ] add assert messages to tests
 
 * [ ] Engines
     * [ ] JDK

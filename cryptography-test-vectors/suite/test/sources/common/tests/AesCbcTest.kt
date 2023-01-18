@@ -13,7 +13,7 @@ private const val cipherIterations = 10
 private const val maxPlaintextSize = 10000
 private const val blockSize = 16 //for no padding
 
-// WebCrypto doesn't support 192bits - TODO: WHY???
+// WebCrypto BROWSER doesn't support 192bits - TODO: WHY???
 private fun CryptographyProvider.supportsKeySize(keySizeBits: Int, logging: TestLoggingContext): Boolean = skipUnsupported(
     feature = "192bit key",
     supports = !isWebCrypto || keySizeBits != 192,
@@ -47,6 +47,8 @@ class AesCbcTest : TestVectorTest<AES.CBC>(AES.CBC) {
         }
 
         generateSymmetricKeySize { keySize ->
+            if (!provider.supportsKeySize(keySize.value.inBits, logging)) return@generateSymmetricKeySize
+
             val keyParametersId = api.keys.saveParameters(KeyParameters(keySize.value.inBits))
             algorithm.keyGenerator(keySize).generateKeys(keyIterations) { key ->
                 val keyReference = api.keys.saveData(keyParametersId, KeyData {
