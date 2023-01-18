@@ -5,7 +5,13 @@ package dev.whyoleg.cryptography.test.vectors.suite.api
 import kotlinx.serialization.*
 import kotlin.jvm.*
 
-interface TestVectorParameters
+interface TestVectorParameters {
+    @Serializable
+    object Empty : TestVectorParameters {
+        override fun toString(): String = "EmptyParameters"
+    }
+}
+
 interface TestVectorData
 
 @Serializable

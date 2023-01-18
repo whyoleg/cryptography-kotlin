@@ -32,7 +32,6 @@ kotlin {
     val excludedTests = tests.values.filter { it != includedTest }
 
     val testFilter: TestFilter.() -> Unit = {
-        includeTestsMatching("${testsPackage}$includedTest")
         excludedTests.forEach {
             excludeTestsMatching("${testsPackage}$it")
         }
