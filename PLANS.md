@@ -6,13 +6,13 @@
     * [ ] Decide on algorithms access in code. f.e. AES.CBC, RSA.OAEP vs ECDSA, ECDH, etc.
         * [ ] algorithms - AesBasedAlgorihm, RsaBasedAlgorithm, AesGcmAlgorithm
         * [ ] ids -> AES.CBC, RSA.OAEP, RSA, etc.
-    * [ ] Key Formats cleanup
-    * [ ] Support PEM encoding where DER is supported
+* [ ] Tests
     * [ ] tests for empty arrays
     * [ ] Add assertion in test-vectors on amount of tested vectors
     * [ ] investigate failure WebCrypto vs JDK with RSA, ECDSA
     * [ ] add assert messages to tests
-
+    * [ ] reduce RSA test iterations (?)
+    * [ ] AES-GCM test
 * [ ] Engines
     * [ ] JDK
         * [ ] RSA/EC/AES shared implementation
@@ -20,6 +20,8 @@
         * [ ] HMAC key size
         * [ ] error reporting
     * [ ] OpenSSL(1/3) engine (dynamic/static for desktop native targets)
+    * [ ] Key Formats support cleanup
+    * [ ] Support PEM encoding where DER is supported
 * [ ] Build
     * [ ] Binary compatibility validator
     * [ ] GitHub Actions vis github-workflows-kt
