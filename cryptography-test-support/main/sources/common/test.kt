@@ -3,11 +3,14 @@ package dev.whyoleg.cryptography.test.support
 import dev.whyoleg.cryptography.provider.*
 import kotlinx.coroutines.test.*
 
-fun runTestForEachProvider(test: suspend TestLoggingContext.(provider: CryptographyProvider) -> Unit): TestResult = runTest {
-    val errors = mutableListOf<Pair<String, Throwable>>()
+fun runTestForEachProvider(
+    enableLogs: Boolean = true,
+    test: suspend TestLoggingContext.(provider: CryptographyProvider) -> Unit,
+): TestResult = runTest {
     println("PLATFORM: $currentPlatform")
+    val errors = mutableListOf<Pair<String, Throwable>>()
     availableProviders.forEach { provider ->
-        with(TestLoggingContext(provider.name)) {
+        with(TestLoggingContext(enableLogs, provider.name)) {
             log("START")
             try {
                 test(provider)

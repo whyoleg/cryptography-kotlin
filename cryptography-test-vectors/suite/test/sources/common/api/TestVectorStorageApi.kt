@@ -3,7 +3,8 @@ package dev.whyoleg.cryptography.test.vectors.suite.api
 import dev.whyoleg.cryptography.test.support.*
 import kotlin.reflect.*
 
-sealed class TestVectorStorageApi(
+//TODO: can not be sealed on K/N and K/JS for some strange reason - create kotlin issue (failed to build binary)
+abstract class TestVectorStorageApi(
     val storageName: String,
     val testLoggingContext: TestLoggingContext,
 ) {

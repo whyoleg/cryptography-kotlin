@@ -3,6 +3,7 @@ package dev.whyoleg.cryptography.test.vectors.suite
 import dev.whyoleg.cryptography.io.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.provider.*
+import dev.whyoleg.cryptography.test.support.*
 
 suspend fun <KF : KeyFormat> EncodableKey<KF>.encodeTo(format: KF?): Buffer? {
     return format?.let { encodeTo(it) }
@@ -27,9 +28,9 @@ object StringKeyFormat {
     val PEM = "PEM"
 }
 
-fun CryptographyProvider.skipUnsupported(feature: String, supports: Boolean): Boolean {
+fun CryptographyProvider.skipUnsupported(feature: String, supports: Boolean, logging: TestLoggingContext): Boolean {
     if (supports) return true
 
-    println("[TEST] SKIP: $feature is not supported by $name")
+    logging.log("[TEST] SKIP: $feature is not supported by $name")
     return false
 }

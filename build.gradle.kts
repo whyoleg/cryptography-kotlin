@@ -7,4 +7,5 @@ plugins {
 
 plugins.withType<YarnPlugin> {
     yarn.lockFileDirectory = rootDir.resolve("gradle/js")
+    yarn.yarnLockMismatchReport = YarnLockMismatchReport.WARNING
 }

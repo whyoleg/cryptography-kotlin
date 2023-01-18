@@ -12,11 +12,14 @@ class InMemoryApi(private val testLoggingContext: TestLoggingContext) : TestVect
     override val ciphers: TestVectorStorageApi = api("ciphers")
 }
 
-private class InMemoryStorageApi(storageName: String, testLoggingContext: TestLoggingContext) :
-    TestVectorStorageApi(storageName, testLoggingContext) {
-    private val parametersMap = mutableMapOf<String, Any>()
+@Suppress("UNCHECKED_CAST")
+private class InMemoryStorageApi(
+    storageName: String,
+    testLoggingContext: TestLoggingContext,
+) : TestVectorStorageApi(storageName, testLoggingContext) {
+    private val parametersMap: MutableMap<String, Any> = mutableMapOf()
     private var parametersId = 0
-    private val dataMap = mutableMapOf<String, MutableMap<String, Any>>()
+    private val dataMap: MutableMap<String, MutableMap<String, Any>> = mutableMapOf()
     private var dataId = 0
     override suspend fun <T : TestVectorParameters> saveParameters(parameters: T, type: KType): String {
         val id = (++parametersId).toString()

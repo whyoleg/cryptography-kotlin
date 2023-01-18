@@ -14,14 +14,16 @@ private const val maxPlaintextSize = 10000
 private const val blockSize = 16 //for no padding
 
 // WebCrypto doesn't support 192bits - TODO: WHY???
-private fun CryptographyProvider.supportsKeySize(keySize: SymmetricKeySize): Boolean = skipUnsupported(
+private fun CryptographyProvider.supportsKeySize(keySize: SymmetricKeySize, logging: TestLoggingContext): Boolean = skipUnsupported(
     feature = "192bit key",
-    supports = keySize != SymmetricKeySize.B192 || !isWebCrypto
+    supports = keySize != SymmetricKeySize.B192 || !isWebCrypto,
+    logging = logging
 )
 
-private fun CryptographyProvider.supportsPadding(padding: Boolean): Boolean = skipUnsupported(
+private fun CryptographyProvider.supportsPadding(padding: Boolean, logging: TestLoggingContext): Boolean = skipUnsupported(
     feature = "NoPadding",
-    supports = padding || !isWebCrypto // WebCrypto does not support NoPadding
+    supports = padding || !isWebCrypto, // WebCrypto does not support NoPadding
+    logging = logging
 )
 
 private fun Int.withPadding(padding: Boolean): Int = if (padding) this else this + blockSize - this % blockSize
@@ -37,9 +39,14 @@ private data class CipherParameters(
 ) : TestVectorParameters
 
 class AesCbcTest : TestVectorTest<AES.CBC>(AES.CBC) {
-    override suspend fun TestLoggingContext.generate(api: TestVectorApi, provider: CryptographyProvider, algorithm: AES.CBC) {
+    override suspend fun generate(
+        logging: TestLoggingContext,
+        api: TestVectorApi,
+        provider: CryptographyProvider,
+        algorithm: AES.CBC,
+    ) {
         generateSymmetricKeySize { keySize ->
-            if (!provider.supportsKeySize(keySize)) return@generateSymmetricKeySize
+            if (!provider.supportsKeySize(keySize, logging)) return@generateSymmetricKeySize
 
             val keyParametersId = api.keys.saveParameters(KeyParameters(keySize))
             algorithm.keyGenerator(keySize).generateKeys(keyIterations) { key ->
@@ -48,16 +55,16 @@ class AesCbcTest : TestVectorTest<AES.CBC>(AES.CBC) {
                     if (provider.supportsJwk) put(StringKeyFormat.JWK, key.encodeTo(AES.Key.Format.JWK))
                 })
                 generateBoolean { padding ->
-                    if (!provider.supportsPadding(padding)) return@generateBoolean
+                    if (!provider.supportsPadding(padding, logging)) return@generateBoolean
 
                     val cipherParametersId = api.ciphers.saveParameters(CipherParameters(padding))
                     val cipher = key.cipher(padding)
                     repeat(cipherIterations) {
                         val plaintextSize = CryptographyRandom.nextInt(maxPlaintextSize).withPadding(padding)
-                        log("plaintext.size  = $plaintextSize")
+                        logging.log("plaintext.size  = $plaintextSize")
                         val plaintext = CryptographyRandom.nextBytes(plaintextSize)
                         val ciphertext = cipher.encrypt(plaintext)
-                        log("ciphertext.size = ${ciphertext.size}")
+                        logging.log("ciphertext.size = ${ciphertext.size}")
 
                         //only simple check here to fail fast
                         cipher.decrypt(ciphertext).assertContentEquals(plaintext)
@@ -69,12 +76,17 @@ class AesCbcTest : TestVectorTest<AES.CBC>(AES.CBC) {
         }
     }
 
-    override suspend fun TestLoggingContext.validate(api: TestVectorApi, provider: CryptographyProvider, algorithm: AES.CBC) {
+    override suspend fun validate(
+        logging: TestLoggingContext,
+        api: TestVectorApi,
+        provider: CryptographyProvider,
+        algorithm: AES.CBC,
+    ) {
         val keyDecoder = algorithm.keyDecoder()
 
         val keys = buildMap {
             api.keys.getParameters<KeyParameters> { (keySize), parametersId ->
-                if (!provider.supportsKeySize(keySize)) return@getParameters
+                if (!provider.supportsKeySize(keySize, logging)) return@getParameters
 
                 api.keys.getData<KeyData>(parametersId) { (formats), keyReference ->
                     val keys = formats.mapNotNull { (stringFormat, data) ->
@@ -92,13 +104,13 @@ class AesCbcTest : TestVectorTest<AES.CBC>(AES.CBC) {
                             key.encodeTo(AES.Key.Format.RAW).assertContentEquals(bytes)
                         }
                     }
-                    put(keyReference, keys)
+                    this.put(keyReference, keys)
                 }
             }
         }
 
         api.ciphers.getParameters<CipherParameters> { (padding), parametersId ->
-            if (!provider.supportsPadding(padding)) return@getParameters
+            if (!provider.supportsPadding(padding, logging)) return@getParameters
 
             api.ciphers.getData<CipherData>(parametersId) { (keyReference, plaintext, ciphertext), _ ->
                 keys.getValue(keyReference).forEach { key ->
