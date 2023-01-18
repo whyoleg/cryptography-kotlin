@@ -12,15 +12,24 @@ import dev.whyoleg.cryptography.operations.signature.*
 import java.math.*
 import java.security.spec.*
 
+//TODO
+internal fun CryptographyAlgorithmId<Digest>.rsaHashAlgorithmName(): String = when (this) {
+    SHA1   -> "SHA-1"
+    SHA256 -> "SHA-256"
+    SHA384 -> "SHA-384"
+    SHA512 -> "SHA-512"
+    else   -> throw CryptographyException("Unsupported hash algorithm: $this")
+}
+
 internal class JdkRsaPss(
     private val state: JdkCryptographyState,
 ) : RSA.PSS {
 
     override fun publicKeyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<RSA.PublicKey.Format, RSA.PSS.PublicKey> =
-        RsaPssPublicKeyDecoder(state, digest.hashAlgorithmName())
+        RsaPssPublicKeyDecoder(state, digest.rsaHashAlgorithmName())
 
     override fun privateKeyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<RSA.PrivateKey.Format, RSA.PSS.PrivateKey> =
-        RsaPssPrivateKeyDecoder(state, digest.hashAlgorithmName())
+        RsaPssPrivateKeyDecoder(state, digest.rsaHashAlgorithmName())
 
     override fun keyPairGenerator(
         keySize: BinarySize,
@@ -36,7 +45,7 @@ internal class JdkRsaPss(
                 is RSA.PublicExponent.Text   -> BigInteger(publicExponent.value)
             }
         )
-        return RsaPssKeyPairGenerator(state, rsaParameters, digest.hashAlgorithmName())
+        return RsaPssKeyPairGenerator(state, rsaParameters, digest.rsaHashAlgorithmName())
     }
 }
 

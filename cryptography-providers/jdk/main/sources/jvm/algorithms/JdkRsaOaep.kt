@@ -18,10 +18,10 @@ internal class JdkRsaOaep(
 ) : RSA.OAEP {
 
     override fun publicKeyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<RSA.PublicKey.Format, RSA.OAEP.PublicKey> =
-        RsaOaepPublicKeyDecoder(state, digest.hashAlgorithmName())
+        RsaOaepPublicKeyDecoder(state, digest.rsaHashAlgorithmName())
 
     override fun privateKeyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<RSA.PrivateKey.Format, RSA.OAEP.PrivateKey> =
-        RsaOaepPrivateKeyDecoder(state, digest.hashAlgorithmName())
+        RsaOaepPrivateKeyDecoder(state, digest.rsaHashAlgorithmName())
 
     override fun keyPairGenerator(
         keySize: BinarySize,
@@ -37,7 +37,7 @@ internal class JdkRsaOaep(
                 is RSA.PublicExponent.Text   -> BigInteger(publicExponent.value)
             }
         )
-        return RsaOaepKeyPairGenerator(state, rsaParameters, digest.hashAlgorithmName())
+        return RsaOaepKeyPairGenerator(state, rsaParameters, digest.rsaHashAlgorithmName())
     }
 }
 

@@ -76,9 +76,9 @@ internal class JdkCryptographyState(
 }
 
 internal fun CryptographyAlgorithmId<Digest>.hashAlgorithmName(): String = when (this) {
-    SHA1   -> "SHA-1"
-    SHA256 -> "SHA-256"
-    SHA384 -> "SHA-384"
-    SHA512 -> "SHA-512"
+    SHA1   -> "SHA1"
+    SHA256 -> "SHA256"
+    SHA384 -> "SHA384"
+    SHA512 -> "SHA512"
     else   -> throw CryptographyException("Unsupported hash algorithm: $this")
 }
