@@ -9,6 +9,7 @@
     * [ ] Key Formats cleanup
     * [ ] Support PEM encoding where DER is supported
     * [ ] tests for empty arrays
+    * [ ] Add assertion in test-vectors on amount of tested vectors
 
 * [ ] Engines
     * [ ] JDK
