@@ -6,7 +6,6 @@
     * [ ] Decide on algorithms access in code. f.e. AES.CBC, RSA.OAEP vs ECDSA, ECDH, etc.
         * [ ] algorithms - AesBasedAlgorihm, RsaBasedAlgorithm, AesGcmAlgorithm
         * [ ] ids -> AES.CBC, RSA.OAEP, RSA, etc.
-    * [ ] BinarySize naming, factory functions and extension functions (like for Duration)
     * [ ] Key Formats cleanup
     * [ ] Support PEM encoding where DER is supported
     * [ ] Revisit Random implementations

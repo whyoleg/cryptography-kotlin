@@ -3,18 +3,23 @@ package dev.whyoleg.cryptography
 import kotlin.jvm.*
 
 @JvmInline
-public value class BinarySize internal constructor(private val value: Int) : Comparable<BinarySize> {
+public value class BinarySize private constructor(private val bits: Int) : Comparable<BinarySize> {
     init {
-        require(value >= 0) { "Value must be greater than or equal to 0" }
-        require(value % 8 == 0) { "Value must be a multiple of 8" }
+        require(bits >= 0) { "Value must be greater than or equal to 0" }
+        require(bits % 8 == 0) { "Value must be a multiple of 8" }
     }
 
-    public val bits: Int get() = value
-    public val bytes: Int get() = value / 8
+    public val inBits: Int get() = bits
+    public val inBytes: Int get() = bits / 8
 
-    public operator fun plus(other: BinarySize): BinarySize = BinarySize(value + other.value)
-    public operator fun minus(other: BinarySize): BinarySize = BinarySize(value - other.value)
-    public override operator fun compareTo(other: BinarySize): Int = value.compareTo(other.value)
+    public operator fun plus(other: BinarySize): BinarySize = BinarySize(bits + other.bits)
+    public operator fun minus(other: BinarySize): BinarySize = BinarySize(bits - other.bits)
+    public operator fun times(other: Int): BinarySize = BinarySize(bits * other)
+    public operator fun div(other: Int): BinarySize = BinarySize(bits / other)
+    public operator fun rem(other: Int): BinarySize = BinarySize(bits % other)
+    public override operator fun compareTo(other: BinarySize): Int = bits.compareTo(other.bits)
+
+    override fun toString(): String = "$bits bits"
 
     public companion object {
         public val Int.bits: BinarySize get() = BinarySize(this)

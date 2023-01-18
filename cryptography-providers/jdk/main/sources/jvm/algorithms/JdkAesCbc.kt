@@ -22,7 +22,7 @@ internal class JdkAesCbc(
 
     override fun keyDecoder(): KeyDecoder<AES.Key.Format, AES.CBC.Key> = keyDecoder
     override fun keyGenerator(keySize: SymmetricKeySize): KeyGenerator<AES.CBC.Key> = JdkSecretKeyGenerator(state, "AES", keyWrapper) {
-        init(keySize.value.bits, state.secureRandom)
+        init(keySize.value.inBits, state.secureRandom)
     }
 }
 

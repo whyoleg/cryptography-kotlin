@@ -28,7 +28,7 @@ internal class JdkRsaPss(
         publicExponent: RSA.PublicExponent,
     ): KeyGenerator<RSA.PSS.KeyPair> {
         val rsaParameters = RSAKeyGenParameterSpec(
-            keySize.bits,
+            keySize.inBits,
             when (publicExponent) {
                 RSA.PublicExponent.F4        -> RSAKeyGenParameterSpec.F4
                 is RSA.PublicExponent.Bytes  -> BigInteger(publicExponent.value)
@@ -88,7 +88,7 @@ private class RsaPssPublicKey(
             hashAlgorithmName,
             "MGF1",
             MGF1ParameterSpec.SHA1,
-            saltLength.bytes,
+            saltLength.inBytes,
             1
         )
         return JdkSignatureVerifier(state, key, "RSASSA-PSS", parameters)
@@ -105,7 +105,7 @@ private class RsaPssPrivateKey(
             hashAlgorithmName,
             "MGF1",
             MGF1ParameterSpec.SHA1,
-            saltLength.bytes,
+            saltLength.inBytes,
             1
         )
         return JdkSignatureGenerator(state, key, "RSASSA-PSS", parameters)

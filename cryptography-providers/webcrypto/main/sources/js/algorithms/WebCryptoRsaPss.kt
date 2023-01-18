@@ -29,7 +29,7 @@ internal object WebCryptoRsaPss : RSA.PSS {
     private val publicKeyWrapper: (CryptoKey) -> RSA.PSS.PublicKey = { key ->
         object : RSA.PSS.PublicKey, EncodableKey<RSA.PublicKey.Format> by WebCryptoEncodableKey(key, publicKeyFormat) {
             override fun signatureVerifier(saltLength: BinarySize): SignatureVerifier = WebCryptoSignatureVerifier(
-                algorithm = RsaPssParams(saltLength.bytes),
+                algorithm = RsaPssParams(saltLength.inBytes),
                 key = key
             )
         }
@@ -37,7 +37,7 @@ internal object WebCryptoRsaPss : RSA.PSS {
     private val privateKeyWrapper: (CryptoKey) -> RSA.PSS.PrivateKey = { key ->
         object : RSA.PSS.PrivateKey, EncodableKey<RSA.PrivateKey.Format> by WebCryptoEncodableKey(key, privateKeyFormat) {
             override fun signatureGenerator(saltLength: BinarySize): SignatureGenerator = WebCryptoSignatureGenerator(
-                algorithm = RsaPssParams(saltLength.bytes),
+                algorithm = RsaPssParams(saltLength.inBytes),
                 key = key
             )
         }
@@ -68,7 +68,7 @@ internal object WebCryptoRsaPss : RSA.PSS {
     ): KeyGenerator<RSA.PSS.KeyPair> = WebCryptoAsymmetricKeyGenerator(
         algorithm = RsaHashedKeyGenerationAlgorithm(
             name = "RSA-PSS",
-            modulusLength = keySize.bits,
+            modulusLength = keySize.inBits,
             publicExponent = when (publicExponent) {
                 RSA.PublicExponent.F4        -> byteArrayOf(0x01, 0x00, 0x01)
                 is RSA.PublicExponent.Bytes  -> publicExponent.value

@@ -20,14 +20,14 @@ internal object WebCryptoAesGcm : AES.GCM {
     }
     private val wrapKey: (CryptoKey) -> AES.GCM.Key = { key ->
         object : AES.GCM.Key, EncodableKey<AES.Key.Format> by WebCryptoEncodableKey(key, keyFormat) {
-            override fun cipher(tagSize: BinarySize): AuthenticatedCipher = AesGcmCipher(key, tagSize.bits)
+            override fun cipher(tagSize: BinarySize): AuthenticatedCipher = AesGcmCipher(key, tagSize.inBits)
         }
     }
     private val keyDecoder = WebCryptoKeyDecoder(Algorithm("AES-GCM"), keyUsages, keyFormat, wrapKey)
 
     override fun keyDecoder(): KeyDecoder<AES.Key.Format, AES.GCM.Key> = keyDecoder
     override fun keyGenerator(keySize: SymmetricKeySize): KeyGenerator<AES.GCM.Key> =
-        WebCryptoSymmetricKeyGenerator(AesKeyGenerationAlgorithm("AES-GCM", keySize.value.bits), keyUsages, wrapKey)
+        WebCryptoSymmetricKeyGenerator(AesKeyGenerationAlgorithm("AES-GCM", keySize.value.inBits), keyUsages, wrapKey)
 }
 
 private const val ivSizeBytes = 12 //bytes for GCM

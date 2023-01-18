@@ -22,7 +22,7 @@ internal class JdkAesGcm(
 
     override fun keyDecoder(): KeyDecoder<AES.Key.Format, AES.GCM.Key> = keyDecoder
     override fun keyGenerator(keySize: SymmetricKeySize): KeyGenerator<AES.GCM.Key> = JdkSecretKeyGenerator(state, "AES", keyWrapper) {
-        init(keySize.value.bits, state.secureRandom)
+        init(keySize.value.inBits, state.secureRandom)
     }
 }
 
@@ -37,13 +37,13 @@ private class AesGcmCipher(
 
     override fun encryptBlocking(plaintextInput: Buffer, associatedData: Buffer?): Buffer = cipher.use { cipher ->
         val iv = ByteArray(ivSizeBytes).also(state.secureRandom::nextBytes)
-        cipher.init(JCipher.ENCRYPT_MODE, key, GCMParameterSpec(tagSize.bits, iv), state.secureRandom)
+        cipher.init(JCipher.ENCRYPT_MODE, key, GCMParameterSpec(tagSize.inBits, iv), state.secureRandom)
         associatedData?.let(cipher::updateAAD)
         iv + cipher.doFinal(plaintextInput)
     }
 
     override fun decryptBlocking(ciphertextInput: Buffer, associatedData: Buffer?): Buffer = cipher.use { cipher ->
-        cipher.init(JCipher.DECRYPT_MODE, key, GCMParameterSpec(tagSize.bits, ciphertextInput, 0, ivSizeBytes), state.secureRandom)
+        cipher.init(JCipher.DECRYPT_MODE, key, GCMParameterSpec(tagSize.inBits, ciphertextInput, 0, ivSizeBytes), state.secureRandom)
         associatedData?.let(cipher::updateAAD)
         cipher.doFinal(ciphertextInput, ivSizeBytes, ciphertextInput.size - ivSizeBytes)
     }

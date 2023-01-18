@@ -29,7 +29,7 @@ internal class JdkRsaOaep(
         publicExponent: RSA.PublicExponent,
     ): KeyGenerator<RSA.OAEP.KeyPair> {
         val rsaParameters = RSAKeyGenParameterSpec(
-            keySize.bits,
+            keySize.inBits,
             when (publicExponent) {
                 RSA.PublicExponent.F4        -> RSAKeyGenParameterSpec.F4
                 is RSA.PublicExponent.Bytes  -> BigInteger(publicExponent.value)

@@ -33,7 +33,7 @@ private object SymmetricKeySizeSerializer : KSerializer<SymmetricKeySize> {
     }
 
     override fun serialize(encoder: Encoder, value: SymmetricKeySize) {
-        encoder.encodeInt(value.value.bits)
+        encoder.encodeInt(value.value.inBits)
     }
 }
 

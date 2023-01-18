@@ -2,7 +2,6 @@ package dev.whyoleg.cryptography.apple.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
-import dev.whyoleg.cryptography.apple.*
 import dev.whyoleg.cryptography.io.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.cipher.*
@@ -15,7 +14,7 @@ internal object CCAesCbc : AES.CBC {
     override fun keyDecoder(): KeyDecoder<AES.Key.Format, AES.CBC.Key> = AesCbcKeyDecoder
 
     override fun keyGenerator(keySize: SymmetricKeySize): KeyGenerator<AES.CBC.Key> =
-        AesCbcKeyGenerator(keySize.value.bytes)
+        AesCbcKeyGenerator(keySize.value.inBytes)
 }
 
 private object AesCbcKeyDecoder : KeyDecoder<AES.Key.Format, AES.CBC.Key> {

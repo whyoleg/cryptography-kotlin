@@ -64,7 +64,7 @@ internal object WebCryptoRsaOaep : RSA.OAEP {
     ): KeyGenerator<RSA.OAEP.KeyPair> = WebCryptoAsymmetricKeyGenerator(
         algorithm = RsaHashedKeyGenerationAlgorithm(
             name = "RSA-OAEP",
-            modulusLength = keySize.bits,
+            modulusLength = keySize.inBits,
             publicExponent = when (publicExponent) {
                 RSA.PublicExponent.F4        -> byteArrayOf(0x01, 0x00, 0x01)
                 is RSA.PublicExponent.Bytes  -> publicExponent.value

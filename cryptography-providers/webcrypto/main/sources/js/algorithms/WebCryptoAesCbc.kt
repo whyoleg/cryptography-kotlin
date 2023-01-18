@@ -31,7 +31,7 @@ internal object WebCryptoAesCbc : AES.CBC {
 
     override fun keyDecoder(): KeyDecoder<AES.Key.Format, AES.CBC.Key> = keyDecoder
     override fun keyGenerator(keySize: SymmetricKeySize): KeyGenerator<AES.CBC.Key> =
-        WebCryptoSymmetricKeyGenerator(AesKeyGenerationAlgorithm("AES-CBC", keySize.value.bits), keyUsages, wrapKey)
+        WebCryptoSymmetricKeyGenerator(AesKeyGenerationAlgorithm("AES-CBC", keySize.value.inBits), keyUsages, wrapKey)
 }
 
 private class AesCbcCipher(private val key: CryptoKey) : Cipher {
