@@ -7,7 +7,6 @@
         * [ ] algorithms - AesBasedAlgorihm, RsaBasedAlgorithm, AesGcmAlgorithm
         * [ ] ids -> AES.CBC, RSA.OAEP, RSA, etc.
     * [ ] BinarySize naming, factory functions and extension functions (like for Duration)
-    * [ ] Closeable.close impl
     * [ ] Key Formats cleanup
     * [ ] Support PEM encoding where DER is supported
     * [ ] Revisit Random implementations
@@ -99,6 +98,7 @@
 
 * [ ] compiler plugin to generate declarations with flatten parameters (related to 'general way to define algorithms')
 * [ ] Coroutines integration (for JDK engine to run on other dispatcher, to avoid blocking main thread) - is it needed?
+* [ ] use kotlin.Closeable when it will be available (1.8.20 or 1.9.0)
 * [ ] Engines
     * [ ] AWS/GCP KMS provider
     * [ ] BorringSSL engine (MPP)
