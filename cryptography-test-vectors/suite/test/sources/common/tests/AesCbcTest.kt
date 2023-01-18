@@ -16,13 +16,13 @@ private const val blockSize = 16 //for no padding
 // WebCrypto doesn't support 192bits - TODO: WHY???
 private fun CryptographyProvider.supportsKeySize(keySizeBits: Int, logging: TestLoggingContext): Boolean = skipUnsupported(
     feature = "192bit key",
-    supports = keySizeBits != 192 || !isWebCrypto,
+    supports = !isWebCrypto || keySizeBits != 192,
     logging = logging
 )
 
 private fun CryptographyProvider.supportsPadding(padding: Boolean, logging: TestLoggingContext): Boolean = skipUnsupported(
     feature = "NoPadding",
-    supports = padding || !isWebCrypto, // WebCrypto does not support NoPadding
+    supports = !isWebCrypto || padding, // WebCrypto does not support NoPadding
     logging = logging
 )
 
@@ -54,6 +54,7 @@ class AesCbcTest : TestVectorTest<AES.CBC>(AES.CBC) {
                     if (provider.supportsJwk) put(StringKeyFormat.JWK, key.encodeTo(AES.Key.Format.JWK))
                 })
                 paddings.forEach { (cipherParametersId, padding) ->
+                    logging.log("padding = $padding")
                     val cipher = key.cipher(padding)
                     repeat(cipherIterations) {
                         val plaintextSize = CryptographyRandom.nextInt(maxPlaintextSize).withPadding(padding)
@@ -80,15 +81,12 @@ class AesCbcTest : TestVectorTest<AES.CBC>(AES.CBC) {
                 if (!provider.supportsKeySize(keySize, logging)) return@getParameters
 
                 api.keys.getData<KeyData>(parametersId) { (formats), keyReference ->
-                    val keys = formats.mapNotNull { (stringFormat, data) ->
-                        keyDecoder.decodeFrom(
-                            format = when (stringFormat) {
-                                StringKeyFormat.RAW -> AES.Key.Format.RAW
-                                StringKeyFormat.JWK -> AES.Key.Format.JWK.takeIf { provider.supportsJwk }
-                                else                -> error("Unsupported key format: $stringFormat") //TODO
-                            },
-                            input = data
-                        )
+                    val keys = keyDecoder.decodeFrom(formats) { stringFormat ->
+                        when (stringFormat) {
+                            StringKeyFormat.RAW -> AES.Key.Format.RAW
+                            StringKeyFormat.JWK -> AES.Key.Format.JWK.takeIf { provider.supportsJwk }
+                            else                -> error("Unsupported key format: $stringFormat") //TODO
+                        }
                     }
                     keys.forEach { key ->
                         formats[StringKeyFormat.RAW]?.let { bytes ->

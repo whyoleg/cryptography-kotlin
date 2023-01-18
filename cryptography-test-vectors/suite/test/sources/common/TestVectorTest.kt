@@ -52,10 +52,14 @@ abstract class TestVectorTest<A : CryptographyAlgorithm>(
         name: String? = null,
         testFunction: suspend (TestLoggingContext, TestVectorApi, CryptographyProvider, A) -> Unit,
     ) = runTestForEachProvider { provider ->
+        val algorithm = provider.getOrNull(algorithmId) ?: run {
+            log("Algorithm ${algorithmId.name} is not supported by provider $provider")
+            return@runTestForEachProvider
+        }
         val api = when (name) {
             null -> InMemoryApi(this)
             else -> ServerBasedApi(algorithmId.name, mapOf("platform" to currentPlatform, "provider" to provider.name), this)
         }
-        testFunction(this, api, provider, provider.get(algorithmId))
+        testFunction(this, api, provider, algorithm)
     }
 }

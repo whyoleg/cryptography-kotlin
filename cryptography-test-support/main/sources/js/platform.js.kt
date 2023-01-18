@@ -4,7 +4,15 @@ actual val currentPlatform: String by lazy {
     val isNodeJs =
         js("typeof process !== 'undefined' && process.versions != null && process.versions.node != null").unsafeCast<Boolean>()
     when {
-        isNodeJs -> "JS(NodeJS)"
-        else     -> "JS(Browser)"
+        isNodeJs -> {
+            val version = js("process.version").unsafeCast<String>()
+            val os = js("process.platform").unsafeCast<String>()
+            val arch = js("process.arch").unsafeCast<String>()
+            "JS(Node) [version=$version, os=$os, arch=$arch]"
+        }
+        else     -> {
+            val userAgent = js("navigator.userAgent").unsafeCast<String>()
+            "JS(Browser) [userAgent=$userAgent]"
+        }
     }
 }

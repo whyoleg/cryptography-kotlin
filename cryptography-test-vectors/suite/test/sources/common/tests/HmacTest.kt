@@ -1,7 +1,5 @@
 package dev.whyoleg.cryptography.test.vectors.suite.tests
 
-import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.provider.*
 import dev.whyoleg.cryptography.random.*
@@ -18,14 +16,6 @@ class HmacTest : TestVectorTest<HMAC>(HMAC) {
 
     @Serializable
     private data class KeyParameters(val digest: String) : TestVectorParameters
-
-    private fun digest(name: String): CryptographyAlgorithmId<Digest> = when (name) {
-        SHA1.name -> SHA1
-        SHA256.name -> SHA256
-        SHA384.name -> SHA384
-        SHA512.name -> SHA512
-        else -> error("Unknown digest: $name")
-    }
 
     override suspend fun generate(logging: TestLoggingContext, api: TestVectorApi, provider: CryptographyProvider, algorithm: HMAC) {
         val signatureParametersId = api.signatures.saveParameters(TestVectorParameters.Empty)
@@ -59,15 +49,12 @@ class HmacTest : TestVectorTest<HMAC>(HMAC) {
             api.keys.getParameters<KeyParameters> { (digestName), parametersId ->
                 val keyDecoder = algorithm.keyDecoder(digest(digestName))
                 api.keys.getData<KeyData>(parametersId) { (formats), keyReference ->
-                    val keys = formats.mapNotNull { (stringFormat, data) ->
-                        keyDecoder.decodeFrom(
-                            format = when (stringFormat) {
-                                StringKeyFormat.RAW -> HMAC.Key.Format.RAW
-                                StringKeyFormat.JWK -> HMAC.Key.Format.JWK.takeIf { provider.supportsJwk }
-                                else                -> error("Unsupported key format: $stringFormat") //TODO
-                            },
-                            input = data
-                        )
+                    val keys = keyDecoder.decodeFrom(formats) { stringFormat ->
+                        when (stringFormat) {
+                            StringKeyFormat.RAW -> HMAC.Key.Format.RAW
+                            StringKeyFormat.JWK -> HMAC.Key.Format.JWK.takeIf { provider.supportsJwk }
+                            else                -> error("Unsupported key format: $stringFormat") //TODO
+                        }
                     }
                     keys.forEach { key ->
                         formats[StringKeyFormat.RAW]?.let { bytes ->

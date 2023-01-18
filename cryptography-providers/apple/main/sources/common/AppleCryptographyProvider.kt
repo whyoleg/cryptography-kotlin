@@ -31,7 +31,7 @@ internal object AppleCryptographyProvider : CryptographyProvider() {
         SHA512  -> CCDigest(CCHashAlgorithm.SHA512, SHA512)
         HMAC    -> CCHmac
         AES.CBC -> CCAesCbc
-        else    -> throw CryptographyAlgorithmNotFoundException(identifier)
+        else    -> null
     } as A?
 }
 
