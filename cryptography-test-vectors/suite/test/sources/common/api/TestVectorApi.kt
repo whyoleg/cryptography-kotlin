@@ -6,5 +6,4 @@ sealed class TestVectorApi {
     abstract val digests: TestVectorStorageApi
     abstract val signatures: TestVectorStorageApi
     abstract val ciphers: TestVectorStorageApi
-//    abstract val derivedSecrets: TestVectorStorageApi
 }

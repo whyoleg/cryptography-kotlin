@@ -1,16 +1,19 @@
 package dev.whyoleg.cryptography.test.vectors.suite.api
 
+import dev.whyoleg.cryptography.test.support.*
 import kotlin.reflect.*
 
-class InMemoryApi : TestVectorApi() {
-    override val keys: TestVectorStorageApi = InMemoryStorageApi()
-    override val keyPairs: TestVectorStorageApi = InMemoryStorageApi()
-    override val digests: TestVectorStorageApi = InMemoryStorageApi()
-    override val signatures: TestVectorStorageApi = InMemoryStorageApi()
-    override val ciphers: TestVectorStorageApi = InMemoryStorageApi()
+class InMemoryApi(private val testLoggingContext: TestLoggingContext) : TestVectorApi() {
+    private fun api(storageName: String): TestVectorStorageApi = InMemoryStorageApi(storageName, testLoggingContext)
+    override val keys: TestVectorStorageApi = api("keys")
+    override val keyPairs: TestVectorStorageApi = api("key-pairs")
+    override val digests: TestVectorStorageApi = api("digests")
+    override val signatures: TestVectorStorageApi = api("signatures")
+    override val ciphers: TestVectorStorageApi = api("ciphers")
 }
 
-private class InMemoryStorageApi : TestVectorStorageApi() {
+private class InMemoryStorageApi(storageName: String, testLoggingContext: TestLoggingContext) :
+    TestVectorStorageApi(storageName, testLoggingContext) {
     private val parametersMap = mutableMapOf<String, Any>()
     private var parametersId = 0
     private val dataMap = mutableMapOf<String, MutableMap<String, Any>>()
@@ -21,21 +24,28 @@ private class InMemoryStorageApi : TestVectorStorageApi() {
         return id
     }
 
-    override suspend fun <T : TestVectorParameters> getParameters(type: KType): List<Pair<String, T>> {
+    override suspend fun <T : TestVectorParameters> getParameters(type: KType): List<Triple<String, T, Map<String, String>>> {
         return parametersMap.map {
-            it.key to it.value as T
+            Triple(it.key, it.value as T, emptyMap())
         }
     }
 
-    override suspend fun <T : TestVectorData> saveData(parametersId: TestVectorParametersId, data: T, type: KType): String {
+    override suspend fun <T : TestVectorData> saveData(
+        parametersId: TestVectorParametersId,
+        data: T,
+        type: KType,
+    ): String {
         val id = (++dataId).toString()
         dataMap.getOrPut(parametersId.value) { mutableMapOf() }[id] = data
         return id
     }
 
-    override suspend fun <T : TestVectorData> getData(parametersId: TestVectorParametersId, type: KType): List<Pair<String, T>> {
+    override suspend fun <T : TestVectorData> getData(
+        parametersId: TestVectorParametersId,
+        type: KType,
+    ): List<Triple<String, T, Map<String, String>>> {
         return dataMap.getValue(parametersId.value).map {
-            it.key to it.value as T
+            Triple(it.key, it.value as T, emptyMap())
         }
     }
 }

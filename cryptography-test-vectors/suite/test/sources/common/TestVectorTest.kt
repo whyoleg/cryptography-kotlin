@@ -9,18 +9,18 @@ import kotlin.test.*
 abstract class TestVectorTest<A : CryptographyAlgorithm>(
     private val algorithmId: CryptographyAlgorithmId<A>,
 ) {
-    abstract suspend fun generate(api: TestVectorApi, provider: CryptographyProvider, algorithm: A)
-    open suspend fun compute(api: TestVectorApi, provider: CryptographyProvider, algorithm: A) {} //ignored by default
-    abstract suspend fun validate(api: TestVectorApi, provider: CryptographyProvider, algorithm: A)
+    abstract suspend fun TestLoggingContext.generate(api: TestVectorApi, provider: CryptographyProvider, algorithm: A)
+    open suspend fun TestLoggingContext.compute(api: TestVectorApi, provider: CryptographyProvider, algorithm: A) {} //ignored by default
+    abstract suspend fun TestLoggingContext.validate(api: TestVectorApi, provider: CryptographyProvider, algorithm: A)
 
     @Test
-    fun generateTestStep() = testIt("GENERATE", ::generate)
+    fun generateTestStep() = testIt("GENERATE") { api, provider, algorithm -> generate(api, provider, algorithm) }
 
     @Test
-    fun computeTestStep() = testIt("COMPUTE", ::compute)
+    fun computeTestStep() = testIt("COMPUTE") { api, provider, algorithm -> compute(api, provider, algorithm) }
 
     @Test
-    fun validateTestStep() = testIt("VALIDATE", ::validate)
+    fun validateTestStep() = testIt("VALIDATE") { api, provider, algorithm -> validate(api, provider, algorithm) }
 
     @Test
     fun localTest() = testIt { api, provider, algorithm ->
@@ -31,11 +31,11 @@ abstract class TestVectorTest<A : CryptographyAlgorithm>(
 
     private fun testIt(
         name: String? = null,
-        testFunction: suspend (TestVectorApi, CryptographyProvider, A) -> Unit,
+        testFunction: suspend TestLoggingContext.(TestVectorApi, CryptographyProvider, A) -> Unit,
     ) = runTestForEachProvider { provider ->
         val api = when (name) {
-            null -> InMemoryApi()
-            else -> ServerBasedApi(algorithmId.name, mapOf("platform" to currentPlatform, "provider" to provider.name))
+            null -> InMemoryApi(this)
+            else -> ServerBasedApi(algorithmId.name, mapOf("platform" to currentPlatform, "provider" to provider.name), this)
         }
         testFunction(api, provider, provider.get(algorithmId))
     }

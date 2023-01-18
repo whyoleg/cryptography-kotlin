@@ -2,6 +2,7 @@ package dev.whyoleg.cryptography.test.vectors.suite.api
 
 import dev.whyoleg.cryptography.BinarySize.Companion.bits
 import dev.whyoleg.cryptography.algorithms.symmetric.*
+import dev.whyoleg.cryptography.test.support.*
 import dev.whyoleg.cryptography.test.vectors.client.*
 import io.ktor.util.*
 import kotlinx.coroutines.flow.*
@@ -16,13 +17,14 @@ import kotlin.reflect.*
 class ServerBasedApi(
     private val algorithm: String,
     private val metadata: Map<String, String>,
+    private val testLoggingContext: TestLoggingContext,
 ) : TestVectorApi() {
-    private fun storage(path: String) = RemoteStorageApi(algorithm, metadata, path)
-    override val keys: TestVectorStorageApi = storage("keys")
-    override val keyPairs: TestVectorStorageApi = storage("key-pairs")
-    override val digests: TestVectorStorageApi = storage("digests")
-    override val signatures: TestVectorStorageApi = storage("signatures")
-    override val ciphers: TestVectorStorageApi = storage("ciphers")
+    private fun api(storageName: String): TestVectorStorageApi = RemoteStorageApi(algorithm, metadata, storageName, testLoggingContext)
+    override val keys: TestVectorStorageApi = api("keys")
+    override val keyPairs: TestVectorStorageApi = api("key-pairs")
+    override val digests: TestVectorStorageApi = api("digests")
+    override val signatures: TestVectorStorageApi = api("signatures")
+    override val ciphers: TestVectorStorageApi = api("ciphers")
 }
 
 private object SymmetricKeySizeSerializer : KSerializer<SymmetricKeySize> {
@@ -68,8 +70,9 @@ private class Payload<T>(
 private class RemoteStorageApi(
     private val algorithm: String,
     private val metadata: Map<String, String>,
-    private val path: String,
-) : TestVectorStorageApi() {
+    storageName: String,
+    testLoggingContext: TestLoggingContext,
+) : TestVectorStorageApi(storageName, testLoggingContext) {
     private val cache = mutableMapOf<KType, KSerializer<Any?>>()
 
     @Suppress("UNCHECKED_CAST")
@@ -82,30 +85,34 @@ private class RemoteStorageApi(
             Payload(metadata, value)
         ).encodeToByteArray()
 
-    private fun <T> decode(bytes: ByteArray, type: KType): T =
-        json.decodeFromString(
+    private fun <T> decode(id: String, bytes: ByteArray, type: KType): Triple<String, T, Map<String, String>> {
+        val payload = json.decodeFromString(
             Payload.serializer<T>(serializer(type)),
             bytes.decodeToString()
-        ).content //log metadata
-
-    //TODO: add logging
-    override suspend fun <T : TestVectorParameters> saveParameters(parameters: T, type: KType): String {
-        return TestVectorsClient.saveParameters(algorithm, path, encode(parameters, type))
+        )
+        return Triple(id, payload.content, payload.metadata)
     }
 
-    override suspend fun <T : TestVectorParameters> getParameters(type: KType): List<Pair<String, T>> {
-        return TestVectorsClient.getParameters(algorithm, path).map { (id, bytes) ->
-            id to decode<T>(bytes, type)
+    override suspend fun <T : TestVectorParameters> saveParameters(parameters: T, type: KType): String {
+        return TestVectorsClient.saveParameters(algorithm, storageName, encode(parameters, type))
+    }
+
+    override suspend fun <T : TestVectorParameters> getParameters(type: KType): List<Triple<String, T, Map<String, String>>> {
+        return TestVectorsClient.getParameters(algorithm, storageName).map { (id, bytes) ->
+            decode<T>(id, bytes, type)
         }.toList()
     }
 
     override suspend fun <T : TestVectorData> saveData(parametersId: TestVectorParametersId, data: T, type: KType): String {
-        return TestVectorsClient.saveData(algorithm, path, parametersId.value, encode(data, type))
+        return TestVectorsClient.saveData(algorithm, storageName, parametersId.value, encode(data, type))
     }
 
-    override suspend fun <T : TestVectorData> getData(parametersId: TestVectorParametersId, type: KType): List<Pair<String, T>> {
-        return TestVectorsClient.getData(algorithm, path, parametersId.value).map { (id, bytes) ->
-            id to decode<T>(bytes, type)
+    override suspend fun <T : TestVectorData> getData(
+        parametersId: TestVectorParametersId,
+        type: KType,
+    ): List<Triple<String, T, Map<String, String>>> {
+        return TestVectorsClient.getData(algorithm, storageName, parametersId.value).map { (id, bytes) ->
+            decode<T>(id, bytes, type)
         }.toList()
     }
 }

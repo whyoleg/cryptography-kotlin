@@ -8,7 +8,6 @@
         * [ ] ids -> AES.CBC, RSA.OAEP, RSA, etc.
     * [ ] Key Formats cleanup
     * [ ] Support PEM encoding where DER is supported
-    * [ ] introduce logging in test-support module
 
 * [ ] Engines
     * [ ] JDK

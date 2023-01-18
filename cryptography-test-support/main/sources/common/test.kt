@@ -3,18 +3,19 @@ package dev.whyoleg.cryptography.test.support
 import dev.whyoleg.cryptography.provider.*
 import kotlinx.coroutines.test.*
 
-fun runTestForEachProvider(test: suspend (provider: CryptographyProvider) -> Unit): TestResult = runTest {
+fun runTestForEachProvider(test: suspend TestLoggingContext.(provider: CryptographyProvider) -> Unit): TestResult = runTest {
     val errors = mutableListOf<Pair<String, Throwable>>()
-    println("[TEST] PLATFORM: $currentPlatform")
+    println("PLATFORM: $currentPlatform")
     availableProviders.forEach { provider ->
-        //TODO: provider logger
-        println("[TEST|${provider.name}] START")
-        try {
-            test(provider)
-            println("[TEST|${provider.name}] SUCCESS")
-        } catch (cause: Throwable) {
-            println("[TEST|${provider.name}] FAILURE: ${cause.stackTraceToString()}")
-            errors += provider.name to cause
+        with(TestLoggingContext(provider.name)) {
+            log("START")
+            try {
+                test(provider)
+                log("SUCCESS")
+            } catch (cause: Throwable) {
+                log("FAILURE: ${cause.stackTraceToString()}")
+                errors += provider.name to cause
+            }
         }
     }
     if (errors.isNotEmpty()) throw MultipleFailuresException(errors)

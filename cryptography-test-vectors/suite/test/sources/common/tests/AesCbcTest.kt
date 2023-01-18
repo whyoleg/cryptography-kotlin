@@ -28,7 +28,7 @@ private fun Int.withPadding(padding: Boolean): Int = if (padding) this else this
 
 @Serializable
 private data class KeyParameters(
-    val keySize: @Contextual SymmetricKeySize, //TODO
+    val keySize: @Contextual SymmetricKeySize,
 ) : TestVectorParameters
 
 @Serializable
@@ -37,7 +37,7 @@ private data class CipherParameters(
 ) : TestVectorParameters
 
 class AesCbcTest : TestVectorTest<AES.CBC>(AES.CBC) {
-    override suspend fun generate(api: TestVectorApi, provider: CryptographyProvider, algorithm: AES.CBC) {
+    override suspend fun TestLoggingContext.generate(api: TestVectorApi, provider: CryptographyProvider, algorithm: AES.CBC) {
         generateSymmetricKeySize { keySize ->
             if (!provider.supportsKeySize(keySize)) return@generateSymmetricKeySize
 
@@ -54,10 +54,10 @@ class AesCbcTest : TestVectorTest<AES.CBC>(AES.CBC) {
                     val cipher = key.cipher(padding)
                     repeat(cipherIterations) {
                         val plaintextSize = CryptographyRandom.nextInt(maxPlaintextSize).withPadding(padding)
-                        println("generate: plaintext.size  = $plaintextSize")
+                        log("plaintext.size  = $plaintextSize")
                         val plaintext = CryptographyRandom.nextBytes(plaintextSize)
                         val ciphertext = cipher.encrypt(plaintext)
-                        println("generate: ciphertext.size = ${ciphertext.size}")
+                        log("ciphertext.size = ${ciphertext.size}")
 
                         //only simple check here to fail fast
                         cipher.decrypt(ciphertext).assertContentEquals(plaintext)
@@ -69,7 +69,7 @@ class AesCbcTest : TestVectorTest<AES.CBC>(AES.CBC) {
         }
     }
 
-    override suspend fun validate(api: TestVectorApi, provider: CryptographyProvider, algorithm: AES.CBC) {
+    override suspend fun TestLoggingContext.validate(api: TestVectorApi, provider: CryptographyProvider, algorithm: AES.CBC) {
         val keyDecoder = algorithm.keyDecoder()
 
         val keys = buildMap {
