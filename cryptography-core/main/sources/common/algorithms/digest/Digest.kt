@@ -22,8 +22,3 @@ public object SHA1 : CryptographyAlgorithmId<Digest>("SHA-1")
 public object SHA256 : CryptographyAlgorithmId<Digest>("SHA-256")
 public object SHA384 : CryptographyAlgorithmId<Digest>("SHA-384")
 public object SHA512 : CryptographyAlgorithmId<Digest>("SHA-512")
-
-public object SHA3 {
-    public object B224 : CryptographyAlgorithmId<Digest>("SHA3-224")
-    public object B512 : CryptographyAlgorithmId<Digest>("SHA3-512")
-}
