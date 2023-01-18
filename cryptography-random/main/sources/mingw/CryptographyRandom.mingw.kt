@@ -9,17 +9,16 @@ private object BCryptCryptographyRandom : PlatformRandom() {
     override fun nextBytes(array: ByteArray): ByteArray {
         if (array.isEmpty()) return array
 
-        val size = array.size
         @OptIn(ExperimentalUnsignedTypes::class)
-        array.asUByteArray().usePinned { pinned ->
-            val status = BCryptGenRandom(
+        val status = array.asUByteArray().usePinned { pinned ->
+            BCryptGenRandom(
                 hAlgorithm = null,
                 pbBuffer = pinned.addressOf(0),
-                cbBuffer = size.convert(),
+                cbBuffer = pinned.get().size.convert(),
                 dwFlags = BCRYPT_USE_SYSTEM_PREFERRED_RNG
             )
-            if (status != 0) error("BCryptGenRandom failed: $status")
         }
+        if (status != 0) error("BCryptGenRandom failed: $status")
         return array
     }
 }

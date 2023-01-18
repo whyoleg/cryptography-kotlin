@@ -9,13 +9,17 @@ private object URandomCryptographyRandom : PlatformRandom() {
     override fun nextBytes(array: ByteArray): ByteArray {
         if (array.isEmpty()) return array
 
-        //TODO: handle null?
-        val fd = fopen("/dev/urandom", "rb") ?: return array
-        val size = array.size
-        array.usePinned { pinned ->
-            fread(pinned.addressOf(0), 1.convert(), size.convert(), fd)
+        val file = checkNotNull(fopen("/dev/urandom", "rb")) { "Failed to open /dev/urandom" }
+        val result = array.usePinned { pinned ->
+            fread(
+                __ptr = pinned.addressOf(0),
+                __size = 1.convert(),
+                __n = pinned.get().size.convert(),
+                __stream = file
+            )
         }
-        fclose(fd)
+        fclose(file)
+        if (result <= 0UL) error("Failed to read from /dev/urandom")
         return array
     }
 }
