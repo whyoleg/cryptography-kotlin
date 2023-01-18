@@ -27,26 +27,27 @@ fun main() {
         routing {
             route("{algorithm}") {
                 fun Route.storage(path: String, idPrefix: String): Route = route(path) {
-                    fun ApplicationCall.metaPath() = rootPath / parameters["algorithm"]!! / path
-                    fun ApplicationCall.dataPath() = metaPath() / parameters["id"]!! / "data"
+                    fun ApplicationCall.parametersPath() = rootPath / parameters["algorithm"]!! / path
+                    fun ApplicationCall.dataPath() = parametersPath() / parameters["id"]!! / "data"
+                    fun AtomicInteger.generateId(kind: String) = "$instanceId-$idPrefix-$kind${incrementAndGet()}"
 
-                    val metaIdGenerator = AtomicInteger()
+                    val parametersIdGenerator = AtomicInteger()
                     val dataIdGenerator = AtomicInteger()
 
-                    get { call.getFiles(call.metaPath(), "meta.json") }
-                    post { call.saveFile(call.metaPath(), "meta.json", "M-$idPrefix-$instanceId-${metaIdGenerator.incrementAndGet()}") }
+                    get { call.getFiles(call.parametersPath(), "parameters.json") }
+                    post { call.saveFile(call.parametersPath(), "parameters.json", parametersIdGenerator.generateId("P")) }
                     route("{id}/data") {
                         get { call.getFiles(call.dataPath(), "data.json") }
-                        post { call.saveFile(call.dataPath(), "data.json", "D-$idPrefix-$instanceId-${dataIdGenerator.incrementAndGet()}") }
+                        post { call.saveFile(call.dataPath(), "data.json", dataIdGenerator.generateId("D")) }
                     }
                 }
 
-                storage("keys", "k")
-                storage("key-pairs", "kp")
-                storage("digests", "d")
-                storage("signatures", "s")
-                storage("ciphers", "c")
-                storage("derived-secrets", "ds")
+                storage("keys", "K")
+                storage("key-pairs", "KP")
+                storage("digests", "D")
+                storage("signatures", "S")
+                storage("ciphers", "C")
+                storage("derived-secrets", "DS")
             }
         }
     }.start(wait = true)

@@ -14,6 +14,7 @@ kotlin {
             dependencies {
                 implementation(projects.cryptographyTestSupport)
                 implementation(projects.cryptographyTestVectorsClient)
+                implementation(libs.ktor.utils) //for base64
                 implementation(libs.kotlinx.serialization.json)
             }
         }

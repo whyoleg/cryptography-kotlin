@@ -10,29 +10,34 @@ interface TestVectorData
 
 @Serializable
 @JvmInline
-value class TestVectorParametersId(val value: String)
+value class TestVectorParametersId(val value: String) {
+    override fun toString(): String = "P($value)"
+}
 
 @Serializable
 @JvmInline
-value class TestVectorDataId(val value: String)
+value class TestVectorDataId(val value: String) {
+    override fun toString(): String = "D($value)"
+}
 
 @Serializable
 data class TestVectorReference(
     val parametersId: TestVectorParametersId,
     val dataId: TestVectorDataId,
-)
-
-@Serializable
-data class Payload<T>(val data: T, val metadata: Map<String, String>)
+) {
+    override fun toString(): String = "R(${parametersId.value} -> ${dataId.value})"
+}
 
 
 typealias SerializableBuffer = @Contextual ByteArray
 
 @Serializable
-class DigestData(val data: SerializableBuffer, val digest: SerializableBuffer) : TestVectorData
+data class DigestData(val data: SerializableBuffer, val digest: SerializableBuffer) : TestVectorData
 
 @Serializable
-data class KeyData(val formats: Map<String, SerializableBuffer>) : TestVectorData
+data class KeyData(val formats: Map<String, SerializableBuffer>) : TestVectorData {
+    override fun toString(): String = "KeyData(formats=${formats.mapValues { it.value.size.toString() }})"
+}
 
 inline fun KeyData(block: MutableMap<String, ByteArray>.() -> Unit): KeyData = KeyData(buildMap(block))
 
@@ -44,7 +49,11 @@ data class CipherData(
     val keyReference: TestVectorReference,
     val plaintext: SerializableBuffer,
     val ciphertext: SerializableBuffer,
-) : TestVectorData
+) : TestVectorData {
+    override fun toString(): String {
+        return "CipherData(keyReference=$keyReference, plaintext.size=${plaintext.size}, ciphertext.size=${ciphertext.size})"
+    }
+}
 
 @Serializable
 data class AuthenticatedCipherData(

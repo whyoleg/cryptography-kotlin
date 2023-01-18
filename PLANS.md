@@ -17,6 +17,9 @@
     * [ ] Support PEM encoding where DER is supported
     * [ ] Drop key derivation (?) EC!!!
     * [ ] Revisit Random implementations
+    * [ ] Server - drop data.json - use id
+    * [ ] Server - local vs remote vs in memory naming
+    * [ ] introduce logging in test-support module
 
 * [ ] Tests
     * [ ] Key agreement

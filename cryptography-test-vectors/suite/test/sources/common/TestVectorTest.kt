@@ -22,7 +22,7 @@ abstract class TestVectorTest<A : CryptographyAlgorithm>(
     fun validateTestStep() = testIt("VALIDATE", ::validate)
 
     @Test
-    fun localTest() = testIt("LOCAL") { api, provider, algorithm ->
+    fun localTest() = testIt { api, provider, algorithm ->
         generate(api, provider, algorithm)
         compute(api, provider, algorithm)
         validate(api, provider, algorithm)
@@ -30,31 +30,13 @@ abstract class TestVectorTest<A : CryptographyAlgorithm>(
 
     //TODO: local must use local api
     private fun testIt(
-        name: String,
+        name: String? = null,
         testFunction: suspend (TestVectorApi, CryptographyProvider, A) -> Unit,
     ) = runTestForEachProvider { provider ->
-        currentPlatform
-        println(name)
-//            testFunction(TestVectorApi(), provider)
+        val api = when (name) {
+            null -> InMemoryApi
+            else -> RemoteApi(algorithmId.name, mapOf("platform" to currentPlatform, "provider" to provider.name))
+        }
+        testFunction(api, provider, provider.get(algorithmId))
     }
 }
-
-//    private fun testIt(suite: TestSuite) = runTest {
-//        steps.forEach { step ->
-//            val action = suite.actions[step] ?: run {
-//                println("No step '$step' for '${suite.algorithm}'")
-//                return@forEach
-//            }
-//            supportedProviders.forEach { provider ->
-//                val api = api(
-//                    mapOf(
-//                        "provider" to provider.name,
-//                        "platform" to currentPlatform
-//                    )
-//                )
-//                println("START: ${suite.algorithm}, Step: $step | ${api.metadata}")
-//                action.execute(api, provider)
-//                println("END:   ${suite.algorithm}, Step: $step | ${api.metadata}")
-//            }
-//        }
-//    }
