@@ -1,6 +1,5 @@
 package dev.whyoleg.cryptography.test.vectors.suite.api
 
-import dev.whyoleg.cryptography.BinarySize.Companion.bits
 import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.test.support.*
 import dev.whyoleg.cryptography.test.vectors.client.*
@@ -27,18 +26,6 @@ class ServerBasedApi(
     override val ciphers: TestVectorStorageApi = api("ciphers")
 }
 
-private object SymmetricKeySizeSerializer : KSerializer<SymmetricKeySize> {
-    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("SymmetricKeySize", PrimitiveKind.INT)
-
-    override fun deserialize(decoder: Decoder): SymmetricKeySize {
-        return SymmetricKeySize(decoder.decodeInt().bits)
-    }
-
-    override fun serialize(encoder: Encoder, value: SymmetricKeySize) {
-        encoder.encodeInt(value.value.inBits)
-    }
-}
-
 private object Base64ByteArraySerializer : KSerializer<ByteArray> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Base64", PrimitiveKind.STRING)
 
@@ -56,7 +43,6 @@ private val json = Json {
     prettyPrint = true
     useAlternativeNames = false
     serializersModule = SerializersModule {
-        contextual(SymmetricKeySizeSerializer)
         contextual(Base64ByteArraySerializer)
     }
 }

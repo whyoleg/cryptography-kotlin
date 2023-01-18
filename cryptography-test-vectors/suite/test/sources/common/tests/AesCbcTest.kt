@@ -14,9 +14,9 @@ private const val maxPlaintextSize = 10000
 private const val blockSize = 16 //for no padding
 
 // WebCrypto doesn't support 192bits - TODO: WHY???
-private fun CryptographyProvider.supportsKeySize(keySize: SymmetricKeySize, logging: TestLoggingContext): Boolean = skipUnsupported(
+private fun CryptographyProvider.supportsKeySize(keySizeBits: Int, logging: TestLoggingContext): Boolean = skipUnsupported(
     feature = "192bit key",
-    supports = keySize != SymmetricKeySize.B192 || !isWebCrypto,
+    supports = keySizeBits != 192 || !isWebCrypto,
     logging = logging
 )
 
@@ -28,36 +28,32 @@ private fun CryptographyProvider.supportsPadding(padding: Boolean, logging: Test
 
 private fun Int.withPadding(padding: Boolean): Int = if (padding) this else this + blockSize - this % blockSize
 
-@Serializable
-private data class KeyParameters(
-    val keySize: @Contextual SymmetricKeySize,
-) : TestVectorParameters
-
-@Serializable
-private data class CipherParameters(
-    val padding: Boolean,
-) : TestVectorParameters
-
 class AesCbcTest : TestVectorTest<AES.CBC>(AES.CBC) {
-    override suspend fun generate(
-        logging: TestLoggingContext,
-        api: TestVectorApi,
-        provider: CryptographyProvider,
-        algorithm: AES.CBC,
-    ) {
-        generateSymmetricKeySize { keySize ->
-            if (!provider.supportsKeySize(keySize, logging)) return@generateSymmetricKeySize
 
-            val keyParametersId = api.keys.saveParameters(KeyParameters(keySize))
+    @Serializable
+    private data class KeyParameters(val keySizeBits: Int) : TestVectorParameters
+
+    @Serializable
+    private data class CipherParameters(val padding: Boolean) : TestVectorParameters
+
+    override suspend fun generate(logging: TestLoggingContext, api: TestVectorApi, provider: CryptographyProvider, algorithm: AES.CBC) {
+        val paddings = buildList {
+            generateBoolean { padding ->
+                if (!provider.supportsPadding(padding, logging)) return@generateBoolean
+
+                val id = api.ciphers.saveParameters(CipherParameters(padding))
+                add(id to padding)
+            }
+        }
+
+        generateSymmetricKeySize { keySize ->
+            val keyParametersId = api.keys.saveParameters(KeyParameters(keySize.value.inBits))
             algorithm.keyGenerator(keySize).generateKeys(keyIterations) { key ->
                 val keyReference = api.keys.saveData(keyParametersId, KeyData {
                     put(StringKeyFormat.RAW, key.encodeTo(AES.Key.Format.RAW))
                     if (provider.supportsJwk) put(StringKeyFormat.JWK, key.encodeTo(AES.Key.Format.JWK))
                 })
-                generateBoolean { padding ->
-                    if (!provider.supportsPadding(padding, logging)) return@generateBoolean
-
-                    val cipherParametersId = api.ciphers.saveParameters(CipherParameters(padding))
+                paddings.forEach { (cipherParametersId, padding) ->
                     val cipher = key.cipher(padding)
                     repeat(cipherIterations) {
                         val plaintextSize = CryptographyRandom.nextInt(maxPlaintextSize).withPadding(padding)
@@ -76,12 +72,7 @@ class AesCbcTest : TestVectorTest<AES.CBC>(AES.CBC) {
         }
     }
 
-    override suspend fun validate(
-        logging: TestLoggingContext,
-        api: TestVectorApi,
-        provider: CryptographyProvider,
-        algorithm: AES.CBC,
-    ) {
+    override suspend fun validate(logging: TestLoggingContext, api: TestVectorApi, provider: CryptographyProvider, algorithm: AES.CBC) {
         val keyDecoder = algorithm.keyDecoder()
 
         val keys = buildMap {
@@ -104,7 +95,7 @@ class AesCbcTest : TestVectorTest<AES.CBC>(AES.CBC) {
                             key.encodeTo(AES.Key.Format.RAW).assertContentEquals(bytes)
                         }
                     }
-                    this.put(keyReference, keys)
+                    put(keyReference, keys)
                 }
             }
         }

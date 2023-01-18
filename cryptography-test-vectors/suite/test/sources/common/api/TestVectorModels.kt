@@ -80,4 +80,8 @@ data class SignatureData(
     val keyReference: TestVectorReference,
     val data: SerializableBuffer,
     val signature: SerializableBuffer,
-) : TestVectorData
+) : TestVectorData {
+    override fun toString(): String {
+        return "SignatureData(keyReference=$keyReference, data.size=${data.size}, signature.size=${signature.size})"
+    }
+}

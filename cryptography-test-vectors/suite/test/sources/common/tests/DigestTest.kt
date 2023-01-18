@@ -22,10 +22,10 @@ abstract class DigestTest(algorithmId: CryptographyAlgorithmId<Digest>) : TestVe
         val parametersId = api.digests.saveParameters(TestVectorParameters.Empty)
         repeat(iterations) {
             val dataSize = CryptographyRandom.nextInt(maxDataSize)
-            logging.log("data.size  = $dataSize")
+            logging.log("data.size   = $dataSize")
             val data = CryptographyRandom.nextBytes(dataSize)
             val digest = hasher.hash(data)
-            logging.log("digest.size  = ${digest.size}")
+            logging.log("digest.size = ${digest.size}")
             hasher.hash(data).assertContentEquals(digest)
 
             api.digests.saveData(parametersId, DigestData(data, digest))
@@ -36,8 +36,8 @@ abstract class DigestTest(algorithmId: CryptographyAlgorithmId<Digest>) : TestVe
         val hasher = algorithm.hasher()
 
         api.digests.getParameters<TestVectorParameters.Empty> { _, parametersId ->
-            api.digests.getData<DigestData>(parametersId) { data, _ ->
-                hasher.hash(data.data).assertContentEquals(data.digest)
+            api.digests.getData<DigestData>(parametersId) { (data, digest), _ ->
+                hasher.hash(data).assertContentEquals(digest)
             }
         }
     }
