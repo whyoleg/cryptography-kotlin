@@ -1,5 +1,6 @@
 package dev.whyoleg.cryptography.jdk.algorithms
 
+import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.algorithms.digest.*
@@ -24,7 +25,7 @@ private class EcdsaPublicKey(
     private val key: JPublicKey,
 ) : ECDSA.PublicKey, JdkEncodableKey<EC.PublicKey.Format>(state, key) {
     override fun signatureVerifier(digest: CryptographyAlgorithmId<Digest>): SignatureVerifier {
-        return JdkSignatureVerifier(state, key, digest.hashAlgorithmName() + "withECDSA", null)
+        return JdkSignatureVerifier(state, key, digest.edcsaHashAlgorithmName() + "withECDSA", null)
     }
 }
 
@@ -33,6 +34,14 @@ private class EcdsaPrivateKey(
     private val key: JPrivateKey,
 ) : ECDSA.PrivateKey, JdkEncodableKey<EC.PrivateKey.Format>(state, key) {
     override fun signatureGenerator(digest: CryptographyAlgorithmId<Digest>): SignatureGenerator {
-        return JdkSignatureGenerator(state, key, digest.hashAlgorithmName() + "withECDSA", null)
+        return JdkSignatureGenerator(state, key, digest.edcsaHashAlgorithmName() + "withECDSA", null)
     }
+}
+
+private fun CryptographyAlgorithmId<Digest>.edcsaHashAlgorithmName(): String = when (this) {
+    SHA1   -> "SHA1"
+    SHA256 -> "SHA256"
+    SHA384 -> "SHA384"
+    SHA512 -> "SHA512"
+    else   -> throw CryptographyException("Unsupported hash algorithm: $this")
 }

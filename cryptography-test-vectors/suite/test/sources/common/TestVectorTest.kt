@@ -51,7 +51,7 @@ abstract class TestVectorTest<A : CryptographyAlgorithm>(
     private fun testIt(
         name: String? = null,
         testFunction: suspend (TestLoggingContext, TestVectorApi, CryptographyProvider, A) -> Unit,
-    ) = runTestForEachProvider(enableLogs = false) { provider ->
+    ) = runTestForEachProvider(enableLogs = true) { provider ->
         val algorithm = provider.getOrNull(algorithmId) ?: run {
             log("Algorithm ${algorithmId.name} is not supported by provider $provider")
             return@runTestForEachProvider

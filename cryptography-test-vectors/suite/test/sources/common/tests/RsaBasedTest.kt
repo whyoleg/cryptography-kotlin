@@ -13,9 +13,7 @@ import kotlinx.serialization.*
 private const val keyIterations = 5
 
 private inline fun generateKeySizes(block: (keySize: BinarySize) -> Unit) {
-    listOf(2048.bits, 3072.bits, 4096.bits).forEach { keySize ->
-        block(keySize)
-    }
+    generate(block, 2048.bits, 3072.bits, 4096.bits)
 }
 
 abstract class RsaBasedTest<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP : RSA.KeyPair<PublicK, PrivateK>, A : RSA<PublicK, PrivateK, KP>>(
