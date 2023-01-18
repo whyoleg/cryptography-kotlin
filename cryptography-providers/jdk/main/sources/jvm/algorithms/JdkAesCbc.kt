@@ -1,7 +1,6 @@
 package dev.whyoleg.cryptography.jdk.algorithms
 
 import dev.whyoleg.cryptography.algorithms.symmetric.*
-import dev.whyoleg.cryptography.algorithms.symmetric.mac.*
 import dev.whyoleg.cryptography.io.*
 import dev.whyoleg.cryptography.jdk.*
 import dev.whyoleg.cryptography.jdk.materials.*
@@ -50,13 +49,5 @@ private class AesCbcCipher(
     override fun decryptBlocking(ciphertextInput: Buffer): Buffer = cipher.use { cipher ->
         cipher.init(JCipher.DECRYPT_MODE, key, IvParameterSpec(ciphertextInput, 0, ivSizeBytes), state.secureRandom)
         cipher.doFinal(ciphertextInput, ivSizeBytes, ciphertextInput.size - ivSizeBytes)
-    }
-
-    override suspend fun decrypt(ciphertextInput: Buffer): Buffer {
-        return state.execute { decryptBlocking(ciphertextInput) }
-    }
-
-    override suspend fun encrypt(plaintextInput: Buffer): Buffer {
-        return state.execute { encryptBlocking(plaintextInput) }
     }
 }

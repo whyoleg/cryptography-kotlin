@@ -47,12 +47,4 @@ private class AesGcmCipher(
         associatedData?.let(cipher::updateAAD)
         cipher.doFinal(ciphertextInput, ivSizeBytes, ciphertextInput.size - ivSizeBytes)
     }
-
-    override suspend fun decrypt(ciphertextInput: Buffer, associatedData: Buffer?): Buffer {
-        return state.execute { decryptBlocking(ciphertextInput, associatedData) }
-    }
-
-    override suspend fun encrypt(plaintextInput: Buffer, associatedData: Buffer?): Buffer {
-        return state.execute { encryptBlocking(plaintextInput, associatedData) }
-    }
 }

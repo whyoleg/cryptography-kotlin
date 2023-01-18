@@ -16,9 +16,5 @@ internal class JdkSecretKeyGenerator<K : Key>(
             it.generateKey()
         })
     }
-
-    override suspend fun generateKey(): K {
-        return state.execute { generateKeyBlocking() }
-    }
 }
 

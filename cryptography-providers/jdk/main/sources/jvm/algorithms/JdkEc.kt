@@ -1,6 +1,6 @@
 package dev.whyoleg.cryptography.jdk.algorithms
 
-import dev.whyoleg.cryptography.algorithms.asymmetric.ec.*
+import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.jdk.*
 import dev.whyoleg.cryptography.jdk.materials.*
 import dev.whyoleg.cryptography.materials.key.*

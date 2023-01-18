@@ -18,8 +18,4 @@ internal abstract class JdkPrivateKeyDecoder<KF : KeyFormat, K : Key>(
         is KeyFormat.PEM -> TODO("fix it")
         else             -> TODO()
     }
-
-    final override suspend fun decodeFrom(format: KF, input: Buffer): K {
-        return state.execute { decodeFromBlocking(format, input) }
-    }
 }

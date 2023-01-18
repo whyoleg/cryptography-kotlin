@@ -91,10 +91,6 @@ private class RsaOaepPublicKey(
         RSA.PublicKey.Format.JWK -> TODO()
         RSA.PublicKey.Format.PEM -> TODO()
     }
-
-    override suspend fun encodeTo(format: RSA.PublicKey.Format): Buffer {
-        return state.execute { encodeToBlocking(format) }
-    }
 }
 
 private class RsaOaepPrivateKey(
@@ -109,10 +105,6 @@ private class RsaOaepPrivateKey(
         RSA.PrivateKey.Format.DER -> key.encoded
         RSA.PrivateKey.Format.JWK -> TODO()
         RSA.PrivateKey.Format.PEM -> TODO()
-    }
-
-    override suspend fun encodeTo(format: RSA.PrivateKey.Format): Buffer {
-        return state.execute { encodeToBlocking(format) }
     }
 }
 
@@ -133,10 +125,6 @@ private class RsaOaepEncryptor(
         cipher.init(JCipher.ENCRYPT_MODE, key, parameters, state.secureRandom)
         cipher.doFinal(plaintextInput)
     }
-
-    override suspend fun encrypt(plaintextInput: Buffer, associatedData: Buffer?): Buffer {
-        return state.execute { encryptBlocking(plaintextInput, associatedData) }
-    }
 }
 
 private class RsaOaepDecryptor(
@@ -155,9 +143,5 @@ private class RsaOaepDecryptor(
         )
         cipher.init(JCipher.DECRYPT_MODE, key, parameters, state.secureRandom)
         cipher.doFinal(ciphertextInput)
-    }
-
-    override suspend fun decrypt(ciphertextInput: Buffer, associatedData: Buffer?): Buffer {
-        return state.execute { decryptBlocking(ciphertextInput, associatedData) }
     }
 }

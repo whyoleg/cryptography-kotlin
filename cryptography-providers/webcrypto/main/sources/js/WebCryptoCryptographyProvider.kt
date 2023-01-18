@@ -3,10 +3,8 @@ package dev.whyoleg.cryptography.webcrypto
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
-import dev.whyoleg.cryptography.algorithms.asymmetric.ec.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
-import dev.whyoleg.cryptography.algorithms.symmetric.mac.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.provider.*
 import dev.whyoleg.cryptography.webcrypto.algorithms.*
@@ -29,7 +27,6 @@ internal object WebCryptoCryptographyProvider : CryptographyProvider() {
         AES.GCM  -> WebCryptoAesGcm
         RSA.OAEP -> WebCryptoRsaOaep
         RSA.PSS  -> WebCryptoRsaPss
-        ECDH     -> WebCryptoEcdh
         ECDSA    -> WebCryptoEcdsa
         else     -> null
     } as A?

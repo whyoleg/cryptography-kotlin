@@ -89,7 +89,7 @@ private class RsaPssPublicKey(
             "MGF1",
             MGF1ParameterSpec.SHA1,
             saltLength.bytes,
-            PSSParameterSpec.TRAILER_FIELD_BC
+            1
         )
         return JdkSignatureVerifier(state, key, "RSASSA-PSS", parameters)
     }
@@ -106,7 +106,7 @@ private class RsaPssPrivateKey(
             "MGF1",
             MGF1ParameterSpec.SHA1,
             saltLength.bytes,
-            PSSParameterSpec.TRAILER_FIELD_BC
+            1
         )
         return JdkSignatureGenerator(state, key, "RSASSA-PSS", parameters)
     }

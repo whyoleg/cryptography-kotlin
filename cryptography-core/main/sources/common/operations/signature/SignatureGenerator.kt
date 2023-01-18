@@ -5,6 +5,6 @@ import dev.whyoleg.cryptography.provider.*
 
 @SubclassOptInRequired(CryptographyProviderApi::class)
 public interface SignatureGenerator {
-    public suspend fun generateSignature(dataInput: Buffer): Buffer
+    public suspend fun generateSignature(dataInput: Buffer): Buffer = generateSignatureBlocking(dataInput)
     public fun generateSignatureBlocking(dataInput: Buffer): Buffer
 }

@@ -19,8 +19,4 @@ internal class JdkSignatureGenerator(
         signature.update(dataInput)
         signature.sign()
     }
-
-    override suspend fun generateSignature(dataInput: Buffer): Buffer {
-        return state.execute { generateSignatureBlocking(dataInput) }
-    }
 }

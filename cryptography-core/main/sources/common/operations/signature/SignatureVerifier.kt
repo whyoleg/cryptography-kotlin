@@ -5,6 +5,6 @@ import dev.whyoleg.cryptography.provider.*
 
 @SubclassOptInRequired(CryptographyProviderApi::class)
 public interface SignatureVerifier {
-    public suspend fun verifySignature(dataInput: Buffer, signatureInput: Buffer): Boolean
+    public suspend fun verifySignature(dataInput: Buffer, signatureInput: Buffer): Boolean = verifySignatureBlocking(dataInput, signatureInput)
     public fun verifySignatureBlocking(dataInput: Buffer, signatureInput: Buffer): Boolean
 }

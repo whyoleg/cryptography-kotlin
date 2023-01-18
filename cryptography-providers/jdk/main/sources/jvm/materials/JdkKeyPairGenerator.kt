@@ -19,9 +19,5 @@ internal abstract class JdkKeyPairGenerator<K : Key>(
             it.generateKeyPair()
         }.convert()
     }
-
-    override suspend fun generateKey(): K {
-        return state.execute { generateKeyBlocking() }
-    }
 }
 

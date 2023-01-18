@@ -10,9 +10,7 @@ import java.util.concurrent.*
 internal class JdkCryptographyState(
     private val provider: JdkProvider,
     val secureRandom: JSecureRandom,
-    val adaptor: SuspendAdaptor?,
 ) {
-    suspend inline fun <T> execute(crossinline block: () -> T): T = adaptor?.execute { block() } ?: block()
 
     private val ciphers: ConcurrentHashMap<String, Pooled<JCipher>> = ConcurrentHashMap()
     private val messageDigests: ConcurrentHashMap<String, Pooled<JMessageDigest>> = ConcurrentHashMap()

@@ -14,8 +14,4 @@ internal class JdkSecretKeyDecoder<KF : KeyFormat, K : Key>(
         if (format is KeyFormat.RAW) return keyWrapper(SecretKeySpec(input, algorithm))
         TODO("$format is not yet supported")
     }
-
-    override suspend fun decodeFrom(format: KF, input: Buffer): K {
-        return state.execute { decodeFromBlocking(format, input) }
-    }
 }

@@ -2,7 +2,7 @@ package dev.whyoleg.cryptography.jdk.algorithms
 
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.digest.*
-import dev.whyoleg.cryptography.algorithms.symmetric.mac.*
+import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.jdk.*
 import dev.whyoleg.cryptography.jdk.materials.*
 import dev.whyoleg.cryptography.jdk.operations.*

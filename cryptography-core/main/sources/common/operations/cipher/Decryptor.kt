@@ -5,6 +5,6 @@ import dev.whyoleg.cryptography.provider.*
 
 @SubclassOptInRequired(CryptographyProviderApi::class)
 public interface Decryptor {
-    public suspend fun decrypt(ciphertextInput: Buffer): Buffer
+    public suspend fun decrypt(ciphertextInput: Buffer): Buffer = decryptBlocking(ciphertextInput)
     public fun decryptBlocking(ciphertextInput: Buffer): Buffer
 }

@@ -19,8 +19,4 @@ internal class JdkSignatureVerifier(
         signature.update(dataInput)
         signature.verify(signatureInput)
     }
-
-    override suspend fun verifySignature(dataInput: Buffer, signatureInput: Buffer): Boolean {
-        return state.execute { verifySignatureBlocking(dataInput, signatureInput) }
-    }
 }

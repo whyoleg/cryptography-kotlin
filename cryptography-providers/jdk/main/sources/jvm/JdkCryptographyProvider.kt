@@ -3,10 +3,8 @@ package dev.whyoleg.cryptography.jdk
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
-import dev.whyoleg.cryptography.algorithms.asymmetric.ec.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
-import dev.whyoleg.cryptography.algorithms.symmetric.mac.*
 import dev.whyoleg.cryptography.jdk.*
 import dev.whyoleg.cryptography.jdk.algorithms.*
 import dev.whyoleg.cryptography.jdk.operations.*
@@ -24,15 +22,13 @@ public val CryptographyProvider.Companion.JDK: CryptographyProvider by defaultPr
 public fun CryptographyProvider.Companion.JDK(
     provider: JdkProvider = JdkProvider.Default,
     cryptographyRandom: CryptographyRandom = CryptographyRandom.Default,
-    adaptor: SuspendAdaptor? = null,
-): CryptographyProvider = JdkCryptographyProvider(JdkCryptographyState(provider, cryptographyRandom.asSecureRandom(), adaptor))
+): CryptographyProvider = JDK(provider, cryptographyRandom.asSecureRandom())
 
 @Suppress("FunctionName")
 public fun CryptographyProvider.Companion.JDK(
     provider: JdkProvider = JdkProvider.Default,
     secureRandom: SecureRandom,
-    adaptor: SuspendAdaptor? = null,
-): CryptographyProvider = JdkCryptographyProvider(JdkCryptographyState(provider, secureRandom, adaptor))
+): CryptographyProvider = JdkCryptographyProvider(JdkCryptographyState(provider, secureRandom))
 
 internal class JdkCryptographyProvider(
     private val state: JdkCryptographyState,

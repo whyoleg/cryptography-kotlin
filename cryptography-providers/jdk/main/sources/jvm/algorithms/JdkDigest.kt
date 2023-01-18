@@ -19,8 +19,4 @@ internal class JdkDigest(
         messageDigest.reset()
         messageDigest.digest(dataInput)
     }
-
-    override suspend fun hash(dataInput: Buffer): Buffer {
-        return state.execute { hashBlocking(dataInput) }
-    }
 }

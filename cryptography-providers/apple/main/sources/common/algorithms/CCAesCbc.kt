@@ -11,60 +11,41 @@ import kotlinx.cinterop.*
 import platform.CoreCrypto.*
 import platform.posix.*
 
-internal class CCAesCbc(
-    private val state: AppleState,
-) : AES.CBC {
-    private val keyDecoder = AesCbcKeyDecoder(state)
-    override fun keyDecoder(): KeyDecoder<AES.Key.Format, AES.CBC.Key> = keyDecoder
+internal object CCAesCbc : AES.CBC {
+    override fun keyDecoder(): KeyDecoder<AES.Key.Format, AES.CBC.Key> = AesCbcKeyDecoder
 
     override fun keyGenerator(keySize: SymmetricKeySize): KeyGenerator<AES.CBC.Key> =
-        AesCbcKeyGenerator(state, keySize.value.bytes)
+        AesCbcKeyGenerator(keySize.value.bytes)
 }
 
-private class AesCbcKeyDecoder(
-    private val state: AppleState,
-) : KeyDecoder<AES.Key.Format, AES.CBC.Key> {
+private object AesCbcKeyDecoder : KeyDecoder<AES.Key.Format, AES.CBC.Key> {
     override fun decodeFromBlocking(format: AES.Key.Format, input: Buffer): AES.CBC.Key {
-        if (format == AES.Key.Format.RAW) return wrapKey(state, input)
+        if (format == AES.Key.Format.RAW) return wrapKey(input)
         TODO("$format is not yet supported")
-    }
-
-    override suspend fun decodeFrom(format: AES.Key.Format, input: Buffer): AES.CBC.Key {
-        return state.execute { decodeFromBlocking(format, input) }
     }
 }
 
 private class AesCbcKeyGenerator(
-    private val state: AppleState,
     private val keySizeBytes: Int,
 ) : KeyGenerator<AES.CBC.Key> {
     override fun generateKeyBlocking(): AES.CBC.Key {
         val key = CryptographyRandom.nextBytes(keySizeBytes)
-        return wrapKey(state, key)
-    }
-
-    override suspend fun generateKey(): AES.CBC.Key {
-        return state.execute { generateKeyBlocking() }
+        return wrapKey(key)
     }
 }
 
-private fun wrapKey(state: AppleState, key: ByteArray): AES.CBC.Key = object : AES.CBC.Key {
-    override fun cipher(padding: Boolean): Cipher = AesCbcCipher(state, key, padding)
+private fun wrapKey(key: ByteArray): AES.CBC.Key = object : AES.CBC.Key {
+    override fun cipher(padding: Boolean): Cipher = AesCbcCipher(key, padding)
 
     override fun encodeToBlocking(format: AES.Key.Format): Buffer {
         if (format == AES.Key.Format.RAW) return key
         TODO("$format is not yet supported")
-    }
-
-    override suspend fun encodeTo(format: AES.Key.Format): Buffer {
-        return state.execute { encodeToBlocking(format) }
     }
 }
 
 private const val ivSizeBytes = 16 //bytes for GCM
 
 private class AesCbcCipher(
-    private val state: AppleState,
     private val key: Buffer,
     private val padding: Boolean,
 ) : Cipher {
@@ -114,14 +95,6 @@ private class AesCbcCipher(
         } else {
             plaintextOutput.copyOf(moved)
         }
-    }
-
-    override suspend fun decrypt(ciphertextInput: Buffer): Buffer {
-        return state.execute { decryptBlocking(ciphertextInput) }
-    }
-
-    override suspend fun encrypt(plaintextInput: Buffer): Buffer {
-        return state.execute { encryptBlocking(plaintextInput) }
     }
 
     private inline fun <T> useCryptor(

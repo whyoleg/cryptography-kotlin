@@ -12,7 +12,6 @@ import platform.CoreCrypto.*
 import platform.Security.*
 
 internal class CCDigest(
-    private val state: AppleState,
     private val hashAlgorithm: CCHashAlgorithm,
     override val id: CryptographyAlgorithmId<Digest>,
 ) : Hasher, Digest {
@@ -28,9 +27,5 @@ internal class CCDigest(
         )
 //        if (result != kCCSuccess) throw Exception("CC_SHA512 failed")
         return output
-    }
-
-    override suspend fun hash(dataInput: Buffer): Buffer {
-        return state.execute { hashBlocking(dataInput) }
     }
 }

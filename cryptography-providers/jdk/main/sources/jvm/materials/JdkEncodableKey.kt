@@ -19,9 +19,5 @@ internal open class JdkEncodableKey<KF : KeyFormat>(
         }
         else             -> TODO("$format is not yet supported")
     }
-
-    override suspend fun encodeTo(format: KF): Buffer {
-        return state.execute { encodeToBlocking(format) }
-    }
 }
 

@@ -1,4 +1,4 @@
-package dev.whyoleg.cryptography.algorithms.asymmetric.ec
+package dev.whyoleg.cryptography.algorithms.asymmetric
 
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.digest.*

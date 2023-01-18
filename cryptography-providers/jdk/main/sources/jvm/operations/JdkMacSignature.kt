@@ -19,12 +19,4 @@ internal class JdkMacSignature(
     override fun verifySignatureBlocking(dataInput: Buffer, signatureInput: Buffer): Boolean {
         return generateSignatureBlocking(dataInput).contentEquals(signatureInput)
     }
-
-    override suspend fun generateSignature(dataInput: Buffer): Buffer {
-        return state.execute { generateSignatureBlocking(dataInput) }
-    }
-
-    override suspend fun verifySignature(dataInput: Buffer, signatureInput: Buffer): Boolean {
-        return state.execute { verifySignatureBlocking(dataInput, signatureInput) }
-    }
 }

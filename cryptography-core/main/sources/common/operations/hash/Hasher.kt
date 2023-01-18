@@ -5,6 +5,6 @@ import dev.whyoleg.cryptography.provider.*
 
 @SubclassOptInRequired(CryptographyProviderApi::class)
 public interface Hasher {
-    public suspend fun hash(dataInput: Buffer): Buffer
+    public suspend fun hash(dataInput: Buffer): Buffer = hashBlocking(dataInput)
     public fun hashBlocking(dataInput: Buffer): Buffer
 }

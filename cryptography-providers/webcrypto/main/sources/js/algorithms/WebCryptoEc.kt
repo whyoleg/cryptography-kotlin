@@ -1,6 +1,6 @@
 package dev.whyoleg.cryptography.webcrypto.algorithms
 
-import dev.whyoleg.cryptography.algorithms.asymmetric.ec.*
+import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.webcrypto.external.*
 import dev.whyoleg.cryptography.webcrypto.materials.*

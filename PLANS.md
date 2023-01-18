@@ -3,28 +3,21 @@
 ## 0.1.0: Initial release
 
 * [ ] Release preparation
-    * [ ] DECIDE ON KEY AGREEMENT/DERIVATION IN THIS RELEASE!!!!!!!!
-    * [ ] drop blocking/suspend adaptors
     * [ ] Decide on algorithms access in code. f.e. AES.CBC, RSA.OAEP vs ECDSA, ECDH, etc.
         * [ ] algorithms - AesBasedAlgorihm, RsaBasedAlgorithm, AesGcmAlgorithm
         * [ ] ids -> AES.CBC, RSA.OAEP, RSA, etc.
-    * [ ] CryptographyAlgorithmId naming
-    * [ ] RSA PublicExponent BigInt
     * [ ] BinarySize naming, factory functions and extension functions (like for Duration)
     * [ ] JDK CryptographyProviderContainer is public
-    * [ ] Closeable impl
+    * [ ] Closeable.close impl
     * [ ] Key Formats cleanup
     * [ ] Support PEM encoding where DER is supported
-    * [ ] Drop key derivation (?) EC!!!
     * [ ] Revisit Random implementations
-    * [ ] Server - drop data.json - use id
+    * [ ] Server - drop data.json - use id.json
     * [ ] Server - local vs remote vs in memory naming
     * [ ] introduce logging in test-support module
 
-* [ ] Tests
-    * [ ] Key agreement
 * [ ] Engines
-    * [ ] JDK (ECDH left)
+    * [ ] JDK
         * [ ] RSA/EC/AES shared implementation
     * [ ] Apple (CoreCrypto (done) + Security framework (not started))
         * [ ] HMAC key size
@@ -56,6 +49,7 @@
     * [ ] AES-KW (key wrap/unwrap)
     * [ ] AES-CTR (?) (cipher)
     * [ ] ChaCha20-Poly1305 (stream cipher)
+    * [ ] ECDH (key agreement)
     * [ ] PBKDF2 (prf)
     * [ ] HKDF (kdf)
     * [ ] Agron2 (prf)
@@ -125,3 +119,4 @@
 
 * [ ] Design CryptographyException hierarchy
 * [ ] Migrate to some IO library
+* [ ] Use some BigInt library/implementation (f.e. for RSA.PublicExponent)
