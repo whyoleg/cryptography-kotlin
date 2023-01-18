@@ -7,7 +7,6 @@
         * [ ] algorithms - AesBasedAlgorihm, RsaBasedAlgorithm, AesGcmAlgorithm
         * [ ] ids -> AES.CBC, RSA.OAEP, RSA, etc.
     * [ ] BinarySize naming, factory functions and extension functions (like for Duration)
-    * [ ] JDK CryptographyProviderContainer is public
     * [ ] Closeable.close impl
     * [ ] Key Formats cleanup
     * [ ] Support PEM encoding where DER is supported

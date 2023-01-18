@@ -11,6 +11,12 @@ kotlin {
     targets.all {
         if (this is KotlinNativeTargetWithTests<*>) setupTests()
         if (this is KotlinJvmTarget) setupTests()
+
+        compilations.all {
+            compilerOptions.configure {
+                freeCompilerArgs.add("-Xrender-internal-diagnostic-names")
+            }
+        }
     }
 
     sourceSets.all {
