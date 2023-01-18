@@ -28,17 +28,29 @@ fun main() {
             route("{algorithm}") {
                 fun Route.storage(path: String, idPrefix: String): Route = route(path) {
                     fun ApplicationCall.parametersPath() = rootPath / parameters["algorithm"]!! / path
-                    fun ApplicationCall.dataPath() = parametersPath() / parameters["id"]!! / "data"
+                    fun ApplicationCall.dataPath() = parametersPath() / parameters["parametersId"]!! / "data"
                     fun AtomicInteger.generateId(kind: String) = "$instanceId-$idPrefix-$kind${incrementAndGet()}"
 
                     val parametersIdGenerator = AtomicInteger()
                     val dataIdGenerator = AtomicInteger()
 
-                    get { call.getFiles(call.parametersPath(), "parameters.json") }
-                    post { call.saveFile(call.parametersPath(), "parameters.json", parametersIdGenerator.generateId("P")) }
-                    route("{id}/data") {
-                        get { call.getFiles(call.dataPath(), "data.json") }
-                        post { call.saveFile(call.dataPath(), "data.json", dataIdGenerator.generateId("D")) }
+                    post {
+                        val id = parametersIdGenerator.generateId("P")
+                        call.saveFile(call.parametersPath().resolve(id), "parameters.json")
+                        call.respondText(id)
+                    }
+                    get {
+                        call.getFiles(call.parametersPath()) { name to resolve("parameters.json") }
+                    }
+                    route("{parametersId}/data") {
+                        post {
+                            val id = dataIdGenerator.generateId("D")
+                            call.saveFile(call.dataPath(), "$id.json")
+                            call.respondText(id)
+                        }
+                        get {
+                            call.getFiles(call.dataPath()) { nameWithoutExtension to this }
+                        }
                     }
                 }
 
@@ -47,27 +59,22 @@ fun main() {
                 storage("digests", "D")
                 storage("signatures", "S")
                 storage("ciphers", "C")
-                storage("derived-secrets", "DS")
             }
         }
     }.start(wait = true)
 }
 
-private suspend fun ApplicationCall.saveFile(path: Path, name: String, id: String) {
+private suspend fun ApplicationCall.saveFile(path: Path, name: String) {
     val bytes = request.receiveChannel().readRemaining().readBytes()
 
-    path.resolve(id)
-        .createDirectories()
-        .resolve(name)
-        .writeBytes(bytes, StandardOpenOption.CREATE_NEW)
-
-    respondText(id)
+    path.createDirectories().resolve(name).writeBytes(bytes, StandardOpenOption.CREATE_NEW)
 }
 
-private suspend fun ApplicationCall.getFiles(path: Path, name: String) = respondBytesWriter {
-    path.forEachDirectoryEntry { directory ->
-        val idBytes = directory.name.encodeToByteArray()
-        val contentBytes = directory.resolve(name).readBytes()
+private suspend fun ApplicationCall.getFiles(path: Path, get: Path.() -> Pair<String, Path>) = respondBytesWriter {
+    path.forEachDirectoryEntry { entry ->
+        val (id, contentPath) = get(entry)
+        val idBytes = id.encodeToByteArray()
+        val contentBytes = contentPath.readBytes()
         writeInt(idBytes.size)
         writeFully(idBytes)
         writeInt(contentBytes.size)

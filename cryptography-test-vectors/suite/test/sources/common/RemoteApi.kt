@@ -61,8 +61,8 @@ private val json = Json {
 
 @Serializable
 private class Payload<T>(
-    val content: T,
     val metadata: Map<String, String>,
+    val content: T,
 )
 
 private class RemoteStorageApi(
@@ -79,7 +79,7 @@ private class RemoteStorageApi(
     private fun <T> encode(value: T, type: KType): ByteArray =
         json.encodeToString(
             Payload.serializer(serializer(type)),
-            Payload(value, metadata)
+            Payload(metadata, value)
         ).encodeToByteArray()
 
     private fun <T> decode(bytes: ByteArray, type: KType): T =
