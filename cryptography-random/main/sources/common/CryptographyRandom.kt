@@ -44,5 +44,11 @@ internal abstract class PlatformRandom : CryptographyRandom() {
         return next ushr numBytes * 8 - bitCount
     }
 
-    abstract override fun nextBytes(array: ByteArray): ByteArray
+    //we can also implement nextBytes(array, index, index)
+    final override fun nextBytes(array: ByteArray): ByteArray {
+        if (array.isNotEmpty()) fillBytes(array)
+        return array
+    }
+
+    protected abstract fun fillBytes(array: ByteArray)
 }

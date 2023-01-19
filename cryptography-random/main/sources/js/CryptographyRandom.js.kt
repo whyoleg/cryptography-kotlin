@@ -11,11 +11,32 @@ private object WebCryptoCryptographyRandom : PlatformRandom() {
             else     -> js("(window ? (window.crypto ? window.crypto : window.msCrypto) : self.crypto)")
         }
     }
+    private const val maxArraySize = 65536
 
-    override fun nextBytes(array: ByteArray): ByteArray {
-        if (array.isEmpty()) return array
+    override fun fillBytes(array: ByteArray) {
+        if (array.size <= maxArraySize) {
+            crypto.getRandomValues(array)
+            return
+        }
 
-        crypto.getRandomValues(array)
-        return array
+        val tempArray = ByteArray(maxArraySize)
+        crypto.getRandomValues(tempArray)
+        tempArray.copyInto(array)
+
+        var remaining = array.size - maxArraySize
+        while (true) when {
+            remaining == 0            -> break
+            remaining <= maxArraySize -> {
+                val last = ByteArray(remaining)
+                crypto.getRandomValues(last)
+                last.copyInto(array, maxArraySize)
+                break
+            }
+            else                      -> {
+                crypto.getRandomValues(tempArray)
+                tempArray.copyInto(array)
+                remaining -= maxArraySize
+            }
+        }
     }
 }

@@ -6,9 +6,7 @@ import platform.CoreCrypto.*
 internal actual fun defaultCryptographyRandom(): CryptographyRandom = CCCryptographyRandom
 
 private object CCCryptographyRandom : PlatformRandom() {
-    override fun nextBytes(array: ByteArray): ByteArray {
-        if (array.isEmpty()) return array
-
+    override fun fillBytes(array: ByteArray) {
         val status = array.usePinned { pinned ->
             CCRandomGenerateBytes(
                 bytes = pinned.addressOf(0),
@@ -16,7 +14,6 @@ private object CCCryptographyRandom : PlatformRandom() {
             )
         }
         checkStatus(status)
-        return array
     }
 }
 

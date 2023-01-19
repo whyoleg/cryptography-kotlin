@@ -4,4 +4,11 @@ plugins {
 
 kotlin {
     allTargets()
+    sourceSets {
+        commonTest {
+            dependencies {
+                implementation(projects.cryptographyTestSupport)
+            }
+        }
+    }
 }

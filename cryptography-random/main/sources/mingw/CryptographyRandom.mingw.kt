@@ -6,9 +6,7 @@ import platform.windows.*
 internal actual fun defaultCryptographyRandom(): CryptographyRandom = BCryptCryptographyRandom
 
 private object BCryptCryptographyRandom : PlatformRandom() {
-    override fun nextBytes(array: ByteArray): ByteArray {
-        if (array.isEmpty()) return array
-
+    override fun fillBytes(array: ByteArray) {
         @OptIn(ExperimentalUnsignedTypes::class)
         val status = array.asUByteArray().usePinned { pinned ->
             BCryptGenRandom(
@@ -19,6 +17,5 @@ private object BCryptCryptographyRandom : PlatformRandom() {
             )
         }
         if (status != 0) error("BCryptGenRandom failed: $status")
-        return array
     }
 }
