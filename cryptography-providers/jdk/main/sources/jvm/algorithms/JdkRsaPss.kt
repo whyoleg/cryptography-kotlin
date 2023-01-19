@@ -12,15 +12,6 @@ import dev.whyoleg.cryptography.operations.signature.*
 import java.math.*
 import java.security.spec.*
 
-//TODO
-internal fun CryptographyAlgorithmId<Digest>.rsaHashAlgorithmName(): String = when (this) {
-    SHA1   -> "SHA-1"
-    SHA256 -> "SHA-256"
-    SHA384 -> "SHA-384"
-    SHA512 -> "SHA-512"
-    else   -> throw CryptographyException("Unsupported hash algorithm: $this")
-}
-
 internal class JdkRsaPss(
     private val state: JdkCryptographyState,
 ) : RSA.PSS {

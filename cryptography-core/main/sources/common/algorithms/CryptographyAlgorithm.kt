@@ -9,4 +9,3 @@ public interface CryptographyAlgorithm {
 
 @SubclassOptInRequired(CryptographyProviderApi::class)
 public abstract class CryptographyAlgorithmId<A : CryptographyAlgorithm>(public val name: String)
-

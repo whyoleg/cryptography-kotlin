@@ -11,8 +11,6 @@ import dev.whyoleg.cryptography.webcrypto.algorithms.*
 
 public val CryptographyProvider.Companion.WebCrypto: CryptographyProvider get() = WebCryptoCryptographyProvider
 
-//Not yet implemented: HKDF, PBKDF2, RSASSA-PKCS1-v1_5, AES-KW
-//PEM support
 internal object WebCryptoCryptographyProvider : CryptographyProvider() {
     override val name: String get() = "WebCrypto"
 

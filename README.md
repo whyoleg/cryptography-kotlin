@@ -17,7 +17,6 @@ Types-safe Multiplatform cryptography library for Kotlin.
 | RSA-OAEP | ✅`e/d` | ✅`e/d`    |        |
 | RSA-PSS  | ✅`s/v` | ✅`s/v`    |        |
 | ECDSA    | ✅`s/v` | ✅`s/v`    |        |
-| ECDH     | ✅`a`   | ✅`a`      |        |
 
 > - `h` - hash
 > - `e` - encryption

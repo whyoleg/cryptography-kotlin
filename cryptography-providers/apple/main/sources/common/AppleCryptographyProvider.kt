@@ -7,14 +7,6 @@ import dev.whyoleg.cryptography.apple.algorithms.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.provider.*
 
-//CoreCrypto support
-// MD5, SHA1, SHA2 +
-// HMAC over SHA +
-// AES-CBC (CTR) +
-
-//Not yet implemented: PBKDF2, AES-KW
-//https://opensource.apple.com/source/CommonCrypto/CommonCrypto-36064/CommonCrypto/CommonCryptor.h.auto.html
-
 private val defaultProvider = lazy { AppleCryptographyProvider }
 
 public val CryptographyProvider.Companion.Apple: CryptographyProvider by defaultProvider

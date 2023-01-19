@@ -2,10 +2,6 @@
 
 ## 0.1.0: Initial release
 
-* [ ] Release preparation
-    * [ ] Decide on algorithms access in code. f.e. AES.CBC, RSA.OAEP vs ECDSA, ECDH, etc.
-        * [ ] algorithms - AesBasedAlgorihm, RsaBasedAlgorithm, AesGcmAlgorithm
-        * [ ] ids -> AES.CBC, RSA.OAEP, RSA, etc.
 * [ ] Tests
     * [ ] tests for empty arrays
     * [ ] Add assertion in test-vectors on amount of tested vectors
@@ -14,9 +10,8 @@
     * [ ] reduce RSA test iterations (?)
     * [ ] AES-GCM test
 * [ ] Engines
-    * [ ] JDK
-        * [ ] RSA/EC/AES shared implementation
-    * [ ] Apple (CoreCrypto (done) + Security framework (not started))
+    * [ ] Apple
+        * [ ] EC/RSA via Security framework
         * [ ] HMAC key size
         * [ ] error reporting
     * [ ] OpenSSL(1/3) engine (dynamic/static for desktop native targets)
@@ -24,12 +19,12 @@
     * [ ] Support PEM encoding where DER is supported
 * [ ] Build
     * [ ] Binary compatibility validator
-    * [ ] GitHub Actions vis github-workflows-kt
+    * [ ] GitHub Actions via github-workflows-kt (?)
     * [ ] Samples (use knit?) (for each different kind of operation)
     * [ ] Dokka (at least to generate public API)
     * [ ] Kover (for coverage)
-    * [ ] Maven Central
     * [ ] rename buildx plugins
+    * [ ] Maven Central
 * [ ] README
     * [ ] modules/dependencies
     * [ ] supported algorithms/operations (+ not supported by some providers)
@@ -54,8 +49,9 @@
     * [ ] Agron2 (prf)
     * [ ] scrypt (prf)
     * [ ] brcypt (prf)
-    * [ ] RSA-SSA-PKCS1 (signature)
-    * [ ] CMAC (mac)
+  * [ ] RSA-SSA-PKCS1 (signature)
+  * [ ] Ed25519 curve
+  * [ ] CMAC (mac)
     * [ ] Blowfish (cipher), Blake (hash) - try to find some implementations (?)
 * [ ] Engines
     * [ ] WebCrypto WASM support (need kotlin 1.8.20 stable (or at least beta))
@@ -82,14 +78,14 @@
       (like different signature algorithms in ssh, tls, certificate)
     * [ ] Decode key from DER -> then decide on which algorithm it is (problems with WebCrypto)
 
-## 0.4.0: Enhanced operations for bigger data and streaming (some things can depend on IO library - if so, design or postpone)
+## 0.4.0: Enhanced operations for big data and streaming (some things can depend on IO library - if so, design or postpone)
 
 * [ ] Function operations (cipher, signature, hash)
 * [ ] Operations with provided output buffer
-* [ ] funcitons for calculating signature/digest/plaintext/etc sizes
+* [ ] functions for calculating signature/digest/plaintext/etc sizes
 * [ ] encrypt/decrypt
     * [ ] Box ciphers
-    * [ ] Unsafe encrypt operations for cases when f.e. AES nonce/iv provided by user
+    * [ ] Unsafe/Parameterized encrypt operations for cases when f.e. AES nonce/iv provided by user
     * [ ] Decide on cipher encrypt/decrypt functions for RSA-like algorithms
     * [ ] Streaming encryption/decryption (look at google/tink)
     * [ ] File encryption/decryption (function operations)
@@ -115,9 +111,13 @@
 * [ ] Integrate with https://github.com/google/wycheproof to test against test vectors (more tests
   here https://github.com/pyca/cryptography/blob/main/docs/development/test-vectors.rst)
 * [ ] investigate linux getrandom call
+* [ ] Extract popular digests into separate module (?) with only blocking impl?
 
 ## 1.0.0: Stable release
 
 * [ ] Design CryptographyException hierarchy
 * [ ] Migrate to some IO library
 * [ ] Use some BigInt library/implementation (f.e. for RSA.PublicExponent)
+* [ ] Decide on algorithms access in code. f.e. AES.CBC, RSA.OAEP vs ECDSA, ECDH, etc.
+    * [ ] algorithms - AesBasedAlgorihm, RsaBasedAlgorithm, AesGcmAlgorithm
+    * [ ] ids -> AES.CBC, RSA.OAEP, RSA, etc.
