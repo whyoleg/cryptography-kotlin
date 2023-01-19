@@ -14,11 +14,11 @@ internal class JdkAesGcm(
     private val state: JdkCryptographyState,
 ) : AES.GCM {
     private val keyWrapper: (JSecretKey) -> AES.GCM.Key = { key ->
-        object : AES.GCM.Key, EncodableKey<AES.Key.Format> by JdkEncodableKey(state, key) {
+        object : AES.GCM.Key, EncodableKey<AES.Key.Format> by JdkEncodableKey(key) {
             override fun cipher(tagSize: BinarySize): AuthenticatedCipher = AesGcmCipher(state, key, tagSize)
         }
     }
-    private val keyDecoder = JdkSecretKeyDecoder<AES.Key.Format, _>(state, "AES", keyWrapper)
+    private val keyDecoder = JdkSecretKeyDecoder<AES.Key.Format, _>("AES", keyWrapper)
 
     override fun keyDecoder(): KeyDecoder<AES.Key.Format, AES.GCM.Key> = keyDecoder
     override fun keyGenerator(keySize: SymmetricKeySize): KeyGenerator<AES.GCM.Key> = JdkSecretKeyGenerator(state, "AES", keyWrapper) {

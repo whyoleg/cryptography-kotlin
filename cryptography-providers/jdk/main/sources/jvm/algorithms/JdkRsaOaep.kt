@@ -83,29 +83,18 @@ private class RsaOaepPublicKey(
     private val state: JdkCryptographyState,
     private val key: JPublicKey,
     hashAlgorithmName: String,
-) : RSA.OAEP.PublicKey {
+) : RSA.OAEP.PublicKey, JdkEncodableKey<RSA.PublicKey.Format>(key, "RSA") {
     private val encryptor = RsaOaepEncryptor(state, key, hashAlgorithmName)
     override fun encryptor(): AuthenticatedEncryptor = encryptor
-    override fun encodeToBlocking(format: RSA.PublicKey.Format): Buffer = when (format) {
-        RSA.PublicKey.Format.DER -> key.encoded
-        RSA.PublicKey.Format.JWK -> TODO()
-        RSA.PublicKey.Format.PEM -> TODO()
-    }
 }
 
 private class RsaOaepPrivateKey(
     private val state: JdkCryptographyState,
     private val key: JPrivateKey,
     hashAlgorithmName: String,
-) : RSA.OAEP.PrivateKey {
+) : RSA.OAEP.PrivateKey, JdkEncodableKey<RSA.PrivateKey.Format>(key, "RSA") {
     private val decryptor = RsaOaepDecryptor(state, key, hashAlgorithmName)
     override fun decryptor(): AuthenticatedDecryptor = decryptor
-
-    override fun encodeToBlocking(format: RSA.PrivateKey.Format): Buffer = when (format) {
-        RSA.PrivateKey.Format.DER -> key.encoded
-        RSA.PrivateKey.Format.JWK -> TODO()
-        RSA.PrivateKey.Format.PEM -> TODO()
-    }
 }
 
 private class RsaOaepEncryptor(

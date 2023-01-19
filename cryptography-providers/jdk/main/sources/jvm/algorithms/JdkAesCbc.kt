@@ -14,11 +14,11 @@ internal class JdkAesCbc(
     private val state: JdkCryptographyState,
 ) : AES.CBC {
     private val keyWrapper: (JSecretKey) -> AES.CBC.Key = { key ->
-        object : AES.CBC.Key, EncodableKey<AES.Key.Format> by JdkEncodableKey(state, key) {
+        object : AES.CBC.Key, EncodableKey<AES.Key.Format> by JdkEncodableKey(key) {
             override fun cipher(padding: Boolean): Cipher = AesCbcCipher(state, key, padding)
         }
     }
-    private val keyDecoder = JdkSecretKeyDecoder<AES.Key.Format, _>(state, "AES", keyWrapper)
+    private val keyDecoder = JdkSecretKeyDecoder<AES.Key.Format, _>("AES", keyWrapper)
 
     override fun keyDecoder(): KeyDecoder<AES.Key.Format, AES.CBC.Key> = keyDecoder
     override fun keyGenerator(keySize: SymmetricKeySize): KeyGenerator<AES.CBC.Key> = JdkSecretKeyGenerator(state, "AES", keyWrapper) {

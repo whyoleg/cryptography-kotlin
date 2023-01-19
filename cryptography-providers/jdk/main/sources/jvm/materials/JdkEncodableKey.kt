@@ -5,19 +5,27 @@ import dev.whyoleg.cryptography.jdk.*
 import dev.whyoleg.cryptography.materials.key.*
 
 internal open class JdkEncodableKey<KF : KeyFormat>(
-    private val state: JdkCryptographyState,
     private val key: JKey,
+    private val pemAlgorithm: String = key.algorithm,
 ) : EncodableKey<KF> {
+
     override fun encodeToBlocking(format: KF): Buffer = when (format) {
         is KeyFormat.RAW -> {
-            check(key.format == "RAW") { "Key format is not RAW" }
+            check(key.format == "RAW") { "Wrong JDK Key format, expected `RAW` got `${key.format}`" }
             key.encoded
         }
         is KeyFormat.DER -> {
-            check(key.format == "PKCS#8" || key.format == "X.509") { "Key format is not DER" }
+            check(key.format == "PKCS#8" || key.format == "X.509") { "Wrong JDK Key format, expected `PKCS#8` or `X.509 got `${key.format}`" }
             key.encoded
         }
-        else             -> TODO("$format is not yet supported")
+        is KeyFormat.PEM -> {
+            val type = pemAlgorithm + when (key.format) {
+                "PKCS#8" -> " PUBLIC KEY"
+                "X.509"  -> " PRIVATE KEY"
+                else     -> error("Wrong JDK Key format, expected `PKCS#8` or `X.509 got `${key.format}`")
+            }
+            key.encoded.encodeToPem(type)
+        }
+        else             -> error("$format is not yet supported")
     }
 }
-

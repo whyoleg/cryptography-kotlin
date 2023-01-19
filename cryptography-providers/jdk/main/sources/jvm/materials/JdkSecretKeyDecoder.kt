@@ -6,12 +6,11 @@ import dev.whyoleg.cryptography.materials.key.*
 import javax.crypto.spec.*
 
 internal class JdkSecretKeyDecoder<KF : KeyFormat, K : Key>(
-    private val state: JdkCryptographyState,
     private val algorithm: String,
     private val keyWrapper: (JSecretKey) -> K,
 ) : KeyDecoder<KF, K> {
-    override fun decodeFromBlocking(format: KF, input: Buffer): K {
-        if (format is KeyFormat.RAW) return keyWrapper(SecretKeySpec(input, algorithm))
-        TODO("$format is not yet supported")
+    override fun decodeFromBlocking(format: KF, input: Buffer): K = when (format) {
+        is KeyFormat.RAW -> keyWrapper(SecretKeySpec(input, algorithm))
+        else             -> error("$format is not yet supported")
     }
 }

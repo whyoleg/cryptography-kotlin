@@ -13,11 +13,8 @@ internal abstract class JdkKeyPairGenerator<K : Key>(
 
     protected abstract fun JKeyPair.convert(): K
 
-    final override fun generateKeyBlocking(): K {
-        return keyPairGenerator.use {
-            it.init()
-            it.generateKeyPair()
-        }.convert()
-    }
+    final override fun generateKeyBlocking(): K = keyPairGenerator.use {
+        it.init()
+        it.generateKeyPair()
+    }.convert()
 }
-

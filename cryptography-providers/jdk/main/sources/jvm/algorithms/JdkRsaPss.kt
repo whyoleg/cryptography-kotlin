@@ -82,7 +82,7 @@ private class RsaPssPublicKey(
     private val state: JdkCryptographyState,
     private val key: JPublicKey,
     private val hashAlgorithmName: String,
-) : RSA.PSS.PublicKey, EncodableKey<RSA.PublicKey.Format> by JdkEncodableKey(state, key) {
+) : RSA.PSS.PublicKey, EncodableKey<RSA.PublicKey.Format> by JdkEncodableKey(key, "RSA") {
     override fun signatureVerifier(saltLength: BinarySize): SignatureVerifier {
         val parameters = PSSParameterSpec(
             hashAlgorithmName,
@@ -99,7 +99,7 @@ private class RsaPssPrivateKey(
     private val state: JdkCryptographyState,
     private val key: JPrivateKey,
     private val hashAlgorithmName: String,
-) : RSA.PSS.PrivateKey, JdkEncodableKey<RSA.PrivateKey.Format>(state, key) {
+) : RSA.PSS.PrivateKey, JdkEncodableKey<RSA.PrivateKey.Format>(key, "RSA") {
     override fun signatureGenerator(saltLength: BinarySize): SignatureGenerator {
         val parameters = PSSParameterSpec(
             hashAlgorithmName,

@@ -22,7 +22,7 @@ private class EcdsaKeyPair(
 private class EcdsaPublicKey(
     private val state: JdkCryptographyState,
     private val key: JPublicKey,
-) : ECDSA.PublicKey, JdkEncodableKey<EC.PublicKey.Format>(state, key) {
+) : ECDSA.PublicKey, JdkEncodableKey<EC.PublicKey.Format>(key, "EC") {
     override fun signatureVerifier(digest: CryptographyAlgorithmId<Digest>): SignatureVerifier {
         return JdkSignatureVerifier(state, key, digest.hashAlgorithmName() + "withECDSA", null)
     }
@@ -31,7 +31,7 @@ private class EcdsaPublicKey(
 private class EcdsaPrivateKey(
     private val state: JdkCryptographyState,
     private val key: JPrivateKey,
-) : ECDSA.PrivateKey, JdkEncodableKey<EC.PrivateKey.Format>(state, key) {
+) : ECDSA.PrivateKey, JdkEncodableKey<EC.PrivateKey.Format>(key, "EC") {
     override fun signatureGenerator(digest: CryptographyAlgorithmId<Digest>): SignatureGenerator {
         return JdkSignatureGenerator(state, key, digest.hashAlgorithmName() + "withECDSA", null)
     }
