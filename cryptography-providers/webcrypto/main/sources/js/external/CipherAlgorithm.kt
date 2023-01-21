@@ -4,7 +4,7 @@ internal sealed external interface EncryptAlgorithm : Algorithm
 internal sealed external interface DecryptAlgorithm : Algorithm
 internal sealed external interface CipherAlgorithm : EncryptAlgorithm, DecryptAlgorithm
 internal sealed external interface RsaOaepParams : CipherAlgorithm {
-    var label: ByteArray?
+    var label: ByteArray
 }
 
 internal fun RsaOaepParams(label: ByteArray?): RsaOaepParams = Algorithm("RSA-OAEP") {
@@ -12,7 +12,7 @@ internal fun RsaOaepParams(label: ByteArray?): RsaOaepParams = Algorithm("RSA-OA
 }
 
 internal external interface AesGcmParams : CipherAlgorithm {
-    var additionalData: ByteArray?
+    var additionalData: ByteArray
     var iv: ByteArray
     var tagLength: Int
 }
@@ -22,7 +22,7 @@ internal fun AesGcmParams(
     iv: ByteArray,
     tagLength: Int,
 ): AesGcmParams = Algorithm("AES-GCM") {
-    this.additionalData = additionalData
+    if (additionalData != null) this.additionalData = additionalData
     this.iv = iv
     this.tagLength = tagLength
 }
