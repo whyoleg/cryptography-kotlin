@@ -3,11 +3,17 @@ plugins {
 }
 
 buildParameters {
-    group("testsuite") {
-        enumeration("step") {
-            description.set("Define which test step to execute")
-            defaultValue.set("Local")
-            values.addAll("Local", "Generate", "Compute", "Validate")
+    bool("ci") {
+        fromEnvironment()
+        defaultValue.set(false)
+    }
+    group("tests") {
+        group("compatibility") {
+            enumeration("step") {
+                description.set("Define which test step to execute (if InMemory - will run all steps without server)")
+                defaultValue.set("InMemory")
+                values.addAll("InMemory", "Generate", "Validate")
+            }
         }
     }
 }
