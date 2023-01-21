@@ -43,15 +43,15 @@ class EcdsaTest : CompatibilityTest<ECDSA>(ECDSA) {
             algorithm.keyPairGenerator(curve).generateKeys(keyIterations) { keyPair ->
                 val keyReference = api.keyPairs.saveData(
                     keyParametersId, KeyPairData(
-                    public = KeyData {
-                        put(StringKeyFormat.DER, keyPair.publicKey.encodeTo(EC.PublicKey.Format.DER))
-                        if (provider.supportsJwk) put(StringKeyFormat.JWK, keyPair.publicKey.encodeTo(EC.PublicKey.Format.JWK))
-                    },
-                    private = KeyData {
-                        put(StringKeyFormat.DER, keyPair.privateKey.encodeTo(EC.PrivateKey.Format.DER))
-                        if (provider.supportsJwk) put(StringKeyFormat.JWK, keyPair.privateKey.encodeTo(EC.PrivateKey.Format.JWK))
-                    }
-                ))
+                        public = KeyData {
+                            put(StringKeyFormat.DER, keyPair.publicKey.encodeTo(EC.PublicKey.Format.DER))
+                            if (provider.supportsJwk) put(StringKeyFormat.JWK, keyPair.publicKey.encodeTo(EC.PublicKey.Format.JWK))
+                        },
+                        private = KeyData {
+                            put(StringKeyFormat.DER, keyPair.privateKey.encodeTo(EC.PrivateKey.Format.DER))
+                            if (provider.supportsJwk) put(StringKeyFormat.JWK, keyPair.privateKey.encodeTo(EC.PrivateKey.Format.JWK))
+                        }
+                    ))
 
                 digests.forEach { (signatureParametersId, digest) ->
                     logger.log("digest = $digest")
@@ -65,7 +65,7 @@ class EcdsaTest : CompatibilityTest<ECDSA>(ECDSA) {
                         val signature = signer.generateSignature(data)
                         logger.log("signature.size = ${signature.size}")
 
-                        assertTrue(verifier.verifySignature(data, signature))
+                        assertTrue(verifier.verifySignature(data, signature), "Initial Verify")
 
                         api.signatures.saveData(signatureParametersId, SignatureData(keyReference, data, signature))
                     }
@@ -90,7 +90,7 @@ class EcdsaTest : CompatibilityTest<ECDSA>(ECDSA) {
                     }
                     publicKeys.forEach { publicKey ->
                         public.formats[StringKeyFormat.DER]?.let { bytes ->
-                            assertContentEquals(bytes, publicKey.encodeTo(EC.PublicKey.Format.DER))
+                            assertContentEquals(bytes, publicKey.encodeTo(EC.PublicKey.Format.DER), "Public key DER encoding")
                         }
                     }
                     val privateKeys = privateKeyDecoder.decodeFrom(private.formats) { stringFormat ->
@@ -102,7 +102,7 @@ class EcdsaTest : CompatibilityTest<ECDSA>(ECDSA) {
                     }
                     privateKeys.forEach { privateKey ->
                         private.formats[StringKeyFormat.DER]?.let { bytes ->
-                            assertContentEquals(bytes, privateKey.encodeTo(EC.PrivateKey.Format.DER))
+                            assertContentEquals(bytes, privateKey.encodeTo(EC.PrivateKey.Format.DER), "Private key DER encoding")
                         }
                     }
                     put(keyReference, publicKeys to privateKeys)
@@ -118,10 +118,10 @@ class EcdsaTest : CompatibilityTest<ECDSA>(ECDSA) {
                 val generators = privateKeys.map { it.signatureGenerator(digest) }
 
                 verifiers.forEach { verifier ->
-                    assertTrue(verifier.verifySignature(data, signature))
+                    assertTrue(verifier.verifySignature(data, signature), "Verify")
 
                     generators.forEach { generator ->
-                        assertTrue(verifier.verifySignature(data, generator.generateSignature(data)))
+                        assertTrue(verifier.verifySignature(data, generator.generateSignature(data)), "Sign-Verify")
                     }
                 }
             }

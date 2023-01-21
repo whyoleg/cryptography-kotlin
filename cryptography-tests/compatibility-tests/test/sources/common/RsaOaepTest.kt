@@ -28,7 +28,7 @@ class RsaOaepTest : RsaBasedTest<RSA.OAEP.PublicKey, RSA.OAEP.PrivateKey, RSA.OA
                     val ciphertext = encryptor.encrypt(plaintext, associatedData)
                     logger.log("ciphertext.size       = ${ciphertext.size}")
 
-                    assertContentEquals(plaintext, decryptor.decrypt(ciphertext, associatedData))
+                    assertContentEquals(plaintext, decryptor.decrypt(ciphertext, associatedData), "Initial Decrypt")
 
                     api.ciphers.saveData(cipherParametersId, AuthenticatedCipherData(keyReference, associatedData, plaintext, ciphertext))
                 }
@@ -46,10 +46,14 @@ class RsaOaepTest : RsaBasedTest<RSA.OAEP.PublicKey, RSA.OAEP.PrivateKey, RSA.OA
                 val decryptors = privateKeys.map { it.decryptor() }
 
                 decryptors.forEach { decryptor ->
-                    assertContentEquals(plaintext, decryptor.decrypt(ciphertext, associatedData))
+                    assertContentEquals(plaintext, decryptor.decrypt(ciphertext, associatedData), "Decrypt")
 
                     encryptors.forEach { encryptor ->
-                        assertContentEquals(plaintext, decryptor.decrypt(encryptor.encrypt(plaintext, associatedData), associatedData))
+                        assertContentEquals(
+                            plaintext,
+                            decryptor.decrypt(encryptor.encrypt(plaintext, associatedData), associatedData),
+                            "Encrypt-Decrypt"
+                        )
                     }
                 }
             }

@@ -25,7 +25,7 @@ abstract class DigestTest(algorithmId: CryptographyAlgorithmId<Digest>) : Compat
             val digest = hasher.hash(data)
             logger.log("digest.size = ${digest.size}")
 
-            assertContentEquals(digest, hasher.hash(data))
+            assertContentEquals(digest, hasher.hash(data), "Initial Hash")
 
             api.digests.saveData(parametersId, DigestData(data, digest))
         }
@@ -36,7 +36,7 @@ abstract class DigestTest(algorithmId: CryptographyAlgorithmId<Digest>) : Compat
 
         api.digests.getParameters<TestParameters.Empty> { _, parametersId ->
             api.digests.getData<DigestData>(parametersId) { (data, digest), _ ->
-                assertContentEquals(digest, hasher.hash(data))
+                assertContentEquals(digest, hasher.hash(data), "Hash")
             }
         }
     }

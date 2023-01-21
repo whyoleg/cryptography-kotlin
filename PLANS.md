@@ -6,10 +6,9 @@
     * [ ] tests for empty arrays
     * [ ] Add assertion in test-vectors on amount of tested vectors
     * [ ] investigate failure WebCrypto vs JDK with RSA, ECDSA
-    * [ ] add assert messages to tests
     * [ ] reduce RSA test iterations (?)
     * [ ] AES-GCM test
-    * [ ] Investigate why kotlin("test") is not working
+    * [ ] DROP ALL TODO
 * [ ] Engines
     * [ ] Apple
         * [ ] EC/RSA via Security framework

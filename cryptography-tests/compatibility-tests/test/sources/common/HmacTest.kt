@@ -35,7 +35,7 @@ class HmacTest : CompatibilityTest<HMAC>(HMAC) {
                     val signature = signatureGenerator.generateSignature(data)
                     logger.log("signature.size = ${signature.size}")
 
-                    assertTrue(signatureVerifier.verifySignature(data, signature))
+                    assertTrue(signatureVerifier.verifySignature(data, signature), "Initial Verify")
 
                     api.signatures.saveData(signatureParametersId, SignatureData(keyReference, data, signature))
                 }
@@ -57,7 +57,7 @@ class HmacTest : CompatibilityTest<HMAC>(HMAC) {
                     }
                     keys.forEach { key ->
                         formats[StringKeyFormat.RAW]?.let { bytes ->
-                            assertContentEquals(bytes, key.encodeTo(HMAC.Key.Format.RAW))
+                            assertContentEquals(bytes, key.encodeTo(HMAC.Key.Format.RAW), "Key RAW encoding")
                         }
                     }
                     put(keyReference, keys)
@@ -70,8 +70,8 @@ class HmacTest : CompatibilityTest<HMAC>(HMAC) {
                     val verifier = key.signatureVerifier()
                     val generator = key.signatureGenerator()
 
-                    assertTrue(verifier.verifySignature(data, signature))
-                    assertTrue(verifier.verifySignature(data, generator.generateSignature(data)))
+                    assertTrue(verifier.verifySignature(data, signature), "Verify")
+                    assertTrue(verifier.verifySignature(data, generator.generateSignature(data)), "Sign-Verify")
                 }
             }
         }

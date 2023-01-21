@@ -70,7 +70,7 @@ abstract class RsaBasedTest<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, 
                 }
                 publicKeys.forEach { publicKey ->
                     public.formats[StringKeyFormat.DER]?.let { bytes ->
-                        assertContentEquals(bytes, publicKey.encodeTo(RSA.PublicKey.Format.DER))
+                        assertContentEquals(bytes, publicKey.encodeTo(RSA.PublicKey.Format.DER), "Public key DER encoding")
                     }
                 }
                 val privateKeys = privateKeyDecoder.decodeFrom(private.formats) { stringFormat ->
@@ -82,7 +82,7 @@ abstract class RsaBasedTest<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, 
                 }
                 privateKeys.forEach { privateKey ->
                     private.formats[StringKeyFormat.DER]?.let { bytes ->
-                        assertContentEquals(bytes, privateKey.encodeTo(RSA.PrivateKey.Format.DER))
+                        assertContentEquals(bytes, privateKey.encodeTo(RSA.PrivateKey.Format.DER), "Private key DER encoding")
                     }
                 }
                 put(keyReference, publicKeys to privateKeys)

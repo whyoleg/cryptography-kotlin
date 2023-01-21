@@ -51,8 +51,7 @@ class AesCbcTest : CompatibilityTest<AES.CBC>(AES.CBC) {
                         val ciphertext = cipher.encrypt(plaintext)
                         logger.log("ciphertext.size = ${ciphertext.size}")
 
-                        //only simple check here to fail fast
-                        assertContentEquals(plaintext, cipher.decrypt(ciphertext))
+                        assertContentEquals(plaintext, cipher.decrypt(ciphertext), "Initial Decrypt")
 
                         api.ciphers.saveData(cipherParametersId, CipherData(keyReference, plaintext, ciphertext))
                     }
@@ -78,7 +77,7 @@ class AesCbcTest : CompatibilityTest<AES.CBC>(AES.CBC) {
                     }
                     keys.forEach { key ->
                         formats[StringKeyFormat.RAW]?.let { bytes ->
-                            assertContentEquals(bytes, key.encodeTo(AES.Key.Format.RAW))
+                            assertContentEquals(bytes, key.encodeTo(AES.Key.Format.RAW), "Key RAW encoding")
                         }
                     }
                     put(keyReference, keys)
@@ -92,8 +91,8 @@ class AesCbcTest : CompatibilityTest<AES.CBC>(AES.CBC) {
             api.ciphers.getData<CipherData>(parametersId) { (keyReference, plaintext, ciphertext), _ ->
                 keys.getValue(keyReference).forEach { key ->
                     val cipher = key.cipher(padding)
-                    assertContentEquals(plaintext, cipher.decrypt(ciphertext))
-                    assertContentEquals(plaintext, cipher.decrypt(cipher.encrypt(plaintext)))
+                    assertContentEquals(plaintext, cipher.decrypt(ciphertext), "Decrypt")
+                    assertContentEquals(plaintext, cipher.decrypt(cipher.encrypt(plaintext)), "Encrypt-Decrypt")
                 }
             }
         }

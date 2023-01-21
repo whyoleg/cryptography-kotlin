@@ -39,7 +39,7 @@ class RsaPssTest : RsaBasedTest<RSA.PSS.PublicKey, RSA.PSS.PrivateKey, RSA.PSS.K
                     val signature = signer.generateSignature(data)
                     logger.log("signature.size = ${signature.size}")
 
-                    assertTrue(verifier.verifySignature(data, signature))
+                    assertTrue(verifier.verifySignature(data, signature), "Initial Verify")
 
                     api.signatures.saveData(signatureParametersId, SignatureData(keyReference, data, signature))
                 }
@@ -57,10 +57,10 @@ class RsaPssTest : RsaBasedTest<RSA.PSS.PublicKey, RSA.PSS.PrivateKey, RSA.PSS.K
                 val generators = privateKeys.map { it.signatureGenerator(saltSizeBytes.bytes) }
 
                 verifiers.forEach { verifier ->
-                    assertTrue(verifier.verifySignature(data, signature))
+                    assertTrue(verifier.verifySignature(data, signature), "Verify")
 
                     generators.forEach { generator ->
-                        assertTrue(verifier.verifySignature(data, generator.generateSignature(data)))
+                        assertTrue(verifier.verifySignature(data, generator.generateSignature(data)), "Sign-Verify")
                     }
                 }
             }
