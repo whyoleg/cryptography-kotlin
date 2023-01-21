@@ -3,7 +3,6 @@ package dev.whyoleg.cryptography.tests.compatibility.api
 import dev.whyoleg.cryptography.test.utils.*
 import kotlin.reflect.*
 
-//TODO: can not be sealed on K/N and K/JS for some strange reason - create kotlin issue (failed to build binary)
 abstract class TesterStorageApi(
     val storageName: String,
     val logger: TestLogger,

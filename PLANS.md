@@ -4,11 +4,11 @@
 
 * [ ] Tests
     * [ ] tests for empty arrays
-    * [ ] Add assertion in test-vectors on amount of tested vectors
+    * [ ] Add assertion in compatibility tests on amount of tested combinations
     * [ ] investigate failure WebCrypto vs JDK with RSA, ECDSA
-    * [ ] reduce RSA test iterations (?)
-    * [ ] AES-GCM test
+    * [ ] cache ciphers/signature* like keys
     * [ ] DROP ALL TODO
+    * [ ] Investigate: WebCrypto BROWSER doesn't support 192bits
 * [ ] Engines
     * [ ] Apple
         * [ ] EC/RSA via Security framework

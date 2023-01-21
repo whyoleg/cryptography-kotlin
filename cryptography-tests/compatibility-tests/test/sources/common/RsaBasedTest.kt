@@ -65,7 +65,7 @@ abstract class RsaBasedTest<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, 
                     when (stringFormat) {
                         StringKeyFormat.DER -> RSA.PublicKey.Format.DER
                         StringKeyFormat.JWK -> RSA.PublicKey.Format.JWK.takeIf { provider.supportsJwk }
-                        else                -> error("Unsupported key format: $stringFormat") //TODO
+                        else                -> error("Unsupported key format: $stringFormat")
                     }
                 }
                 publicKeys.forEach { publicKey ->
@@ -77,7 +77,7 @@ abstract class RsaBasedTest<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, 
                     when (stringFormat) {
                         StringKeyFormat.DER -> RSA.PrivateKey.Format.DER
                         StringKeyFormat.JWK -> RSA.PrivateKey.Format.JWK.takeIf { provider.supportsJwk }
-                        else                -> error("Unsupported key format: $stringFormat") //TODO
+                        else                -> error("Unsupported key format: $stringFormat")
                     }
                 }
                 privateKeys.forEach { privateKey ->

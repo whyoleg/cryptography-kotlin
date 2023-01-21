@@ -52,7 +52,7 @@ class HmacTest : CompatibilityTest<HMAC>(HMAC) {
                         when (stringFormat) {
                             StringKeyFormat.RAW -> HMAC.Key.Format.RAW
                             StringKeyFormat.JWK -> HMAC.Key.Format.JWK.takeIf { provider.supportsJwk }
-                            else                -> error("Unsupported key format: $stringFormat") //TODO
+                            else                -> error("Unsupported key format: $stringFormat")
                         }
                     }
                     keys.forEach { key ->

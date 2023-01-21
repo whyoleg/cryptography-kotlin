@@ -85,7 +85,7 @@ class EcdsaTest : CompatibilityTest<ECDSA>(ECDSA) {
                         when (stringFormat) {
                             StringKeyFormat.DER -> EC.PublicKey.Format.DER
                             StringKeyFormat.JWK -> EC.PublicKey.Format.JWK.takeIf { provider.supportsJwk }
-                            else                -> error("Unsupported key format: $stringFormat") //TODO
+                            else                -> error("Unsupported key format: $stringFormat")
                         }
                     }
                     publicKeys.forEach { publicKey ->
@@ -97,7 +97,7 @@ class EcdsaTest : CompatibilityTest<ECDSA>(ECDSA) {
                         when (stringFormat) {
                             StringKeyFormat.DER -> EC.PrivateKey.Format.DER
                             StringKeyFormat.JWK -> EC.PrivateKey.Format.JWK.takeIf { provider.supportsJwk }
-                            else                -> error("Unsupported key format: $stringFormat") //TODO
+                            else                -> error("Unsupported key format: $stringFormat")
                         }
                     }
                     privateKeys.forEach { privateKey ->

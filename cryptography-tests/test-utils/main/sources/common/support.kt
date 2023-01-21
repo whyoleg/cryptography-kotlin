@@ -15,7 +15,7 @@ fun AlgorithmTestContext<AES.CBC>.supportsPadding(padding: Boolean): Boolean = s
     feature = "NoPadding"
 )
 
-// WebCrypto BROWSER doesn't support 192bits - TODO: WHY???
+// WebCrypto BROWSER doesn't support 192bits
 fun AlgorithmTestContext<out AES<*>>.supportsKeySize(keySizeBits: Int): Boolean = supports(
     condition = if (provider.isWebCrypto) keySizeBits != 192 else true,
     feature = "192bit key"

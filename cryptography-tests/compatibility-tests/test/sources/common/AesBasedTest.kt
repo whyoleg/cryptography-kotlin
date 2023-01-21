@@ -44,7 +44,7 @@ abstract class AesBasedTest<K : AES.Key, A : AES<K>>(
                         when (stringFormat) {
                             StringKeyFormat.RAW -> AES.Key.Format.RAW
                             StringKeyFormat.JWK -> AES.Key.Format.JWK.takeIf { provider.supportsJwk }
-                            else                -> error("Unsupported key format: $stringFormat") //TODO
+                            else                -> error("Unsupported key format: $stringFormat")
                         }
                     }
                     keys.forEach { key ->
