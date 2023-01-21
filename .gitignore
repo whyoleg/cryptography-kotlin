@@ -8,4 +8,4 @@ classes
 build/
 *.log
 /local.properties
-/cryptography-test-vectors/storage
+/cryptography-tester/storage
