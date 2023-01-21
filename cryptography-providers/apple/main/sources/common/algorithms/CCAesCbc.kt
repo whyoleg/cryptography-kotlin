@@ -54,7 +54,8 @@ private class AesCbcCipher(
         cryptorRef.create(kCCEncrypt, iv.refTo(0))
         val ciphertextOutput = ByteArray(cryptorRef.outputLength(plaintextInput.size))
 
-        var moved = cryptorRef.update(
+        var moved = if (plaintextInput.isEmpty()) 0
+        else cryptorRef.update(
             dataIn = plaintextInput.refTo(0),
             dataInLength = plaintextInput.size,
             dataOut = ciphertextOutput.refTo(0),
