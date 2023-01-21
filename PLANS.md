@@ -50,9 +50,9 @@
     * [ ] Agron2 (prf)
     * [ ] scrypt (prf)
     * [ ] brcypt (prf)
-  * [ ] RSA-SSA-PKCS1 (signature)
-  * [ ] Ed25519 curve
-  * [ ] CMAC (mac)
+    * [ ] RSA-SSA-PKCS1 (signature)
+    * [ ] Ed25519 curve
+    * [ ] CMAC (mac)
     * [ ] Blowfish (cipher), Blake (hash) - try to find some implementations (?)
 * [ ] Engines
     * [ ] WebCrypto WASM support (need kotlin 1.8.20 stable (or at least beta))
@@ -96,7 +96,8 @@
 
 * [ ] compiler plugin to generate declarations with flatten parameters (related to 'general way to define algorithms')
 * [ ] Coroutines integration (for JDK engine to run on other dispatcher, to avoid blocking main thread) - is it needed?
-* [ ] use kotlin.Closeable when it will be available (1.8.20 or 1.9.0)
+* [ ] use kotlin.Closeable (require kotlin 1.8.20 or 1.9.0)
+* [ ] migrate test-tool-client/server to composite build (require kotlin 1.8.20 or 1.9.0)
 * [ ] Engines
     * [ ] AWS/GCP KMS provider
     * [ ] BorringSSL engine (MPP)
