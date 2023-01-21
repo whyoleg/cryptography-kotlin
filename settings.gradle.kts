@@ -35,11 +35,8 @@ listOf(
     project(":cryptography-$name").projectDir = file("cryptography-providers/$name")
 }
 
-//test modules
-include("cryptography-test-support")
-include("cryptography-tests") //TODO: move to providers folder
-listOf("client", "server", "suite").forEach { name ->
-    val fullName = "cryptography-test-vectors-$name"
-    include(fullName)
-    project(":$fullName").projectDir = file("cryptography-test-vectors/$name")
+//test tool
+listOf("client", "server").forEach { name ->
+    include("cryptography-tester-$name")
+    project(":cryptography-tester-$name").projectDir = file("cryptography-tester/$name")
 }

@@ -1,4 +1,4 @@
-package dev.whyoleg.cryptography.test.vectors.client
+package dev.whyoleg.cryptography.tester.client
 
 import io.ktor.client.*
 import io.ktor.client.plugins.*
@@ -9,7 +9,7 @@ import io.ktor.utils.io.*
 import io.ktor.utils.io.core.*
 import kotlinx.coroutines.flow.*
 
-object TestVectorsClient {
+object TesterClient {
 
     private val client = HttpClient {
         install(DefaultRequest) {

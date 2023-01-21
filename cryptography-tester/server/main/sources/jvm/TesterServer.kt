@@ -1,12 +1,10 @@
-package dev.whyoleg.cryptography.test.vectors.server
+package dev.whyoleg.cryptography.tester.server
 
-import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.callloging.*
 import io.ktor.server.plugins.cors.routing.*
-import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.utils.io.*
@@ -18,7 +16,7 @@ import kotlin.io.path.*
 @OptIn(ExperimentalPathApi::class)
 fun main() {
     //TODO: get from args
-    val rootPath = Path("cryptography-test-vectors/storage").also(Path::deleteRecursively)
+    val rootPath = Path("cryptography-tester/storage").also(Path::deleteRecursively)
     val instanceId = "1"
 
     embeddedServer(Netty, port = 9000) {
