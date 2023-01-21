@@ -5,7 +5,7 @@ import dev.whyoleg.cryptography.algorithms.symmetric.*
 fun ProviderTestContext.supports(condition: Boolean, feature: String): Boolean {
     if (condition) return true
 
-    logger.log("[TEST] SKIP: $feature is not supported by ${provider.name}")
+    logger.log { "[TEST] SKIP: $feature is not supported by ${provider.name}" }
     return false
 }
 

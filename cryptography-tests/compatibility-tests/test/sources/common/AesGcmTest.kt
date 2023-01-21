@@ -25,18 +25,18 @@ class AesGcmTest : AesBasedTest<AES.GCM.Key, AES.GCM>(AES.GCM) {
 
         generateKeys { key, keyReference, keyParameters ->
             tagSizes.forEach { (cipherParametersId, tagSize) ->
-                logger.log("tagSize = $tagSize")
+                logger.log { "tagSize = $tagSize" }
                 val cipher = key.cipher(tagSize)
                 repeat(associatedDataIterations) { adIndex ->
                     val associatedDataSize = if (adIndex == 0) null else CryptographyRandom.nextInt(maxAssociatedDataSize)
-                    logger.log("associatedData.size = $associatedDataSize")
+                    logger.log { "associatedData.size = $associatedDataSize" }
                     val associatedData = associatedDataSize?.let(CryptographyRandom::nextBytes)
                     repeat(cipherIterations) {
                         val plaintextSize = CryptographyRandom.nextInt(maxPlaintextSize)
-                        logger.log("plaintext.size      = $plaintextSize")
+                        logger.log { "plaintext.size      = $plaintextSize" }
                         val plaintext = CryptographyRandom.nextBytes(plaintextSize)
                         val ciphertext = cipher.encrypt(plaintext, associatedData)
-                        logger.log("ciphertext.size     = ${ciphertext.size}")
+                        logger.log { "ciphertext.size     = ${ciphertext.size}" }
 
                         assertContentEquals(plaintext, cipher.decrypt(ciphertext, associatedData), "Initial Decrypt")
 

@@ -20,10 +20,10 @@ abstract class DigestTest(algorithmId: CryptographyAlgorithmId<Digest>) : Compat
         val parametersId = api.digests.saveParameters(TestParameters.Empty)
         repeat(iterations) {
             val dataSize = CryptographyRandom.nextInt(maxDataSize)
-            logger.log("data.size   = $dataSize")
+            logger.log { "data.size   = $dataSize" }
             val data = CryptographyRandom.nextBytes(dataSize)
             val digest = hasher.hash(data)
-            logger.log("digest.size = ${digest.size}")
+            logger.log { "digest.size = ${digest.size}" }
 
             assertContentEquals(digest, hasher.hash(data), "Initial Hash")
 

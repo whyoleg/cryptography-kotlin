@@ -1,22 +1,20 @@
 package dev.whyoleg.cryptography.test.utils
 
-fun interface TestLogger {
-    fun log(message: String)
-
-    companion object {
-        val Noop: TestLogger = TestLogger { }
-    }
-}
-
-fun TestLogger(
-    tag: String? = null,
-    disabled: Boolean = false,
-): TestLogger {
-    if (disabled) return TestLogger.Noop
-
-    val prefix = when (tag) {
+class TestLogger(
+    tag: String?,
+    val enabled: Boolean,
+) {
+    private val tag = when (tag) {
         null -> "[TEST]"
         else -> "[TEST|$tag]"
     }
-    return TestLogger { message -> println("$prefix $message") }
+
+    @PublishedApi
+    internal fun print(message: String) {
+        println("$tag $message")
+    }
+
+    inline fun log(message: () -> String) {
+        if (enabled) print(message())
+    }
 }

@@ -54,16 +54,16 @@ class EcdsaTest : CompatibilityTest<ECDSA>(ECDSA) {
                     ))
 
                 digests.forEach { (signatureParametersId, digest) ->
-                    logger.log("digest = $digest")
+                    logger.log { "digest = $digest" }
                     val signer = keyPair.privateKey.signatureGenerator(digest)
                     val verifier = keyPair.publicKey.signatureVerifier(digest)
 
                     repeat(signatureIterations) {
                         val dataSize = CryptographyRandom.nextInt(maxDataSize)
-                        logger.log("data.size      = $dataSize")
+                        logger.log { "data.size      = $dataSize" }
                         val data = CryptographyRandom.nextBytes(dataSize)
                         val signature = signer.generateSignature(data)
-                        logger.log("signature.size = ${signature.size}")
+                        logger.log { "signature.size = ${signature.size}" }
 
                         assertTrue(verifier.verifySignature(data, signature), "Initial Verify")
 

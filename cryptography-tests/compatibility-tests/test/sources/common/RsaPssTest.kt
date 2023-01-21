@@ -27,17 +27,17 @@ class RsaPssTest : RsaBasedTest<RSA.PSS.PublicKey, RSA.PSS.PrivateKey, RSA.PSS.K
         }
         generateKeys { keyPair, keyReference, _ ->
             saltSizes.forEach { (signatureParametersId, saltSize) ->
-                logger.log("salt.size      = ${saltSize.inBytes}")
+                logger.log { "salt.size      = ${saltSize.inBytes}" }
 
                 val signer = keyPair.privateKey.signatureGenerator(saltSize)
                 val verifier = keyPair.publicKey.signatureVerifier(saltSize)
 
                 repeat(signatureIterations) {
                     val dataSize = CryptographyRandom.nextInt(maxDataSize)
-                    logger.log("data.size      = $dataSize")
+                    logger.log { "data.size      = $dataSize" }
                     val data = CryptographyRandom.nextBytes(dataSize)
                     val signature = signer.generateSignature(data)
-                    logger.log("signature.size = ${signature.size}")
+                    logger.log { "signature.size = ${signature.size}" }
 
                     assertTrue(verifier.verifySignature(data, signature), "Initial Verify")
 

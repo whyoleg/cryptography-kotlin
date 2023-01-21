@@ -14,19 +14,19 @@ class RsaOaepTest : RsaBasedTest<RSA.OAEP.PublicKey, RSA.OAEP.PrivateKey, RSA.OA
         val cipherParametersId = api.ciphers.saveParameters(TestParameters.Empty)
         generateKeys { keyPair, keyReference, keyParameters ->
             val maxPlaintextSize = keyParameters.keySize.inBytes - 2 - 2 * keyParameters.digestSize
-            logger.log("maxPlaintextSize.size = $maxPlaintextSize")
+            logger.log { "maxPlaintextSize.size = $maxPlaintextSize" }
             val encryptor = keyPair.publicKey.encryptor()
             val decryptor = keyPair.privateKey.decryptor()
             repeat(associatedDataIterations) { adIndex ->
                 val associatedDataSize = if (adIndex == 0) null else CryptographyRandom.nextInt(maxAssociatedDataSize)
-                logger.log("associatedData.size   = $associatedDataSize")
+                logger.log { "associatedData.size   = $associatedDataSize" }
                 val associatedData = associatedDataSize?.let(CryptographyRandom::nextBytes)
                 repeat(cipherIterations) {
                     val plaintextSize = CryptographyRandom.nextInt(maxPlaintextSize)
-                    logger.log("plaintext.size        = $plaintextSize")
+                    logger.log { "plaintext.size        = $plaintextSize" }
                     val plaintext = CryptographyRandom.nextBytes(plaintextSize)
                     val ciphertext = encryptor.encrypt(plaintext, associatedData)
-                    logger.log("ciphertext.size       = ${ciphertext.size}")
+                    logger.log { "ciphertext.size       = ${ciphertext.size}" }
 
                     assertContentEquals(plaintext, decryptor.decrypt(ciphertext, associatedData), "Initial Decrypt")
 

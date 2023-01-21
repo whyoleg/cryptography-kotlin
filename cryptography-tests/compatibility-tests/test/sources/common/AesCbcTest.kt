@@ -30,14 +30,14 @@ class AesCbcTest : AesBasedTest<AES.CBC.Key, AES.CBC>(AES.CBC) {
 
         generateKeys { key, keyReference, keyParameters ->
             paddings.forEach { (cipherParametersId, padding) ->
-                logger.log("padding = $padding")
+                logger.log { "padding = $padding" }
                 val cipher = key.cipher(padding)
                 repeat(cipherIterations) {
                     val plaintextSize = CryptographyRandom.nextInt(maxPlaintextSize).withPadding(padding)
-                    logger.log("plaintext.size  = $plaintextSize")
+                    logger.log { "plaintext.size  = $plaintextSize" }
                     val plaintext = CryptographyRandom.nextBytes(plaintextSize)
                     val ciphertext = cipher.encrypt(plaintext)
-                    logger.log("ciphertext.size = ${ciphertext.size}")
+                    logger.log { "ciphertext.size = ${ciphertext.size}" }
 
                     assertContentEquals(plaintext, cipher.decrypt(ciphertext), "Initial Decrypt")
 

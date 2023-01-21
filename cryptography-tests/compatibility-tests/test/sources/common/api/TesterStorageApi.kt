@@ -12,7 +12,7 @@ abstract class TesterStorageApi(
         parameters: T,
     ): TestParametersId {
         val id = saveParameters(parameters, typeOf<T>())
-        logger.log("$storageName.saveParameters: $id -> $parameters")
+        logger.log { "$storageName.saveParameters: $id -> $parameters" }
         return TestParametersId(id)
     }
 
@@ -20,7 +20,7 @@ abstract class TesterStorageApi(
         block: (parameters: T, parametersId: TestParametersId) -> Unit,
     ) {
         getParameters<T>(typeOf<T>()).forEach { (id, parameters, metadata) ->
-            logger.log("$storageName.getParameters: $id -> $parameters | $metadata")
+            logger.log { "$storageName.getParameters: $id -> $parameters | $metadata" }
             block(parameters, TestParametersId(id))
         }
     }
@@ -31,7 +31,7 @@ abstract class TesterStorageApi(
     ): TestReference {
         val id = saveData(parametersId, data, typeOf<T>())
         val reference = TestReference(parametersId, TestDataId(id))
-        logger.log("$storageName.saveData: $reference -> $data")
+        logger.log { "$storageName.saveData: $reference -> $data" }
         return reference
     }
 
@@ -41,7 +41,7 @@ abstract class TesterStorageApi(
     ) {
         getData<T>(parametersId, typeOf<T>()).forEach { (id, data, metadata) ->
             val reference = TestReference(parametersId, TestDataId(id))
-            logger.log("$storageName.getData: $reference -> $data | $metadata")
+            logger.log { "$storageName.getData: $reference -> $data | $metadata" }
             block(data, reference)
         }
     }
