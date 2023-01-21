@@ -29,8 +29,18 @@ kotlin {
 
         languageSettings {
             progressiveMode = true
-            if (compilationName == "test") {
-                optInForTests()
+            if (compilationName == "test") optInForTests()
+        }
+
+        //for some reason adding it to commonTest doesn't work
+        if (compilationName == "test") when (targetName) {
+            "common" -> "test"
+            "jvm"    -> "test-junit"
+            "js"     -> "test-js"
+            else     -> null
+        }?.let { testLibrary ->
+            dependencies {
+                implementation(kotlin(testLibrary))
             }
         }
     }

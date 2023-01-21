@@ -21,7 +21,6 @@ class CryptographyRandomTest {
     fun testArray() {
         repeat(8) { n ->
             val size = 10.0.pow(n).toInt()
-            println(size)
             val array = CryptographyRandom.nextBytes(size)
             assertTrue(array.any { it != 0.toByte() })
             assertEquals(size, array.size)
