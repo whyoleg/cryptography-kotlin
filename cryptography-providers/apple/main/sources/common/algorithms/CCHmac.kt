@@ -4,7 +4,6 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
-import dev.whyoleg.cryptography.apple.*
 import dev.whyoleg.cryptography.io.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.signature.*
@@ -79,7 +78,7 @@ private class HmacSignature(
             algorithm = hmacAlgorithm,
             key = key.refTo(0),
             keyLength = key.size.convert(),
-            data = dataInput.refTo(0),
+            data = dataInput.fixEmpty().refTo(0),
             dataLength = dataInput.size.convert(),
             macOut = macOutput.refTo(0)
         )

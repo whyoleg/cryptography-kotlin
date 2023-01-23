@@ -11,7 +11,7 @@ fun <A : CryptographyAlgorithm> runTestForEachAlgorithm(
     block: suspend AlgorithmTestContext<A>.() -> Unit,
 ): TestResult = runTestForEachProvider(enableLogs) {
     val algorithm = provider.getOrNull(algorithmId) ?: run {
-        logger.log { "Algorithm ${algorithmId.name} is not supported by provider ${provider.name}" }
+        logger.log { "Algorithm ${algorithmId.name} is not supported by ${provider.name} provider" }
         return@runTestForEachProvider
     }
     AlgorithmTestContext(logger, provider, algorithm).block()

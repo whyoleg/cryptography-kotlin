@@ -5,7 +5,6 @@
 * [ ] Tests
     * [ ] tests for empty arrays
     * [ ] investigate failure WebCrypto vs JDK with RSA, ECDSA
-    * [ ] cache ciphers/signature* like keys
     * [ ] DROP ALL TODO
     * [ ] Investigate: WebCrypto BROWSER doesn't support 192bits
 * [ ] Engines
@@ -113,6 +112,7 @@
 * [ ] investigate linux getrandom call
 * [ ] Extract popular digests into separate module (?) with only non-suspend impl?
 * [ ] Add assertion in compatibility tests on amount of tested combinations
+* [ ] cache ciphers/signature* like keys in tests
 
 ## 1.0.0: Stable release
 

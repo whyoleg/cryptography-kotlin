@@ -9,10 +9,12 @@ private const val ivSize = 16
 
 class AesCbcTest {
     @Test
-    fun testEncryptSizes() = runTestForEachAlgorithm(AES.CBC) {
+    fun testSizes() = runTestForEachAlgorithm(AES.CBC) {
         generateSymmetricKeySize { keySize ->
             if (!supportsKeySize(keySize.value.inBits)) return@generateSymmetricKeySize
+
             val key = algorithm.keyGenerator(keySize).generateKey()
+            assertEquals(keySize.value.inBytes, key.encodeTo(AES.Key.Format.RAW).size)
 
             key.cipher(padding = true).run {
                 assertEquals(ivSize + blockSize * 1, encrypt(ByteArray(0)).size)
@@ -28,14 +30,6 @@ class AesCbcTest {
                 assertEquals(ivSize + blockSize * 1, encrypt(ByteArray(16)).size)
                 assertEquals(ivSize + blockSize * 20, encrypt(ByteArray(320)).size)
             }
-        }
-    }
-
-    @Test
-    fun testKeySizes() = runTestForEachAlgorithm(AES.CBC) {
-        generateSymmetricKeySize { keySize ->
-            if (!supportsKeySize(keySize.value.inBits)) return@generateSymmetricKeySize
-            assertEquals(keySize.value.inBytes, algorithm.keyGenerator(keySize).generateKey().encodeTo(AES.Key.Format.RAW).size)
         }
     }
 }

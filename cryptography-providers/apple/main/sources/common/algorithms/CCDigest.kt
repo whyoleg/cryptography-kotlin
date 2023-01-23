@@ -21,7 +21,7 @@ internal class CCDigest(
     override fun hashBlocking(dataInput: Buffer): Buffer {
         val output = ByteArray(hashAlgorithm.digestSize)
         val result = hashAlgorithm.ccHash(
-            dataInput.refTo(0),
+            dataInput.fixEmpty().refTo(0),
             dataInput.size.convert(),
             output.asUByteArray().refTo(0)
         )
