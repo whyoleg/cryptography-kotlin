@@ -54,7 +54,7 @@ internal class JdkCryptographyState(
         macs.get(algorithm, JMac::getInstance, JMac::getInstance, JMac::getInstance)
 
     fun signature(algorithm: String): Pooled<JSignature> =
-        signatures.get(algorithm, JSignature::getInstance, JSignature::getInstance, JSignature::getInstance)
+        signatures.get(algorithm, JSignature::getInstance, JSignature::getInstance, JSignature::getInstance, cached = false)
 
     fun keyGenerator(algorithm: String): Pooled<JKeyGenerator> =
         keyGenerators.get(algorithm, JKeyGenerator::getInstance, JKeyGenerator::getInstance, JKeyGenerator::getInstance)

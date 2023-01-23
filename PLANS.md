@@ -116,6 +116,7 @@
 * [ ] cache ciphers/signature* like keys in tests
 * [ ] Refactor currentPlatform in tests with some kind of object per platform with properties
 * [ ] Supports testing DER keys not by content equality, but by parsing and comparing
+* [ ] JDK pooling for SPIs (f.e. looks like Signature is poolable only by parameters, and not by algorithm)
 
 ## 1.0.0: Stable release
 
