@@ -15,7 +15,6 @@ private inline fun generateCurves(block: (curve: EC.Curve) -> Unit) {
     generate(block, EC.Curve.P256, EC.Curve.P384, EC.Curve.P521)
 }
 
-//TODO: different signature sizes JVM vs nodejs/browser (truncated)
 class EcdsaTest : CompatibilityTest<ECDSA>(ECDSA) {
     @Serializable
     private data class KeyParameters(val curveName: String) : TestParameters {
@@ -29,13 +28,21 @@ class EcdsaTest : CompatibilityTest<ECDSA>(ECDSA) {
     }
 
     @Serializable
-    private data class SignatureParameters(val digest: String) : TestParameters
+    private data class SignatureParameters(
+        val digest: String,
+        val signatureFormat: ECDSA.SignatureFormat,
+    ) : TestParameters
 
     override suspend fun CompatibilityTestContext<ECDSA>.generate() {
-        val digests = buildList {
-            generateDigests { digest, _ ->
-                val id = api.signatures.saveParameters(SignatureParameters(digest.name))
-                add(id to digest)
+        val signatureParametersList = buildList {
+            listOf(ECDSA.SignatureFormat.RAW, ECDSA.SignatureFormat.DER).forEach { signatureFormat ->
+                if (!supportsSignatureFormat(signatureFormat)) return@forEach
+
+                generateDigests { digest, _ ->
+                    val parameters = SignatureParameters(digest.name, signatureFormat)
+                    val id = api.signatures.saveParameters(parameters)
+                    add(id to parameters)
+                }
             }
         }
         generateCurves { curve ->
@@ -53,10 +60,12 @@ class EcdsaTest : CompatibilityTest<ECDSA>(ECDSA) {
                         }
                     ))
 
-                digests.forEach { (signatureParametersId, digest) ->
-                    logger.log { "digest = $digest" }
-                    val signer = keyPair.privateKey.signatureGenerator(digest)
-                    val verifier = keyPair.publicKey.signatureVerifier(digest)
+                signatureParametersList.forEach { (signatureParametersId, signatureParameters) ->
+                    logger.log { "digest = ${signatureParameters.digest}, signatureFormat = ${signatureParameters.signatureFormat}" }
+                    val signer =
+                        keyPair.privateKey.signatureGenerator(digest(signatureParameters.digest), signatureParameters.signatureFormat)
+                    val verifier =
+                        keyPair.publicKey.signatureVerifier(digest(signatureParameters.digest), signatureParameters.signatureFormat)
 
                     repeat(signatureIterations) {
                         val dataSize = CryptographyRandom.nextInt(maxDataSize)
@@ -100,7 +109,7 @@ class EcdsaTest : CompatibilityTest<ECDSA>(ECDSA) {
                             else                -> error("Unsupported key format: $stringFormat")
                         }
                     }
-                    privateKeys.forEach { privateKey ->
+                    if (provider.supportsEcPrivateKeyDer) privateKeys.forEach { privateKey ->
                         private.formats[StringKeyFormat.DER]?.let { bytes ->
                             assertContentEquals(bytes, privateKey.encodeTo(EC.PrivateKey.Format.DER), "Private key DER encoding")
                         }
@@ -110,12 +119,14 @@ class EcdsaTest : CompatibilityTest<ECDSA>(ECDSA) {
             }
         }
 
-        api.signatures.getParameters<SignatureParameters> { (digestName), parametersId ->
+        api.signatures.getParameters<SignatureParameters> { (digestName, signatureFormat), parametersId ->
+            if (!supportsSignatureFormat(signatureFormat)) return@getParameters
+
             val digest = digest(digestName)
             api.signatures.getData<SignatureData>(parametersId) { (keyReference, data, signature), _ ->
                 val (publicKeys, privateKeys) = keyPairs.getValue(keyReference)
-                val verifiers = publicKeys.map { it.signatureVerifier(digest) }
-                val generators = privateKeys.map { it.signatureGenerator(digest) }
+                val verifiers = publicKeys.map { it.signatureVerifier(digest, signatureFormat) }
+                val generators = privateKeys.map { it.signatureGenerator(digest, signatureFormat) }
 
                 verifiers.forEach { verifier ->
                     assertTrue(verifier.verifySignature(data, signature), "Verify")

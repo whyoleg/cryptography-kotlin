@@ -113,6 +113,8 @@
 * [ ] Extract popular digests into separate module (?) with only non-suspend impl?
 * [ ] Add assertion in compatibility tests on amount of tested combinations
 * [ ] cache ciphers/signature* like keys in tests
+* [ ] Refactor currentPlatform in tests with some kind of object per platform with properties
+* [ ] Supports testing DER keys not by content equality, but by parsing and comparing
 
 ## 1.0.0: Stable release
 

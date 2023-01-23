@@ -30,15 +30,11 @@ public interface ECDSA : EC<ECDSA.PublicKey, ECDSA.PrivateKey, ECDSA.KeyPair> {
         ): SignatureGenerator
     }
 
-    public sealed class SignatureFormat {
+    public enum class SignatureFormat {
         //IEEE P1363 format
-        public object RAW : SignatureFormat() {
-            override fun toString(): String = "ECDSA.SignatureFormat.RAW"
-        }
+        RAW,
 
         //X.509 format
-        public object DER : SignatureFormat() {
-            override fun toString(): String = "ECDSA.SignatureFormat.DER"
-        }
+        DER
     }
 }
