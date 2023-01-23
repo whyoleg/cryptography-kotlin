@@ -16,14 +16,18 @@ internal object WebCryptoEcdsa : ECDSA, WebCryptoEc<ECDSA.PublicKey, ECDSA.Priva
     override val keyPairUsages: Array<String> get() = arrayOf("sign", "verify")
     override val publicKeyWrapper: (CryptoKey) -> ECDSA.PublicKey = { key ->
         object : ECDSA.PublicKey, EncodableKey<EC.PublicKey.Format> by WebCryptoEncodableKey(key, publicKeyFormat) {
-            override fun signatureVerifier(digest: CryptographyAlgorithmId<Digest>): SignatureVerifier =
-                WebCryptoSignatureVerifier(EcdsaParams(digest.hashAlgorithmName()), key)
+            override fun signatureVerifier(digest: CryptographyAlgorithmId<Digest>, format: ECDSA.SignatureFormat): SignatureVerifier {
+                check(format == ECDSA.SignatureFormat.RAW) { "Only RAW signature format is supported" }
+                return WebCryptoSignatureVerifier(EcdsaParams(digest.hashAlgorithmName()), key)
+            }
         }
     }
     override val privateKeyWrapper: (CryptoKey) -> ECDSA.PrivateKey = { key ->
         object : ECDSA.PrivateKey, EncodableKey<EC.PrivateKey.Format> by WebCryptoEncodableKey(key, privateKeyFormat) {
-            override fun signatureGenerator(digest: CryptographyAlgorithmId<Digest>): SignatureGenerator =
-                WebCryptoSignatureGenerator(EcdsaParams(digest.hashAlgorithmName()), key)
+            override fun signatureGenerator(digest: CryptographyAlgorithmId<Digest>, format: ECDSA.SignatureFormat): SignatureGenerator {
+                check(format == ECDSA.SignatureFormat.RAW) { "Only RAW signature format is supported" }
+                return WebCryptoSignatureGenerator(EcdsaParams(digest.hashAlgorithmName()), key)
+            }
         }
     }
     override val keyPairWrapper: (CryptoKeyPair) -> ECDSA.KeyPair = { keyPair ->

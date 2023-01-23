@@ -23,8 +23,8 @@ private class EcdsaPublicKey(
     private val state: JdkCryptographyState,
     private val key: JPublicKey,
 ) : ECDSA.PublicKey, JdkEncodableKey<EC.PublicKey.Format>(key, "EC") {
-    override fun signatureVerifier(digest: CryptographyAlgorithmId<Digest>): SignatureVerifier {
-        return JdkSignatureVerifier(state, key, digest.hashAlgorithmName() + "withECDSA", null)
+    override fun signatureVerifier(digest: CryptographyAlgorithmId<Digest>, format: ECDSA.SignatureFormat): SignatureVerifier {
+        return JdkSignatureVerifier(state, key, digest.hashAlgorithmName() + "withECDSA" + format.algorithmSuffix(), null)
     }
 }
 
@@ -32,7 +32,12 @@ private class EcdsaPrivateKey(
     private val state: JdkCryptographyState,
     private val key: JPrivateKey,
 ) : ECDSA.PrivateKey, JdkEncodableKey<EC.PrivateKey.Format>(key, "EC") {
-    override fun signatureGenerator(digest: CryptographyAlgorithmId<Digest>): SignatureGenerator {
-        return JdkSignatureGenerator(state, key, digest.hashAlgorithmName() + "withECDSA", null)
+    override fun signatureGenerator(digest: CryptographyAlgorithmId<Digest>, format: ECDSA.SignatureFormat): SignatureGenerator {
+        return JdkSignatureGenerator(state, key, digest.hashAlgorithmName() + "withECDSA" + format.algorithmSuffix(), null)
     }
+}
+
+private fun ECDSA.SignatureFormat.algorithmSuffix() = when (this) {
+    ECDSA.SignatureFormat.RAW -> "inP1363Format"
+    ECDSA.SignatureFormat.DER -> ""
 }

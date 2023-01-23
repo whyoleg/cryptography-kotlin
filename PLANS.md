@@ -4,7 +4,7 @@
 
 * [ ] Tests
     * [ ] tests for empty arrays
-    * [ ] investigate failure WebCrypto vs JDK with RSA, ECDSA
+    * [ ] investigate failure WebCrypto vs JDK with RSA
     * [ ] DROP ALL TODO
     * [ ] Investigate: WebCrypto BROWSER doesn't support 192bits
 * [ ] Engines
