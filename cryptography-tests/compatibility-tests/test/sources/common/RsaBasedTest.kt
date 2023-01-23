@@ -1,6 +1,5 @@
 package dev.whyoleg.cryptography.tests.compatibility
 
-import dev.whyoleg.cryptography.BinarySize.Companion.bits
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.test.utils.*
@@ -18,10 +17,8 @@ abstract class RsaBasedTest<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, 
     protected data class KeyParameters(
         val keySizeBits: Int,
         val digest: String,
-        val digestSize: Int,
-    ) : TestParameters {
-        val keySize get() = keySizeBits.bits
-    }
+        val digestSizeBytes: Int,
+    ) : TestParameters
 
     protected suspend fun CompatibilityTestContext<A>.generateKeys(
         block: suspend (keyPair: KP, keyReference: TestReference, keyParameters: KeyParameters) -> Unit,
@@ -31,12 +28,11 @@ abstract class RsaBasedTest<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, 
                 val keyParameters = KeyParameters(keySize.inBits, digest.name, digestSize)
                 val keyParametersId = api.keyPairs.saveParameters(keyParameters)
                 algorithm.keyPairGenerator(keySize, digest).generateKeys(keyIterations) { keyPair ->
-                    val keyReference = api.keyPairs.saveData(
-                        keyParametersId, KeyPairData(
-                            public = KeyData {
-                                put(StringKeyFormat.DER, keyPair.publicKey.encodeTo(RSA.PublicKey.Format.DER))
-                                if (provider.supportsJwk) put(StringKeyFormat.JWK, keyPair.publicKey.encodeTo(RSA.PublicKey.Format.JWK))
-                            },
+                    val keyReference = api.keyPairs.saveData(keyParametersId, KeyPairData(
+                        public = KeyData {
+                            put(StringKeyFormat.DER, keyPair.publicKey.encodeTo(RSA.PublicKey.Format.DER))
+                            if (provider.supportsJwk) put(StringKeyFormat.JWK, keyPair.publicKey.encodeTo(RSA.PublicKey.Format.JWK))
+                        },
                         private = KeyData {
                             put(StringKeyFormat.DER, keyPair.privateKey.encodeTo(RSA.PrivateKey.Format.DER))
                             if (provider.supportsJwk) put(StringKeyFormat.JWK, keyPair.privateKey.encodeTo(RSA.PrivateKey.Format.JWK))

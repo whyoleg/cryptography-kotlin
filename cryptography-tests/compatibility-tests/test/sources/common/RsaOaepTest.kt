@@ -1,5 +1,6 @@
 package dev.whyoleg.cryptography.tests.compatibility
 
+import dev.whyoleg.cryptography.BinarySize.Companion.bits
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.random.*
 import dev.whyoleg.cryptography.tests.compatibility.api.*
@@ -13,7 +14,7 @@ class RsaOaepTest : RsaBasedTest<RSA.OAEP.PublicKey, RSA.OAEP.PrivateKey, RSA.OA
     override suspend fun CompatibilityTestContext<RSA.OAEP>.generate() {
         val cipherParametersId = api.ciphers.saveParameters(TestParameters.Empty)
         generateKeys { keyPair, keyReference, keyParameters ->
-            val maxPlaintextSize = keyParameters.keySize.inBytes - 2 - 2 * keyParameters.digestSize
+            val maxPlaintextSize = keyParameters.keySizeBits.bits.inBytes - 2 - 2 * keyParameters.digestSizeBytes
             logger.log { "maxPlaintextSize.size = $maxPlaintextSize" }
             val encryptor = keyPair.publicKey.encryptor()
             val decryptor = keyPair.privateKey.decryptor()
