@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.*
 object TesterClient {
 
     private val client = HttpClient {
+        expectSuccess = true
         install(DefaultRequest) {
             port = 9000
         }
@@ -29,12 +30,12 @@ object TesterClient {
     fun getData(algorithm: String, path: String, parametersId: String): Flow<Pair<String, ByteArray>> =
         get("$algorithm/$path/$parametersId/data")
 
-    private suspend fun save(path: String, bytes: ByteArray) = client.post(path) {
+    private suspend fun save(path: String, bytes: ByteArray) = client.post("compatibility/$path") {
         setBody(ByteArrayContent(bytes))
     }.bodyAsText()
 
     private fun get(path: String) = flow {
-        val channel = client.get(path).bodyAsChannel()
+        val channel = client.get("compatibility/$path").bodyAsChannel()
         while (true) {
             val idLength = channel.readIntOrNull() ?: break
             val id = channel.readPacket(idLength).readText()

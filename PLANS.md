@@ -4,7 +4,6 @@
 
 * [ ] Tests
     * [ ] tests for empty arrays
-    * [ ] Add assertion in compatibility tests on amount of tested combinations
     * [ ] investigate failure WebCrypto vs JDK with RSA, ECDSA
     * [ ] cache ciphers/signature* like keys
     * [ ] DROP ALL TODO
@@ -112,7 +111,8 @@
 * [ ] Integrate with https://github.com/google/wycheproof to test against test vectors (more tests
   here https://github.com/pyca/cryptography/blob/main/docs/development/test-vectors.rst)
 * [ ] investigate linux getrandom call
-* [ ] Extract popular digests into separate module (?) with only blocking impl?
+* [ ] Extract popular digests into separate module (?) with only non-suspend impl?
+* [ ] Add assertion in compatibility tests on amount of tested combinations
 
 ## 1.0.0: Stable release
 
