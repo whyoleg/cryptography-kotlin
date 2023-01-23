@@ -13,7 +13,9 @@ class RsaPssTest {
     fun testSizes() = runTestForEachAlgorithm(RSA.PSS) {
         generateRsaKeySizes { keySize ->
             generateDigests { digest, _ ->
-                val signatureGenerator = algorithm.keyPairGenerator(keySize, digest).generateKey().privateKey.signatureGenerator(10.bytes)
+                val keyPair = algorithm.keyPairGenerator(keySize, digest).generateKey()
+                assertEquals(keySize.inBytes + 38, keyPair.publicKey.encodeTo(RSA.PublicKey.Format.DER).size)
+                val signatureGenerator = keyPair.privateKey.signatureGenerator(10.bytes)
 
                 assertEquals(keySize.inBytes, signatureGenerator.generateSignature(ByteArray(0)).size)
                 repeat(8) { n ->
