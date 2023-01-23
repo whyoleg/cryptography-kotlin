@@ -1,6 +1,5 @@
 package dev.whyoleg.cryptography.tests.compatibility
 
-import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.BinarySize.Companion.bits
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
@@ -10,10 +9,6 @@ import kotlinx.serialization.*
 import kotlin.test.*
 
 private const val keyIterations = 5
-
-private inline fun generateKeySizes(block: (keySize: BinarySize) -> Unit) {
-    generate(block, 2048.bits, 3072.bits, 4096.bits)
-}
 
 abstract class RsaBasedTest<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP : RSA.KeyPair<PublicK, PrivateK>, A : RSA<PublicK, PrivateK, KP>>(
     algorithmId: CryptographyAlgorithmId<A>,
@@ -31,7 +26,7 @@ abstract class RsaBasedTest<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, 
     protected suspend fun CompatibilityTestContext<A>.generateKeys(
         block: suspend (keyPair: KP, keyReference: TestReference, keyParameters: KeyParameters) -> Unit,
     ) {
-        generateKeySizes { keySize ->
+        generateRsaKeySizes { keySize ->
             generateDigests { digest, digestSize ->
                 val keyParameters = KeyParameters(keySize.inBits, digest.name, digestSize)
                 val keyParametersId = api.keyPairs.saveParameters(keyParameters)
@@ -41,7 +36,7 @@ abstract class RsaBasedTest<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, 
                             public = KeyData {
                                 put(StringKeyFormat.DER, keyPair.publicKey.encodeTo(RSA.PublicKey.Format.DER))
                                 if (provider.supportsJwk) put(StringKeyFormat.JWK, keyPair.publicKey.encodeTo(RSA.PublicKey.Format.JWK))
-                        },
+                            },
                         private = KeyData {
                             put(StringKeyFormat.DER, keyPair.privateKey.encodeTo(RSA.PrivateKey.Format.DER))
                             if (provider.supportsJwk) put(StringKeyFormat.JWK, keyPair.privateKey.encodeTo(RSA.PrivateKey.Format.JWK))

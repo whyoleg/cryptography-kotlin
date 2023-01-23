@@ -1,6 +1,7 @@
 package dev.whyoleg.cryptography.test.utils
 
 import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.BinarySize.Companion.bits
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
@@ -8,6 +9,10 @@ import dev.whyoleg.cryptography.materials.key.*
 
 inline fun generateSymmetricKeySize(block: (keySize: SymmetricKeySize) -> Unit) {
     generate(block, SymmetricKeySize.B128, SymmetricKeySize.B192, SymmetricKeySize.B256)
+}
+
+inline fun generateRsaKeySizes(block: (keySize: BinarySize) -> Unit) {
+    generate(block, 2048.bits, 3072.bits, 4096.bits)
 }
 
 @OptIn(InsecureAlgorithm::class)
