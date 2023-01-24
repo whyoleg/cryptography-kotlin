@@ -87,7 +87,7 @@ private class RsaPssPublicKey(
         val parameters = PSSParameterSpec(
             hashAlgorithmName,
             "MGF1",
-            MGF1ParameterSpec.SHA1,
+            MGF1ParameterSpec(hashAlgorithmName),
             saltLength.inBytes,
             1
         )
@@ -104,7 +104,7 @@ private class RsaPssPrivateKey(
         val parameters = PSSParameterSpec(
             hashAlgorithmName,
             "MGF1",
-            MGF1ParameterSpec.SHA1,
+            MGF1ParameterSpec(hashAlgorithmName),
             saltLength.inBytes,
             1
         )

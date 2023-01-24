@@ -108,7 +108,7 @@ private class RsaOaepEncryptor(
         val parameters = OAEPParameterSpec(
             hashAlgorithmName,
             "MGF1",
-            MGF1ParameterSpec.SHA1,
+            MGF1ParameterSpec(hashAlgorithmName),
             associatedData?.let(PSource::PSpecified) ?: PSource.PSpecified.DEFAULT
         )
         cipher.init(JCipher.ENCRYPT_MODE, key, parameters, state.secureRandom)
@@ -127,7 +127,7 @@ private class RsaOaepDecryptor(
         val parameters = OAEPParameterSpec(
             hashAlgorithmName,
             "MGF1",
-            MGF1ParameterSpec.SHA1,
+            MGF1ParameterSpec(hashAlgorithmName),
             associatedData?.let(PSource::PSpecified) ?: PSource.PSpecified.DEFAULT
         )
         cipher.init(JCipher.DECRYPT_MODE, key, parameters, state.secureRandom)
