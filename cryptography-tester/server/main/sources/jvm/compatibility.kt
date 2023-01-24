@@ -57,6 +57,10 @@ private suspend fun ApplicationCall.saveFile(path: Path, name: String) {
 private suspend fun ApplicationCall.getFiles(path: Path, get: Path.() -> Pair<String, Path>) = respondBytesWriter {
     path.forEachDirectoryEntry { entry ->
         val (id, contentPath) = get(entry)
+        if (!contentPath.isRegularFile()) {
+            println("$contentPath is not supported")
+            return@forEachDirectoryEntry
+        }
         val idBytes = id.encodeToByteArray()
         val contentBytes = contentPath.readBytes()
         writeInt(idBytes.size)

@@ -28,7 +28,7 @@ class AesCbcTest : AesBasedTest<AES.CBC.Key, AES.CBC>(AES.CBC) {
             }
         }
 
-        generateKeys { key, keyReference, keyParameters ->
+        generateKeys { key, keyReference, _ ->
             paddings.forEach { (cipherParametersId, padding) ->
                 logger.log { "padding = $padding" }
                 val cipher = key.cipher(padding)
