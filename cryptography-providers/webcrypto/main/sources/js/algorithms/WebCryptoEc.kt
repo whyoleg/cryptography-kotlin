@@ -12,15 +12,15 @@ internal sealed class WebCryptoEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateK
         when (it) {
             EC.PublicKey.Format.RAW -> "raw"
             EC.PublicKey.Format.DER -> "spki"
+            EC.PublicKey.Format.PEM -> "pem-EC-spki"
             EC.PublicKey.Format.JWK -> "jwk"
-            EC.PublicKey.Format.PEM -> TODO("PEM format is not supported yet")
         }
     }
     protected val privateKeyFormat: (EC.PrivateKey.Format) -> String = {
         when (it) {
             EC.PrivateKey.Format.DER -> "pkcs8"
+            EC.PrivateKey.Format.PEM -> "pem-EC-pkcs8"
             EC.PrivateKey.Format.JWK -> "jwk"
-            EC.PrivateKey.Format.PEM -> TODO("PEM format is not supported yet")
         }
     }
     protected abstract val publicKeyUsages: Array<String>

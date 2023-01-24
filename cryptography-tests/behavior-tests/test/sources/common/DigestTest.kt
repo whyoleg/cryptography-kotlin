@@ -11,7 +11,7 @@ class DigestTest {
 
     private fun test(algorithmId: CryptographyAlgorithmId<Digest>, digestSize: Int) = runTestForEachAlgorithm(algorithmId) {
         val hasher = algorithm.hasher()
-        assertEquals(digestSize, hasher.hash(ByteArray(0)).also { println(it.contentToString()) }.size)
+        assertEquals(digestSize, hasher.hash(ByteArray(0)).size)
         repeat(8) { n ->
             val size = 10.0.pow(n).toInt()
             val data = CryptographyRandom.nextBytes(size)

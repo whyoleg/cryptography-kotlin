@@ -16,5 +16,5 @@ internal fun ByteArray.decodeFromPem(): Pair<String, ByteArray> {
     val footerType = lines.last().substringAfter("-----END ").substringBefore("-----").trim()
 
     check(headerType == footerType) { "Invalid PEM format, BEGIN type: `$headerType`, END type: `$footerType`" }
-    return headerType to Base64.getDecoder().decode(lines.joinToString("\n"))
+    return headerType to Base64.getDecoder().decode(lines.drop(1).dropLast(1).joinToString("\n"))
 }

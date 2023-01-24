@@ -18,9 +18,6 @@ class AesGcmTest {
             assertEquals(keySize.value.inBytes, key.encodeTo(AES.Key.Format.RAW).size)
 
             listOf(96, 104, 112, 120, 128).forEach { tagSizeBits ->
-                println(tagSizeBits.bits.inBytes)
-                println(ivSize)
-                println(blockSize)
                 val tagSize = tagSizeBits.bits.inBytes
                 key.cipher(tagSizeBits.bits).run {
                     listOf(0, 15, 16, 17, 319, 320, 321).forEach { inputSize ->

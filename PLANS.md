@@ -2,9 +2,8 @@
 
 ## 0.1.0: Initial release
 
-* [ ] Tests
-    * [ ] DROP ALL TODO
-    * [ ] add PEM tests
+* [ ] DROP ALL TODO
+* [ ] DROP ALL println
 * [ ] Engines
     * [ ] Apple
         * [ ] EC/RSA via Security framework

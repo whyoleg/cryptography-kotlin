@@ -52,10 +52,12 @@ class EcdsaTest : CompatibilityTest<ECDSA>(ECDSA) {
                     keyParametersId, KeyPairData(
                         public = KeyData {
                             put(StringKeyFormat.DER, keyPair.publicKey.encodeTo(EC.PublicKey.Format.DER))
+                            put(StringKeyFormat.PEM, keyPair.publicKey.encodeTo(EC.PublicKey.Format.PEM))
                             if (supportsJwk()) put(StringKeyFormat.JWK, keyPair.publicKey.encodeTo(EC.PublicKey.Format.JWK))
                         },
                         private = KeyData {
                             put(StringKeyFormat.DER, keyPair.privateKey.encodeTo(EC.PrivateKey.Format.DER))
+                            put(StringKeyFormat.PEM, keyPair.privateKey.encodeTo(EC.PrivateKey.Format.PEM))
                             if (supportsJwk()) put(StringKeyFormat.JWK, keyPair.privateKey.encodeTo(EC.PrivateKey.Format.JWK))
                         }
                     ))
@@ -93,6 +95,7 @@ class EcdsaTest : CompatibilityTest<ECDSA>(ECDSA) {
                     val publicKeys = publicKeyDecoder.decodeFrom(public.formats) { stringFormat ->
                         when (stringFormat) {
                             StringKeyFormat.DER -> EC.PublicKey.Format.DER
+                            StringKeyFormat.PEM -> EC.PublicKey.Format.PEM
                             StringKeyFormat.JWK -> EC.PublicKey.Format.JWK.takeIf { supportsJwk() }
                             else                -> error("Unsupported key format: $stringFormat")
                         }
@@ -101,10 +104,14 @@ class EcdsaTest : CompatibilityTest<ECDSA>(ECDSA) {
                         public.formats[StringKeyFormat.DER]?.let { bytes ->
                             assertContentEquals(bytes, publicKey.encodeTo(EC.PublicKey.Format.DER), "Public key DER encoding")
                         }
+                        public.formats[StringKeyFormat.PEM]?.let { bytes ->
+                            assertContentEquals(bytes, publicKey.encodeTo(EC.PublicKey.Format.PEM), "Public key PEM encoding")
+                        }
                     }
                     val privateKeys = privateKeyDecoder.decodeFrom(private.formats) { stringFormat ->
                         when (stringFormat) {
                             StringKeyFormat.DER -> EC.PrivateKey.Format.DER
+                            StringKeyFormat.PEM -> EC.PrivateKey.Format.PEM
                             StringKeyFormat.JWK -> EC.PrivateKey.Format.JWK.takeIf { supportsJwk() }
                             else                -> error("Unsupported key format: $stringFormat")
                         }
@@ -112,6 +119,9 @@ class EcdsaTest : CompatibilityTest<ECDSA>(ECDSA) {
                     if (supportsPrivateKeyDerFormat()) privateKeys.forEach { privateKey ->
                         private.formats[StringKeyFormat.DER]?.let { bytes ->
                             assertContentEquals(bytes, privateKey.encodeTo(EC.PrivateKey.Format.DER), "Private key DER encoding")
+                        }
+                        private.formats[StringKeyFormat.PEM]?.let { bytes ->
+                            assertContentEquals(bytes, privateKey.encodeTo(EC.PrivateKey.Format.PEM), "Private key PEM encoding")
                         }
                     }
                     put(keyReference, publicKeys to privateKeys)

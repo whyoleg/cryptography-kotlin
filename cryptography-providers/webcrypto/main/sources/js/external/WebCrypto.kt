@@ -1,11 +1,36 @@
 package dev.whyoleg.cryptography.webcrypto.external
 
+import org.khronos.webgl.*
+
+private val isNodeJs =
+    js("typeof process !== 'undefined' && process.versions != null && process.versions.node != null").unsafeCast<Boolean>()
+
 internal val WebCrypto: Crypto by lazy {
-    val isNodeJs =
-        js("typeof process !== 'undefined' && process.versions != null && process.versions.node != null").unsafeCast<Boolean>()
     if (isNodeJs) {
         js("eval('require')('node:crypto').webcrypto")
     } else {
         js("(window ? (window.crypto ? window.crypto : window.msCrypto) : self.crypto)")
+    }
+}
+
+internal val encodeBase64: (ArrayBuffer) -> String = if (isNodeJs) {
+    { array ->
+        js("Buffer.from(array).toString('base64')").unsafeCast<String>()
+    }
+} else {
+    { array ->
+        js("btoa(String.fromCharCode.apply(null, new Uint8Array(array)))").unsafeCast<String>()
+    }
+}
+
+internal val decodeBase64: (String) -> ByteArray = if (isNodeJs) {
+    { string ->
+        js("Buffer.from(string, 'base64')").unsafeCast<ByteArray>()
+    }
+} else {
+    { string ->
+        js("atob(string)").unsafeCast<String>().run {
+            ByteArray(length) { get(it).code.toByte() }
+        }
     }
 }

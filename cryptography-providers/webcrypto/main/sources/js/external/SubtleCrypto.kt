@@ -41,10 +41,22 @@ internal external interface SubtleCrypto {
     ): Promise<CryptoKeyPair>
 }
 
-internal fun SubtleCrypto.exportKeyBinary(format: String, key: CryptoKey): Promise<ByteArray> = exportKey(format, key).then { keyData ->
-    when (format) {
-        "jwk" -> JSON.stringify(keyData).encodeToByteArray()
-        else  -> keyData.unsafeCast<ArrayBuffer>().toByteArray()
+internal fun SubtleCrypto.exportKeyBinary(format: String, key: CryptoKey): Promise<ByteArray> {
+    val fixedFormat = format.substringAfterLast("-")
+    return exportKey(fixedFormat, key).then { keyData ->
+        when {
+            format == "jwk"          -> JSON.stringify(keyData).encodeToByteArray()
+            format.startsWith("pem") -> {
+                val pemAlgorithm = format.substringAfter("pem-").substringBefore("-")
+                val type = when (fixedFormat) {
+                    "pkcs8" -> " PRIVATE KEY"
+                    "spki"  -> " PUBLIC KEY"
+                    else    -> error("Unsupported format: $fixedFormat")
+                }
+                keyData.unsafeCast<ArrayBuffer>().encodeToPem(pemAlgorithm + type)
+            }
+            else                     -> keyData.unsafeCast<ArrayBuffer>().toByteArray()
+        }
     }
 }
 
@@ -55,9 +67,41 @@ internal fun SubtleCrypto.importKeyBinary(
     extractable: Boolean,
     keyUsages: Array<String>,
 ): Promise<CryptoKey> {
-    val key = when (format) {
-        "jwk" -> JSON.parse<Any>(keyData.decodeToString())
-        else  -> keyData
+    val fixedFormat = format.substringAfterLast("-")
+    val key = when {
+        format == "jwk"          -> JSON.parse<Any>(keyData.decodeToString())
+        format.startsWith("pem") -> {
+            val pemAlgorithm = format.substringAfter("pem-").substringBefore("-")
+            val (type, decoded) = keyData.decodeFromPem()
+            val s = when (fixedFormat) {
+                "pkcs8" -> "PRIVATE KEY"
+                "spki"  -> "PUBLIC KEY"
+                else    -> error("Unsupported format: $fixedFormat")
+            }
+            check(type == s || type == "$pemAlgorithm $s") {
+                "Wrong PEM type, expected `$s` or `$pemAlgorithm $s` got `$type`"
+            }
+            decoded
+        }
+        else                     -> keyData
     }
-    return importKey(format, key, algorithm, extractable, keyUsages)
+
+    return importKey(fixedFormat, key, algorithm, extractable, keyUsages)
+}
+
+private fun ArrayBuffer.encodeToPem(type: String): ByteArray =
+    """
+    |-----BEGIN $type-----
+    |${encodeBase64(this)}
+    |-----END $type-----
+    """.trimMargin().encodeToByteArray()
+
+private fun ByteArray.decodeFromPem(): Pair<String, ByteArray> {
+    val lines = decodeToString().split("\n")
+    check(lines.size >= 3) { "Invalid PEM format" }
+    val headerType = lines.first().substringAfter("-----BEGIN ").substringBefore("-----").trim()
+    val footerType = lines.last().substringAfter("-----END ").substringBefore("-----").trim()
+
+    check(headerType == footerType) { "Invalid PEM format, BEGIN type: `$headerType`, END type: `$footerType`" }
+    return headerType to decodeBase64(lines.drop(1).dropLast(1).joinToString("\n"))
 }
