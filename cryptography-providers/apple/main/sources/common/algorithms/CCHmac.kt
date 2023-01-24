@@ -13,52 +13,54 @@ import platform.CoreCrypto.*
 
 internal object CCHmac : HMAC {
     override fun keyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<HMAC.Key.Format, HMAC.Key> {
-        val (hmacAlgorithm, keySize) = when (digest) {
-            SHA1   -> kCCHmacAlgSHA1 to CC_SHA1_DIGEST_LENGTH
-            SHA256 -> kCCHmacAlgSHA256 to CC_SHA256_DIGEST_LENGTH
-            SHA384 -> kCCHmacAlgSHA384 to CC_SHA384_DIGEST_LENGTH
-            SHA512 -> kCCHmacAlgSHA512 to CC_SHA512_DIGEST_LENGTH
+        return when (digest) {
+            SHA1   -> HmacKeyDecoder(kCCHmacAlgSHA1, CC_SHA1_DIGEST_LENGTH)
+            SHA256 -> HmacKeyDecoder(kCCHmacAlgSHA256, CC_SHA256_DIGEST_LENGTH)
+            SHA384 -> HmacKeyDecoder(kCCHmacAlgSHA384, CC_SHA384_DIGEST_LENGTH)
+            SHA512 -> HmacKeyDecoder(kCCHmacAlgSHA512, CC_SHA512_DIGEST_LENGTH)
             else   -> throw CryptographyException("Unsupported hash algorithm: $digest")
         }
-        return HmacKeyDecoder(hmacAlgorithm)
     }
 
     override fun keyGenerator(digest: CryptographyAlgorithmId<Digest>): KeyGenerator<HMAC.Key> {
-        val (hmacAlgorithm, keySize) = when (digest) {
-            SHA1   -> kCCHmacAlgSHA1 to CC_SHA1_DIGEST_LENGTH
-            SHA256 -> kCCHmacAlgSHA256 to CC_SHA256_DIGEST_LENGTH
-            SHA384 -> kCCHmacAlgSHA384 to CC_SHA384_DIGEST_LENGTH
-            SHA512 -> kCCHmacAlgSHA512 to CC_SHA512_DIGEST_LENGTH
+        return when (digest) {
+            SHA1   -> HmacKeyGenerator(kCCHmacAlgSHA1, CC_SHA1_BLOCK_BYTES, CC_SHA1_DIGEST_LENGTH)
+            SHA256 -> HmacKeyGenerator(kCCHmacAlgSHA256, CC_SHA256_BLOCK_BYTES, CC_SHA256_DIGEST_LENGTH)
+            SHA384 -> HmacKeyGenerator(kCCHmacAlgSHA384, CC_SHA384_BLOCK_BYTES, CC_SHA384_DIGEST_LENGTH)
+            SHA512 -> HmacKeyGenerator(kCCHmacAlgSHA512, CC_SHA512_BLOCK_BYTES, CC_SHA512_DIGEST_LENGTH)
             else   -> throw CryptographyException("Unsupported hash algorithm: $digest")
         }
-        return HmacKeyGenerator(keySize, hmacAlgorithm)
     }
 }
 
 private class HmacKeyDecoder(
     private val hmacAlgorithm: CCHmacAlgorithm,
+    private val digestSize: Int,
 ) : KeyDecoder<HMAC.Key.Format, HMAC.Key> {
     override fun decodeFromBlocking(format: HMAC.Key.Format, input: Buffer): HMAC.Key {
-        if (format == HMAC.Key.Format.RAW) return wrapKey(input, hmacAlgorithm)
+        //TODO: validate input size
+        if (format == HMAC.Key.Format.RAW) return wrapKey(hmacAlgorithm, input, digestSize)
         TODO("$format is not yet supported")
     }
 }
 
 private class HmacKeyGenerator(
-    private val keySizeBytes: Int,
     private val hmacAlgorithm: CCHmacAlgorithm,
+    private val keySizeBytes: Int,
+    private val digestSize: Int,
 ) : KeyGenerator<HMAC.Key> {
     override fun generateKeyBlocking(): HMAC.Key {
         val key = CryptographyRandom.nextBytes(keySizeBytes)
-        return wrapKey(key, hmacAlgorithm)
+        return wrapKey(hmacAlgorithm, key, digestSize)
     }
 }
 
 private fun wrapKey(
-    key: Buffer,
     hmacAlgorithm: CCHmacAlgorithm,
+    key: Buffer,
+    digestSize: Int,
 ): HMAC.Key = object : HMAC.Key {
-    private val signature = HmacSignature(key, hmacAlgorithm)
+    private val signature = HmacSignature(hmacAlgorithm, key, digestSize)
     override fun signatureGenerator(): SignatureGenerator = signature
     override fun signatureVerifier(): SignatureVerifier = signature
 
@@ -69,11 +71,12 @@ private fun wrapKey(
 }
 
 private class HmacSignature(
-    private val key: Buffer,
     private val hmacAlgorithm: CCHmacAlgorithm,
+    private val key: Buffer,
+    private val digestSize: Int,
 ) : SignatureGenerator, SignatureVerifier {
     override fun generateSignatureBlocking(dataInput: Buffer): Buffer {
-        val macOutput = ByteArray(key.size)
+        val macOutput = ByteArray(digestSize)
         val result = CCHmac(
             algorithm = hmacAlgorithm,
             key = key.refTo(0),

@@ -10,10 +10,12 @@ internal sealed external interface AsymmetricKeyGenerationAlgorithm : KeyGenerat
 
 internal sealed external interface HmacKeyAlgorithm : SymmetricKeyGenerationAlgorithm, KeyImportAlgorithm {
     var hash: String
+    var length: Int
 }
 
-internal fun HmacKeyAlgorithm(hash: String): HmacKeyAlgorithm = Algorithm("HMAC") {
+internal fun HmacKeyAlgorithm(hash: String, length: Int): HmacKeyAlgorithm = Algorithm("HMAC") {
     this.hash = hash
+    this.length = length
 }
 
 internal sealed external interface AesKeyGenerationAlgorithm : SymmetricKeyGenerationAlgorithm {

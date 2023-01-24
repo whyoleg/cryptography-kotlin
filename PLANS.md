@@ -13,7 +13,6 @@
     * [ ] OpenSSL(1/3) engine (dynamic/static for desktop native targets)
     * [ ] Key Formats support cleanup
     * [ ] Support PEM encoding where DER is supported
-    * [ ] HMAC key size consistency
 * [ ] Build
     * [ ] Binary compatibility validator
     * [ ] GitHub Actions via github-workflows-kt (?)

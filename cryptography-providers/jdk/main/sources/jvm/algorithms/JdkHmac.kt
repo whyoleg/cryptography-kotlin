@@ -1,5 +1,6 @@
 package dev.whyoleg.cryptography.jdk.algorithms
 
+import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
@@ -26,11 +27,15 @@ internal class JdkHmac(
 
     override fun keyGenerator(digest: CryptographyAlgorithmId<Digest>): KeyGenerator<HMAC.Key> {
         return JdkSecretKeyGenerator(state, "Hmac${digest.hashAlgorithmName()}", keyWrapper) {
-            //sha1 in JDK uses wrong default key size
-            when (digest) {
-                SHA1 -> init(160, state.secureRandom)
-                else -> init(state.secureRandom)
-            }
+            init(digest.blockSize(), state.secureRandom)
         }
     }
 }
+
+private fun CryptographyAlgorithmId<Digest>.blockSize(): Int = when (this) {
+    SHA1   -> 64
+    SHA256 -> 64
+    SHA384 -> 128
+    SHA512 -> 128
+    else   -> throw CryptographyException("Unsupported hash algorithm: $this")
+} * 8

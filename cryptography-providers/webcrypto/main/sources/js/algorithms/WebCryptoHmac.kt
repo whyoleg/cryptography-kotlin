@@ -1,5 +1,6 @@
 package dev.whyoleg.cryptography.webcrypto.algorithms
 
+import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
@@ -29,8 +30,16 @@ internal object WebCryptoHmac : HMAC {
     }
 
     override fun keyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<HMAC.Key.Format, HMAC.Key> =
-        WebCryptoKeyDecoder(HmacKeyAlgorithm(digest.hashAlgorithmName()), keyUsages, keyFormat, keyWrapper)
+        WebCryptoKeyDecoder(HmacKeyAlgorithm(digest.hashAlgorithmName(), digest.blockSize()), keyUsages, keyFormat, keyWrapper)
 
     override fun keyGenerator(digest: CryptographyAlgorithmId<Digest>): KeyGenerator<HMAC.Key> =
-        WebCryptoSymmetricKeyGenerator(HmacKeyAlgorithm(digest.hashAlgorithmName()), keyUsages, keyWrapper)
+        WebCryptoSymmetricKeyGenerator(HmacKeyAlgorithm(digest.hashAlgorithmName(), digest.blockSize()), keyUsages, keyWrapper)
 }
+
+private fun CryptographyAlgorithmId<Digest>.blockSize(): Int = when (this) {
+    SHA1   -> 64
+    SHA256 -> 64
+    SHA384 -> 128
+    SHA512 -> 128
+    else   -> throw CryptographyException("Unsupported hash algorithm: $this")
+} * 8

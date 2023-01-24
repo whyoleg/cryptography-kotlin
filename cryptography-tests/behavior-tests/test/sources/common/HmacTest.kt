@@ -1,5 +1,6 @@
 package dev.whyoleg.cryptography.tests.behavior
 
+import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.random.*
 import dev.whyoleg.cryptography.test.utils.*
@@ -10,9 +11,15 @@ class HmacTest {
 
     @Test
     fun testSizes() = runTestForEachAlgorithm(HMAC) {
-        generateDigests { digest, digestSize ->
+        //all values are in bytes
+        listOf(
+            Triple(SHA1, 20, 64),
+            Triple(SHA256, 32, 64),
+            Triple(SHA384, 48, 128),
+            Triple(SHA512, 64, 128),
+        ).forEach { (digest, digestSize, digestBlockSize) ->
             val key = algorithm.keyGenerator(digest).generateKey()
-            assertEquals(digestSize, key.encodeTo(HMAC.Key.Format.RAW).size)
+            assertEquals(digestBlockSize, key.encodeTo(HMAC.Key.Format.RAW).size)
             val signatureGenerator = key.signatureGenerator()
 
             assertEquals(digestSize, signatureGenerator.generateSignature(ByteArray(0)).size)
