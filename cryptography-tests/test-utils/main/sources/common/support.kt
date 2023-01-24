@@ -20,10 +20,11 @@ fun AlgorithmTestContext<AES.CBC>.supportsPadding(padding: Boolean): Boolean = s
     condition = if (provider.isWebCrypto) padding else true
 )
 
-// WebCrypto BROWSER doesn't support 192bits
+// WebCrypto BROWSER(or only chromium) doesn't support 192bits
+// https://bugs.chromium.org/p/chromium/issues/detail?id=533699
 fun AlgorithmTestContext<out AES<*>>.supportsKeySize(keySizeBits: Int): Boolean = supports(
     feature = "${keySizeBits.bits} key",
-    condition = if (provider.isWebCrypto) keySizeBits != 192 else true
+    condition = if (provider.isWebCrypto && currentPlatformIsBrowser) keySizeBits != 192 else true
 )
 
 fun AlgorithmTestContext<ECDSA>.supportsSignatureFormat(format: ECDSA.SignatureFormat): Boolean = supports(

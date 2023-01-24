@@ -3,12 +3,9 @@
 ## 0.1.0: Initial release
 
 * [ ] Tests
-    * [ ] investigate failure WebCrypto vs JDK with RSA
-        * [ ] PSS - signature verification failure
-        * [ ] OAEP - error:04099079:rsa routines:RSA_padding_check_PKCS1_OAEP_mgf1:oaep decoding error
     * [ ] DROP ALL TODO
-    * [ ] Investigate: WebCrypto BROWSER doesn't support 192bits
     * [ ] add PEM tests
+    * [ ] cleanup provider-support checks
 * [ ] Engines
     * [ ] Apple
         * [ ] EC/RSA via Security framework
