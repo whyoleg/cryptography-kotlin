@@ -12,11 +12,3 @@ val CryptographyProvider.isJdk: Boolean
 
 val CryptographyProvider.isApple: Boolean
     get() = name == "Apple"
-
-val CryptographyProvider.supportsJwk: Boolean
-    get() = isWebCrypto
-
-// Private key DER encoding is different per providers (e.g. PKCS#8 vs. SEC1)
-// it's more of a hack now (to test at least jdk vs nodejs) then a real and correct check
-val CryptographyProvider.supportsEcPrivateKeyDer: Boolean
-    get() = !(isWebCrypto && currentPlatformIsBrowser)

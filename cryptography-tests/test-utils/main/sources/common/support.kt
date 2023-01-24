@@ -11,6 +11,12 @@ fun ProviderTestContext.supports(feature: String, condition: Boolean): Boolean {
     return false
 }
 
+// only WebCrypto supports JWK for now
+fun ProviderTestContext.supportsJwk(): Boolean = supports(
+    feature = "JWK",
+    condition = provider.isWebCrypto
+)
+
 // WebCrypto supports only encryption with padding
 fun AlgorithmTestContext<AES.CBC>.supportsPadding(padding: Boolean): Boolean = supports(
     feature = when {
@@ -35,5 +41,15 @@ fun AlgorithmTestContext<ECDSA>.supportsSignatureFormat(format: ECDSA.SignatureF
         //JDK supports RAW signature format starting from java 9
         provider.isJdk && currentPlatformJvmVersion!! <= 8 -> format == ECDSA.SignatureFormat.DER
         else                                               -> true
+    }
+)
+
+// Private key DER encoding is different per providers (e.g. PKCS#8 vs. SEC1)
+// it's more of a hack now (to test at least jdk vs nodejs) then a real and correct check
+fun AlgorithmTestContext<ECDSA>.supportsPrivateKeyDerFormat(): Boolean = supports(
+    feature = "EC DER private key encoding",
+    condition = when {
+        provider.isWebCrypto -> !currentPlatformIsBrowser
+        else                 -> true
     }
 )

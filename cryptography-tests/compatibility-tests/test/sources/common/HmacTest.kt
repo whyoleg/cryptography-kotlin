@@ -23,7 +23,7 @@ class HmacTest : CompatibilityTest<HMAC>(HMAC) {
             algorithm.keyGenerator(digest).generateKeys(keyIterations) { key ->
                 val keyReference = api.keys.saveData(keyParametersId, KeyData {
                     put(StringKeyFormat.RAW, key.encodeTo(HMAC.Key.Format.RAW))
-                    if (provider.supportsJwk) put(StringKeyFormat.JWK, key.encodeTo(HMAC.Key.Format.JWK))
+                    if (supportsJwk()) put(StringKeyFormat.JWK, key.encodeTo(HMAC.Key.Format.JWK))
                 })
 
                 val signatureGenerator = key.signatureGenerator()
@@ -51,7 +51,7 @@ class HmacTest : CompatibilityTest<HMAC>(HMAC) {
                     val keys = keyDecoder.decodeFrom(formats) { stringFormat ->
                         when (stringFormat) {
                             StringKeyFormat.RAW -> HMAC.Key.Format.RAW
-                            StringKeyFormat.JWK -> HMAC.Key.Format.JWK.takeIf { provider.supportsJwk }
+                            StringKeyFormat.JWK -> HMAC.Key.Format.JWK.takeIf { supportsJwk() }
                             else                -> error("Unsupported key format: $stringFormat")
                         }
                     }

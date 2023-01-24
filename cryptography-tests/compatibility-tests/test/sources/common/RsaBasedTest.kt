@@ -31,11 +31,11 @@ abstract class RsaBasedTest<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, 
                     val keyReference = api.keyPairs.saveData(keyParametersId, KeyPairData(
                         public = KeyData {
                             put(StringKeyFormat.DER, keyPair.publicKey.encodeTo(RSA.PublicKey.Format.DER))
-                            if (provider.supportsJwk) put(StringKeyFormat.JWK, keyPair.publicKey.encodeTo(RSA.PublicKey.Format.JWK))
+                            if (supportsJwk()) put(StringKeyFormat.JWK, keyPair.publicKey.encodeTo(RSA.PublicKey.Format.JWK))
                         },
                         private = KeyData {
                             put(StringKeyFormat.DER, keyPair.privateKey.encodeTo(RSA.PrivateKey.Format.DER))
-                            if (provider.supportsJwk) put(StringKeyFormat.JWK, keyPair.privateKey.encodeTo(RSA.PrivateKey.Format.JWK))
+                            if (supportsJwk()) put(StringKeyFormat.JWK, keyPair.privateKey.encodeTo(RSA.PrivateKey.Format.JWK))
                         }
                     ))
                     block(keyPair, keyReference, keyParameters)
@@ -55,7 +55,7 @@ abstract class RsaBasedTest<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, 
                 val publicKeys = publicKeyDecoder.decodeFrom(public.formats) { stringFormat ->
                     when (stringFormat) {
                         StringKeyFormat.DER -> RSA.PublicKey.Format.DER
-                        StringKeyFormat.JWK -> RSA.PublicKey.Format.JWK.takeIf { provider.supportsJwk }
+                        StringKeyFormat.JWK -> RSA.PublicKey.Format.JWK.takeIf { supportsJwk() }
                         else                -> error("Unsupported key format: $stringFormat")
                     }
                 }
@@ -67,7 +67,7 @@ abstract class RsaBasedTest<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, 
                 val privateKeys = privateKeyDecoder.decodeFrom(private.formats) { stringFormat ->
                     when (stringFormat) {
                         StringKeyFormat.DER -> RSA.PrivateKey.Format.DER
-                        StringKeyFormat.JWK -> RSA.PrivateKey.Format.JWK.takeIf { provider.supportsJwk }
+                        StringKeyFormat.JWK -> RSA.PrivateKey.Format.JWK.takeIf { supportsJwk() }
                         else                -> error("Unsupported key format: $stringFormat")
                     }
                 }

@@ -11,10 +11,7 @@ fun KotlinNativeTargetWithTests<*>.setupTests() {
     }
     //don't even link tests if we can't run them (like, linux on macos, or mingw on linux/macos, etc)
     testRuns.all {
-        //should always be true? - TODO: replace
-        if (this is ExecutionTaskHolder<*>) {
-            executionSource.binary.linkTaskProvider.get().enabled = executionTask.get().enabled
-        }
+        executionSource.binary.linkTaskProvider.get().enabled = (this as ExecutionTaskHolder<*>).executionTask.get().enabled
     }
 }
 

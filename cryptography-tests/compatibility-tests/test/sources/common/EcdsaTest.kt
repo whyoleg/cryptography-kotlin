@@ -52,11 +52,11 @@ class EcdsaTest : CompatibilityTest<ECDSA>(ECDSA) {
                     keyParametersId, KeyPairData(
                         public = KeyData {
                             put(StringKeyFormat.DER, keyPair.publicKey.encodeTo(EC.PublicKey.Format.DER))
-                            if (provider.supportsJwk) put(StringKeyFormat.JWK, keyPair.publicKey.encodeTo(EC.PublicKey.Format.JWK))
+                            if (supportsJwk()) put(StringKeyFormat.JWK, keyPair.publicKey.encodeTo(EC.PublicKey.Format.JWK))
                         },
                         private = KeyData {
                             put(StringKeyFormat.DER, keyPair.privateKey.encodeTo(EC.PrivateKey.Format.DER))
-                            if (provider.supportsJwk) put(StringKeyFormat.JWK, keyPair.privateKey.encodeTo(EC.PrivateKey.Format.JWK))
+                            if (supportsJwk()) put(StringKeyFormat.JWK, keyPair.privateKey.encodeTo(EC.PrivateKey.Format.JWK))
                         }
                     ))
 
@@ -93,7 +93,7 @@ class EcdsaTest : CompatibilityTest<ECDSA>(ECDSA) {
                     val publicKeys = publicKeyDecoder.decodeFrom(public.formats) { stringFormat ->
                         when (stringFormat) {
                             StringKeyFormat.DER -> EC.PublicKey.Format.DER
-                            StringKeyFormat.JWK -> EC.PublicKey.Format.JWK.takeIf { provider.supportsJwk }
+                            StringKeyFormat.JWK -> EC.PublicKey.Format.JWK.takeIf { supportsJwk() }
                             else                -> error("Unsupported key format: $stringFormat")
                         }
                     }
@@ -105,11 +105,11 @@ class EcdsaTest : CompatibilityTest<ECDSA>(ECDSA) {
                     val privateKeys = privateKeyDecoder.decodeFrom(private.formats) { stringFormat ->
                         when (stringFormat) {
                             StringKeyFormat.DER -> EC.PrivateKey.Format.DER
-                            StringKeyFormat.JWK -> EC.PrivateKey.Format.JWK.takeIf { provider.supportsJwk }
+                            StringKeyFormat.JWK -> EC.PrivateKey.Format.JWK.takeIf { supportsJwk() }
                             else                -> error("Unsupported key format: $stringFormat")
                         }
                     }
-                    if (provider.supportsEcPrivateKeyDer) privateKeys.forEach { privateKey ->
+                    if (supportsPrivateKeyDerFormat()) privateKeys.forEach { privateKey ->
                         private.formats[StringKeyFormat.DER]?.let { bytes ->
                             assertContentEquals(bytes, privateKey.encodeTo(EC.PrivateKey.Format.DER), "Private key DER encoding")
                         }

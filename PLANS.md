@@ -5,7 +5,6 @@
 * [ ] Tests
     * [ ] DROP ALL TODO
     * [ ] add PEM tests
-    * [ ] cleanup provider-support checks
 * [ ] Engines
     * [ ] Apple
         * [ ] EC/RSA via Security framework
@@ -14,6 +13,7 @@
     * [ ] OpenSSL(1/3) engine (dynamic/static for desktop native targets)
     * [ ] Key Formats support cleanup
     * [ ] Support PEM encoding where DER is supported
+    * [ ] HMAC key size consistency
 * [ ] Build
     * [ ] Binary compatibility validator
     * [ ] GitHub Actions via github-workflows-kt (?)
