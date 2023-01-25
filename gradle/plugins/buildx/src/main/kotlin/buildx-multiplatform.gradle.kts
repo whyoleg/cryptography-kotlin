@@ -22,7 +22,7 @@ kotlin {
     sourceSets.all {
         val (targetName, compilationName) = name.run {
             val index = indexOfLast { it.isUpperCase() }
-            take(index) to drop(index).lowercase()
+            take(index) to drop(index).toLowerCase() //.lowercase() //need Gradle 8
         }
         kotlin.setSrcDirs(listOf("$compilationName/sources/$targetName"))
         resources.setSrcDirs(listOf("$compilationName/resources/$targetName"))

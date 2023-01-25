@@ -1,5 +1,5 @@
-import gradle.kotlin.dsl.accessors._1c8707824c48c16ed0a1f292cf6be26b.*
 import org.gradle.jvm.toolchain.*
+import org.gradle.kotlin.dsl.*
 import org.jetbrains.kotlin.gradle.targets.jvm.*
 
 fun KotlinJvmTarget.setupTests() {
@@ -8,7 +8,8 @@ fun KotlinJvmTarget.setupTests() {
         testRuns.create("${jdkVersion}Test") {
             executionTask.configure {
                 javaLauncher.set(
-                    project.javaToolchains.launcherFor {
+                    //project.javaToolchains //need Gradle 8
+                    project.extensions.getByType<JavaToolchainService>().launcherFor {
                         languageVersion.set(JavaLanguageVersion.of(jdkVersion))
                     }
                 )
