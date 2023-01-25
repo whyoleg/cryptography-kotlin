@@ -1,0 +1,10 @@
+name: Build dev
+on:
+  push:
+    branches:
+      - dev
+      - main # drop after release
+
+jobs:
+  test:
+    uses: ./.github/workflows/run-tests.yml

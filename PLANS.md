@@ -4,13 +4,12 @@
 
 * [ ] DROP ALL TODO
 * [ ] DROP ALL println
-* [ ] write some behaviour tests for failures
+* [ ] write behaviour tests for failures
 * [ ] Engines
-    * [ ] OpenSSL(1/3) engine (dynamic/static for desktop native targets)
+    * [ ] OpenSSL(1/3) engine (dynamic/static(?) for desktop native targets)
 * [ ] Build
-    * [ ] GitHub Actions via github-workflows-kt (?)
-    * [ ] Samples (use knit?) (for each different kind of operation)
-    * [ ] rename buildx plugins
+    * [ ] GitHub Actions (check and fix)
+    * [ ] Samples (for each different kind of operation)
     * [ ] Maven Central
 * [ ] README
     * [ ] modules/dependencies
@@ -118,6 +117,8 @@
 * [ ] integrations
     * [ ] https://github.com/Password4j/password4j
     * [ ] https://github.com/keycloak/keycloak
+* [ ] use knit when it will work with current kotlin version
+* [ ] add snapshots publishing
 
 ## 1.0.0: Stable release
 

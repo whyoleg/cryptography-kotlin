@@ -1,0 +1,53 @@
+name: Run tests on all platforms
+on: [ workflow_call, workflow_dispatch ]
+
+jobs:
+  default-test:
+    name: Run tests
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ 'ubuntu-latest', 'macos-latest', 'windows-latest' ]
+    steps:
+      - uses: actions/checkout@v3
+      - if: matrix.os != 'windows-latest'
+        run: echo "KONAN_DATA_DIR=${HOME}/.gradle/konan" >> $GITHUB_ENV
+      - if: matrix.os == 'windows-latest'
+        run: echo "KONAN_DATA_DIR=${USERPROFILE}\.gradle\konan" >> $GITHUB_ENV
+        shell: bash
+      - uses: gradle/gradle-build-action@v2
+        with:
+          arguments: |
+            allTests
+            --scan
+            --info
+            --continue
+          gradle-home-cache-includes: |
+            caches
+            notifications
+            konan
+            nodejs
+            yarn
+      - if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-reports
+          path: "**/build/test-results/*Test/TEST-*.xml"
+          retention-days: 1
+
+  publish-test-results:
+    needs: [ default-test ]
+    if: always()
+    name: Publish test report
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: test-reports
+          path: test-reports
+      - uses: EnricoMi/publish-unit-test-result-action@v1
+        with:
+          check_name: Test Report
+          files: test-reports/**/TEST-*.xml
+          github_token: ${{ secrets.GITHUB_TOKEN }}

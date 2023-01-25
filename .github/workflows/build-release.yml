@@ -1,0 +1,39 @@
+name: Release CI
+on:
+  push:
+    tags:
+      - '*'
+
+env:
+  ORG_GRADLE_PROJECT_signingKey: ${{secrets.signingKey}}
+  ORG_GRADLE_PROJECT_signingPassword: ${{secrets.signingPassword}}
+  ORG_GRADLE_PROJECT_sonatypeUsername: ${{secrets.sonatypeUsername}}
+  ORG_GRADLE_PROJECT_sonatypePassword: ${{secrets.sonatypePassword}}
+
+jobs:
+  test:
+    uses: ./.github/workflows/run-tests.yml
+  publish:
+    needs: [ test ]
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: echo "KONAN_DATA_DIR=${HOME}/.gradle/konan" >> $GITHUB_ENV
+      - name: Publish to Maven Local (prepare packages)
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: |
+            publishToMavenLocal
+            --scan 
+            --info
+            -Pversion=${{ github.ref_name }}
+          cache-disabled: true
+      - name: Publish to Sonotype (version ${{ github.ref_name }})
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: |
+            publishAllPublicationsToSonatypeRepository
+            --scan 
+            --info
+            -Pversion=${{ github.ref_name }}
+          cache-disabled: true
