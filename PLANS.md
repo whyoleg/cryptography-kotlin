@@ -32,6 +32,7 @@
     * [ ] Key derive (kdf/prf)
     * [ ] Multi-key agreement support
     * [ ] Key wrap/unwrap
+    * [ ] OTP (One Time Password) support
 * [ ] Algorithms
     * [ ] SHA-3 (hash)
     * [ ] SHAKE (hash)
@@ -46,10 +47,10 @@
     * [ ] brcypt (prf)
     * [ ] RSA-SSA-PKCS1 (signature)
     * [ ] Ed25519 curve
-    * [ ] CMAC (mac)
-    * [ ] Blowfish (cipher), Blake (hash) - try to find some implementations (?)
+  * [ ] CMAC (mac)
+  * [ ] Blowfish (cipher), Blake (hash) - try to find some implementations (?)
+  * [ ] TOTP/HOTP (otp)
 * [ ] Engines
-    * [ ] WebCrypto WASM support (need kotlin 1.8.20 stable (or at least beta))
     * [ ] CryptoKit engine
     * [ ] Windows CNG engine
     * [ ] OpenSSL(1/3) engine (static for almost all native targets)
@@ -57,13 +58,20 @@
 * [ ] Android integration tests
 * [ ] JDK with BC tests
 
+## Kotlin 1.8.20/1.9.0
+
+* [ ] WebCrypto WASM support
+* [ ] use kotlin.Closeable
+* [ ] migrate test-tool-client/server to composite build
+* [ ] use base64 from stdlib
+
 ## 0.3.0: Certificates and Key management
 
 * [ ] Materials
     * [ ] introduce materials: key, key pair, certificate, certificate chain, certificate+key pair etc
     * [ ] X.509 Certificates
     * [ ] PKCS12 support
-    * [ ] Keys
+    * [ ] Keys/Certificates management
         * [ ] keystore/keymanager/keychain/keyring?
         * [ ] Destination: java key store, keychain, file (?), secure enclave (?)
         * [ ] JDK KeyStore (?)
@@ -71,7 +79,7 @@
     * [ ] General way to define algorithms, that support something (like KeyGen, needed for certificates)
     * [ ] Decide on how someone can create custom algorithms, that need or ECDSA.Key or RSA.PSS.Key
       (like different signature algorithms in ssh, tls, certificate)
-    * [ ] Decode key from DER -> then decide on which algorithm it is (problems with WebCrypto)
+    * [ ] Decode key from DER/PEM -> then decide on which algorithm it is (problems with WebCrypto)
 
 ## 0.4.0: Enhanced operations for big data and streaming (some things can depend on IO library - if so, design or postpone)
 
@@ -89,9 +97,10 @@
 ## x.y.z plans:
 
 * [ ] compiler plugin to generate declarations with flatten parameters (related to 'general way to define algorithms')
-* [ ] Coroutines integration (for JDK engine to run on other dispatcher, to avoid blocking main thread) - is it needed?
-* [ ] use kotlin.Closeable (require kotlin 1.8.20 or 1.9.0)
-* [ ] migrate test-tool-client/server to composite build (require kotlin 1.8.20 or 1.9.0)
+* [ ] Extensions - something, that can be linked automatically, but also can be configured explicitly
+    * [ ] Coroutines integration (for JDK engine to run on other dispatcher, to avoid blocking main thread) - is it needed?
+    * [ ] PEM support as extension
+    * [ ] JWK support as extension
 * [ ] Engines
     * [ ] AWS/GCP KMS provider
     * [ ] BorringSSL engine (MPP)
@@ -107,7 +116,7 @@
 * [ ] Integrate with https://github.com/google/wycheproof to test against test vectors (more tests
   here https://github.com/pyca/cryptography/blob/main/docs/development/test-vectors.rst)
 * [ ] investigate linux getrandom call
-* [ ] Extract popular digests into separate module (?) with only non-suspend impl?
+* [ ] Extract popular digests into separate module with only non-suspend impl? (?)
 * [ ] Add assertion in compatibility tests on amount of tested combinations
 * [ ] cache ciphers/signature* like keys in tests
 * [ ] Refactor currentPlatform in tests with some kind of object per platform with properties
