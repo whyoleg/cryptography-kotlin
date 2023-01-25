@@ -15,15 +15,15 @@ internal object WebCryptoRsaPss : RSA.PSS {
     private val publicKeyFormat: (RSA.PublicKey.Format) -> String = {
         when (it) {
             RSA.PublicKey.Format.DER -> "spki"
+            RSA.PublicKey.Format.PEM -> "pem-RSA-spki"
             RSA.PublicKey.Format.JWK -> "jwk"
-            RSA.PublicKey.Format.PEM -> TODO("PEM format is not supported yet")
         }
     }
     private val privateKeyFormat: (RSA.PrivateKey.Format) -> String = {
         when (it) {
             RSA.PrivateKey.Format.DER -> "pkcs8"
+            RSA.PrivateKey.Format.PEM -> "pem-RSA-pkcs8"
             RSA.PrivateKey.Format.JWK -> "jwk"
-            RSA.PrivateKey.Format.PEM -> TODO("PEM format is not supported yet")
         }
     }
     private val publicKeyWrapper: (CryptoKey) -> RSA.PSS.PublicKey = { key ->
@@ -70,10 +70,10 @@ internal object WebCryptoRsaPss : RSA.PSS {
             name = "RSA-PSS",
             modulusLength = keySize.inBits,
             publicExponent = when (publicExponent) {
-                RSA.PublicExponent.F4        -> byteArrayOf(0x01, 0x00, 0x01)
-                is RSA.PublicExponent.Bytes  -> publicExponent.value
-                is RSA.PublicExponent.Number -> TODO("not yet supported")
-                is RSA.PublicExponent.Text   -> TODO("not yet supported")
+                RSA.PublicExponent.F4                                    -> byteArrayOf(0x01, 0x00, 0x01)
+                is RSA.PublicExponent.Bytes                              -> publicExponent.value
+                is RSA.PublicExponent.Number, is RSA.PublicExponent.Text ->
+                    throw IllegalArgumentException("WebCrypto supports only F4 or Bytes public exponent")
             },
             digest.hashAlgorithmName()
         ),

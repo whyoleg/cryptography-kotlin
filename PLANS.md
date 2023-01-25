@@ -4,13 +4,13 @@
 
 * [ ] DROP ALL TODO
 * [ ] DROP ALL println
+* [ ] write some behaviour tests for failures
+* [ ] JDK EC key support?
 * [ ] Engines
     * [ ] Apple
         * [ ] EC/RSA via Security framework
         * [ ] error reporting
     * [ ] OpenSSL(1/3) engine (dynamic/static for desktop native targets)
-    * [ ] Key Formats support cleanup
-    * [ ] Support PEM encoding where DER is supported
 * [ ] Build
     * [ ] Binary compatibility validator
     * [ ] GitHub Actions via github-workflows-kt (?)
