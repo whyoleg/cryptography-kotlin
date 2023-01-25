@@ -14,10 +14,10 @@ import platform.CoreCrypto.*
 internal object CCHmac : HMAC {
     override fun keyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<HMAC.Key.Format, HMAC.Key> {
         return when (digest) {
-            SHA1   -> HmacKeyDecoder(kCCHmacAlgSHA1, CC_SHA1_DIGEST_LENGTH)
-            SHA256 -> HmacKeyDecoder(kCCHmacAlgSHA256, CC_SHA256_DIGEST_LENGTH)
-            SHA384 -> HmacKeyDecoder(kCCHmacAlgSHA384, CC_SHA384_DIGEST_LENGTH)
-            SHA512 -> HmacKeyDecoder(kCCHmacAlgSHA512, CC_SHA512_DIGEST_LENGTH)
+            SHA1   -> HmacKeyDecoder(kCCHmacAlgSHA1, CC_SHA1_BLOCK_BYTES, CC_SHA1_DIGEST_LENGTH)
+            SHA256 -> HmacKeyDecoder(kCCHmacAlgSHA256, CC_SHA256_BLOCK_BYTES, CC_SHA256_DIGEST_LENGTH)
+            SHA384 -> HmacKeyDecoder(kCCHmacAlgSHA384, CC_SHA384_BLOCK_BYTES, CC_SHA384_DIGEST_LENGTH)
+            SHA512 -> HmacKeyDecoder(kCCHmacAlgSHA512, CC_SHA512_BLOCK_BYTES, CC_SHA512_DIGEST_LENGTH)
             else   -> throw CryptographyException("Unsupported hash algorithm: $digest")
         }
     }
@@ -35,12 +35,15 @@ internal object CCHmac : HMAC {
 
 private class HmacKeyDecoder(
     private val hmacAlgorithm: CCHmacAlgorithm,
+    private val keySizeBytes: Int,
     private val digestSize: Int,
 ) : KeyDecoder<HMAC.Key.Format, HMAC.Key> {
-    override fun decodeFromBlocking(format: HMAC.Key.Format, input: Buffer): HMAC.Key {
-        //TODO: validate input size
-        if (format == HMAC.Key.Format.RAW) return wrapKey(hmacAlgorithm, input, digestSize)
-        TODO("$format is not yet supported")
+    override fun decodeFromBlocking(format: HMAC.Key.Format, input: Buffer): HMAC.Key = when (format) {
+        HMAC.Key.Format.RAW -> {
+            require(input.size == keySizeBytes) { "Invalid key size: ${input.size}, expected: $keySizeBytes" }
+            wrapKey(hmacAlgorithm, input.copyOf(), digestSize)
+        }
+        HMAC.Key.Format.JWK -> error("JWK is not supported")
     }
 }
 
@@ -64,9 +67,9 @@ private fun wrapKey(
     override fun signatureGenerator(): SignatureGenerator = signature
     override fun signatureVerifier(): SignatureVerifier = signature
 
-    override fun encodeToBlocking(format: HMAC.Key.Format): Buffer {
-        if (format == HMAC.Key.Format.RAW) return key
-        TODO("$format is not yet supported")
+    override fun encodeToBlocking(format: HMAC.Key.Format): Buffer = when (format) {
+        HMAC.Key.Format.RAW -> key.copyOf()
+        HMAC.Key.Format.JWK -> error("JWK is not supported")
     }
 }
 
@@ -77,7 +80,7 @@ private class HmacSignature(
 ) : SignatureGenerator, SignatureVerifier {
     override fun generateSignatureBlocking(dataInput: Buffer): Buffer {
         val macOutput = ByteArray(digestSize)
-        val result = CCHmac(
+        CCHmac(
             algorithm = hmacAlgorithm,
             key = key.refTo(0),
             keyLength = key.size.convert(),

@@ -18,9 +18,14 @@ internal object CCAesCbc : AES.CBC {
 }
 
 private object AesCbcKeyDecoder : KeyDecoder<AES.Key.Format, AES.CBC.Key> {
-    override fun decodeFromBlocking(format: AES.Key.Format, input: Buffer): AES.CBC.Key {
-        if (format == AES.Key.Format.RAW) return wrapKey(input)
-        TODO("$format is not yet supported")
+    override fun decodeFromBlocking(format: AES.Key.Format, input: Buffer): AES.CBC.Key = when (format) {
+        AES.Key.Format.RAW -> {
+            require(input.size == 16 || input.size == 24 || input.size == 32) {
+                "AES key size must be 128, 192 or 256 bits"
+            }
+            wrapKey(input.copyOf())
+        }
+        AES.Key.Format.JWK -> error("JWK is not supported")
     }
 }
 
@@ -36,9 +41,9 @@ private class AesCbcKeyGenerator(
 private fun wrapKey(key: ByteArray): AES.CBC.Key = object : AES.CBC.Key {
     override fun cipher(padding: Boolean): Cipher = AesCbcCipher(key, padding)
 
-    override fun encodeToBlocking(format: AES.Key.Format): Buffer {
-        if (format == AES.Key.Format.RAW) return key
-        TODO("$format is not yet supported")
+    override fun encodeToBlocking(format: AES.Key.Format): Buffer = when (format) {
+        AES.Key.Format.RAW -> key.copyOf()
+        AES.Key.Format.JWK -> error("JWK is not supported")
     }
 }
 
@@ -54,16 +59,15 @@ private class AesCbcCipher(
         cryptorRef.create(kCCEncrypt, iv.refTo(0))
         val ciphertextOutput = ByteArray(cryptorRef.outputLength(plaintextInput.size))
 
-        var moved = if (plaintextInput.isEmpty()) 0
-        else cryptorRef.update(
-            dataIn = plaintextInput.refTo(0),
+        val moved = cryptorRef.update(
+            dataIn = plaintextInput.fixEmpty().refTo(0),
             dataInLength = plaintextInput.size,
             dataOut = ciphertextOutput.refTo(0),
             dataOutAvailable = ciphertextOutput.size,
             dataOutMoved = dataOutMoved,
         )
 
-        if (ciphertextOutput.size != moved) moved += cryptorRef.final(
+        if (ciphertextOutput.size != moved) cryptorRef.final(
             dataOut = ciphertextOutput.refTo(moved),
             dataOutAvailable = ciphertextOutput.size - moved,
             dataOutMoved = dataOutMoved,
@@ -71,29 +75,34 @@ private class AesCbcCipher(
         iv + ciphertextOutput
     }
 
-    override fun decryptBlocking(ciphertextInput: Buffer): Buffer = useCryptor { cryptorRef, dataOutMoved ->
-        cryptorRef.create(kCCDecrypt, ciphertextInput.refTo(0))
+    override fun decryptBlocking(ciphertextInput: Buffer): Buffer {
+        require(ciphertextInput.size >= ivSizeBytes) { "Ciphertext is too short" }
+        if (!padding) require(ciphertextInput.size % 16 == 0) { "Ciphertext is not padded" }
 
-        val plaintextOutput = ByteArray(cryptorRef.outputLength(ciphertextInput.size - ivSizeBytes))
+        return useCryptor { cryptorRef, dataOutMoved ->
+            cryptorRef.create(kCCDecrypt, ciphertextInput.refTo(0))
 
-        var moved = cryptorRef.update(
-            dataIn = ciphertextInput.refTo(ivSizeBytes),
-            dataInLength = ciphertextInput.size - ivSizeBytes,
-            dataOut = plaintextOutput.refTo(0),
-            dataOutAvailable = plaintextOutput.size,
-            dataOutMoved = dataOutMoved
-        )
+            val plaintextOutput = ByteArray(cryptorRef.outputLength(ciphertextInput.size - ivSizeBytes))
 
-        if (plaintextOutput.size != moved) moved += cryptorRef.final(
-            dataOut = plaintextOutput.refTo(moved),
-            dataOutAvailable = plaintextOutput.size - moved,
-            dataOutMoved = dataOutMoved
-        )
+            var moved = cryptorRef.update(
+                dataIn = ciphertextInput.refTo(ivSizeBytes),
+                dataInLength = ciphertextInput.size - ivSizeBytes,
+                dataOut = plaintextOutput.refTo(0),
+                dataOutAvailable = plaintextOutput.size,
+                dataOutMoved = dataOutMoved
+            )
 
-        if (plaintextOutput.size == moved) {
-            plaintextOutput
-        } else {
-            plaintextOutput.copyOf(moved)
+            if (plaintextOutput.size != moved) moved += cryptorRef.final(
+                dataOut = plaintextOutput.refTo(moved),
+                dataOutAvailable = plaintextOutput.size - moved,
+                dataOutMoved = dataOutMoved
+            )
+
+            if (plaintextOutput.size == moved) {
+                plaintextOutput
+            } else {
+                plaintextOutput.copyOf(moved)
+            }
         }
     }
 

@@ -20,12 +20,11 @@ internal class CCDigest(
     @OptIn(ExperimentalUnsignedTypes::class)
     override fun hashBlocking(dataInput: Buffer): Buffer {
         val output = ByteArray(hashAlgorithm.digestSize)
-        val result = hashAlgorithm.ccHash(
-            dataInput.fixEmpty().refTo(0),
-            dataInput.size.convert(),
-            output.asUByteArray().refTo(0)
+        hashAlgorithm.ccHash(
+            data = dataInput.fixEmpty().refTo(0),
+            dataLength = dataInput.size.convert(),
+            digest = output.asUByteArray().refTo(0)
         )
-//        if (result != kCCSuccess) throw Exception("CC_SHA512 failed")
         return output
     }
 }

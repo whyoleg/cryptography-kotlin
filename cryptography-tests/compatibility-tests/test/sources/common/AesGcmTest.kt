@@ -23,7 +23,7 @@ class AesGcmTest : AesBasedTest<AES.GCM.Key, AES.GCM>(AES.GCM) {
             id to tagSizeBits.bits
         }
 
-        generateKeys { key, keyReference, keyParameters ->
+        generateKeys { key, keyReference, _ ->
             tagSizes.forEach { (cipherParametersId, tagSize) ->
                 logger.log { "tagSize = $tagSize" }
                 val cipher = key.cipher(tagSize)
