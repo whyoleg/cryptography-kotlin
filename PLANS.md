@@ -8,7 +8,6 @@
 * [ ] Engines
     * [ ] OpenSSL(1/3) engine (dynamic/static for desktop native targets)
 * [ ] Build
-    * [ ] Binary compatibility validator
     * [ ] GitHub Actions via github-workflows-kt (?)
     * [ ] Samples (use knit?) (for each different kind of operation)
     * [ ] Dokka (at least to generate public API)

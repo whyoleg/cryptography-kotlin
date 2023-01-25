@@ -1,0 +1,28 @@
+public abstract class dev/whyoleg/cryptography/random/CryptographyRandom : kotlin/random/Random {
+	public static final field Default Ldev/whyoleg/cryptography/random/CryptographyRandom$Default;
+	public fun <init> ()V
+}
+
+public final class dev/whyoleg/cryptography/random/CryptographyRandom$Default : dev/whyoleg/cryptography/random/CryptographyRandom {
+	public fun nextBits (I)I
+	public fun nextBoolean ()Z
+	public fun nextBytes (I)[B
+	public fun nextBytes ([B)[B
+	public fun nextBytes ([BII)[B
+	public fun nextDouble ()D
+	public fun nextDouble (D)D
+	public fun nextDouble (DD)D
+	public fun nextFloat ()F
+	public fun nextInt ()I
+	public fun nextInt (I)I
+	public fun nextInt (II)I
+	public fun nextLong ()J
+	public fun nextLong (J)J
+	public fun nextLong (JJ)J
+}
+
+public final class dev/whyoleg/cryptography/random/CryptographyRandom_jvmKt {
+	public static final fun asCryptographyRandom (Ljava/security/SecureRandom;)Ldev/whyoleg/cryptography/random/CryptographyRandom;
+	public static final fun asSecureRandom (Ldev/whyoleg/cryptography/random/CryptographyRandom;)Ljava/security/SecureRandom;
+}
+
