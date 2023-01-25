@@ -28,18 +28,12 @@ abstract class RsaBasedTest<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, 
                 val keyParameters = KeyParameters(keySize.inBits, digest.name, digestSize)
                 val keyParametersId = api.keyPairs.saveParameters(keyParameters)
                 algorithm.keyPairGenerator(keySize, digest).generateKeys(keyIterations) { keyPair ->
-                    val keyReference = api.keyPairs.saveData(keyParametersId, KeyPairData(
-                        public = KeyData {
-                            put(StringKeyFormat.DER, keyPair.publicKey.encodeTo(RSA.PublicKey.Format.DER))
-                            put(StringKeyFormat.PEM, keyPair.publicKey.encodeTo(RSA.PublicKey.Format.PEM))
-                            if (supportsJwk()) put(StringKeyFormat.JWK, keyPair.publicKey.encodeTo(RSA.PublicKey.Format.JWK))
-                        },
-                        private = KeyData {
-                            put(StringKeyFormat.DER, keyPair.privateKey.encodeTo(RSA.PrivateKey.Format.DER))
-                            put(StringKeyFormat.PEM, keyPair.privateKey.encodeTo(RSA.PrivateKey.Format.PEM))
-                            if (supportsJwk()) put(StringKeyFormat.JWK, keyPair.privateKey.encodeTo(RSA.PrivateKey.Format.JWK))
-                        }
-                    ))
+                    val keyReference = api.keyPairs.saveData(
+                        keyParametersId, KeyPairData(
+                            public = KeyData(keyPair.publicKey.encodeTo(RSA.PublicKey.Format.values(), ::supportsKeyFormat)),
+                            private = KeyData(keyPair.privateKey.encodeTo(RSA.PrivateKey.Format.values(), ::supportsKeyFormat))
+                        )
+                    )
                     block(keyPair, keyReference, keyParameters)
                 }
             }
@@ -54,36 +48,27 @@ abstract class RsaBasedTest<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, 
             val publicKeyDecoder = algorithm.publicKeyDecoder(digest)
 
             api.keyPairs.getData<KeyPairData>(parametersId) { (public, private), keyReference ->
-                val publicKeys = publicKeyDecoder.decodeFrom(public.formats) { stringFormat ->
-                    when (stringFormat) {
-                        StringKeyFormat.DER -> RSA.PublicKey.Format.DER
-                        StringKeyFormat.PEM -> RSA.PublicKey.Format.PEM
-                        StringKeyFormat.JWK -> RSA.PublicKey.Format.JWK.takeIf { supportsJwk() }
-                        else                -> error("Unsupported key format: $stringFormat")
+                val publicKeys = publicKeyDecoder.decodeFrom(
+                    formats = public.formats,
+                    formatOf = RSA.PublicKey.Format::valueOf,
+                    supports = ::supportsKeyFormat
+                ) { key, format, bytes ->
+                    when (format) {
+                        RSA.PublicKey.Format.DER, RSA.PublicKey.Format.PEM ->
+                            assertContentEquals(bytes, key.encodeTo(format), "Public Key $format encoding")
+                        RSA.PublicKey.Format.JWK                           -> {}
                     }
                 }
-                publicKeys.forEach { publicKey ->
-                    public.formats[StringKeyFormat.DER]?.let { bytes ->
-                        assertContentEquals(bytes, publicKey.encodeTo(RSA.PublicKey.Format.DER), "Public key DER encoding")
-                    }
-                    public.formats[StringKeyFormat.PEM]?.let { bytes ->
-                        assertContentEquals(bytes, publicKey.encodeTo(RSA.PublicKey.Format.PEM), "Public key PEM encoding")
-                    }
-                }
-                val privateKeys = privateKeyDecoder.decodeFrom(private.formats) { stringFormat ->
-                    when (stringFormat) {
-                        StringKeyFormat.DER -> RSA.PrivateKey.Format.DER
-                        StringKeyFormat.PEM -> RSA.PrivateKey.Format.PEM
-                        StringKeyFormat.JWK -> RSA.PrivateKey.Format.JWK.takeIf { supportsJwk() }
-                        else                -> error("Unsupported key format: $stringFormat")
-                    }
-                }
-                privateKeys.forEach { privateKey ->
-                    private.formats[StringKeyFormat.DER]?.let { bytes ->
-                        assertContentEquals(bytes, privateKey.encodeTo(RSA.PrivateKey.Format.DER), "Private key DER encoding")
-                    }
-                    private.formats[StringKeyFormat.PEM]?.let { bytes ->
-                        assertContentEquals(bytes, privateKey.encodeTo(RSA.PrivateKey.Format.PEM), "Private key DER encoding")
+                val privateKeys = privateKeyDecoder.decodeFrom(
+                    formats = private.formats,
+                    formatOf = RSA.PrivateKey.Format::valueOf,
+                    supports = ::supportsKeyFormat
+                ) { key, format, bytes ->
+                    when (format) {
+                        RSA.PrivateKey.Format.DER, RSA.PrivateKey.Format.PEM -> {
+                            assertContentEquals(bytes, key.encodeTo(format), "Private Key $format encoding")
+                        }
+                        RSA.PrivateKey.Format.JWK                            -> {}
                     }
                 }
                 put(keyReference, publicKeys to privateKeys)

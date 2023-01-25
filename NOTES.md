@@ -18,3 +18,7 @@ public interface ParameterizedDecryptor<P, B> {
     public suspend fun decryptBoxWith(parameters: P, ciphertextInput: B, associatedData: Buffer?): Buffer
 }
 ```
+
+## key management
+
+- https://github.com/tersesystems/securitybuilder

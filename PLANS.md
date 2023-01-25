@@ -7,7 +7,6 @@
 * [ ] Engines
     * [ ] Apple
         * [ ] EC/RSA via Security framework
-        * [ ] HMAC key size
         * [ ] error reporting
     * [ ] OpenSSL(1/3) engine (dynamic/static for desktop native targets)
     * [ ] Key Formats support cleanup
@@ -47,9 +46,9 @@
     * [ ] brcypt (prf)
     * [ ] RSA-SSA-PKCS1 (signature)
     * [ ] Ed25519 curve
-  * [ ] CMAC (mac)
-  * [ ] Blowfish (cipher), Blake (hash) - try to find some implementations (?)
-  * [ ] TOTP/HOTP (otp)
+    * [ ] CMAC (mac)
+    * [ ] Blowfish (cipher), Blake (hash) - try to find some implementations (?)
+    * [ ] TOTP/HOTP (otp)
 * [ ] Engines
     * [ ] CryptoKit engine
     * [ ] Windows CNG engine
@@ -122,6 +121,9 @@
 * [ ] Refactor currentPlatform in tests with some kind of object per platform with properties
 * [ ] Supports testing DER keys not by content equality, but by parsing and comparing
 * [ ] JDK pooling for SPIs (f.e. looks like Signature is poolable only by parameters, and not by algorithm)
+* [ ] integrations
+    * [ ] https://github.com/Password4j/password4j
+    * [ ] https://github.com/keycloak/keycloak
 
 ## 1.0.0: Stable release
 

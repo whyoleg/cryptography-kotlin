@@ -25,10 +25,10 @@ abstract class AesBasedTest<K : AES.Key, A : AES<K>>(
             val keyParameters = KeyParameters(keySize.value.inBits)
             val keyParametersId = api.keys.saveParameters(keyParameters)
             algorithm.keyGenerator(keySize).generateKeys(keyIterations) { key ->
-                val keyReference = api.keys.saveData(keyParametersId, KeyData {
-                    put(StringKeyFormat.RAW, key.encodeTo(AES.Key.Format.RAW))
-                    if (supportsJwk()) put(StringKeyFormat.JWK, key.encodeTo(AES.Key.Format.JWK))
-                })
+                val keyReference = api.keys.saveData(
+                    keyParametersId,
+                    KeyData(key.encodeTo(AES.Key.Format.values(), ::supportsKeyFormat))
+                )
                 block(key, keyReference, keyParameters)
             }
         }
@@ -40,16 +40,14 @@ abstract class AesBasedTest<K : AES.Key, A : AES<K>>(
                 if (!supportsKeySize(keySize)) return@getParameters
 
                 api.keys.getData<KeyData>(parametersId) { (formats), keyReference ->
-                    val keys = keyDecoder.decodeFrom(formats) { stringFormat ->
-                        when (stringFormat) {
-                            StringKeyFormat.RAW -> AES.Key.Format.RAW
-                            StringKeyFormat.JWK -> AES.Key.Format.JWK.takeIf { supportsJwk() }
-                            else                -> error("Unsupported key format: $stringFormat")
-                        }
-                    }
-                    keys.forEach { key ->
-                        formats[StringKeyFormat.RAW]?.let { bytes ->
-                            assertContentEquals(bytes, key.encodeTo(AES.Key.Format.RAW), "Key RAW encoding")
+                    val keys = keyDecoder.decodeFrom(
+                        formats = formats,
+                        formatOf = AES.Key.Format::valueOf,
+                        supports = ::supportsKeyFormat
+                    ) { key, format, bytes ->
+                        when (format) {
+                            AES.Key.Format.RAW -> assertContentEquals(bytes, key.encodeTo(format), "Key $format encoding")
+                            AES.Key.Format.JWK -> {} //no check for JWK yet
                         }
                     }
                     put(keyReference, keys)

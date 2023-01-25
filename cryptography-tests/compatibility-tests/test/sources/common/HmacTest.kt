@@ -21,10 +21,10 @@ class HmacTest : CompatibilityTest<HMAC>(HMAC) {
         generateDigests { digest, _ ->
             val keyParametersId = api.keys.saveParameters(KeyParameters(digest.name))
             algorithm.keyGenerator(digest).generateKeys(keyIterations) { key ->
-                val keyReference = api.keys.saveData(keyParametersId, KeyData {
-                    put(StringKeyFormat.RAW, key.encodeTo(HMAC.Key.Format.RAW))
-                    if (supportsJwk()) put(StringKeyFormat.JWK, key.encodeTo(HMAC.Key.Format.JWK))
-                })
+                val keyReference = api.keys.saveData(
+                    keyParametersId,
+                    KeyData(key.encodeTo(HMAC.Key.Format.values(), ::supportsKeyFormat))
+                )
 
                 val signatureGenerator = key.signatureGenerator()
                 val signatureVerifier = key.signatureVerifier()
@@ -48,16 +48,14 @@ class HmacTest : CompatibilityTest<HMAC>(HMAC) {
             api.keys.getParameters<KeyParameters> { (digestName), parametersId ->
                 val keyDecoder = algorithm.keyDecoder(digest(digestName))
                 api.keys.getData<KeyData>(parametersId) { (formats), keyReference ->
-                    val keys = keyDecoder.decodeFrom(formats) { stringFormat ->
-                        when (stringFormat) {
-                            StringKeyFormat.RAW -> HMAC.Key.Format.RAW
-                            StringKeyFormat.JWK -> HMAC.Key.Format.JWK.takeIf { supportsJwk() }
-                            else                -> error("Unsupported key format: $stringFormat")
-                        }
-                    }
-                    keys.forEach { key ->
-                        formats[StringKeyFormat.RAW]?.let { bytes ->
-                            assertContentEquals(bytes, key.encodeTo(HMAC.Key.Format.RAW), "Key RAW encoding")
+                    val keys = keyDecoder.decodeFrom(
+                        formats = formats,
+                        formatOf = HMAC.Key.Format::valueOf,
+                        supports = ::supportsKeyFormat
+                    ) { key, format, bytes ->
+                        when (format) {
+                            HMAC.Key.Format.RAW -> assertContentEquals(bytes, key.encodeTo(format), "Key $format encoding")
+                            HMAC.Key.Format.JWK -> {} //no check for JWK yet
                         }
                     }
                     put(keyReference, keys)

@@ -4,7 +4,6 @@ import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.materials.key.*
-import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.operations.signature.*
 import dev.whyoleg.cryptography.provider.*
 import kotlin.jvm.*
@@ -32,20 +31,11 @@ public interface EC<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP : EC.Ke
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface PublicKey : EncodableKey<PublicKey.Format> {
-        public sealed class Format : KeyFormat {
-            public object RAW : Format(), KeyFormat.RAW
-            public object PEM : Format(), KeyFormat.PEM
-            public object DER : Format(), KeyFormat.DER
-            public object JWK : Format(), KeyFormat.JWK
-        }
+        public enum class Format : KeyFormat { RAW, DER, PEM, JWK, }
     }
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface PrivateKey : EncodableKey<PrivateKey.Format> {
-        public sealed class Format : KeyFormat {
-            public object PEM : Format(), KeyFormat.PEM
-            public object DER : Format(), KeyFormat.DER
-            public object JWK : Format(), KeyFormat.JWK
-        }
+        public enum class Format : KeyFormat { DER, PEM, JWK, }
     }
 }

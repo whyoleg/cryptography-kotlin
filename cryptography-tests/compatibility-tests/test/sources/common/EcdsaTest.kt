@@ -50,17 +50,10 @@ class EcdsaTest : CompatibilityTest<ECDSA>(ECDSA) {
             algorithm.keyPairGenerator(curve).generateKeys(keyIterations) { keyPair ->
                 val keyReference = api.keyPairs.saveData(
                     keyParametersId, KeyPairData(
-                        public = KeyData {
-                            put(StringKeyFormat.DER, keyPair.publicKey.encodeTo(EC.PublicKey.Format.DER))
-                            put(StringKeyFormat.PEM, keyPair.publicKey.encodeTo(EC.PublicKey.Format.PEM))
-                            if (supportsJwk()) put(StringKeyFormat.JWK, keyPair.publicKey.encodeTo(EC.PublicKey.Format.JWK))
-                        },
-                        private = KeyData {
-                            put(StringKeyFormat.DER, keyPair.privateKey.encodeTo(EC.PrivateKey.Format.DER))
-                            put(StringKeyFormat.PEM, keyPair.privateKey.encodeTo(EC.PrivateKey.Format.PEM))
-                            if (supportsJwk()) put(StringKeyFormat.JWK, keyPair.privateKey.encodeTo(EC.PrivateKey.Format.JWK))
-                        }
-                    ))
+                        public = KeyData(keyPair.publicKey.encodeTo(EC.PublicKey.Format.values(), ::supportsKeyFormat)),
+                        private = KeyData(keyPair.privateKey.encodeTo(EC.PrivateKey.Format.values(), ::supportsKeyFormat))
+                    )
+                )
 
                 signatureParametersList.forEach { (signatureParametersId, signatureParameters) ->
                     logger.log { "digest = ${signatureParameters.digest}, signatureFormat = ${signatureParameters.signatureFormat}" }
@@ -92,36 +85,29 @@ class EcdsaTest : CompatibilityTest<ECDSA>(ECDSA) {
                 val publicKeyDecoder = algorithm.publicKeyDecoder(keyParameters.curve)
 
                 api.keyPairs.getData<KeyPairData>(parametersId) { (public, private), keyReference ->
-                    val publicKeys = publicKeyDecoder.decodeFrom(public.formats) { stringFormat ->
-                        when (stringFormat) {
-                            StringKeyFormat.DER -> EC.PublicKey.Format.DER
-                            StringKeyFormat.PEM -> EC.PublicKey.Format.PEM
-                            StringKeyFormat.JWK -> EC.PublicKey.Format.JWK.takeIf { supportsJwk() }
-                            else                -> error("Unsupported key format: $stringFormat")
+                    val publicKeys = publicKeyDecoder.decodeFrom(
+                        formats = public.formats,
+                        formatOf = EC.PublicKey.Format::valueOf,
+                        supports = ::supportsKeyFormat
+                    ) { key, format, bytes ->
+                        when (format) {
+                            EC.PublicKey.Format.RAW, EC.PublicKey.Format.DER, EC.PublicKey.Format.PEM ->
+                                assertContentEquals(bytes, key.encodeTo(format), "Public Key $format encoding")
+                            EC.PublicKey.Format.JWK                                                   -> {}
                         }
                     }
-                    publicKeys.forEach { publicKey ->
-                        public.formats[StringKeyFormat.DER]?.let { bytes ->
-                            assertContentEquals(bytes, publicKey.encodeTo(EC.PublicKey.Format.DER), "Public key DER encoding")
-                        }
-                        public.formats[StringKeyFormat.PEM]?.let { bytes ->
-                            assertContentEquals(bytes, publicKey.encodeTo(EC.PublicKey.Format.PEM), "Public key PEM encoding")
-                        }
-                    }
-                    val privateKeys = privateKeyDecoder.decodeFrom(private.formats) { stringFormat ->
-                        when (stringFormat) {
-                            StringKeyFormat.DER -> EC.PrivateKey.Format.DER
-                            StringKeyFormat.PEM -> EC.PrivateKey.Format.PEM
-                            StringKeyFormat.JWK -> EC.PrivateKey.Format.JWK.takeIf { supportsJwk() }
-                            else                -> error("Unsupported key format: $stringFormat")
-                        }
-                    }
-                    if (supportsPrivateKeyDerFormat()) privateKeys.forEach { privateKey ->
-                        private.formats[StringKeyFormat.DER]?.let { bytes ->
-                            assertContentEquals(bytes, privateKey.encodeTo(EC.PrivateKey.Format.DER), "Private key DER encoding")
-                        }
-                        private.formats[StringKeyFormat.PEM]?.let { bytes ->
-                            assertContentEquals(bytes, privateKey.encodeTo(EC.PrivateKey.Format.PEM), "Private key PEM encoding")
+                    val privateKeys = privateKeyDecoder.decodeFrom(
+                        formats = private.formats,
+                        formatOf = EC.PrivateKey.Format::valueOf,
+                        supports = ::supportsKeyFormat
+                    ) { key, format, bytes ->
+                        when (format) {
+                            EC.PrivateKey.Format.DER, EC.PrivateKey.Format.PEM -> {
+                                if (supportsPrivateKeyDerFormat()) {
+                                    assertContentEquals(bytes, key.encodeTo(format), "Private Key $format encoding")
+                                }
+                            }
+                            EC.PrivateKey.Format.JWK                           -> {}
                         }
                     }
                     put(keyReference, publicKeys to privateKeys)

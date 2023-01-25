@@ -21,9 +21,6 @@ public interface HMAC : CryptographyAlgorithm {
         public fun signatureGenerator(): SignatureGenerator
         public fun signatureVerifier(): SignatureVerifier
 
-        public sealed class Format : KeyFormat {
-            public object RAW : Format(), KeyFormat.RAW
-            public object JWK : Format(), KeyFormat.JWK
-        }
+        public enum class Format : KeyFormat { RAW, JWK }
     }
 }

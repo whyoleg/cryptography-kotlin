@@ -16,15 +16,15 @@ internal abstract class JdkPublicKeyDecoder<KF : KeyFormat, K : Key>(
 
     protected abstract fun JPublicKey.convert(): K
 
-    final override fun decodeFromBlocking(format: KF, input: Buffer): K = when (format) {
-        is KeyFormat.DER -> decode(input)
-        is KeyFormat.PEM -> {
+    final override fun decodeFromBlocking(format: KF, input: Buffer): K = when (format.name) {
+        "DER" -> decode(input)
+        "PEM" -> {
             val (type, decoded) = input.decodeFromPem()
             check(type == "PUBLIC KEY" || type == "$pemAlgorithm PUBLIC KEY") {
                 "Wrong PEM type, expected `PUBLIC KEY` or `$pemAlgorithm PUBLIC KEY` got `$type`"
             }
             decode(decoded)
         }
-        else             -> error("$format is not yet supported")
+        else  -> error("$format is not  supported")
     }.convert()
 }

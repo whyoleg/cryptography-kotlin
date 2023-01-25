@@ -5,7 +5,6 @@ import dev.whyoleg.cryptography.BinarySize.Companion.bits
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.io.*
 import dev.whyoleg.cryptography.materials.key.*
-import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.operations.cipher.*
 import dev.whyoleg.cryptography.provider.*
 
@@ -16,10 +15,7 @@ public interface AES<K : AES.Key> : CryptographyAlgorithm {
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface Key : EncodableKey<Key.Format> {
-        public sealed class Format : KeyFormat {
-            public object RAW : Format(), KeyFormat.RAW
-            public object JWK : Format(), KeyFormat.JWK
-        }
+        public enum class Format : KeyFormat { RAW, JWK }
     }
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
