@@ -11,6 +11,8 @@ ktor = "2.2.2"
 
 logback = "1.2.11"
 
+gradle-versions = "0.44.0"
+
 [libraries]
 build-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 build-atomicfu = { module = "org.jetbrains.kotlinx:atomicfu-gradle-plugin", version.ref = "kotlinx-atomicfu" }
@@ -38,3 +40,4 @@ logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "lo
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlinx-bcv = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "kotlinx-bcv" }
+gradle-versions = { id = "com.github.ben-manes.versions", version.ref = "gradle-versions" }
