@@ -1,5 +1,6 @@
 plugins {
     id("buildx-multiplatform")
+    id("org.jetbrains.kotlinx.kover")
 }
 
 kotlin {

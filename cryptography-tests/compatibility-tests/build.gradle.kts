@@ -2,9 +2,10 @@ import buildparameters.tests.compatibility.*
 import org.jetbrains.kotlin.gradle.plugin.*
 
 plugins {
-    id("buildx-multiplatform")
     id("build-parameters")
-    kotlin("plugin.serialization")
+    id("buildx-multiplatform")
+    id("org.jetbrains.kotlin.plugin.serialization")
+    id("org.jetbrains.kotlinx.kover")
 }
 
 kotlin {

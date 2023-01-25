@@ -11,7 +11,6 @@
     * [ ] GitHub Actions via github-workflows-kt (?)
     * [ ] Samples (use knit?) (for each different kind of operation)
     * [ ] Dokka (at least to generate public API)
-    * [ ] Kover (for coverage)
     * [ ] rename buildx plugins
     * [ ] Maven Central
 * [ ] README
