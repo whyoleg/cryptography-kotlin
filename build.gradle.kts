@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.targets.js.yarn.*
 plugins {
     alias(libs.plugins.kotlin.multiplatform) apply false
     alias(libs.plugins.kotlin.serialization) apply false
+    alias(libs.plugins.kotlin.dokka)
     alias(libs.plugins.kotlinx.bcv) apply false
     alias(libs.plugins.kotlinx.kover)
     alias(libs.plugins.gradle.versions)
