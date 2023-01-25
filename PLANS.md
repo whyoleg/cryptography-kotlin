@@ -5,11 +5,7 @@
 * [ ] DROP ALL TODO
 * [ ] DROP ALL println
 * [ ] write some behaviour tests for failures
-* [ ] JDK EC key support?
 * [ ] Engines
-    * [ ] Apple
-        * [ ] EC/RSA via Security framework
-        * [ ] error reporting
     * [ ] OpenSSL(1/3) engine (dynamic/static for desktop native targets)
 * [ ] Build
     * [ ] Binary compatibility validator
@@ -105,6 +101,7 @@
     * [ ] BorringSSL engine (MPP)
     * [ ] NodeJS engine
     * [ ] OpenSSL(1/3) engine for JVM (may be JS/WASM)
+    * [ ] Apple: EC/RSA via Security framework (no DER key encoding out of the box)
 * [ ] MPP encoding
     * [ ] JWT/JWK support (JOSE)
     * [ ] ASN.1/X.509/DER/PEM encoder/decoder (via kx.serialization ?)

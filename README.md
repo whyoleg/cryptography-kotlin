@@ -6,7 +6,7 @@ Types-safe Multiplatform cryptography library for Kotlin.
 
 |          | JDK    | WebCrypto | Apple  |
 |----------|--------|-----------|--------|
-| MD5      | ✅`h`   | ✅`h`      | ✅`h`   |
+| MD5      | ✅`h`   |           | ✅`h`   |
 | SHA1     | ✅`h`   | ✅`h`      | ✅`h`   |
 | SHA256   | ✅`h`   | ✅`h`      | ✅`h`   |
 | SHA384   | ✅`h`   | ✅`h`      | ✅`h`   |
