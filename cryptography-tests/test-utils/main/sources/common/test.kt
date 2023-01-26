@@ -3,7 +3,7 @@ package dev.whyoleg.cryptography.test.utils
 import dev.whyoleg.cryptography.algorithms.*
 import kotlinx.coroutines.test.*
 
-private const val enableLogsGlobal = true
+private const val enableLogsGlobal = false
 
 fun <A : CryptographyAlgorithm> runTestForEachAlgorithm(
     algorithmId: CryptographyAlgorithmId<A>,
