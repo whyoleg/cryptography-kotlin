@@ -45,7 +45,6 @@ jobs:
           arguments: |
             check
             --scan
-            --info
             --continue
           gradle-home-cache-includes: |
             caches
