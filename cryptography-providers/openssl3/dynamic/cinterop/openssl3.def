@@ -1,12 +1,14 @@
 linkerOpts = -lcrypto
 
 #what are correct values?
-linkerOpts.osx = -L/usr/local/opt/openssl@3/lib \
-                 -L/opt/homebrew/opt/openssl@3/lib
+linkerOpts.osx = -L/opt/homebrew/opt/openssl@3/lib \
+                 -L/usr/local/opt/openssl@3/lib
+
+linkerOpts.linux = -L/home/linuxbrew/.linuxbrew/opt/openssl@3/lib \
+                   -L/usr/lib64 \
+                   -L/usr/lib/x86_64-linux-gnu \
+                   -L/lib/x86_64-linux-gnu
 
 linkerOpts.mingw = -LC:/msys64/mingw64/lib \
-                       -LC:/Tools/msys64/mingw64/lib \
-                       -LC:/Tools/msys2/mingw64/lib
-
-linkerOpts.linux = -L/usr/lib64 \
-                   -L/usr/lib/x86_64-linux-gnu
+                   -LC:/Tools/msys64/mingw64/lib \
+                   -LC:/Tools/msys2/mingw64/lib
