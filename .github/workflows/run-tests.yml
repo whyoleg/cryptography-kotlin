@@ -16,10 +16,22 @@ jobs:
       - if: matrix.os == 'windows-latest'
         run: echo "KONAN_DATA_DIR=${USERPROFILE}\.gradle\konan" >> $GITHUB_ENV
         shell: bash
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '8'
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
       - uses: gradle/gradle-build-action@v2
         with:
           arguments: |
-            allTests
+            check
             --scan
             --info
             --continue
@@ -29,25 +41,3 @@ jobs:
             konan
             nodejs
             yarn
-      - if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: test-reports
-          path: "**/build/test-results/*Test/TEST-*.xml"
-          retention-days: 1
-
-  publish-test-results:
-    needs: [ default-test ]
-    if: always()
-    name: Publish test report
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/download-artifact@v3
-        with:
-          name: test-reports
-          path: test-reports
-      - uses: EnricoMi/publish-unit-test-result-action@v1
-        with:
-          check_name: Test Report
-          files: test-reports/**/TEST-*.xml
-          github_token: ${{ secrets.GITHUB_TOKEN }}
