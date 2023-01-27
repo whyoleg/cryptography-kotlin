@@ -6,9 +6,10 @@
 * [ ] DROP ALL println
 * [ ] write behaviour tests for failures
 * [ ] Engines
-    * [ ] OpenSSL(1/3) engine (dynamic/static(?) for desktop native targets)
+    * [ ] OpenSSL3 engine (dynamic/static(?) for desktop native targets)
 * [ ] Build
     * [ ] GitHub Actions (check and fix)
+    * [ ] bom
     * [ ] Samples (for each different kind of operation)
     * [ ] Maven Central
 * [ ] README
@@ -44,7 +45,7 @@
 * [ ] Engines
     * [ ] CryptoKit engine
     * [ ] Windows CNG engine
-    * [ ] OpenSSL(1/3) engine (static for almost all native targets)
+    * [ ] OpenSSL3 engine (static for watchos/tvos (?))
     * [ ] Engine builder DSL + decide on how to better handle providers inside engine (lazy, cache, etc)
 * [ ] Android integration tests
 * [ ] JDK with BC tests
@@ -96,7 +97,8 @@
     * [ ] AWS/GCP KMS provider
     * [ ] BorringSSL engine (MPP)
     * [ ] NodeJS engine
-    * [ ] OpenSSL(1/3) engine for JVM (may be JS/WASM)
+    * [ ] OpenSSL3 engine for JVM (may be JS/WASM)
+    * [ ] OpenSSL 1.1.1 - is it needed?
     * [ ] Apple: EC/RSA via Security framework (no DER key encoding out of the box)
 * [ ] MPP encoding
     * [ ] JWT/JWK support (JOSE)

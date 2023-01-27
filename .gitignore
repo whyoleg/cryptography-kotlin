@@ -9,3 +9,4 @@ build/
 *.log
 /local.properties
 /cryptography-tester/storage
+/cryptography-providers/openssl3/prebuilt

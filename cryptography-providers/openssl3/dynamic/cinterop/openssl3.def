@@ -1,0 +1,3 @@
+linkerOpts = -lcrypto
+
+#linkerOpts.mingw_x64 = -LC:/msys64/mingw64/lib

@@ -4,5 +4,5 @@ plugins {
 }
 
 kotlin {
-    darwinTargets()
+    appleTargets()
 }
