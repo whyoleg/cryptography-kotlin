@@ -1,3 +1,12 @@
 linkerOpts = -lcrypto
 
-#linkerOpts.mingw_x64 = -LC:/msys64/mingw64/lib
+#what are correct values?
+linkerOpts.osx = -L/usr/local/opt/openssl@3/lib \
+                 -L/opt/homebrew/opt/openssl@3/lib
+
+linkerOpts.mingw = -LC:/msys64/mingw64/lib \
+                       -LC:/Tools/msys64/mingw64/lib \
+                       -LC:/Tools/msys2/mingw64/lib
+
+linkerOpts.linux = -L/usr/lib64 \
+                   -L/usr/lib/x86_64-linux-gnu

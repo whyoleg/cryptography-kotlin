@@ -1,3 +1,3 @@
 package = dev.whyoleg.cryptography.openssl3.internal.cinterop
-headers = openssl/evp.h
+headers = openssl/evp.h openssl/sha.h openssl/aes.h
 headerFilter = openssl/*
