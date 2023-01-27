@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlinx.bcv) apply false
     alias(libs.plugins.kotlinx.kover)
     alias(libs.plugins.gradle.versions)
+    alias(libs.plugins.gradle.download) apply false
 }
 
 plugins.withType<YarnPlugin> {

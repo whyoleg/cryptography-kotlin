@@ -14,6 +14,9 @@ ktor = "2.2.2"
 logback = "1.2.11"
 
 gradle-versions = "0.44.0"
+gradle-download = "5.3.0"
+
+openssl3 = "3.0.7-alpha1"
 
 [libraries]
 build-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
@@ -45,3 +48,4 @@ kotlin-dokka = { id = "org.jetbrains.dokka", version.ref = "kotlin-dokka" }
 kotlinx-bcv = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "kotlinx-bcv" }
 kotlinx-kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kotlinx-kover" }
 gradle-versions = { id = "com.github.ben-manes.versions", version.ref = "gradle-versions" }
+gradle-download = { id = "de.undercouch.download", version.ref = "gradle-download" }

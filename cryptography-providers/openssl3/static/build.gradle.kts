@@ -1,8 +1,15 @@
 import org.jetbrains.kotlin.gradle.plugin.mpp.*
+import org.jetbrains.kotlin.gradle.tasks.*
 import org.jetbrains.kotlin.konan.target.*
 
 plugins {
     id("buildx-multiplatform-library")
+}
+
+val unzipPrebuiltOpenSSL3 by evaluationDependsOn(":cryptography-providers:cryptography-openssl3").tasks.getting(Sync::class)
+
+tasks.withType<CInteropProcess>().configureEach {
+    dependsOn(unzipPrebuiltOpenSSL3)
 }
 
 kotlin {
@@ -34,7 +41,7 @@ kotlin {
             }
             kotlinOptions.freeCompilerArgs += listOf(
                 "-include-binary",
-                file("../prebuilt/$prebuiltName/lib/libcrypto.a").absolutePath
+                unzipPrebuiltOpenSSL3.destinationDir.resolve("$prebuiltName/lib/libcrypto.a").absolutePath,
             )
         }
     }
