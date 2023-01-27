@@ -62,7 +62,7 @@ private class AesCbcCipher(
         val moved = cryptorRef.update(
             dataIn = plaintextInput.fixEmpty().refTo(0),
             dataInLength = plaintextInput.size,
-            dataOut = ciphertextOutput.refTo(0),
+            dataOut = ciphertextOutput.fixEmpty().refTo(0),
             dataOutAvailable = ciphertextOutput.size,
             dataOutMoved = dataOutMoved,
         )
