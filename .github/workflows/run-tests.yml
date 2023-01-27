@@ -40,11 +40,24 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-      - uses: gradle/gradle-build-action@v2
+      - name: Run tests
+        uses: gradle/gradle-build-action@v2
         with:
           arguments: |
             check
             --scan
+            --continue
+          gradle-home-cache-includes: |
+            caches
+            notifications
+            konan
+            nodejs
+            yarn
+      - name: Publish to Maven Local
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: |
+            publishToMavenLocal
             --continue
           gradle-home-cache-includes: |
             caches
