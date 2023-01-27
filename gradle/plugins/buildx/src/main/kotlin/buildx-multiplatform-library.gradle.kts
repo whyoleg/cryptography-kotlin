@@ -5,4 +5,12 @@ plugins {
 
 kotlin {
     explicitApi()
+
+    sourceSets {
+        commonMain {
+            dependencies {
+                api(platform(project(":cryptography-bom")))
+            }
+        }
+    }
 }

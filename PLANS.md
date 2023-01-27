@@ -6,10 +6,9 @@
 * [ ] DROP ALL println
 * [ ] write behaviour tests for failures
 * [ ] Engines
-    * [ ] OpenSSL3 engine (dynamic/static(?) for desktop native targets)
+    * [ ] OpenSSL3 engine
 * [ ] Build
     * [ ] GitHub Actions (check and fix)
-    * [ ] bom
     * [ ] Samples (for each different kind of operation)
     * [ ] Maven Central
 * [ ] README
