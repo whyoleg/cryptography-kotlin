@@ -17,8 +17,6 @@ jobs:
         run: echo "KONAN_DATA_DIR=${USERPROFILE}\.gradle\konan" >> $GITHUB_ENV
         shell: bash
 
-      - if: matrix.os == 'ubuntu-20.04'
-        run: /home/linuxbrew/.linuxbrew/bin/brew install openssl@3
       - if: matrix.os == 'macos-latest'
         run: brew install openssl@3
       - if: matrix.os == 'windows-latest'
@@ -58,6 +56,7 @@ jobs:
         with:
           arguments: |
             publishToMavenLocal
+            --scan
             --continue
           gradle-home-cache-includes: |
             caches
