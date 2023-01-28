@@ -29,6 +29,7 @@ gradleEnterprise {
 rootProject.name = "cryptography-kotlin"
 
 include("cryptography-bom")
+include("cryptography-version-catalog")
 include("cryptography-io")
 include("cryptography-random")
 include("cryptography-core")

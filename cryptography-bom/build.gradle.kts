@@ -5,8 +5,12 @@ plugins {
 
 dependencies {
     constraints {
-        rootProject.subprojects {
-            if (plugins.hasPlugin("buildx-multiplatform-library")) api(project(path))
+        rootProject.subprojects.forEach {
+            if (it.name !in setOf("cryptography-bom", "cryptography-version-catalog") &&
+                evaluationDependsOn(it.path).plugins.hasPlugin("buildx-multiplatform-library")
+            ) {
+                api(project(it.path))
+            }
         }
     }
 }

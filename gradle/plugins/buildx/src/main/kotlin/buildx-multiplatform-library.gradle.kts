@@ -6,11 +6,8 @@ plugins {
 kotlin {
     explicitApi()
 
-    sourceSets {
-        commonMain {
-            dependencies {
-                api(platform(project(":cryptography-bom")))
-            }
-        }
+    //version enforcement using bom works only for jvm
+    sourceSets.findByName("jvmMain")?.dependencies {
+        api(platform(project(":cryptography-bom")))
     }
 }
