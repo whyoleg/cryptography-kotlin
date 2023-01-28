@@ -17,10 +17,9 @@ kotlin {
 
     targets.all {
         if (this !is KotlinNativeTarget) return@all
-
         val main by compilations.getting {
-            val openssl3 by cinterops.creating {
-                defFile("cinterop/openssl3.def")
+            val linkerOpts by cinterops.creating {
+                defFile("linkerOpts.def")
             }
         }
     }

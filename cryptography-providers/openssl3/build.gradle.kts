@@ -31,9 +31,8 @@ kotlin {
 
     targets.all {
         if (this !is KotlinNativeTarget) return@all
-
         val main by compilations.getting {
-            val openssl3 by cinterops.creating {
+            val libcrypto by cinterops.creating {
                 val prebuiltName = when (konanTarget) {
                     KonanTarget.IOS_ARM64           -> "ios-device-arm64"
                     KonanTarget.IOS_SIMULATOR_ARM64 -> "ios-simulator-arm64"
@@ -44,7 +43,7 @@ kotlin {
                     KonanTarget.MINGW_X64           -> "mingw-x64"
                     else                            -> TODO("Unsupported target: $konanTarget")
                 }
-                defFile("cinterop/openssl3.def")
+                defFile("libcrypto.def")
                 includeDirs(unzipPrebuiltOpenSSL3.map { it.destinationDir.resolve("$prebuiltName/include") })
             }
         }

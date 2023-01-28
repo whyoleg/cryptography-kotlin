@@ -25,10 +25,7 @@ kotlin {
     }
 
     targets.all {
-        if (this !is KotlinNativeTarget) return@all
-
-        //TODO: will it work after publication?
-        compilations.all {
+        if (this is KotlinNativeTarget) compilations.all {
             val prebuiltName = when (konanTarget) {
                 KonanTarget.IOS_ARM64           -> "ios-device-arm64"
                 KonanTarget.IOS_SIMULATOR_ARM64 -> "ios-simulator-arm64"

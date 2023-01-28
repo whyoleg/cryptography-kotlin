@@ -1,6 +1,5 @@
 linkerOpts = -lcrypto
 
-#what are correct values?
 linkerOpts.osx = -L/opt/homebrew/opt/openssl@3/lib \
                  -L/usr/local/opt/openssl@3/lib
 
