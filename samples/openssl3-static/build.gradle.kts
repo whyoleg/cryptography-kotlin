@@ -17,7 +17,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(libs.cryptography.openssl3.static)
+                implementation(libsCryptography.openssl3.static)
             }
         }
     }

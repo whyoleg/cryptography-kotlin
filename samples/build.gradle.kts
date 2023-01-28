@@ -1,3 +1,3 @@
 plugins {
-    alias(libs.plugins.kotlin.multiplatform) apply false
+    kotlin("multiplatform") version "1.8.0" apply false
 }

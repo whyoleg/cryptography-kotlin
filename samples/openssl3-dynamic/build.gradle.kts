@@ -17,7 +17,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(libs.cryptography.openssl3.dynamic)
+                implementation(libsCryptography.openssl3.dynamic)
             }
         }
     }
