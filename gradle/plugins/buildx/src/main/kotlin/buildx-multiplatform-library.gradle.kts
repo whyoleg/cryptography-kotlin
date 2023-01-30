@@ -7,7 +7,9 @@ kotlin {
     explicitApi()
 
     //version enforcement using bom works only for jvm
-    sourceSets.findByName("jvmMain")?.dependencies {
-        api(platform(project(":cryptography-bom")))
+    sourceSets.all {
+        if (name == "jvmMain") dependencies {
+            api(platform(project(":cryptography-bom")))
+        }
     }
 }

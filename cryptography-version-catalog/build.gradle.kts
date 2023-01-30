@@ -9,7 +9,7 @@ catalog {
         version("kotlin", libs.versions.kotlin.asProvider().get())
         version("cryptography", version.toString())
         rootProject.subprojects.forEach {
-            if (it.name !in setOf("cryptography-bom", "cryptography-version-catalog") &&
+            if (it.name != "cryptography-version-catalog" &&
                 evaluationDependsOn(it.path).plugins.hasPlugin("buildx-multiplatform-library")
             ) {
                 library(it.name.substringAfter("cryptography-"), "dev.whyoleg.cryptography", it.name).versionRef("cryptography")
@@ -20,7 +20,7 @@ catalog {
 
 publishing {
     publications {
-        val catalog by creating(MavenPublication::class) {
+        val versionCatalog by creating(MavenPublication::class) {
             from(components["versionCatalog"])
         }
     }
