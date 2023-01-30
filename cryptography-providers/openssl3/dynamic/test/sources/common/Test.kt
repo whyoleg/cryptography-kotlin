@@ -7,6 +7,9 @@ class SomeTest {
 
     @Test
     fun test() {
-        assertTrue(init().startsWith("3."))
+        val version = init()
+        assertTrue(version!!.startsWith("3."), "Version: $version")
+
+        assertEquals(3, major())
     }
 }
