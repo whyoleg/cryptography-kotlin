@@ -10,6 +10,8 @@
 * [ ] Build
     * [ ] GitHub Actions (check and fix)
     * [ ] Samples (for each different kind of operation)
+    * [ ] License header
+    * [ ] JPMS support
     * [ ] Maven Central
 * [ ] README
     * [ ] modules/dependencies
