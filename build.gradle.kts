@@ -14,7 +14,7 @@ plugins.withType<YarnPlugin> {
     yarn.apply {
         lockFileDirectory = rootDir.resolve("gradle/js")
         yarnLockMismatchReport = YarnLockMismatchReport.WARNING
-        resolution("ua-parser-js", "^0.7.33")
+        resolution("ua-parser-js", "0.7.33")
     }
 }
 
