@@ -2,7 +2,7 @@ package dev.whyoleg.cryptography.webcrypto.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
-import dev.whyoleg.cryptography.io.*
+
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.cipher.*
 import dev.whyoleg.cryptography.random.*
@@ -37,7 +37,7 @@ private class AesGcmCipher(
     private val tagSizeBits: Int,
 ) : AuthenticatedCipher {
 
-    override suspend fun encrypt(plaintextInput: Buffer, associatedData: Buffer?): Buffer {
+    override suspend fun encrypt(plaintextInput: ByteArray, associatedData: ByteArray?): ByteArray {
         val iv = CryptographyRandom.nextBytes(ivSizeBytes)
 
         val ciphertext = WebCrypto.subtle.encrypt(
@@ -49,7 +49,7 @@ private class AesGcmCipher(
         return iv + ciphertext.toByteArray()
     }
 
-    override suspend fun decrypt(ciphertextInput: Buffer, associatedData: Buffer?): Buffer {
+    override suspend fun decrypt(ciphertextInput: ByteArray, associatedData: ByteArray?): ByteArray {
         val plaintext = WebCrypto.subtle.decrypt(
             AesGcmParams(additionalData = associatedData, iv = ciphertextInput.copyOfRange(0, ivSizeBytes), tagLength = tagSizeBits),
             key,
@@ -59,6 +59,6 @@ private class AesGcmCipher(
         return plaintext.toByteArray()
     }
 
-    override fun decryptBlocking(ciphertextInput: Buffer, associatedData: Buffer?): Buffer = nonBlocking()
-    override fun encryptBlocking(plaintextInput: Buffer, associatedData: Buffer?): Buffer = nonBlocking()
+    override fun decryptBlocking(ciphertextInput: ByteArray, associatedData: ByteArray?): ByteArray = nonBlocking()
+    override fun encryptBlocking(plaintextInput: ByteArray, associatedData: ByteArray?): ByteArray = nonBlocking()
 }

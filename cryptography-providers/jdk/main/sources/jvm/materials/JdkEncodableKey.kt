@@ -1,6 +1,6 @@
 package dev.whyoleg.cryptography.jdk.materials
 
-import dev.whyoleg.cryptography.io.*
+
 import dev.whyoleg.cryptography.jdk.*
 import dev.whyoleg.cryptography.materials.key.*
 
@@ -9,7 +9,7 @@ internal open class JdkEncodableKey<KF : KeyFormat>(
     private val pemAlgorithm: String = key.algorithm,
 ) : EncodableKey<KF> {
 
-    override fun encodeToBlocking(format: KF): Buffer = when (format.name) {
+    override fun encodeToBlocking(format: KF): ByteArray = when (format.name) {
         "RAW" -> {
             check(key.format == "RAW") { "Wrong JDK Key format, expected `RAW` got `${key.format}`" }
             key.encoded

@@ -1,7 +1,7 @@
 package dev.whyoleg.cryptography.jdk.algorithms
 
 import dev.whyoleg.cryptography.algorithms.symmetric.*
-import dev.whyoleg.cryptography.io.*
+
 import dev.whyoleg.cryptography.jdk.*
 import dev.whyoleg.cryptography.jdk.materials.*
 import dev.whyoleg.cryptography.jdk.operations.*
@@ -40,13 +40,13 @@ private class AesCbcCipher(
         }
     )
 
-    override fun encryptBlocking(plaintextInput: Buffer): Buffer = cipher.use { cipher ->
+    override fun encryptBlocking(plaintextInput: ByteArray): ByteArray = cipher.use { cipher ->
         val iv = ByteArray(ivSizeBytes).also(state.secureRandom::nextBytes)
         cipher.init(JCipher.ENCRYPT_MODE, key, IvParameterSpec(iv), state.secureRandom)
         iv + cipher.doFinal(plaintextInput)
     }
 
-    override fun decryptBlocking(ciphertextInput: Buffer): Buffer = cipher.use { cipher ->
+    override fun decryptBlocking(ciphertextInput: ByteArray): ByteArray = cipher.use { cipher ->
         cipher.init(JCipher.DECRYPT_MODE, key, IvParameterSpec(ciphertextInput, 0, ivSizeBytes), state.secureRandom)
         cipher.doFinal(ciphertextInput, ivSizeBytes, ciphertextInput.size - ivSizeBytes)
     }

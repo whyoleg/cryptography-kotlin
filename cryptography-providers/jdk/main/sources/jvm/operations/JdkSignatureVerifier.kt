@@ -1,6 +1,6 @@
 package dev.whyoleg.cryptography.jdk.operations
 
-import dev.whyoleg.cryptography.io.*
+
 import dev.whyoleg.cryptography.jdk.*
 import dev.whyoleg.cryptography.operations.signature.*
 import java.security.spec.*
@@ -13,7 +13,7 @@ internal class JdkSignatureVerifier(
 ) : SignatureVerifier {
     private val signature = state.signature(algorithm)
 
-    override fun verifySignatureBlocking(dataInput: Buffer, signatureInput: Buffer): Boolean = signature.use { signature ->
+    override fun verifySignatureBlocking(dataInput: ByteArray, signatureInput: ByteArray): Boolean = signature.use { signature ->
         signature.initVerify(key)
         parameters?.let(signature::setParameter)
         signature.update(dataInput)

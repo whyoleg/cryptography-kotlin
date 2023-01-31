@@ -2,24 +2,24 @@ package dev.whyoleg.cryptography.tests.compatibility
 
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.digest.*
-import dev.whyoleg.cryptography.io.*
+
 import dev.whyoleg.cryptography.materials.key.*
 import kotlin.test.*
 
 suspend fun <KF : KeyFormat> EncodableKey<KF>.encodeTo(
     formats: Array<KF>,
     supports: (KF) -> Boolean,
-): Map<String, Buffer> = formats.filter(supports).associate {
+): Map<String, ByteArray> = formats.filter(supports).associate {
     it.name to encodeTo(it)
 }.also {
     assertTrue(it.isNotEmpty(), "No supported formats")
 }
 
 suspend inline fun <KF : KeyFormat, K : EncodableKey<KF>> KeyDecoder<KF, K>.decodeFrom(
-    formats: Map<String, Buffer>,
+    formats: Map<String, ByteArray>,
     formatOf: (String) -> KF,
     supports: (KF) -> Boolean,
-    validate: (key: K, format: KF, bytes: Buffer) -> Unit,
+    validate: (key: K, format: KF, bytes: ByteArray) -> Unit,
 ): List<K> {
     val supportedFormats = formats
         .mapKeys { (formatName, _) -> formatOf(formatName) }

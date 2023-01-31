@@ -1,6 +1,6 @@
 package dev.whyoleg.cryptography.jdk.operations
 
-import dev.whyoleg.cryptography.io.*
+
 import dev.whyoleg.cryptography.jdk.*
 import dev.whyoleg.cryptography.operations.signature.*
 
@@ -11,12 +11,12 @@ internal class JdkMacSignature(
 ) : SignatureGenerator, SignatureVerifier {
     private val mac = state.mac(algorithm)
 
-    override fun generateSignatureBlocking(dataInput: Buffer): Buffer = mac.use { mac ->
+    override fun generateSignatureBlocking(dataInput: ByteArray): ByteArray = mac.use { mac ->
         mac.init(key)
         mac.doFinal(dataInput)
     }
 
-    override fun verifySignatureBlocking(dataInput: Buffer, signatureInput: Buffer): Boolean {
+    override fun verifySignatureBlocking(dataInput: ByteArray, signatureInput: ByteArray): Boolean {
         return generateSignatureBlocking(dataInput).contentEquals(signatureInput)
     }
 }

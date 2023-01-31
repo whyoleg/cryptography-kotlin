@@ -1,6 +1,6 @@
 package dev.whyoleg.cryptography.jdk.materials
 
-import dev.whyoleg.cryptography.io.*
+
 import dev.whyoleg.cryptography.jdk.*
 import dev.whyoleg.cryptography.materials.key.*
 import java.security.spec.*
@@ -12,11 +12,11 @@ internal abstract class JdkPublicKeyDecoder<KF : KeyFormat, K : Key>(
 ) : KeyDecoder<KF, K> {
     private val keyFactory = state.keyFactory(algorithm)
 
-    private fun decode(input: Buffer): JPublicKey = keyFactory.use { it.generatePublic(X509EncodedKeySpec(input)) }
+    private fun decode(input: ByteArray): JPublicKey = keyFactory.use { it.generatePublic(X509EncodedKeySpec(input)) }
 
     protected abstract fun JPublicKey.convert(): K
 
-    final override fun decodeFromBlocking(format: KF, input: Buffer): K = when (format.name) {
+    final override fun decodeFromBlocking(format: KF, input: ByteArray): K = when (format.name) {
         "DER" -> decode(input)
         "PEM" -> {
             val (type, decoded) = input.decodeFromPem()

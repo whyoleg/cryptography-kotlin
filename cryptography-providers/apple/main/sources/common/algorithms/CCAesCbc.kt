@@ -2,7 +2,7 @@ package dev.whyoleg.cryptography.apple.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
-import dev.whyoleg.cryptography.io.*
+
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.cipher.*
 import dev.whyoleg.cryptography.random.*
@@ -18,7 +18,7 @@ internal object CCAesCbc : AES.CBC {
 }
 
 private object AesCbcKeyDecoder : KeyDecoder<AES.Key.Format, AES.CBC.Key> {
-    override fun decodeFromBlocking(format: AES.Key.Format, input: Buffer): AES.CBC.Key = when (format) {
+    override fun decodeFromBlocking(format: AES.Key.Format, input: ByteArray): AES.CBC.Key = when (format) {
         AES.Key.Format.RAW -> {
             require(input.size == 16 || input.size == 24 || input.size == 32) {
                 "AES key size must be 128, 192 or 256 bits"
@@ -41,7 +41,7 @@ private class AesCbcKeyGenerator(
 private fun wrapKey(key: ByteArray): AES.CBC.Key = object : AES.CBC.Key {
     override fun cipher(padding: Boolean): Cipher = AesCbcCipher(key, padding)
 
-    override fun encodeToBlocking(format: AES.Key.Format): Buffer = when (format) {
+    override fun encodeToBlocking(format: AES.Key.Format): ByteArray = when (format) {
         AES.Key.Format.RAW -> key.copyOf()
         AES.Key.Format.JWK -> error("JWK is not supported")
     }
@@ -50,10 +50,10 @@ private fun wrapKey(key: ByteArray): AES.CBC.Key = object : AES.CBC.Key {
 private const val ivSizeBytes = 16 //bytes for GCM
 
 private class AesCbcCipher(
-    private val key: Buffer,
+    private val key: ByteArray,
     private val padding: Boolean,
 ) : Cipher {
-    override fun encryptBlocking(plaintextInput: Buffer): Buffer = useCryptor { cryptorRef, dataOutMoved ->
+    override fun encryptBlocking(plaintextInput: ByteArray): ByteArray = useCryptor { cryptorRef, dataOutMoved ->
         val iv = ByteArray(ivSizeBytes).also { CryptographyRandom.nextBytes(it) }
 
         cryptorRef.create(kCCEncrypt, iv.refTo(0))
@@ -75,7 +75,7 @@ private class AesCbcCipher(
         iv + ciphertextOutput
     }
 
-    override fun decryptBlocking(ciphertextInput: Buffer): Buffer {
+    override fun decryptBlocking(ciphertextInput: ByteArray): ByteArray {
         require(ciphertextInput.size >= ivSizeBytes) { "Ciphertext is too short" }
         if (!padding) require(ciphertextInput.size % 16 == 0) { "Ciphertext is not padded" }
 

@@ -2,7 +2,7 @@ package dev.whyoleg.cryptography.jdk.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
-import dev.whyoleg.cryptography.io.*
+
 import dev.whyoleg.cryptography.jdk.*
 import dev.whyoleg.cryptography.jdk.algorithms.*
 import dev.whyoleg.cryptography.jdk.materials.*
@@ -35,14 +35,14 @@ private class AesGcmCipher(
 ) : AuthenticatedCipher {
     private val cipher = state.cipher("AES/GCM/NoPadding")
 
-    override fun encryptBlocking(plaintextInput: Buffer, associatedData: Buffer?): Buffer = cipher.use { cipher ->
+    override fun encryptBlocking(plaintextInput: ByteArray, associatedData: ByteArray?): ByteArray = cipher.use { cipher ->
         val iv = ByteArray(ivSizeBytes).also(state.secureRandom::nextBytes)
         cipher.init(JCipher.ENCRYPT_MODE, key, GCMParameterSpec(tagSize.inBits, iv), state.secureRandom)
         associatedData?.let(cipher::updateAAD)
         iv + cipher.doFinal(plaintextInput)
     }
 
-    override fun decryptBlocking(ciphertextInput: Buffer, associatedData: Buffer?): Buffer = cipher.use { cipher ->
+    override fun decryptBlocking(ciphertextInput: ByteArray, associatedData: ByteArray?): ByteArray = cipher.use { cipher ->
         cipher.init(JCipher.DECRYPT_MODE, key, GCMParameterSpec(tagSize.inBits, ciphertextInput, 0, ivSizeBytes), state.secureRandom)
         associatedData?.let(cipher::updateAAD)
         cipher.doFinal(ciphertextInput, ivSizeBytes, ciphertextInput.size - ivSizeBytes)

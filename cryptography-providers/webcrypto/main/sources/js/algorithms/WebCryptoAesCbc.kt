@@ -1,7 +1,7 @@
 package dev.whyoleg.cryptography.webcrypto.algorithms
 
 import dev.whyoleg.cryptography.algorithms.symmetric.*
-import dev.whyoleg.cryptography.io.*
+
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.cipher.*
 import dev.whyoleg.cryptography.random.*
@@ -36,7 +36,7 @@ internal object WebCryptoAesCbc : AES.CBC {
 
 private class AesCbcCipher(private val key: CryptoKey) : Cipher {
 
-    override suspend fun encrypt(plaintextInput: Buffer): Buffer {
+    override suspend fun encrypt(plaintextInput: ByteArray): ByteArray {
         val iv = CryptographyRandom.nextBytes(ivSizeBytes)
 
         val result = WebCrypto.subtle.encrypt(
@@ -48,7 +48,7 @@ private class AesCbcCipher(private val key: CryptoKey) : Cipher {
         return iv + result.toByteArray()
     }
 
-    override suspend fun decrypt(ciphertextInput: Buffer): Buffer {
+    override suspend fun decrypt(ciphertextInput: ByteArray): ByteArray {
         val result = WebCrypto.subtle.decrypt(
             AesCbcParams(ciphertextInput.copyOfRange(0, ivSizeBytes)),
             key,
@@ -58,6 +58,6 @@ private class AesCbcCipher(private val key: CryptoKey) : Cipher {
         return result.toByteArray()
     }
 
-    override fun decryptBlocking(ciphertextInput: Buffer): Buffer = nonBlocking()
-    override fun encryptBlocking(plaintextInput: Buffer): Buffer = nonBlocking()
+    override fun decryptBlocking(ciphertextInput: ByteArray): ByteArray = nonBlocking()
+    override fun encryptBlocking(plaintextInput: ByteArray): ByteArray = nonBlocking()
 }

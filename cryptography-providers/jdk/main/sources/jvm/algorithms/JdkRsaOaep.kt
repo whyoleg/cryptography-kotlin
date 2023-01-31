@@ -4,7 +4,7 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.algorithms.digest.*
-import dev.whyoleg.cryptography.io.*
+
 import dev.whyoleg.cryptography.jdk.*
 import dev.whyoleg.cryptography.jdk.materials.*
 import dev.whyoleg.cryptography.materials.key.*
@@ -104,7 +104,7 @@ private class RsaOaepEncryptor(
 ) : AuthenticatedEncryptor {
     private val cipher = state.cipher("RSA/ECB/OAEPPadding")
 
-    override fun encryptBlocking(plaintextInput: Buffer, associatedData: Buffer?): Buffer = cipher.use { cipher ->
+    override fun encryptBlocking(plaintextInput: ByteArray, associatedData: ByteArray?): ByteArray = cipher.use { cipher ->
         val parameters = OAEPParameterSpec(
             hashAlgorithmName,
             "MGF1",
@@ -123,7 +123,7 @@ private class RsaOaepDecryptor(
 ) : AuthenticatedDecryptor {
     private val cipher = state.cipher("RSA/ECB/OAEPPadding")
 
-    override fun decryptBlocking(ciphertextInput: Buffer, associatedData: Buffer?): Buffer = cipher.use { cipher ->
+    override fun decryptBlocking(ciphertextInput: ByteArray, associatedData: ByteArray?): ByteArray = cipher.use { cipher ->
         val parameters = OAEPParameterSpec(
             hashAlgorithmName,
             "MGF1",

@@ -4,7 +4,7 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.algorithms.digest.*
-import dev.whyoleg.cryptography.io.*
+
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.cipher.*
 import dev.whyoleg.cryptography.webcrypto.*
@@ -80,7 +80,7 @@ internal object WebCryptoRsaOaep : RSA.OAEP {
 
 private class RsaOaepEncryptor(private val key: CryptoKey) : AuthenticatedEncryptor {
 
-    override suspend fun encrypt(plaintextInput: Buffer, associatedData: Buffer?): Buffer {
+    override suspend fun encrypt(plaintextInput: ByteArray, associatedData: ByteArray?): ByteArray {
         return WebCrypto.subtle.encrypt(
             algorithm = RsaOaepParams(associatedData),
             key = key,
@@ -88,12 +88,12 @@ private class RsaOaepEncryptor(private val key: CryptoKey) : AuthenticatedEncryp
         ).await().toByteArray()
     }
 
-    override fun encryptBlocking(plaintextInput: Buffer, associatedData: Buffer?): Buffer = nonBlocking()
+    override fun encryptBlocking(plaintextInput: ByteArray, associatedData: ByteArray?): ByteArray = nonBlocking()
 }
 
 private class RsaOaepDecryptor(private val key: CryptoKey) : AuthenticatedDecryptor {
 
-    override suspend fun decrypt(ciphertextInput: Buffer, associatedData: Buffer?): Buffer {
+    override suspend fun decrypt(ciphertextInput: ByteArray, associatedData: ByteArray?): ByteArray {
         return WebCrypto.subtle.decrypt(
             algorithm = RsaOaepParams(associatedData),
             key = key,
@@ -101,5 +101,5 @@ private class RsaOaepDecryptor(private val key: CryptoKey) : AuthenticatedDecryp
         ).await().toByteArray()
     }
 
-    override fun decryptBlocking(ciphertextInput: Buffer, associatedData: Buffer?): Buffer = nonBlocking()
+    override fun decryptBlocking(ciphertextInput: ByteArray, associatedData: ByteArray?): ByteArray = nonBlocking()
 }

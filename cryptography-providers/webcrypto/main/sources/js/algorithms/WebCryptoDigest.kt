@@ -2,7 +2,7 @@ package dev.whyoleg.cryptography.webcrypto.algorithms
 
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.digest.*
-import dev.whyoleg.cryptography.io.*
+
 import dev.whyoleg.cryptography.operations.hash.*
 import dev.whyoleg.cryptography.webcrypto.*
 import dev.whyoleg.cryptography.webcrypto.external.*
@@ -20,9 +20,9 @@ internal class WebCryptoDigest private constructor(
 
     override fun hasher(): Hasher = this
 
-    override suspend fun hash(dataInput: Buffer): Buffer {
+    override suspend fun hash(dataInput: ByteArray): ByteArray {
         return WebCrypto.subtle.digest(algorithm, dataInput).await().toByteArray()
     }
 
-    override fun hashBlocking(dataInput: Buffer): Buffer = nonBlocking()
+    override fun hashBlocking(dataInput: ByteArray): ByteArray = nonBlocking()
 }

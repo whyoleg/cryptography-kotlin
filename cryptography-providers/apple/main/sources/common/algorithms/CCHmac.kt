@@ -4,7 +4,7 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
-import dev.whyoleg.cryptography.io.*
+
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.signature.*
 import dev.whyoleg.cryptography.random.*
@@ -38,7 +38,7 @@ private class HmacKeyDecoder(
     private val keySizeBytes: Int,
     private val digestSize: Int,
 ) : KeyDecoder<HMAC.Key.Format, HMAC.Key> {
-    override fun decodeFromBlocking(format: HMAC.Key.Format, input: Buffer): HMAC.Key = when (format) {
+    override fun decodeFromBlocking(format: HMAC.Key.Format, input: ByteArray): HMAC.Key = when (format) {
         HMAC.Key.Format.RAW -> {
             require(input.size == keySizeBytes) { "Invalid key size: ${input.size}, expected: $keySizeBytes" }
             wrapKey(hmacAlgorithm, input.copyOf(), digestSize)
@@ -60,14 +60,14 @@ private class HmacKeyGenerator(
 
 private fun wrapKey(
     hmacAlgorithm: CCHmacAlgorithm,
-    key: Buffer,
+    key: ByteArray,
     digestSize: Int,
 ): HMAC.Key = object : HMAC.Key {
     private val signature = HmacSignature(hmacAlgorithm, key, digestSize)
     override fun signatureGenerator(): SignatureGenerator = signature
     override fun signatureVerifier(): SignatureVerifier = signature
 
-    override fun encodeToBlocking(format: HMAC.Key.Format): Buffer = when (format) {
+    override fun encodeToBlocking(format: HMAC.Key.Format): ByteArray = when (format) {
         HMAC.Key.Format.RAW -> key.copyOf()
         HMAC.Key.Format.JWK -> error("JWK is not supported")
     }
@@ -75,10 +75,10 @@ private fun wrapKey(
 
 private class HmacSignature(
     private val hmacAlgorithm: CCHmacAlgorithm,
-    private val key: Buffer,
+    private val key: ByteArray,
     private val digestSize: Int,
 ) : SignatureGenerator, SignatureVerifier {
-    override fun generateSignatureBlocking(dataInput: Buffer): Buffer {
+    override fun generateSignatureBlocking(dataInput: ByteArray): ByteArray {
         val macOutput = ByteArray(digestSize)
         CCHmac(
             algorithm = hmacAlgorithm,
@@ -91,7 +91,7 @@ private class HmacSignature(
         return macOutput
     }
 
-    override fun verifySignatureBlocking(dataInput: Buffer, signatureInput: Buffer): Boolean {
+    override fun verifySignatureBlocking(dataInput: ByteArray, signatureInput: ByteArray): Boolean {
         return generateSignatureBlocking(dataInput).contentEquals(signatureInput)
     }
 }

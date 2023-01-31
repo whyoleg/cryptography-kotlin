@@ -4,7 +4,7 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.apple.*
-import dev.whyoleg.cryptography.io.*
+
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.operations.hash.*
 import kotlinx.cinterop.*
@@ -18,7 +18,7 @@ internal class CCDigest(
     override fun hasher(): Hasher = this
 
     @OptIn(ExperimentalUnsignedTypes::class)
-    override fun hashBlocking(dataInput: Buffer): Buffer {
+    override fun hashBlocking(dataInput: ByteArray): ByteArray {
         val output = ByteArray(hashAlgorithm.digestSize)
         hashAlgorithm.ccHash(
             data = dataInput.fixEmpty().refTo(0),
