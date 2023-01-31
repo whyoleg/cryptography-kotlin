@@ -1746,10 +1746,10 @@ typescript@3.9.5:
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.9.5.tgz#586f0dba300cde8be52dd1ac4f7e1009c1b13f36"
   integrity sha512-hSAifV3k+i6lEoCJ2k6R2Z/rp/H3+8sdmcn5NrS3/3kE7+RyZXm9aqvxWqjEXHAd8b0pShatpcdMTvEdvAJltQ==
 
-ua-parser-js@^0.7.30:
-  version "0.7.32"
-  resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.32.tgz#cd8c639cdca949e30fa68c44b7813ef13e36d211"
-  integrity sha512-f9BESNVhzlhEFf2CHMSj40NWOjYPl1YKYbrvIr/hFTDEmLq7SRbWvm7FcdcpCYT95zrOhC7gZSxjdnnTpBcwVw==
+"ua-parser-js@>=0.7.33 <1.0.0", ua-parser-js@^0.7.30:
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.8.1.tgz#aa3fea52565c5e36cd84ad5a47497e8f2abadc9a"
+  integrity sha512-top37bpoaHp+wJBAqjm5KNz7qNfSZ/tmHEisuMMK5uzjdIo/L6uWovDFuYboO+q8EMz1f67exTnd+OPYESuu8Q==
 
 universalify@^0.1.0:
   version "0.1.2"

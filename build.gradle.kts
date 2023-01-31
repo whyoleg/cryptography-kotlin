@@ -11,8 +11,11 @@ plugins {
 }
 
 plugins.withType<YarnPlugin> {
-    yarn.lockFileDirectory = rootDir.resolve("gradle/js")
-    yarn.yarnLockMismatchReport = YarnLockMismatchReport.WARNING
+    yarn.apply {
+        lockFileDirectory = rootDir.resolve("gradle/js")
+        yarnLockMismatchReport = YarnLockMismatchReport.WARNING
+        resolution("ua-parser-js", "^0.7.33")
+    }
 }
 
 koverMerged {
