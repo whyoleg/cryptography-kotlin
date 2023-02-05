@@ -5,6 +5,8 @@ plugins {
     id("org.jetbrains.dokka")
 }
 
+description = "cryptography-kotlin random API"
+
 kotlin {
     allTargets()
 }

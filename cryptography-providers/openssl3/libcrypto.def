@@ -1,5 +1,0 @@
-package = dev.whyoleg.cryptography.openssl3.internal.libcrypto
-headerFilter = openssl/*
-headers = openssl/evp.h \
-          openssl/sha.h \
-          openssl/aes.h

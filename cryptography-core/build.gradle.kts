@@ -5,6 +5,8 @@ plugins {
     id("org.jetbrains.dokka")
 }
 
+description = "cryptography-kotlin core API"
+
 kotlin {
     allTargets()
     sourceSets {

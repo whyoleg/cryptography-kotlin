@@ -8,7 +8,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ 'ubuntu-20.04', 'macos-latest', 'windows-latest' ]
+        os: [ 'ubuntu-latest', 'macos-latest', 'windows-latest' ]
     steps:
       - uses: actions/checkout@v3
       - if: matrix.os != 'windows-latest'
@@ -16,15 +16,6 @@ jobs:
       - if: matrix.os == 'windows-latest'
         run: echo "KONAN_DATA_DIR=${USERPROFILE}\.gradle\konan" >> $GITHUB_ENV
         shell: bash
-
-      - if: matrix.os == 'macos-latest'
-        run: brew install openssl@3
-      - if: matrix.os == 'windows-latest'
-        uses: msys2/setup-msys2@v2
-        with:
-          release: false
-          update: true
-          install: mingw-w64-x86_64-openssl
 
       - uses: actions/setup-java@v3
         with:
@@ -38,13 +29,11 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
+
       - name: Run tests
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: |
-            check
-            --scan
-            --continue
+          arguments: check --scan --continue
           gradle-home-cache-includes: |
             caches
             notifications
@@ -54,10 +43,7 @@ jobs:
       - name: Publish to Maven Local
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: |
-            publishToMavenLocal
-            --scan
-            --continue
+          arguments: publishToMavenLocal --scan --continue
           gradle-home-cache-includes: |
             caches
             notifications

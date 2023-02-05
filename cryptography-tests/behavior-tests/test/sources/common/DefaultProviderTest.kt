@@ -7,8 +7,7 @@ import kotlin.test.*
 class DefaultProviderTest {
     @Test
     fun test() {
-        val defaultName = kotlin.runCatching { CryptographyProvider.Default.name }
-        if (availableProviders.isEmpty()) return
-        assertContains(availableProviders.map { it.name }, defaultName.getOrThrow())
+        val defaultName = CryptographyProvider.Default.name
+        assertContains(availableProviders.map { it.name }, defaultName)
     }
 }

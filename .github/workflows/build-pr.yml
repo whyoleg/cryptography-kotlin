@@ -1,7 +1,0 @@
-name: Build PR
-on:
-  pull_request:
-
-jobs:
-  test:
-    uses: ./.github/workflows/run-tests.yml

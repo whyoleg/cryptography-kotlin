@@ -10,7 +10,18 @@ pluginManagement {
 
 dependencyResolutionManagement {
     repositories {
+        maven("https://s01.oss.sonatype.org/content/repositories/snapshots/") {
+            content {
+                includeGroup("dev.whyoleg.kcwrapper")
+            }
+        }
         mavenCentral()
+    }
+
+    versionCatalogs {
+        create("kcwrapperLibs") {
+            from("dev.whyoleg.kcwrapper:kcwrapper-version-catalog:0.1.0-SNAPSHOT")
+        }
     }
 }
 
@@ -34,12 +45,12 @@ include("cryptography-random")
 include("cryptography-core")
 
 //providers
-listOf("jdk", "apple", "webcrypto", "openssl3").forEach { name ->
+listOf("jdk", "apple", "webcrypto").forEach { name ->
     include("cryptography-providers:cryptography-$name")
     project(":cryptography-providers:cryptography-$name").projectDir = file("cryptography-providers/$name")
 }
 
-listOf("dynamic", "static").forEach { name ->
+listOf("api", "dynamic", "static").forEach { name ->
     include("cryptography-providers:cryptography-openssl3:cryptography-openssl3-$name")
     project(":cryptography-providers:cryptography-openssl3:cryptography-openssl3-$name").projectDir =
         file("cryptography-providers/openssl3/$name")

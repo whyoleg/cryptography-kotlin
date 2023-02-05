@@ -3,6 +3,8 @@ plugins {
     id("org.jetbrains.dokka")
 }
 
+description = "cryptography-kotlin Apple provider"
+
 kotlin {
     appleTargets()
 }

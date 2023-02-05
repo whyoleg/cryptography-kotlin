@@ -1,7 +1,9 @@
 plugins {
     `java-platform`
-    `maven-publish`
+    id("buildx-publish")
 }
+
+description = "cryptography-kotlin BOM"
 
 dependencies {
     constraints {

@@ -1,0 +1,13 @@
+name: Build main
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    uses: ./.github/workflows/run-tests.yml
+  publish:
+    needs: [ test ]
+    uses: ./.github/workflows/publish-snapshot.yml
+    secrets: inherit

@@ -1,7 +1,9 @@
 plugins {
     `version-catalog`
-    `maven-publish`
+    id("buildx-publish")
 }
+
+description = "cryptography-kotlin Gradle Version Catalog"
 
 catalog {
     versionCatalog {

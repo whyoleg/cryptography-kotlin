@@ -1,8 +1,8 @@
-import org.jetbrains.kotlin.gradle.plugin.mpp.*
-
 plugins {
     id("buildx-multiplatform-library")
 }
+
+description = "cryptography-kotlin OpenSSL3 provider (dynamic linking)"
 
 kotlin {
     desktopTargets()
@@ -10,16 +10,8 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                api(projects.cryptographyProviders.cryptographyOpenssl3)
-            }
-        }
-    }
-
-    targets.all {
-        if (this !is KotlinNativeTarget) return@all
-        val main by compilations.getting {
-            val linkerOpts by cinterops.creating {
-                defFile("linkerOpts.def")
+                api(projects.cryptographyProviders.cryptographyOpenssl3.cryptographyOpenssl3Api)
+                implementation(kcwrapperLibs.libraries.libcrypto3.dynamic)
             }
         }
     }

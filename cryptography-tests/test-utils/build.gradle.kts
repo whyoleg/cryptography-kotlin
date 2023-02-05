@@ -28,6 +28,19 @@ kotlin {
         val darwinMain by getting {
             dependencies {
                 implementation(projects.cryptographyProviders.cryptographyApple)
+                implementation(projects.cryptographyProviders.cryptographyOpenssl3.cryptographyOpenssl3Static)
+            }
+        }
+
+        val linuxMain by getting {
+            dependencies {
+                implementation(projects.cryptographyProviders.cryptographyOpenssl3.cryptographyOpenssl3Static)
+            }
+        }
+
+        val mingwMain by getting {
+            dependencies {
+                implementation(projects.cryptographyProviders.cryptographyOpenssl3.cryptographyOpenssl3Static)
             }
         }
     }

@@ -1,9 +1,8 @@
 name: Build dev
 on:
   push:
-    branches:
-      - dev
-      - main # drop after release
+    branches-ignore:
+      - main
 
 jobs:
   test:

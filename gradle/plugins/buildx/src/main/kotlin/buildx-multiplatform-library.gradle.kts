@@ -1,6 +1,6 @@
 plugins {
     id("buildx-multiplatform")
-    `maven-publish`
+    id("buildx-publish")
 }
 
 kotlin {

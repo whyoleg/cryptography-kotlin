@@ -122,6 +122,9 @@
     * [ ] https://github.com/keycloak/keycloak
 * [ ] use knit when it will work with current kotlin version
 * [ ] add snapshots publishing
+* [ ] Qodana/CodeQL integration
+* [ ] Investigate WASI-crypto support
+* [ ] FIPS (?)
 
 ## 1.0.0: Stable release
 
