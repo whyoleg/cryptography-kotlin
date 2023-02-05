@@ -11,7 +11,7 @@ fun <A : CryptographyAlgorithm> runTestForEachAlgorithm(
     block: suspend AlgorithmTestContext<A>.() -> Unit,
 ): TestResult = runTestForEachProvider(enableLogs) {
     val algorithm = provider.getOrNull(algorithmId) ?: run {
-        logger.log { "Algorithm ${algorithmId.name} is not supported by ${provider.name} provider" }
+        println("Algorithm ${algorithmId.name} is not supported by ${provider.name} provider")
         return@runTestForEachProvider
     }
     AlgorithmTestContext(logger, provider, algorithm).block()
@@ -24,11 +24,12 @@ fun runTestForEachProvider(
     println("PLATFORM: $currentPlatform")
     val errors = mutableListOf<Pair<String, Throwable>>()
     availableProviders.forEach { provider ->
+        println("PROVIDER: ${provider.name}")
         val logger = TestLogger(provider.name, enableLogs)
         try {
             ProviderTestContext(logger, provider).block()
         } catch (cause: Throwable) {
-            logger.log { "FAILURE: ${cause.stackTraceToString()}" }
+            println("FAILURE: ${cause.stackTraceToString()}")
             errors += provider.name to cause
         }
     }

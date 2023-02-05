@@ -22,10 +22,10 @@ class SupportedAlgorithmsTest {
 
     @Test
     fun testSupported() = runTestForEachProvider {
-        assertSupports(AES.CBC)
-        assertSupports(AES.GCM, !provider.isApple)
+        assertSupports(AES.CBC, !provider.isOpenssl3)
+        assertSupports(AES.GCM, !provider.isApple && !provider.isOpenssl3)
 
-        assertSupports(HMAC)
+        assertSupports(HMAC, !provider.isOpenssl3)
 
         assertSupports(MD5, !provider.isWebCrypto)
         assertSupports(SHA1)
@@ -33,9 +33,9 @@ class SupportedAlgorithmsTest {
         assertSupports(SHA384)
         assertSupports(SHA512)
 
-        assertSupports(ECDSA, !provider.isApple)
+        assertSupports(ECDSA, !provider.isApple && !provider.isOpenssl3)
 
-        assertSupports(RSA.PSS, !provider.isApple)
-        assertSupports(RSA.OAEP, !provider.isApple)
+        assertSupports(RSA.PSS, !provider.isApple && !provider.isOpenssl3)
+        assertSupports(RSA.OAEP, !provider.isApple && !provider.isOpenssl3)
     }
 }

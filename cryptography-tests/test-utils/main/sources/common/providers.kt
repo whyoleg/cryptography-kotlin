@@ -12,3 +12,6 @@ val CryptographyProvider.isJdk: Boolean
 
 val CryptographyProvider.isApple: Boolean
     get() = name == "Apple"
+
+val CryptographyProvider.isOpenssl3: Boolean
+    get() = name.startsWith("OpenSSL3")
