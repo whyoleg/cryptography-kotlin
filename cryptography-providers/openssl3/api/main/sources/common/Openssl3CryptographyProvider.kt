@@ -18,13 +18,14 @@ internal object Openssl3CryptographyProvider : CryptographyProvider() {
 
     @Suppress("UNCHECKED_CAST")
     override fun <A : CryptographyAlgorithm> getOrNull(identifier: CryptographyAlgorithmId<A>): A? = when (identifier) {
-        MD5    -> Openssl3Digest("MD5", MD5)
-        SHA1   -> Openssl3Digest("SHA1", SHA1)
-        SHA256 -> Openssl3Digest("SHA256", SHA256)
-        SHA384 -> Openssl3Digest("SHA384", SHA384)
-        SHA512 -> Openssl3Digest("SHA512", SHA512)
-        HMAC   -> Openssl3Hmac
-        else   -> null
+        MD5     -> Openssl3Digest("MD5", MD5)
+        SHA1    -> Openssl3Digest("SHA1", SHA1)
+        SHA256  -> Openssl3Digest("SHA256", SHA256)
+        SHA384  -> Openssl3Digest("SHA384", SHA384)
+        SHA512  -> Openssl3Digest("SHA512", SHA512)
+        HMAC    -> Openssl3Hmac
+        AES.CBC -> Openssl3AesCbc
+        else    -> null
     } as A?
 }
 
