@@ -29,7 +29,7 @@ jobs:
       - name: Run tests
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: check --scan --continue
+          arguments: check --scan --continue --refresh-dependencies
           gradle-home-cache-includes: |
             caches
             notifications
