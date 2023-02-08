@@ -25,6 +25,7 @@ internal object Openssl3CryptographyProvider : CryptographyProvider() {
         SHA512  -> Openssl3Digest("SHA512", SHA512)
         HMAC    -> Openssl3Hmac
         AES.CBC -> Openssl3AesCbc
+        AES.GCM -> Openssl3AesGcm
         else    -> null
     } as A?
 }

@@ -9,8 +9,6 @@ import dev.whyoleg.cryptography.webcrypto.*
 import dev.whyoleg.cryptography.webcrypto.external.*
 import dev.whyoleg.cryptography.webcrypto.materials.*
 
-private const val ivSizeBytes = 16 //bytes for CBC
-
 internal object WebCryptoAesCbc : AES.CBC {
     private val keyUsages = arrayOf("encrypt", "decrypt")
     private val keyFormat: (AES.Key.Format) -> String = {
@@ -33,6 +31,8 @@ internal object WebCryptoAesCbc : AES.CBC {
     override fun keyGenerator(keySize: SymmetricKeySize): KeyGenerator<AES.CBC.Key> =
         WebCryptoSymmetricKeyGenerator(AesKeyGenerationAlgorithm("AES-CBC", keySize.value.inBits), keyUsages, wrapKey)
 }
+
+private const val ivSizeBytes = 16 //bytes for CBC
 
 private class AesCbcCipher(private val key: CryptoKey) : Cipher {
 

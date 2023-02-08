@@ -1,7 +1,6 @@
 package dev.whyoleg.cryptography.openssl3.algorithms
 
 import dev.whyoleg.cryptography.*
-import dev.whyoleg.cryptography.BinarySize.Companion.bytes
 import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.openssl3.*
@@ -11,62 +10,22 @@ import dev.whyoleg.kcwrapper.libcrypto3.cinterop.*
 import kotlinx.cinterop.*
 import kotlin.native.internal.*
 
-internal object Openssl3AesCbc : AES.CBC {
-    override fun keyDecoder(): KeyDecoder<AES.Key.Format, AES.CBC.Key> = AesCbcKeyDecoder
-    override fun keyGenerator(keySize: SymmetricKeySize): KeyGenerator<AES.CBC.Key> = AesCbcKeyGenerator(keySize)
-}
+internal object Openssl3AesCbc : AES.CBC, Openssl3Aes<AES.CBC.Key>() {
+    override fun wrapKey(keySize: SymmetricKeySize, key: ByteArray): AES.CBC.Key = AesCbcKey(keySize, key)
 
-private fun requireAesKeySize(keySize: SymmetricKeySize) {
-    require(keySize == SymmetricKeySize.B128 || keySize == SymmetricKeySize.B192 || keySize == SymmetricKeySize.B256) {
-        "AES key size must be 128, 192 or 256 bits"
-    }
-}
-
-private object AesCbcKeyDecoder : KeyDecoder<AES.Key.Format, AES.CBC.Key> {
-    override fun decodeFromBlocking(format: AES.Key.Format, input: ByteArray): AES.CBC.Key = when (format) {
-        AES.Key.Format.RAW -> {
-            val keySize = SymmetricKeySize(input.size.bytes)
-            requireAesKeySize(keySize)
-            AesCbcKey(keySize, input.copyOf())
+    private class AesCbcKey(keySize: SymmetricKeySize, key: ByteArray) : AES.CBC.Key, AesKey(key) {
+        private val algorithm = when (keySize) {
+            SymmetricKeySize.B128 -> "AES-128-CBC"
+            SymmetricKeySize.B192 -> "AES-192-CBC"
+            SymmetricKeySize.B256 -> "AES-256-CBC"
+            else                  -> error("Unsupported key size")
         }
-        AES.Key.Format.JWK -> error("JWK is not supported")
+
+        override fun cipher(padding: Boolean): Cipher = AesCbcCipher(algorithm, key, padding)
     }
 }
 
-private class AesCbcKeyGenerator(
-    private val keySize: SymmetricKeySize,
-) : KeyGenerator<AES.CBC.Key> {
-
-    init {
-        requireAesKeySize(keySize)
-    }
-
-    override fun generateKeyBlocking(): AES.CBC.Key {
-        val key = CryptographyRandom.nextBytes(keySize.value.inBytes)
-        return AesCbcKey(keySize, key)
-    }
-}
-
-private class AesCbcKey(
-    keySize: SymmetricKeySize,
-    private val key: ByteArray,
-) : AES.CBC.Key {
-    private val algorithm = when (keySize) {
-        SymmetricKeySize.B128 -> "AES-128-CBC"
-        SymmetricKeySize.B192 -> "AES-192-CBC"
-        SymmetricKeySize.B256 -> "AES-256-CBC"
-        else                  -> error("Unsupported key size")
-    }
-
-    override fun cipher(padding: Boolean): Cipher = AesCbcCipher(algorithm, key, padding)
-
-    override fun encodeToBlocking(format: AES.Key.Format): ByteArray = when (format) {
-        AES.Key.Format.RAW -> key.copyOf()
-        AES.Key.Format.JWK -> error("JWK is not supported")
-    }
-}
-
-private const val ivSizeBytes = 16 //bytes for GCM
+private const val ivSizeBytes = 16 //bytes for CBC
 
 private class AesCbcCipher(
     algorithm: String,
@@ -89,8 +48,8 @@ private class AesCbcCipher(
                 EVP_EncryptInit_ex2(
                     ctx = context,
                     cipher = cipher,
-                    key = key.asUByteArray().refTo(0),
-                    iv = iv.asUByteArray().refTo(0),
+                    key = key.refToU(0),
+                    iv = iv.refToU(0),
                     params = null
                 )
             )
@@ -104,9 +63,9 @@ private class AesCbcCipher(
             checkError(
                 EVP_EncryptUpdate(
                     ctx = context,
-                    out = ciphertextOutput.asUByteArray().refTo(0),
+                    out = ciphertextOutput.refToU(0),
                     outl = outl.ptr,
-                    `in` = plaintextInput.fixEmpty().asUByteArray().refTo(0),
+                    `in` = plaintextInput.safeRefToU(0),
                     inl = plaintextInput.size
                 )
             )
@@ -116,7 +75,7 @@ private class AesCbcCipher(
             checkError(
                 EVP_EncryptFinal_ex(
                     ctx = context,
-                    out = ciphertextOutput.asUByteArray().refTo(outl.value),
+                    out = ciphertextOutput.refToU(outl.value),
                     outl = outl.ptr
                 )
             )
@@ -142,8 +101,8 @@ private class AesCbcCipher(
                 EVP_DecryptInit_ex2(
                     ctx = context,
                     cipher = cipher,
-                    key = key.asUByteArray().refTo(0),
-                    iv = ciphertextInput.asUByteArray().refTo(0),
+                    key = key.refToU(0),
+                    iv = ciphertextInput.refToU(0),
                     params = null
                 )
             )
@@ -157,9 +116,9 @@ private class AesCbcCipher(
             checkError(
                 EVP_DecryptUpdate(
                     ctx = context,
-                    out = plaintextOutput.asUByteArray().refTo(0),
+                    out = plaintextOutput.refToU(0),
                     outl = outl.ptr,
-                    `in` = ciphertextInput.asUByteArray().refTo(ivSizeBytes),
+                    `in` = ciphertextInput.refToU(ivSizeBytes),
                     inl = ciphertextInput.size - ivSizeBytes
                 )
             )
@@ -169,7 +128,7 @@ private class AesCbcCipher(
             checkError(
                 EVP_DecryptFinal_ex(
                     ctx = context,
-                    outm = plaintextOutput.asUByteArray().refTo(outl.value),
+                    outm = plaintextOutput.refToU(producedByUpdate),
                     outl = outl.ptr
                 )
             )

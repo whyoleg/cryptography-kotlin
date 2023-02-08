@@ -98,11 +98,11 @@ private class HmacSignature(
                 OSSL_PARAM_construct_utf8_string("digest".cstr.ptr, hashAlgorithm.cstr.ptr, 0).ptr,
                 OSSL_PARAM_construct_end().ptr
             ).pointed.value
-            checkError(EVP_MAC_init(context, key.asUByteArray().refTo(0), key.size.convert(), params))
-            checkError(EVP_MAC_update(context, dataInput.fixEmpty().asUByteArray().refTo(0), dataInput.size.convert()))
+            checkError(EVP_MAC_init(context, key.refToU(0), key.size.convert(), params))
+            checkError(EVP_MAC_update(context, dataInput.safeRefToU(0), dataInput.size.convert()))
             val signature = ByteArray(checkError(EVP_MAC_CTX_get_mac_size(context)).convert())
             //TODO: check is `outl` needed?
-            checkError(EVP_MAC_final(context, signature.asUByteArray().refTo(0), null, signature.size.convert()))
+            checkError(EVP_MAC_final(context, signature.refToU(0), null, signature.size.convert()))
             signature
         } finally {
             EVP_MAC_CTX_free(context)

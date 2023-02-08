@@ -47,7 +47,7 @@ private fun wrapKey(key: ByteArray): AES.CBC.Key = object : AES.CBC.Key {
     }
 }
 
-private const val ivSizeBytes = 16 //bytes for GCM
+private const val ivSizeBytes = 16 //bytes for CBC
 
 private class AesCbcCipher(
     private val key: ByteArray,

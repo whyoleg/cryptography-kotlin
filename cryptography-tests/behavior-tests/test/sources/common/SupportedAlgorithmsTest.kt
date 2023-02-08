@@ -22,10 +22,10 @@ class SupportedAlgorithmsTest {
 
     @Test
     fun testSupported() = runTestForEachProvider {
-        assertSupports(AES.CBC, !provider.isOpenssl3)
-        assertSupports(AES.GCM, !provider.isApple && !provider.isOpenssl3)
+        assertSupports(AES.CBC)
+        assertSupports(AES.GCM, !provider.isApple)
 
-        assertSupports(HMAC, !provider.isOpenssl3)
+        assertSupports(HMAC /*!provider.isOpenssl3*/) //TODO: decide on HMAC support in OpenSSL3
 
         assertSupports(MD5, !provider.isWebCrypto)
         assertSupports(SHA1)
