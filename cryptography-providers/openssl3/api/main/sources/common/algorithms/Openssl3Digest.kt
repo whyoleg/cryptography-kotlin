@@ -30,6 +30,7 @@ internal class Openssl3Digest(
             //TODO: error handling
             check(EVP_DigestInit(context, md) == 1)
             check(EVP_DigestUpdate(context, dataInput.fixEmpty().refTo(0), dataInput.size.convert()) == 1)
+            //TODO: check is `s` needed?
             check(EVP_DigestFinal(context, digest.asUByteArray().refTo(0), null) == 1)
 
             return digest

@@ -23,6 +23,7 @@ internal object Openssl3CryptographyProvider : CryptographyProvider() {
         SHA256 -> Openssl3Digest("SHA256", SHA256)
         SHA384 -> Openssl3Digest("SHA384", SHA384)
         SHA512 -> Openssl3Digest("SHA512", SHA512)
+        HMAC   -> Openssl3Hmac
         else   -> null
     } as A?
 }

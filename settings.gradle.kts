@@ -10,6 +10,11 @@ pluginManagement {
 
 dependencyResolutionManagement {
     repositories {
+        mavenLocal {
+            content {
+                includeGroup("dev.whyoleg.kcwrapper")
+            }
+        }
         maven("https://s01.oss.sonatype.org/content/repositories/snapshots/") {
             content {
                 includeGroup("dev.whyoleg.kcwrapper")
