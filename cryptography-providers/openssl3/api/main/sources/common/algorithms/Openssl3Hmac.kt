@@ -6,13 +6,10 @@ import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.openssl3.*
-import dev.whyoleg.cryptography.operations.hash.*
 import dev.whyoleg.cryptography.operations.signature.*
 import dev.whyoleg.cryptography.random.*
 import dev.whyoleg.kcwrapper.libcrypto3.cinterop.*
 import kotlinx.cinterop.*
-import platform.posix.*
-import kotlin.native.internal.*
 
 internal object Openssl3Hmac : HMAC {
     override fun keyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<HMAC.Key.Format, HMAC.Key> {
@@ -88,10 +85,9 @@ private class HmacSignature(
     private val key: ByteArray,
 ) : SignatureGenerator, SignatureVerifier {
 
-    @OptIn(ExperimentalUnsignedTypes::class)
     override fun generateSignatureBlocking(dataInput: ByteArray): ByteArray = memScoped {
         //TODO: pool it? use EVP_MAC_up_ref?
-        val mac = EVP_MAC_fetch(null, "HMAC".cstr.ptr, null)
+        val mac = EVP_MAC_fetch(null, "HMAC", null)
         val context = EVP_MAC_CTX_new(mac)
         try {
             val params = allocArrayOf(

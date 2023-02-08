@@ -21,7 +21,6 @@ internal class Openssl3Digest(
 
     private val digestSize = EVP_MD_get_size(md)
 
-    @OptIn(ExperimentalUnsignedTypes::class)
     override fun hashBlocking(dataInput: ByteArray): ByteArray {
         val context = EVP_MD_CTX_new()
         try {

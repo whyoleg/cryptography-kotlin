@@ -38,7 +38,6 @@ private class AesCbcCipher(
     @OptIn(ExperimentalStdlibApi::class)
     private val cleaner = createCleaner(cipher, ::EVP_CIPHER_free)
 
-    @OptIn(ExperimentalUnsignedTypes::class)
     override fun encryptBlocking(plaintextInput: ByteArray): ByteArray = memScoped {
         val context = EVP_CIPHER_CTX_new()
         try {
@@ -90,7 +89,6 @@ private class AesCbcCipher(
         }
     }
 
-    @OptIn(ExperimentalUnsignedTypes::class)
     override fun decryptBlocking(ciphertextInput: ByteArray): ByteArray = memScoped {
         require(ciphertextInput.size >= ivSizeBytes) { "Ciphertext is too short" }
 //        if (!padding) require(ciphertextInput.size % 16 == 0) { "Ciphertext is not padded" }
