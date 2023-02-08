@@ -25,7 +25,7 @@ class SupportedAlgorithmsTest {
         assertSupports(AES.CBC)
         assertSupports(AES.GCM, !provider.isApple)
 
-        assertSupports(HMAC /*!provider.isOpenssl3*/) //TODO: decide on HMAC support in OpenSSL3
+        assertSupports(HMAC, !provider.isOpenssl3)
 
         assertSupports(MD5, !provider.isWebCrypto)
         assertSupports(SHA1)
