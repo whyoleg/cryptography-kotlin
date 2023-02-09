@@ -1,6 +1,7 @@
 package dev.whyoleg.cryptography.openssl3
 
 import dev.whyoleg.cryptography.algorithms.*
+import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.openssl3.algorithms.*
@@ -26,6 +27,7 @@ internal object Openssl3CryptographyProvider : CryptographyProvider() {
         HMAC    -> Openssl3Hmac
         AES.CBC -> Openssl3AesCbc
         AES.GCM -> Openssl3AesGcm
+        ECDSA   -> Openssl3Ecdsa
         else    -> null
     } as A?
 }

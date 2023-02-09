@@ -17,9 +17,9 @@ public interface EC<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP : EC.Ke
     @JvmInline
     public value class Curve(public val name: String) {
         public companion object {
-            public val P256: Curve get() = Curve("P256")
-            public val P384: Curve get() = Curve("P384")
-            public val P521: Curve get() = Curve("P521")
+            public val P256: Curve get() = Curve("P-256")
+            public val P384: Curve get() = Curve("P-384")
+            public val P521: Curve get() = Curve("P-521")
         }
     }
 

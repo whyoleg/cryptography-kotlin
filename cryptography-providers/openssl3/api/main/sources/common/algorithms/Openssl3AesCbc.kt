@@ -80,10 +80,7 @@ private class AesCbcCipher(
             )
 
             val produced = producedByUpdate + outl.value
-            iv + when (ciphertextOutput.size) {
-                produced -> ciphertextOutput
-                else     -> ciphertextOutput.copyOf(produced)
-            }
+            iv + ciphertextOutput.ensureSizeExactly(produced)
         } finally {
             EVP_CIPHER_CTX_free(context)
         }
@@ -131,10 +128,7 @@ private class AesCbcCipher(
                 )
             )
             val produced = producedByUpdate + outl.value
-            when (plaintextOutput.size) {
-                produced -> plaintextOutput
-                else     -> plaintextOutput.copyOf(produced)
-            }
+            plaintextOutput.ensureSizeExactly(produced)
         } finally {
             EVP_CIPHER_CTX_free(context)
         }
