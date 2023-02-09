@@ -74,10 +74,19 @@ private class HmacSignature(
 
     override fun generateSignatureBlocking(dataInput: ByteArray): ByteArray = memScoped {
         //TODO: pool it? use EVP_MAC_up_ref?
-        val mac = checkNotNull(EVP_MAC_fetch(null, "HMAC", null)) { "HMAC is not supported" }
-        val context = checkNotNull(EVP_MAC_CTX_new(mac)) { "Can't create MAC context" }
+        val mac = checkError(EVP_MAC_fetch(null, "HMAC", null))
+        val context = checkError(EVP_MAC_CTX_new(mac))
         try {
-            checkError(EVP_MAC_init_HMAC(context, key.refToU(0), key.size.convert(), hashAlgorithm))
+            checkError(
+                EVP_MAC_init(
+                    ctx = context,
+                    key = key.refToU(0),
+                    keylen = key.size.convert(),
+                    params = OSSL_PARAM_array(
+                        OSSL_PARAM_construct_utf8_string("digest".cstr.ptr, hashAlgorithm.cstr.ptr, 0)
+                    )
+                )
+            )
             checkError(EVP_MAC_update(context, dataInput.safeRefToU(0), dataInput.size.convert()))
             val signature = ByteArray(checkError(EVP_MAC_CTX_get_mac_size(context)).convert())
             //TODO: check is `outl` needed?

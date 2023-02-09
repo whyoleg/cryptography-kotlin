@@ -5,6 +5,12 @@ import dev.whyoleg.kcwrapper.libcrypto3.cinterop.*
 import kotlinx.cinterop.*
 import platform.posix.*
 
+internal inline fun <T : Any> checkError(result: T?, onFailure: () -> Unit = {}): T {
+    if (result != null) return result
+    onFailure()
+    fail(0)
+}
+
 internal inline fun checkError(result: size_t, onFailure: () -> Unit = {}): size_t {
     if (result > 0u) return result
     onFailure()
