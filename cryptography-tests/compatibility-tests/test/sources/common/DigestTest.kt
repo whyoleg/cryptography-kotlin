@@ -9,6 +9,7 @@ import kotlin.test.*
 private const val iterations = 100
 private const val maxDataSize = 10000
 
+class Md5Test : DigestTest(MD5)
 class Sha1Test : DigestTest(SHA1)
 class Sha256Test : DigestTest(SHA256)
 class Sha384Test : DigestTest(SHA384)
