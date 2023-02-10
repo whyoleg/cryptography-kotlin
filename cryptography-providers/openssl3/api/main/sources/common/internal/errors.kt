@@ -1,4 +1,4 @@
-package dev.whyoleg.cryptography.openssl3
+package dev.whyoleg.cryptography.openssl3.internal
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.kcwrapper.libcrypto3.cinterop.*

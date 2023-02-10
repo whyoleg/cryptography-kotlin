@@ -1,4 +1,4 @@
-package dev.whyoleg.cryptography.openssl3
+package dev.whyoleg.cryptography.openssl3.internal
 
 import kotlinx.cinterop.*
 

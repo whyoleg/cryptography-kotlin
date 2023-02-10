@@ -5,6 +5,7 @@ import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.openssl3.*
+import dev.whyoleg.cryptography.openssl3.internal.*
 import dev.whyoleg.cryptography.operations.signature.*
 import dev.whyoleg.kcwrapper.libcrypto3.cinterop.*
 import kotlinx.cinterop.*

@@ -4,7 +4,7 @@ import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.materials.key.*
-import dev.whyoleg.cryptography.openssl3.*
+import dev.whyoleg.cryptography.openssl3.internal.*
 import dev.whyoleg.cryptography.operations.signature.*
 import dev.whyoleg.cryptography.random.*
 import dev.whyoleg.kcwrapper.libcrypto3.cinterop.*
