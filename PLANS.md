@@ -7,12 +7,15 @@
 * [ ] write behaviour tests for failures
 * [ ] write MORE behaviour tests
 * [ ] rewrite support ifs to be more understandable
+* [ ] investigate compatibility test failure on JS browser - Key R(* -> *) is missing in the map
+* [ ] fix PEM implementation
 * [ ] Engines
     * [ ] OpenSSL3 engine
         * [ ] EC RAW KEY SUPPORT
         * [ ] ECDSA.SignatureFormat.RAW
         * [ ] EC curve validation
         * [ ] redesign ref counting
+        * [ ] Somehow check, that there is no memory leaks regarding openssl references
 * [ ] Build
     * [ ] GitHub Actions (check and fix)
     * [ ] Samples (for each different kind of operation)

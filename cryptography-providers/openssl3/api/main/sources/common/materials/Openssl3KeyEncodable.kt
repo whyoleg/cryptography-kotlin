@@ -23,6 +23,7 @@ internal abstract class Openssl3PublicKeyEncodable<KF : KeyFormat>(
 internal abstract class Openssl3KeyEncodable<KF : KeyFormat>(
     protected val key: CPointer<EVP_PKEY>,
 ) : EncodableKey<KF> {
+    private val cleaner = key.cleaner()
 
     protected abstract fun selection(format: KF): Int
     protected abstract fun outputType(format: KF): String

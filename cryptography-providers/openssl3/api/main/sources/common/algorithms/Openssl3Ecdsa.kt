@@ -6,10 +6,10 @@ import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.openssl3.internal.*
 import dev.whyoleg.cryptography.openssl3.materials.*
+import dev.whyoleg.cryptography.openssl3.operations.*
 import dev.whyoleg.cryptography.operations.signature.*
 import dev.whyoleg.kcwrapper.libcrypto3.cinterop.*
 import kotlinx.cinterop.*
-import platform.posix.*
 
 internal object Openssl3Ecdsa : ECDSA {
     override fun publicKeyDecoder(curve: EC.Curve?): KeyDecoder<EC.PublicKey.Format, ECDSA.PublicKey> = EcPublicKeyDecoder(curve)
@@ -66,8 +66,6 @@ internal object Openssl3Ecdsa : ECDSA {
     private class EcPrivateKey(
         key: CPointer<EVP_PKEY>,
     ) : ECDSA.PrivateKey, Openssl3PrivateKeyEncodable<EC.PrivateKey.Format>(key) {
-        private val cleaner = key.cleaner()
-
         override fun outputType(format: EC.PrivateKey.Format): String = when (format) {
             EC.PrivateKey.Format.DER -> "DER"
             EC.PrivateKey.Format.PEM -> "PEM"
@@ -76,14 +74,13 @@ internal object Openssl3Ecdsa : ECDSA {
 
         override fun signatureGenerator(digest: CryptographyAlgorithmId<Digest>, format: ECDSA.SignatureFormat): SignatureGenerator {
             check(format == ECDSA.SignatureFormat.DER) { "Only DER signature format is supported" }
-            return EcdsaSignatureGenerator(key.upRef(), hashAlgorithm(digest))
+            return EcdsaSignatureGenerator(key, hashAlgorithm(digest))
         }
     }
 
     private class EcPublicKey(
         key: CPointer<EVP_PKEY>,
     ) : ECDSA.PublicKey, Openssl3PublicKeyEncodable<EC.PublicKey.Format>(key) {
-        private val cleaner = key.cleaner()
         override fun outputType(format: EC.PublicKey.Format): String = when (format) {
             EC.PublicKey.Format.RAW -> "BLOB"
             EC.PublicKey.Format.DER -> "DER"
@@ -98,76 +95,21 @@ internal object Openssl3Ecdsa : ECDSA {
 
         override fun signatureVerifier(digest: CryptographyAlgorithmId<Digest>, format: ECDSA.SignatureFormat): SignatureVerifier {
             check(format == ECDSA.SignatureFormat.DER) { "Only DER signature format is supported" }
-            return EcdsaSignatureVerifier(key.upRef(), hashAlgorithm(digest))
+            return EcdsaSignatureVerifier(key, hashAlgorithm(digest))
         }
     }
 }
 
 private class EcdsaSignatureGenerator(
-    private val privateKey: CPointer<EVP_PKEY>,
-    private val hashAlgorithm: String,
-) : SignatureGenerator {
-    private val cleaner = privateKey.cleaner()
-
-    override fun generateSignatureBlocking(dataInput: ByteArray): ByteArray = memScoped {
-        val context = checkError(EVP_MD_CTX_new())
-        try {
-            checkError(
-                EVP_DigestSignInit_ex(
-                    ctx = context,
-                    pctx = null,
-                    mdname = hashAlgorithm,
-                    libctx = null,
-                    props = null,
-                    pkey = privateKey,
-                    params = null
-                )
-            )
-
-            checkError(EVP_DigestSignUpdate(context, dataInput.safeRefTo(0), dataInput.size.convert()))
-
-            val siglen = alloc<size_tVar>()
-            checkError(EVP_DigestSignFinal(context, null, siglen.ptr))
-            val signature = ByteArray(siglen.value.convert())
-            checkError(EVP_DigestSignFinal(context, signature.refToU(0), siglen.ptr))
-            signature.ensureSizeExactly(siglen.value.convert())
-        } finally {
-            EVP_MD_CTX_free(context)
-        }
-    }
+    privateKey: CPointer<EVP_PKEY>,
+    hashAlgorithm: String,
+) : Openssl3DigestSignatureGenerator(privateKey, hashAlgorithm) {
+    override fun MemScope.createParams(): CValuesRef<OSSL_PARAM>? = null
 }
 
 private class EcdsaSignatureVerifier(
-    private val publicKey: CPointer<EVP_PKEY>,
-    private val hashAlgorithm: String,
-) : SignatureVerifier {
-    private val cleaner = publicKey.cleaner()
-
-    override fun verifySignatureBlocking(dataInput: ByteArray, signatureInput: ByteArray): Boolean = memScoped {
-        val context = checkError(EVP_MD_CTX_new())
-        try {
-            checkError(
-                EVP_DigestVerifyInit_ex(
-                    ctx = context,
-                    pctx = null,
-                    mdname = hashAlgorithm,
-                    libctx = null,
-                    props = null,
-                    pkey = publicKey,
-                    params = null
-                )
-            )
-
-            checkError(EVP_DigestVerifyUpdate(context, dataInput.safeRefTo(0), dataInput.size.convert()))
-
-            val result = EVP_DigestVerifyFinal(context, signatureInput.safeRefToU(0), signatureInput.size.convert())
-            // 0     - means verification failed
-            // 1     - means verification succeeded
-            // other - means error
-            if (result != 0) checkError(result)
-            result == 1
-        } finally {
-            EVP_MD_CTX_free(context)
-        }
-    }
+    publicKey: CPointer<EVP_PKEY>,
+    hashAlgorithm: String,
+) : Openssl3DigestSignatureVerifier(publicKey, hashAlgorithm) {
+    override fun MemScope.createParams(): CValuesRef<OSSL_PARAM>? = null
 }
