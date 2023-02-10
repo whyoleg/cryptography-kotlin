@@ -19,12 +19,17 @@ class RsaOaepTest {
                 val maxSize = keySize.inBytes - 2 - 2 * digestSize
 
                 assertEquals(keySize.inBytes, encryptor.encrypt(ByteArray(0)).size)
+                assertEquals(keySize.inBytes, encryptor.encrypt(ByteArray(0), ByteArray(0)).size)
                 assertEquals(keySize.inBytes, encryptor.encrypt(ByteArray(maxSize)).size)
+                assertEquals(keySize.inBytes, encryptor.encrypt(ByteArray(maxSize), ByteArray(0)).size)
+
                 repeat(8) { n ->
                     val size = 10.0.pow(n).toInt()
                     if (size < maxSize) {
                         val data = CryptographyRandom.Default.nextBytes(size)
                         assertEquals(keySize.inBytes, encryptor.encrypt(data).size)
+                        assertEquals(keySize.inBytes, encryptor.encrypt(data, ByteArray(0)).size)
+                        assertEquals(keySize.inBytes, encryptor.encrypt(data, data).size)
                     }
                 }
             }

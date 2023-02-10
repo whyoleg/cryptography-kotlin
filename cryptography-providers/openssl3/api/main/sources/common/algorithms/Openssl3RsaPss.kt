@@ -14,11 +14,11 @@ internal object Openssl3RsaPss : Openssl3Rsa<RSA.PSS.PublicKey, RSA.PSS.PrivateK
         privateKey = RsaPssPrivateKey(keyPair, hashAlgorithm),
     )
 
-    override fun wrapPublicKey(hashAlgorithm: String, keyPair: CPointer<EVP_PKEY>): RSA.PSS.PublicKey =
-        RsaPssPublicKey(keyPair, hashAlgorithm)
+    override fun wrapPublicKey(hashAlgorithm: String, publicKey: CPointer<EVP_PKEY>): RSA.PSS.PublicKey =
+        RsaPssPublicKey(publicKey, hashAlgorithm)
 
-    override fun wrapPrivateKey(hashAlgorithm: String, keyPair: CPointer<EVP_PKEY>): RSA.PSS.PrivateKey =
-        RsaPssPrivateKey(keyPair, hashAlgorithm)
+    override fun wrapPrivateKey(hashAlgorithm: String, privateKey: CPointer<EVP_PKEY>): RSA.PSS.PrivateKey =
+        RsaPssPrivateKey(privateKey, hashAlgorithm)
 
     private class RsaPssKeyPair(
         override val publicKey: RSA.PSS.PublicKey,

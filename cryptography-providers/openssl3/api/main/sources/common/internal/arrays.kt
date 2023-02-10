@@ -7,6 +7,10 @@ internal fun NativePlacement.OSSL_PARAM_array(vararg values: CValue<OSSL_PARAM>)
     return allocArrayOf(*values, OSSL_PARAM_construct_end())
 }
 
+internal fun NativePlacement.OSSL_PARAM_arrayNotNull(vararg values: CValue<OSSL_PARAM>?): CArrayPointer<OSSL_PARAM> {
+    return allocArrayOf(*values.filterNotNull().toTypedArray(), OSSL_PARAM_construct_end())
+}
+
 //for stdlib
 internal inline fun <reified T : CVariable> NativePlacement.allocArrayOf(vararg elements: CValue<T>): CArrayPointer<T> {
     val array = allocArray<T>(elements.size)

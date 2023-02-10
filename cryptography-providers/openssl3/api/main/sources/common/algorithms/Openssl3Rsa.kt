@@ -14,8 +14,8 @@ internal abstract class Openssl3Rsa<PublicK : RSA.PublicKey, PrivateK : RSA.Priv
     RSA<PublicK, PrivateK, KP> {
 
     protected abstract fun wrapKeyPair(hashAlgorithm: String, keyPair: CPointer<EVP_PKEY>): KP
-    protected abstract fun wrapPublicKey(hashAlgorithm: String, keyPair: CPointer<EVP_PKEY>): PublicK
-    protected abstract fun wrapPrivateKey(hashAlgorithm: String, keyPair: CPointer<EVP_PKEY>): PrivateK
+    protected abstract fun wrapPublicKey(hashAlgorithm: String, publicKey: CPointer<EVP_PKEY>): PublicK
+    protected abstract fun wrapPrivateKey(hashAlgorithm: String, privateKey: CPointer<EVP_PKEY>): PrivateK
 
     final override fun publicKeyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<RSA.PublicKey.Format, PublicK> =
         RsaPublicKeyDecoder(hashAlgorithm(digest))
