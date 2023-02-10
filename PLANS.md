@@ -6,11 +6,13 @@
 * [ ] DROP ALL println
 * [ ] write behaviour tests for failures
 * [ ] write MORE behaviour tests
+* [ ] rewrite support ifs to be more understandable
 * [ ] Engines
     * [ ] OpenSSL3 engine
         * [ ] EC RAW KEY SUPPORT
         * [ ] ECDSA.SignatureFormat.RAW
         * [ ] EC curve validation
+        * [ ] redesign ref counting
 * [ ] Build
     * [ ] GitHub Actions (check and fix)
     * [ ] Samples (for each different kind of operation)

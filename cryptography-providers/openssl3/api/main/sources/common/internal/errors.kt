@@ -22,10 +22,17 @@ internal fun checkError(result: Int): Int {
 
 @OptIn(UnsafeNumber::class)
 private fun fail(result: Int): Nothing {
-    val code = ERR_get_error()
-    val message = memScoped {
-        val buffer = allocArray<ByteVar>(256)
-        ERR_error_string(code, buffer)?.toKString()
+    val message = buildString {
+        var code = ERR_get_error()
+        if (code.toInt() != 0) do {
+            val message = memScoped {
+                val buffer = allocArray<ByteVar>(256)
+                ERR_error_string(code, buffer)?.toKString()
+            }
+            append(message)
+            code = ERR_get_error()
+            if (code.toInt() != 0) append(", ")
+        } while (code.toInt() != 0)
     }
-    throw CryptographyException("OPENSSL failure: $message (result: $result, code: $code)")
+    throw CryptographyException("OPENSSL failure: $message (result: $result)")
 }

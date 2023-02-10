@@ -19,7 +19,7 @@ class RsaPssTest {
                 val maxSaltSize = (ceil((keySize.inBits - 1) / 8.0) - digestSize - 2).toInt()
                 listOf(
                     0,
-                    CryptographyRandom.nextInt(digestSize),
+                    CryptographyRandom.nextInt(1, digestSize),
                     digestSize,
                     CryptographyRandom.nextInt(digestSize, maxSaltSize),
                     maxSaltSize
