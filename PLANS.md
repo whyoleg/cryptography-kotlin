@@ -4,20 +4,22 @@
 
 * [ ] DROP ALL TODO
 * [ ] DROP ALL println
-* [ ] write behaviour tests for failures
-* [ ] write MORE behaviour tests
-* [ ] rewrite support ifs to be more understandable
-* [ ] investigate compatibility test failure on JS browser - Key R(* -> *) is missing in the map
-* [ ] fix PEM implementation
 * [ ] Engines
+    * [ ] fix PEM implementation
     * [ ] OpenSSL3 engine
         * [ ] EC RAW KEY SUPPORT
         * [ ] ECDSA.SignatureFormat.RAW
         * [ ] EC curve validation
         * [ ] redesign ref counting
         * [ ] Somehow check, that there is no memory leaks regarding openssl references
+* [ ] Tests
+    * [ ] investigate compatibility test failure on JS browser - Key R(* -> *) is missing in the map
+    * [ ] rewrite support ifs to be more understandable
+    * [ ] investigate JVM compatibility tests on CI
+    * [ ] write behaviour tests for failures
+    * [ ] write MORE behaviour tests
+    * [ ] Setup cross-platform compatibility tests on CI
 * [ ] Build
-    * [ ] GitHub Actions (check and fix)
     * [ ] Samples (for each different kind of operation)
     * [ ] License header
     * [ ] JPMS support
