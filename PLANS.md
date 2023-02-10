@@ -24,8 +24,6 @@
     * [ ] Maven Central
     * [ ] Merge BOM and Version catalog (https://melix.github.io/blog/2022/02/micronaut-version-catalog.html)
 * [ ] README
-    * [ ] modules/dependencies
-    * [ ] supported algorithms/operations (+ not supported by some providers)
     * [ ] some intro on what this library is and testing
 
 ## 0.2.0: New operations, algorithms, engines
