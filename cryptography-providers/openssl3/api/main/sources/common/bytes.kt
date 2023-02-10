@@ -21,3 +21,13 @@ internal fun ByteArray.ensureSizeExactly(expectedSize: Int): ByteArray = when (s
     expectedSize -> this
     else         -> copyOf(expectedSize)
 }
+
+internal inline fun <reified T : CVariable, R> NativeFreeablePlacement.safeAlloc(block: (value: T) -> R): R {
+    val value = alloc<T>()
+    try {
+        return block(value)
+    } catch (cause: Throwable) {
+        free(value)
+        throw cause
+    }
+}

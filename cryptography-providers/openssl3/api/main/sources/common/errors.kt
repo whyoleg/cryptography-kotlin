@@ -5,21 +5,18 @@ import dev.whyoleg.kcwrapper.libcrypto3.cinterop.*
 import kotlinx.cinterop.*
 import platform.posix.*
 
-internal inline fun <T : Any> checkError(result: T?, onFailure: () -> Unit = {}): T {
+internal fun <T : Any> checkError(result: T?): T {
     if (result != null) return result
-    onFailure()
     fail(0)
 }
 
-internal inline fun checkError(result: size_t, onFailure: () -> Unit = {}): size_t {
+internal fun checkError(result: size_t): size_t {
     if (result > 0u) return result
-    onFailure()
     fail(result.convert())
 }
 
-internal inline fun checkError(result: Int, onFailure: () -> Unit = {}): Int {
+internal fun checkError(result: Int): Int {
     if (result > 0) return result
-    onFailure()
     fail(result)
 }
 

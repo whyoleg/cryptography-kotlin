@@ -8,7 +8,9 @@
 * [ ] write MORE behaviour tests
 * [ ] Engines
     * [ ] OpenSSL3 engine
-        * [ ] understand why HMAC fails...
+        * [ ] EC RAW KEY SUPPORT
+        * [ ] ECDSA.SignatureFormat.RAW
+        * [ ] EC curve validation
 * [ ] Build
     * [ ] GitHub Actions (check and fix)
     * [ ] Samples (for each different kind of operation)

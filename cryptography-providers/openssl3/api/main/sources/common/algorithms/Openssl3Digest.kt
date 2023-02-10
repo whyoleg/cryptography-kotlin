@@ -22,7 +22,7 @@ internal class Openssl3Digest(
     private val digestSize = EVP_MD_get_size(md)
 
     override fun hashBlocking(dataInput: ByteArray): ByteArray {
-        val context = EVP_MD_CTX_new()
+        val context = checkError(EVP_MD_CTX_new())
         try {
             val digest = ByteArray(digestSize)
 

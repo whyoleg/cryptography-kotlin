@@ -16,9 +16,9 @@ fun ProviderTestContext.supports(feature: String, condition: Boolean): Boolean {
 fun AlgorithmTestContext<*>.supportsKeyFormat(format: KeyFormat): Boolean = supports(
     feature = "${format.name} Key format",
     condition = when {
-        provider.isWebCrypto                                               -> true
-        provider.isJdk && algorithm is EC<*, *, *> && format.name == "RAW" -> false
-        else                                                               -> format.name != "JWK"
+        provider.isWebCrypto                                                                        -> true
+        (provider.isJdk || provider.isOpenssl3) && algorithm is EC<*, *, *> && format.name == "RAW" -> false
+        else                                                                                        -> format.name != "JWK"
     }
 )
 
