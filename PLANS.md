@@ -22,7 +22,6 @@
 * [ ] Build
     * [ ] Samples (for each different kind of operation)
     * [ ] License header
-    * [ ] JPMS support
     * [ ] Maven Central
     * [ ] Merge BOM and Version catalog (https://melix.github.io/blog/2022/02/micronaut-version-catalog.html)
 * [ ] README
@@ -135,6 +134,7 @@
 * [ ] Qodana/CodeQL integration
 * [ ] Investigate WASI-crypto support
 * [ ] FIPS (?)
+* [ ] JPMS support
 
 ## 1.0.0: Stable release
 
