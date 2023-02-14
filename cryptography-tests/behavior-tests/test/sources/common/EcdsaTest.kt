@@ -22,7 +22,7 @@ class EcdsaTest {
         listOf(
             EcdsaSize(EC.Curve.P256, 64, listOf(69, 70, 71, 72), 91, listOf(67, 138)),
             EcdsaSize(EC.Curve.P384, 96, listOf(101, 102, 103, 104), 120, listOf(80, 185)),
-            EcdsaSize(EC.Curve.P521, 132, listOf(137, 138, 139), 158, listOf(98, 241)),
+            EcdsaSize(EC.Curve.P521, 132, listOf(136, 137, 138, 139), 158, listOf(98, 241)),
         ).forEach { (curve, rawSignatureSize, derSignatureSizes, publicKeySize, privateKeySizes) ->
             val keyPair = algorithm.keyPairGenerator(curve).generateKey()
 
