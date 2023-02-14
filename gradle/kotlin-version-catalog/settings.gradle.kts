@@ -3,11 +3,6 @@ pluginManagement {
         gradlePluginPortal()
         mavenCentral()
     }
-    includeBuild("../kotlin-version-catalog")
-}
-
-plugins {
-    id("kotlin-version-catalog")
 }
 
 dependencyResolutionManagement {
@@ -17,6 +12,10 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "plugins"
+rootProject.name = "kotlin-version-catalog"
 
-include("buildx")
+includeBuild("../build-parameters") {
+    dependencySubstitution {
+        substitute(module("build:build-parameters")).using(project(":"))
+    }
+}

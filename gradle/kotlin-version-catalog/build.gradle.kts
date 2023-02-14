@@ -3,5 +3,5 @@ plugins {
 }
 
 dependencies {
-    implementation(kotlinLibs.gradle.plugin)
+    implementation("build:build-parameters")
 }

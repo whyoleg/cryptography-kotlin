@@ -8,7 +8,7 @@ description = "cryptography-kotlin Gradle Version Catalog"
 catalog {
     versionCatalog {
         //just a hint on version used by the library
-        version("kotlin", libs.versions.kotlin.asProvider().get())
+        version("kotlin", kotlinLibs.versions.kotlin.get())
         version("cryptography", version.toString())
         rootProject.subprojects.forEach {
             if (it.name != "cryptography-version-catalog" &&

@@ -1,6 +1,5 @@
 [versions]
 
-kotlin = "1.8.0"
 kotlin-dokka = "1.7.20"
 
 kotlinx-serialization = "1.4.1"
@@ -16,7 +15,6 @@ logback = "1.2.11"
 gradle-versions = "0.44.0"
 
 [libraries]
-build-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 build-atomicfu = { module = "org.jetbrains.kotlinx:atomicfu-gradle-plugin", version.ref = "kotlinx-atomicfu" }
 
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
@@ -39,8 +37,6 @@ ktor-server-calllogging = { module = "io.ktor:ktor-server-call-logging", version
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 
 [plugins]
-kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-dokka = { id = "org.jetbrains.dokka", version.ref = "kotlin-dokka" }
 kotlinx-bcv = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "kotlinx-bcv" }
 kotlinx-kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kotlinx-kover" }

@@ -1,5 +1,5 @@
 plugins {
-    id("org.gradlex.build-parameters") version "1.3"
+    id("org.gradlex.build-parameters") version "1.4.2"
 }
 
 buildParameters {
@@ -13,6 +13,13 @@ buildParameters {
                 description.set("Define which test step to execute (if InMemory - will run all steps without server)")
                 defaultValue.set("InMemory")
                 values.addAll("InMemory", "Generate", "Validate")
+            }
+        }
+    }
+    group("kotlin") {
+        group("override") {
+            string("version") {
+
             }
         }
     }
