@@ -36,8 +36,8 @@ jobs:
           cache-disabled: true
           arguments: |
             build
-            -PskipTests
-            -PskipLink
+            -Pskip.test
+            -Pskip.link
             -Pkotlin.override.version=${{ matrix.kotlinVersion }}
             --scan
             --continue
@@ -47,7 +47,7 @@ jobs:
           cache-disabled: true
           arguments: |
             build
-            -PskipTests
+            -Pskip.test
             -Pkotlin.override.version=${{ matrix.kotlinVersion }}
             --scan
             --continue

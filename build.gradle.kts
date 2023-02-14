@@ -1,6 +1,8 @@
 import org.jetbrains.kotlin.gradle.targets.js.yarn.*
 
 plugins {
+    id("build-parameters")
+
     alias(kotlinLibs.plugins.multiplatform) apply false
     alias(kotlinLibs.plugins.serialization) apply false
     alias(libs.plugins.kotlin.dokka)
@@ -32,5 +34,15 @@ koverMerged {
                 .filter { it.buildFile.exists() && it.name !in includes }
                 .map { it.name }
         }
+    }
+}
+
+val skipTest = buildParameters.skip.test
+val skipLink = buildParameters.skip.link
+
+subprojects {
+    tasks.whenTaskAdded {
+        if (name.endsWith("test", ignoreCase = true)) onlyIf { !skipTest }
+        if (name.startsWith("link", ignoreCase = true)) onlyIf { !skipLink }
     }
 }

@@ -2,14 +2,24 @@ plugins {
     id("build-parameters")
 }
 
+val kotlinVersion = "1.8.0"
+val kotlinVersionOverride = the<buildparameters.BuildParametersExtension>().kotlin.override.version.orNull
+
+if (kotlinVersionOverride != null) logger.lifecycle("Kotlin version override: $kotlinVersionOverride")
+
+pluginManagement {
+    if (kotlinVersionOverride != null) repositories {
+        maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev")
+    }
+}
+
 dependencyResolutionManagement {
+    if (kotlinVersionOverride != null) repositories {
+        maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev")
+    }
     versionCatalogs {
         create("kotlinLibs") {
-            val kotlinVersionDefault = "1.8.0"
-
-            val kotlinVersionOverride = the<buildparameters.BuildParametersExtension>().kotlin.override.version.orNull
-            if (kotlinVersionOverride != null) logger.lifecycle("Kotlin version override: $kotlinVersionOverride")
-            val kotlin = version("kotlin", kotlinVersionOverride ?: kotlinVersionDefault)
+            val kotlin = version("kotlin", kotlinVersionOverride ?: kotlinVersion)
 
             library("gradle-plugin", "org.jetbrains.kotlin", "kotlin-gradle-plugin").versionRef(kotlin)
 
