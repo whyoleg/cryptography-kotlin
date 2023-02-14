@@ -12,16 +12,15 @@ CryptographyProvider.Default
 ## Modules
 
 * `cryptography-random` - zero-dependency platform-dependent CSPRNG
-* `cryptography-core`
-    * operations
-    * algorithms
-    * materials
-    * provider
+* `cryptography-core` - core interfaces for implementation by providers
 * providers:
-    * `cryptography-jdk` - uses JCE: javax.crypto.* and java.security.* (TODO link)
-    * `cryptography-webcrypto` - uses WebCrypto (TODO link)
-    * `cryptography-apple` - uses CoreCrypto/CommonCrypto` (TODO link)
-    * `cryptography-openssl3` - uses OpenSSL 3.x (TODO link)
+    * `cryptography-jdk` -
+      uses [JCA](https://docs.oracle.com/en/java/javase/17/security/java-cryptography-architecture-jca-reference-guide.html): javax.crypto.*
+      and java.security.* (TODO link)
+    * `cryptography-webcrypto` - uses [WebCrypto](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API)
+    * `cryptography-apple` -
+      uses [CommonCrypto](https://developer.apple.com/library/archive/documentation/Security/Conceptual/cryptoservices/Introduction/Introduction.html)
+    * `cryptography-openssl3` - uses [OpenSSL 3.x](https://www.openssl.org)
         * `cryptography-openssl3-dynamic` - dynamically linked
         * `cryptography-openssl3-static` - statically linked to prebuilt OpenSSL 3.0.7
 * `cryptography-bom`

@@ -14,6 +14,8 @@
         * [ ] Somehow check, that there is no memory leaks regarding openssl references
 * [ ] Tests
     * [ ] investigate compatibility test failure on JS browser - Key R(* -> *) is missing in the map
+    * [ ] investigate behavior test failure on JS node - UncompletedCoroutinesError: After waiting for 60000 ms, the test coroutine is not
+      completing
     * [ ] rewrite support ifs to be more understandable
     * [ ] investigate JVM compatibility tests on CI
     * [ ] write behaviour tests for failures
@@ -23,7 +25,6 @@
     * [ ] Samples (for each different kind of operation)
     * [ ] License header
     * [ ] Maven Central
-    * [ ] Merge BOM and Version catalog (https://melix.github.io/blog/2022/02/micronaut-version-catalog.html)
 * [ ] README
     * [ ] some intro on what this library is and testing
 
@@ -135,6 +136,7 @@
 * [ ] Investigate WASI-crypto support
 * [ ] FIPS (?)
 * [ ] JPMS support
+* [ ] Merge BOM and Version catalog (https://melix.github.io/blog/2022/02/micronaut-version-catalog.html)
 
 ## 1.0.0: Stable release
 
