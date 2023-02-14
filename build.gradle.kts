@@ -1,3 +1,4 @@
+import kotlinx.validation.*
 import org.jetbrains.kotlin.gradle.targets.js.yarn.*
 
 plugins {
@@ -39,10 +40,16 @@ koverMerged {
 
 val skipTest = buildParameters.skip.test
 val skipLink = buildParameters.skip.link
+val kotlinVersionOverriden = buildParameters.kotlin.override.version.isPresent
 
 subprojects {
     tasks.whenTaskAdded {
         if (name.endsWith("test", ignoreCase = true)) onlyIf { !skipTest }
         if (name.startsWith("link", ignoreCase = true)) onlyIf { !skipLink }
+    }
+    plugins.withType<BinaryCompatibilityValidatorPlugin> {
+        extensions.configure<ApiValidationExtension>("apiValidation") {
+            validationDisabled = kotlinVersionOverriden
+        }
     }
 }
