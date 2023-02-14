@@ -8,7 +8,6 @@
     * [ ] fix PEM implementation
     * [ ] OpenSSL3 engine
         * [ ] EC RAW KEY SUPPORT
-        * [ ] ECDSA.SignatureFormat.RAW
         * [ ] EC curve validation
         * [ ] redesign ref counting
         * [ ] Somehow check, that there is no memory leaks regarding openssl references

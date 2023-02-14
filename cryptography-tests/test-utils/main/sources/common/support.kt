@@ -49,8 +49,6 @@ fun AlgorithmTestContext<ECDSA>.supportsSignatureFormat(format: ECDSA.SignatureF
     condition = when {
         //WebCrypto supports only RAW signature format
         provider.isWebCrypto                               -> format == ECDSA.SignatureFormat.RAW
-        //OpenSSL3 supports only RAW signature format (?)
-        provider.isOpenssl3                                -> format == ECDSA.SignatureFormat.DER
         //JDK supports RAW signature format starting from java 9
         provider.isJdk && currentPlatformJvmVersion!! <= 8 -> format == ECDSA.SignatureFormat.DER
         else                                               -> true

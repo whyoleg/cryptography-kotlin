@@ -73,8 +73,11 @@ internal object Openssl3Ecdsa : ECDSA {
         }
 
         override fun signatureGenerator(digest: CryptographyAlgorithmId<Digest>, format: ECDSA.SignatureFormat): SignatureGenerator {
-            check(format == ECDSA.SignatureFormat.DER) { "Only DER signature format is supported" }
-            return EcdsaSignatureGenerator(key, hashAlgorithm(digest))
+            val derSignatureGenerator = EcdsaDerSignatureGenerator(key, hashAlgorithm(digest))
+            return when (format) {
+                ECDSA.SignatureFormat.DER -> derSignatureGenerator
+                ECDSA.SignatureFormat.RAW -> EcdsaRawSignatureGenerator(EC_order_size(key), derSignatureGenerator)
+            }
         }
     }
 
@@ -94,22 +97,85 @@ internal object Openssl3Ecdsa : ECDSA {
         }
 
         override fun signatureVerifier(digest: CryptographyAlgorithmId<Digest>, format: ECDSA.SignatureFormat): SignatureVerifier {
-            check(format == ECDSA.SignatureFormat.DER) { "Only DER signature format is supported" }
-            return EcdsaSignatureVerifier(key, hashAlgorithm(digest))
+            val derSignatureVerifier = EcdsaDerSignatureVerifier(key, hashAlgorithm(digest))
+            return when (format) {
+                ECDSA.SignatureFormat.DER -> derSignatureVerifier
+                ECDSA.SignatureFormat.RAW -> EcdsaRawSignatureVerifier(EC_order_size(key), derSignatureVerifier)
+            }
         }
     }
 }
 
-private class EcdsaSignatureGenerator(
+private fun EC_order_size(key: CPointer<EVP_PKEY>): Int {
+    val ec = checkError(EVP_PKEY_get0_EC_KEY(key))
+    val group = checkError(EC_KEY_get0_group(ec))
+    val order = BN_new()
+    try {
+        checkError(EC_GROUP_get_order(group, order, null))
+        return (checkError(BN_num_bits(order)) + 7) / 8
+    } finally {
+        BN_free(order)
+    }
+}
+
+private class EcdsaDerSignatureGenerator(
     privateKey: CPointer<EVP_PKEY>,
     hashAlgorithm: String,
 ) : Openssl3DigestSignatureGenerator(privateKey, hashAlgorithm) {
     override fun MemScope.createParams(): CValuesRef<OSSL_PARAM>? = null
 }
 
-private class EcdsaSignatureVerifier(
+private class EcdsaRawSignatureGenerator(
+    private val orderSizeBytes: Int,
+    private val derSignatureGenerator: EcdsaDerSignatureGenerator,
+) : SignatureGenerator {
+    override fun generateSignatureBlocking(dataInput: ByteArray): ByteArray {
+        val derSignature = derSignatureGenerator.generateSignatureBlocking(dataInput)
+
+        return memScoped {
+            val pdataVar = alloc<CPointerVar<UByteVar>> { value = allocArrayOf(derSignature).reinterpret() }
+            val sig = checkError(d2i_ECDSA_SIG(null, pdataVar.ptr, derSignature.size.convert()))
+            try {
+                val r = checkError(ECDSA_SIG_get0_r(sig))
+                val s = checkError(ECDSA_SIG_get0_s(sig))
+                val signature = ByteArray(orderSizeBytes * 2)
+                checkError(BN_bn2binpad(r, signature.refToU(0), orderSizeBytes))
+                checkError(BN_bn2binpad(s, signature.refToU(orderSizeBytes), orderSizeBytes))
+                signature
+            } finally {
+                ECDSA_SIG_free(sig)
+            }
+        }
+    }
+}
+
+private class EcdsaDerSignatureVerifier(
     publicKey: CPointer<EVP_PKEY>,
     hashAlgorithm: String,
 ) : Openssl3DigestSignatureVerifier(publicKey, hashAlgorithm) {
     override fun MemScope.createParams(): CValuesRef<OSSL_PARAM>? = null
+}
+
+private class EcdsaRawSignatureVerifier(
+    private val orderSizeBytes: Int,
+    private val derSignatureVerifier: EcdsaDerSignatureVerifier,
+) : SignatureVerifier {
+    override fun verifySignatureBlocking(dataInput: ByteArray, signatureInput: ByteArray): Boolean {
+        if (signatureInput.size != orderSizeBytes * 2) return false
+
+        return memScoped {
+            val r = BN_bin2bn(signatureInput.refToU(0), orderSizeBytes, null)
+            val s = BN_bin2bn(signatureInput.refToU(orderSizeBytes), orderSizeBytes, null)
+            val sig = ECDSA_SIG_new()
+            try {
+                checkError(ECDSA_SIG_set0(sig, r, s))
+                val outVar = alloc<CPointerVar<UByteVar>>()
+                val signatureLength = checkError(i2d_ECDSA_SIG(sig, outVar.ptr))
+                val derSignature = outVar.value!!.readBytes(signatureLength)
+                derSignatureVerifier.verifySignatureBlocking(dataInput, derSignature)
+            } finally {
+                ECDSA_SIG_free(sig)
+            }
+        }
+    }
 }
