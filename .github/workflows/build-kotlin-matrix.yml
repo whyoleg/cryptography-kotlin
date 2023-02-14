@@ -1,4 +1,4 @@
-name: Build main
+name: Build Kotlin Matrix
 on:
   workflow_dispatch: # manual run
   schedule: # scheduled run every saturday
@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    name: Kotlin ${{ matrix.kotlinVersionOverride }} on ${{ matrix.os }}
+    name: Kotlin ${{ matrix.kotlinVersion }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
