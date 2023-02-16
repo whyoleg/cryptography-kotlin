@@ -135,6 +135,7 @@
 * [ ] FIPS (?)
 * [ ] JPMS support
 * [ ] Merge BOM and Version catalog (https://melix.github.io/blog/2022/02/micronaut-version-catalog.html)
+* [ ] RSA-PSS salt size values: digest size, max size, plain value
 
 ## 1.0.0: Stable release
 
@@ -144,3 +145,4 @@
 * [ ] Decide on algorithms access in code. f.e. AES.CBC, RSA.OAEP vs ECDSA, ECDH, etc.
     * [ ] algorithms - AesBasedAlgorihm, RsaBasedAlgorithm, AesGcmAlgorithm
     * [ ] ids -> AES.CBC, RSA.OAEP, RSA, etc.
+* [ ] Decide on operations default carefully

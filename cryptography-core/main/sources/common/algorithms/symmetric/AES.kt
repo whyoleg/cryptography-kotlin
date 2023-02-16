@@ -10,7 +10,7 @@ import dev.whyoleg.cryptography.provider.*
 @SubclassOptInRequired(CryptographyProviderApi::class)
 public interface AES<K : AES.Key> : CryptographyAlgorithm {
     public fun keyDecoder(): KeyDecoder<Key.Format, K>
-    public fun keyGenerator(keySize: SymmetricKeySize): KeyGenerator<K>
+    public fun keyGenerator(keySize: SymmetricKeySize = SymmetricKeySize.B256): KeyGenerator<K>
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface Key : EncodableKey<Key.Format> {

@@ -15,7 +15,7 @@ public interface RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP : RS
     public fun privateKeyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<PrivateKey.Format, PrivateK>
 
     public fun keyPairGenerator(
-        keySize: BinarySize = 2048.bits,
+        keySize: BinarySize = 4096.bits,
         digest: CryptographyAlgorithmId<Digest> = SHA512,
         publicExponent: PublicExponent = PublicExponent.F4,
     ): KeyGenerator<KP>
