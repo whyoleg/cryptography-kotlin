@@ -10,6 +10,7 @@ import dev.whyoleg.cryptography.openssl3.operations.*
 import dev.whyoleg.cryptography.operations.signature.*
 import dev.whyoleg.kcwrapper.libcrypto3.cinterop.*
 import kotlinx.cinterop.*
+import platform.posix.*
 
 internal object Openssl3Ecdsa : ECDSA {
     override fun publicKeyDecoder(curve: EC.Curve): KeyDecoder<EC.PublicKey.Format, ECDSA.PublicKey> = EcPublicKeyDecoder(curve)
@@ -37,10 +38,36 @@ internal object Openssl3Ecdsa : ECDSA {
         private val curve: EC.Curve,
     ) : Openssl3PublicKeyDecoder<EC.PublicKey.Format, ECDSA.PublicKey>("EC") {
         override fun inputType(format: EC.PublicKey.Format): String = when (format) {
-            EC.PublicKey.Format.RAW -> TODO("will be be supported later")
             EC.PublicKey.Format.DER -> "DER"
             EC.PublicKey.Format.PEM -> "PEM"
+            EC.PublicKey.Format.RAW -> error("should not be called")
             EC.PublicKey.Format.JWK -> error("JWK format is not supported")
+        }
+
+        override fun decodeFromBlocking(format: EC.PublicKey.Format, input: ByteArray): ECDSA.PublicKey = when (format) {
+            EC.PublicKey.Format.RAW -> memScoped {
+                val context = checkError(EVP_PKEY_CTX_new_from_name(null, "EC", null))
+                try {
+                    checkError(EVP_PKEY_fromdata_init(context))
+                    val pkeyVar = alloc<CPointerVar<EVP_PKEY>>()
+                    checkError(
+                        EVP_PKEY_fromdata(
+                            ctx = context,
+                            ppkey = pkeyVar.ptr,
+                            selection = EVP_PKEY_PUBLIC_KEY,
+                            param = OSSL_PARAM_array(
+                                OSSL_PARAM_construct_utf8_string("group".cstr.ptr, curve.name.cstr.ptr, 0),
+                                OSSL_PARAM_construct_octet_string("pub".cstr.ptr, input.safeRefToU(0), input.size.convert())
+                            )
+                        )
+                    )
+                    val pkey = checkError(pkeyVar.value)
+                    wrapKey(pkey)
+                } finally {
+                    EVP_PKEY_CTX_free(context)
+                }
+            }
+            else                    -> super.decodeFromBlocking(format, input)
         }
 
         override fun wrapKey(key: CPointer<EVP_PKEY>): ECDSA.PublicKey {
@@ -89,15 +116,21 @@ internal object Openssl3Ecdsa : ECDSA {
         key: CPointer<EVP_PKEY>,
     ) : ECDSA.PublicKey, Openssl3PublicKeyEncodable<EC.PublicKey.Format>(key) {
         override fun outputType(format: EC.PublicKey.Format): String = when (format) {
-            EC.PublicKey.Format.RAW -> "BLOB"
             EC.PublicKey.Format.DER -> "DER"
             EC.PublicKey.Format.PEM -> "PEM"
+            EC.PublicKey.Format.RAW -> error("should not be called")
             EC.PublicKey.Format.JWK -> error("JWK format is not supported")
         }
 
-        override fun outputStruct(format: EC.PublicKey.Format): String = when (format) {
-            EC.PublicKey.Format.RAW -> "BLOB"
-            else                    -> super.outputStruct(format)
+        override fun encodeToBlocking(format: EC.PublicKey.Format): ByteArray = when (format) {
+            EC.PublicKey.Format.RAW -> memScoped {
+                val outVar = alloc<size_tVar>()
+                checkError(EVP_PKEY_get_octet_string_param(key, "pub", null, 0, outVar.ptr))
+                val output = ByteArray(outVar.value.convert())
+                checkError(EVP_PKEY_get_octet_string_param(key, "pub", output.safeRefToU(0), output.size.convert(), outVar.ptr))
+                output.ensureSizeExactly(outVar.value.convert())
+            }
+            else                    -> super.encodeToBlocking(format)
         }
 
         override fun signatureVerifier(digest: CryptographyAlgorithmId<Digest>, format: ECDSA.SignatureFormat): SignatureVerifier {
@@ -111,6 +144,7 @@ internal object Openssl3Ecdsa : ECDSA {
 }
 
 private fun EC_check_key_group(key: CPointer<EVP_PKEY>, expectedCurve: EC.Curve) = memScoped {
+    //we need to construct a group, because our EC.Curve names are not the ones, which are used inside openssl
     val expectedGroup = checkError(
         EC_GROUP_new_from_params(
             OSSL_PARAM_array(
@@ -119,28 +153,26 @@ private fun EC_check_key_group(key: CPointer<EVP_PKEY>, expectedCurve: EC.Curve)
         )
     )
     try {
-        val expectedGroupName = checkError(EC_GROUP_get_curve_name(expectedGroup))
+        val expectedGroupNid = checkError(EC_GROUP_get_curve_name(expectedGroup))
+        val expectedGroupName = checkError(OSSL_EC_curve_nid2name(expectedGroupNid)).toKString()
 
-        val ecKey = checkError(EVP_PKEY_get0_EC_KEY(key))
-        val keyGroup = checkError(EC_KEY_get0_group(ecKey))
-        val keyGroupName = checkError(EC_GROUP_get_curve_name(keyGroup))
-
-        fun curveName(nid: Int): String = OSSL_EC_curve_nid2name(nid)?.toKString() ?: "nid=$nid"
+        val keyGroupName = allocArray<ByteVar>(256).also {
+            checkError(EVP_PKEY_get_utf8_string_param(key, "group", it, 256, null))
+        }.toKString()
 
         check(expectedGroupName == keyGroupName) {
-            "Wrong curve, expected ${expectedCurve.name}(${curveName(expectedGroupName)}) actual ${curveName(keyGroupName)}"
+            "Wrong curve, expected ${expectedCurve.name}($expectedGroupName) actual $keyGroupName"
         }
     } finally {
         EC_GROUP_free(expectedGroup)
     }
 }
 
-private fun EC_order_size(key: CPointer<EVP_PKEY>): Int {
-    val ec = checkError(EVP_PKEY_get0_EC_KEY(key))
-    val group = checkError(EC_KEY_get0_group(ec))
-    val order = BN_new()
+private fun EC_order_size(key: CPointer<EVP_PKEY>): Int = memScoped {
+    val orderVar = alloc<CPointerVar<BIGNUM>>()
+    checkError(EVP_PKEY_get_bn_param(key, "order", orderVar.ptr))
+    val order = checkError(orderVar.value)
     try {
-        checkError(EC_GROUP_get_order(group, order, null))
         return (checkError(BN_num_bits(order)) + 7) / 8
     } finally {
         BN_free(order)

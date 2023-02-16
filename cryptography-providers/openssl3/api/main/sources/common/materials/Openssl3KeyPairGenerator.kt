@@ -12,13 +12,13 @@ internal abstract class Openssl3KeyPairGenerator<K : Key>(
     protected abstract fun wrapKeyPair(keyPair: CPointer<EVP_PKEY>): K
 
     final override fun generateKeyBlocking(): K = memScoped {
-        val context = checkNotNull(EVP_PKEY_CTX_new_from_name(null, algorithm, null)) { "Failed to create PKEY_CTX context" }
+        val context = checkError(EVP_PKEY_CTX_new_from_name(null, algorithm, null))
         try {
             checkError(EVP_PKEY_keygen_init(context))
             checkError(EVP_PKEY_CTX_set_params(context, createParams()))
             val pkeyVar = alloc<CPointerVar<EVP_PKEY>>()
             checkError(EVP_PKEY_generate(context, pkeyVar.ptr))
-            val pkey = checkNotNull(pkeyVar.value) { "Failed to generate key pair" }
+            val pkey = checkError(pkeyVar.value)
             //we do upRef here, because key pair contains 2 separate instances: public and private key
             wrapKeyPair(pkey.upRef())
         } finally {

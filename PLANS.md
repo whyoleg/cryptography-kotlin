@@ -6,9 +6,6 @@
 * [ ] DROP ALL println
 * [ ] Engines
     * [ ] fix PEM implementation
-    * [ ] OpenSSL3 engine
-        * [ ] EC RAW KEY SUPPORT
-        * [ ] Somehow check, that there is no memory leaks regarding openssl references
 * [ ] Tests
     * [ ] investigate compatibility test failure on JS browser - Key R(* -> *) is missing in the map
     * [ ] investigate behavior test failure on JS node - UncompletedCoroutinesError: After waiting for 60000 ms, the test coroutine is not
@@ -135,6 +132,7 @@
 * [ ] JPMS support
 * [ ] Merge BOM and Version catalog (https://melix.github.io/blog/2022/02/micronaut-version-catalog.html)
 * [ ] RSA-PSS salt size values: digest size, max size, plain value
+* [ ] Somehow check, that there is no memory leaks (especially in openssl provider)
 
 ## 1.0.0: Stable release
 

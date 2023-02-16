@@ -46,7 +46,7 @@ internal abstract class Openssl3KeyDecoder<KF : KeyFormat, K : Key>(
             val pdataLenVar = alloc(input.size.convert<size_t>())
             val pdataVar = alloc<CPointerVar<UByteVar>> { value = allocArrayOf(input).reinterpret() }
             checkError(OSSL_DECODER_from_data(context, pdataVar.ptr, pdataLenVar.ptr))
-            val pkey = checkNotNull(pkeyVar.value) { "Failed to decode key" }
+            val pkey = checkError(pkeyVar.value)
             wrapKey(pkey)
         } finally {
             OSSL_DECODER_CTX_free(context)
