@@ -4,6 +4,7 @@ import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.jdk.*
 import dev.whyoleg.cryptography.jdk.materials.*
 import dev.whyoleg.cryptography.materials.key.*
+import java.math.*
 import java.security.interfaces.*
 import java.security.spec.*
 
@@ -61,6 +62,27 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP
             check(curveName == keyCurve) { "Key curve $keyCurve is not equal to expected curve $curveName" }
 
             return with(this@JdkEc) { convert() }
+        }
+
+        override fun decodeFromBlocking(format: EC.PublicKey.Format, input: ByteArray): PublicK = when (format) {
+            EC.PublicKey.Format.RAW -> {
+                check(input.isNotEmpty() && input[0].toInt() == 4) { "Encoded key should be in uncompressed format" }
+                val parameters = algorithmParameters.use {
+                    it.init(ECGenParameterSpec(curveName))
+                    it.getParameterSpec(ECParameterSpec::class.java)
+                }
+                val fieldSize = (parameters.curve.field.fieldSize + 7) / 8
+                check(input.size == fieldSize * 2 + 1) { "Wrong encoded key size" }
+
+                val x = input.copyOfRange(1, fieldSize + 1)
+                val y = input.copyOfRange(fieldSize + 1, fieldSize + 1 + fieldSize)
+                val point = ECPoint(BigInteger(1, x), BigInteger(1, y))
+
+                keyFactory.use {
+                    it.generatePublic(ECPublicKeySpec(point, parameters))
+                }.convert()
+            }
+            else                    -> super.decodeFromBlocking(format, input)
         }
     }
 

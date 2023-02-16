@@ -10,13 +10,13 @@ internal abstract class JdkPublicKeyDecoder<KF : KeyFormat, K : Key>(
     algorithm: String,
     private val pemAlgorithm: String = algorithm,
 ) : KeyDecoder<KF, K> {
-    private val keyFactory = state.keyFactory(algorithm)
+    protected val keyFactory = state.keyFactory(algorithm)
 
     private fun decode(input: ByteArray): JPublicKey = keyFactory.use { it.generatePublic(X509EncodedKeySpec(input)) }
 
     protected abstract fun JPublicKey.convert(): K
 
-    final override fun decodeFromBlocking(format: KF, input: ByteArray): K = when (format.name) {
+    override fun decodeFromBlocking(format: KF, input: ByteArray): K = when (format.name) {
         "DER" -> decode(input)
         "PEM" -> {
             val (type, decoded) = input.decodeFromPem()

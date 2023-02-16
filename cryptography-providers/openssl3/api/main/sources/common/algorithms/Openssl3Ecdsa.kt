@@ -125,9 +125,9 @@ internal object Openssl3Ecdsa : ECDSA {
         override fun encodeToBlocking(format: EC.PublicKey.Format): ByteArray = when (format) {
             EC.PublicKey.Format.RAW -> memScoped {
                 val outVar = alloc<size_tVar>()
-                checkError(EVP_PKEY_get_octet_string_param(key, "pub", null, 0, outVar.ptr))
+                checkError(EVP_PKEY_get_octet_string_param(key, "encoded-pub-key", null, 0, outVar.ptr))
                 val output = ByteArray(outVar.value.convert())
-                checkError(EVP_PKEY_get_octet_string_param(key, "pub", output.safeRefToU(0), output.size.convert(), outVar.ptr))
+                checkError(EVP_PKEY_get_octet_string_param(key, "encoded-pub-key", output.safeRefToU(0), output.size.convert(), outVar.ptr))
                 output.ensureSizeExactly(outVar.value.convert())
             }
             else                    -> super.encodeToBlocking(format)

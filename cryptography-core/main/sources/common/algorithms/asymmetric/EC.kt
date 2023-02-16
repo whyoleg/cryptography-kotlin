@@ -31,7 +31,10 @@ public interface EC<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP : EC.Ke
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface PublicKey : EncodableKey<PublicKey.Format> {
-        public enum class Format : KeyFormat { RAW, DER, PEM, JWK, }
+        public enum class Format : KeyFormat {
+            RAW, //only uncompressed format is supported
+            DER, PEM, JWK,
+        }
     }
 
     @SubclassOptInRequired(CryptographyProviderApi::class)

@@ -15,10 +15,9 @@ fun ProviderTestContext.supports(feature: String, condition: Boolean): Boolean {
 // only WebCrypto supports JWK for now
 fun AlgorithmTestContext<*>.supportsKeyFormat(format: KeyFormat): Boolean = supports(
     feature = "${format.name} Key format",
-    condition = when {
-        provider.isWebCrypto                                               -> true
-        provider.isJdk && algorithm is EC<*, *, *> && format.name == "RAW" -> false
-        else                                                               -> format.name != "JWK"
+    condition = when (format.name) {
+        "JWK" -> provider.isWebCrypto
+        else  -> true
     }
 )
 
@@ -55,7 +54,7 @@ fun AlgorithmTestContext<ECDSA>.supportsSignatureFormat(format: ECDSA.SignatureF
     }
 )
 
-// Private key DER encoding is different per providers (e.g. PKCS#8 vs. SEC1)
+// Private key DER encoding is different per providers
 // it's more of a hack now (to test at least jdk vs nodejs) then a real and correct check
 fun AlgorithmTestContext<ECDSA>.supportsPrivateKeyDerFormat(): Boolean = supports(
     feature = "EC DER private key encoding",
