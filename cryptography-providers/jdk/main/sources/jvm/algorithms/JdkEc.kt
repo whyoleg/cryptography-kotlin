@@ -21,12 +21,12 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP
     protected abstract fun JPrivateKey.convert(): PrivateK
     protected abstract fun JKeyPair.convert(): KP
 
-    final override fun publicKeyDecoder(curve: EC.Curve?): KeyDecoder<EC.PublicKey.Format, PublicK> {
-        return EcPublicKeyDecoder(curve?.let { curveName(ECGenParameterSpec(it.jdkName)) })
+    final override fun publicKeyDecoder(curve: EC.Curve): KeyDecoder<EC.PublicKey.Format, PublicK> {
+        return EcPublicKeyDecoder(curveName(ECGenParameterSpec(curve.jdkName)))
     }
 
-    final override fun privateKeyDecoder(curve: EC.Curve?): KeyDecoder<EC.PrivateKey.Format, PrivateK> {
-        return EcPrivateKeyDecoder(curve?.let { curveName(ECGenParameterSpec(it.jdkName)) })
+    final override fun privateKeyDecoder(curve: EC.Curve): KeyDecoder<EC.PrivateKey.Format, PrivateK> {
+        return EcPrivateKeyDecoder(curveName(ECGenParameterSpec(curve.jdkName)))
     }
 
     final override fun keyPairGenerator(curve: EC.Curve): KeyGenerator<KP> {
@@ -52,28 +52,26 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP
     }
 
     private inner class EcPublicKeyDecoder(
-        private val curveName: String?,
+        private val curveName: String,
     ) : JdkPublicKeyDecoder<EC.PublicKey.Format, PublicK>(state, "EC") {
         override fun JPublicKey.convert(): PublicK {
             check(this is ECPublicKey)
-            curveName?.let {
-                val keyCurve = curveName(params)
-                check(it == keyCurve) { "Key curve $keyCurve is not equal to expected curve $curveName" }
-            }
+
+            val keyCurve = curveName(params)
+            check(curveName == keyCurve) { "Key curve $keyCurve is not equal to expected curve $curveName" }
 
             return with(this@JdkEc) { convert() }
         }
     }
 
     private inner class EcPrivateKeyDecoder(
-        private val curveName: String?,
+        private val curveName: String,
     ) : JdkPrivateKeyDecoder<EC.PrivateKey.Format, PrivateK>(state, "EC") {
         override fun JPrivateKey.convert(): PrivateK {
             check(this is ECPrivateKey)
-            curveName?.let {
-                val keyCurve = curveName(params)
-                check(it == keyCurve) { "Key curve $keyCurve is not equal to expected curve $curveName" }
-            }
+
+            val keyCurve = curveName(params)
+            check(curveName == keyCurve) { "Key curve $keyCurve is not equal to expected curve $curveName" }
 
             return with(this@JdkEc) { convert() }
         }

@@ -12,14 +12,14 @@ import dev.whyoleg.kcwrapper.libcrypto3.cinterop.*
 import kotlinx.cinterop.*
 
 internal object Openssl3Ecdsa : ECDSA {
-    override fun publicKeyDecoder(curve: EC.Curve?): KeyDecoder<EC.PublicKey.Format, ECDSA.PublicKey> = EcPublicKeyDecoder(curve)
+    override fun publicKeyDecoder(curve: EC.Curve): KeyDecoder<EC.PublicKey.Format, ECDSA.PublicKey> = EcPublicKeyDecoder(curve)
 
-    override fun privateKeyDecoder(curve: EC.Curve?): KeyDecoder<EC.PrivateKey.Format, ECDSA.PrivateKey> = EcPrivateKeyDecoder(curve)
+    override fun privateKeyDecoder(curve: EC.Curve): KeyDecoder<EC.PrivateKey.Format, ECDSA.PrivateKey> = EcPrivateKeyDecoder(curve)
 
     override fun keyPairGenerator(curve: EC.Curve): KeyGenerator<ECDSA.KeyPair> = EcKeyGenerator(curve)
 
     private class EcPrivateKeyDecoder(
-        private val curve: EC.Curve?,
+        private val curve: EC.Curve,
     ) : Openssl3PrivateKeyDecoder<EC.PrivateKey.Format, ECDSA.PrivateKey>("EC") {
         override fun inputType(format: EC.PrivateKey.Format): String = when (format) {
             EC.PrivateKey.Format.DER -> "DER"
@@ -27,12 +27,14 @@ internal object Openssl3Ecdsa : ECDSA {
             EC.PrivateKey.Format.JWK -> error("JWK format is not supported")
         }
 
-        //TODO: validate curve!!!
-        override fun wrapKey(key: CPointer<EVP_PKEY>): ECDSA.PrivateKey = EcPrivateKey(key)
+        override fun wrapKey(key: CPointer<EVP_PKEY>): ECDSA.PrivateKey {
+            EC_check_key_group(key, curve)
+            return EcPrivateKey(key)
+        }
     }
 
     private class EcPublicKeyDecoder(
-        private val curve: EC.Curve?,
+        private val curve: EC.Curve,
     ) : Openssl3PublicKeyDecoder<EC.PublicKey.Format, ECDSA.PublicKey>("EC") {
         override fun inputType(format: EC.PublicKey.Format): String = when (format) {
             EC.PublicKey.Format.RAW -> TODO("will be be supported later")
@@ -41,8 +43,10 @@ internal object Openssl3Ecdsa : ECDSA {
             EC.PublicKey.Format.JWK -> error("JWK format is not supported")
         }
 
-        //TODO: validate curve!!!
-        override fun wrapKey(key: CPointer<EVP_PKEY>): ECDSA.PublicKey = EcPublicKey(key)
+        override fun wrapKey(key: CPointer<EVP_PKEY>): ECDSA.PublicKey {
+            EC_check_key_group(key, curve)
+            return EcPublicKey(key)
+        }
     }
 
     private class EcKeyGenerator(
@@ -103,6 +107,31 @@ internal object Openssl3Ecdsa : ECDSA {
                 ECDSA.SignatureFormat.RAW -> EcdsaRawSignatureVerifier(EC_order_size(key), derSignatureVerifier)
             }
         }
+    }
+}
+
+private fun EC_check_key_group(key: CPointer<EVP_PKEY>, expectedCurve: EC.Curve) = memScoped {
+    val expectedGroup = checkError(
+        EC_GROUP_new_from_params(
+            OSSL_PARAM_array(
+                OSSL_PARAM_construct_utf8_string("group".cstr.ptr, expectedCurve.name.cstr.ptr, 0)
+            ), null, null
+        )
+    )
+    try {
+        val expectedGroupName = checkError(EC_GROUP_get_curve_name(expectedGroup))
+
+        val ecKey = checkError(EVP_PKEY_get0_EC_KEY(key))
+        val keyGroup = checkError(EC_KEY_get0_group(ecKey))
+        val keyGroupName = checkError(EC_GROUP_get_curve_name(keyGroup))
+
+        fun curveName(nid: Int): String = OSSL_EC_curve_nid2name(nid)?.toKString() ?: "nid=$nid"
+
+        check(expectedGroupName == keyGroupName) {
+            "Wrong curve, expected ${expectedCurve.name}(${curveName(expectedGroupName)}) actual ${curveName(keyGroupName)}"
+        }
+    } finally {
+        EC_GROUP_free(expectedGroup)
     }
 }
 
