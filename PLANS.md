@@ -8,7 +8,6 @@
     * [ ] fix PEM implementation
     * [ ] OpenSSL3 engine
         * [ ] EC RAW KEY SUPPORT
-        * [ ] redesign ref counting
         * [ ] Somehow check, that there is no memory leaks regarding openssl references
 * [ ] Tests
     * [ ] investigate compatibility test failure on JS browser - Key R(* -> *) is missing in the map

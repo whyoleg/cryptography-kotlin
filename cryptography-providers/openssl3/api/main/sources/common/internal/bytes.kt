@@ -11,23 +11,13 @@ internal fun ByteArray.safeRefTo(index: Int): CValuesRef<ByteVar> {
 }
 
 //unsafe casts instead of asUByteArray().refTo() because of boxing when pinning
-internal fun ByteArray.safeRefToU(index: Int): CValuesRef<UByteVar> {
-    return safeRefTo(index) as CValuesRef<UByteVar>
-}
+@Suppress("UNCHECKED_CAST")
+internal fun ByteArray.safeRefToU(index: Int): CValuesRef<UByteVar> = safeRefTo(index) as CValuesRef<UByteVar>
 
+@Suppress("UNCHECKED_CAST")
 internal fun ByteArray.refToU(index: Int): CValuesRef<UByteVar> = refTo(index) as CValuesRef<UByteVar>
 
 internal fun ByteArray.ensureSizeExactly(expectedSize: Int): ByteArray = when (size) {
     expectedSize -> this
     else         -> copyOf(expectedSize)
-}
-
-internal inline fun <reified T : CVariable, R> NativeFreeablePlacement.safeAlloc(block: (value: T) -> R): R {
-    val value = alloc<T>()
-    try {
-        return block(value)
-    } catch (cause: Throwable) {
-        free(value)
-        throw cause
-    }
 }

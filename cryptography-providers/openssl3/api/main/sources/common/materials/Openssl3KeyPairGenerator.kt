@@ -16,11 +16,11 @@ internal abstract class Openssl3KeyPairGenerator<K : Key>(
         try {
             checkError(EVP_PKEY_keygen_init(context))
             checkError(EVP_PKEY_CTX_set_params(context, createParams()))
-            nativeHeap.safeAlloc<CPointerVar<EVP_PKEY>, _> { keys ->
-                checkError(EVP_PKEY_generate(context, keys.ptr))
-                val keyPair = checkNotNull(keys.value) { "Failed to generate key pair" }
-                wrapKeyPair(keyPair.upRef())
-            }
+            val pkeyVar = alloc<CPointerVar<EVP_PKEY>>()
+            checkError(EVP_PKEY_generate(context, pkeyVar.ptr))
+            val pkey = checkNotNull(pkeyVar.value) { "Failed to generate key pair" }
+            //we do upRef here, because key pair contains 2 separate instances: public and private key
+            wrapKeyPair(pkey.upRef())
         } finally {
             EVP_PKEY_CTX_free(context)
         }

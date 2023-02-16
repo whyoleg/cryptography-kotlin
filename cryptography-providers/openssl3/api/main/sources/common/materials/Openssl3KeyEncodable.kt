@@ -40,14 +40,10 @@ internal abstract class Openssl3KeyEncodable<KF : KeyFormat>(
             )
         )
         try {
-            //println("PRI_ENCODE: $format")
             val pdataLenVar = alloc<size_tVar>()
             val pdataVar = alloc<CPointerVar<UByteVar>>()
             checkError(OSSL_ENCODER_to_data(context, pdataVar.ptr, pdataLenVar.ptr))
-            //println("PRI_ENCODE SIZE[1]: ${pdataLenVar.value}")
-            pdataVar.value!!.readBytes(pdataLenVar.value.convert()).also {
-                //println("PRI_ENCODE SIZE[2]: ${it.size}")
-            }
+            pdataVar.value!!.readBytes(pdataLenVar.value.convert())
         } finally {
             OSSL_ENCODER_CTX_free(context)
         }

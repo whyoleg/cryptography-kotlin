@@ -1,8 +1,6 @@
 package dev.whyoleg.cryptography.openssl3.materials
 
-import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.materials.key.*
-import dev.whyoleg.cryptography.openssl3.algorithms.*
 import dev.whyoleg.cryptography.openssl3.internal.*
 import dev.whyoleg.kcwrapper.libcrypto3.cinterop.*
 import kotlinx.cinterop.*
@@ -32,29 +30,26 @@ internal abstract class Openssl3KeyDecoder<KF : KeyFormat, K : Key>(
     protected abstract fun inputStruct(format: KF): String
 
     override fun decodeFromBlocking(format: KF, input: ByteArray): K = memScoped {
-        nativeHeap.safeAlloc<CPointerVar<EVP_PKEY>, _> { pkey ->
-            val context = checkError(
-                OSSL_DECODER_CTX_new_for_pkey(
-                    pkey = pkey.ptr,
-                    input_type = inputType(format).cstr.ptr,
-                    input_struct = inputStruct(format).cstr.ptr,
-                    keytype = algorithm.cstr.ptr,
-                    selection = selection(format),
-                    libctx = null,
-                    propquery = null
-                )
+        val pkeyVar = alloc<CPointerVar<EVP_PKEY>>()
+        val context = checkError(
+            OSSL_DECODER_CTX_new_for_pkey(
+                pkey = pkeyVar.ptr,
+                input_type = inputType(format).cstr.ptr,
+                input_struct = inputStruct(format).cstr.ptr,
+                keytype = algorithm.cstr.ptr,
+                selection = selection(format),
+                libctx = null,
+                propquery = null
             )
-            //println("PRI_DECODE: $format")
-            //println("PRI_DECODE_SIZE[1]: ${input.size}")
-            try {
-                val pdataLenVar = alloc(input.size.convert<size_t>())
-                val pdataVar = alloc<CPointerVar<UByteVar>> { value = allocArrayOf(input).reinterpret() }
-                checkError(OSSL_DECODER_from_data(context, pdataVar.ptr, pdataLenVar.ptr))
-                //println("PRI_DECODE_SIZE[2]: ${pdataLenVar.value}")
-                wrapKey(checkNotNull(pkey.value))
-            } finally {
-                OSSL_DECODER_CTX_free(context)
-            }
+        )
+        try {
+            val pdataLenVar = alloc(input.size.convert<size_t>())
+            val pdataVar = alloc<CPointerVar<UByteVar>> { value = allocArrayOf(input).reinterpret() }
+            checkError(OSSL_DECODER_from_data(context, pdataVar.ptr, pdataLenVar.ptr))
+            val pkey = checkNotNull(pkeyVar.value) { "Failed to decode key" }
+            wrapKey(pkey)
+        } finally {
+            OSSL_DECODER_CTX_free(context)
         }
     }
 }
