@@ -50,8 +50,8 @@ public abstract interface annotation class dev/whyoleg/cryptography/algorithms/I
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/EC : dev/whyoleg/cryptography/algorithms/CryptographyAlgorithm {
 	public abstract fun keyPairGenerator-EsXthJ8 (Ljava/lang/String;)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
-	public abstract fun privateKeyDecoder-nu8BrC8 (Ljava/lang/String;)Ldev/whyoleg/cryptography/materials/key/KeyDecoder;
-	public abstract fun publicKeyDecoder-nu8BrC8 (Ljava/lang/String;)Ldev/whyoleg/cryptography/materials/key/KeyDecoder;
+	public abstract fun privateKeyDecoder-EsXthJ8 (Ljava/lang/String;)Ldev/whyoleg/cryptography/materials/key/KeyDecoder;
+	public abstract fun publicKeyDecoder-EsXthJ8 (Ljava/lang/String;)Ldev/whyoleg/cryptography/materials/key/KeyDecoder;
 }
 
 public final class dev/whyoleg/cryptography/algorithms/asymmetric/EC$Curve {
@@ -338,6 +338,10 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AE
 public final class dev/whyoleg/cryptography/algorithms/symmetric/AES$CBC$Key$DefaultImpls {
 	public static synthetic fun cipher$default (Ldev/whyoleg/cryptography/algorithms/symmetric/AES$CBC$Key;ZILjava/lang/Object;)Ldev/whyoleg/cryptography/operations/cipher/Cipher;
 	public static fun encodeTo (Ldev/whyoleg/cryptography/algorithms/symmetric/AES$CBC$Key;Ldev/whyoleg/cryptography/algorithms/symmetric/AES$Key$Format;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/symmetric/AES$DefaultImpls {
+	public static synthetic fun keyGenerator-__FLmac$default (Ldev/whyoleg/cryptography/algorithms/symmetric/AES;IILjava/lang/Object;)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES$GCM : dev/whyoleg/cryptography/algorithms/symmetric/AES {
