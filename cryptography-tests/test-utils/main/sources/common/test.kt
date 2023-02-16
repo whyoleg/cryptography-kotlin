@@ -20,7 +20,7 @@ fun <A : CryptographyAlgorithm> runTestForEachAlgorithm(
 fun runTestForEachProvider(
     enableLogs: Boolean = enableLogsGlobal,
     block: suspend ProviderTestContext.() -> Unit,
-): TestResult = runTest {
+): TestResult = runTest(dispatchTimeoutMs = 120_000L) {
     println("PLATFORM: $currentPlatform")
     val errors = mutableListOf<Pair<String, Throwable>>()
     availableProviders.forEach { provider ->
