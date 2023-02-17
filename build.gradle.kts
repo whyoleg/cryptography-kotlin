@@ -43,13 +43,6 @@ val skipLink = buildParameters.skip.link
 val kotlinVersionOverriden = buildParameters.kotlin.override.version.isPresent
 
 subprojects {
-    tasks.whenTaskAdded {
-        if (name.endsWith("test", ignoreCase = true)) onlyIf { !skipTest }
-        if (name.startsWith("link", ignoreCase = true)) onlyIf { !skipLink }
-    }
-    plugins.withType<BinaryCompatibilityValidatorPlugin> {
-        extensions.configure<ApiValidationExtension>("apiValidation") {
-            validationDisabled = kotlinVersionOverriden
-        }
-    }
+    if (skipTest) tasks.matching { it.name.endsWith("test", ignoreCase = true) }.configureEach { onlyIf { false } }
+    if (skipLink) tasks.matching { it.name.startsWith("link", ignoreCase = true) }.configureEach { onlyIf { false } }
 }
