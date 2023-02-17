@@ -12,7 +12,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "kotlin-version-catalog"
+rootProject.name = "build-kotlin"
 
 includeBuild("../build-parameters") {
     dependencySubstitution {

@@ -3,11 +3,7 @@ pluginManagement {
         gradlePluginPortal()
         mavenCentral()
     }
-    includeBuild("../kotlin-version-catalog")
-}
-
-plugins {
-    id("kotlin-version-catalog")
+    includeBuild("../build-kotlin")
 }
 
 dependencyResolutionManagement {
@@ -17,6 +13,8 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "plugins"
+plugins {
+    id("kotlin-version-catalog")
+}
 
-include("buildx")
+rootProject.name = "build-logic"
