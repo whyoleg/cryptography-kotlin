@@ -15,7 +15,6 @@ signing {
     sign(publishing.publications)
 }
 
-//TODO: replace with dokka output?
 val javadocJar by tasks.registering(Jar::class) { archiveClassifier.set("javadoc") }
 
 publishing {

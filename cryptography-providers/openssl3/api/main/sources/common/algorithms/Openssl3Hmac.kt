@@ -13,7 +13,6 @@ import kotlinx.cinterop.*
 internal object Openssl3Hmac : HMAC {
     override fun keyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<HMAC.Key.Format, HMAC.Key> {
         val hashAlgorithm = hashAlgorithm(digest)
-        //TODO: don't do it here - pool/cache
         val md = EVP_MD_fetch(null, hashAlgorithm, null)
         val keySizeBytes = EVP_MD_get_block_size(md)
         EVP_MD_free(md)
@@ -22,7 +21,6 @@ internal object Openssl3Hmac : HMAC {
 
     override fun keyGenerator(digest: CryptographyAlgorithmId<Digest>): KeyGenerator<HMAC.Key> {
         val hashAlgorithm = hashAlgorithm(digest)
-        //TODO: don't do it here - pool/cache
         val md = EVP_MD_fetch(null, hashAlgorithm, null)
         val keySizeBytes = EVP_MD_get_block_size(md)
         EVP_MD_free(md)
@@ -73,7 +71,6 @@ private class HmacSignature(
 ) : SignatureGenerator, SignatureVerifier {
 
     override fun generateSignatureBlocking(dataInput: ByteArray): ByteArray = memScoped {
-        //TODO: pool it? use EVP_MAC_up_ref?
         val mac = checkError(EVP_MAC_fetch(null, "HMAC", null))
         val context = checkError(EVP_MAC_CTX_new(mac))
         try {
@@ -89,7 +86,6 @@ private class HmacSignature(
             )
             checkError(EVP_MAC_update(context, dataInput.safeRefToU(0), dataInput.size.convert()))
             val signature = ByteArray(checkError(EVP_MAC_CTX_get_mac_size(context)).convert())
-            //TODO: check is `outl` needed?
             checkError(EVP_MAC_final(context, signature.refToU(0), null, signature.size.convert()))
             signature
         } finally {

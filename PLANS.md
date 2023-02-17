@@ -2,19 +2,18 @@
 
 ## 0.1.0: Initial release
 
-* [ ] DROP ALL TODO
-* [ ] DROP ALL println
 * [ ] Tests
-    * [ ] investigate compatibility test failure on JS browser - Key R(* -> *) is missing in the map
-      completing
+    * [ ] investigate compatibility test failure on JS browser - Key R(* -> *) is missing in the map completing
     * [ ] investigate JVM compatibility tests on CI
-    * [ ] write behaviour tests for failures
     * [ ] write MORE behaviour tests
+        * [ ] add test for decrypto ciphertext equal to iv size
+        * [ ] write behaviour tests for failures
     * [ ] Setup cross-platform compatibility tests on CI
 * [ ] Build
     * [ ] Samples (for each different kind of operation)
     * [ ] License header
     * [ ] Maven Central
+    * [ ] Documentation publish - replace empty javadoc with dokka output
 * [ ] README
     * [ ] some intro on what this library is and testing
 
@@ -129,6 +128,7 @@
 * [ ] Merge BOM and Version catalog (https://melix.github.io/blog/2022/02/micronaut-version-catalog.html)
 * [ ] RSA-PSS salt size values: digest size, max size, plain value
 * [ ] Somehow check, that there is no memory leaks (especially in openssl provider)
+* [ ] Add pooling in openssl provider
 
 ## 1.0.0: Stable release
 

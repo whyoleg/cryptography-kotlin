@@ -57,8 +57,8 @@ internal abstract class Openssl3Rsa<PublicK : RSA.PublicKey, PrivateK : RSA.Priv
         publicExponent = when (publicExponent) {
             RSA.PublicExponent.F4        -> 65537U
             is RSA.PublicExponent.Number -> publicExponent.value.toUInt()
-            is RSA.PublicExponent.Bytes  -> TODO()
-            is RSA.PublicExponent.Text   -> TODO()
+            is RSA.PublicExponent.Text   -> publicExponent.value.toUInt()
+            is RSA.PublicExponent.Bytes  -> throw IllegalArgumentException("OpenSSL3 provider doesn't support PublicExponent.Bytes for now")
         }
     )
 

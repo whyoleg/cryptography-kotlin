@@ -7,7 +7,6 @@ import kotlin.test.*
 private const val blockSize = 16
 private const val ivSize = 16
 
-//TODO: add test for decrypto ciphertext equal to iv size
 class AesCbcTest {
     @Test
     fun testSizes() = runTestForEachAlgorithm(AES.CBC) {
