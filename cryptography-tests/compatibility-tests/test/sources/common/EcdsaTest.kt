@@ -91,8 +91,9 @@ class EcdsaTest : CompatibilityTest<ECDSA>(ECDSA) {
                         supports = ::supportsKeyFormat
                     ) { key, format, bytes ->
                         when (format) {
-                            EC.PublicKey.Format.RAW, EC.PublicKey.Format.DER, EC.PublicKey.Format.PEM ->
+                            EC.PublicKey.Format.RAW, EC.PublicKey.Format.DER, EC.PublicKey.Format.PEM -> {
                                 assertContentEquals(bytes, key.encodeTo(format), "Public Key $format encoding")
+                            }
                             EC.PublicKey.Format.JWK                                                   -> {}
                         }
                     }
@@ -103,7 +104,7 @@ class EcdsaTest : CompatibilityTest<ECDSA>(ECDSA) {
                     ) { key, format, bytes ->
                         when (format) {
                             EC.PrivateKey.Format.DER, EC.PrivateKey.Format.PEM -> {
-                                if (supportsPrivateKeyDerFormat()) {
+                                if (supportsPrivateKeyDerComparison()) {
                                     assertContentEquals(bytes, key.encodeTo(format), "Private Key $format encoding")
                                 }
                             }

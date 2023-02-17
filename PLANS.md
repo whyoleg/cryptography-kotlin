@@ -4,13 +4,9 @@
 
 * [ ] DROP ALL TODO
 * [ ] DROP ALL println
-* [ ] Engines
-    * [ ] fix PEM implementation
 * [ ] Tests
     * [ ] investigate compatibility test failure on JS browser - Key R(* -> *) is missing in the map
-    * [ ] investigate behavior test failure on JS node - UncompletedCoroutinesError: After waiting for 60000 ms, the test coroutine is not
       completing
-    * [ ] rewrite support ifs to be more understandable
     * [ ] investigate JVM compatibility tests on CI
     * [ ] write behaviour tests for failures
     * [ ] write MORE behaviour tests

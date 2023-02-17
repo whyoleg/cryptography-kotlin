@@ -26,13 +26,9 @@ internal class Openssl3Digest(
         val context = checkError(EVP_MD_CTX_new())
         try {
             val digest = ByteArray(digestSize)
-
-            //TODO: error handling
-            check(EVP_DigestInit(context, md) == 1)
-            check(EVP_DigestUpdate(context, dataInput.safeRefTo(0), dataInput.size.convert()) == 1)
-            //TODO: check is `s` needed?
-            check(EVP_DigestFinal(context, digest.refToU(0), null) == 1)
-
+            checkError(EVP_DigestInit(context, md))
+            checkError(EVP_DigestUpdate(context, dataInput.safeRefTo(0), dataInput.size.convert()))
+            checkError(EVP_DigestFinal(context, digest.refToU(0), null))
             return digest
         } finally {
             EVP_MD_CTX_free(context)

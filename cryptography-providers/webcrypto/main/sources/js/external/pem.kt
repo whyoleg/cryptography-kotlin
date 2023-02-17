@@ -1,14 +1,14 @@
-package dev.whyoleg.cryptography.jdk.materials
+package dev.whyoleg.cryptography.webcrypto.external
 
-import java.util.*
+import org.khronos.webgl.*
 
 private const val BEGIN_PREFIX = "-----BEGIN "
 private const val END_PREFIX = "-----END "
 private const val SUFFIX = "-----"
 
-internal fun ByteArray.encodeToPem(type: String): ByteArray = buildString {
+internal fun ArrayBuffer.encodeToPem(type: String): ByteArray = buildString {
     append(BEGIN_PREFIX).append(type).append(SUFFIX)
-    Base64.getEncoder().encodeToString(this@encodeToPem).chunked(64).joinTo(this, "\n", "\n", "\n")
+    encodeBase64(this@encodeToPem).chunked(64).joinTo(this, "\n", "\n", "\n")
     append(END_PREFIX).append(type).append(SUFFIX)
     append("\n")
 }.encodeToByteArray()
@@ -21,5 +21,5 @@ internal fun ByteArray.decodeFromPem(type: String): ByteArray {
 
     check(headerType == footerType) { "Invalid PEM format, BEGIN type: `$headerType`, END type: `$footerType`" }
     check(headerType == type) { "Wrong PEM type, expected $type, actual $headerType" }
-    return Base64.getDecoder().decode(lines.drop(1).dropLast(1).joinToString(""))
+    return decodeBase64(lines.drop(1).dropLast(1).joinToString(""))
 }

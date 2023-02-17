@@ -26,7 +26,10 @@ abstract class CompatibilityTest<A : CryptographyAlgorithm>(
     fun validateStep() = runCompatibilityTest("VALIDATE") { validate() }
 
     @Test
-    fun inMemoryTest() = runCompatibilityTest { generate(); validate() }
+    fun inMemoryTest() = runCompatibilityTest {
+        generate()
+        validate()
+    }
 
     private fun runCompatibilityTest(
         name: String? = null,

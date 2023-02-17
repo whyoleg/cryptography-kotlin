@@ -18,13 +18,7 @@ internal abstract class JdkPublicKeyDecoder<KF : KeyFormat, K : Key>(
 
     override fun decodeFromBlocking(format: KF, input: ByteArray): K = when (format.name) {
         "DER" -> decode(input)
-        "PEM" -> {
-            val (type, decoded) = input.decodeFromPem()
-            check(type == "PUBLIC KEY" || type == "$pemAlgorithm PUBLIC KEY") {
-                "Wrong PEM type, expected `PUBLIC KEY` or `$pemAlgorithm PUBLIC KEY` got `$type`"
-            }
-            decode(decoded)
-        }
+        "PEM" -> decode(input.decodeFromPem("PUBLIC KEY"))
         else  -> error("$format is not  supported")
     }.convert()
 }

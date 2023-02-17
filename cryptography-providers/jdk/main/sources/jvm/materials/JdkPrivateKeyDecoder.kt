@@ -18,13 +18,7 @@ internal abstract class JdkPrivateKeyDecoder<KF : KeyFormat, K : Key>(
 
     final override fun decodeFromBlocking(format: KF, input: ByteArray): K = when (format.name) {
         "DER" -> decode(input)
-        "PEM" -> {
-            val (type, decoded) = input.decodeFromPem()
-            check(type == "PRIVATE KEY" || type == "$pemAlgorithm PRIVATE KEY") {
-                "Wrong PEM type, expected `PRIVATE KEY` or `$pemAlgorithm PRIVATE KEY` got `$type`"
-            }
-            decode(decoded)
-        }
+        "PEM" -> decode(input.decodeFromPem("PRIVATE KEY"))
         else  -> error("$format is not supported")
     }.convert()
 }

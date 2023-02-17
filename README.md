@@ -16,7 +16,7 @@ CryptographyProvider.Default
 * providers:
     * `cryptography-jdk` -
       uses [JCA](https://docs.oracle.com/en/java/javase/17/security/java-cryptography-architecture-jca-reference-guide.html): javax.crypto.*
-      and java.security.* (TODO link)
+      and java.security.*
     * `cryptography-webcrypto` - uses [WebCrypto](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API)
     * `cryptography-apple` -
       uses [CommonCrypto](https://developer.apple.com/library/archive/documentation/Security/Conceptual/cryptoservices/Introduction/Introduction.html)

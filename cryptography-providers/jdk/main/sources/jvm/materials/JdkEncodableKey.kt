@@ -19,9 +19,9 @@ internal open class JdkEncodableKey<KF : KeyFormat>(
             key.encoded
         }
         "PEM" -> {
-            val type = pemAlgorithm + when (key.format) {
-                "PKCS#8" -> " PRIVATE KEY"
-                "X.509"  -> " PUBLIC KEY"
+            val type = when (key.format) {
+                "PKCS#8" -> "PRIVATE KEY"
+                "X.509"  -> "PUBLIC KEY"
                 else     -> error("Wrong JDK Key format, expected `PKCS#8` or `X.509 got `${key.format}`")
             }
             key.encoded.encodeToPem(type)
