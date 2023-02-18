@@ -1,8 +1,6 @@
 name: Build Kotlin Matrix
 on:
   workflow_dispatch: # manual run
-  schedule: # scheduled run every saturday
-    - cron: '* * * * SAT'
   push:
     branches:
       - main
