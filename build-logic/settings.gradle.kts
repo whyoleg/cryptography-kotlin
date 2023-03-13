@@ -11,6 +11,12 @@ dependencyResolutionManagement {
         gradlePluginPortal()
         mavenCentral()
     }
+
+    versionCatalogs {
+        val libs by creating {
+            from(files("libs.versions.toml"))
+        }
+    }
 }
 
 plugins {

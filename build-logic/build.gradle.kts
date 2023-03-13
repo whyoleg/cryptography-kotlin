@@ -4,5 +4,8 @@ plugins {
 
 dependencies {
     implementation(kotlinLibs.gradle.plugin)
-    implementation("de.undercouch:gradle-download-task:5.3.0")
+    implementation(libs.kotlinx.bcv)
+    implementation(libs.kotlinx.kover)
+    implementation(libs.kotlin.dokka)
+    implementation(libs.gradle.download)
 }

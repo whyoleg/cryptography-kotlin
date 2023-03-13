@@ -5,8 +5,6 @@ plugins {
     id("buildx-multiplatform-provider")
     id("buildx-target-native-all")
     id("buildx-use-openssl")
-
-    id("org.jetbrains.dokka")
 }
 
 description = "cryptography-kotlin OpenSSL3 provider (API)"

@@ -7,7 +7,6 @@ plugins {
     id("buildx-target-all")
 
     id("org.jetbrains.kotlin.plugin.serialization")
-    id("org.jetbrains.kotlinx.kover")
 }
 
 kotlin {

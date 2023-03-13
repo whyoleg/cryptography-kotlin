@@ -14,6 +14,8 @@
     * [ ] License header
     * [ ] Maven Central
     * [ ] Documentation publish - replace empty javadoc with dokka output
+    * [ ] setup kover merged report + publish it on CI?
+    * [ ] Setup Renovate
 * [ ] README
     * [ ] some intro on what this library is and testing
 
