@@ -10,10 +10,13 @@
         * [ ] write behaviour tests for failures
     * [ ] Setup cross-platform compatibility tests on CI
 * [ ] Build
+    * [ ] drop dependency on kcwrapper and inline it here
+    * [ ] update to latest openssl
     * [ ] Samples (for each different kind of operation)
     * [ ] License header
     * [ ] Maven Central
     * [ ] Documentation publish - replace empty javadoc with dokka output
+    * [ ] Merge BOM and Version catalog (https://melix.github.io/blog/2022/02/micronaut-version-catalog.html)
 * [ ] README
     * [ ] some intro on what this library is and testing
 
@@ -54,7 +57,7 @@
 
 * [ ] WebCrypto WASM support
 * [ ] use kotlin.Closeable
-* [ ] migrate test-tool-client/server to composite build
+* [ ] migrate test-client to composite build
 * [ ] use base64 from stdlib
 
 ## 0.3.0: Certificates and Key management
@@ -109,7 +112,6 @@
 * [ ] Try to implement some TLS cipher suites (TLS 1.2/1.3) in sample or as a separate module
 * [ ] Integrate with https://github.com/google/wycheproof to test against test vectors (more tests
   here https://github.com/pyca/cryptography/blob/main/docs/development/test-vectors.rst)
-* [ ] investigate linux getrandom call
 * [ ] Extract popular digests into separate module with only non-suspend impl? (?)
 * [ ] Add assertion in compatibility tests on amount of tested combinations
 * [ ] cache ciphers/signature* like keys in tests
@@ -120,12 +122,10 @@
     * [ ] https://github.com/Password4j/password4j
     * [ ] https://github.com/keycloak/keycloak
 * [ ] use knit when it will work with current kotlin version
-* [ ] add snapshots publishing
 * [ ] Qodana/CodeQL integration
 * [ ] Investigate WASI-crypto support
 * [ ] FIPS (?)
 * [ ] JPMS support
-* [ ] Merge BOM and Version catalog (https://melix.github.io/blog/2022/02/micronaut-version-catalog.html)
 * [ ] RSA-PSS salt size values: digest size, max size, plain value
 * [ ] Somehow check, that there is no memory leaks (especially in openssl provider)
 * [ ] Add pooling in openssl provider

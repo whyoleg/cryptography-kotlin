@@ -24,16 +24,16 @@ kotlin {
             val index = indexOfLast { it.isUpperCase() }
             take(index) to drop(index).toLowerCase() //.lowercase() //need Gradle 8
         }
-        kotlin.setSrcDirs(listOf("$compilationName/sources/$targetName"))
-        resources.setSrcDirs(listOf("$compilationName/resources/$targetName"))
+
+        val isTest = compilationName == "test"
 
         languageSettings {
             progressiveMode = true
-            if (compilationName == "test") optInForTests()
+            if (isTest) optInForTests()
         }
 
-        //for some reason adding it to commonTest doesn't work
-        if (compilationName == "test") when (targetName) {
+        //for some reason adding it to commonTest only doesn't work
+        if (isTest) when (targetName) {
             "common" -> "test"
             "jvm"    -> "test-junit"
             "js"     -> "test-js"

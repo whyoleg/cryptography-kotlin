@@ -13,7 +13,7 @@ kotlin {
     linuxX64 {
         val main by compilations.getting {
             val random by cinterops.creating {
-                defFile("linux.def")
+                defFile("src/linuxMain/cinterop/random.def")
             }
         }
     }
