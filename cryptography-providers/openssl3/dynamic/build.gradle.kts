@@ -3,14 +3,13 @@ import org.jetbrains.kotlin.konan.target.*
 
 plugins {
     id("buildx-multiplatform-library")
+    id("buildx-target-native-desktop")
     id("buildx-use-openssl")
 }
 
 description = "cryptography-kotlin OpenSSL3 provider (dynamic linking)"
 
 kotlin {
-    desktopTargets()
-
     targets.all {
         if (this !is KotlinNativeTarget) return@all
 

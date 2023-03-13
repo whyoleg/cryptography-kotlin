@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.*
 
 plugins {
     id("buildx-multiplatform-library")
+    id("buildx-target-native-all")
     id("buildx-use-openssl")
 }
 
@@ -14,9 +15,6 @@ tasks.withType<CInteropProcess>().configureEach {
 }
 
 kotlin {
-    appleTargets()
-    desktopTargets()
-
     targets.all {
         if (this !is KotlinNativeTarget) return@all
 

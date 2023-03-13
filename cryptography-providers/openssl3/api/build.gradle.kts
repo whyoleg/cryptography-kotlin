@@ -3,8 +3,10 @@ import org.jetbrains.kotlin.gradle.tasks.*
 
 plugins {
     id("buildx-multiplatform-provider")
-    id("org.jetbrains.dokka")
+    id("buildx-target-native-all")
     id("buildx-use-openssl")
+
+    id("org.jetbrains.dokka")
 }
 
 description = "cryptography-kotlin OpenSSL3 provider (API)"
@@ -15,9 +17,6 @@ tasks.withType<CInteropProcess>().configureEach {
 }
 
 kotlin {
-    appleTargets()
-    desktopTargets()
-
     targets.all {
         if (this !is KotlinNativeTarget) return@all
 

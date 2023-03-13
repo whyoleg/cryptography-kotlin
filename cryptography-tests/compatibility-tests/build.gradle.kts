@@ -4,12 +4,13 @@ import org.jetbrains.kotlin.gradle.plugin.*
 plugins {
     id("build-parameters")
     id("buildx-multiplatform")
+    id("buildx-target-all")
+
     id("org.jetbrains.kotlin.plugin.serialization")
     id("org.jetbrains.kotlinx.kover")
 }
 
 kotlin {
-    allTargets()
     sourceSets {
         commonTest {
             dependencies {

@@ -1,31 +1,31 @@
 plugins {
     id("buildx-multiplatform")
+    id("buildx-target-all")
 }
 
 kotlin {
-    allTargets()
     sourceSets {
         commonMain {
             dependencies {
                 implementation(libs.ktor.client.core)
             }
         }
-        val jvmMain by getting {
+        jvmMain {
             dependencies {
                 implementation(libs.ktor.client.okhttp)
             }
         }
-        val linuxMain by getting {
+        linuxMain {
             dependencies {
                 implementation(libs.ktor.client.cio)
             }
         }
-        val darwinMain by getting {
+        darwinMain {
             dependencies {
                 implementation(libs.ktor.client.cio)
             }
         }
-        val mingwMain by getting {
+        mingwMain {
             dependencies {
                 implementation(libs.ktor.client.winhttp)
             }

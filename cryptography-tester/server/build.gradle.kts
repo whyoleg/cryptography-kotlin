@@ -1,12 +1,11 @@
 plugins {
     id("buildx-multiplatform")
+    id("buildx-target-jvm")
 }
 
 kotlin {
-    jvm()
-
     sourceSets {
-        val jvmMain by getting {
+        jvmMain {
             dependencies {
                 implementation(libs.ktor.server.core)
                 implementation(libs.ktor.server.netty)

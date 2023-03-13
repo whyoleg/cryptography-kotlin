@@ -1,9 +1,9 @@
 plugins {
     id("buildx-multiplatform")
+    id("buildx-target-all")
 }
 
 kotlin {
-    allTargets()
     sourceSets {
         all {
             languageSettings.optInForTests()
@@ -14,31 +14,31 @@ kotlin {
                 api(projects.cryptographyCore)
             }
         }
-        val jsMain by getting {
+        jsMain {
             dependencies {
                 implementation(projects.cryptographyProviders.cryptographyWebcrypto)
             }
         }
-        val jvmMain by getting {
+        jvmMain {
             dependencies {
                 implementation(projects.cryptographyProviders.cryptographyJdk)
             }
         }
 
-        val darwinMain by getting {
+        darwinMain {
             dependencies {
                 implementation(projects.cryptographyProviders.cryptographyApple)
                 implementation(projects.cryptographyProviders.cryptographyOpenssl3.cryptographyOpenssl3Static)
             }
         }
 
-        val linuxMain by getting {
+        linuxMain {
             dependencies {
                 implementation(projects.cryptographyProviders.cryptographyOpenssl3.cryptographyOpenssl3Static)
             }
         }
 
-        val mingwMain by getting {
+        mingwMain {
             dependencies {
                 implementation(projects.cryptographyProviders.cryptographyOpenssl3.cryptographyOpenssl3Static)
             }

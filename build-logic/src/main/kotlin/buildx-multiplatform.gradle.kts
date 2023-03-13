@@ -1,6 +1,3 @@
-import org.jetbrains.kotlin.gradle.plugin.mpp.*
-import org.jetbrains.kotlin.gradle.targets.jvm.*
-
 plugins {
     kotlin("multiplatform")
 }
@@ -9,9 +6,6 @@ kotlin {
     jvmToolchain(8)
 
     targets.all {
-        if (this is KotlinNativeTargetWithTests<*>) setupTests()
-        if (this is KotlinJvmTarget) setupTests()
-
         compilations.all {
             compilerOptions.configure {
                 freeCompilerArgs.add("-Xrender-internal-diagnostic-names")
