@@ -33,5 +33,10 @@ kotlin {
                 api(projects.cryptographyProviders.cryptographyOpenssl3.cryptographyOpenssl3Api)
             }
         }
+        commonTest {
+            dependencies {
+                api(projects.cryptographyProviders.cryptographyOpenssl3.cryptographyOpenssl3Test)
+            }
+        }
     }
 }
