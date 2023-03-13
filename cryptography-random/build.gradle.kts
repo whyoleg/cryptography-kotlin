@@ -11,10 +11,6 @@ kotlin {
     allTargets()
 
     linuxX64 {
-        val main by compilations.getting {
-            val random by cinterops.creating {
-                defFile("src/linuxMain/cinterop/random.def")
-            }
-        }
+        cinterop("random", "linux")
     }
 }

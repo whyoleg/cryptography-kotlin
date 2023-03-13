@@ -2,7 +2,7 @@ package dev.whyoleg.cryptography.openssl3.materials
 
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.openssl3.internal.*
-import dev.whyoleg.kcwrapper.libcrypto3.cinterop.*
+import dev.whyoleg.cryptography.openssl3.internal.cinterop.*
 import kotlinx.cinterop.*
 import platform.posix.*
 

@@ -1,0 +1,25 @@
+package = dev.whyoleg.cryptography.openssl3.internal.cinterop
+headerFilter = openssl/*
+headers = openssl/evp.h \
+          openssl/err.h \
+          openssl/encoder.h \
+          openssl/decoder.h \
+          openssl/ec.h
+noStringConversion = OSSL_PARAM_construct_double \
+                     OSSL_PARAM_construct_int \
+                     OSSL_PARAM_construct_int32 \
+                     OSSL_PARAM_construct_int64 \
+                     OSSL_PARAM_construct_long \
+                     OSSL_PARAM_construct_size_t \
+                     OSSL_PARAM_construct_time_t \
+                     OSSL_PARAM_construct_uint \
+                     OSSL_PARAM_construct_uint32 \
+                     OSSL_PARAM_construct_uint64 \
+                     OSSL_PARAM_construct_ulong \
+                     OSSL_PARAM_construct_BN \
+                     OSSL_PARAM_construct_utf8_string \
+                     OSSL_PARAM_construct_utf8_ptr \
+                     OSSL_PARAM_construct_octet_string \
+                     OSSL_PARAM_construct_octet_ptr \
+                     OSSL_ENCODER_CTX_new_for_pkey \
+                     OSSL_DECODER_CTX_new_for_pkey

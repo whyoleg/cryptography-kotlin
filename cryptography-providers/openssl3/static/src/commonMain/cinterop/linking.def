@@ -1,0 +1,4 @@
+staticLibraries = libcrypto.a
+
+linkerOpts.mingw = -lws2_32 -lcrypt32 -lz
+linkerOpts.linux = -lz

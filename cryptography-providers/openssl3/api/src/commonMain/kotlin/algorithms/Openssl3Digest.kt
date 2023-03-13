@@ -5,7 +5,7 @@ import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.openssl3.*
 import dev.whyoleg.cryptography.openssl3.internal.*
 import dev.whyoleg.cryptography.operations.hash.*
-import dev.whyoleg.kcwrapper.libcrypto3.cinterop.*
+import dev.whyoleg.cryptography.openssl3.internal.cinterop.*
 import kotlinx.cinterop.*
 import kotlin.native.internal.*
 

@@ -17,23 +17,7 @@ plugins {
 
 dependencyResolutionManagement {
     repositories {
-        mavenLocal {
-            content {
-                includeGroup("dev.whyoleg.kcwrapper")
-            }
-        }
-        maven("https://s01.oss.sonatype.org/content/repositories/snapshots/") {
-            content {
-                includeGroup("dev.whyoleg.kcwrapper")
-            }
-        }
         mavenCentral()
-    }
-
-    versionCatalogs {
-        create("kcwrapperLibs") {
-            from("dev.whyoleg.kcwrapper:kcwrapper-version-catalog:0.1.0-SNAPSHOT")
-        }
     }
 }
 

@@ -8,7 +8,7 @@ import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.openssl3.algorithms.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.provider.*
-import dev.whyoleg.kcwrapper.libcrypto3.cinterop.*
+import dev.whyoleg.cryptography.openssl3.internal.cinterop.*
 import kotlinx.cinterop.*
 
 private val defaultProvider = lazy { Openssl3CryptographyProvider }

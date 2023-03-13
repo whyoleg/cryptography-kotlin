@@ -3,7 +3,7 @@ package dev.whyoleg.cryptography.openssl3.algorithms
 import dev.whyoleg.cryptography.algorithms.asymmetric.RSA
 import dev.whyoleg.cryptography.openssl3.internal.*
 import dev.whyoleg.cryptography.operations.cipher.*
-import dev.whyoleg.kcwrapper.libcrypto3.cinterop.*
+import dev.whyoleg.cryptography.openssl3.internal.cinterop.*
 import kotlinx.cinterop.*
 import platform.posix.*
 

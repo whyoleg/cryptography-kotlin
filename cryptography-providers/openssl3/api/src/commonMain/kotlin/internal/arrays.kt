@@ -1,6 +1,6 @@
 package dev.whyoleg.cryptography.openssl3.internal
 
-import dev.whyoleg.kcwrapper.libcrypto3.cinterop.*
+import dev.whyoleg.cryptography.openssl3.internal.cinterop.*
 import kotlinx.cinterop.*
 
 internal fun NativePlacement.OSSL_PARAM_array(vararg values: CValue<OSSL_PARAM>): CArrayPointer<OSSL_PARAM> {
