@@ -41,7 +41,7 @@ listOf("jdk", "apple", "webcrypto").forEach { name ->
     project(":cryptography-providers:cryptography-$name").projectDir = file("cryptography-providers/$name")
 }
 
-listOf("api", "dynamic", "static", "test").forEach { name ->
+listOf("api", "shared", "prebuilt", "test").forEach { name ->
     include("cryptography-providers:cryptography-openssl3:cryptography-openssl3-$name")
     project(":cryptography-providers:cryptography-openssl3:cryptography-openssl3-$name").projectDir =
         file("cryptography-providers/openssl3/$name")

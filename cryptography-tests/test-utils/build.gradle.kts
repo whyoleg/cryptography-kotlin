@@ -28,19 +28,19 @@ kotlin {
         darwinMain {
             dependencies {
                 implementation(projects.cryptographyProviders.cryptographyApple)
-                implementation(projects.cryptographyProviders.cryptographyOpenssl3.cryptographyOpenssl3Static)
+                implementation(projects.cryptographyProviders.cryptographyOpenssl3.cryptographyOpenssl3Prebuilt)
             }
         }
 
         linuxMain {
             dependencies {
-                implementation(projects.cryptographyProviders.cryptographyOpenssl3.cryptographyOpenssl3Static)
+                implementation(projects.cryptographyProviders.cryptographyOpenssl3.cryptographyOpenssl3Prebuilt)
             }
         }
 
         mingwMain {
             dependencies {
-                implementation(projects.cryptographyProviders.cryptographyOpenssl3.cryptographyOpenssl3Static)
+                implementation(projects.cryptographyProviders.cryptographyOpenssl3.cryptographyOpenssl3Prebuilt)
             }
         }
     }

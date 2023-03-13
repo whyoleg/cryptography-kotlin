@@ -10,8 +10,6 @@
         * [ ] write behaviour tests for failures
     * [ ] Setup cross-platform compatibility tests on CI
 * [ ] Build
-    * [ ] drop dependency on kcwrapper and inline it here
-    * [ ] update to latest openssl
     * [ ] Samples (for each different kind of operation)
     * [ ] License header
     * [ ] Maven Central

@@ -21,8 +21,8 @@ CryptographyProvider.Default
     * `cryptography-apple` -
       uses [CommonCrypto](https://developer.apple.com/library/archive/documentation/Security/Conceptual/cryptoservices/Introduction/Introduction.html)
     * `cryptography-openssl3` - uses [OpenSSL 3.x](https://www.openssl.org)
-        * `cryptography-openssl3-dynamic` - dynamically linked
-        * `cryptography-openssl3-static` - statically linked to prebuilt OpenSSL 3.0.7
+        * `cryptography-openssl3-prebuilt` - statically linked to prebuilt OpenSSL 3.0.8
+        * `cryptography-openssl3-shared` - dynamically linked (experimental)
 * `cryptography-bom`
 
 ## Usage
@@ -60,15 +60,14 @@ dependencies {
 
 > Provider artifacts are `cryptography-NAME` (e.g. `cryptography-openssl3`)
 
-| target                                    | jdk | webcrypto | apple | openssl3      |
-|-------------------------------------------|-----|-----------|-------|---------------|
-| jvm                                       | ✅   | ➖         | ➖     | ❌             |
-| js                                        | ➖   | ✅         | ➖     | ❌             |
-| iosX64<br/>iosSimulatorArm64<br/>iosArm64 | ➖   | ➖         | ✅     | ✅ only static |
-| tvOS<br/>watchOS                          | ➖   | ➖         | ✅     | ❌             |
-| macosX64<br/>macosArm64                   | ➖   | ➖         | ✅     | ✅             |
-| linuxX64                                  | ➖   | ➖         | ➖     | ✅             |
-| mingwX64                                  | ➖   | ➖         | ➖     | ✅             |
+| target                                    | jdk | webcrypto | apple | openssl3        |
+|-------------------------------------------|-----|-----------|-------|-----------------|
+| jvm                                       | ✅   | ➖         | ➖     | ❌               |
+| js                                        | ➖   | ✅         | ➖     | ❌               |
+| iosX64<br/>iosSimulatorArm64<br/>iosArm64 | ➖   | ➖         | ✅     | ✅ prebuilt only |
+| macosX64<br/>macosArm64                   | ➖   | ➖         | ✅     | ✅               |
+| linuxX64                                  | ➖   | ➖         | ➖     | ✅               |
+| mingwX64                                  | ➖   | ➖         | ➖     | ✅               |
 
 ## Supported algorithms per provider
 

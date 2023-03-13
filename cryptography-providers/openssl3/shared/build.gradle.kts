@@ -7,7 +7,7 @@ plugins {
     id("buildx-use-openssl")
 }
 
-description = "cryptography-kotlin OpenSSL3 provider (dynamic linking)"
+description = "cryptography-kotlin OpenSSL3 provider (shared)"
 
 kotlin {
     targets.all {

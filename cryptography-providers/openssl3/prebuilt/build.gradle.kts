@@ -7,7 +7,7 @@ plugins {
     id("buildx-use-openssl")
 }
 
-description = "cryptography-kotlin OpenSSL3 provider (static linking)"
+description = "cryptography-kotlin OpenSSL3 provider (prebuilt)"
 
 tasks.withType<CInteropProcess>().configureEach {
     dependsOn(openssl.prepareOpensslTaskProvider)
