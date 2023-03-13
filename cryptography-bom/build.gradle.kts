@@ -7,12 +7,8 @@ description = "cryptography-kotlin BOM"
 
 dependencies {
     constraints {
-        rootProject.subprojects.forEach {
-            if (it.name !in setOf("cryptography-bom", "cryptography-version-catalog") &&
-                evaluationDependsOn(it.path).plugins.hasPlugin("buildx-multiplatform-library")
-            ) {
-                api(project(it.path))
-            }
+        bom.libraries.forEach {
+            api(project(it))
         }
     }
 }

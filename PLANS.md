@@ -14,7 +14,6 @@
     * [ ] License header
     * [ ] Maven Central
     * [ ] Documentation publish - replace empty javadoc with dokka output
-    * [ ] Merge BOM and Version catalog (https://melix.github.io/blog/2022/02/micronaut-version-catalog.html)
 * [ ] README
     * [ ] some intro on what this library is and testing
 
