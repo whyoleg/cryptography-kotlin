@@ -9,8 +9,7 @@ kotlin {
             testRuns.create("${jdkVersion}Test") {
                 executionTask.configure {
                     javaLauncher.set(
-                        //project.javaToolchains //need Gradle 8
-                        project.extensions.getByType<JavaToolchainService>().launcherFor {
+                        project.javaToolchains.launcherFor {
                             languageVersion.set(JavaLanguageVersion.of(jdkVersion))
                         }
                     )

@@ -8,8 +8,7 @@ fun KotlinNativeTarget.cinterop(
 ) {
     compilations.getByName(compilationName) {
         cinterops.create(defFileName) {
-            // replace capitalize after Gradle 8
-            defFile("src/${groupName}${compilationName.capitalize()}/cinterop/$defFileName.def")
+            defFile("src/${groupName}${compilationName.replaceFirstChar(Char::uppercase)}/cinterop/$defFileName.def")
             block()
         }
     }

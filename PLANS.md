@@ -16,6 +16,8 @@
     * [ ] Documentation publish - replace empty javadoc with dokka output
     * [ ] setup kover merged report + publish it on CI?
     * [ ] Setup Renovate
+    * [ ] investigate configuration cache support
+    * [ ] setup toolchains compatible with gradle 8
 * [ ] README
     * [ ] some intro on what this library is and testing
 

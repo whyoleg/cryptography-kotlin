@@ -17,7 +17,7 @@ kotlin {
     sourceSets.all {
         val (targetName, compilationName) = name.run {
             val index = indexOfLast { it.isUpperCase() }
-            take(index) to drop(index).toLowerCase() //.lowercase() //need Gradle 8
+            take(index) to drop(index).lowercase()
         }
 
         val isTest = compilationName == "test"
