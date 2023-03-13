@@ -21,5 +21,5 @@ kotlin {
 
 apiValidation {
     // in kotlin 1.9 Enum.entries were added because of which binary compatibility validator check fails
-    validationDisabled = getKotlinPluginVersion().also(::println).startsWith("1.9")
+    validationDisabled = getKotlinPluginVersion().startsWith("1.9")
 }
