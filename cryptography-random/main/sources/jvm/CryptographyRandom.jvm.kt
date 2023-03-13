@@ -23,8 +23,7 @@ private class CryptographyRandomImpl(
     override fun nextFloat(): Float = secureRandom.nextFloat()
     override fun nextBytes(array: ByteArray): ByteArray {
         if (array.isEmpty()) return array
-
-        return array.also { secureRandom.nextBytes(it) }
+        return array.also(secureRandom::nextBytes)
     }
 }
 
