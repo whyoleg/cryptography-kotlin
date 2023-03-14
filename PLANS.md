@@ -10,16 +10,22 @@
         * [ ] write behaviour tests for failures
     * [ ] Setup cross-platform compatibility tests on CI
 * [ ] Build
-    * [ ] Samples (for each different kind of operation)
+    * [ ] Samples (for each different kind of operation) - decide on how to include them
     * [ ] License header
-    * [ ] Maven Central
-    * [ ] Documentation publish - replace empty javadoc with dokka output
-    * [ ] setup kover merged report + publish it on CI?
-    * [ ] Setup Renovate
-    * [ ] investigate configuration cache support
+    * [ ] setup kover merged report
     * [ ] setup toolchains compatible with gradle 8
-* [ ] README
-    * [ ] some intro on what this library is and testing
+* [ ] CI
+    * [ ] publish dokka HTML
+    * [ ] setup Dependabot
+    * [ ] publish kover report somewhere
+    * [ ] setup workflow for release publishing
+    * [ ] Maven Central (check)
+    * [ ] Qodana/CodeQL integration
+* [ ] Doc
+    * [ ] actualize README with some high-level information about library and some links
+    * [ ] add info about testing to README
+    * [ ] add FAQ about security related things to README
+    * [ ] add kotlin documentation to ALL declarations (there are not so much of them TBH)
 
 ## 0.2.0: New operations, algorithms, engines
 
@@ -33,7 +39,7 @@
     * [ ] SHA-3 (hash)
     * [ ] SHAKE (hash)
     * [ ] AES-KW (key wrap/unwrap)
-    * [ ] AES-CTR (?) (cipher)
+    * [ ] AES-CTR (cipher)
     * [ ] ChaCha20-Poly1305 (stream cipher)
     * [ ] ECDH (key agreement)
     * [ ] PBKDF2 (prf)
@@ -49,10 +55,16 @@
 * [ ] Engines
     * [ ] CryptoKit engine
     * [ ] Windows CNG engine
-    * [ ] OpenSSL3 engine (static for watchos/tvos (?))
+    * [ ] watchos/tvos: OpenSSL3/Apple
     * [ ] Engine builder DSL + decide on how to better handle providers inside engine (lazy, cache, etc)
-* [ ] Android integration tests
-* [ ] JDK with BC tests
+* [ ] Tests
+    * [ ] Android integration tests
+    * [ ] JDK with Bouncy Castle tests
+    * [ ] Integrate with https://github.com/google/wycheproof to test against test vectors
+      (more tests here https://github.com/pyca/cryptography/blob/main/docs/development/test-vectors.rst)
+    * [ ] Add assertion in compatibility tests on amount of tested combinations
+    * [ ] better caching in tests (ciphers/signature* like keys)
+    * [ ] Refactor currentPlatform in tests with some kind of object per platform with properties
 
 ## Kotlin 1.8.20/1.9.0
 
@@ -60,6 +72,7 @@
 * [ ] use kotlin.Closeable
 * [ ] migrate test-client to composite build
 * [ ] use base64 from stdlib
+* [ ] setup configuration cache
 
 ## 0.3.0: Certificates and Key management
 
@@ -111,22 +124,16 @@
     * [ ] Hybrid Encryption
     * [ ] Double Ratchet Algorithm (?)
 * [ ] Try to implement some TLS cipher suites (TLS 1.2/1.3) in sample or as a separate module
-* [ ] Integrate with https://github.com/google/wycheproof to test against test vectors (more tests
-  here https://github.com/pyca/cryptography/blob/main/docs/development/test-vectors.rst)
 * [ ] Extract popular digests into separate module with only non-suspend impl? (?)
-* [ ] Add assertion in compatibility tests on amount of tested combinations
-* [ ] cache ciphers/signature* like keys in tests
-* [ ] Refactor currentPlatform in tests with some kind of object per platform with properties
 * [ ] Supports testing DER keys not by content equality, but by parsing and comparing
 * [ ] JDK pooling for SPIs (f.e. looks like Signature is poolable only by parameters, and not by algorithm)
 * [ ] integrations
     * [ ] https://github.com/Password4j/password4j
     * [ ] https://github.com/keycloak/keycloak
 * [ ] use knit when it will work with current kotlin version
-* [ ] Qodana/CodeQL integration
 * [ ] Investigate WASI-crypto support
 * [ ] FIPS (?)
-* [ ] JPMS support
+* [ ] JPMS support (when kx.* libraries will support it)
 * [ ] RSA-PSS salt size values: digest size, max size, plain value
 * [ ] Somehow check, that there is no memory leaks (especially in openssl provider)
 * [ ] Add pooling in openssl provider
@@ -140,3 +147,4 @@
     * [ ] algorithms - AesBasedAlgorihm, RsaBasedAlgorithm, AesGcmAlgorithm
     * [ ] ids -> AES.CBC, RSA.OAEP, RSA, etc.
 * [ ] Decide on operations default carefully
+* [ ] Decide on suspend and non-suspend functions
