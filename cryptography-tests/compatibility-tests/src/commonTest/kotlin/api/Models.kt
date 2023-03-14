@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ */
+
 @file:Suppress("ArrayInDataClass")
 
 package dev.whyoleg.cryptography.tests.compatibility.api

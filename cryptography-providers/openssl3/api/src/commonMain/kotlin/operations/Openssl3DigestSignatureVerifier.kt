@@ -1,8 +1,12 @@
+/*
+ * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ */
+
 package dev.whyoleg.cryptography.openssl3.operations
 
 import dev.whyoleg.cryptography.openssl3.internal.*
-import dev.whyoleg.cryptography.operations.signature.*
 import dev.whyoleg.cryptography.openssl3.internal.cinterop.*
+import dev.whyoleg.cryptography.operations.signature.*
 import kotlinx.cinterop.*
 
 internal abstract class Openssl3DigestSignatureVerifier(

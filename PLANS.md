@@ -11,7 +11,6 @@
     * [ ] Setup cross-platform compatibility tests on CI
 * [ ] Build
     * [ ] Samples (for each different kind of operation) - decide on how to include them
-    * [ ] License header
     * [ ] setup kover merged report
     * [ ] setup toolchains compatible with gradle 8
 * [ ] CI

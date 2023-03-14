@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ */
+
 package dev.whyoleg.cryptography.webcrypto
 
 import dev.whyoleg.cryptography.*
@@ -19,9 +23,9 @@ internal fun nonBlocking(): Nothing = throw CryptographyException("Only non-bloc
 internal fun ArrayBuffer.toByteArray(): ByteArray = Int8Array(this).unsafeCast<ByteArray>()
 
 internal fun CryptographyAlgorithmId<Digest>.hashAlgorithmName(): String = when (this) {
-    SHA1   -> "SHA-1"
+    SHA1 -> "SHA-1"
     SHA256 -> "SHA-256"
     SHA384 -> "SHA-384"
     SHA512 -> "SHA-512"
-    else   -> throw CryptographyException("Unsupported hash algorithm: ${this}")
+    else -> throw CryptographyException("Unsupported hash algorithm: ${this}")
 }

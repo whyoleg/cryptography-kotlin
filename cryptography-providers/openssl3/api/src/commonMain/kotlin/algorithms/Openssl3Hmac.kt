@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ */
+
 package dev.whyoleg.cryptography.openssl3.algorithms
 
 import dev.whyoleg.cryptography.algorithms.*
@@ -5,9 +9,9 @@ import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.openssl3.internal.*
+import dev.whyoleg.cryptography.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.operations.signature.*
 import dev.whyoleg.cryptography.random.*
-import dev.whyoleg.cryptography.openssl3.internal.cinterop.*
 import kotlinx.cinterop.*
 
 internal object Openssl3Hmac : HMAC {

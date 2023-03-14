@@ -1,6 +1,9 @@
 syntax: glob
 
-/.idea/*
+**/.idea/*
+!/.idea/vcs.xml
+!/.idea/copyright
+!/.idea/codeStyles
 *.iml
 
 .gradle
