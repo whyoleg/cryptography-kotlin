@@ -28,6 +28,13 @@ jobs:
             11
             17
             19
+      - if: matrix.os == 'windows-latest'
+        uses: msys2/setup-msys2@v2
+        with:
+          release: false
+          update: true
+          install: mingw-w64-x86_64-openssl
+
       - name: Compile sources
         uses: gradle/gradle-build-action@v2
         with:
