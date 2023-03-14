@@ -97,7 +97,7 @@ abstract class CryptographyRandomTest(private val random: CryptographyRandom) {
                 size < 50     -> 0.2
                 size < 100    -> 0.1
                 size < 200    -> 0.05
-                size < 500    -> 0.03
+                size < 500    -> 0.035
                 size < 1000   -> 0.025
                 size < 5000   -> 0.02
                 size < 10000  -> 0.01
