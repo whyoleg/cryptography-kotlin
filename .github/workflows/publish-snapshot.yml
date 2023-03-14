@@ -20,7 +20,7 @@ jobs:
       - name: Publish to Maven Local (prepare packages)
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: publishToMavenLocal --scan --info
+          arguments: publishToMavenLocal --scan
           cache-disabled: true
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{secrets.signingKey}}
@@ -31,7 +31,7 @@ jobs:
       - name: Publish snapshot to Sonatype
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: publishAllPublicationsToSnapshotRepository --scan --info
+          arguments: publishAllPublicationsToSnapshotRepository --scan
           cache-disabled: true
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{secrets.signingKey}}

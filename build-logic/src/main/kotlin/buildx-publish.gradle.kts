@@ -17,6 +17,10 @@ signing {
 
 val javadocJar by tasks.registering(Jar::class) { archiveClassifier.set("javadoc") }
 
+// this is somewhat a hack because we have single javadoc artifact which is used for all publications
+tasks.withType<Sign>().configureEach { dependsOn(javadocJar) }
+tasks.withType<AbstractPublishToMaven>().configureEach { dependsOn(tasks.withType<Sign>()) }
+
 publishing {
     repositories {
         maven {
