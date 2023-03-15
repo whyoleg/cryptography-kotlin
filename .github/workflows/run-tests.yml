@@ -36,6 +36,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: check --scan --continue --configuration-cache -x jsPublicPackageJson
+          gradle-home-cache-cleanup: true
           gradle-home-cache-includes: |
             caches
             notifications
@@ -46,6 +47,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: publishToMavenLocal --scan --continue
+          gradle-home-cache-cleanup: true
           gradle-home-cache-includes: |
             caches
             notifications
