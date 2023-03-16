@@ -11,15 +11,11 @@
     * [ ] Setup cross-platform compatibility tests on CI
 * [ ] Build
     * [ ] Samples (for each different kind of operation) - decide on how to include them
-    * [ ] setup kover merged report
     * [ ] setup toolchains compatible with gradle 8
 * [ ] CI
     * [ ] publish dokka HTML
-    * [ ] setup Dependabot
-    * [ ] publish kover report somewhere
     * [ ] setup workflow for release publishing
     * [ ] Maven Central (check)
-    * [ ] Qodana/CodeQL integration
 * [ ] Doc
     * [ ] actualize README with some high-level information about library and some links
     * [ ] add info about testing to README
@@ -64,6 +60,11 @@
     * [ ] Add assertion in compatibility tests on amount of tested combinations
     * [ ] better caching in tests (ciphers/signature* like keys)
     * [ ] Refactor currentPlatform in tests with some kind of object per platform with properties
+* [ ] Infrastructure:
+    * [ ] setup Dependabot/Renovate
+    * [ ] setup kover merged report
+    * [ ] publish kover report somewhere (https://github.com/mi-kas/kover-report)
+    * [ ] Qodana/CodeQL integration
 
 ## Kotlin 1.8.20/1.9.0
 
