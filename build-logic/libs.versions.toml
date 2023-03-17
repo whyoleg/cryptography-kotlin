@@ -5,7 +5,7 @@ kotlin-dokka = "1.8.10"
 kotlinx-bcv = "0.13.0"
 kotlinx-kover = "0.6.1"
 
-gradle-download = "5.3.0"
+gradle-download = "5.3.1"
 
 [libraries]
 kotlin-dokka = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "kotlin-dokka" }
