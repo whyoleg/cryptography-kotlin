@@ -8,8 +8,8 @@ plugins {
 
 dependencies {
     implementation(kotlinLibs.gradle.plugin)
-    implementation(libs.kotlinx.bcv)
-    implementation(libs.kotlinx.kover)
-    implementation(libs.kotlin.dokka)
-    implementation(libs.gradle.download)
+    implementation(libs.build.kotlinx.bcv)
+    implementation(libs.build.kotlinx.kover)
+    implementation(libs.build.kotlin.dokka)
+    implementation(libs.build.gradle.download)
 }

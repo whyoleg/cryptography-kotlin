@@ -1,5 +1,16 @@
 [versions]
 
+# build dependencies
+
+kotlin-dokka = "1.8.10"
+
+kotlinx-bcv = "0.13.0"
+kotlinx-kover = "0.6.1"
+
+gradle-download = "5.3.1"
+
+# test dependencies
+
 kotlinx-serialization = "1.5.0"
 kotlinx-coroutines = "1.6.4"
 
@@ -9,6 +20,17 @@ ktor = "2.2.2"
 logback = "1.2.11"
 
 [libraries]
+
+# build dependencies
+
+build-kotlin-dokka = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "kotlin-dokka" }
+
+build-kotlinx-bcv = { module = "org.jetbrains.kotlinx:binary-compatibility-validator", version.ref = "kotlinx-bcv" }
+build-kotlinx-kover = { module = "org.jetbrains.kotlinx:kover", version.ref = "kotlinx-kover" }
+
+build-gradle-download = { module = "de.undercouch:gradle-download-task", version.ref = "gradle-download" }
+
+# test dependencies
 
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
@@ -30,3 +52,4 @@ ktor-server-calllogging = { module = "io.ktor:ktor-server-call-logging", version
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 
 [plugins]
+kotlin-dokka = { id = "org.jetbrains.dokka", version.ref = "kotlin-dokka" }
