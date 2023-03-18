@@ -12,3 +12,4 @@ build/
 *.log
 /local.properties
 /cryptography-tester/storage
+/docs/api

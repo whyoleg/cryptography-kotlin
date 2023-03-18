@@ -1,5 +1,6 @@
 name: Build dev
 on:
+  workflow_dispatch:
   push:
     branches-ignore:
       - main

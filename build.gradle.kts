@@ -7,6 +7,8 @@ import org.jetbrains.kotlin.gradle.targets.js.yarn.*
 plugins {
     id("build-parameters")
 
+    alias(libs.plugins.kotlin.dokka)
+
     alias(kotlinLibs.plugins.multiplatform) apply false
     alias(kotlinLibs.plugins.serialization) apply false
 }
@@ -19,9 +21,12 @@ plugins.withType<YarnPlugin> {
     }
 }
 
+tasks.dokkaHtmlMultiModule {
+    outputDirectory.set(file("docs/api"))
+}
+
 val skipTest = buildParameters.skip.test
 val skipLink = buildParameters.skip.link
-val kotlinVersionOverriden = buildParameters.kotlin.override.version.isPresent
 
 subprojects {
     if (skipTest) tasks.matching { it.name.endsWith("test", ignoreCase = true) }.configureEach { onlyIf { false } }

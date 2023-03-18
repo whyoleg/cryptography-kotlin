@@ -3,6 +3,7 @@ on: [ workflow_call, workflow_dispatch ]
 
 jobs:
   publish:
+    if: github.repository == 'whyoleg/cryptography-kotlin'
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3

@@ -1,5 +1,6 @@
 name: Build main
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -11,3 +12,45 @@ jobs:
     needs: [ test ]
     uses: ./.github/workflows/publish-snapshot.yml
     secrets: inherit
+  deploy:
+    if: github.repository == 'whyoleg/cryptography-kotlin'
+    needs: [ publish ]
+    runs-on: macos-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    concurrency:
+      group: github-pages
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.x
+      - run: pip install mkdocs-material
+      - uses: ./.github/actions/setup-gradle
+        with:
+          os: macos-latest
+          cache-disabled: true
+      - name: Run dokka
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: dokkaHtmlMultiModule
+      - name: Copy docs
+        run: |
+          cp README.md docs/index.md
+      - name: Build docs
+        run: mkdocs build
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: site
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1

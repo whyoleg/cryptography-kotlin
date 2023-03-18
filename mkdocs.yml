@@ -1,0 +1,43 @@
+site_author: Oleg Yukhnevich
+site_name: cryptography-kotlin
+site_description: "Type-safe Multi-platform cryptography kotlin library"
+site_url: https://whyoleg.github.io/cryptography-kotlin/
+repo_name: cryptography-kotlin
+repo_url: https://github.com/whyoleg/cryptography-kotlin
+remote_branch: gh-pages
+copyright: 'Copyright (c) 2023 Oleg Yukhnevich.'
+
+extra:
+  social:
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/why_oleg
+    - icon: fontawesome/brands/telegram
+      link: https://t.me/why_oleg
+    - icon: fontawesome/brands/patreon
+      link: https://patreon.com/why_oleg
+    - icon: fontawesome/brands/linkedin
+      link: https://linkedin.com/in/whyoleg/
+
+theme:
+  name: 'material'
+  palette:
+    - scheme: default
+      media: "(prefers-color-scheme: light)"
+      primary: 'deep purple'
+      accent: 'white'
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      media: "(prefers-color-scheme: dark)"
+      primary: 'deep purple'
+      accent: 'white'
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  icon:
+    repo: fontawesome/brands/github
+
+nav:
+  - 'Overview': index.md
+  - 'API': api/index.html
