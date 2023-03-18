@@ -3,24 +3,19 @@
 ## 0.1.0: Initial release
 
 * [ ] Tests
-    * [ ] investigate compatibility test failure on JS browser - Key R(* -> *) is missing in the map completing
-    * [ ] investigate JVM compatibility tests on CI
-    * [ ] write MORE behaviour tests
+    * [ ] write MORE core tests
         * [ ] add test for decrypto ciphertext equal to iv size
         * [ ] write behaviour tests for failures
-    * [ ] Setup cross-platform compatibility tests on CI
 * [ ] Build
     * [ ] Samples (for each different kind of operation) - decide on how to include them
     * [ ] setup toolchains compatible with gradle 8
 * [ ] CI
-    * [ ] publish dokka HTML
     * [ ] setup workflow for release publishing
     * [ ] Maven Central (check)
 * [ ] Doc
     * [ ] actualize README with some high-level information about library and some links
     * [ ] add info about testing to README
     * [ ] add FAQ about security related things to README
-    * [ ] add kotlin documentation to ALL declarations (there are not so much of them TBH)
 
 ## 0.2.0: New operations, algorithms, engines
 
@@ -70,7 +65,7 @@
 
 * [ ] WebCrypto WASM support
 * [ ] use kotlin.Closeable
-* [ ] migrate test-client to composite build
+* [ ] migrate test-tool-client to composite build
 * [ ] use base64 from stdlib
 * [ ] setup configuration cache
 
