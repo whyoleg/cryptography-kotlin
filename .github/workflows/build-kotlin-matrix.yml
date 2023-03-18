@@ -23,6 +23,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup-gradle
+        with:
+          cache-disabled: true
 
       - if: matrix.os == 'windows-latest'
         uses: msys2/setup-msys2@v2
