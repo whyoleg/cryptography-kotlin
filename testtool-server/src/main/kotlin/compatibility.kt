@@ -2,7 +2,7 @@
  * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
-package dev.whyoleg.cryptography.tester.server
+package dev.whyoleg.cryptography.testtool.server
 
 import io.ktor.server.application.*
 import io.ktor.server.response.*
@@ -13,7 +13,7 @@ import java.nio.file.*
 import java.util.concurrent.atomic.*
 import kotlin.io.path.*
 
-fun Route.compatibility(
+internal fun Route.compatibility(
     instanceId: String,
     storagePath: Path,
 ): Route = route("compatibility/{algorithm}") {
