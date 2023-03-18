@@ -27,3 +27,109 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: publishToMavenLocal --scan --continue
+
+  compatibility-generate:
+    name: "Compatibility tests: Generate"
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ 'ubuntu-latest', 'macos-latest', 'windows-latest' ]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/setup-gradle
+        with:
+          cache-read-only: true
+      - name: Run tests
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: |
+            tests-compatibility:allTests
+            -Ptests.compatibility.step=Generate
+            -Ptesttool.instanceId=${{ matrix.os }}
+            --scan
+            --continue
+            --configuration-cache
+            --exclude-task
+            jsPublicPackageJson
+
+      - name: ZIP test-tool-storage (windows)
+        if: ${{ always() && matrix.os == 'windows-latest' }}
+        run: Compress-Archive build/test-tool-storage compatibility-tests-data.zip
+      - name: ZIP test-tool-storage (unix)
+        if: ${{ always() && matrix.os != 'windows-latest' }}
+        run: zip -r compatibility-tests-data.zip build/test-tool-storage
+      - name: Upload test-tool-storage ZIP
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: compatibility-tests-data-${{ matrix.os }}
+          path: compatibility-tests-data.zip
+          if-no-files-found: error
+
+  compatibility-validate:
+    needs: [ compatibility-generate ]
+    name: "Compatibility tests: Validate"
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ 'ubuntu-latest', 'macos-latest', 'windows-latest' ]
+        fromOS: [ 'ubuntu-latest', 'macos-latest', 'windows-latest' ]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/setup-gradle
+        with:
+          cache-read-only: true
+
+      - name: Download test-tool-storage ZIP
+        uses: actions/download-artifact@v3
+        with:
+          name: compatibility-tests-data-${{ matrix.fromOS }}
+          path: compatibility-tests-data
+      - name: UNZIP test-tool-storage (windows (from windows))
+        if: ${{ matrix.os == 'windows-latest' && matrix.fromOS == 'windows-latest' }}
+        run: Expand-Archive compatibility-tests-data/compatibility-tests-data.zip -DestinationPath build
+      - name: UNZIP test-tool-storage (windows (from unix))
+        if: ${{ matrix.os == 'windows-latest' && matrix.fromOS != 'windows-latest' }}
+        run: Expand-Archive compatibility-tests-data/compatibility-tests-data.zip -DestinationPath .
+      - name: UNZIP test-tool-storage (unix (from windows))
+        if: ${{ matrix.os != 'windows-latest' && matrix.fromOS == 'windows-latest' }}
+        run: unzip compatibility-tests-data/compatibility-tests-data.zip -d build
+      - name: UNZIP test-tool-storage (unix (from unix))
+        if: ${{ matrix.os != 'windows-latest' && matrix.fromOS != 'windows-latest' }}
+        run: unzip compatibility-tests-data/compatibility-tests-data.zip
+
+      - name: Display structure of test-tool-storage
+        run: ls -R
+        working-directory: build/test-tool-storage
+
+      - name: Run tests (unix)
+        if: matrix.os != 'windows-latest'
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: |
+            tests-compatibility:allTests
+            -Ptests.compatibility.step=Validate
+            -Ptesttool.instanceId=${{ matrix.os }}
+            --scan
+            --continue
+            --configuration-cache
+            --exclude-task
+            jsPublicPackageJson
+      # for windows, we skip jsNodeTest task, because for some reason it timeouts
+      - name: Run tests (windows)
+        if: matrix.os == 'windows-latest'
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: |
+            tests-compatibility:allTests
+            -Ptests.compatibility.step=Validate
+            -Ptesttool.instanceId=${{ matrix.os }}
+            --scan
+            --continue
+            --configuration-cache
+            --exclude-task
+            jsPublicPackageJson
+            --exclude-task
+            jsNodeTest
