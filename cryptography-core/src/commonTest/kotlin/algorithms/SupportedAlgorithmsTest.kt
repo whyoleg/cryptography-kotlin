@@ -2,13 +2,12 @@
  * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
-package dev.whyoleg.cryptography.tests.behavior
+package dev.whyoleg.cryptography.algorithms
 
-import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
-import dev.whyoleg.cryptography.test.utils.*
+import dev.whyoleg.cryptography.test.*
 import kotlin.test.*
 
 class SupportedAlgorithmsTest {

@@ -2,12 +2,11 @@
  * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
-package dev.whyoleg.cryptography.tests.behavior
+package dev.whyoleg.cryptography.algorithms.asymmetric
 
 import dev.whyoleg.cryptography.BinarySize.Companion.bytes
-import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.random.*
-import dev.whyoleg.cryptography.test.utils.*
+import dev.whyoleg.cryptography.test.*
 import kotlin.math.*
 import kotlin.test.*
 
