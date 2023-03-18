@@ -1,0 +1,46 @@
+name: "Setup Gradle"
+description: "Setup konan relocation and gradle caching specific to kotlin MPP"
+inputs:
+  os:
+    required: true
+    description: "OS"
+    default: ${{ matrix.os }}
+  cache-disabled:
+    description: When 'true', all caching is disabled. No entries will be written to or read from the cache.
+    required: false
+    default: false
+  cache-read-only:
+    description: |
+      When 'true', existing entries will be read from the cache but no entries will be written.
+      By default this value is 'false' for workflows on the GitHub default branch and 'true' for workflows on other branches.
+    required: false
+    default: ${{ github.event.repository != null && github.ref_name != github.event.repository.default_branch }}
+runs:
+  # noinspection YAMLSchemaValidation
+  using: "composite"
+  steps:
+    - if: inputs.os != 'windows-latest'
+      run: echo "KONAN_DATA_DIR=${HOME}/.gradle/konan" >> $GITHUB_ENV
+      shell: bash
+    - if: inputs.os == 'windows-latest'
+      run: echo "KONAN_DATA_DIR=${USERPROFILE}\.gradle\konan" >> $GITHUB_ENV
+      shell: bash
+    - uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: |
+          8
+          11
+          17
+          19
+    - name: Setup gradle
+      uses: gradle/gradle-build-action@v2
+      with:
+        cache-disabled: ${{ inputs.cache-disabled }}
+        cache-read-only: ${{ inputs.cache-read-only }}
+        gradle-home-cache-includes: |
+          caches
+          notifications
+          konan
+          nodejs
+          yarn

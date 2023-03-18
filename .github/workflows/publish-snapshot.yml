@@ -6,22 +6,15 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
-      - run: echo "KONAN_DATA_DIR=${HOME}/.gradle/konan" >> $GITHUB_ENV
-
-      - uses: actions/setup-java@v3
+      - uses: ./.github/actions/setup-gradle
         with:
-          distribution: 'temurin'
-          java-version: |
-            8
-            11
-            17
-            19
+          os: macos-latest
+          cache-disabled: true
 
       - name: Publish to Maven Local (prepare packages)
         uses: gradle/gradle-build-action@v2
         with:
           arguments: publishToMavenLocal --scan
-          cache-disabled: true
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{secrets.signingKey}}
           ORG_GRADLE_PROJECT_signingPassword: ${{secrets.signingPassword}}
@@ -32,7 +25,6 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: publishAllPublicationsToSnapshotRepository --scan
-          cache-disabled: true
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{secrets.signingKey}}
           ORG_GRADLE_PROJECT_signingPassword: ${{secrets.signingPassword}}
