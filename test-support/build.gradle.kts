@@ -3,15 +3,12 @@
  */
 
 plugins {
-    id("buildx-multiplatform")
+    id("buildx-multiplatform-test")
     id("buildx-target-all")
 }
 
 kotlin {
     sourceSets {
-        all {
-            languageSettings.optInForTests()
-        }
         commonMain {
             dependencies {
                 api(libs.kotlinx.coroutines.test)
@@ -20,31 +17,31 @@ kotlin {
         }
         jsMain {
             dependencies {
-                implementation(projects.cryptographyProviders.cryptographyWebcrypto)
+                implementation(projects.cryptographyWebcrypto)
             }
         }
         jvmMain {
             dependencies {
-                implementation(projects.cryptographyProviders.cryptographyJdk)
+                implementation(projects.cryptographyJdk)
             }
         }
 
         darwinMain {
             dependencies {
-                implementation(projects.cryptographyProviders.cryptographyApple)
-                implementation(projects.cryptographyProviders.cryptographyOpenssl3.cryptographyOpenssl3Prebuilt)
+                implementation(projects.cryptographyApple)
+                implementation(projects.cryptographyOpenssl3Prebuilt)
             }
         }
 
         linuxMain {
             dependencies {
-                implementation(projects.cryptographyProviders.cryptographyOpenssl3.cryptographyOpenssl3Prebuilt)
+                implementation(projects.cryptographyOpenssl3Prebuilt)
             }
         }
 
         mingwMain {
             dependencies {
-                implementation(projects.cryptographyProviders.cryptographyOpenssl3.cryptographyOpenssl3Prebuilt)
+                implementation(projects.cryptographyOpenssl3Prebuilt)
             }
         }
     }

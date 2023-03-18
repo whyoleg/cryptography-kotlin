@@ -11,6 +11,11 @@ buildParameters {
         fromEnvironment()
         defaultValue.set(false)
     }
+    group("testtool") {
+        string("instanceId") {
+            description.set("Instance ID for running tests")
+        }
+    }
     group("tests") {
         group("compatibility") {
             enumeration("step") {

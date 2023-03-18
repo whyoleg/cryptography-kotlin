@@ -12,6 +12,7 @@ pluginManagement {
     includeBuild("build-logic")
     includeBuild("build-parameters")
     includeBuild("build-kotlin")
+    includeBuild("testtool-server")
 }
 
 plugins {
@@ -34,35 +35,37 @@ gradleEnterprise {
 
 rootProject.name = "cryptography-kotlin"
 
+fun includeProvider(name: String, submodules: List<String> = emptyList()) {
+    if (submodules.isEmpty()) {
+        include("cryptography-$name")
+        project(":cryptography-$name").projectDir = file("cryptography-providers/$name")
+    } else {
+        submodules.forEach { submodule ->
+            include("cryptography-$name-$submodule")
+            project(":cryptography-$name-$submodule").projectDir = file("cryptography-providers/$name/$submodule")
+        }
+    }
+}
+
+// support modules
+
 include("cryptography-bom")
 include("cryptography-version-catalog")
+
+// core modules
+
 include("cryptography-random")
 include("cryptography-core")
 
-//providers
-listOf("jdk", "apple", "webcrypto").forEach { name ->
-    include("cryptography-providers:cryptography-$name")
-    project(":cryptography-providers:cryptography-$name").projectDir = file("cryptography-providers/$name")
-}
+// providers
 
-listOf("api", "shared", "prebuilt", "test").forEach { name ->
-    include("cryptography-providers:cryptography-openssl3:cryptography-openssl3-$name")
-    project(":cryptography-providers:cryptography-openssl3:cryptography-openssl3-$name").projectDir =
-        file("cryptography-providers/openssl3/$name")
-}
+includeProvider("jdk")
+includeProvider("apple")
+includeProvider("webcrypto")
+includeProvider("openssl3", listOf("api", "shared", "prebuilt", "test"))
 
-//tests
-listOf(
-    "test-utils",
-    "behavior-tests",
-    "compatibility-tests"
-).forEach { name ->
-    include("cryptography-tests:cryptography-$name")
-    project(":cryptography-tests:cryptography-$name").projectDir = file("cryptography-tests/$name")
-}
+// testing
 
-//test tool
-listOf("client", "server").forEach { name ->
-    include("cryptography-tester:cryptography-tester-$name")
-    project(":cryptography-tester:cryptography-tester-$name").projectDir = file("cryptography-tester/$name")
-}
+include("testtool-client")
+include("test-support")
+include("tests-compatibility")

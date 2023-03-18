@@ -16,5 +16,10 @@ kotlin {
                 api(projects.cryptographyRandom)
             }
         }
+        commonTest {
+            dependencies {
+                api(projects.testSupport)
+            }
+        }
     }
 }

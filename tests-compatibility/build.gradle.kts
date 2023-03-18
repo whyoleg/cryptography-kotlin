@@ -11,16 +11,19 @@ plugins {
     id("buildx-target-all")
 
     id("org.jetbrains.kotlin.plugin.serialization")
+    id("testtool-server")
 }
 
 kotlin {
     sourceSets {
         commonTest {
             dependencies {
-                implementation(projects.cryptographyTests.cryptographyTestUtils)
-                implementation(projects.cryptographyTester.cryptographyTesterClient)
-                implementation(libs.ktor.utils) //for base64
                 implementation(libs.kotlinx.serialization.json)
+                implementation(projects.testSupport)
+                implementation(projects.testtoolClient)
+
+                // drop after kotlin 1.8.20 (needed only for base64)
+                implementation(libs.ktor.utils)
             }
         }
     }
