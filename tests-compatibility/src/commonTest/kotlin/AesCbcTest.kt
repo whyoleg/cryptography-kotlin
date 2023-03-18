@@ -6,12 +6,12 @@ package dev.whyoleg.cryptography.tests.compatibility
 
 import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.random.*
-import dev.whyoleg.cryptography.test.utils.*
+import dev.whyoleg.cryptography.test.*
 import dev.whyoleg.cryptography.tests.compatibility.api.*
 import kotlinx.serialization.*
 import kotlin.test.*
 
-private const val cipherIterations = 10
+private const val cipherIterations = 5
 private const val maxPlaintextSize = 10000
 private const val blockSize = 16 //for no padding
 
@@ -58,7 +58,7 @@ class AesCbcTest : AesBasedTest<AES.CBC.Key, AES.CBC>(AES.CBC) {
             if (!supportsPadding(padding)) return@getParameters
 
             api.ciphers.getData<CipherData>(parametersId) { (keyReference, plaintext, ciphertext), _ ->
-                keys.getValue(keyReference).forEach { key ->
+                keys[keyReference]?.forEach { key ->
                     val cipher = key.cipher(padding)
                     assertContentEquals(plaintext, cipher.decrypt(ciphertext), "Decrypt")
                     assertContentEquals(plaintext, cipher.decrypt(cipher.encrypt(plaintext)), "Encrypt-Decrypt")

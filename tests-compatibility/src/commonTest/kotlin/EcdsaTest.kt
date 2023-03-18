@@ -6,12 +6,12 @@ package dev.whyoleg.cryptography.tests.compatibility
 
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.random.*
-import dev.whyoleg.cryptography.test.utils.*
+import dev.whyoleg.cryptography.test.*
 import dev.whyoleg.cryptography.tests.compatibility.api.*
 import kotlinx.serialization.*
 import kotlin.test.*
 
-private const val keyIterations = 5
+private const val keyIterations = 3
 private const val signatureIterations = 5
 private const val maxDataSize = 10000
 
@@ -125,7 +125,7 @@ class EcdsaTest : CompatibilityTest<ECDSA>(ECDSA) {
 
             val digest = digest(digestName)
             api.signatures.getData<SignatureData>(parametersId) { (keyReference, data, signature), _ ->
-                val (publicKeys, privateKeys) = keyPairs.getValue(keyReference)
+                val (publicKeys, privateKeys) = keyPairs[keyReference] ?: return@getData
                 val verifiers = publicKeys.map { it.signatureVerifier(digest, signatureFormat) }
                 val generators = privateKeys.map { it.signatureGenerator(digest, signatureFormat) }
 

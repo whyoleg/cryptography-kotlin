@@ -4,10 +4,10 @@
 
 package dev.whyoleg.cryptography.tests.compatibility.api
 
-import dev.whyoleg.cryptography.test.utils.*
+import dev.whyoleg.cryptography.test.*
 import kotlin.reflect.*
 
-abstract class TesterStorageApi(
+abstract class CompatibilityStorageApi(
     val storageName: String,
     val logger: TestLogger,
 ) {

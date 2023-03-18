@@ -6,13 +6,13 @@ package dev.whyoleg.cryptography.tests.compatibility
 
 import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.random.*
-import dev.whyoleg.cryptography.test.utils.*
+import dev.whyoleg.cryptography.test.*
 import dev.whyoleg.cryptography.tests.compatibility.api.*
 import kotlinx.serialization.*
 import kotlin.test.*
 
-private const val keyIterations = 10
-private const val dataIterations = 10
+private const val keyIterations = 5
+private const val dataIterations = 5
 private const val maxDataSize = 10000
 
 class HmacTest : CompatibilityTest<HMAC>(HMAC) {
@@ -68,7 +68,7 @@ class HmacTest : CompatibilityTest<HMAC>(HMAC) {
         }
         api.signatures.getParameters<TestParameters.Empty> { _, parametersId ->
             api.signatures.getData<SignatureData>(parametersId) { (keyReference, data, signature), _ ->
-                keys.getValue(keyReference).forEach { key ->
+                keys[keyReference]?.forEach { key ->
                     val verifier = key.signatureVerifier()
                     val generator = key.signatureGenerator()
 

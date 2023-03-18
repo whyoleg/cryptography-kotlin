@@ -4,23 +4,23 @@
 
 package dev.whyoleg.cryptography.tests.compatibility.api
 
-import dev.whyoleg.cryptography.test.utils.*
+import dev.whyoleg.cryptography.test.*
 import kotlin.reflect.*
 
-class InMemoryApi(private val logger: TestLogger) : TesterApi() {
-    private fun api(storageName: String): TesterStorageApi = InMemoryStorageApi(storageName, logger)
-    override val keys: TesterStorageApi = api("keys")
-    override val keyPairs: TesterStorageApi = api("key-pairs")
-    override val digests: TesterStorageApi = api("digests")
-    override val signatures: TesterStorageApi = api("signatures")
-    override val ciphers: TesterStorageApi = api("ciphers")
+class InMemoryApi(private val logger: TestLogger) : CompatibilityApi() {
+    private fun api(storageName: String): CompatibilityStorageApi = InMemoryStorageApi(storageName, logger)
+    override val keys: CompatibilityStorageApi = api("keys")
+    override val keyPairs: CompatibilityStorageApi = api("key-pairs")
+    override val digests: CompatibilityStorageApi = api("digests")
+    override val signatures: CompatibilityStorageApi = api("signatures")
+    override val ciphers: CompatibilityStorageApi = api("ciphers")
 }
 
 @Suppress("UNCHECKED_CAST")
 private class InMemoryStorageApi(
     storageName: String,
     logger: TestLogger,
-) : TesterStorageApi(storageName, logger) {
+) : CompatibilityStorageApi(storageName, logger) {
     private val parametersMap: MutableMap<String, Any> = mutableMapOf()
     private var parametersId = 0
     private val dataMap: MutableMap<String, MutableMap<String, Any>> = mutableMapOf()

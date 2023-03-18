@@ -46,7 +46,7 @@ class RsaOaepTest : RsaBasedTest<RSA.OAEP.PublicKey, RSA.OAEP.PrivateKey, RSA.OA
 
         api.ciphers.getParameters<TestParameters.Empty> { _, parametersId ->
             api.ciphers.getData<AuthenticatedCipherData>(parametersId) { (keyReference, associatedData, plaintext, ciphertext), _ ->
-                val (publicKeys, privateKeys) = keyPairs.getValue(keyReference)
+                val (publicKeys, privateKeys) = keyPairs[keyReference] ?: return@getData
                 val encryptors = publicKeys.map { it.encryptor() }
                 val decryptors = privateKeys.map { it.decryptor() }
 

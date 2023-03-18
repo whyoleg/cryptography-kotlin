@@ -5,8 +5,8 @@
 package dev.whyoleg.cryptography.tests.compatibility.api
 
 import dev.whyoleg.cryptography.algorithms.symmetric.*
-import dev.whyoleg.cryptography.test.utils.*
-import dev.whyoleg.cryptography.tester.client.*
+import dev.whyoleg.cryptography.test.*
+import dev.whyoleg.cryptography.testtool.client.*
 import io.ktor.util.*
 import kotlinx.coroutines.flow.*
 import kotlinx.serialization.*
@@ -17,17 +17,17 @@ import kotlinx.serialization.json.*
 import kotlinx.serialization.modules.*
 import kotlin.reflect.*
 
-class ServerBasedApi(
+class ServerApi(
     private val algorithm: String,
     private val metadata: Map<String, String>,
     private val logger: TestLogger,
-) : TesterApi() {
-    private fun api(storageName: String): TesterStorageApi = RemoteStorageApi(algorithm, metadata, storageName, logger)
-    override val keys: TesterStorageApi = api("keys")
-    override val keyPairs: TesterStorageApi = api("key-pairs")
-    override val digests: TesterStorageApi = api("digests")
-    override val signatures: TesterStorageApi = api("signatures")
-    override val ciphers: TesterStorageApi = api("ciphers")
+) : CompatibilityApi() {
+    private fun api(storageName: String): CompatibilityStorageApi = ServerStorageApi(algorithm, metadata, storageName, logger)
+    override val keys: CompatibilityStorageApi = api("keys")
+    override val keyPairs: CompatibilityStorageApi = api("key-pairs")
+    override val digests: CompatibilityStorageApi = api("digests")
+    override val signatures: CompatibilityStorageApi = api("signatures")
+    override val ciphers: CompatibilityStorageApi = api("ciphers")
 }
 
 private object Base64ByteArraySerializer : KSerializer<ByteArray> {
@@ -57,12 +57,12 @@ private class Payload<T>(
     val content: T,
 )
 
-private class RemoteStorageApi(
+private class ServerStorageApi(
     private val algorithm: String,
     private val metadata: Map<String, String>,
     storageName: String,
     logger: TestLogger,
-) : TesterStorageApi(storageName, logger) {
+) : CompatibilityStorageApi(storageName, logger) {
     private val cache = mutableMapOf<KType, KSerializer<Any?>>()
 
     @Suppress("UNCHECKED_CAST")
@@ -84,24 +84,24 @@ private class RemoteStorageApi(
     }
 
     override suspend fun <T : TestParameters> saveParameters(parameters: T, type: KType): String {
-        return TesterClient.saveParameters(algorithm, storageName, encode(parameters, type))
+        return TesttoolClient.Compatibility.saveParameters(algorithm, storageName, encode(parameters, type))
     }
 
     override suspend fun <T : TestParameters> getParameters(type: KType): List<Triple<String, T, Map<String, String>>> {
-        return TesterClient.getParameters(algorithm, storageName).map { (id, bytes) ->
+        return TesttoolClient.Compatibility.getParameters(algorithm, storageName).map { (id, bytes) ->
             decode<T>(id, bytes, type)
         }.toList()
     }
 
     override suspend fun <T : TestData> saveData(parametersId: TestParametersId, data: T, type: KType): String {
-        return TesterClient.saveData(algorithm, storageName, parametersId.value, encode(data, type))
+        return TesttoolClient.Compatibility.saveData(algorithm, storageName, parametersId.value, encode(data, type))
     }
 
     override suspend fun <T : TestData> getData(
         parametersId: TestParametersId,
         type: KType,
     ): List<Triple<String, T, Map<String, String>>> {
-        return TesterClient.getData(algorithm, storageName, parametersId.value).map { (id, bytes) ->
+        return TesttoolClient.Compatibility.getData(algorithm, storageName, parametersId.value).map { (id, bytes) ->
             decode<T>(id, bytes, type)
         }.toList()
     }

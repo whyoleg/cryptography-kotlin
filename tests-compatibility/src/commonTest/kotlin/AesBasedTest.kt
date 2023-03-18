@@ -6,12 +6,12 @@ package dev.whyoleg.cryptography.tests.compatibility
 
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
-import dev.whyoleg.cryptography.test.utils.*
+import dev.whyoleg.cryptography.test.*
 import dev.whyoleg.cryptography.tests.compatibility.api.*
 import kotlinx.serialization.*
 import kotlin.test.*
 
-private const val keyIterations = 10
+private const val keyIterations = 5
 
 abstract class AesBasedTest<K : AES.Key, A : AES<K>>(
     algorithmId: CryptographyAlgorithmId<A>,

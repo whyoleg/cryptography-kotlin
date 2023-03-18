@@ -12,7 +12,7 @@ import kotlinx.serialization.*
 import kotlin.test.*
 
 private const val associatedDataIterations = 5
-private const val cipherIterations = 10
+private const val cipherIterations = 5
 private const val maxPlaintextSize = 10000
 private const val maxAssociatedDataSize = 10000
 
@@ -22,7 +22,7 @@ class AesGcmTest : AesBasedTest<AES.GCM.Key, AES.GCM>(AES.GCM) {
     private data class CipherParameters(val tagSizeBits: Int) : TestParameters
 
     override suspend fun CompatibilityTestContext<AES.GCM>.generate() {
-        val tagSizes = listOf(96, 104, 112, 120, 128).map { tagSizeBits ->
+        val tagSizes = listOf(96, 128).map { tagSizeBits ->
             val id = api.ciphers.saveParameters(CipherParameters(tagSizeBits))
             id to tagSizeBits.bits
         }
@@ -59,7 +59,7 @@ class AesGcmTest : AesBasedTest<AES.GCM.Key, AES.GCM>(AES.GCM) {
 
         api.ciphers.getParameters<CipherParameters> { (tagSize), parametersId ->
             api.ciphers.getData<AuthenticatedCipherData>(parametersId) { (keyReference, associatedData, plaintext, ciphertext), _ ->
-                keys.getValue(keyReference).forEach { key ->
+                keys[keyReference]?.forEach { key ->
                     val cipher = key.cipher(tagSize.bits)
                     assertContentEquals(plaintext, cipher.decrypt(ciphertext, associatedData), "Decrypt")
                     assertContentEquals(

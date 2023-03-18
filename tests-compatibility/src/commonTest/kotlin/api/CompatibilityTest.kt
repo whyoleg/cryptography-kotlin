@@ -2,20 +2,11 @@
  * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
-package dev.whyoleg.cryptography.tests.compatibility
+package dev.whyoleg.cryptography.tests.compatibility.api
 
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.provider.*
-import dev.whyoleg.cryptography.test.utils.*
-import dev.whyoleg.cryptography.tests.compatibility.api.*
+import dev.whyoleg.cryptography.test.*
 import kotlin.test.*
-
-open class CompatibilityTestContext<A : CryptographyAlgorithm>(
-    logger: TestLogger,
-    provider: CryptographyProvider,
-    algorithm: A,
-    val api: TesterApi,
-) : AlgorithmTestContext<A>(logger, provider, algorithm)
 
 abstract class CompatibilityTest<A : CryptographyAlgorithm>(
     private val algorithmId: CryptographyAlgorithmId<A>,
@@ -41,7 +32,7 @@ abstract class CompatibilityTest<A : CryptographyAlgorithm>(
     ) = runTestForEachAlgorithm(algorithmId) {
         val api = when (name) {
             null -> InMemoryApi(logger)
-            else -> ServerBasedApi(algorithmId.name, mapOf("platform" to currentPlatform, "provider" to provider.name), logger)
+            else -> ServerApi(algorithmId.name, mapOf("platform" to currentPlatform, "provider" to provider.name), logger)
         }
         CompatibilityTestContext(logger, provider, algorithm, api).block()
     }

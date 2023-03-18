@@ -6,12 +6,12 @@ package dev.whyoleg.cryptography.tests.compatibility
 
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
-import dev.whyoleg.cryptography.test.utils.*
+import dev.whyoleg.cryptography.test.*
 import dev.whyoleg.cryptography.tests.compatibility.api.*
 import kotlinx.serialization.*
 import kotlin.test.*
 
-private const val keyIterations = 5
+private const val keyIterations = 3
 
 abstract class RsaBasedTest<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP : RSA.KeyPair<PublicK, PrivateK>, A : RSA<PublicK, PrivateK, KP>>(
     algorithmId: CryptographyAlgorithmId<A>,

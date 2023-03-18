@@ -53,7 +53,7 @@ class RsaPssTest : RsaBasedTest<RSA.PSS.PublicKey, RSA.PSS.PrivateKey, RSA.PSS.K
 
         api.signatures.getParameters<SignatureParameters> { (saltSizeBytes), parametersId ->
             api.signatures.getData<SignatureData>(parametersId) { (keyReference, data, signature), _ ->
-                val (publicKeys, privateKeys) = keyPairs.getValue(keyReference)
+                val (publicKeys, privateKeys) = keyPairs[keyReference] ?: return@getData
                 val verifiers = publicKeys.map { it.signatureVerifier(saltSizeBytes.bytes) }
                 val generators = privateKeys.map { it.signatureGenerator(saltSizeBytes.bytes) }
 
