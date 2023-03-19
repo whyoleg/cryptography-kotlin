@@ -2,9 +2,11 @@ site_author: Oleg Yukhnevich
 site_name: cryptography-kotlin
 site_description: "Type-safe Multi-platform cryptography kotlin library"
 site_url: https://whyoleg.github.io/cryptography-kotlin/
+
 repo_name: cryptography-kotlin
 repo_url: https://github.com/whyoleg/cryptography-kotlin
 remote_branch: gh-pages
+
 copyright: 'Copyright &copy; 2023 Oleg Yukhnevich'
 
 extra:
@@ -50,6 +52,7 @@ theme:
     - content.code.copy
 
 markdown_extensions:
+  - smarty
   - pymdownx.highlight
   - pymdownx.inlinehilite
   - pymdownx.snippets
@@ -59,23 +62,27 @@ markdown_extensions:
   - toc:
       permalink: true
 
+plugins:
+  - search
+
 nav:
   - 'Overview':
       - index.md
+      - 'Modules':
+          - 'cryptography-random': modules/cryptography-random.md
+          - 'cryptography-core': modules/cryptography-core.md
+          - 'cryptography-bom': modules/cryptography-bom.md
+          - 'cryptography-version-catalog': modules/cryptography-version-catalog.md
+          - 'cryptography-jdk': modules/cryptography-jdk.md
+          - 'cryptography-webcrypto': modules/cryptography-webcrypto.md
+          - 'cryptography-apple': modules/cryptography-apple.md
+          - 'cryptography-openssl3-api': modules/cryptography-openssl3-api.md
+          - 'cryptography-openssl3-shared': modules/cryptography-openssl3-shared.md
+          - 'cryptography-openssl3-prebuilt': modules/cryptography-openssl3-prebuilt.md
   - 'API': api/index.html
   - 'Providers':
-      - providers.md
+      - providers/index.md
       - 'JDK': providers/jdk.md
       - 'WebCrypto': providers/webcrypto.md
       - 'Apple': providers/apple.md
       - 'OpenSSL3': providers/openssl3.md
-  - 'Modules':
-      - modules.md
-      - 'cryptography-random': modules/cryptography-random.md
-      - 'cryptography-core': modules/cryptography-core.md
-      - 'cryptography-jdk': modules/cryptography-jdk.md
-      - 'cryptography-apple': modules/cryptography-apple.md
-      - 'cryptography-webcrypto': modules/cryptography-webcrypto.md
-      - 'cryptography-openssl3-api': modules/cryptography-openssl3-api.md
-      - 'cryptography-openssl3-shared': modules/cryptography-openssl3-shared.md
-      - 'cryptography-openssl3-prebuilt': modules/cryptography-openssl3-prebuilt.md

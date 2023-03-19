@@ -24,3 +24,9 @@ publishing {
         }
     }
 }
+
+tasks.register<Copy>("copyForMkDocs") {
+    from("README.md")
+    into(rootDir.resolve("docs/modules"))
+    rename { "${project.name}.md" }
+}
