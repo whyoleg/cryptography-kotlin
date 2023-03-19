@@ -5,12 +5,12 @@ jobs:
   deploy:
     if: github.repository == 'whyoleg/cryptography-kotlin'
     runs-on: macos-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     concurrency:
       group: github-pages
       cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
