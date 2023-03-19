@@ -34,7 +34,8 @@ tasks.withType<DokkaTaskPartial>().configureEach {
     suppressInheritedMembers.set(true)
     failOnWarning.set(true)
     dokkaSourceSets.configureEach {
-//        includes.from("README.md")
+        //includes.from("README.md")
+        file("README.md").also { if (it.exists()) includes.from(it) }
         reportUndocumented.set(false) // set true later
         sourceLink {
             val sourceSetPath = "src/$name/kotlin"
@@ -44,4 +45,10 @@ tasks.withType<DokkaTaskPartial>().configureEach {
             remoteLineSuffix.set("#L")
         }
     }
+}
+
+tasks.register<Copy>("copyForMkDocs") {
+    file("README.md").also { if (it.exists()) from(it) }
+    into(rootDir.resolve("docs/modules"))
+    rename { "${project.name}.md" }
 }

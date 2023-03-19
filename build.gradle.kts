@@ -23,6 +23,20 @@ plugins.withType<YarnPlugin> {
 
 tasks.dokkaHtmlMultiModule {
     outputDirectory.set(file("docs/api"))
+    includes.from("MODULES.md")
+}
+
+tasks.register<Copy>("copyForMkDocs") {
+    from("README.md")
+    into(rootDir.resolve("docs"))
+    rename { "index.md" }
+}
+
+tasks.register<Exec>("buildMkDocs") {
+    dependsOn(tasks.dokkaHtmlMultiModule)
+    dependsOn("copyForMkDocs")
+    dependsOn(subprojects.mapNotNull { it.tasks.findByName("copyForMkDocs") })
+    commandLine("mkdocs", "build", "--clean", "--strict")
 }
 
 val skipTest = buildParameters.skip.test

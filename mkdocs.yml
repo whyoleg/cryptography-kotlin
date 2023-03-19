@@ -5,7 +5,7 @@ site_url: https://whyoleg.github.io/cryptography-kotlin/
 repo_name: cryptography-kotlin
 repo_url: https://github.com/whyoleg/cryptography-kotlin
 remote_branch: gh-pages
-copyright: 'Copyright (c) 2023 Oleg Yukhnevich.'
+copyright: 'Copyright &copy; 2023 Oleg Yukhnevich'
 
 extra:
   social:
@@ -20,6 +20,8 @@ extra:
 
 theme:
   name: 'material'
+  icon:
+    repo: fontawesome/brands/github
   palette:
     - scheme: default
       media: "(prefers-color-scheme: light)"
@@ -35,9 +37,45 @@ theme:
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
-  icon:
-    repo: fontawesome/brands/github
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.indexes
+    - navigation.top
+    - toc.follow
+    - content.code.copy
+
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.magiclink
+  - pymdownx.smartsymbols
+  - toc:
+      permalink: true
 
 nav:
-  - 'Overview': index.md
+  - 'Overview':
+      - index.md
   - 'API': api/index.html
+  - 'Providers':
+      - providers.md
+      - 'JDK': providers/jdk.md
+      - 'WebCrypto': providers/webcrypto.md
+      - 'Apple': providers/apple.md
+      - 'OpenSSL3': providers/openssl3.md
+  - 'Modules':
+      - modules.md
+      - 'cryptography-random': modules/cryptography-random.md
+      - 'cryptography-core': modules/cryptography-core.md
+      - 'cryptography-jdk': modules/cryptography-jdk.md
+      - 'cryptography-apple': modules/cryptography-apple.md
+      - 'cryptography-webcrypto': modules/cryptography-webcrypto.md
+      - 'cryptography-openssl3-api': modules/cryptography-openssl3-api.md
+      - 'cryptography-openssl3-shared': modules/cryptography-openssl3-shared.md
+      - 'cryptography-openssl3-prebuilt': modules/cryptography-openssl3-prebuilt.md

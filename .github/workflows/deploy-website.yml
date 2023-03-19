@@ -25,15 +25,10 @@ jobs:
         with:
           os: macos-latest
           cache-disabled: true
-      - name: Run dokka
+      - name: Build documentation
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: dokkaHtmlMultiModule
-      - name: Copy docs
-        run: |
-          cp README.md docs/index.md
-      - name: Build docs
-        run: mkdocs build
+          arguments: buildMkDocs
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact

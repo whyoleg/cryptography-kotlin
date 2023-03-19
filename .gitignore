@@ -12,3 +12,6 @@ build/
 *.log
 /local.properties
 /docs/api
+/docs/modules
+/docs/index.md
+/site
