@@ -13,8 +13,12 @@
     * Maven Central (check)
 * Doc
     * more info on what library is and how it works
-    * add info about testing to README
-    * add FAQ about security related things to README
+    * providers
+        * jdk
+        * webcrypto
+        * apple
+        * openssl (prebuilt + shared)
+    * modules
 
 ## 0.2.0: New operations, algorithms, engines
 
@@ -62,6 +66,12 @@
     * Qodana/CodeQL integration
     * setup mkdocs for current + preview versions
     * setup changelog managing
+    * setup CI builds for pull requests
+* Documentation:
+    * add info about testing
+    * add FAQ about security related things
+    * add documentation to declarations
+    * setup dokka to fail on undocumented
 
 ## Kotlin 1.8.20/1.9.0
 
