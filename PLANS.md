@@ -8,7 +8,6 @@
         * [ ] write behaviour tests for failures
 * [ ] Build
     * [ ] Samples (for each different kind of operation) - decide on how to include them
-    * [ ] setup toolchains compatible with gradle 8
 * [ ] CI
     * [ ] setup workflow for release publishing
     * [ ] Maven Central (check)
@@ -59,6 +58,7 @@
     * [ ] setup Dependabot/Renovate
     * [ ] setup kover merged report
     * [ ] publish kover report somewhere (https://github.com/mi-kas/kover-report)
+    * [ ] publish test report on CI
     * [ ] Qodana/CodeQL integration
 
 ## Kotlin 1.8.20/1.9.0
