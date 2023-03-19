@@ -3,9 +3,6 @@ on:
   workflow_dispatch:
   schedule:
     - cron: "0 0 * * SAT"
-  push:
-    branches:
-      - main
 
 jobs:
   build:
