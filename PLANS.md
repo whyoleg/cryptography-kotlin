@@ -12,7 +12,6 @@
     * [ ] setup workflow for release publishing
     * [ ] Maven Central (check)
 * [ ] Doc
-    * [ ] actualize README with some high-level information about library and some links
     * [ ] add info about testing to README
     * [ ] add FAQ about security related things to README
 
@@ -60,6 +59,8 @@
     * [ ] publish kover report somewhere (https://github.com/mi-kas/kover-report)
     * [ ] publish test report on CI
     * [ ] Qodana/CodeQL integration
+    * [ ] setup mkdocs for current + preview versions
+    * [ ] setup changelog managing
 
 ## Kotlin 1.8.20/1.9.0
 
