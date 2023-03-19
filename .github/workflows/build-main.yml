@@ -15,3 +15,7 @@ jobs:
   deploy:
     needs: [ publish ]
     uses: ./.github/workflows/deploy-website.yml
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
