@@ -1,6 +1,6 @@
 # cryptography-kotlin
 
-Types-safe Multiplatform cryptography library for Kotlin
+Type-safe Multiplatform cryptography library for Kotlin
 
 ```kotlin
 CryptographyProvider.Default
@@ -11,21 +11,32 @@ CryptographyProvider.Default
 
 ## Modules
 
-* `cryptography-random` - zero-dependency platform-dependent CSPRNG
-* `cryptography-core` - core interfaces for implementation by providers
+* [random](https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-random/) - zero-dependency platform-dependent CSPRNG
+* [core](https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-core) - core interfaces for implementation by providers
 * providers:
-    * `cryptography-jdk` -
-      uses [JCA](https://docs.oracle.com/en/java/javase/17/security/java-cryptography-architecture-jca-reference-guide.html): javax.crypto.*
-      and java.security.*
-    * `cryptography-webcrypto` - uses [WebCrypto](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API)
-    * `cryptography-apple` -
-      uses [CommonCrypto](https://developer.apple.com/library/archive/documentation/Security/Conceptual/cryptoservices/Introduction/Introduction.html)
-    * `cryptography-openssl3` - uses [OpenSSL 3.x](https://www.openssl.org)
-        * `cryptography-openssl3-prebuilt` - statically linked to prebuilt OpenSSL 3.0.8
-        * `cryptography-openssl3-shared` - dynamically linked (experimental)
-* `cryptography-bom`
+    * [jdk](https://whyoleg.github.io/cryptography-kotlin/providers/jdk/) - based on
+      JDK built-in [JCA](https://docs.oracle.com/en/java/javase/17/security/java-cryptography-architecture-jca-reference-guide.html)
+      (javax.crypto.* / java.security.*)
+    * [webcrypto](https://whyoleg.github.io/cryptography-kotlin/providers/webcrypto/) - based on
+      [WebCrypto](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API)
+    * [apple](https://whyoleg.github.io/cryptography-kotlin/providers/apple/) - based on
+      [CommonCrypto](https://developer.apple.com/library/archive/documentation/Security/Conceptual/cryptoservices/Introduction/Introduction.html)
+    * [openssl3](https://whyoleg.github.io/cryptography-kotlin/providers/openssl3/) - based on
+      [OpenSSL 3.x](https://www.openssl.org), statically linked to prebuilt OpenSSL 3.0.8 or dynamically linked (experimental)
+* [bom](https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-bom) and
+  [version-catalog](https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-version-catalog) -
+  provides [Maven BOM](https://docs.gradle.org/current/userguide/platforms.html#sub:bom_import)
+  and [Gradle version catalog](https://docs.gradle.org/current/userguide/platforms.html#sec:importing-published-catalog)
+  artifacts respectively
 
-## Usage
+## Documentation
+
+* [Project website with detailed documentation](https://whyoleg.github.io/cryptography-kotlin/)
+* [Full cryptography-kotlin API reference](https://whyoleg.github.io/cryptography-kotlin/api/)
+
+## Using in your projects
+
+Make sure, that you use Kotlin 1.8.10+
 
 > ⚠️ NOT YET PUBLISHED TO MAVEN CENTRAL
 
@@ -35,7 +46,8 @@ repositories {
 }
 dependencies {
     implementation("dev.whyoleg.cryptography:cryptography-core:0.1.0")
-    implementation("dev.whyoleg.cryptography:cryptography-PROVIDER_NAME:0.1.0")
+    // some provider
+    implementation("dev.whyoleg.cryptography:cryptography-jdk:0.1.0")
 }
 ```
 
@@ -49,40 +61,30 @@ repositories {
 }
 dependencies {
     implementation("dev.whyoleg.cryptography:cryptography-core:0.1.0-SNAPSHOT")
-    implementation("dev.whyoleg.cryptography:cryptography-PROVIDER_NAME:0.1.0-SNAPSHOT")
+    // some provider
+    implementation("dev.whyoleg.cryptography:cryptography-jdk:0.1.0-SNAPSHOT")
 }
 ```
 
 </p>
 </details>
 
-## Supported targets per provider
+## Bugs and Feedback
 
-> Provider artifacts are `cryptography-NAME` (e.g. `cryptography-openssl3`)
+For bugs, questions and discussions please use the [Github Issues](https://github.com/whyoleg/cryptography-kotlin/issues).
 
-| target                                    | jdk | webcrypto | apple | openssl3        |
-|-------------------------------------------|-----|-----------|-------|-----------------|
-| jvm                                       | ✅   | ➖         | ➖     | ❌               |
-| js                                        | ➖   | ✅         | ➖     | ❌               |
-| iosX64<br/>iosSimulatorArm64<br/>iosArm64 | ➖   | ➖         | ✅     | ✅ prebuilt only |
-| macosX64<br/>macosArm64                   | ➖   | ➖         | ✅     | ✅               |
-| linuxX64                                  | ➖   | ➖         | ➖     | ✅               |
-| mingwX64                                  | ➖   | ➖         | ➖     | ✅               |
+## License
 
-## Supported algorithms per provider
+    Copyright 2023 Oleg Yukhnevich.
 
-> Provider artifacts are `cryptography-NAME` (e.g. `cryptography-openssl3`)
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-| Operation                                   | Algorithm   | jdk | webcrypto | apple | openssl3 |
-|---------------------------------------------|-------------|:---:|:---------:|:-----:|:--------:|
-| **Digest**                                  | ⚠️ MD5      |  ✅  |     ❌     |   ✅   |    ✅     |
-|                                             | ⚠️ SHA1     |  ✅  |     ✅     |   ✅   |    ✅     |
-|                                             | SHA256      |  ✅  |     ✅     |   ✅   |    ✅     |
-|                                             | SHA384      |  ✅  |     ✅     |   ✅   |    ✅     |
-|                                             | SHA512      |  ✅  |     ✅     |   ✅   |    ✅     |
-| **MAC**                                     | HMAC        |  ✅  |     ✅     |   ✅   |    ✅     |
-| **Symmetric-key<br/>encryption/decryption** | AES-CBC     |  ✅  |     ✅     |   ✅   |    ✅     |
-|                                             | AES-GCM     |  ✅  |     ✅     |   ❌   |    ✅     |
-| **Public-key<br/>encryption/decryption**    | RSA-OAEP    |  ✅  |     ✅     |   ❌   |    ✅     |
-| **Digital Signatures**                      | ECDSA       |  ✅  |     ✅     |   ❌   |    ✅     |
-|                                             | RSA-SSA-PSS |  ✅  |     ✅     |   ❌   |    ✅     |
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.

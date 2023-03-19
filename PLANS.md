@@ -12,6 +12,7 @@
     * setup workflow for release publishing
     * Maven Central (check)
 * Doc
+    * more info on what library is and how it works
     * add info about testing to README
     * add FAQ about security related things to README
 

@@ -53,6 +53,7 @@ theme:
 
 markdown_extensions:
   - smarty
+  - tables
   - pymdownx.highlight
   - pymdownx.inlinehilite
   - pymdownx.snippets
