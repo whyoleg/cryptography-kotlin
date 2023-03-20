@@ -2,6 +2,9 @@
 
 > [API Reference](https://whyoleg.github.io/cryptography-kotlin/api/cryptography-webcrypto/index.html)
 
+Provider implementation via
+[WebCrypto](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API)
+
 For supported targets and algorithms please consult [Supported primitives section](index.md#supported-primitives)
 
 ## Limitations

@@ -25,7 +25,7 @@ dependencies {
 Provides implementation of [CryptographyProvider][CryptographyProvider] via
 [CommonCrypto](https://developer.apple.com/library/archive/documentation/Security/Conceptual/cryptoservices/Introduction/Introduction.html).
 
-<!--- MODULE cryptograph-apple -->
+<!--- MODULE cryptography-apple -->
 
 [CryptographyProvider]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.provider/-cryptography-provider/index.html
 
