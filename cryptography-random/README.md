@@ -28,7 +28,7 @@ dependencies {
 
 [kotlin.Random]: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.random/-random/
 
-[CryptographyRandom]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-kotlin/api/cryptography-random/dev.whyoleg.cryptography.random/-cryptography-random/index.html
+[CryptographyRandom]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-random/dev.whyoleg.cryptography.random/-cryptography-random/index.html
 
 # Package dev.whyoleg.cryptography.random
 
@@ -36,4 +36,4 @@ Provides [CryptographyRandom][CryptographyRandom] zero-dependency platform-depen
 
 [kotlin.Random]: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.random/-random/
 
-[CryptographyRandom]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-kotlin/api/cryptography-random/dev.whyoleg.cryptography.random/-cryptography-random/index.html
+[CryptographyRandom]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-random/dev.whyoleg.cryptography.random/-cryptography-random/index.html
