@@ -1,9 +1,17 @@
 # Module cryptography-webcrypto
 
-Provides implementation of [CryptographyProvider][CryptographyProvider] via
-[WebCrypto](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API)
+Provides implementation of [CryptographyProvider][CryptographyProvider] via [WebCrypto][WebCrypto]
 
-> Notes: only `suspend` functions are supported, because `WebCrypto` API is async by default
+For supported targets and algorithms please consult [Supported primitives section][Supported primitives section]
+
+## Limitations
+
+* only `suspend` functions are supported, because `WebCrypto` API is async by default
+* AES.* (browser only): may not support `192 bit` keys
+* AES.CBC: only `padding=true` is supported
+* ECDSA: only `RAW` signature format is supported
+* ECDSA (browser only): private key `DER` encoding can be different comparing to other providers
+  (though it will still work)
 
 ## Example
 
@@ -24,8 +32,10 @@ dependencies {
 
 # Package dev.whyoleg.cryptography.webcrypto
 
-<!--- MODULE cryptography-webcrypto -->
+Provides implementation of [CryptographyProvider][CryptographyProvider] via [WebCrypto][WebCrypto]
 
 [CryptographyProvider]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.provider/-cryptography-provider/index.html
 
-<!--- END -->
+[WebCrypto]: https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API
+
+[Supported primitives section]: https://whyoleg.github.io/cryptography-kotlin/providers#supported-primitives

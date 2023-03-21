@@ -9,22 +9,23 @@ CryptographyProvider.Default
     .hash("Kotlin is Awesome".encodeToByteArray())
 ```
 
+
+
 ## Modules
 
 * [random](https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-random/) - zero-dependency platform-dependent CSPRNG
-* [core](https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-core) - core interfaces for implementation by providers
-* providers:
+* [core](https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-core/) - core interfaces for implementation by providers
+* [Providers](https://whyoleg.github.io/cryptography-kotlin/providers/):
     * [jdk](https://whyoleg.github.io/cryptography-kotlin/providers/jdk/) - based on
       JDK built-in [JCA](https://docs.oracle.com/en/java/javase/17/security/java-cryptography-architecture-jca-reference-guide.html)
-      (javax.crypto.* / java.security.*)
     * [webcrypto](https://whyoleg.github.io/cryptography-kotlin/providers/webcrypto/) - based on
       [WebCrypto](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API)
     * [apple](https://whyoleg.github.io/cryptography-kotlin/providers/apple/) - based on
       [CommonCrypto](https://developer.apple.com/library/archive/documentation/Security/Conceptual/cryptoservices/Introduction/Introduction.html)
     * [openssl3](https://whyoleg.github.io/cryptography-kotlin/providers/openssl3/) - based on
       [OpenSSL 3.x](https://www.openssl.org), statically linked to prebuilt OpenSSL 3.0.8 or dynamically linked (experimental)
-* [bom](https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-bom) and
-  [version-catalog](https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-version-catalog) -
+* [bom](https://whyoleg.github.io/cryptography-kotlin/bom) and
+  [version-catalog](https://whyoleg.github.io/cryptography-kotlin/gradle-version-catalog) -
   provides [Maven BOM](https://docs.gradle.org/current/userguide/platforms.html#sub:bom_import)
   and [Gradle version catalog](https://docs.gradle.org/current/userguide/platforms.html#sec:importing-published-catalog)
   artifacts respectively
@@ -36,7 +37,9 @@ CryptographyProvider.Default
 
 ## Using in your projects
 
-Make sure, that you use Kotlin 1.8.10+
+Make sure that you use Kotlin 1.8.10+
+Additionally, it's possible to use [BOM](https://whyoleg.github.io/cryptography-kotlin/bom)
+or [Gradle version catalog](https://whyoleg.github.io/cryptography-kotlin/gradle-version-catalog) to add dependencies easier
 
 > ⚠️ NOT YET PUBLISHED TO MAVEN CENTRAL
 
@@ -52,7 +55,7 @@ dependencies {
 ```
 
 <details>
-<summary>Snapshots of the development version are available in Sonatype's snapshots repository.</summary>
+<summary>Snapshots of the development version are available in Sonatype's snapshot repository.</summary>
 <p>
 
 ```kotlin
@@ -71,7 +74,7 @@ dependencies {
 
 ## Bugs and Feedback
 
-For bugs, questions and discussions please use the [Github Issues](https://github.com/whyoleg/cryptography-kotlin/issues).
+For bugs, questions and discussions, please use the [GitHub Issues](https://github.com/whyoleg/cryptography-kotlin/issues).
 
 ## License
 

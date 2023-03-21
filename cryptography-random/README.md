@@ -1,6 +1,6 @@
 # Module cryptography-random
 
-Zero-dependency platform-dependent CSPRNG exposed via [kotlin.Random][kotlin.Random] API.
+Provides zero-dependency platform-dependent CSPRNG exposed via [kotlin.Random][kotlin.Random] API
 
 Depending on target/platform uses:
 
@@ -30,8 +30,4 @@ dependencies {
 
 Zero-dependency platform-dependent CSPRNG exposed via [kotlin.Random][kotlin.Random] API
 
-<!--- MODULE cryptograph-random -->
-
 [kotlin.Random]: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.random/-random/
-
-<!--- END -->

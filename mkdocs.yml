@@ -20,6 +20,21 @@ extra:
     - icon: fontawesome/brands/linkedin
       link: https://linkedin.com/in/whyoleg/
 
+nav:
+  - 'Overview':
+      - index.md
+      - 'Secure Random': modules/cryptography-random.md
+      - 'Core primitives': modules/cryptography-core.md
+      - 'BOM': bom.md
+      - 'Gradle version catalog': gradle-version-catalog.md
+  - 'Providers':
+      - providers/index.md
+      - 'JDK': modules/cryptography-jdk.md
+      - 'WebCrypto': modules/cryptography-webcrypto.md
+      - 'Apple': modules/cryptography-apple.md
+      - 'OpenSSL3': modules/cryptography-openssl3.md
+  - 'API': api/index.html
+
 theme:
   name: 'material'
   icon:
@@ -65,16 +80,3 @@ markdown_extensions:
 
 plugins:
   - search
-
-nav:
-  - 'Overview':
-      - index.md
-      - 'Secure Random': modules/cryptography-random.md
-      - 'Core primitives': modules/cryptography-core.md
-  - 'Providers':
-      - providers/index.md
-      - 'JDK': modules/cryptography-jdk.md
-      - 'WebCrypto': modules/cryptography-webcrypto.md
-      - 'Apple': modules/cryptography-apple.md
-      - 'OpenSSL3': modules/cryptography-openssl3.md
-  - 'API': api/index.html

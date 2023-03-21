@@ -4,7 +4,8 @@ cryptography-kotlin library provides both common multi-platform API for cryptogr
 
 ## Using in your projects
 
-Make sure, that you use Kotlin 1.8.10+
+Make sure that you use Kotlin 1.8.10+.
+Additionally, it's possible to use [BOM](bom.md) or [Gradle version catalog](gradle-version-catalog.md) to add dependencies easier
 
 > ⚠️ NOT YET PUBLISHED TO MAVEN CENTRAL
 
@@ -20,7 +21,7 @@ dependencies {
 ```
 
 <details>
-<summary>Snapshots of the development version are available in Sonatype's snapshots repository.</summary>
+<summary>Snapshots of the development version are available in Sonatype's snapshot repository.</summary>
 <p>
 
 ```kotlin
@@ -39,7 +40,7 @@ dependencies {
 
 ## Bugs and Feedback
 
-For bugs, questions and discussions please use the [Github Issues](https://github.com/whyoleg/cryptography-kotlin/issues).
+For bugs, questions and discussions, please use the [GitHub Issues](https://github.com/whyoleg/cryptography-kotlin/issues).
 
 ## License
 
