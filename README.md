@@ -89,30 +89,28 @@ For bugs, questions and discussions, please use the [GitHub Issues](https://gith
 
 [kotlin.Random]: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.random/-random/
 
-[//]: # (TODO: correct paths)
+[ciphers]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-core#package-devwhyolegcryptographyoperationscipher
 
-[ciphers]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-core.md
+[digests]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-core#package-devwhyolegcryptographyoperationshash
 
-[digests]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-core.md
+[signatures]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-core#package-devwhyolegcryptographyoperationssignature
 
-[signatures]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-core.md
+[AES]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-core#package-devwhyolegcryptographyalgorithmssymmetric
 
-[AES]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-core.md
+[RSA]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-core#package-devwhyolegcryptographyalgorithmsasymmetric
 
-[RSA]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-core.md
+[ECDSA]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-core#package-devwhyolegcryptographyalgorithmsasymmetric
 
-[ECDSA]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-core.md
-
-[SHA]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-core.md
+[SHA]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-core#package-devwhyolegcryptographyalgorithmsdigest
 
 [providers]: https://whyoleg.github.io/cryptography-kotlin/providers/
 
-[OpenSSL]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-openssl3
+[OpenSSL]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-openssl3/
 
-[WebCrypto]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-webcrypto
+[WebCrypto]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-webcrypto/
 
-[JDK]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-jdk
+[JDK]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-jdk/
 
-[BOM]: https://whyoleg.github.io/cryptography-kotlin/bom
+[BOM]: https://whyoleg.github.io/cryptography-kotlin/bom/
 
-[Gradle version catalog]: https://whyoleg.github.io/cryptography-kotlin/gradle-version-catalog
+[Gradle version catalog]: https://whyoleg.github.io/cryptography-kotlin/gradle-version-catalog/

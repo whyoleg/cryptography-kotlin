@@ -70,34 +70,32 @@ For bugs, questions and discussions, please use the [GitHub Issues](https://gith
     See the License for the specific language governing permissions and
     limitations under the License.
 
-[Secure random]: modules/cryptography-random.md
+[Secure random]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-random
 
 [kotlin.Random]: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.random/-random/
 
-[//]: # (TODO: correct paths)
+[ciphers]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-core#package-devwhyolegcryptographyoperationscipher
 
-[ciphers]: modules/cryptography-core.md
+[digests]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-core#package-devwhyolegcryptographyoperationshash
 
-[digests]: modules/cryptography-core.md
+[signatures]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-core#package-devwhyolegcryptographyoperationssignature
 
-[signatures]: modules/cryptography-core.md
+[AES]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-core#package-devwhyolegcryptographyalgorithmssymmetric
 
-[AES]: modules/cryptography-core.md
+[RSA]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-core#package-devwhyolegcryptographyalgorithmsasymmetric
 
-[RSA]: modules/cryptography-core.md
+[ECDSA]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-core#package-devwhyolegcryptographyalgorithmsasymmetric
 
-[ECDSA]: modules/cryptography-core.md
+[SHA]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-core#package-devwhyolegcryptographyalgorithmsdigest
 
-[SHA]: modules/cryptography-core.md
+[providers]: https://whyoleg.github.io/cryptography-kotlin/providers/
 
-[providers]: providers/index.md
+[OpenSSL]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-openssl3/
 
-[OpenSSL]: modules/cryptography-openssl3.md
+[WebCrypto]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-webcrypto/
 
-[WebCrypto]: modules/cryptography-webcrypto.md
+[JDK]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-jdk/
 
-[JDK]: modules/cryptography-jdk.md
+[BOM]: https://whyoleg.github.io/cryptography-kotlin/bom/
 
-[BOM]: bom.md
-
-[Gradle version catalog]: gradle-version-catalog.md
+[Gradle version catalog]: https://whyoleg.github.io/cryptography-kotlin/gradle-version-catalog/
