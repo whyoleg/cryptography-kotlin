@@ -69,21 +69,12 @@ plugins:
 nav:
   - 'Overview':
       - index.md
-      - 'Modules':
-          - 'cryptography-random': modules/cryptography-random.md
-          - 'cryptography-core': modules/cryptography-core.md
-          - 'cryptography-bom': modules/cryptography-bom.md
-          - 'cryptography-version-catalog': modules/cryptography-version-catalog.md
-          - 'cryptography-jdk': modules/cryptography-jdk.md
-          - 'cryptography-webcrypto': modules/cryptography-webcrypto.md
-          - 'cryptography-apple': modules/cryptography-apple.md
-          - 'cryptography-openssl3-api': modules/cryptography-openssl3-api.md
-          - 'cryptography-openssl3-shared': modules/cryptography-openssl3-shared.md
-          - 'cryptography-openssl3-prebuilt': modules/cryptography-openssl3-prebuilt.md
-  - 'API': api/index.html
+      - 'Secure Random': modules/cryptography-random.md
+      - 'Core primitives': modules/cryptography-core.md
   - 'Providers':
       - providers/index.md
-      - 'JDK': providers/jdk.md
-      - 'WebCrypto': providers/webcrypto.md
-      - 'Apple': providers/apple.md
-      - 'OpenSSL3': providers/openssl3.md
+      - 'JDK': modules/cryptography-jdk.md
+      - 'WebCrypto': modules/cryptography-webcrypto.md
+      - 'Apple': modules/cryptography-apple.md
+      - 'OpenSSL3': modules/cryptography-openssl3.md
+  - 'API': api/index.html

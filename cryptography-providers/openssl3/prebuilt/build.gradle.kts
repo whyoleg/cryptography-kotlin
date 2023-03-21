@@ -38,3 +38,7 @@ kotlin {
         }
     }
 }
+
+documentation {
+    includes.set(null as String?)
+}

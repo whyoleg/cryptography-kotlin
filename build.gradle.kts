@@ -25,9 +25,9 @@ tasks.dokkaHtmlMultiModule {
     outputDirectory.set(file("docs/api"))
 }
 
-tasks.register<Exec>("buildMkDocs") {
+tasks.register<Exec>("mkdocsBuild") {
     dependsOn(tasks.dokkaHtmlMultiModule)
-    dependsOn(subprojects.mapNotNull { it.tasks.findByName("copyForMkDocs") })
+    dependsOn(subprojects.mapNotNull { it.tasks.findByName("mkdocsCopy") })
     commandLine("mkdocs", "build", "--clean", "--strict")
 }
 
