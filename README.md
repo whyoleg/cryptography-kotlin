@@ -9,37 +9,30 @@ CryptographyProvider.Default
     .hash("Kotlin is Awesome".encodeToByteArray())
 ```
 
+Detailed documentation can be found on
+[project website](https://whyoleg.github.io/cryptography-kotlin/) as well as in
+[API reference](https://whyoleg.github.io/cryptography-kotlin/api/)
 
+# Overview
 
-## Modules
+cryptography-kotlin provides multiplatform API which consists of multiple components:
 
-* [random](https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-random/) - zero-dependency platform-dependent CSPRNG
-* [core](https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-core/) - core interfaces for implementation by providers
-* [Providers](https://whyoleg.github.io/cryptography-kotlin/providers/):
-    * [jdk](https://whyoleg.github.io/cryptography-kotlin/providers/jdk/) - based on
-      JDK built-in [JCA](https://docs.oracle.com/en/java/javase/17/security/java-cryptography-architecture-jca-reference-guide.html)
-    * [webcrypto](https://whyoleg.github.io/cryptography-kotlin/providers/webcrypto/) - based on
-      [WebCrypto](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API)
-    * [apple](https://whyoleg.github.io/cryptography-kotlin/providers/apple/) - based on
-      [CommonCrypto](https://developer.apple.com/library/archive/documentation/Security/Conceptual/cryptoservices/Introduction/Introduction.html)
-    * [openssl3](https://whyoleg.github.io/cryptography-kotlin/providers/openssl3/) - based on
-      [OpenSSL 3.x](https://www.openssl.org), statically linked to prebuilt OpenSSL 3.0.8 or dynamically linked (experimental)
-* [bom](https://whyoleg.github.io/cryptography-kotlin/bom) and
-  [version-catalog](https://whyoleg.github.io/cryptography-kotlin/gradle-version-catalog) -
-  provides [Maven BOM](https://docs.gradle.org/current/userguide/platforms.html#sub:bom_import)
-  and [Gradle version catalog](https://docs.gradle.org/current/userguide/platforms.html#sec:importing-published-catalog)
-  artifacts respectively
+* [Secure random][Secure random] with [kotlin.Random][kotlin.Random] like API which can be used independently of other modules
+* common API to use different cryptography operations, like [ciphers][ciphers], [digests][digests] and [signatures][signatures]
+* multiple algorithms definitions, like [AES][AES], [RSA][RSA], [ECDSA][ECDSA] and [SHA][SHA]
+* multiple cryptography [providers][providers], like [OpenSSL][OpenSSL], [WebCrypto][WebCrypto] and [JDK][JDK]
 
-## Documentation
-
-* [Project website with detailed documentation](https://whyoleg.github.io/cryptography-kotlin/)
-* [Full cryptography-kotlin API reference](https://whyoleg.github.io/cryptography-kotlin/api/)
+The library doesn't implement any cryptography algorithm on its own, but wraps well-known future-proof solutions
+like [OpenSSL 3.x](https://www.openssl.org), [WebCrypto](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API)
+or [JCA](https://docs.oracle.com/en/java/javase/17/security/java-cryptography-architecture-jca-reference-guide.html)
+with type-safe multiplatform API providing uniform experience with aligned default behavior,
+and same expected results using identical parameters while allowing to use platform-specific capabilities.
+For supported algorithms, primitives and targets, please consult [Providers documentation][providers]
 
 ## Using in your projects
 
-Make sure that you use Kotlin 1.8.10+
-Additionally, it's possible to use [BOM](https://whyoleg.github.io/cryptography-kotlin/bom)
-or [Gradle version catalog](https://whyoleg.github.io/cryptography-kotlin/gradle-version-catalog) to add dependencies easier
+Make sure that you use Kotlin 1.8.10+.
+Additionally, it's possible to use [BOM][BOM] or [Gradle version catalog][Gradle version catalog] to add dependencies easier
 
 > ⚠️ NOT YET PUBLISHED TO MAVEN CENTRAL
 
@@ -74,7 +67,7 @@ dependencies {
 
 ## Bugs and Feedback
 
-For bugs, questions and discussions, please use the [GitHub Issues](https://github.com/whyoleg/cryptography-kotlin/issues).
+For bugs, questions and discussions, please use the [GitHub Issues](https://github.com/whyoleg/cryptography-kotlin/issues)
 
 ## License
 
@@ -91,3 +84,35 @@ For bugs, questions and discussions, please use the [GitHub Issues](https://gith
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
+
+[Secure random]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-random
+
+[kotlin.Random]: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.random/-random/
+
+[//]: # (TODO: correct paths)
+
+[ciphers]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-core.md
+
+[digests]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-core.md
+
+[signatures]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-core.md
+
+[AES]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-core.md
+
+[RSA]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-core.md
+
+[ECDSA]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-core.md
+
+[SHA]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-core.md
+
+[providers]: https://whyoleg.github.io/cryptography-kotlin/providers/
+
+[OpenSSL]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-openssl3
+
+[WebCrypto]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-webcrypto
+
+[JDK]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-jdk
+
+[BOM]: https://whyoleg.github.io/cryptography-kotlin/bom
+
+[Gradle version catalog]: https://whyoleg.github.io/cryptography-kotlin/gradle-version-catalog

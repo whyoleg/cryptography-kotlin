@@ -2,7 +2,7 @@
 
 Provides implementation of [CryptographyProvider][CryptographyProvider] via [WebCrypto][WebCrypto]
 
-For supported targets and algorithms please consult [Supported primitives section][Supported primitives section]
+For supported targets and algorithms, please consult [Supported primitives section][Supported primitives section]
 
 ## Limitations
 
@@ -29,6 +29,12 @@ dependencies {
     implementation("dev.whyoleg.cryptography:cryptography-webcrypto:0.1.0")
 }
 ```
+
+[CryptographyProvider]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.provider/-cryptography-provider/index.html
+
+[WebCrypto]: https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API
+
+[Supported primitives section]: https://whyoleg.github.io/cryptography-kotlin/providers#supported-primitives
 
 # Package dev.whyoleg.cryptography.webcrypto
 

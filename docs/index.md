@@ -1,11 +1,23 @@
 # Overview
 
-cryptography-kotlin library provides both common multi-platform API for cryptography operations and several providers implementing API.
+cryptography-kotlin provides multiplatform API which consists of multiple components:
+
+* [Secure random][Secure random] with [kotlin.Random][kotlin.Random] like API which can be used independently of other modules
+* common API to use different cryptography operations, like [ciphers][ciphers], [digests][digests] and [signatures][signatures]
+* multiple algorithms definitions, like [AES][AES], [RSA][RSA], [ECDSA][ECDSA] and [SHA][SHA]
+* multiple cryptography [providers][providers], like [OpenSSL][OpenSSL], [WebCrypto][WebCrypto] and [JDK][JDK]
+
+The library doesn't implement any cryptography algorithm on its own, but wraps well-known future-proof solutions
+like [OpenSSL 3.x](https://www.openssl.org), [WebCrypto](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API)
+or [JCA](https://docs.oracle.com/en/java/javase/17/security/java-cryptography-architecture-jca-reference-guide.html)
+with type-safe multiplatform API providing uniform experience with aligned default behavior,
+and same expected results using identical parameters while allowing to use platform-specific capabilities.
+For supported algorithms, primitives and targets, please consult [Providers documentation][providers]
 
 ## Using in your projects
 
 Make sure that you use Kotlin 1.8.10+.
-Additionally, it's possible to use [BOM](bom.md) or [Gradle version catalog](gradle-version-catalog.md) to add dependencies easier
+Additionally, it's possible to use [BOM][BOM] or [Gradle version catalog][Gradle version catalog] to add dependencies easier
 
 > ⚠️ NOT YET PUBLISHED TO MAVEN CENTRAL
 
@@ -40,7 +52,7 @@ dependencies {
 
 ## Bugs and Feedback
 
-For bugs, questions and discussions, please use the [GitHub Issues](https://github.com/whyoleg/cryptography-kotlin/issues).
+For bugs, questions and discussions, please use the [GitHub Issues](https://github.com/whyoleg/cryptography-kotlin/issues)
 
 ## License
 
@@ -57,3 +69,35 @@ For bugs, questions and discussions, please use the [GitHub Issues](https://gith
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
+
+[Secure random]: modules/cryptography-random.md
+
+[kotlin.Random]: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.random/-random/
+
+[//]: # (TODO: correct paths)
+
+[ciphers]: modules/cryptography-core.md
+
+[digests]: modules/cryptography-core.md
+
+[signatures]: modules/cryptography-core.md
+
+[AES]: modules/cryptography-core.md
+
+[RSA]: modules/cryptography-core.md
+
+[ECDSA]: modules/cryptography-core.md
+
+[SHA]: modules/cryptography-core.md
+
+[providers]: providers/index.md
+
+[OpenSSL]: modules/cryptography-openssl3.md
+
+[WebCrypto]: modules/cryptography-webcrypto.md
+
+[JDK]: modules/cryptography-jdk.md
+
+[BOM]: bom.md
+
+[Gradle version catalog]: gradle-version-catalog.md

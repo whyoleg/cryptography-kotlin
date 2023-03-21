@@ -11,14 +11,6 @@
 * CI
     * setup workflow for release publishing
     * Maven Central (check)
-* Doc
-    * more info on what library is and how it works
-    * providers
-        * jdk
-        * webcrypto
-        * apple
-        * openssl (prebuilt + shared)
-    * modules
 
 ## 0.2.0: New operations, algorithms, engines
 

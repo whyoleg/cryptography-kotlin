@@ -2,7 +2,7 @@
 
 Provides implementation of [CryptographyProvider][CryptographyProvider] via [CommonCrypto][CommonCrypto]
 
-For supported targets and algorithms please consult [Supported primitives section][Supported primitives section]
+For supported targets and algorithms, please consult [Supported primitives section][Supported primitives section]
 
 ## Limitations
 
@@ -24,6 +24,12 @@ dependencies {
     implementation("dev.whyoleg.cryptography:cryptography-apple:0.1.0")
 }
 ```
+
+[CryptographyProvider]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.provider/-cryptography-provider/index.html
+
+[CommonCrypto]: https://developer.apple.com/library/archive/documentation/Security/Conceptual/cryptoservices/Introduction/Introduction.html
+
+[Supported primitives section]: https://whyoleg.github.io/cryptography-kotlin/providers#supported-primitives
 
 # Package dev.whyoleg.cryptography.apple
 
