@@ -28,12 +28,15 @@ class RsaPssTest {
                     maxSaltSize
                 ).forEach { saltSize ->
                     val signatureGenerator = keyPair.privateKey.signatureGenerator(saltSize.bytes)
+                    val signatureVerifier = keyPair.publicKey.signatureVerifier(saltSize.bytes)
 
                     assertEquals(keySize.inBytes, signatureGenerator.generateSignature(ByteArray(0)).size)
                     repeat(8) { n ->
                         val size = 10.0.pow(n).toInt()
                         val data = CryptographyRandom.nextBytes(size)
-                        assertEquals(keySize.inBytes, signatureGenerator.generateSignature(data).size)
+                        val signature = signatureGenerator.generateSignature(data)
+                        assertEquals(keySize.inBytes, signature.size)
+                        assertTrue(signatureVerifier.verifySignature(data, signature))
                     }
                 }
             }

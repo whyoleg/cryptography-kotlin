@@ -1,12 +1,5 @@
 # Future versions planning
 
-## 0.1.0: Initial release
-
-* Tests
-    * write MORE core tests
-        * add test for decrypto ciphertext equal to iv size
-        * write behaviour tests for failures
-
 ## 0.2.0: New operations, algorithms, engines
 
 * Operations
@@ -46,6 +39,7 @@
     * Add assertion in compatibility tests on amount of tested combinations
     * better caching in tests (ciphers/signature* like keys)
     * Refactor currentPlatform in tests with some kind of object per platform with properties
+    * write MORE tests for failures - decide on how to better test everything, specifically failures and exeptional situations
 * Infrastructure:
     * setup Dependabot/Renovate
     * setup kover merged report
