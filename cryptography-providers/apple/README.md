@@ -11,7 +11,7 @@ For supported targets and algorithms, please consult [Supported primitives secti
 ## Example
 
 ```kotlin
-val provider = CryptographyProvider.Apple
+val provider = CryptographyProvider.Apple // or CryptographyProvider.Default 
 
 // get some algorithm
 provider.get(SHA512)

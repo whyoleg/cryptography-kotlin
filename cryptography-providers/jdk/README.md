@@ -12,7 +12,7 @@ For supported targets and algorithms, please consult [Supported primitives secti
 ## Example
 
 ```kotlin
-val provider = CryptographyProvider.JDK
+val provider = CryptographyProvider.JDK // or CryptographyProvider.Default
 
 // get some algorithm
 provider.get(SHA512)

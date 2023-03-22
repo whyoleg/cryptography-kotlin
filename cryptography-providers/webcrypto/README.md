@@ -16,7 +16,7 @@ For supported targets and algorithms, please consult [Supported primitives secti
 ## Example
 
 ```kotlin
-val provider = CryptographyProvider.WebCrypto
+val provider = CryptographyProvider.WebCrypto // or CryptographyProvider.Default
 
 // get some algorithm
 provider.get(SHA512)

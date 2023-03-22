@@ -23,7 +23,7 @@ For supported targets and algorithms, please consult [Supported primitives secti
 ## Example
 
 ```kotlin
-val provider = CryptographyProvider.Openssl3
+val provider = CryptographyProvider.Openssl3 // or CryptographyProvider.Default
 
 // get some algorithm
 provider.get(SHA512)
