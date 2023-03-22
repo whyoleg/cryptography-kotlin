@@ -74,19 +74,19 @@ For bugs, questions and discussions, please use the [GitHub Issues](https://gith
 
 [kotlin.Random]: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.random/-random/
 
-[ciphers]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-core#package-devwhyolegcryptographyoperationscipher
+[ciphers]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.operations.cipher/index.html
 
-[digests]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-core#package-devwhyolegcryptographyoperationshash
+[digests]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.operations.hash/index.html
 
-[signatures]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-core#package-devwhyolegcryptographyoperationssignature
+[signatures]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.operations.signature/index.html
 
-[AES]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-core#package-devwhyolegcryptographyalgorithmssymmetric
+[AES]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms.symmetric/-a-e-s/index.html
 
-[RSA]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-core#package-devwhyolegcryptographyalgorithmsasymmetric
+[RSA]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms.asymmetric/-r-s-a/index.html
 
-[ECDSA]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-core#package-devwhyolegcryptographyalgorithmsasymmetric
+[ECDSA]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms.asymmetric/-e-c-d-s-a/index.html
 
-[SHA]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-core#package-devwhyolegcryptographyalgorithmsdigest
+[SHA]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms.digest/index.html
 
 [providers]: https://whyoleg.github.io/cryptography-kotlin/providers/
 
