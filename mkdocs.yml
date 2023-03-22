@@ -25,6 +25,7 @@ nav:
       - index.md
       - 'Secure Random': modules/cryptography-random.md
       - 'Core primitives': modules/cryptography-core.md
+      - 'Code examples': examples.md
       - 'BOM': bom.md
       - 'Gradle version catalog': gradle-version-catalog.md
   - 'Providers':

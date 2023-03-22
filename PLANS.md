@@ -6,8 +6,6 @@
     * write MORE core tests
         * add test for decrypto ciphertext equal to iv size
         * write behaviour tests for failures
-* Build
-    * Samples (for each different kind of operation) - decide on how to include them
 * CI
     * setup workflow for release publishing
     * Maven Central (check)

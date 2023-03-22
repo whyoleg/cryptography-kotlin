@@ -13,7 +13,7 @@ Detailed documentation can be found on
 [project website](https://whyoleg.github.io/cryptography-kotlin/) as well as in
 [API reference](https://whyoleg.github.io/cryptography-kotlin/api/)
 
-# Overview
+## Overview
 
 cryptography-kotlin provides multiplatform API which consists of multiple components:
 
