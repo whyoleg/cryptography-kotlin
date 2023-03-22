@@ -18,7 +18,9 @@ class DigestTest {
         repeat(8) { n ->
             val size = 10.0.pow(n).toInt()
             val data = CryptographyRandom.nextBytes(size)
-            assertEquals(digestSize, hasher.hash(data).size)
+            val result = hasher.hash(data)
+            assertEquals(digestSize, result.size)
+            assertContentEquals(result, hasher.hash(data))
         }
     }
 
