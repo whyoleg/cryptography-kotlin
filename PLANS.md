@@ -37,6 +37,7 @@
     * Windows CNG engine
     * watchos/tvos: OpenSSL3/Apple
     * Engine builder DSL + decide on how to better handle providers inside engine (lazy, cache, etc)
+    * align exceptions between engines
 * Tests
     * Android integration tests
     * JDK with Bouncy Castle tests

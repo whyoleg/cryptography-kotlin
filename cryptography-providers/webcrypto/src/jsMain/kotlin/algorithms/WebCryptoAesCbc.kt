@@ -53,6 +53,8 @@ private class AesCbcCipher(private val key: CryptoKey) : Cipher {
     }
 
     override suspend fun decrypt(ciphertextInput: ByteArray): ByteArray {
+        require(ciphertextInput.size >= ivSizeBytes) { "Ciphertext is too short" }
+
         val result = WebCrypto.subtle.decrypt(
             AesCbcParams(ciphertextInput.copyOfRange(0, ivSizeBytes)),
             key,

@@ -52,6 +52,7 @@ private fun wrapKey(key: ByteArray): AES.CBC.Key = object : AES.CBC.Key {
 }
 
 private const val ivSizeBytes = 16 //bytes for CBC
+private const val blockSizeBytes = 16 //bytes for CBC
 
 private class AesCbcCipher(
     private val key: ByteArray,
@@ -81,7 +82,7 @@ private class AesCbcCipher(
 
     override fun decryptBlocking(ciphertextInput: ByteArray): ByteArray {
         require(ciphertextInput.size >= ivSizeBytes) { "Ciphertext is too short" }
-        if (!padding) require(ciphertextInput.size % 16 == 0) { "Ciphertext is not padded" }
+        require(ciphertextInput.size % blockSizeBytes == 0) { "Ciphertext is not padded" }
 
         return useCryptor { cryptorRef, dataOutMoved ->
             cryptorRef.create(kCCDecrypt, ciphertextInput.refTo(0))
@@ -89,9 +90,9 @@ private class AesCbcCipher(
             val plaintextOutput = ByteArray(cryptorRef.outputLength(ciphertextInput.size - ivSizeBytes))
 
             var moved = cryptorRef.update(
-                dataIn = ciphertextInput.refTo(ivSizeBytes),
+                dataIn = ciphertextInput.refToFixed(ivSizeBytes),
                 dataInLength = ciphertextInput.size - ivSizeBytes,
-                dataOut = plaintextOutput.refTo(0),
+                dataOut = plaintextOutput.refToFixed(0),
                 dataOutAvailable = plaintextOutput.size,
                 dataOutMoved = dataOutMoved
             )
@@ -184,8 +185,8 @@ private class AesCbcCipher(
     }
 
     private fun checkResult(result: CCCryptorStatus) {
-        when (result) {
-            kCCSuccess        -> null
+        val error = when (result) {
+            kCCSuccess        -> return
             kCCParamError     -> "Illegal parameter value."
             kCCBufferTooSmall -> "Insufficent buffer provided for specified operation."
             kCCMemoryFailure  -> "Memory allocation failure."
@@ -193,6 +194,7 @@ private class AesCbcCipher(
             kCCDecodeError    -> "Input data did not decode or decrypt properly."
             kCCUnimplemented  -> "Function not implemented for the current algorithm."
             else              -> "CCCrypt failed with code $result"
-        }?.let { throw CryptographyException(it) }
+        }
+        throw CryptographyException(error)
     }
 }
