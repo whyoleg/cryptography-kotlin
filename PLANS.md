@@ -6,9 +6,6 @@
     * write MORE core tests
         * add test for decrypto ciphertext equal to iv size
         * write behaviour tests for failures
-* CI
-    * setup workflow for release publishing
-    * Maven Central (check)
 
 ## 0.2.0: New operations, algorithms, engines
 

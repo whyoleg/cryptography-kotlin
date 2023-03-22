@@ -1,0 +1,20 @@
+name: Build main
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  test:
+    uses: ./.github/workflows/run-tests.yml
+  publish:
+    needs: [ test ]
+    uses: ./.github/workflows/publish-release.yml
+    secrets: inherit
+  deploy:
+    needs: [ publish ]
+    uses: ./.github/workflows/deploy-website.yml
+    permissions:
+      contents: read
+      pages: write
+      id-token: write

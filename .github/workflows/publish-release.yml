@@ -1,4 +1,4 @@
-name: Publish snapshot
+name: Publish release
 on: [ workflow_call ]
 
 jobs:
@@ -6,7 +6,7 @@ jobs:
     if: github.repository == 'whyoleg/cryptography-kotlin'
     runs-on: macos-latest
     concurrency:
-      group: publish-snapshot
+      group: publish-release
       cancel-in-progress: false
     steps:
       - uses: actions/checkout@v3
@@ -25,10 +25,10 @@ jobs:
           ORG_GRADLE_PROJECT_sonatypeUsername: ${{secrets.sonatypeUsername}}
           ORG_GRADLE_PROJECT_sonatypePassword: ${{secrets.sonatypePassword}}
 
-      - name: Publish snapshot to Sonatype
+      - name: Publish release to Maven Central
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: publishAllPublicationsToSnapshotRepository --scan
+          arguments: publishAllPublicationsToMavenCentralRepository --scan -Pversion=${{ github.ref_name }}
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{secrets.signingKey}}
           ORG_GRADLE_PROJECT_signingPassword: ${{secrets.signingPassword}}
