@@ -7,6 +7,7 @@ plugins {
 }
 
 buildParameters {
+    string("version")
     bool("ci") {
         fromEnvironment()
         defaultValue.set(false)
