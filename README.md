@@ -34,8 +34,6 @@ For supported algorithms, primitives and targets, please consult [Providers docu
 Make sure that you use Kotlin 1.8.10+.
 Additionally, it's possible to use [BOM][BOM] or [Gradle version catalog][Gradle version catalog] to add dependencies easier
 
-> ⚠️ NOT YET PUBLISHED TO MAVEN CENTRAL
-
 ```kotlin
 repositories {
     mavenCentral()
@@ -56,9 +54,9 @@ repositories {
     maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
 }
 dependencies {
-    implementation("dev.whyoleg.cryptography:cryptography-core:0.1.0-SNAPSHOT")
+    implementation("dev.whyoleg.cryptography:cryptography-core:0.2.0-SNAPSHOT")
     // some provider
-    implementation("dev.whyoleg.cryptography:cryptography-jdk:0.1.0-SNAPSHOT")
+    implementation("dev.whyoleg.cryptography:cryptography-jdk:0.2.0-SNAPSHOT")
 }
 ```
 

@@ -6,19 +6,17 @@ pluginManagement {
     repositories {
         gradlePluginPortal()
         mavenCentral()
-        maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
     }
 }
 
 dependencyResolutionManagement {
     repositories {
         mavenCentral()
-        maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
     }
 
     versionCatalogs {
         create("cryptographyLibs") {
-            from("dev.whyoleg.cryptography:cryptography-version-catalog:0.1.0-SNAPSHOT")
+            from("dev.whyoleg.cryptography:cryptography-version-catalog:0.1.0")
         }
     }
 }
