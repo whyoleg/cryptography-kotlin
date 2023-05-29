@@ -6,6 +6,10 @@ plugins {
     `kotlin-dsl`
 }
 
+kotlin {
+    jvmToolchain(8)
+}
+
 dependencies {
     implementation("build:build-parameters")
 }

@@ -6,6 +6,12 @@ plugins {
     id("org.gradlex.build-parameters") version "1.4.3"
 }
 
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(8))
+    }
+}
+
 buildParameters {
     enableValidation.set(false)
     string("version")

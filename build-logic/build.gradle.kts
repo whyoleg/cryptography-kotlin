@@ -6,6 +6,10 @@ plugins {
     `kotlin-dsl`
 }
 
+kotlin {
+    jvmToolchain(8)
+}
+
 dependencies {
     implementation(kotlinLibs.gradle.plugin)
     implementation(libs.build.kotlinx.bcv)
