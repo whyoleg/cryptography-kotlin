@@ -7,7 +7,6 @@ package dev.whyoleg.cryptography.openssl3.test
 import dev.whyoleg.cryptography.openssl3.internal.cinterop.*
 import kotlinx.cinterop.*
 import platform.posix.*
-import kotlin.random.*
 import kotlin.test.*
 
 abstract class LibCrypto3Test {
@@ -57,7 +56,7 @@ abstract class LibCrypto3Test {
                     key = key.asUByteArray().refTo(0),
                     keylen = key.size.convert(),
                     params = OSSL_PARAM_array(
-                        OSSL_PARAM_construct_utf8_string("digest".cstr.ptr, hashAlgorithm.cstr.ptr, 0)
+                        OSSL_PARAM_construct_utf8_string("digest".cstr.ptr, hashAlgorithm.cstr.ptr, 0U)
                     )
                 )
             )
@@ -85,7 +84,7 @@ abstract class LibCrypto3Test {
                 checkError(
                     EVP_PKEY_CTX_set_params(
                         context, OSSL_PARAM_array(
-                            OSSL_PARAM_construct_utf8_string("group".cstr.ptr, "P-521".cstr.ptr, 0)
+                            OSSL_PARAM_construct_utf8_string("group".cstr.ptr, "P-521".cstr.ptr, 0U)
                         )
                     )
                 )

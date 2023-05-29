@@ -60,7 +60,7 @@ internal object Openssl3Ecdsa : ECDSA {
                             ppkey = pkeyVar.ptr,
                             selection = EVP_PKEY_PUBLIC_KEY,
                             param = OSSL_PARAM_array(
-                                OSSL_PARAM_construct_utf8_string("group".cstr.ptr, curve.name.cstr.ptr, 0),
+                                OSSL_PARAM_construct_utf8_string("group".cstr.ptr, curve.name.cstr.ptr, 0U),
                                 OSSL_PARAM_construct_octet_string("pub".cstr.ptr, input.safeRefToU(0), input.size.convert())
                             )
                         )
@@ -84,7 +84,7 @@ internal object Openssl3Ecdsa : ECDSA {
         private val curve: EC.Curve,
     ) : Openssl3KeyPairGenerator<ECDSA.KeyPair>("EC") {
         override fun MemScope.createParams(): CValuesRef<OSSL_PARAM> = OSSL_PARAM_array(
-            OSSL_PARAM_construct_utf8_string("group".cstr.ptr, curve.name.cstr.ptr, 0)
+            OSSL_PARAM_construct_utf8_string("group".cstr.ptr, curve.name.cstr.ptr, 0U)
         )
 
         override fun wrapKeyPair(keyPair: CPointer<EVP_PKEY>): ECDSA.KeyPair = EcKeyPair(
@@ -129,7 +129,7 @@ internal object Openssl3Ecdsa : ECDSA {
         override fun encodeToBlocking(format: EC.PublicKey.Format): ByteArray = when (format) {
             EC.PublicKey.Format.RAW -> memScoped {
                 val outVar = alloc<size_tVar>()
-                checkError(EVP_PKEY_get_octet_string_param(key, "encoded-pub-key", null, 0, outVar.ptr))
+                checkError(EVP_PKEY_get_octet_string_param(key, "encoded-pub-key", null, 0U, outVar.ptr))
                 val output = ByteArray(outVar.value.convert())
                 checkError(EVP_PKEY_get_octet_string_param(key, "encoded-pub-key", output.safeRefToU(0), output.size.convert(), outVar.ptr))
                 output.ensureSizeExactly(outVar.value.convert())
@@ -152,7 +152,7 @@ private fun EC_check_key_group(key: CPointer<EVP_PKEY>, expectedCurve: EC.Curve)
     val expectedGroup = checkError(
         EC_GROUP_new_from_params(
             OSSL_PARAM_array(
-                OSSL_PARAM_construct_utf8_string("group".cstr.ptr, expectedCurve.name.cstr.ptr, 0)
+                OSSL_PARAM_construct_utf8_string("group".cstr.ptr, expectedCurve.name.cstr.ptr, 0U)
             ), null, null
         )
     )
@@ -161,7 +161,7 @@ private fun EC_check_key_group(key: CPointer<EVP_PKEY>, expectedCurve: EC.Curve)
         val expectedGroupName = checkError(OSSL_EC_curve_nid2name(expectedGroupNid)).toKString()
 
         val keyGroupName = allocArray<ByteVar>(256).also {
-            checkError(EVP_PKEY_get_utf8_string_param(key, "group", it, 256, null))
+            checkError(EVP_PKEY_get_utf8_string_param(key, "group", it, 256U, null))
         }.toKString()
 
         check(expectedGroupName == keyGroupName) {

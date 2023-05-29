@@ -39,7 +39,7 @@ internal object Openssl3CryptographyProvider : CryptographyProvider() {
     } as A?
 }
 
-@Suppress("DEPRECATION", "INVISIBLE_MEMBER")
+@Suppress("DEPRECATION", "INVISIBLE_MEMBER", "INVISIBLE_REFERENCE")
 @OptIn(ExperimentalStdlibApi::class)
 @EagerInitialization
 private val initHook = registerProvider(defaultProvider)

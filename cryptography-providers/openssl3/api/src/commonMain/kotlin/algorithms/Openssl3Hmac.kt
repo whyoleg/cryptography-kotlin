@@ -84,7 +84,7 @@ private class HmacSignature(
                     key = key.refToU(0),
                     keylen = key.size.convert(),
                     params = OSSL_PARAM_array(
-                        OSSL_PARAM_construct_utf8_string("digest".cstr.ptr, hashAlgorithm.cstr.ptr, 0)
+                        OSSL_PARAM_construct_utf8_string("digest".cstr.ptr, hashAlgorithm.cstr.ptr, 0U)
                     )
                 )
             )

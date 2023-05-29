@@ -34,7 +34,7 @@ internal object WebCryptoCryptographyProvider : CryptographyProvider() {
     } as A?
 }
 
-@Suppress("DEPRECATION", "INVISIBLE_MEMBER")
+@Suppress("DEPRECATION", "INVISIBLE_MEMBER", "INVISIBLE_REFERENCE")
 @OptIn(ExperimentalStdlibApi::class, ExperimentalJsExport::class)
 @EagerInitialization
 @JsExport

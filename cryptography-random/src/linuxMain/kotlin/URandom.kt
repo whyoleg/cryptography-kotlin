@@ -32,7 +32,7 @@ private fun awaitURandomReady() {
             }
 
             while (true) {
-                if (poll(pollFd.ptr, 1, -1) >= 0) break
+                if (poll(pollFd.ptr, 1U, -1) >= 0) break
 
                 when (errno) {
                     EINTR, EAGAIN -> continue

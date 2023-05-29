@@ -28,6 +28,10 @@ kotlin {
 
         languageSettings {
             progressiveMode = true
+
+            optIn("kotlinx.cinterop.ExperimentalForeignApi")
+            optIn("kotlin.experimental.ExperimentalNativeApi")
+
             if (isTest) optInForTests()
         }
 

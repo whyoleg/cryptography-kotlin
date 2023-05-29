@@ -17,7 +17,7 @@ private object BCryptCryptographyRandom : PlatformRandom() {
                 hAlgorithm = null,
                 pbBuffer = pinned.addressOf(0),
                 cbBuffer = pinned.get().size.convert(),
-                dwFlags = BCRYPT_USE_SYSTEM_PREFERRED_RNG
+                dwFlags = BCRYPT_USE_SYSTEM_PREFERRED_RNG.toUInt()
             )
         }
         if (status != 0) error("BCryptGenRandom failed: $status")
