@@ -7,6 +7,7 @@ plugins {
 }
 
 buildParameters {
+    enableValidation.set(false)
     string("version")
     bool("ci") {
         fromEnvironment()
@@ -26,13 +27,7 @@ buildParameters {
             }
         }
     }
-    group("kotlin") {
-        group("override") {
-            string("version") {
-                description.set("Override Kotlin version")
-            }
-        }
-    }
+    string("useKotlin")
     group("skip") {
         bool("test") {
             description.set("Skip running tests")
