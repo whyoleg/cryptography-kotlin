@@ -9,7 +9,7 @@ plugins {
 kotlin {
     jvm {
         //setup additional testing on different JDK versions (default task jvmTest will run on JDK8)
-        listOf(11, 17, 19).forEach { jdkVersion ->
+        listOf(11, 17, 20).forEach { jdkVersion ->
             testRuns.create("${jdkVersion}Test") {
                 executionTask.configure {
                     javaLauncher.set(

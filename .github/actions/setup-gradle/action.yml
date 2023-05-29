@@ -32,7 +32,7 @@ runs:
           8
           11
           17
-          19
+          20
     - name: Setup gradle
       uses: gradle/gradle-build-action@v2
       with:
