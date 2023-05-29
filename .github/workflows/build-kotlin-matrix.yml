@@ -6,53 +6,16 @@ on:
 
 jobs:
   build:
-    name: Kotlin ${{ matrix.kotlinVersion }} on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
+    name: Kotlin=${{ matrix.kotlin-version }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ 'ubuntu-latest','macos-latest','windows-latest' ]
-        kotlinVersion: [
-          '1.8.10',
-          '1.8.20-RC',
-          '[1.9.0-dev,1.9.0-dev-9999['
+        kotlin-version: [
+          '', # empty means a current project version
+          '1.9.0-Beta',
+          '[1.9.20-dev,1.9.20-dev-9999['
         ]
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/setup-gradle
-        with:
-          cache-disabled: true
-
-      - if: matrix.os == 'windows-latest'
-        uses: msys2/setup-msys2@v2
-        with:
-          release: false
-          install: mingw-w64-x86_64-openssl
-
-      - name: Compile sources
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: |
-            build
-            -Pskip.test
-            -Pskip.link
-            -Pkotlin.override.version=${{ matrix.kotlinVersion }}
-            --scan
-            --continue
-      - name: Link native binaries
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: |
-            build
-            -Pskip.test
-            -Pkotlin.override.version=${{ matrix.kotlinVersion }}
-            --scan
-            --continue
-      - name: Run tests
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: |
-            build
-            -Pkotlin.override.version=${{ matrix.kotlinVersion }}
-            --scan
-            --continue
+    uses: ./.github/workflows/run-tests.yml
+    with:
+      cache-disabled: true
+      kotlin-version: ${{ matrix.kotlin-version }}
