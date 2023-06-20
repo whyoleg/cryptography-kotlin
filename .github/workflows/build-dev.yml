@@ -4,6 +4,7 @@ on:
   push:
     branches-ignore:
       - main
+      - kotlin-eap/*
 
 jobs:
   test:
