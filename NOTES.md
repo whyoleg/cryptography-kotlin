@@ -22,3 +22,7 @@ public interface ParameterizedDecryptor<P, B> {
 ## key management
 
 - https://github.com/tersesystems/securitybuilder
+
+## default openssl provider parameters
+
+- https://www.openssl.org/docs/man3.0/man7/OSSL_PROVIDER-default.html

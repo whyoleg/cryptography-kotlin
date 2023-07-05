@@ -1,6 +1,19 @@
 # Future versions planning
 
-## 0.2.0: New operations, algorithms, engines
+## 0.2.0: New algorithms, more tests
+
+* Algorithms:
+    * SHA-3 (hash)
+    * SHAKE (hash)
+    * AES-CTR (cipher)
+    * Ed25519 curve
+* Tests
+    * Android integration tests
+    * JDK with Bouncy Castle tests - investigate ECDSA RAW signature support
+    * (Optional) Integrate with https://github.com/google/wycheproof to test against test vectors
+      (more tests here https://github.com/pyca/cryptography/blob/main/docs/development/test-vectors.rst)
+
+## 0.3.0: New operations, algorithms, engines
 
 * Operations
     * Key agreement
@@ -9,10 +22,7 @@
     * Key wrap/unwrap
     * OTP (One Time Password) support
 * Algorithms
-    * SHA-3 (hash)
-    * SHAKE (hash)
     * AES-KW (key wrap/unwrap)
-    * AES-CTR (cipher)
     * ChaCha20-Poly1305 (stream cipher)
     * ECDH (key agreement)
     * PBKDF2 (prf)
@@ -20,8 +30,6 @@
     * Agron2 (prf)
     * scrypt (prf)
     * brcypt (prf)
-    * RSA-SSA-PKCS1 (signature)
-    * Ed25519 curve
     * CMAC (mac)
     * Blowfish (cipher), Blake (hash) - try to find some implementations (?)
     * TOTP/HOTP (otp)
@@ -30,13 +38,8 @@
     * Windows CNG engine
     * watchos/tvos: OpenSSL3/Apple
     * Engine builder DSL + decide on how to better handle providers inside engine (lazy, cache, etc)
-    * align exceptions between engines
 * Tests
-    * Android integration tests
-    * JDK with Bouncy Castle tests
-    * Integrate with https://github.com/google/wycheproof to test against test vectors
-      (more tests here https://github.com/pyca/cryptography/blob/main/docs/development/test-vectors.rst)
-    * Add assertion in compatibility tests on amount of tested combinations
+    * Add assertion in compatibility tests on number of tested combinations
     * better caching in tests (ciphers/signature* like keys)
     * Refactor currentPlatform in tests with some kind of object per platform with properties
     * write MORE tests for failures - decide on how to better test everything, specifically failures and exeptional situations
@@ -63,7 +66,7 @@
 * use base64 from stdlib
 * setup configuration cache
 
-## 0.3.0: Certificates and Key management
+## 0.4.0: Certificates and Key management
 
 * Materials
     * introduce materials: key, key pair, certificate, certificate chain, certificate+key pair etc
@@ -79,7 +82,7 @@
       (like different signature algorithms in ssh, tls, certificate)
     * Decode key from DER/PEM -> then decide on which algorithm it is (problems with WebCrypto)
 
-## 0.4.0: Enhanced operations for big data and streaming (some things can depend on IO library - if so, design or postpone)
+## 0.5.0: Enhanced operations for big data and streaming (some things can depend on IO library - if so, design or postpone)
 
 * Function operations (cipher, signature, hash)
 * Operations with provided output buffer
@@ -106,6 +109,7 @@
     * OpenSSL3 engine for JVM (may be JS/WASM)
     * OpenSSL 1.1.1 - is it needed?
     * Apple: EC/RSA via Security framework (no DER key encoding out of the box)
+  * align exceptions between engines
 * MPP encoding
     * JWT/JWK support (JOSE)
     * ASN.1/X.509/DER/PEM encoder/decoder (via kx.serialization ?)
