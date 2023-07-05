@@ -28,12 +28,17 @@ public fun CryptographyProvider.Companion.JDK(
 public fun CryptographyProvider.Companion.JDK(
     provider: JdkProvider = JdkProvider.Default,
     secureRandom: SecureRandom,
-): CryptographyProvider = JdkCryptographyProvider(JdkCryptographyState(provider, secureRandom))
+): CryptographyProvider = JdkCryptographyProvider(provider.name, JdkCryptographyState(provider, secureRandom))
 
 internal class JdkCryptographyProvider(
+    private val providerName: String?,
     private val state: JdkCryptographyState,
 ) : CryptographyProvider() {
-    override val name: String get() = "JDK"
+    override val name: String
+        get() = when (providerName) {
+            null -> "JDK"
+            else -> "JDK ($providerName)"
+        }
 
     private val cache = ConcurrentHashMap<CryptographyAlgorithmId<*>, CryptographyAlgorithm?>()
 

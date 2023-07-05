@@ -6,7 +6,9 @@ package dev.whyoleg.cryptography.test
 
 import dev.whyoleg.cryptography.jdk.*
 import dev.whyoleg.cryptography.provider.*
+import org.bouncycastle.jce.provider.*
 
 actual val availableProviders: List<CryptographyProvider> = listOf(
-    CryptographyProvider.JDK
+    CryptographyProvider.JDK,
+    CryptographyProvider.JDK(JdkProvider.Instance(BouncyCastleProvider()))
 )

@@ -51,10 +51,12 @@ fun AlgorithmTestContext<ECDSA>.supportsSignatureFormat(format: ECDSA.SignatureF
     feature = "$format signature format",
     condition = when {
         //WebCrypto supports only RAW signature format
-        provider.isWebCrypto                               -> format == ECDSA.SignatureFormat.RAW
+        provider.isWebCrypto                                      -> format == ECDSA.SignatureFormat.RAW
         //JDK supports RAW signature format starting from java 9
-        provider.isJdk && currentPlatformJvmVersion!! <= 8 -> format == ECDSA.SignatureFormat.DER
-        else                                               -> true
+        provider.isJdkDefault && currentPlatformJvmVersion!! <= 8 -> format == ECDSA.SignatureFormat.DER
+        //BC supports only DER signature format
+        provider.isBouncyCastle                                   -> format == ECDSA.SignatureFormat.DER
+        else                                                      -> true
     }
 )
 

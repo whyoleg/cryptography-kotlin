@@ -23,6 +23,7 @@ kotlin {
         jvmMain {
             dependencies {
                 implementation(projects.cryptographyJdk)
+                implementation(libs.bouncycastle.jdk8)
             }
         }
 

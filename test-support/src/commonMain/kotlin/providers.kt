@@ -11,8 +11,11 @@ expect val availableProviders: List<CryptographyProvider>
 val CryptographyProvider.isWebCrypto: Boolean
     get() = name == "WebCrypto"
 
-val CryptographyProvider.isJdk: Boolean
+val CryptographyProvider.isJdkDefault: Boolean
     get() = name == "JDK"
+
+val CryptographyProvider.isBouncyCastle: Boolean
+    get() = name == "JDK (BC)"
 
 val CryptographyProvider.isApple: Boolean
     get() = name == "Apple"
