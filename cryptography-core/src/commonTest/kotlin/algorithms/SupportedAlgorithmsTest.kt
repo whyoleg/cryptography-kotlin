@@ -40,5 +40,6 @@ class SupportedAlgorithmsTest {
 
         assertSupports(RSA.PSS, !provider.isApple)
         assertSupports(RSA.OAEP, !provider.isApple)
+        assertSupports(RSA.PKCS1, !provider.isApple)
     }
 }

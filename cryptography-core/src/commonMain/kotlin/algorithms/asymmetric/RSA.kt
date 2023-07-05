@@ -93,4 +93,24 @@ public interface RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP : RS
             public fun signatureGenerator(saltLength: BinarySize): SignatureGenerator
         }
     }
+
+    @SubclassOptInRequired(CryptographyProviderApi::class)
+    public interface PKCS1 : RSA<PKCS1.PublicKey, PKCS1.PrivateKey, PKCS1.KeyPair> {
+        override val id: CryptographyAlgorithmId<PKCS1> get() = Companion
+
+        public companion object : CryptographyAlgorithmId<PKCS1>("RSA-PKCS1-V1.5")
+
+        @SubclassOptInRequired(CryptographyProviderApi::class)
+        public interface KeyPair : RSA.KeyPair<PublicKey, PrivateKey>
+
+        @SubclassOptInRequired(CryptographyProviderApi::class)
+        public interface PublicKey : RSA.PublicKey {
+            public fun signatureVerifier(): SignatureVerifier
+        }
+
+        @SubclassOptInRequired(CryptographyProviderApi::class)
+        public interface PrivateKey : RSA.PrivateKey {
+            public fun signatureGenerator(): SignatureGenerator
+        }
+    }
 }

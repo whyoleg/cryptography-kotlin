@@ -4,15 +4,11 @@
 
 package dev.whyoleg.cryptography.jdk
 
-import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
-import dev.whyoleg.cryptography.jdk.*
 import dev.whyoleg.cryptography.jdk.algorithms.*
-import dev.whyoleg.cryptography.jdk.operations.*
-import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.provider.*
 import dev.whyoleg.cryptography.random.*
 import java.security.*
@@ -44,18 +40,19 @@ internal class JdkCryptographyProvider(
     @Suppress("UNCHECKED_CAST")
     override fun <A : CryptographyAlgorithm> getOrNull(identifier: CryptographyAlgorithmId<A>): A? = cache.getOrPut(identifier) {
         when (identifier) {
-            MD5      -> JdkDigest(state, "MD5", MD5)
-            SHA1     -> JdkDigest(state, "SHA-1", SHA1)
-            SHA256   -> JdkDigest(state, "SHA-256", SHA256)
-            SHA384   -> JdkDigest(state, "SHA-384", SHA384)
-            SHA512   -> JdkDigest(state, "SHA-512", SHA512)
-            HMAC     -> JdkHmac(state)
-            AES.CBC  -> JdkAesCbc(state)
-            AES.GCM  -> JdkAesGcm(state)
-            RSA.OAEP -> JdkRsaOaep(state)
-            RSA.PSS  -> JdkRsaPss(state)
-            ECDSA    -> JdkEcdsa(state)
-            else     -> null
+            MD5       -> JdkDigest(state, "MD5", MD5)
+            SHA1      -> JdkDigest(state, "SHA-1", SHA1)
+            SHA256    -> JdkDigest(state, "SHA-256", SHA256)
+            SHA384    -> JdkDigest(state, "SHA-384", SHA384)
+            SHA512    -> JdkDigest(state, "SHA-512", SHA512)
+            HMAC      -> JdkHmac(state)
+            AES.CBC   -> JdkAesCbc(state)
+            AES.GCM   -> JdkAesGcm(state)
+            RSA.OAEP  -> JdkRsaOaep(state)
+            RSA.PSS   -> JdkRsaPss(state)
+            RSA.PKCS1 -> JdkRsaPkcs1(state)
+            ECDSA     -> JdkEcdsa(state)
+            else      -> null
         }
     } as A?
 }

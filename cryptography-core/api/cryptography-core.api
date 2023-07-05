@@ -199,6 +199,37 @@ public final class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$OAEP$Publi
 	public static fun encodeTo (Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$OAEP$PublicKey;Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicKey$Format;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
+public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PKCS1 : dev/whyoleg/cryptography/algorithms/asymmetric/RSA {
+	public static final field Companion Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PKCS1$Companion;
+	public abstract fun getId ()Ldev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PKCS1$Companion : dev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId {
+}
+
+public final class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PKCS1$DefaultImpls {
+	public static fun getId (Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PKCS1;)Ldev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId;
+}
+
+public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PKCS1$KeyPair : dev/whyoleg/cryptography/algorithms/asymmetric/RSA$KeyPair {
+}
+
+public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PKCS1$PrivateKey : dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PrivateKey {
+	public abstract fun signatureGenerator ()Ldev/whyoleg/cryptography/operations/signature/SignatureGenerator;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PKCS1$PrivateKey$DefaultImpls {
+	public static fun encodeTo (Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PKCS1$PrivateKey;Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PrivateKey$Format;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PKCS1$PublicKey : dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicKey {
+	public abstract fun signatureVerifier ()Ldev/whyoleg/cryptography/operations/signature/SignatureVerifier;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PKCS1$PublicKey$DefaultImpls {
+	public static fun encodeTo (Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PKCS1$PublicKey;Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicKey$Format;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PSS : dev/whyoleg/cryptography/algorithms/asymmetric/RSA {
 	public static final field Companion Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PSS$Companion;
 	public abstract fun getId ()Ldev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId;
