@@ -13,7 +13,10 @@ kotlin {
     targets.all {
         compilations.all {
             compilerOptions.configure {
-                freeCompilerArgs.add("-Xrender-internal-diagnostic-names")
+                freeCompilerArgs.addAll(
+                    "-Xrender-internal-diagnostic-names",
+                    "-Xjvm-default=all"
+                )
             }
         }
     }

@@ -83,10 +83,6 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/E
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey : dev/whyoleg/cryptography/materials/key/EncodableKey {
 }
 
-public final class dev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey$DefaultImpls {
-	public static fun encodeTo (Ldev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey;Ldev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey$Format;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
 public final class dev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey$Format : java/lang/Enum, dev/whyoleg/cryptography/materials/key/KeyFormat {
 	public static final field DER Ldev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey$Format;
 	public static final field JWK Ldev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey$Format;
@@ -97,10 +93,6 @@ public final class dev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey$
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/EC$PublicKey : dev/whyoleg/cryptography/materials/key/EncodableKey {
-}
-
-public final class dev/whyoleg/cryptography/algorithms/asymmetric/EC$PublicKey$DefaultImpls {
-	public static fun encodeTo (Ldev/whyoleg/cryptography/algorithms/asymmetric/EC$PublicKey;Ldev/whyoleg/cryptography/algorithms/asymmetric/EC$PublicKey$Format;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class dev/whyoleg/cryptography/algorithms/asymmetric/EC$PublicKey$Format : java/lang/Enum, dev/whyoleg/cryptography/materials/key/KeyFormat {
@@ -115,14 +107,10 @@ public final class dev/whyoleg/cryptography/algorithms/asymmetric/EC$PublicKey$F
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/ECDSA : dev/whyoleg/cryptography/algorithms/asymmetric/EC {
 	public static final field Companion Ldev/whyoleg/cryptography/algorithms/asymmetric/ECDSA$Companion;
-	public abstract fun getId ()Ldev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId;
+	public fun getId ()Ldev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId;
 }
 
 public final class dev/whyoleg/cryptography/algorithms/asymmetric/ECDSA$Companion : dev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId {
-}
-
-public final class dev/whyoleg/cryptography/algorithms/asymmetric/ECDSA$DefaultImpls {
-	public static fun getId (Ldev/whyoleg/cryptography/algorithms/asymmetric/ECDSA;)Ldev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/ECDSA$KeyPair : dev/whyoleg/cryptography/algorithms/asymmetric/EC$KeyPair {
@@ -130,19 +118,11 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/E
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/ECDSA$PrivateKey : dev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey {
 	public abstract fun signatureGenerator (Ldev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId;Ldev/whyoleg/cryptography/algorithms/asymmetric/ECDSA$SignatureFormat;)Ldev/whyoleg/cryptography/operations/signature/SignatureGenerator;
-}
-
-public final class dev/whyoleg/cryptography/algorithms/asymmetric/ECDSA$PrivateKey$DefaultImpls {
-	public static fun encodeTo (Ldev/whyoleg/cryptography/algorithms/asymmetric/ECDSA$PrivateKey;Ldev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey$Format;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun signatureGenerator$default (Ldev/whyoleg/cryptography/algorithms/asymmetric/ECDSA$PrivateKey;Ldev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId;Ldev/whyoleg/cryptography/algorithms/asymmetric/ECDSA$SignatureFormat;ILjava/lang/Object;)Ldev/whyoleg/cryptography/operations/signature/SignatureGenerator;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/ECDSA$PublicKey : dev/whyoleg/cryptography/algorithms/asymmetric/EC$PublicKey {
 	public abstract fun signatureVerifier (Ldev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId;Ldev/whyoleg/cryptography/algorithms/asymmetric/ECDSA$SignatureFormat;)Ldev/whyoleg/cryptography/operations/signature/SignatureVerifier;
-}
-
-public final class dev/whyoleg/cryptography/algorithms/asymmetric/ECDSA$PublicKey$DefaultImpls {
-	public static fun encodeTo (Ldev/whyoleg/cryptography/algorithms/asymmetric/ECDSA$PublicKey;Ldev/whyoleg/cryptography/algorithms/asymmetric/EC$PublicKey$Format;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun signatureVerifier$default (Ldev/whyoleg/cryptography/algorithms/asymmetric/ECDSA$PublicKey;Ldev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId;Ldev/whyoleg/cryptography/algorithms/asymmetric/ECDSA$SignatureFormat;ILjava/lang/Object;)Ldev/whyoleg/cryptography/operations/signature/SignatureVerifier;
 }
 
@@ -155,12 +135,9 @@ public final class dev/whyoleg/cryptography/algorithms/asymmetric/ECDSA$Signatur
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/RSA : dev/whyoleg/cryptography/algorithms/CryptographyAlgorithm {
 	public abstract fun keyPairGenerator-imL9hLU (ILdev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId;Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicExponent;)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
+	public static synthetic fun keyPairGenerator-imL9hLU$default (Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA;ILdev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId;Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicExponent;ILjava/lang/Object;)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
 	public abstract fun privateKeyDecoder (Ldev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId;)Ldev/whyoleg/cryptography/materials/key/KeyDecoder;
 	public abstract fun publicKeyDecoder (Ldev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId;)Ldev/whyoleg/cryptography/materials/key/KeyDecoder;
-}
-
-public final class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$DefaultImpls {
-	public static synthetic fun keyPairGenerator-imL9hLU$default (Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA;ILdev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId;Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicExponent;ILjava/lang/Object;)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$KeyPair : dev/whyoleg/cryptography/materials/key/Key {
@@ -170,14 +147,10 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/R
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$OAEP : dev/whyoleg/cryptography/algorithms/asymmetric/RSA {
 	public static final field Companion Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$OAEP$Companion;
-	public abstract fun getId ()Ldev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId;
+	public fun getId ()Ldev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId;
 }
 
 public final class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$OAEP$Companion : dev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId {
-}
-
-public final class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$OAEP$DefaultImpls {
-	public static fun getId (Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$OAEP;)Ldev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$OAEP$KeyPair : dev/whyoleg/cryptography/algorithms/asymmetric/RSA$KeyPair {
@@ -187,28 +160,16 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/R
 	public abstract fun decryptor ()Ldev/whyoleg/cryptography/operations/cipher/AuthenticatedDecryptor;
 }
 
-public final class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$OAEP$PrivateKey$DefaultImpls {
-	public static fun encodeTo (Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$OAEP$PrivateKey;Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PrivateKey$Format;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$OAEP$PublicKey : dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicKey {
 	public abstract fun encryptor ()Ldev/whyoleg/cryptography/operations/cipher/AuthenticatedEncryptor;
 }
 
-public final class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$OAEP$PublicKey$DefaultImpls {
-	public static fun encodeTo (Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$OAEP$PublicKey;Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicKey$Format;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PKCS1 : dev/whyoleg/cryptography/algorithms/asymmetric/RSA {
 	public static final field Companion Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PKCS1$Companion;
-	public abstract fun getId ()Ldev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId;
+	public fun getId ()Ldev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId;
 }
 
 public final class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PKCS1$Companion : dev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId {
-}
-
-public final class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PKCS1$DefaultImpls {
-	public static fun getId (Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PKCS1;)Ldev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PKCS1$KeyPair : dev/whyoleg/cryptography/algorithms/asymmetric/RSA$KeyPair {
@@ -218,28 +179,16 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/R
 	public abstract fun signatureGenerator ()Ldev/whyoleg/cryptography/operations/signature/SignatureGenerator;
 }
 
-public final class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PKCS1$PrivateKey$DefaultImpls {
-	public static fun encodeTo (Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PKCS1$PrivateKey;Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PrivateKey$Format;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PKCS1$PublicKey : dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicKey {
 	public abstract fun signatureVerifier ()Ldev/whyoleg/cryptography/operations/signature/SignatureVerifier;
 }
 
-public final class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PKCS1$PublicKey$DefaultImpls {
-	public static fun encodeTo (Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PKCS1$PublicKey;Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicKey$Format;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PSS : dev/whyoleg/cryptography/algorithms/asymmetric/RSA {
 	public static final field Companion Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PSS$Companion;
-	public abstract fun getId ()Ldev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId;
+	public fun getId ()Ldev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId;
 }
 
 public final class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PSS$Companion : dev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId {
-}
-
-public final class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PSS$DefaultImpls {
-	public static fun getId (Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PSS;)Ldev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PSS$KeyPair : dev/whyoleg/cryptography/algorithms/asymmetric/RSA$KeyPair {
@@ -249,23 +198,11 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/R
 	public abstract fun signatureGenerator-6q1zMKY (I)Ldev/whyoleg/cryptography/operations/signature/SignatureGenerator;
 }
 
-public final class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PSS$PrivateKey$DefaultImpls {
-	public static fun encodeTo (Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PSS$PrivateKey;Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PrivateKey$Format;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PSS$PublicKey : dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicKey {
 	public abstract fun signatureVerifier-6q1zMKY (I)Ldev/whyoleg/cryptography/operations/signature/SignatureVerifier;
 }
 
-public final class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PSS$PublicKey$DefaultImpls {
-	public static fun encodeTo (Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PSS$PublicKey;Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicKey$Format;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PrivateKey : dev/whyoleg/cryptography/materials/key/EncodableKey {
-}
-
-public final class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PrivateKey$DefaultImpls {
-	public static fun encodeTo (Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PrivateKey;Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PrivateKey$Format;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PrivateKey$Format : java/lang/Enum, dev/whyoleg/cryptography/materials/key/KeyFormat {
@@ -307,10 +244,6 @@ public final class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicExpo
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicKey : dev/whyoleg/cryptography/materials/key/EncodableKey {
 }
 
-public final class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicKey$DefaultImpls {
-	public static fun encodeTo (Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicKey;Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicKey$Format;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
 public final class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicKey$Format : java/lang/Enum, dev/whyoleg/cryptography/materials/key/KeyFormat {
 	public static final field DER Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicKey$Format;
 	public static final field JWK Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicKey$Format;
@@ -348,59 +281,36 @@ public final class dev/whyoleg/cryptography/algorithms/digest/SHA512 : dev/whyol
 public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES : dev/whyoleg/cryptography/algorithms/CryptographyAlgorithm {
 	public abstract fun keyDecoder ()Ldev/whyoleg/cryptography/materials/key/KeyDecoder;
 	public abstract fun keyGenerator-__FLmac (I)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
+	public static synthetic fun keyGenerator-__FLmac$default (Ldev/whyoleg/cryptography/algorithms/symmetric/AES;IILjava/lang/Object;)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES$CBC : dev/whyoleg/cryptography/algorithms/symmetric/AES {
 	public static final field Companion Ldev/whyoleg/cryptography/algorithms/symmetric/AES$CBC$Companion;
-	public abstract fun getId ()Ldev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId;
+	public fun getId ()Ldev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId;
 }
 
 public final class dev/whyoleg/cryptography/algorithms/symmetric/AES$CBC$Companion : dev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId {
 }
 
-public final class dev/whyoleg/cryptography/algorithms/symmetric/AES$CBC$DefaultImpls {
-	public static fun getId (Ldev/whyoleg/cryptography/algorithms/symmetric/AES$CBC;)Ldev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId;
-}
-
 public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES$CBC$Key : dev/whyoleg/cryptography/algorithms/symmetric/AES$Key {
 	public abstract fun cipher (Z)Ldev/whyoleg/cryptography/operations/cipher/Cipher;
-}
-
-public final class dev/whyoleg/cryptography/algorithms/symmetric/AES$CBC$Key$DefaultImpls {
 	public static synthetic fun cipher$default (Ldev/whyoleg/cryptography/algorithms/symmetric/AES$CBC$Key;ZILjava/lang/Object;)Ldev/whyoleg/cryptography/operations/cipher/Cipher;
-	public static fun encodeTo (Ldev/whyoleg/cryptography/algorithms/symmetric/AES$CBC$Key;Ldev/whyoleg/cryptography/algorithms/symmetric/AES$Key$Format;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public final class dev/whyoleg/cryptography/algorithms/symmetric/AES$DefaultImpls {
-	public static synthetic fun keyGenerator-__FLmac$default (Ldev/whyoleg/cryptography/algorithms/symmetric/AES;IILjava/lang/Object;)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES$GCM : dev/whyoleg/cryptography/algorithms/symmetric/AES {
 	public static final field Companion Ldev/whyoleg/cryptography/algorithms/symmetric/AES$GCM$Companion;
-	public abstract fun getId ()Ldev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId;
+	public fun getId ()Ldev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId;
 }
 
 public final class dev/whyoleg/cryptography/algorithms/symmetric/AES$GCM$Companion : dev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId {
 }
 
-public final class dev/whyoleg/cryptography/algorithms/symmetric/AES$GCM$DefaultImpls {
-	public static fun getId (Ldev/whyoleg/cryptography/algorithms/symmetric/AES$GCM;)Ldev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId;
-}
-
 public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES$GCM$Key : dev/whyoleg/cryptography/algorithms/symmetric/AES$Key {
 	public abstract fun cipher-6q1zMKY (I)Ldev/whyoleg/cryptography/operations/cipher/AuthenticatedCipher;
-}
-
-public final class dev/whyoleg/cryptography/algorithms/symmetric/AES$GCM$Key$DefaultImpls {
 	public static synthetic fun cipher-6q1zMKY$default (Ldev/whyoleg/cryptography/algorithms/symmetric/AES$GCM$Key;IILjava/lang/Object;)Ldev/whyoleg/cryptography/operations/cipher/AuthenticatedCipher;
-	public static fun encodeTo (Ldev/whyoleg/cryptography/algorithms/symmetric/AES$GCM$Key;Ldev/whyoleg/cryptography/algorithms/symmetric/AES$Key$Format;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES$Key : dev/whyoleg/cryptography/materials/key/EncodableKey {
-}
-
-public final class dev/whyoleg/cryptography/algorithms/symmetric/AES$Key$DefaultImpls {
-	public static fun encodeTo (Ldev/whyoleg/cryptography/algorithms/symmetric/AES$Key;Ldev/whyoleg/cryptography/algorithms/symmetric/AES$Key$Format;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class dev/whyoleg/cryptography/algorithms/symmetric/AES$Key$Format : java/lang/Enum, dev/whyoleg/cryptography/materials/key/KeyFormat {
@@ -413,26 +323,18 @@ public final class dev/whyoleg/cryptography/algorithms/symmetric/AES$Key$Format 
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/HMAC : dev/whyoleg/cryptography/algorithms/CryptographyAlgorithm {
 	public static final field Companion Ldev/whyoleg/cryptography/algorithms/symmetric/HMAC$Companion;
-	public abstract fun getId ()Ldev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId;
+	public fun getId ()Ldev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId;
 	public abstract fun keyDecoder (Ldev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId;)Ldev/whyoleg/cryptography/materials/key/KeyDecoder;
 	public abstract fun keyGenerator (Ldev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId;)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
+	public static synthetic fun keyGenerator$default (Ldev/whyoleg/cryptography/algorithms/symmetric/HMAC;Ldev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId;ILjava/lang/Object;)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
 }
 
 public final class dev/whyoleg/cryptography/algorithms/symmetric/HMAC$Companion : dev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId {
 }
 
-public final class dev/whyoleg/cryptography/algorithms/symmetric/HMAC$DefaultImpls {
-	public static fun getId (Ldev/whyoleg/cryptography/algorithms/symmetric/HMAC;)Ldev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId;
-	public static synthetic fun keyGenerator$default (Ldev/whyoleg/cryptography/algorithms/symmetric/HMAC;Ldev/whyoleg/cryptography/algorithms/CryptographyAlgorithmId;ILjava/lang/Object;)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
-}
-
 public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/HMAC$Key : dev/whyoleg/cryptography/materials/key/EncodableKey {
 	public abstract fun signatureGenerator ()Ldev/whyoleg/cryptography/operations/signature/SignatureGenerator;
 	public abstract fun signatureVerifier ()Ldev/whyoleg/cryptography/operations/signature/SignatureVerifier;
-}
-
-public final class dev/whyoleg/cryptography/algorithms/symmetric/HMAC$Key$DefaultImpls {
-	public static fun encodeTo (Ldev/whyoleg/cryptography/algorithms/symmetric/HMAC$Key;Ldev/whyoleg/cryptography/algorithms/symmetric/HMAC$Key$Format;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class dev/whyoleg/cryptography/algorithms/symmetric/HMAC$Key$Format : java/lang/Enum, dev/whyoleg/cryptography/materials/key/KeyFormat {
@@ -465,24 +367,18 @@ public final class dev/whyoleg/cryptography/algorithms/symmetric/SymmetricKeySiz
 }
 
 public abstract interface class dev/whyoleg/cryptography/materials/key/EncodableKey : dev/whyoleg/cryptography/materials/key/Key {
-	public abstract fun encodeTo (Ldev/whyoleg/cryptography/materials/key/KeyFormat;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun encodeTo (Ldev/whyoleg/cryptography/materials/key/KeyFormat;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun encodeTo$suspendImpl (Ldev/whyoleg/cryptography/materials/key/EncodableKey;Ldev/whyoleg/cryptography/materials/key/KeyFormat;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun encodeToBlocking (Ldev/whyoleg/cryptography/materials/key/KeyFormat;)[B
-}
-
-public final class dev/whyoleg/cryptography/materials/key/EncodableKey$DefaultImpls {
-	public static fun encodeTo (Ldev/whyoleg/cryptography/materials/key/EncodableKey;Ldev/whyoleg/cryptography/materials/key/KeyFormat;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class dev/whyoleg/cryptography/materials/key/Key {
 }
 
 public abstract interface class dev/whyoleg/cryptography/materials/key/KeyDecoder {
-	public abstract fun decodeFrom (Ldev/whyoleg/cryptography/materials/key/KeyFormat;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun decodeFrom (Ldev/whyoleg/cryptography/materials/key/KeyFormat;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun decodeFrom$suspendImpl (Ldev/whyoleg/cryptography/materials/key/KeyDecoder;Ldev/whyoleg/cryptography/materials/key/KeyFormat;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun decodeFromBlocking (Ldev/whyoleg/cryptography/materials/key/KeyFormat;[B)Ldev/whyoleg/cryptography/materials/key/Key;
-}
-
-public final class dev/whyoleg/cryptography/materials/key/KeyDecoder$DefaultImpls {
-	public static fun decodeFrom (Ldev/whyoleg/cryptography/materials/key/KeyDecoder;Ldev/whyoleg/cryptography/materials/key/KeyFormat;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class dev/whyoleg/cryptography/materials/key/KeyFormat {
@@ -490,103 +386,63 @@ public abstract interface class dev/whyoleg/cryptography/materials/key/KeyFormat
 }
 
 public abstract interface class dev/whyoleg/cryptography/materials/key/KeyGenerator {
-	public abstract fun generateKey (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun generateKey (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun generateKey$suspendImpl (Ldev/whyoleg/cryptography/materials/key/KeyGenerator;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun generateKeyBlocking ()Ldev/whyoleg/cryptography/materials/key/Key;
-}
-
-public final class dev/whyoleg/cryptography/materials/key/KeyGenerator$DefaultImpls {
-	public static fun generateKey (Ldev/whyoleg/cryptography/materials/key/KeyGenerator;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class dev/whyoleg/cryptography/operations/cipher/AuthenticatedCipher : dev/whyoleg/cryptography/operations/cipher/AuthenticatedDecryptor, dev/whyoleg/cryptography/operations/cipher/AuthenticatedEncryptor, dev/whyoleg/cryptography/operations/cipher/Cipher {
 }
 
-public final class dev/whyoleg/cryptography/operations/cipher/AuthenticatedCipher$DefaultImpls {
-	public static fun decrypt (Ldev/whyoleg/cryptography/operations/cipher/AuthenticatedCipher;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun decrypt (Ldev/whyoleg/cryptography/operations/cipher/AuthenticatedCipher;[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun decryptBlocking (Ldev/whyoleg/cryptography/operations/cipher/AuthenticatedCipher;[B)[B
-	public static fun encrypt (Ldev/whyoleg/cryptography/operations/cipher/AuthenticatedCipher;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun encrypt (Ldev/whyoleg/cryptography/operations/cipher/AuthenticatedCipher;[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun encryptBlocking (Ldev/whyoleg/cryptography/operations/cipher/AuthenticatedCipher;[B)[B
-}
-
 public abstract interface class dev/whyoleg/cryptography/operations/cipher/AuthenticatedDecryptor : dev/whyoleg/cryptography/operations/cipher/Decryptor {
-	public abstract fun decrypt ([BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun decrypt ([B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun decryptBlocking ([B)[B
+	public fun decrypt ([BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun decrypt ([B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun decrypt$suspendImpl (Ldev/whyoleg/cryptography/operations/cipher/AuthenticatedDecryptor;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun decrypt$suspendImpl (Ldev/whyoleg/cryptography/operations/cipher/AuthenticatedDecryptor;[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun decryptBlocking ([B)[B
 	public abstract fun decryptBlocking ([B[B)[B
 }
 
-public final class dev/whyoleg/cryptography/operations/cipher/AuthenticatedDecryptor$DefaultImpls {
-	public static fun decrypt (Ldev/whyoleg/cryptography/operations/cipher/AuthenticatedDecryptor;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun decrypt (Ldev/whyoleg/cryptography/operations/cipher/AuthenticatedDecryptor;[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun decryptBlocking (Ldev/whyoleg/cryptography/operations/cipher/AuthenticatedDecryptor;[B)[B
-}
-
 public abstract interface class dev/whyoleg/cryptography/operations/cipher/AuthenticatedEncryptor : dev/whyoleg/cryptography/operations/cipher/Encryptor {
-	public abstract fun encrypt ([BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun encrypt ([B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun encryptBlocking ([B)[B
+	public fun encrypt ([BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun encrypt ([B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun encrypt$suspendImpl (Ldev/whyoleg/cryptography/operations/cipher/AuthenticatedEncryptor;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun encrypt$suspendImpl (Ldev/whyoleg/cryptography/operations/cipher/AuthenticatedEncryptor;[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun encryptBlocking ([B)[B
 	public abstract fun encryptBlocking ([B[B)[B
-}
-
-public final class dev/whyoleg/cryptography/operations/cipher/AuthenticatedEncryptor$DefaultImpls {
-	public static fun encrypt (Ldev/whyoleg/cryptography/operations/cipher/AuthenticatedEncryptor;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun encrypt (Ldev/whyoleg/cryptography/operations/cipher/AuthenticatedEncryptor;[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun encryptBlocking (Ldev/whyoleg/cryptography/operations/cipher/AuthenticatedEncryptor;[B)[B
 }
 
 public abstract interface class dev/whyoleg/cryptography/operations/cipher/Cipher : dev/whyoleg/cryptography/operations/cipher/Decryptor, dev/whyoleg/cryptography/operations/cipher/Encryptor {
 }
 
-public final class dev/whyoleg/cryptography/operations/cipher/Cipher$DefaultImpls {
-	public static fun decrypt (Ldev/whyoleg/cryptography/operations/cipher/Cipher;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun encrypt (Ldev/whyoleg/cryptography/operations/cipher/Cipher;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
 public abstract interface class dev/whyoleg/cryptography/operations/cipher/Decryptor {
-	public abstract fun decrypt ([BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun decrypt ([BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun decrypt$suspendImpl (Ldev/whyoleg/cryptography/operations/cipher/Decryptor;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun decryptBlocking ([B)[B
 }
 
-public final class dev/whyoleg/cryptography/operations/cipher/Decryptor$DefaultImpls {
-	public static fun decrypt (Ldev/whyoleg/cryptography/operations/cipher/Decryptor;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
 public abstract interface class dev/whyoleg/cryptography/operations/cipher/Encryptor {
-	public abstract fun encrypt ([BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun encrypt ([BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun encrypt$suspendImpl (Ldev/whyoleg/cryptography/operations/cipher/Encryptor;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun encryptBlocking ([B)[B
 }
 
-public final class dev/whyoleg/cryptography/operations/cipher/Encryptor$DefaultImpls {
-	public static fun encrypt (Ldev/whyoleg/cryptography/operations/cipher/Encryptor;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
 public abstract interface class dev/whyoleg/cryptography/operations/hash/Hasher {
-	public abstract fun hash ([BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun hash ([BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun hash$suspendImpl (Ldev/whyoleg/cryptography/operations/hash/Hasher;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun hashBlocking ([B)[B
 }
 
-public final class dev/whyoleg/cryptography/operations/hash/Hasher$DefaultImpls {
-	public static fun hash (Ldev/whyoleg/cryptography/operations/hash/Hasher;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
 public abstract interface class dev/whyoleg/cryptography/operations/signature/SignatureGenerator {
-	public abstract fun generateSignature ([BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun generateSignature ([BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun generateSignature$suspendImpl (Ldev/whyoleg/cryptography/operations/signature/SignatureGenerator;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun generateSignatureBlocking ([B)[B
 }
 
-public final class dev/whyoleg/cryptography/operations/signature/SignatureGenerator$DefaultImpls {
-	public static fun generateSignature (Ldev/whyoleg/cryptography/operations/signature/SignatureGenerator;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
 public abstract interface class dev/whyoleg/cryptography/operations/signature/SignatureVerifier {
-	public abstract fun verifySignature ([B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun verifySignature ([B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun verifySignature$suspendImpl (Ldev/whyoleg/cryptography/operations/signature/SignatureVerifier;[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun verifySignatureBlocking ([B[B)Z
-}
-
-public final class dev/whyoleg/cryptography/operations/signature/SignatureVerifier$DefaultImpls {
-	public static fun verifySignature (Ldev/whyoleg/cryptography/operations/signature/SignatureVerifier;[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract class dev/whyoleg/cryptography/provider/CryptographyProvider {
