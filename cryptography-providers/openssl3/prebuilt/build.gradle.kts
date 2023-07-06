@@ -19,8 +19,8 @@ tasks.withType<CInteropProcess>().configureEach {
 }
 
 kotlin {
-    targets.all {
-        if (this !is KotlinNativeTarget) return@all
+    targets.configureEach {
+        if (this !is KotlinNativeTarget) return@configureEach
 
         cinterop("linking", "common")
     }

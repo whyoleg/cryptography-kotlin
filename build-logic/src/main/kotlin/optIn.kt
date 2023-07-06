@@ -5,6 +5,7 @@
 import org.jetbrains.kotlin.gradle.plugin.*
 
 fun LanguageSettingsBuilder.optInForTests() {
+    optIn("kotlin.io.encoding.ExperimentalEncodingApi")
     optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
     optIn("dev.whyoleg.cryptography.provider.CryptographyProviderApi")
     optIn("dev.whyoleg.cryptography.algorithms.InsecureAlgorithm")

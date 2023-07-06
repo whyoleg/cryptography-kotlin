@@ -10,43 +10,27 @@ plugins {
 kotlin {
     jvmToolchain(8)
 
-    targets.all {
-        compilations.all {
+    targets.configureEach {
+        compilations.configureEach {
             compilerOptions.configure {
-                freeCompilerArgs.addAll(
-                    "-Xrender-internal-diagnostic-names",
-                    "-Xjvm-default=all"
-                )
+                progressiveMode.set(true)
+                freeCompilerArgs.add("-Xrender-internal-diagnostic-names")
             }
         }
     }
 
-    sourceSets.all {
-        val (targetName, compilationName) = name.run {
-            val index = indexOfLast { it.isUpperCase() }
-            take(index) to drop(index).lowercase()
+    sourceSets {
+        configureEach {
+            languageSettings {
+                // optIn in compilations are not propagated to IDE
+                optIn("kotlinx.cinterop.ExperimentalForeignApi")
+                optIn("kotlin.experimental.ExperimentalNativeApi")
+                if (name.contains("test", ignoreCase = true)) optInForTests()
+            }
         }
-
-        val isTest = compilationName == "test"
-
-        languageSettings {
-            progressiveMode = true
-
-            optIn("kotlinx.cinterop.ExperimentalForeignApi")
-            optIn("kotlin.experimental.ExperimentalNativeApi")
-
-            if (isTest) optInForTests()
-        }
-
-        //for some reason adding it to commonTest only doesn't work
-        if (isTest) when (targetName) {
-            "common" -> "test"
-            "jvm"    -> "test-junit"
-            "js"     -> "test-js"
-            else     -> null
-        }?.let { testLibrary ->
+        commonTest {
             dependencies {
-                implementation(kotlin(testLibrary))
+                implementation(kotlin("test"))
             }
         }
     }

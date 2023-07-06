@@ -14,16 +14,16 @@ plugins {
 description = "cryptography-kotlin OpenSSL3 provider (shared)"
 
 kotlin {
-    targets.all {
-        if (this !is KotlinNativeTarget) return@all
+    targets.configureEach {
+        if (this !is KotlinNativeTarget) return@configureEach
 
         cinterop("linking", "common")
 
-        if (this !is KotlinNativeTargetWithTests<*>) return@all
+        if (this !is KotlinNativeTargetWithTests<*>) return@configureEach
 
         // on CI, Linux by default has openssl built with newer glibc
         // which cause errors trying to link it with current K/N toolchain
-        if (konanTarget.family == Family.LINUX) testRuns.all {
+        if (konanTarget.family == Family.LINUX) testRuns.configureEach {
             executionSource.binary.linkTaskProvider.configure {
                 dependsOn(openssl.prepareOpensslTaskProvider)
                 binary.linkerOpts("-L${openssl.libDir(konanTarget).get().absolutePath}")
