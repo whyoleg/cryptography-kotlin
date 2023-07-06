@@ -24,7 +24,7 @@ kotlin {
                 implementation(libs.ktor.client.cio)
             }
         }
-        darwinMain {
+        appleMain {
             dependencies {
                 implementation(libs.ktor.client.cio)
             }

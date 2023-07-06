@@ -2,6 +2,9 @@
  * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
+import org.jetbrains.kotlin.gradle.*
+import org.jetbrains.kotlin.gradle.plugin.*
+
 plugins {
     kotlin("multiplatform")
     id("org.jetbrains.kotlinx.kover")
@@ -9,6 +12,19 @@ plugins {
 
 kotlin {
     jvmToolchain(8)
+
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    targetHierarchy.default {
+        common {
+            group("nonJvm") {
+                withCompilations {
+                    it.platformType != KotlinPlatformType.jvm &&
+                            it.platformType != KotlinPlatformType.androidJvm &&
+                            it.platformType != KotlinPlatformType.common
+                }
+            }
+        }
+    }
 
     targets.configureEach {
         compilations.configureEach {

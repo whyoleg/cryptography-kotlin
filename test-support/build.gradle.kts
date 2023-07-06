@@ -26,7 +26,7 @@ kotlin {
             }
         }
 
-        darwinMain {
+        appleMain {
             dependencies {
                 implementation(projects.cryptographyApple)
                 implementation(projects.cryptographyOpenssl3Prebuilt)
