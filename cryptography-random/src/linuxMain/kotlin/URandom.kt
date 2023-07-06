@@ -6,6 +6,7 @@ package dev.whyoleg.cryptography.random
 
 import kotlinx.cinterop.*
 import platform.posix.*
+import kotlin.native.concurrent.*
 
 internal fun createURandom(): CryptographyRandom {
     awaitURandomReady()

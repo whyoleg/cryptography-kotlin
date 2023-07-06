@@ -6,13 +6,13 @@ package dev.whyoleg.cryptography.openssl3.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
-import dev.whyoleg.cryptography.openssl3.*
 import dev.whyoleg.cryptography.openssl3.internal.*
 import dev.whyoleg.cryptography.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.operations.cipher.*
 import dev.whyoleg.cryptography.random.*
 import kotlinx.cinterop.*
-import kotlin.native.internal.*
+import kotlin.experimental.*
+import kotlin.native.ref.*
 
 internal object Openssl3AesGcm : AES.GCM, Openssl3Aes<AES.GCM.Key>() {
     override fun wrapKey(keySize: SymmetricKeySize, key: ByteArray): AES.GCM.Key = AesGcmKey(keySize, key)
@@ -39,7 +39,7 @@ private class AesGcmCipher(
 
     private val cipher = EVP_CIPHER_fetch(null, algorithm, null)
 
-    @OptIn(ExperimentalStdlibApi::class)
+    @OptIn(ExperimentalNativeApi::class)
     private val cleaner = createCleaner(cipher, ::EVP_CIPHER_free)
 
     override fun encryptBlocking(plaintextInput: ByteArray, associatedData: ByteArray?): ByteArray = memScoped {

@@ -40,7 +40,6 @@ kotlin {
             languageSettings {
                 // optIn in compilations are not propagated to IDE
                 optIn("kotlinx.cinterop.ExperimentalForeignApi")
-                optIn("kotlin.experimental.ExperimentalNativeApi")
                 if (name.contains("test", ignoreCase = true)) optInForTests()
             }
         }

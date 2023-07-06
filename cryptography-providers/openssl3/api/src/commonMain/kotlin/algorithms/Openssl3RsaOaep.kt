@@ -10,6 +10,7 @@ import dev.whyoleg.cryptography.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.operations.cipher.*
 import kotlinx.cinterop.*
 import platform.posix.*
+import kotlin.experimental.*
 
 internal object Openssl3RsaOaep : Openssl3Rsa<RSA.OAEP.PublicKey, RSA.OAEP.PrivateKey, RSA.OAEP.KeyPair>(), RSA.OAEP {
     override fun wrapKeyPair(hashAlgorithm: String, keyPair: CPointer<EVP_PKEY>): RSA.OAEP.KeyPair = RsaOaepKeyPair(
@@ -49,6 +50,7 @@ private class RsaOaepEncryptor(
     private val publicKey: CPointer<EVP_PKEY>,
     private val hashAlgorithm: String,
 ) : AuthenticatedEncryptor {
+    @OptIn(ExperimentalNativeApi::class)
     private val cleaner = publicKey.upRef().cleaner()
 
     override fun encryptBlocking(plaintextInput: ByteArray, associatedData: ByteArray?): ByteArray = memScoped {
@@ -96,6 +98,7 @@ private class RsaOaepDecryptor(
     private val privateKey: CPointer<EVP_PKEY>,
     private val hashAlgorithm: String,
 ) : AuthenticatedDecryptor {
+    @OptIn(ExperimentalNativeApi::class)
     private val cleaner = privateKey.upRef().cleaner()
 
     override fun decryptBlocking(ciphertextInput: ByteArray, associatedData: ByteArray?): ByteArray = memScoped {

@@ -9,6 +9,7 @@ import dev.whyoleg.cryptography.openssl3.internal.*
 import dev.whyoleg.cryptography.openssl3.internal.cinterop.*
 import kotlinx.cinterop.*
 import platform.posix.*
+import kotlin.experimental.*
 
 internal abstract class Openssl3PrivateKeyEncodable<KF : KeyFormat>(
     key: CPointer<EVP_PKEY>,
@@ -27,6 +28,7 @@ internal abstract class Openssl3PublicKeyEncodable<KF : KeyFormat>(
 internal abstract class Openssl3KeyEncodable<KF : KeyFormat>(
     protected val key: CPointer<EVP_PKEY>,
 ) : EncodableKey<KF> {
+    @OptIn(ExperimentalNativeApi::class)
     private val cleaner = key.cleaner()
 
     protected abstract fun selection(format: KF): Int

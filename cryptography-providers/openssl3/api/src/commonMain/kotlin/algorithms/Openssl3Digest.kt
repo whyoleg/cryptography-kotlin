@@ -6,12 +6,12 @@ package dev.whyoleg.cryptography.openssl3.algorithms
 
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.digest.*
-import dev.whyoleg.cryptography.openssl3.*
 import dev.whyoleg.cryptography.openssl3.internal.*
 import dev.whyoleg.cryptography.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.operations.hash.*
 import kotlinx.cinterop.*
-import kotlin.native.internal.*
+import kotlin.experimental.*
+import kotlin.native.ref.*
 
 internal class Openssl3Digest(
     algorithm: String,
@@ -21,7 +21,7 @@ internal class Openssl3Digest(
 
     private val md = EVP_MD_fetch(null, algorithm, null)
 
-    @OptIn(ExperimentalStdlibApi::class)
+    @OptIn(ExperimentalNativeApi::class)
     private val cleaner = createCleaner(md, ::EVP_MD_free)
 
     private val digestSize = EVP_MD_get_size(md)

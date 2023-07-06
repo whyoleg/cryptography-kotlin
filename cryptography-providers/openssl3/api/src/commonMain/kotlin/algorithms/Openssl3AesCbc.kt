@@ -10,7 +10,8 @@ import dev.whyoleg.cryptography.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.operations.cipher.*
 import dev.whyoleg.cryptography.random.*
 import kotlinx.cinterop.*
-import kotlin.native.internal.*
+import kotlin.experimental.*
+import kotlin.native.ref.*
 
 internal object Openssl3AesCbc : AES.CBC, Openssl3Aes<AES.CBC.Key>() {
     override fun wrapKey(keySize: SymmetricKeySize, key: ByteArray): AES.CBC.Key = AesCbcKey(keySize, key)
@@ -37,7 +38,7 @@ private class AesCbcCipher(
 
     private val cipher = EVP_CIPHER_fetch(null, algorithm, null)
 
-    @OptIn(ExperimentalStdlibApi::class)
+    @OptIn(ExperimentalNativeApi::class)
     private val cleaner = createCleaner(cipher, ::EVP_CIPHER_free)
 
     override fun encryptBlocking(plaintextInput: ByteArray): ByteArray = memScoped {

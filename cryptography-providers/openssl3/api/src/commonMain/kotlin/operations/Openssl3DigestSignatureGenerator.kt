@@ -9,12 +9,13 @@ import dev.whyoleg.cryptography.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.operations.signature.*
 import kotlinx.cinterop.*
 import platform.posix.*
+import kotlin.experimental.*
 
 internal abstract class Openssl3DigestSignatureGenerator(
     private val privateKey: CPointer<EVP_PKEY>,
     private val hashAlgorithm: String,
 ) : SignatureGenerator {
-
+    @OptIn(ExperimentalNativeApi::class)
     private val cleaner = privateKey.upRef().cleaner()
 
     protected abstract fun MemScope.createParams(): CValuesRef<OSSL_PARAM>?
