@@ -9,7 +9,12 @@
     * Ed25519 curve
 * Tests
     * Android integration tests
+        * doesn't support RSASSA-PSS
+        * doesn't support java.util.Base64 on at least API 21 - need to handle this - migrate to kotlin.Base64 when available
+        * need to somehow be able to run tests from `core` and `random` with android emulator,
+          but without publishing `android` artifacts...
     * JDK with Bouncy Castle tests - investigate ECDSA RAW signature support
+    * migrate test-tool-client to composite build (1.9.0: experimental)
     * (Optional) Integrate with https://github.com/google/wycheproof to test against test vectors
       (more tests here https://github.com/pyca/cryptography/blob/main/docs/development/test-vectors.rst)
 
@@ -30,7 +35,7 @@
     * Agron2 (prf)
     * scrypt (prf)
     * brcypt (prf)
-    * CMAC (mac)
+  * CMAC (mac) - how to configure it? check BC and OpenSSL
     * Blowfish (cipher), Blake (hash) - try to find some implementations (?)
     * TOTP/HOTP (otp)
 * Engines
@@ -57,14 +62,6 @@
     * add FAQ about security related things
     * add documentation to declarations
     * setup dokka to fail on undocumented
-
-## Kotlin 1.8.20/1.9.0
-
-* WebCrypto WASM support
-* use kotlin.Closeable
-* migrate test-tool-client to composite build
-* use base64 from stdlib
-* setup configuration cache
 
 ## 0.4.0: Certificates and Key management
 
@@ -95,6 +92,13 @@
     * File encryption/decryption (function operations)
     * JDK in-place encryption/decryption (use single ByteArray for output (generate IV in place, and output it))
 
+## Kotlin x.y.z:
+
+* WebCrypto WASM(JS) support (1.9.0: still has no simple libraries releases)
+* use kotlin.Closeable (1.9.0: still experimental)
+* use base64 from stdlib (1.9.0: still experimental)
+* setup configuration cache (1.9.0: has issues)
+
 ## x.y.z plans:
 
 * compiler plugin to generate declarations with flatten parameters (related to 'general way to define algorithms')
@@ -109,6 +113,7 @@
     * OpenSSL3 engine for JVM (may be JS/WASM)
     * OpenSSL 1.1.1 - is it needed?
     * Apple: EC/RSA via Security framework (no DER key encoding out of the box)
+  * WASM WASI - is there something available?
   * align exceptions between engines
 * MPP encoding
     * JWT/JWK support (JOSE)
@@ -134,7 +139,7 @@
 ## 1.0.0: Stable release
 
 * Design CryptographyException hierarchy
-* Migrate to some IO library
+* Migrate to kotlinx-io
 * Use some BigInt library/implementation (f.e. for RSA.PublicExponent)
 * Decide on algorithms access in code. f.e. AES.CBC, RSA.OAEP vs ECDSA, ECDH, etc.
     * algorithms - AesBasedAlgorihm, RsaBasedAlgorithm, AesGcmAlgorithm
