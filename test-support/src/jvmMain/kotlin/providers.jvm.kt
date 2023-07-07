@@ -10,5 +10,5 @@ import org.bouncycastle.jce.provider.*
 
 actual val availableProviders: List<CryptographyProvider> = listOf(
     CryptographyProvider.JDK,
-    CryptographyProvider.JDK(JdkProvider.Instance(BouncyCastleProvider()))
+    CryptographyProvider.JDK(BouncyCastleProvider())
 )

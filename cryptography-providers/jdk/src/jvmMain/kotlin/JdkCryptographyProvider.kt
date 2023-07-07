@@ -20,25 +20,50 @@ public val CryptographyProvider.Companion.JDK: CryptographyProvider by defaultPr
 
 @Suppress("FunctionName")
 public fun CryptographyProvider.Companion.JDK(
-    provider: JdkProvider = JdkProvider.Default,
+    cryptographyRandom: CryptographyRandom = CryptographyRandom.Default,
+): CryptographyProvider = JDK(cryptographyRandom.asSecureRandom())
+
+@Suppress("FunctionName")
+public fun CryptographyProvider.Companion.JDK(
+    provider: Provider,
     cryptographyRandom: CryptographyRandom = CryptographyRandom.Default,
 ): CryptographyProvider = JDK(provider, cryptographyRandom.asSecureRandom())
 
 @Suppress("FunctionName")
 public fun CryptographyProvider.Companion.JDK(
-    provider: JdkProvider = JdkProvider.Default,
+    providerName: String,
+    cryptographyRandom: CryptographyRandom = CryptographyRandom.Default,
+): CryptographyProvider = JDK(providerName, cryptographyRandom.asSecureRandom())
+
+@Suppress("FunctionName")
+public fun CryptographyProvider.Companion.JDK(
     secureRandom: SecureRandom,
-): CryptographyProvider = JdkCryptographyProvider(provider.name, JdkCryptographyState(provider, secureRandom))
+): CryptographyProvider = JdkCryptographyProvider(null, secureRandom)
+
+@Suppress("FunctionName")
+public fun CryptographyProvider.Companion.JDK(
+    provider: Provider,
+    secureRandom: SecureRandom,
+): CryptographyProvider = JdkCryptographyProvider(provider, secureRandom)
+
+@Suppress("FunctionName")
+public fun CryptographyProvider.Companion.JDK(
+    providerName: String,
+    secureRandom: SecureRandom,
+): CryptographyProvider {
+    val provider = checkNotNull(Security.getProvider(providerName)) { "No provider with name: $providerName" }
+    return JdkCryptographyProvider(provider, secureRandom)
+}
 
 internal class JdkCryptographyProvider(
-    private val providerName: String?,
-    private val state: JdkCryptographyState,
+    provider: Provider?,
+    secureRandom: SecureRandom,
 ) : CryptographyProvider() {
-    override val name: String
-        get() = when (providerName) {
-            null -> "JDK"
-            else -> "JDK ($providerName)"
-        }
+    private val state = JdkCryptographyState(provider, secureRandom)
+    override val name: String = when (provider) {
+        null -> "JDK"
+        else -> "JDK (${provider.name})"
+    }
 
     private val cache = ConcurrentHashMap<CryptographyAlgorithmId<*>, CryptographyAlgorithm?>()
 

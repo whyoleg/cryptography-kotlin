@@ -11,7 +11,7 @@ import java.util.concurrent.*
 
 //candidate for context receivers
 internal class JdkCryptographyState(
-    private val provider: JdkProvider,
+    private val provider: JProvider?,
     val secureRandom: JSecureRandom,
 ) {
 
@@ -26,20 +26,16 @@ internal class JdkCryptographyState(
 
     private inline fun <T> ConcurrentHashMap<String, Pooled<T>>.get(
         algorithm: String,
-        crossinline s: (String) -> T,
-        crossinline s1: (String, String) -> T,
-        crossinline s2: (String, JProvider) -> T,
+        crossinline fromDefault: (String) -> T,
+        crossinline fromProvider: (String, JProvider) -> T,
         cached: Boolean = true,
     ): Pooled<T> = getOrPut(algorithm) {
-        val instantiate = when (provider) {
-            JdkProvider.Default     -> {
-                { s(algorithm) }
+        val instantiate = when (val provider = provider) {
+            null -> {
+                { fromDefault(algorithm) }
             }
-            is JdkProvider.Name     -> {
-                { s1(algorithm, provider.provider) }
-            }
-            is JdkProvider.Instance -> {
-                { s2(algorithm, provider.provider) }
+            else -> {
+                { fromProvider(algorithm, provider) }
             }
         }
         when (cached) {
@@ -49,34 +45,28 @@ internal class JdkCryptographyState(
     }
 
     fun cipher(algorithm: String): Pooled<JCipher> =
-        ciphers.get(algorithm, JCipher::getInstance, JCipher::getInstance, JCipher::getInstance)
+        ciphers.get(algorithm, JCipher::getInstance, JCipher::getInstance)
 
     fun messageDigest(algorithm: String): Pooled<JMessageDigest> =
-        messageDigests.get(algorithm, JMessageDigest::getInstance, JMessageDigest::getInstance, JMessageDigest::getInstance)
+        messageDigests.get(algorithm, JMessageDigest::getInstance, JMessageDigest::getInstance)
 
     fun mac(algorithm: String): Pooled<JMac> =
-        macs.get(algorithm, JMac::getInstance, JMac::getInstance, JMac::getInstance)
+        macs.get(algorithm, JMac::getInstance, JMac::getInstance)
 
     fun signature(algorithm: String): Pooled<JSignature> =
-        signatures.get(algorithm, JSignature::getInstance, JSignature::getInstance, JSignature::getInstance, cached = false)
+        signatures.get(algorithm, JSignature::getInstance, JSignature::getInstance, cached = false)
 
     fun keyGenerator(algorithm: String): Pooled<JKeyGenerator> =
-        keyGenerators.get(algorithm, JKeyGenerator::getInstance, JKeyGenerator::getInstance, JKeyGenerator::getInstance)
+        keyGenerators.get(algorithm, JKeyGenerator::getInstance, JKeyGenerator::getInstance)
 
     fun keyPairGenerator(algorithm: String): Pooled<JKeyPairGenerator> =
-        keyPairGenerators.get(algorithm, JKeyPairGenerator::getInstance, JKeyPairGenerator::getInstance, JKeyPairGenerator::getInstance)
+        keyPairGenerators.get(algorithm, JKeyPairGenerator::getInstance, JKeyPairGenerator::getInstance)
 
     fun keyFactory(algorithm: String): Pooled<JKeyFactory> =
-        keyFactories.get(algorithm, JKeyFactory::getInstance, JKeyFactory::getInstance, JKeyFactory::getInstance)
+        keyFactories.get(algorithm, JKeyFactory::getInstance, JKeyFactory::getInstance)
 
     fun algorithmParameters(algorithm: String): Pooled<JAlgorithmParameters> =
-        algorithmParameters.get(
-            algorithm,
-            JAlgorithmParameters::getInstance,
-            JAlgorithmParameters::getInstance,
-            JAlgorithmParameters::getInstance,
-            cached = false
-        )
+        algorithmParameters.get(algorithm, JAlgorithmParameters::getInstance, JAlgorithmParameters::getInstance, cached = false)
 }
 
 internal fun CryptographyAlgorithmId<Digest>.hashAlgorithmName(): String = when (this) {

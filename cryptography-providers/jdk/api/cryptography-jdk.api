@@ -1,25 +1,13 @@
 public final class dev/whyoleg/cryptography/jdk/JdkCryptographyProviderKt {
-	public static final fun JDK (Ldev/whyoleg/cryptography/provider/CryptographyProvider$Companion;Ldev/whyoleg/cryptography/jdk/JdkProvider;Ldev/whyoleg/cryptography/random/CryptographyRandom;)Ldev/whyoleg/cryptography/provider/CryptographyProvider;
-	public static final fun JDK (Ldev/whyoleg/cryptography/provider/CryptographyProvider$Companion;Ldev/whyoleg/cryptography/jdk/JdkProvider;Ljava/security/SecureRandom;)Ldev/whyoleg/cryptography/provider/CryptographyProvider;
-	public static synthetic fun JDK$default (Ldev/whyoleg/cryptography/provider/CryptographyProvider$Companion;Ldev/whyoleg/cryptography/jdk/JdkProvider;Ldev/whyoleg/cryptography/random/CryptographyRandom;ILjava/lang/Object;)Ldev/whyoleg/cryptography/provider/CryptographyProvider;
-	public static synthetic fun JDK$default (Ldev/whyoleg/cryptography/provider/CryptographyProvider$Companion;Ldev/whyoleg/cryptography/jdk/JdkProvider;Ljava/security/SecureRandom;ILjava/lang/Object;)Ldev/whyoleg/cryptography/provider/CryptographyProvider;
+	public static final fun JDK (Ldev/whyoleg/cryptography/provider/CryptographyProvider$Companion;Ldev/whyoleg/cryptography/random/CryptographyRandom;)Ldev/whyoleg/cryptography/provider/CryptographyProvider;
+	public static final fun JDK (Ldev/whyoleg/cryptography/provider/CryptographyProvider$Companion;Ljava/lang/String;Ldev/whyoleg/cryptography/random/CryptographyRandom;)Ldev/whyoleg/cryptography/provider/CryptographyProvider;
+	public static final fun JDK (Ldev/whyoleg/cryptography/provider/CryptographyProvider$Companion;Ljava/lang/String;Ljava/security/SecureRandom;)Ldev/whyoleg/cryptography/provider/CryptographyProvider;
+	public static final fun JDK (Ldev/whyoleg/cryptography/provider/CryptographyProvider$Companion;Ljava/security/Provider;Ldev/whyoleg/cryptography/random/CryptographyRandom;)Ldev/whyoleg/cryptography/provider/CryptographyProvider;
+	public static final fun JDK (Ldev/whyoleg/cryptography/provider/CryptographyProvider$Companion;Ljava/security/Provider;Ljava/security/SecureRandom;)Ldev/whyoleg/cryptography/provider/CryptographyProvider;
+	public static final fun JDK (Ldev/whyoleg/cryptography/provider/CryptographyProvider$Companion;Ljava/security/SecureRandom;)Ldev/whyoleg/cryptography/provider/CryptographyProvider;
+	public static synthetic fun JDK$default (Ldev/whyoleg/cryptography/provider/CryptographyProvider$Companion;Ldev/whyoleg/cryptography/random/CryptographyRandom;ILjava/lang/Object;)Ldev/whyoleg/cryptography/provider/CryptographyProvider;
+	public static synthetic fun JDK$default (Ldev/whyoleg/cryptography/provider/CryptographyProvider$Companion;Ljava/lang/String;Ldev/whyoleg/cryptography/random/CryptographyRandom;ILjava/lang/Object;)Ldev/whyoleg/cryptography/provider/CryptographyProvider;
+	public static synthetic fun JDK$default (Ldev/whyoleg/cryptography/provider/CryptographyProvider$Companion;Ljava/security/Provider;Ldev/whyoleg/cryptography/random/CryptographyRandom;ILjava/lang/Object;)Ldev/whyoleg/cryptography/provider/CryptographyProvider;
 	public static final fun getJDK (Ldev/whyoleg/cryptography/provider/CryptographyProvider$Companion;)Ldev/whyoleg/cryptography/provider/CryptographyProvider;
-}
-
-public abstract class dev/whyoleg/cryptography/jdk/JdkProvider {
-}
-
-public final class dev/whyoleg/cryptography/jdk/JdkProvider$Default : dev/whyoleg/cryptography/jdk/JdkProvider {
-	public static final field INSTANCE Ldev/whyoleg/cryptography/jdk/JdkProvider$Default;
-}
-
-public final class dev/whyoleg/cryptography/jdk/JdkProvider$Instance : dev/whyoleg/cryptography/jdk/JdkProvider {
-	public fun <init> (Ljava/security/Provider;)V
-	public final fun getProvider ()Ljava/security/Provider;
-}
-
-public final class dev/whyoleg/cryptography/jdk/JdkProvider$Name : dev/whyoleg/cryptography/jdk/JdkProvider {
-	public fun <init> (Ljava/lang/String;)V
-	public final fun getProvider ()Ljava/lang/String;
 }
 
