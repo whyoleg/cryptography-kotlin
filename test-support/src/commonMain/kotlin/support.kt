@@ -60,13 +60,16 @@ fun AlgorithmTestContext<ECDSA>.supportsSignatureFormat(format: ECDSA.SignatureF
     }
 )
 
-// Private key DER encoding of EC keys is different on browser comparing to all other implementations
+// Private key DER encoding of EC keys could be different per engines
 //  while it can be both decoded and encoded successfully, they will be not equal
 //  TBD what to do here
 fun AlgorithmTestContext<ECDSA>.supportsPrivateKeyDerComparison(): Boolean = supports(
     feature = "EC DER/PEM private key encoding",
     condition = when {
+        // DER encoding includes `public key`
         provider.isWebCrypto && currentPlatformIsBrowser -> false
+        // DER encoding includes `public key` and `parameters`
+        provider.isBouncyCastle                          -> false
         else                                             -> true
     }
 )
