@@ -7,7 +7,6 @@ pluginManagement {
         gradlePluginPortal()
         mavenCentral()
     }
-    includeBuild("../build-kotlin")
 }
 
 dependencyResolutionManagement {
@@ -15,16 +14,8 @@ dependencyResolutionManagement {
         gradlePluginPortal()
         mavenCentral()
     }
-
-    versionCatalogs {
-        val libs by creating {
-            from(files("../gradle/libs.versions.toml"))
-        }
-    }
 }
 
-plugins {
-    id("kotlin-version-catalog")
-}
+rootProject.name = "kotlin-version-catalog"
 
-rootProject.name = "build-logic"
+includeBuild("../build-parameters")

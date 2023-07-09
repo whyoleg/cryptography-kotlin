@@ -12,6 +12,8 @@ java {
     }
 }
 
+group = "cryptography.build"
+
 buildParameters {
     enableValidation.set(false)
     string("version")

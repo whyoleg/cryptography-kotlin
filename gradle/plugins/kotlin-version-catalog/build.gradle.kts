@@ -11,5 +11,5 @@ kotlin {
 }
 
 dependencies {
-    implementation("build:build-parameters")
+    implementation("cryptography.build:build-parameters")
 }
