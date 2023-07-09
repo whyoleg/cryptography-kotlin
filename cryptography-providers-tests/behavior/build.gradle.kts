@@ -3,17 +3,15 @@
  */
 
 plugins {
-    id("buildx-multiplatform-library")
+    id("buildx-multiplatform")
     id("buildx-target-all")
 }
 
-description = "cryptography-kotlin core API"
-
 kotlin {
     sourceSets {
-        commonMain {
+        commonTest {
             dependencies {
-                api(projects.cryptographyRandom)
+                implementation(projects.cryptographyProvidersTests.cryptographyProvidersTestsSupport)
             }
         }
     }

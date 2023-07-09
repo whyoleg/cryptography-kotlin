@@ -18,8 +18,8 @@ kotlin {
     sourceSets {
         commonTest {
             dependencies {
+                implementation(projects.cryptographyProvidersTests.cryptographyProvidersTestsSupport)
                 implementation(libs.kotlinx.serialization.json)
-                implementation(projects.testSupport)
 
                 // drop after kotlin 1.8.20 (needed only for base64)
                 implementation(libs.ktor.utils)

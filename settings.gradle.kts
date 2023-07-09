@@ -37,18 +37,6 @@ gradleEnterprise {
 
 rootProject.name = "cryptography-kotlin"
 
-fun includeProvider(name: String, submodules: List<String> = emptyList()) {
-    if (submodules.isEmpty()) {
-        include("cryptography-$name")
-        project(":cryptography-$name").projectDir = file("cryptography-providers/$name")
-    } else {
-        submodules.forEach { submodule ->
-            include("cryptography-$name-$submodule")
-            project(":cryptography-$name-$submodule").projectDir = file("cryptography-providers/$name/$submodule")
-        }
-    }
-}
-
 // support modules
 
 include("cryptography-bom")
@@ -66,15 +54,38 @@ includeProvider("apple")
 includeProvider("webcrypto")
 includeProvider("openssl3", listOf("api", "shared", "prebuilt", "test"))
 
-// testing
+// providers tests
 
-include("test-support")
-include("tests-compatibility")
+listOf(
+    "support",
+    "behavior",
+    "compatibility"
+).forEach { name ->
+    includeWithPath(
+        "cryptography-providers-tests:cryptography-providers-tests-$name",
+        "cryptography-providers-tests/$name"
+    )
+}
 
-//tests
-//tests:behavior
-//tests:compatibility
-//tests:wycheproof
+// utils
 
-//testtool:client
-//testtool:server
+fun includeProvider(name: String, submodules: List<String> = emptyList()) {
+    if (submodules.isEmpty()) {
+        includeWithPath(
+            "cryptography-$name",
+            "cryptography-providers/$name"
+        )
+    } else {
+        submodules.forEach { submodule ->
+            includeWithPath(
+                "cryptography-$name-$submodule",
+                "cryptography-providers/$name/$submodule"
+            )
+        }
+    }
+}
+
+fun includeWithPath(name: String, path: String) {
+    include(name)
+    project(":$name").projectDir = file(path)
+}
