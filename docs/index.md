@@ -26,7 +26,7 @@ repositories {
 dependencies {
     implementation("dev.whyoleg.cryptography:cryptography-core:0.1.0")
     // some provider
-    implementation("dev.whyoleg.cryptography:cryptography-jdk:0.1.0")
+    implementation("dev.whyoleg.cryptography:cryptography-provider-jdk:0.1.0")
 }
 ```
 
@@ -41,7 +41,7 @@ repositories {
 dependencies {
     implementation("dev.whyoleg.cryptography:cryptography-core:0.2.0-SNAPSHOT")
     // some provider
-    implementation("dev.whyoleg.cryptography:cryptography-jdk:0.2.0-SNAPSHOT")
+    implementation("dev.whyoleg.cryptography:cryptography-provider-jdk:0.2.0-SNAPSHOT")
 }
 ```
 
@@ -88,11 +88,11 @@ For bugs, questions and discussions, please use the [GitHub Issues](https://gith
 
 [providers]: https://whyoleg.github.io/cryptography-kotlin/providers/
 
-[OpenSSL]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-openssl3/
+[OpenSSL]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-provider-openssl3/
 
-[WebCrypto]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-webcrypto/
+[WebCrypto]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-provider-webcrypto/
 
-[JDK]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-jdk/
+[JDK]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-provider-jdk/
 
 [BOM]: https://whyoleg.github.io/cryptography-kotlin/bom/
 

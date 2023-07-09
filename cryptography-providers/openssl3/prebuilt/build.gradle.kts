@@ -28,12 +28,12 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                api(projects.cryptographyOpenssl3Api)
+                api(projects.cryptographyProviderOpenssl3Api)
             }
         }
         commonTest {
             dependencies {
-                api(projects.cryptographyOpenssl3Test)
+                api(projects.cryptographyProviderOpenssl3Test)
             }
         }
     }

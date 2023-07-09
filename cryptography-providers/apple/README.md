@@ -1,4 +1,4 @@
-# Module cryptography-apple
+# Module cryptography-provider-apple
 
 Provides implementation of [CryptographyProvider][CryptographyProvider] via [CommonCrypto][CommonCrypto]
 
@@ -21,7 +21,7 @@ provider.get(SHA512)
 
 ```kotlin
 dependencies {
-    implementation("dev.whyoleg.cryptography:cryptography-apple:0.1.0")
+    implementation("dev.whyoleg.cryptography:cryptography-provider-apple:0.1.0")
 }
 ```
 

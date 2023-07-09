@@ -1,4 +1,4 @@
-# Module cryptography-webcrypto
+# Module cryptography-provider-webcrypto
 
 Provides implementation of [CryptographyProvider][CryptographyProvider] via [WebCrypto][WebCrypto]
 
@@ -26,7 +26,7 @@ provider.get(SHA512)
 
 ```kotlin
 dependencies {
-    implementation("dev.whyoleg.cryptography:cryptography-webcrypto:0.1.0")
+    implementation("dev.whyoleg.cryptography:cryptography-provider-webcrypto:0.1.0")
 }
 ```
 

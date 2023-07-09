@@ -12,7 +12,7 @@ kotlin {
         commonMain {
             dependencies {
                 api(kotlin("test"))
-                api(projects.cryptographyOpenssl3Api)
+                api(projects.cryptographyProviderOpenssl3Api)
             }
         }
     }
