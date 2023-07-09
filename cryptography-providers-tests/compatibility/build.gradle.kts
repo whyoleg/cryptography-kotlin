@@ -20,9 +20,6 @@ kotlin {
             dependencies {
                 implementation(projects.cryptographyProvidersTestsSupport)
                 implementation(libs.kotlinx.serialization.json)
-
-                // drop after kotlin 1.8.20 (needed only for base64)
-                implementation(libs.ktor.utils)
             }
         }
     }
