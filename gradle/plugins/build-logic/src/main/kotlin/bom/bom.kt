@@ -4,14 +4,14 @@
 
 package bom
 
-val libraries
+val artifacts
     get() = listOf(
-        ":cryptography-random",
-        ":cryptography-core",
-        ":cryptography-provider-jdk",
-        ":cryptography-provider-apple",
-        ":cryptography-provider-webcrypto",
-        ":cryptography-provider-openssl3-api",
-        ":cryptography-provider-openssl3-shared",
-        ":cryptography-provider-openssl3-prebuilt",
+        "cryptography-random",
+        "cryptography-core",
+        "cryptography-provider-jdk",
+        "cryptography-provider-apple",
+        "cryptography-provider-webcrypto",
+        "cryptography-provider-openssl3-api",
+        "cryptography-provider-openssl3-shared",
+        "cryptography-provider-openssl3-prebuilt",
     )

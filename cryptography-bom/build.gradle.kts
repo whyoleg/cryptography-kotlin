@@ -11,8 +11,8 @@ description = "cryptography-kotlin BOM"
 
 dependencies {
     constraints {
-        bom.libraries.forEach {
-            api(project(it))
+        bom.artifacts.forEach {
+            api(project(":$it"))
         }
     }
 }

@@ -14,11 +14,10 @@ catalog {
         //just a hint on version used by the library
         version("kotlin", kotlinLibs.versions.kotlin.get())
         val cryptographyVersion = version("cryptography", version.toString())
-        (bom.libraries + ":cryptography-bom").forEach {
-            val name = it.substringAfterLast(":")
+        (bom.artifacts + "cryptography-bom").forEach { name ->
             library(
-                /* alias = */ name.substringAfter("cryptography-"),
-                /* group = */ "dev.whyoleg.cryptography",
+                /* alias =    */ name.substringAfter("cryptography-"),
+                /* group =    */ "dev.whyoleg.cryptography",
                 /* artifact = */ name
             ).versionRef(cryptographyVersion)
         }
