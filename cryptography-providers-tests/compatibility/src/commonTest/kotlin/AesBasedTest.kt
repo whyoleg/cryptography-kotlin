@@ -31,7 +31,7 @@ abstract class AesBasedTest<K : AES.Key, A : AES<K>>(
             algorithm.keyGenerator(keySize).generateKeys(keyIterations) { key ->
                 val keyReference = api.keys.saveData(
                     keyParametersId,
-                    KeyData(key.encodeTo(AES.Key.Format.values(), ::supportsKeyFormat))
+                    KeyData(key.encodeTo(AES.Key.Format.entries, ::supportsKeyFormat))
                 )
                 block(key, keyReference, keyParameters)
             }

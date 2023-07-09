@@ -20,7 +20,6 @@
     * support getting test data metadata in type safe way to allow checking for support for it
       (f.e. BC provider produces EC keys in slightly different format, so we couldn't compare them with other providers)
 * Other:
-    * use enum entries
     * rebuild OpenSSL to version 3.1.x and include it statically while testing over 3.0.x and 3.1.x dynamically
     * investigate WASM support
 * Project structure:
