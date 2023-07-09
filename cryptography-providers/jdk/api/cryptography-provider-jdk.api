@@ -1,4 +1,4 @@
-public final class dev/whyoleg/cryptography/jdk/JdkCryptographyProviderKt {
+public final class dev/whyoleg/cryptography/providers/jdk/JdkCryptographyProviderKt {
 	public static final fun JDK (Ldev/whyoleg/cryptography/provider/CryptographyProvider$Companion;Ldev/whyoleg/cryptography/random/CryptographyRandom;)Ldev/whyoleg/cryptography/provider/CryptographyProvider;
 	public static final fun JDK (Ldev/whyoleg/cryptography/provider/CryptographyProvider$Companion;Ljava/lang/String;Ldev/whyoleg/cryptography/random/CryptographyRandom;)Ldev/whyoleg/cryptography/provider/CryptographyProvider;
 	public static final fun JDK (Ldev/whyoleg/cryptography/provider/CryptographyProvider$Companion;Ljava/lang/String;Ljava/security/SecureRandom;)Ldev/whyoleg/cryptography/provider/CryptographyProvider;
