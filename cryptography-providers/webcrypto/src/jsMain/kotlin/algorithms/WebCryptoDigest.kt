@@ -2,14 +2,14 @@
  * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
-package dev.whyoleg.cryptography.webcrypto.algorithms
+package dev.whyoleg.cryptography.providers.webcrypto.algorithms
 
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 
 import dev.whyoleg.cryptography.operations.hash.*
-import dev.whyoleg.cryptography.webcrypto.*
-import dev.whyoleg.cryptography.webcrypto.external.*
+import dev.whyoleg.cryptography.providers.webcrypto.*
+import dev.whyoleg.cryptography.providers.webcrypto.external.*
 
 internal class WebCryptoDigest private constructor(
     private val algorithm: String,

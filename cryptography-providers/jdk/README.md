@@ -32,7 +32,7 @@ dependencies {
 
 [Supported primitives section]: https://whyoleg.github.io/cryptography-kotlin/providers#supported-primitives
 
-# Package dev.whyoleg.cryptography.jdk
+# Package dev.whyoleg.cryptography.providers.jdk
 
 Provides implementation of [CryptographyProvider][CryptographyProvider] via JDK built-in [JCA][JCA]
 

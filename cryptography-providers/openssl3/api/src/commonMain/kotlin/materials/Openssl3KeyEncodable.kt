@@ -2,11 +2,11 @@
  * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
-package dev.whyoleg.cryptography.openssl3.materials
+package dev.whyoleg.cryptography.providers.openssl3.materials
 
 import dev.whyoleg.cryptography.materials.key.*
-import dev.whyoleg.cryptography.openssl3.internal.*
-import dev.whyoleg.cryptography.openssl3.internal.cinterop.*
+import dev.whyoleg.cryptography.providers.openssl3.internal.*
+import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import kotlinx.cinterop.*
 import platform.posix.*
 import kotlin.experimental.*

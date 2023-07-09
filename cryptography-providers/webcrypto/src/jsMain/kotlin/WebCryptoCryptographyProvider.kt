@@ -2,14 +2,14 @@
  * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
-package dev.whyoleg.cryptography.webcrypto
+package dev.whyoleg.cryptography.providers.webcrypto
 
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.provider.*
-import dev.whyoleg.cryptography.webcrypto.algorithms.*
+import dev.whyoleg.cryptography.providers.webcrypto.algorithms.*
 
 public val CryptographyProvider.Companion.WebCrypto: CryptographyProvider get() = WebCryptoCryptographyProvider
 

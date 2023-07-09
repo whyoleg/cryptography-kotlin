@@ -2,11 +2,11 @@
  * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
-package dev.whyoleg.cryptography.webcrypto.materials
+package dev.whyoleg.cryptography.providers.webcrypto.materials
 
 import dev.whyoleg.cryptography.materials.key.*
-import dev.whyoleg.cryptography.webcrypto.*
-import dev.whyoleg.cryptography.webcrypto.external.*
+import dev.whyoleg.cryptography.providers.webcrypto.*
+import dev.whyoleg.cryptography.providers.webcrypto.external.*
 
 internal class WebCryptoAsymmetricKeyGenerator<K : Key>(
     private val algorithm: AsymmetricKeyGenerationAlgorithm,

@@ -48,7 +48,7 @@ dependencies {
 
 [Supported primitives section]: https://whyoleg.github.io/cryptography-kotlin/providers#supported-primitives
 
-# Package dev.whyoleg.cryptography.openssl3
+# Package dev.whyoleg.cryptography.providers.openssl3
 
 Provides implementation of [CryptographyProvider][CryptographyProvider] via [OpenSSL 3.x](https://www.openssl.org).
 

@@ -31,7 +31,7 @@ dependencies {
 
 [Supported primitives section]: https://whyoleg.github.io/cryptography-kotlin/providers#supported-primitives
 
-# Package dev.whyoleg.cryptography.apple
+# Package dev.whyoleg.cryptography.providers.apple
 
 Provides implementation of [CryptographyProvider][CryptographyProvider] via [CommonCrypto][CommonCrypto]
 

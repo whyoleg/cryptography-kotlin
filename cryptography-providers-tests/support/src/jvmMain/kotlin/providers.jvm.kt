@@ -4,7 +4,7 @@
 
 package dev.whyoleg.cryptography.providers.tests.support
 
-import dev.whyoleg.cryptography.jdk.*
+import dev.whyoleg.cryptography.providers.jdk.*
 import dev.whyoleg.cryptography.provider.*
 import org.bouncycastle.jce.provider.*
 
