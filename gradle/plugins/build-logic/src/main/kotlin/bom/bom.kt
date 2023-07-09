@@ -8,10 +8,10 @@ val libraries
     get() = listOf(
         ":cryptography-random",
         ":cryptography-core",
-        ":cryptography-jdk",
-        ":cryptography-apple",
-        ":cryptography-webcrypto",
-        ":cryptography-openssl3-api",
-        ":cryptography-openssl3-shared",
-        ":cryptography-openssl3-prebuilt",
+        ":cryptography-provider-jdk",
+        ":cryptography-provider-apple",
+        ":cryptography-provider-webcrypto",
+        ":cryptography-provider-openssl3-api",
+        ":cryptography-provider-openssl3-shared",
+        ":cryptography-provider-openssl3-prebuilt",
     )

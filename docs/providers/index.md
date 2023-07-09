@@ -2,13 +2,13 @@
 
 On current moment following providers are available out of the box:
 
-* [JDK](../modules/cryptography-jdk.md) - via
+* [JDK](../modules/cryptography-provider-jdk.md) - via
   JDK built-in [JCA](https://docs.oracle.com/en/java/javase/17/security/java-cryptography-architecture-jca-reference-guide.html)
-* [WebCrypto](../modules/cryptography-webcrypto.md) - via
+* [WebCrypto](../modules/cryptography-provider-webcrypto.md) - via
   [WebCrypto](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API)
-* [Apple](../modules/cryptography-apple.md) - via
+* [Apple](../modules/cryptography-provider-apple.md) - via
   [CommonCrypto](https://developer.apple.com/library/archive/documentation/Security/Conceptual/cryptoservices/Introduction/Introduction.html)
-* [OpenSSL3](../modules/cryptography-openssl3.md) - via [OpenSSL 3.x](https://www.openssl.org),
+* [OpenSSL3](../modules/cryptography-provider-openssl3.md) - via [OpenSSL 3.x](https://www.openssl.org),
   statically linked to prebuilt OpenSSL 3.0.8 or dynamically linked (experimental)
 
 ## Supported primitives

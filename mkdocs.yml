@@ -30,10 +30,10 @@ nav:
       - 'Gradle version catalog': gradle-version-catalog.md
   - 'Providers':
       - providers/index.md
-      - 'JDK': modules/cryptography-jdk.md
-      - 'WebCrypto': modules/cryptography-webcrypto.md
-      - 'Apple': modules/cryptography-apple.md
-      - 'OpenSSL3': modules/cryptography-openssl3.md
+      - 'JDK': modules/cryptography-provider-jdk.md
+      - 'WebCrypto': modules/cryptography-provider-webcrypto.md
+      - 'Apple': modules/cryptography-provider-apple.md
+      - 'OpenSSL3': modules/cryptography-provider-openssl3.md
   - 'API': api/index.html
 
 theme:

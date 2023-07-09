@@ -62,7 +62,7 @@ listOf(
     "compatibility"
 ).forEach { name ->
     includeWithPath(
-        "cryptography-providers-tests:cryptography-providers-tests-$name",
+        "cryptography-providers-tests-$name",
         "cryptography-providers-tests/$name"
     )
 }
@@ -72,13 +72,13 @@ listOf(
 fun includeProvider(name: String, submodules: List<String> = emptyList()) {
     if (submodules.isEmpty()) {
         includeWithPath(
-            "cryptography-$name",
+            "cryptography-provider-$name",
             "cryptography-providers/$name"
         )
     } else {
         submodules.forEach { submodule ->
             includeWithPath(
-                "cryptography-$name-$submodule",
+                "cryptography-provider-$name-$submodule",
                 "cryptography-providers/$name/$submodule"
             )
         }

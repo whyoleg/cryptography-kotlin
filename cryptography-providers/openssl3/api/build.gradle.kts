@@ -27,6 +27,6 @@ kotlin {
 }
 
 documentation {
-    moduleName.set("cryptography-openssl3")
+    moduleName.set("cryptography-provider-openssl3")
     includes.set("../README.md")
 }

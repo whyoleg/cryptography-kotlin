@@ -11,7 +11,7 @@ kotlin {
     sourceSets {
         commonTest {
             dependencies {
-                implementation(projects.cryptographyProvidersTests.cryptographyProvidersTestsSupport)
+                implementation(projects.cryptographyProvidersTestsSupport)
             }
         }
     }

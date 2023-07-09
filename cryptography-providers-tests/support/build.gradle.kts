@@ -17,32 +17,32 @@ kotlin {
         }
         jsMain {
             dependencies {
-                implementation(projects.cryptographyWebcrypto)
+                implementation(projects.cryptographyProviderWebcrypto)
             }
         }
         jvmMain {
             dependencies {
-                implementation(projects.cryptographyJdk)
+                implementation(projects.cryptographyProviderJdk)
                 implementation(libs.bouncycastle.jdk8)
             }
         }
 
         appleMain {
             dependencies {
-                implementation(projects.cryptographyApple)
-                implementation(projects.cryptographyOpenssl3Prebuilt)
+                implementation(projects.cryptographyProviderApple)
+                implementation(projects.cryptographyProviderOpenssl3Prebuilt)
             }
         }
 
         linuxMain {
             dependencies {
-                implementation(projects.cryptographyOpenssl3Prebuilt)
+                implementation(projects.cryptographyProviderOpenssl3Prebuilt)
             }
         }
 
         mingwMain {
             dependencies {
-                implementation(projects.cryptographyOpenssl3Prebuilt)
+                implementation(projects.cryptographyProviderOpenssl3Prebuilt)
             }
         }
     }
