@@ -34,8 +34,8 @@ abstract class RsaBasedTest<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, 
                 algorithm.keyPairGenerator(keySize, digest).generateKeys(keyIterations) { keyPair ->
                     val keyReference = api.keyPairs.saveData(
                         keyParametersId, KeyPairData(
-                            public = KeyData(keyPair.publicKey.encodeTo(RSA.PublicKey.Format.values(), ::supportsKeyFormat)),
-                            private = KeyData(keyPair.privateKey.encodeTo(RSA.PrivateKey.Format.values(), ::supportsKeyFormat))
+                            public = KeyData(keyPair.publicKey.encodeTo(RSA.PublicKey.Format.entries, ::supportsKeyFormat)),
+                            private = KeyData(keyPair.privateKey.encodeTo(RSA.PrivateKey.Format.entries, ::supportsKeyFormat))
                         )
                     )
                     block(keyPair, keyReference, keyParameters)

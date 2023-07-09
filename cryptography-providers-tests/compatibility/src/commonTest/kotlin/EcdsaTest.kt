@@ -54,8 +54,8 @@ class EcdsaTest : CompatibilityTest<ECDSA>(ECDSA) {
             algorithm.keyPairGenerator(curve).generateKeys(keyIterations) { keyPair ->
                 val keyReference = api.keyPairs.saveData(
                     keyParametersId, KeyPairData(
-                        public = KeyData(keyPair.publicKey.encodeTo(EC.PublicKey.Format.values(), ::supportsKeyFormat)),
-                        private = KeyData(keyPair.privateKey.encodeTo(EC.PrivateKey.Format.values(), ::supportsKeyFormat))
+                        public = KeyData(keyPair.publicKey.encodeTo(EC.PublicKey.Format.entries, ::supportsKeyFormat)),
+                        private = KeyData(keyPair.privateKey.encodeTo(EC.PrivateKey.Format.entries, ::supportsKeyFormat))
                     )
                 )
 

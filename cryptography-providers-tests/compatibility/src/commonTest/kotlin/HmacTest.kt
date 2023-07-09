@@ -27,7 +27,7 @@ class HmacTest : CompatibilityTest<HMAC>(HMAC) {
             algorithm.keyGenerator(digest).generateKeys(keyIterations) { key ->
                 val keyReference = api.keys.saveData(
                     keyParametersId,
-                    KeyData(key.encodeTo(HMAC.Key.Format.values(), ::supportsKeyFormat))
+                    KeyData(key.encodeTo(HMAC.Key.Format.entries, ::supportsKeyFormat))
                 )
 
                 val signatureGenerator = key.signatureGenerator()
