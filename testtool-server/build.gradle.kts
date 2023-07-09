@@ -20,7 +20,7 @@ dependencies {
 
     implementation(libs.logback.classic)
 
-    implementation("build:build-parameters")
+    implementation("cryptography.build:build-parameters")
 }
 
 gradlePlugin {

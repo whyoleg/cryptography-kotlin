@@ -9,9 +9,9 @@ pluginManagement {
         gradlePluginPortal()
         mavenCentral()
     }
-    includeBuild("build-logic")
-    includeBuild("build-parameters")
-    includeBuild("build-kotlin")
+    includeBuild("gradle/plugins/build-parameters")
+    includeBuild("gradle/plugins/build-logic")
+    includeBuild("gradle/plugins/kotlin-version-catalog")
     includeBuild("testtool-server")
 }
 
@@ -70,3 +70,11 @@ includeProvider("openssl3", listOf("api", "shared", "prebuilt", "test"))
 include("testtool-client")
 include("test-support")
 include("tests-compatibility")
+
+//tests
+//tests:behavior
+//tests:compatibility
+//tests:wycheproof
+
+//testtool:client
+//testtool:server

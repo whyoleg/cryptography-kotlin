@@ -9,7 +9,7 @@ pluginManagement {
         gradlePluginPortal()
         mavenCentral()
     }
-    includeBuild("../build-kotlin")
+    includeBuild("../gradle/plugins/kotlin-version-catalog")
 }
 
 dependencyResolutionManagement {
@@ -31,8 +31,4 @@ plugins {
 
 rootProject.name = "testtool-server"
 
-includeBuild("../build-parameters") {
-    dependencySubstitution {
-        substitute(module("build:build-parameters")).using(project(":"))
-    }
-}
+includeBuild("../gradle/plugins/build-parameters")
