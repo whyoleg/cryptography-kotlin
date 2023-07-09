@@ -12,8 +12,9 @@ pluginManagement {
     includeBuild("gradle/plugins/build-parameters")
     includeBuild("gradle/plugins/build-logic")
     includeBuild("gradle/plugins/kotlin-version-catalog")
-    includeBuild("testtool-server")
 }
+
+includeBuild("testtool")
 
 plugins {
     id("kotlin-version-catalog")
@@ -67,7 +68,6 @@ includeProvider("openssl3", listOf("api", "shared", "prebuilt", "test"))
 
 // testing
 
-include("testtool-client")
 include("test-support")
 include("tests-compatibility")
 

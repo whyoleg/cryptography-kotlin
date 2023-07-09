@@ -3,7 +3,8 @@
  */
 
 plugins {
-    `kotlin-dsl`
+    //replace `kotlin` with `embeddedKotlin` with gradle 8.3
+    kotlin("jvm") version "1.8.20"
 }
 
 kotlin {
@@ -11,23 +12,10 @@ kotlin {
 }
 
 dependencies {
-    implementation(kotlinLibs.gradle.plugin)
-
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.netty)
     implementation(libs.ktor.server.calllogging)
     implementation(libs.ktor.server.cors)
 
     implementation(libs.logback.classic)
-
-    implementation("cryptography.build:build-parameters")
-}
-
-gradlePlugin {
-    plugins {
-        create("plugin") {
-            id = "testtool-server"
-            implementationClass = "dev.whyoleg.cryptography.testtool.server.TesttoolServerPlugin"
-        }
-    }
 }
