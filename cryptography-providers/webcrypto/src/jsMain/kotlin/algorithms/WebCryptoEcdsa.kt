@@ -2,17 +2,17 @@
  * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
-package dev.whyoleg.cryptography.webcrypto.algorithms
+package dev.whyoleg.cryptography.providers.webcrypto.algorithms
 
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.signature.*
-import dev.whyoleg.cryptography.webcrypto.*
-import dev.whyoleg.cryptography.webcrypto.external.*
-import dev.whyoleg.cryptography.webcrypto.materials.*
-import dev.whyoleg.cryptography.webcrypto.operations.*
+import dev.whyoleg.cryptography.providers.webcrypto.*
+import dev.whyoleg.cryptography.providers.webcrypto.external.*
+import dev.whyoleg.cryptography.providers.webcrypto.materials.*
+import dev.whyoleg.cryptography.providers.webcrypto.operations.*
 
 internal object WebCryptoEcdsa : ECDSA, WebCryptoEc<ECDSA.PublicKey, ECDSA.PrivateKey, ECDSA.KeyPair>("ECDSA") {
     override val publicKeyUsages: Array<String> get() = arrayOf("verify")

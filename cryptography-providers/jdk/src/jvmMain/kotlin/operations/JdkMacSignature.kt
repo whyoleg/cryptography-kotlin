@@ -2,10 +2,10 @@
  * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
-package dev.whyoleg.cryptography.jdk.operations
+package dev.whyoleg.cryptography.providers.jdk.operations
 
 
-import dev.whyoleg.cryptography.jdk.*
+import dev.whyoleg.cryptography.providers.jdk.*
 import dev.whyoleg.cryptography.operations.signature.*
 
 internal class JdkMacSignature(

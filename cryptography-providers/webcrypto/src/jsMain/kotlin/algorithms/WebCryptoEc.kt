@@ -2,12 +2,12 @@
  * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
-package dev.whyoleg.cryptography.webcrypto.algorithms
+package dev.whyoleg.cryptography.providers.webcrypto.algorithms
 
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.materials.key.*
-import dev.whyoleg.cryptography.webcrypto.external.*
-import dev.whyoleg.cryptography.webcrypto.materials.*
+import dev.whyoleg.cryptography.providers.webcrypto.external.*
+import dev.whyoleg.cryptography.providers.webcrypto.materials.*
 
 internal sealed class WebCryptoEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP : EC.KeyPair<PublicK, PrivateK>>(
     private val algorithmName: String,

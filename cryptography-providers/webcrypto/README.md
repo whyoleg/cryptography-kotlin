@@ -36,7 +36,7 @@ dependencies {
 
 [Supported primitives section]: https://whyoleg.github.io/cryptography-kotlin/providers#supported-primitives
 
-# Package dev.whyoleg.cryptography.webcrypto
+# Package dev.whyoleg.cryptography.providers.webcrypto
 
 Provides implementation of [CryptographyProvider][CryptographyProvider] via [WebCrypto][WebCrypto]
 

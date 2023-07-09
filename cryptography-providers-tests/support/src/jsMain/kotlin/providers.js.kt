@@ -5,7 +5,7 @@
 package dev.whyoleg.cryptography.providers.tests.support
 
 import dev.whyoleg.cryptography.provider.*
-import dev.whyoleg.cryptography.webcrypto.*
+import dev.whyoleg.cryptography.providers.webcrypto.*
 
 actual val availableProviders: List<CryptographyProvider> = listOf(
     CryptographyProvider.WebCrypto

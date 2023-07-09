@@ -24,7 +24,6 @@
     * rebuild OpenSSL to version 3.1.x and include it statically while testing over 3.0.x and 3.1.x dynamically
     * investigate WASM support
 * Project structure:
-    * change providers' package from `dev.whyoleg.cryptography.PROVIDER` to `dev.whyoleg.cryptography.providers.PROVIDER`
     * decide on how additional android tests should be run
 
 ## 0.3.0: New operations, algorithms, engines
