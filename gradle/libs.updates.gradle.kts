@@ -17,7 +17,7 @@ initscript {
 }
 
 allprojects {
-    println("Project: $name / ${rootProject.name}")
+    println("Project: ${rootProject.name} / $name")
     apply<com.github.benmanes.gradle.versions.VersionsPlugin>()
 
     // for root project add dependency on included builds
