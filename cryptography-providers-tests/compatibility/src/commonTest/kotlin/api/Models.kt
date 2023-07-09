@@ -4,7 +4,7 @@
 
 @file:Suppress("ArrayInDataClass")
 
-package dev.whyoleg.cryptography.tests.compatibility.api
+package dev.whyoleg.cryptography.providers.tests.compatibility.api
 
 import kotlinx.serialization.*
 import kotlin.jvm.*

@@ -2,13 +2,14 @@
  * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
-package dev.whyoleg.cryptography.algorithms.symmetric
+package dev.whyoleg.cryptography.providers.tests.behavior
 
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.digest.*
+import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.provider.*
+import dev.whyoleg.cryptography.providers.tests.support.*
 import dev.whyoleg.cryptography.random.*
-import dev.whyoleg.cryptography.test.*
 import kotlin.math.*
 import kotlin.test.*
 
