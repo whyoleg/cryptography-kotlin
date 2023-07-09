@@ -6,14 +6,13 @@ package dev.whyoleg.cryptography.providers.tests.compatibility.api
 
 import dev.whyoleg.cryptography.providers.tests.support.*
 import dev.whyoleg.cryptography.testtool.client.*
-import io.ktor.util.*
 import kotlinx.coroutines.flow.*
 import kotlinx.serialization.*
 import kotlinx.serialization.descriptors.*
 import kotlinx.serialization.encoding.*
-import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.*
 import kotlinx.serialization.modules.*
+import kotlin.io.encoding.*
 import kotlin.reflect.*
 
 class ServerApi(
@@ -33,11 +32,11 @@ private object Base64ByteArraySerializer : KSerializer<ByteArray> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Base64", PrimitiveKind.STRING)
 
     override fun deserialize(decoder: Decoder): ByteArray {
-        return decoder.decodeString().decodeBase64Bytes()
+        return Base64.decode(decoder.decodeString())
     }
 
     override fun serialize(encoder: Encoder, value: ByteArray) {
-        encoder.encodeString(value.encodeBase64())
+        encoder.encodeString(Base64.encode(value))
     }
 }
 
