@@ -14,9 +14,21 @@
         * need to somehow be able to run tests from `core` and `random` with android emulator,
           but without publishing `android` artifacts...
     * JDK with Bouncy Castle tests - investigate ECDSA RAW signature support
-    * migrate test-tool-client to composite build (1.9.0: experimental)
-    * (Optional) Integrate with https://github.com/google/wycheproof to test against test vectors
-      (more tests here https://github.com/pyca/cryptography/blob/main/docs/development/test-vectors.rst)
+    * check also, that if something is not supported it's really not supported - throws exception?
+    * Refactor currentPlatform in tests with some kind of object per platform with properties (for better android support)
+    * better caching in tests (ciphers/signature* like keys) - rework testtool to be more reliable
+    * support getting test data metadata in type safe way to allow checking for support for it
+      (f.e. BC provider produces EC keys in slightly different format, so we couldn't compare them with other providers)
+* Other:
+    * use enum entries
+    * rebuild OpenSSL to version 3.1.x and include it statically while testing over 3.0.x and 3.1.x dynamically
+    * investigate WASM support
+* Project structure:
+    * migrate testtool(client+server) to composite build
+    * move tests-compatibility/test-support to `cryptography-providers-tests`
+    * change providers' package from `dev.whyoleg.cryptography.PROVIDER` to `dev.whyoleg.cryptography.providers.PROVIDER`
+    * move build plugins under gradle/plugins (as in rsocket-kotlin)
+    * decide on how additional android tests should be run
 
 ## 0.3.0: New operations, algorithms, engines
 
@@ -35,9 +47,9 @@
     * Agron2 (prf)
     * scrypt (prf)
     * brcypt (prf)
-  * CMAC (mac) - how to configure it? check BC and OpenSSL
-    * Blowfish (cipher), Blake (hash) - try to find some implementations (?)
-    * TOTP/HOTP (otp)
+    * CMAC (mac) - how to configure it? check BC and OpenSSL
+        * Blowfish (cipher), Blake (hash) - try to find some implementations (?)
+        * TOTP/HOTP (otp)
 * Engines
     * CryptoKit engine
     * Windows CNG engine
@@ -45,9 +57,9 @@
     * Engine builder DSL + decide on how to better handle providers inside engine (lazy, cache, etc)
 * Tests
     * Add assertion in compatibility tests on number of tested combinations
-    * better caching in tests (ciphers/signature* like keys)
-    * Refactor currentPlatform in tests with some kind of object per platform with properties
     * write MORE tests for failures - decide on how to better test everything, specifically failures and exeptional situations
+    * Integrate with https://github.com/google/wycheproof to test against test vectors
+      (more tests here https://github.com/pyca/cryptography/blob/main/docs/development/test-vectors.rst)
 * Infrastructure:
     * setup Dependabot/Renovate
     * setup kover merged report
@@ -113,8 +125,8 @@
     * OpenSSL3 engine for JVM (may be JS/WASM)
     * OpenSSL 1.1.1 - is it needed?
     * Apple: EC/RSA via Security framework (no DER key encoding out of the box)
-  * WASM WASI - is there something available?
-  * align exceptions between engines
+    * WASM WASI - is there something available?
+    * align exceptions between engines
 * MPP encoding
     * JWT/JWK support (JOSE)
     * ASN.1/X.509/DER/PEM encoder/decoder (via kx.serialization ?)
@@ -135,6 +147,7 @@
 * RSA-PSS salt size values: digest size, max size, plain value
 * Somehow check, that there is no memory leaks (especially in openssl provider)
 * Add pooling in openssl provider
+* linuxArm64 and androidNative* support - need some way to test it
 
 ## 1.0.0: Stable release
 
