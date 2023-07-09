@@ -2,13 +2,12 @@
  * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
-package dev.whyoleg.cryptography.testtool.server
+package dev.whyoleg.cryptography.testtool.plugin
 
 import org.gradle.api.*
+import org.gradle.api.tasks.testing.*
 import org.gradle.kotlin.dsl.*
 import org.jetbrains.kotlin.gradle.dsl.*
-import org.jetbrains.kotlin.gradle.plugin.*
-import org.jetbrains.kotlin.gradle.targets.js.ir.*
 
 open class TesttoolServerPlugin : Plugin<Project> {
 
@@ -25,7 +24,7 @@ open class TesttoolServerPlugin : Plugin<Project> {
 
         val serverProvider = gradle.sharedServices.registerIfAbsent(
             "testtool-server",
-            TesttoolServer::class.java
+            TesttoolServerService::class.java
         ) {
             parameters {
                 instanceId.set(testtoolServerInstanceId)
@@ -40,14 +39,15 @@ open class TesttoolServerPlugin : Plugin<Project> {
             usesService(serverProvider)
         }
 
+        tasks.withType<AbstractTestTask>().configureEach(::useServer)
+//        TODO: android
+//        tasks.withType<AndroidTestTask>().configureEach(::useServer)
+
         plugins.withId("org.jetbrains.kotlin.multiplatform") {
-            val kotlin = extensions.getByName("kotlin") as KotlinMultiplatformExtension
-            kotlin.targets.all {
-                if (this is KotlinTargetWithTests<*, *>) {
-                    testRuns.all { (this as ExecutionTaskHolder<*>).executionTask.configure(::useServer) }
-                    if (this is KotlinJsIrTarget) {
-                        browser.testRuns.all { executionTask.configure(::useServer) }
-                        nodejs.testRuns.all { executionTask.configure(::useServer) }
+            extensions.configure<KotlinMultiplatformExtension>("kotlin") {
+                sourceSets.named("commonTest") {
+                    dependencies {
+                        implementation("testtool:client")
                     }
                 }
             }

@@ -11,7 +11,7 @@ plugins {
     id("buildx-target-all")
 
     id("org.jetbrains.kotlin.plugin.serialization")
-    id("testtool-server")
+    id("testtool.server")
 }
 
 kotlin {
@@ -20,7 +20,6 @@ kotlin {
             dependencies {
                 implementation(libs.kotlinx.serialization.json)
                 implementation(projects.testSupport)
-                implementation(projects.testtoolClient)
 
                 // drop after kotlin 1.8.20 (needed only for base64)
                 implementation(libs.ktor.utils)
