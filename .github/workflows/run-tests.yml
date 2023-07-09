@@ -115,7 +115,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: |
-            tests-compatibility:allTests
+            cryptography-providers-tests-compatibility:allTests
             -Ptests.compatibility.step=Generate
             -Ptesttool.instanceId=${{ matrix.os }}
             --scan
@@ -187,7 +187,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: |
-            tests-compatibility:allTests
+            cryptography-providers-tests-compatibility:allTests
             -Ptests.compatibility.step=Validate
             -Ptesttool.instanceId=${{ matrix.os }}
             --scan
@@ -201,7 +201,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: |
-            tests-compatibility:allTests
+            cryptography-providers-tests-compatibility:allTests
             -Ptests.compatibility.step=Validate
             -Ptesttool.instanceId=${{ matrix.os }}
             --scan
