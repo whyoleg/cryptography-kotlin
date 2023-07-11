@@ -4,9 +4,11 @@
 
 package dev.whyoleg.cryptography.providers.tests.support
 
-import dev.whyoleg.cryptography.providers.openssl3.*
 import dev.whyoleg.cryptography.provider.*
+import dev.whyoleg.cryptography.providers.jdk.*
+import org.bouncycastle.jce.provider.*
 
 actual val availableProviders: List<CryptographyProvider> = listOf(
-    CryptographyProvider.Openssl3
+    CryptographyProvider.JDK,
+    CryptographyProvider.JDK(BouncyCastleProvider())
 )

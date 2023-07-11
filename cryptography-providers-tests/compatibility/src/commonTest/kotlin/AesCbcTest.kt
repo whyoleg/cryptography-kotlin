@@ -22,7 +22,7 @@ class AesCbcTest : AesBasedTest<AES.CBC.Key, AES.CBC>(AES.CBC) {
     @Serializable
     private data class CipherParameters(val padding: Boolean) : TestParameters
 
-    override suspend fun CompatibilityTestContext<AES.CBC>.generate() {
+    override suspend fun CompatibilityTestScope<AES.CBC>.generate() {
         val paddings = buildList {
             generateBoolean { padding ->
                 if (!supportsPadding(padding)) return@generateBoolean
@@ -51,13 +51,13 @@ class AesCbcTest : AesBasedTest<AES.CBC.Key, AES.CBC>(AES.CBC) {
         }
     }
 
-    override suspend fun CompatibilityTestContext<AES.CBC>.validate() {
+    override suspend fun CompatibilityTestScope<AES.CBC>.validate() {
         val keys = validateKeys()
 
-        api.ciphers.getParameters<CipherParameters> { (padding), parametersId ->
+        api.ciphers.getParameters<CipherParameters> { (padding), parametersId, _ ->
             if (!supportsPadding(padding)) return@getParameters
 
-            api.ciphers.getData<CipherData>(parametersId) { (keyReference, plaintext, ciphertext), _ ->
+            api.ciphers.getData<CipherData>(parametersId) { (keyReference, plaintext, ciphertext), _, _ ->
                 keys[keyReference]?.forEach { key ->
                     val cipher = key.cipher(padding)
                     assertContentEquals(plaintext, cipher.decrypt(ciphertext), "Decrypt")

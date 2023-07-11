@@ -24,7 +24,7 @@ abstract class RsaBasedTest<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, 
         val digestSizeBytes: Int,
     ) : TestParameters
 
-    protected suspend fun CompatibilityTestContext<A>.generateKeys(
+    protected suspend fun CompatibilityTestScope<A>.generateKeys(
         block: suspend (keyPair: KP, keyReference: TestReference, keyParameters: KeyParameters) -> Unit,
     ) {
         generateRsaKeySizes { keySize ->
@@ -44,14 +44,14 @@ abstract class RsaBasedTest<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, 
         }
     }
 
-    protected suspend fun CompatibilityTestContext<A>.validateKeys() = buildMap {
-        api.keyPairs.getParameters<KeyParameters> { (_, digestName), parametersId ->
+    protected suspend fun CompatibilityTestScope<A>.validateKeys() = buildMap {
+        api.keyPairs.getParameters<KeyParameters> { (_, digestName), parametersId, _ ->
             val digest = digest(digestName)
 
             val privateKeyDecoder = algorithm.privateKeyDecoder(digest)
             val publicKeyDecoder = algorithm.publicKeyDecoder(digest)
 
-            api.keyPairs.getData<KeyPairData>(parametersId) { (public, private), keyReference ->
+            api.keyPairs.getData<KeyPairData>(parametersId) { (public, private), keyReference, _ ->
                 val publicKeys = publicKeyDecoder.decodeFrom(
                     formats = public.formats,
                     formatOf = RSA.PublicKey.Format::valueOf,

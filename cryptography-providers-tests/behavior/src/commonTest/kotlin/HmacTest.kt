@@ -15,16 +15,17 @@ import kotlin.test.*
 
 class HmacTest {
 
-    private class HmacTestContext(
+    private class HmacTestScope(
         logger: TestLogger,
+        context: TestContext,
         provider: CryptographyProvider,
         algorithm: HMAC,
         val digest: CryptographyAlgorithmId<Digest>,
         val digestSize: Int,
         val digestBlockSize: Int,
-    ) : AlgorithmTestContext<HMAC>(logger, provider, algorithm)
+    ) : AlgorithmTestScope<HMAC>(logger, context, provider, algorithm)
 
-    private fun runTestForEachDigest(block: suspend HmacTestContext.() -> Unit) = runTestForEachAlgorithm(HMAC) {
+    private fun runTestForEachDigest(block: suspend HmacTestScope.() -> Unit) = runTestForEachAlgorithm(HMAC) {
         //all values are in bytes
         listOf(
             Triple(SHA1, 20, 64),
@@ -32,7 +33,7 @@ class HmacTest {
             Triple(SHA384, 48, 128),
             Triple(SHA512, 64, 128),
         ).forEach { (digest, digestSize, digestBlockSize) ->
-            block(HmacTestContext(logger, provider, algorithm, digest, digestSize, digestBlockSize))
+            block(HmacTestScope(logger, context, provider, algorithm, digest, digestSize, digestBlockSize))
         }
     }
 

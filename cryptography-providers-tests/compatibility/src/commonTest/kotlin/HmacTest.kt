@@ -20,7 +20,7 @@ class HmacTest : CompatibilityTest<HMAC>(HMAC) {
     @Serializable
     private data class KeyParameters(val digest: String) : TestParameters
 
-    override suspend fun CompatibilityTestContext<HMAC>.generate() {
+    override suspend fun CompatibilityTestScope<HMAC>.generate() {
         val signatureParametersId = api.signatures.saveParameters(TestParameters.Empty)
         generateDigests { digest, _ ->
             val keyParametersId = api.keys.saveParameters(KeyParameters(digest.name))
@@ -47,11 +47,11 @@ class HmacTest : CompatibilityTest<HMAC>(HMAC) {
         }
     }
 
-    override suspend fun CompatibilityTestContext<HMAC>.validate() {
+    override suspend fun CompatibilityTestScope<HMAC>.validate() {
         val keys = buildMap {
-            api.keys.getParameters<KeyParameters> { (digestName), parametersId ->
+            api.keys.getParameters<KeyParameters> { (digestName), parametersId, _ ->
                 val keyDecoder = algorithm.keyDecoder(digest(digestName))
-                api.keys.getData<KeyData>(parametersId) { (formats), keyReference ->
+                api.keys.getData<KeyData>(parametersId) { (formats), keyReference, _ ->
                     val keys = keyDecoder.decodeFrom(
                         formats = formats,
                         formatOf = HMAC.Key.Format::valueOf,
@@ -66,8 +66,8 @@ class HmacTest : CompatibilityTest<HMAC>(HMAC) {
                 }
             }
         }
-        api.signatures.getParameters<TestParameters.Empty> { _, parametersId ->
-            api.signatures.getData<SignatureData>(parametersId) { (keyReference, data, signature), _ ->
+        api.signatures.getParameters<TestParameters.Empty> { _, parametersId, _ ->
+            api.signatures.getData<SignatureData>(parametersId) { (keyReference, data, signature), _, _ ->
                 keys[keyReference]?.forEach { key ->
                     val verifier = key.signatureVerifier()
                     val generator = key.signatureGenerator()

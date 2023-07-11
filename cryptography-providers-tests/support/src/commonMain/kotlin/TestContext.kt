@@ -4,20 +4,27 @@
 
 package dev.whyoleg.cryptography.providers.tests.support
 
-import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.provider.*
+import kotlinx.serialization.*
 
-open class TestContext(
-    val logger: TestLogger,
+@Serializable
+data class TestContext(
+    val platform: TestPlatform,
+    val provider: TestProvider,
 )
 
-open class ProviderTestContext(
-    logger: TestLogger,
-    val provider: CryptographyProvider,
-) : TestContext(logger)
-
-open class AlgorithmTestContext<A : CryptographyAlgorithm>(
-    logger: TestLogger,
-    provider: CryptographyProvider,
-    val algorithm: A,
-) : ProviderTestContext(logger, provider)
+internal fun TestContext(provider: CryptographyProvider): TestContext = TestContext(
+    platform = currentTestPlatform,
+    provider = when (provider.name) {
+        "WebCrypto" -> TestProvider.WebCrypto
+        "JDK"       -> TestProvider.JDK.Default
+        "JDK (BC)"  -> TestProvider.JDK.BouncyCastle
+        "Apple"     -> TestProvider.Apple
+        else        -> when {
+            provider.name.startsWith("OpenSSL3") -> TestProvider.OpenSSL3(
+                version = provider.name.substringAfter("(").substringBeforeLast(")")
+            )
+            else                                 -> error("Unsupported provider")
+        }
+    }
+)

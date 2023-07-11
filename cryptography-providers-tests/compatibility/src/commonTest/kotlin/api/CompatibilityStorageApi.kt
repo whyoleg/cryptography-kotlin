@@ -20,18 +20,15 @@ abstract class CompatibilityStorageApi(
     }
 
     suspend inline fun <reified T : TestParameters> getParameters(
-        block: (parameters: T, parametersId: TestParametersId) -> Unit,
+        block: (parameters: T, parametersId: TestParametersId, context: TestContext) -> Unit,
     ) {
-        getParameters<T>(typeOf<T>()).forEach { (id, parameters, metadata) ->
-            logger.log { "$storageName.getParameters: $id -> $parameters | $metadata" }
-            block(parameters, TestParametersId(id))
+        getParameters<T>(typeOf<T>()).forEach { (id, parameters, context) ->
+            logger.log { "$storageName.getParameters: $id -> $parameters | $context" }
+            block(parameters, TestParametersId(id), context)
         }
     }
 
-    suspend inline fun <reified T : TestData> saveData(
-        parametersId: TestParametersId,
-        data: T,
-    ): TestReference {
+    suspend inline fun <reified T : TestData> saveData(parametersId: TestParametersId, data: T): TestReference {
         val id = saveData(parametersId, data, typeOf<T>())
         val reference = TestReference(parametersId, TestDataId(id))
         logger.log { "$storageName.saveData: $reference -> $data" }
@@ -40,26 +37,24 @@ abstract class CompatibilityStorageApi(
 
     suspend inline fun <reified T : TestData> getData(
         parametersId: TestParametersId,
-        crossinline block: suspend (data: T, reference: TestReference) -> Unit,
+        crossinline block: suspend (data: T, reference: TestReference, context: TestContext) -> Unit,
     ) {
-        getData<T>(parametersId, typeOf<T>()).forEach { (id, data, metadata) ->
+        getData<T>(parametersId, typeOf<T>()).forEach { (id, data, context) ->
             val reference = TestReference(parametersId, TestDataId(id))
-            logger.log { "$storageName.getData: $reference -> $data | $metadata" }
-            block(data, reference)
+            logger.log { "$storageName.getData: $reference -> $data | $context" }
+            block(data, reference, context)
         }
     }
 
     abstract suspend fun <T : TestParameters> saveParameters(parameters: T, type: KType): String
-    abstract suspend fun <T : TestParameters> getParameters(type: KType): List<Triple<String, T, Map<String, String>>>
+    abstract suspend fun <T : TestParameters> getParameters(type: KType): List<TestContent<T>>
 
-    abstract suspend fun <T : TestData> saveData(
-        parametersId: TestParametersId,
-        data: T,
-        type: KType,
-    ): String
+    abstract suspend fun <T : TestData> saveData(parametersId: TestParametersId, data: T, type: KType): String
+    abstract suspend fun <T : TestData> getData(parametersId: TestParametersId, type: KType): List<TestContent<T>>
 
-    abstract suspend fun <T : TestData> getData(
-        parametersId: TestParametersId,
-        type: KType,
-    ): List<Triple<String, T, Map<String, String>>>
+    data class TestContent<T>(
+        val id: String,
+        val content: T,
+        val context: TestContext,
+    )
 }

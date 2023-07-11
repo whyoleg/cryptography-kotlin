@@ -13,7 +13,7 @@ import kotlin.test.*
 
 class SupportedAlgorithmsTest {
 
-    private fun ProviderTestContext.assertSupports(
+    private fun ProviderTestScope.assertSupports(
         algorithmId: CryptographyAlgorithmId<*>,
         supported: Boolean = true,
     ) {
@@ -27,20 +27,20 @@ class SupportedAlgorithmsTest {
     @Test
     fun testSupported() = runTestForEachProvider {
         assertSupports(AES.CBC)
-        assertSupports(AES.GCM, !provider.isApple)
+        assertSupports(AES.GCM, !context.provider.isApple)
 
         assertSupports(HMAC)
 
-        assertSupports(MD5, !provider.isWebCrypto)
+        assertSupports(MD5, !context.provider.isWebCrypto)
         assertSupports(SHA1)
         assertSupports(SHA256)
         assertSupports(SHA384)
         assertSupports(SHA512)
 
-        assertSupports(ECDSA, !provider.isApple)
+        assertSupports(ECDSA, !context.provider.isApple)
 
-        assertSupports(RSA.PSS, !provider.isApple)
-        assertSupports(RSA.OAEP, !provider.isApple)
-        assertSupports(RSA.PKCS1, !provider.isApple)
+        assertSupports(RSA.PSS, !context.provider.isApple)
+        assertSupports(RSA.OAEP, !context.provider.isApple)
+        assertSupports(RSA.PKCS1, !context.provider.isApple)
     }
 }
