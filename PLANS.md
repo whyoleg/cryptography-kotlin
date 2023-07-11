@@ -14,11 +14,7 @@
         * need to somehow be able to run tests from `core` and `random` with android emulator,
           but without publishing `android` artifacts...
     * JDK with Bouncy Castle tests - investigate ECDSA RAW signature support
-    * check also, that if something is not supported it's really not supported - throws exception?
-    * Refactor currentPlatform in tests with some kind of object per platform with properties (for better android support)
     * better caching in tests (ciphers/signature* like keys) - rework testtool to be more reliable
-    * support getting test data metadata in type safe way to allow checking for support for it
-      (f.e. BC provider produces EC keys in slightly different format, so we couldn't compare them with other providers)
 * Other:
     * rebuild OpenSSL to version 3.1.x and include it statically while testing over 3.0.x and 3.1.x dynamically
     * investigate WASM support
