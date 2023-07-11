@@ -20,7 +20,7 @@ class Sha384Test : DigestTest(SHA384)
 class Sha512Test : DigestTest(SHA512)
 
 abstract class DigestTest(algorithmId: CryptographyAlgorithmId<Digest>) : CompatibilityTest<Digest>(algorithmId) {
-    override suspend fun CompatibilityTestContext<Digest>.generate() {
+    override suspend fun CompatibilityTestScope<Digest>.generate() {
         val hasher = algorithm.hasher()
         val parametersId = api.digests.saveParameters(TestParameters.Empty)
         repeat(iterations) {
@@ -36,11 +36,11 @@ abstract class DigestTest(algorithmId: CryptographyAlgorithmId<Digest>) : Compat
         }
     }
 
-    override suspend fun CompatibilityTestContext<Digest>.validate() {
+    override suspend fun CompatibilityTestScope<Digest>.validate() {
         val hasher = algorithm.hasher()
 
-        api.digests.getParameters<TestParameters.Empty> { _, parametersId ->
-            api.digests.getData<DigestData>(parametersId) { (data, digest), _ ->
+        api.digests.getParameters<TestParameters.Empty> { _, parametersId, _ ->
+            api.digests.getData<DigestData>(parametersId) { (data, digest), _, _ ->
                 assertContentEquals(digest, hasher.hash(data), "Hash")
             }
         }

@@ -5,20 +5,28 @@
 package dev.whyoleg.cryptography.providers.tests.support
 
 class TestLogger(
-    tag: String?,
-    val enabled: Boolean,
+    private val enabled: Boolean,
+    private val tag: String?,
 ) {
-    private val tag = when (tag) {
-        null -> "[TEST]"
-        else -> "[TEST|$tag]"
+
+    fun child(tag: String): TestLogger = TestLogger(
+        enabled = enabled,
+        tag = when (this.tag) {
+            null -> tag
+            else -> "${this.tag}|$tag"
+        }
+    )
+
+    fun print(message: String) {
+        println(buildString {
+            append("[TEST")
+            if (tag != null) append("|").append(tag)
+            append("] ")
+            append(message)
+        })
     }
 
-    @PublishedApi
-    internal fun print(message: String) {
-        println("$tag $message")
-    }
-
-    inline fun log(message: () -> String) {
+    fun log(message: () -> String) {
         if (enabled) print(message())
     }
 }

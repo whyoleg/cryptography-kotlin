@@ -20,7 +20,7 @@ abstract class AesBasedTest<K : AES.Key, A : AES<K>>(
     @Serializable
     protected data class KeyParameters(val keySizeBits: Int) : TestParameters
 
-    protected suspend fun CompatibilityTestContext<A>.generateKeys(
+    protected suspend fun CompatibilityTestScope<A>.generateKeys(
         block: suspend (key: K, keyReference: TestReference, keyParameters: KeyParameters) -> Unit,
     ) {
         generateSymmetricKeySize { keySize ->
@@ -38,12 +38,12 @@ abstract class AesBasedTest<K : AES.Key, A : AES<K>>(
         }
     }
 
-    protected suspend fun CompatibilityTestContext<A>.validateKeys() = algorithm.keyDecoder().let { keyDecoder ->
+    protected suspend fun CompatibilityTestScope<A>.validateKeys() = algorithm.keyDecoder().let { keyDecoder ->
         buildMap {
-            api.keys.getParameters<KeyParameters> { (keySize), parametersId ->
+            api.keys.getParameters<KeyParameters> { (keySize), parametersId, _ ->
                 if (!supportsKeySize(keySize)) return@getParameters
 
-                api.keys.getData<KeyData>(parametersId) { (formats), keyReference ->
+                api.keys.getData<KeyData>(parametersId) { (formats), keyReference, _ ->
                     val keys = keyDecoder.decodeFrom(
                         formats = formats,
                         formatOf = AES.Key.Format::valueOf,

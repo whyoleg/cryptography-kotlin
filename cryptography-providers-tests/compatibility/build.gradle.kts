@@ -19,7 +19,6 @@ kotlin {
         commonTest {
             dependencies {
                 implementation(projects.cryptographyProvidersTestsSupport)
-                implementation(libs.kotlinx.serialization.json)
             }
         }
     }

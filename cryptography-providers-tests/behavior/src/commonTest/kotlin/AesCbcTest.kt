@@ -37,7 +37,7 @@ class AesCbcTest : AesTest<AES.CBC>(AES.CBC) {
             assertFails { decrypt(ByteArray(319)) }
             assertFails { decrypt(ByteArray(321)) }
 
-            if (!provider.isApple) {
+            if (!context.provider.isApple) {
                 // only IV, empty ciphertext
                 // what is expected behavior here?
                 // assertFails { decrypt(ByteArray(ivSize)) }
@@ -79,7 +79,7 @@ class AesCbcTest : AesTest<AES.CBC>(AES.CBC) {
     @Test
     fun decryptionWrongKey() = runTestForEachKeySize {
         // ignore for now - has different behavior
-        if (provider.isApple) return@runTestForEachKeySize
+        if (context.provider.isApple) return@runTestForEachKeySize
 
         val data = CryptographyRandom.nextBytes(100)
 

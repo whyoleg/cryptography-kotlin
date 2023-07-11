@@ -37,7 +37,7 @@ class EcdsaTest : CompatibilityTest<ECDSA>(ECDSA) {
         val signatureFormat: ECDSA.SignatureFormat,
     ) : TestParameters
 
-    override suspend fun CompatibilityTestContext<ECDSA>.generate() {
+    override suspend fun CompatibilityTestScope<ECDSA>.generate() {
         val signatureParametersList = buildList {
             listOf(ECDSA.SignatureFormat.RAW, ECDSA.SignatureFormat.DER).forEach { signatureFormat ->
                 if (!supportsSignatureFormat(signatureFormat)) return@forEach
@@ -82,13 +82,13 @@ class EcdsaTest : CompatibilityTest<ECDSA>(ECDSA) {
         }
     }
 
-    override suspend fun CompatibilityTestContext<ECDSA>.validate() {
+    override suspend fun CompatibilityTestScope<ECDSA>.validate() {
         val keyPairs = buildMap {
-            api.keyPairs.getParameters<KeyParameters> { keyParameters, parametersId ->
+            api.keyPairs.getParameters<KeyParameters> { keyParameters, parametersId, _ ->
                 val privateKeyDecoder = algorithm.privateKeyDecoder(keyParameters.curve)
                 val publicKeyDecoder = algorithm.publicKeyDecoder(keyParameters.curve)
 
-                api.keyPairs.getData<KeyPairData>(parametersId) { (public, private), keyReference ->
+                api.keyPairs.getData<KeyPairData>(parametersId) { (public, private), keyReference, otherContext ->
                     val publicKeys = publicKeyDecoder.decodeFrom(
                         formats = public.formats,
                         formatOf = EC.PublicKey.Format::valueOf,
@@ -108,9 +108,9 @@ class EcdsaTest : CompatibilityTest<ECDSA>(ECDSA) {
                     ) { key, format, bytes ->
                         when (format) {
                             EC.PrivateKey.Format.DER, EC.PrivateKey.Format.PEM -> {
-//                                if (supportsPrivateKeyDerComparison()) {
-//                                    assertContentEquals(bytes, key.encodeTo(format), "Private Key $format encoding")
-//                                }
+                                if (supportsPrivateKeyDerComparisonWith(otherContext)) {
+                                    assertContentEquals(bytes, key.encodeTo(format), "Private Key $format encoding")
+                                }
                             }
                             EC.PrivateKey.Format.JWK                           -> {}
                         }
@@ -120,11 +120,11 @@ class EcdsaTest : CompatibilityTest<ECDSA>(ECDSA) {
             }
         }
 
-        api.signatures.getParameters<SignatureParameters> { (digestName, signatureFormat), parametersId ->
+        api.signatures.getParameters<SignatureParameters> { (digestName, signatureFormat), parametersId, _ ->
             if (!supportsSignatureFormat(signatureFormat)) return@getParameters
 
             val digest = digest(digestName)
-            api.signatures.getData<SignatureData>(parametersId) { (keyReference, data, signature), _ ->
+            api.signatures.getData<SignatureData>(parametersId) { (keyReference, data, signature), _, _ ->
                 val (publicKeys, privateKeys) = keyPairs[keyReference] ?: return@getData
                 val verifiers = publicKeys.map { it.signatureVerifier(digest, signatureFormat) }
                 val generators = privateKeys.map { it.signatureGenerator(digest, signatureFormat) }

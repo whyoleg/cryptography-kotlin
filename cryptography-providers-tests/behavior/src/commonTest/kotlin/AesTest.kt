@@ -13,19 +13,19 @@ abstract class AesTest<A : AES<*>>(
     private val algorithmId: CryptographyAlgorithmId<A>,
 ) {
 
-    protected inner class AesTestContext(
+    protected inner class AesTestScope(
         logger: TestLogger,
+        context: TestContext,
         provider: CryptographyProvider,
         algorithm: A,
         val keySize: SymmetricKeySize,
-    ) : AlgorithmTestContext<A>(logger, provider, algorithm)
+    ) : AlgorithmTestScope<A>(logger, context, provider, algorithm)
 
-
-    protected fun runTestForEachKeySize(block: suspend AesTestContext.() -> Unit) = runTestForEachAlgorithm(algorithmId) {
+    protected fun runTestForEachKeySize(block: suspend AesTestScope.() -> Unit) = runTestForEachAlgorithm(algorithmId) {
         generateSymmetricKeySize { keySize ->
             if (!supportsKeySize(keySize.value.inBits)) return@generateSymmetricKeySize
 
-            block(AesTestContext(logger, provider, algorithm, keySize))
+            block(AesTestScope(logger, context, provider, algorithm, keySize))
         }
     }
 }

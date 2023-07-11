@@ -11,29 +11,48 @@ import kotlin.test.*
 abstract class CompatibilityTest<A : CryptographyAlgorithm>(
     private val algorithmId: CryptographyAlgorithmId<A>,
 ) {
-    abstract suspend fun CompatibilityTestContext<A>.generate()
-    abstract suspend fun CompatibilityTestContext<A>.validate()
+    abstract suspend fun CompatibilityTestScope<A>.generate()
+    abstract suspend fun CompatibilityTestScope<A>.validate()
 
     @Test
-    fun generateStep() = runCompatibilityTest("GENERATE") { generate() }
-
-    @Test
-    fun validateStep() = runCompatibilityTest("VALIDATE") { validate() }
-
-    @Test
-    fun inMemoryTest() = runCompatibilityTest {
-        generate()
-        validate()
+    fun generateStep() = runTest {
+        runCompatibilityTestStep(
+            tag = "GENERATE",
+            api = { ServerApi(algorithmId.name, context, logger) },
+            block = { generate() }
+        )
     }
 
-    private fun runCompatibilityTest(
-        name: String? = null,
-        block: suspend CompatibilityTestContext<A>.() -> Unit,
-    ) = runTestForEachAlgorithm(algorithmId) {
-        val api = when (name) {
-            null -> InMemoryApi(logger)
-            else -> ServerApi(algorithmId.name, mapOf("platform" to currentPlatform, "provider" to provider.name), logger)
+    @Test
+    fun validateStep() = runTest {
+        runCompatibilityTestStep(
+            tag = "VALIDATE",
+            api = { ServerApi(algorithmId.name, context, logger) },
+            block = { validate() }
+        )
+    }
+
+    @Test
+    fun inMemoryTest() = runTest {
+        runCompatibilityTestStep(
+            tag = "GENERATE",
+            api = { InMemoryApi(algorithmId.name, context, logger) },
+            block = { generate() }
+        )
+        runCompatibilityTestStep(
+            tag = "VALIDATE",
+            api = { InMemoryApi(algorithmId.name, context, logger) },
+            block = { validate() }
+        )
+    }
+
+    private suspend fun TestScope.runCompatibilityTestStep(
+        tag: String,
+        api: AlgorithmTestScope<*>.() -> CompatibilityApi,
+        block: suspend CompatibilityTestScope<A>.() -> Unit,
+    ) {
+        TestScope(logger.child(tag)).forEachAlgorithm(algorithmId) {
+            CompatibilityTestScope(logger, context, provider, algorithm, api()).block()
         }
-        CompatibilityTestContext(logger, provider, algorithm, api).block()
     }
 }

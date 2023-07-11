@@ -4,72 +4,75 @@
 
 package dev.whyoleg.cryptography.providers.tests.support
 
-import dev.whyoleg.cryptography.BinarySize.Companion.bits
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.materials.key.*
 
-fun ProviderTestContext.supports(feature: String, condition: Boolean): Boolean {
-    if (condition) return true
-
-    logger.log { "SKIP: `$feature` is not supported by ${provider.name} provider" }
-    return false
+// only WebCrypto supports JWK for now
+fun AlgorithmTestScope<*>.supportsKeyFormat(format: KeyFormat): Boolean = supports {
+    when {
+        format.name == "JWK" && !provider.isWebCrypto -> "JWK"
+        else                                          -> null
+    }
 }
 
-// only WebCrypto supports JWK for now
-fun AlgorithmTestContext<*>.supportsKeyFormat(format: KeyFormat): Boolean = supports(
-    feature = "${format.name} Key format",
-    condition = when (format.name) {
-        "JWK" -> provider.isWebCrypto
-        else  -> true
+// WebCrypto doesn't support encryption without padding
+fun AlgorithmTestScope<AES.CBC>.supportsPadding(padding: Boolean): Boolean = supports {
+    when {
+        provider.isWebCrypto && !padding -> "no padding"
+        else                             -> null
     }
-)
-
-// WebCrypto supports only encryption with padding
-fun AlgorithmTestContext<AES.CBC>.supportsPadding(padding: Boolean): Boolean = supports(
-    feature = when {
-        padding -> "PKCS7Padding"
-        else    -> "No padding"
-    },
-    condition = when {
-        provider.isWebCrypto -> padding
-        else                 -> true
-    }
-)
+}
 
 // WebCrypto BROWSER(or only chromium) doesn't support 192bits
 // https://bugs.chromium.org/p/chromium/issues/detail?id=533699
-fun AlgorithmTestContext<out AES<*>>.supportsKeySize(keySizeBits: Int): Boolean = supports(
-    feature = "${keySizeBits.bits} key",
-    condition = when {
-        provider.isWebCrypto && currentPlatformIsBrowser -> keySizeBits != 192
-        else                                             -> true
+fun AlgorithmTestScope<out AES<*>>.supportsKeySize(keySizeBits: Int): Boolean = supports {
+    when {
+        provider.isWebCrypto && platform.isBrowser && keySizeBits == 192 -> "192 bits key"
+        else                                                             -> null
     }
-)
+}
 
-fun AlgorithmTestContext<ECDSA>.supportsSignatureFormat(format: ECDSA.SignatureFormat): Boolean = supports(
-    feature = "$format signature format",
-    condition = when {
-        //WebCrypto supports only RAW signature format
-        provider.isWebCrypto                                      -> format == ECDSA.SignatureFormat.RAW
-        //JDK supports RAW signature format starting from java 9
-        provider.isJdkDefault && currentPlatformJvmVersion!! <= 8 -> format == ECDSA.SignatureFormat.DER
-        //BC supports only DER signature format
-        provider.isBouncyCastle                                   -> format == ECDSA.SignatureFormat.DER
-        else                                                      -> true
-    }
-)
+fun AlgorithmTestScope<ECDSA>.supportsSignatureFormat(format: ECDSA.SignatureFormat): Boolean = supports {
+    when {
+        // WebCrypto doesn't support the DER signature format
+        provider.isWebCrypto &&
+                format == ECDSA.SignatureFormat.DER -> "$format signature format"
 
-// Private key DER encoding of EC keys could be different per engines
-//  while it can be both decoded and encoded successfully, they will be not equal
-//  TBD what to do here
-fun AlgorithmTestContext<ECDSA>.supportsPrivateKeyDerComparison(): Boolean = supports(
-    feature = "EC DER/PEM private key encoding",
-    condition = when {
-        // DER encoding includes `public key`
-        provider.isWebCrypto && currentPlatformIsBrowser -> false
-        // DER encoding includes `public key` and `parameters`
-        provider.isBouncyCastle                          -> false
-        else                                             -> true
+        // BouncyCastle doesn't support the RAW signature format
+        provider.isBouncyCastle &&
+                format == ECDSA.SignatureFormat.RAW -> "$format signature format"
+
+        // JDK.Default support the DER signature format only starting from java 9
+        provider.isJdkDefault && platform.isJdk { major <= 8 } &&
+                format == ECDSA.SignatureFormat.RAW -> "$format signature format on JDK < 9"
+
+        else                                        -> null
     }
-)
+}
+
+// Private key DER encoding of EC keys could be different per providers
+//  while it can be both decoded and encoded successfully, their encoding will be not equal
+fun AlgorithmTestScope<ECDSA>.supportsPrivateKeyDerComparisonWith(
+    other: TestContext,
+): Boolean = validate {
+    when {
+        context.provider.isWebCrypto && context.platform.isBrowser && context != other -> {
+            "WebCrypto on browser always encodes additional parameters"
+        }
+        context.provider.isBouncyCastle && !other.provider.isBouncyCastle              -> {
+            "BouncyCastle always encodes additional parameters"
+        }
+        else                                                                           -> null
+    }
+}
+
+private fun ProviderTestScope.supports(condition: TestContext.() -> String?): Boolean {
+    return validate { condition()?.let { "'$it' is not supported" } }
+}
+
+private fun ProviderTestScope.validate(condition: TestContext.() -> String?): Boolean {
+    val reason = condition(context) ?: return true
+    logger.print("SKIP: $reason")
+    return false
+}

@@ -15,7 +15,7 @@ private const val cipherIterations = 5
 private const val maxAssociatedDataSize = 10000
 
 class RsaOaepTest : RsaBasedTest<RSA.OAEP.PublicKey, RSA.OAEP.PrivateKey, RSA.OAEP.KeyPair, RSA.OAEP>(RSA.OAEP) {
-    override suspend fun CompatibilityTestContext<RSA.OAEP>.generate() {
+    override suspend fun CompatibilityTestScope<RSA.OAEP>.generate() {
         val cipherParametersId = api.ciphers.saveParameters(TestParameters.Empty)
         generateKeys { keyPair, keyReference, keyParameters ->
             val maxPlaintextSize = keyParameters.keySizeBits.bits.inBytes - 2 - 2 * keyParameters.digestSizeBytes
@@ -41,11 +41,11 @@ class RsaOaepTest : RsaBasedTest<RSA.OAEP.PublicKey, RSA.OAEP.PrivateKey, RSA.OA
         }
     }
 
-    override suspend fun CompatibilityTestContext<RSA.OAEP>.validate() {
+    override suspend fun CompatibilityTestScope<RSA.OAEP>.validate() {
         val keyPairs = validateKeys()
 
-        api.ciphers.getParameters<TestParameters.Empty> { _, parametersId ->
-            api.ciphers.getData<AuthenticatedCipherData>(parametersId) { (keyReference, associatedData, plaintext, ciphertext), _ ->
+        api.ciphers.getParameters<TestParameters.Empty> { _, parametersId, _ ->
+            api.ciphers.getData<AuthenticatedCipherData>(parametersId) { (keyReference, associatedData, plaintext, ciphertext), _, _ ->
                 val (publicKeys, privateKeys) = keyPairs[keyReference] ?: return@getData
                 val encryptors = publicKeys.map { it.encryptor() }
                 val decryptors = privateKeys.map { it.decryptor() }

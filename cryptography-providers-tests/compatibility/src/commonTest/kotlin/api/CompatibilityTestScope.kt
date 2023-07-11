@@ -8,9 +8,10 @@ import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.provider.*
 import dev.whyoleg.cryptography.providers.tests.support.*
 
-open class CompatibilityTestContext<A : CryptographyAlgorithm>(
+open class CompatibilityTestScope<A : CryptographyAlgorithm>(
     logger: TestLogger,
+    context: TestContext,
     provider: CryptographyProvider,
     algorithm: A,
     val api: CompatibilityApi,
-) : AlgorithmTestContext<A>(logger, provider, algorithm)
+) : AlgorithmTestScope<A>(logger, context, provider, algorithm)

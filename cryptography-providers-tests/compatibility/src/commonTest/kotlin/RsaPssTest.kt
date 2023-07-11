@@ -21,7 +21,7 @@ class RsaPssTest : RsaBasedTest<RSA.PSS.PublicKey, RSA.PSS.PrivateKey, RSA.PSS.K
     @Serializable
     private data class SignatureParameters(val saltSizeBytes: Int) : TestParameters
 
-    override suspend fun CompatibilityTestContext<RSA.PSS>.generate() {
+    override suspend fun CompatibilityTestScope<RSA.PSS>.generate() {
         generateKeys { keyPair, keyReference, (keySizeBites, _, digestSizeBytes) ->
             val maxSaltSize = (ceil((keySizeBites - 1) / 8.0) - digestSizeBytes - 2).toInt()
             repeat(saltIterations) {
@@ -48,11 +48,11 @@ class RsaPssTest : RsaBasedTest<RSA.PSS.PublicKey, RSA.PSS.PrivateKey, RSA.PSS.K
         }
     }
 
-    override suspend fun CompatibilityTestContext<RSA.PSS>.validate() {
+    override suspend fun CompatibilityTestScope<RSA.PSS>.validate() {
         val keyPairs = validateKeys()
 
-        api.signatures.getParameters<SignatureParameters> { (saltSizeBytes), parametersId ->
-            api.signatures.getData<SignatureData>(parametersId) { (keyReference, data, signature), _ ->
+        api.signatures.getParameters<SignatureParameters> { (saltSizeBytes), parametersId, _ ->
+            api.signatures.getData<SignatureData>(parametersId) { (keyReference, data, signature), _, _ ->
                 val (publicKeys, privateKeys) = keyPairs[keyReference] ?: return@getData
                 val verifiers = publicKeys.map { it.signatureVerifier(saltSizeBytes.bytes) }
                 val generators = privateKeys.map { it.signatureGenerator(saltSizeBytes.bytes) }

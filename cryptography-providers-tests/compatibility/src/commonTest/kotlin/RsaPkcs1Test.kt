@@ -14,7 +14,7 @@ private const val maxDataSize = 10000
 
 class RsaPkcs1Test : RsaBasedTest<RSA.PKCS1.PublicKey, RSA.PKCS1.PrivateKey, RSA.PKCS1.KeyPair, RSA.PKCS1>(RSA.PKCS1) {
 
-    override suspend fun CompatibilityTestContext<RSA.PKCS1>.generate() {
+    override suspend fun CompatibilityTestScope<RSA.PKCS1>.generate() {
         val signatureParametersId = api.signatures.saveParameters(TestParameters.Empty)
         generateKeys { keyPair, keyReference, _ ->
             val signer = keyPair.privateKey.signatureGenerator()
@@ -34,11 +34,11 @@ class RsaPkcs1Test : RsaBasedTest<RSA.PKCS1.PublicKey, RSA.PKCS1.PrivateKey, RSA
         }
     }
 
-    override suspend fun CompatibilityTestContext<RSA.PKCS1>.validate() {
+    override suspend fun CompatibilityTestScope<RSA.PKCS1>.validate() {
         val keyPairs = validateKeys()
 
-        api.signatures.getParameters<TestParameters.Empty> { _, parametersId ->
-            api.signatures.getData<SignatureData>(parametersId) { (keyReference, data, signature), _ ->
+        api.signatures.getParameters<TestParameters.Empty> { _, parametersId, _ ->
+            api.signatures.getData<SignatureData>(parametersId) { (keyReference, data, signature), _, _ ->
                 val (publicKeys, privateKeys) = keyPairs[keyReference] ?: return@getData
                 val verifiers = publicKeys.map { it.signatureVerifier() }
                 val generators = privateKeys.map { it.signatureGenerator() }

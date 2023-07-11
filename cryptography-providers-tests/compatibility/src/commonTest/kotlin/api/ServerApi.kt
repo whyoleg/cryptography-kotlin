@@ -17,10 +17,10 @@ import kotlin.reflect.*
 
 class ServerApi(
     private val algorithm: String,
-    private val metadata: Map<String, String>,
+    private val context: TestContext,
     private val logger: TestLogger,
 ) : CompatibilityApi() {
-    private fun api(storageName: String): CompatibilityStorageApi = ServerStorageApi(algorithm, metadata, storageName, logger)
+    private fun api(storageName: String): CompatibilityStorageApi = ServerStorageApi(algorithm, context, storageName, logger)
     override val keys: CompatibilityStorageApi = api("keys")
     override val keyPairs: CompatibilityStorageApi = api("key-pairs")
     override val digests: CompatibilityStorageApi = api("digests")
@@ -51,13 +51,13 @@ private val json = Json {
 
 @Serializable
 private class Payload<T>(
-    val metadata: Map<String, String>,
+    val context: TestContext,
     val content: T,
 )
 
 private class ServerStorageApi(
     private val algorithm: String,
-    private val metadata: Map<String, String>,
+    private val context: TestContext,
     storageName: String,
     logger: TestLogger,
 ) : CompatibilityStorageApi(storageName, logger) {
@@ -70,22 +70,22 @@ private class ServerStorageApi(
     private fun <T> encode(value: T, type: KType): ByteArray =
         json.encodeToString(
             Payload.serializer(serializer(type)),
-            Payload(metadata, value)
+            Payload(context, value)
         ).encodeToByteArray()
 
-    private fun <T> decode(id: String, bytes: ByteArray, type: KType): Triple<String, T, Map<String, String>> {
+    private fun <T> decode(id: String, bytes: ByteArray, type: KType): TestContent<T> {
         val payload = json.decodeFromString(
             Payload.serializer<T>(serializer(type)),
             bytes.decodeToString()
         )
-        return Triple(id, payload.content, payload.metadata)
+        return TestContent(id, payload.content, payload.context)
     }
 
     override suspend fun <T : TestParameters> saveParameters(parameters: T, type: KType): String {
         return TesttoolClient.Compatibility.saveParameters(algorithm, storageName, encode(parameters, type))
     }
 
-    override suspend fun <T : TestParameters> getParameters(type: KType): List<Triple<String, T, Map<String, String>>> {
+    override suspend fun <T : TestParameters> getParameters(type: KType): List<TestContent<T>> {
         return TesttoolClient.Compatibility.getParameters(algorithm, storageName).map { (id, bytes) ->
             decode<T>(id, bytes, type)
         }.toList()
@@ -95,10 +95,7 @@ private class ServerStorageApi(
         return TesttoolClient.Compatibility.saveData(algorithm, storageName, parametersId.value, encode(data, type))
     }
 
-    override suspend fun <T : TestData> getData(
-        parametersId: TestParametersId,
-        type: KType,
-    ): List<Triple<String, T, Map<String, String>>> {
+    override suspend fun <T : TestData> getData(parametersId: TestParametersId, type: KType): List<TestContent<T>> {
         return TesttoolClient.Compatibility.getData(algorithm, storageName, parametersId.value).map { (id, bytes) ->
             decode<T>(id, bytes, type)
         }.toList()
