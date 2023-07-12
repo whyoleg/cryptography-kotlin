@@ -56,14 +56,15 @@ fun AlgorithmTestScope<ECDSA>.supportsSignatureFormat(format: ECDSA.SignatureFor
 fun AlgorithmTestScope<ECDSA>.supportsPrivateKeyDerComparisonWith(
     other: TestContext,
 ): Boolean = validate {
+    fun TestContext.isWebCryptoBrowser(): Boolean = provider.isWebCrypto && platform.isBrowser
     when {
-        context.provider.isWebCrypto && context.platform.isBrowser && context != other -> {
+        context.isWebCryptoBrowser() != other.isWebCryptoBrowser()       -> {
             "WebCrypto on browser always encodes additional parameters"
         }
-        context.provider.isBouncyCastle && !other.provider.isBouncyCastle              -> {
+        context.provider.isBouncyCastle != other.provider.isBouncyCastle -> {
             "BouncyCastle always encodes additional parameters"
         }
-        else                                                                           -> null
+        else                                                             -> null
     }
 }
 
