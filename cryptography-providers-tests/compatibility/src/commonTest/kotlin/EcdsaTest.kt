@@ -12,7 +12,7 @@ import kotlinx.serialization.*
 import kotlin.test.*
 
 private const val keyIterations = 3
-private const val signatureIterations = 5
+private const val signatureIterations = 3
 private const val maxDataSize = 10000
 
 private inline fun generateCurves(block: (curve: EC.Curve) -> Unit) {

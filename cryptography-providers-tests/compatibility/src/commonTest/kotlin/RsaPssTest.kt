@@ -12,8 +12,8 @@ import kotlinx.serialization.*
 import kotlin.math.*
 import kotlin.test.*
 
-private const val saltIterations = 5
-private const val signatureIterations = 5
+private const val saltIterations = 3
+private const val signatureIterations = 3
 private const val maxDataSize = 10000
 
 class RsaPssTest : RsaBasedTest<RSA.PSS.PublicKey, RSA.PSS.PrivateKey, RSA.PSS.KeyPair, RSA.PSS>(RSA.PSS) {

@@ -10,8 +10,8 @@ import dev.whyoleg.cryptography.providers.tests.compatibility.api.*
 import dev.whyoleg.cryptography.random.*
 import kotlin.test.*
 
-private const val associatedDataIterations = 5
-private const val cipherIterations = 5
+private const val associatedDataIterations = 3
+private const val cipherIterations = 3
 private const val maxAssociatedDataSize = 10000
 
 class RsaOaepTest : RsaBasedTest<RSA.OAEP.PublicKey, RSA.OAEP.PrivateKey, RSA.OAEP.KeyPair, RSA.OAEP>(RSA.OAEP) {

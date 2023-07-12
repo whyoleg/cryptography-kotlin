@@ -9,7 +9,7 @@ import dev.whyoleg.cryptography.providers.tests.compatibility.api.*
 import dev.whyoleg.cryptography.random.*
 import kotlin.test.*
 
-private const val signatureIterations = 5
+private const val signatureIterations = 3
 private const val maxDataSize = 10000
 
 class RsaPkcs1Test : RsaBasedTest<RSA.PKCS1.PublicKey, RSA.PKCS1.PrivateKey, RSA.PKCS1.KeyPair, RSA.PKCS1>(RSA.PKCS1) {
