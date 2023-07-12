@@ -51,6 +51,7 @@
     * write MORE tests for failures - decide on how to better test everything, specifically failures and exeptional situations
     * Integrate with https://github.com/google/wycheproof to test against test vectors
       (more tests here https://github.com/pyca/cryptography/blob/main/docs/development/test-vectors.rst)
+  * add some tracking on which combinations of tests are executed...
 * Infrastructure:
     * setup Dependabot/Renovate
     * setup kover merged report
