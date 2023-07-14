@@ -2,10 +2,13 @@ name: Build dev
 on:
   workflow_dispatch:
   push:
-    branches-ignore:
-      - main
-      - kotlin-eap/*
+    branches:
+      - dev
 
 jobs:
   test:
     uses: ./.github/workflows/run-tests.yml
+  publish:
+    needs: [ test ]
+    uses: ./.github/workflows/publish-snapshot.yml
+    secrets: inherit

@@ -6,12 +6,6 @@ on:
       - main
 
 jobs:
-  test:
-    uses: ./.github/workflows/run-tests.yml
-  publish:
-    needs: [ test ]
-    uses: ./.github/workflows/publish-snapshot.yml
-    secrets: inherit
   deploy:
     uses: ./.github/workflows/deploy-website.yml
     permissions:

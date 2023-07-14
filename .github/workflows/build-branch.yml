@@ -1,0 +1,12 @@
+name: Build branch
+on:
+  workflow_dispatch:
+  push:
+    branches-ignore:
+      - main
+      - dev
+      - kotlin-eap/*
+
+jobs:
+  test:
+    uses: ./.github/workflows/run-tests.yml
