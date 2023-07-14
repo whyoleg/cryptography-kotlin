@@ -50,9 +50,6 @@ on:
         type: boolean
         default: true
 
-env:
-  KOTLIN_VERSION_OVERRIDE: ${{ inputs.kotlin-version }}
-
 jobs:
   default-test:
     name: Run tests
