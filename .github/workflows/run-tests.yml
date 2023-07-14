@@ -80,8 +80,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: |
-            check 
-            --scan
+            check
             --continue
             -Pkotlin.experimental.tryK2=${{ inputs.kotlin-use-k2 }}
             -PuseKotlin=${{ inputs.kotlin-version }}
@@ -115,7 +114,6 @@ jobs:
             cryptography-providers-tests-compatibility:allTests
             -Ptests.compatibility.step=Generate
             -Ptesttool.instanceId=${{ matrix.os }}
-            --scan
             --continue
             -Pkotlin.experimental.tryK2=${{ inputs.kotlin-use-k2 }}
             -PuseKotlin=${{ inputs.kotlin-version }}
@@ -187,7 +185,6 @@ jobs:
             cryptography-providers-tests-compatibility:allTests
             -Ptests.compatibility.step=Validate
             -Ptesttool.instanceId=${{ matrix.os }}
-            --scan
             --continue
             -Pkotlin.experimental.tryK2=${{ inputs.kotlin-use-k2 }}
             -PuseKotlin=${{ inputs.kotlin-version }}
@@ -201,7 +198,6 @@ jobs:
             cryptography-providers-tests-compatibility:allTests
             -Ptests.compatibility.step=Validate
             -Ptesttool.instanceId=${{ matrix.os }}
-            --scan
             --continue
             --exclude-task
             jsNodeTest
@@ -240,7 +236,6 @@ jobs:
           arguments: |
             build
             publishToMavenLocal
-            --scan
             --continue
             -Pskip.test
             -Pkotlin.experimental.tryK2=${{ inputs.kotlin-use-k2 }}
