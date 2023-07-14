@@ -65,6 +65,7 @@ jobs:
       - uses: ./.github/actions/setup-gradle
         with:
           cache-disabled: ${{ inputs.cache-disabled }}
+          cache-read-only: true
 
       - id: configuration-cache
         if: ${{ inputs.configuration-cache-enabled }}
