@@ -30,8 +30,11 @@ dependencyResolutionManagement {
 
 gradleEnterprise {
     buildScan {
+        publishAlwaysIf(System.getenv("CI").toBoolean())
         termsOfServiceUrl = "https://gradle.com/terms-of-service"
-        termsOfServiceAgree = "yes"
+        if (System.getenv("GITHUB_REPOSITORY") == "whyoleg/cryptography-kotlin") {
+            termsOfServiceAgree = "yes"
+        }
     }
 }
 
