@@ -34,6 +34,8 @@ runs:
       with:
         cache-disabled: ${{ inputs.cache-disabled }}
         cache-read-only: ${{ inputs.cache-read-only }}
+        # disabled on windows because of issue with long paths
+        gradle-home-cache-cleanup: ${{ runner.os != 'Windows' }}
         gradle-home-cache-includes: |
           caches
           notifications
