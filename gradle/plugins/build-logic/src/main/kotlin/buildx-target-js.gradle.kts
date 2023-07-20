@@ -23,12 +23,5 @@ kotlin {
                 }
             })
         }
-
-        useEsModules()
-        compilations.configureEach {
-            compilerOptions.configure {
-                useEsClasses.set(true)
-            }
-        }
     }
 }
