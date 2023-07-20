@@ -12,3 +12,18 @@ jobs:
     needs: [ test ]
     uses: ./.github/workflows/publish-snapshot.yml
     secrets: inherit
+  build-docs:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.x
+      - run: pip install mkdocs-material
+      - uses: ./.github/actions/setup-gradle
+        with:
+          cache-disabled: true
+      - name: Build documentation
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: mkdocsBuild
