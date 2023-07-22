@@ -1,93 +1,8 @@
-name: Run tests on all platforms
-on:
-  workflow_call:
-    inputs:
-      kotlin-version:
-        description: Override Kotlin version
-        type: string
-      kotlin-use-k2:
-        description: Use or not K2
-        type: string
-        default: 'false'
-      cache-disabled:
-        description: When 'true', all caching is disabled. No entries will be written to or read from the cache.
-        type: boolean
-        default: false
-      patch-file:
-        description: Path to git patch to apply
-        type: string
-      configuration-cache-enabled:
-        description: When `true`, will use configuration cache
-        type: boolean
-        default: false
-      run-compatibility-tests:
-        description: When `true`, will run compatibility tests
-        type: boolean
-        default: true
-
-  workflow_dispatch:
-    inputs:
-      kotlin-version:
-        description: Override Kotlin version
-        type: string
-      kotlin-use-k2:
-        description: Use or not K2
-        type: string
-        default: 'false'
-      cache-disabled:
-        description: When 'true', all caching is disabled. No entries will be written to or read from the cache.
-        type: boolean
-        default: false
-      patch-file:
-        description: Path to git patch to apply
-        type: string
-      configuration-cache-enabled:
-        description: When `true`, will use configuration cache
-        type: boolean
-        default: false
-      run-compatibility-tests:
-        description: When `true`, will run compatibility tests
-        type: boolean
-        default: true
+name: Run compatibility tests
+on: [ workflow_call ]
 
 jobs:
-  build:
-    name: Build project and run tests
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ 'ubuntu-latest', 'macos-latest', 'windows-latest' ]
-    steps:
-      - uses: actions/checkout@v3
-      - run: git apply ${{ inputs.patch-file }}
-        if: inputs.patch-file != ''
-      - uses: ./.github/actions/setup-gradle
-        with:
-          cache-disabled: ${{ inputs.cache-disabled }}
-
-      - id: configuration-cache
-        if: ${{ inputs.configuration-cache-enabled }}
-        run: echo "ARGS=--configuration-cache" >> $GITHUB_OUTPUT
-
-      - if: matrix.os == 'windows-latest'
-        uses: msys2/setup-msys2@v2
-        with:
-          release: false
-          install: mingw-w64-x86_64-openssl
-
-      - uses: gradle/gradle-build-action@v2
-        with:
-          arguments: |
-            build
-            publishToMavenLocal
-            --continue
-            -Pkotlin.experimental.tryK2=${{ inputs.kotlin-use-k2 }}
-            -PuseKotlin=${{ inputs.kotlin-version }}
-            ${{ steps.configuration-cache.outputs.ARGS }}"
-
   compatibility-generate:
-    if: ${{ inputs.run-compatibility-tests }}
     name: "Compatibility tests: Generate"
     runs-on: ${{ matrix.os }}
     strategy:
@@ -96,16 +11,9 @@ jobs:
         os: [ 'ubuntu-latest', 'macos-latest', 'windows-latest' ]
     steps:
       - uses: actions/checkout@v3
-      - run: git apply ${{ inputs.patch-file }}
-        if: inputs.patch-file != ''
       - uses: ./.github/actions/setup-gradle
         with:
-          cache-disabled: ${{ inputs.cache-disabled }}
           cache-read-only: true
-
-      - id: configuration-cache
-        if: ${{ inputs.configuration-cache-enabled }}
-        run: echo "ARGS=--configuration-cache" >> $GITHUB_OUTPUT
 
       - name: Run tests
         uses: gradle/gradle-build-action@v2
@@ -115,9 +23,6 @@ jobs:
             -Ptests.compatibility.step=Generate
             -Ptesttool.instanceId=${{ matrix.os }}
             --continue
-            -Pkotlin.experimental.tryK2=${{ inputs.kotlin-use-k2 }}
-            -PuseKotlin=${{ inputs.kotlin-version }}
-            ${{ steps.configuration-cache.outputs.ARGS }}"
 
       - name: ZIP test-tool-storage (windows)
         if: ${{ always() && matrix.os == 'windows-latest' }}
@@ -144,16 +49,9 @@ jobs:
         fromOS: [ 'ubuntu-latest', 'macos-latest', 'windows-latest' ]
     steps:
       - uses: actions/checkout@v3
-      - run: git apply ${{ inputs.patch-file }}
-        if: inputs.patch-file != ''
       - uses: ./.github/actions/setup-gradle
         with:
-          cache-disabled: ${{ inputs.cache-disabled }}
           cache-read-only: true
-
-      - id: configuration-cache
-        if: ${{ inputs.configuration-cache-enabled }}
-        run: echo "ARGS=--configuration-cache" >> $GITHUB_OUTPUT
 
       - name: Download test-tool-storage ZIP
         uses: actions/download-artifact@v3
@@ -186,9 +84,6 @@ jobs:
             -Ptests.compatibility.step=Validate
             -Ptesttool.instanceId=${{ matrix.os }}
             --continue
-            -Pkotlin.experimental.tryK2=${{ inputs.kotlin-use-k2 }}
-            -PuseKotlin=${{ inputs.kotlin-version }}
-            ${{ steps.configuration-cache.outputs.ARGS }}"
       # for windows, we skip jsNodeTest task, because for some reason it timeouts
       - name: Run tests (windows)
         if: matrix.os == 'windows-latest'
@@ -201,6 +96,3 @@ jobs:
             --continue
             --exclude-task
             jsNodeTest
-            -Pkotlin.experimental.tryK2=${{ inputs.kotlin-use-k2 }}
-            -PuseKotlin=${{ inputs.kotlin-version }}
-            ${{ steps.configuration-cache.outputs.ARGS }}"

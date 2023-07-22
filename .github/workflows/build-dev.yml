@@ -6,12 +6,9 @@ on:
       - dev
 
 jobs:
-  test:
-    uses: ./.github/workflows/run-tests.yml
-  publish:
-    needs: [ test ]
-    uses: ./.github/workflows/publish-snapshot.yml
-    secrets: inherit
+  build:
+    uses: ./.github/workflows/run-build.yml
+
   build-docs:
     runs-on: macos-latest
     steps:
@@ -27,3 +24,12 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: mkdocsBuild
+
+  compatibility-tests:
+    needs: [ build ]
+    uses: ./.github/workflows/run-compatibility-tests.yml
+
+  publish:
+    needs: [ build ]
+    uses: ./.github/workflows/publish-snapshot.yml
+    secrets: inherit

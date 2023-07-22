@@ -8,5 +8,7 @@ on:
       - kotlin-eap/*
 
 jobs:
-  test:
-    uses: ./.github/workflows/run-tests.yml
+  build:
+    uses: ./.github/workflows/run-build.yml
+  compatibility-tests:
+    uses: ./.github/workflows/run-compatibility-tests.yml
