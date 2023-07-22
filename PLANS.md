@@ -16,6 +16,8 @@
 * Other:
     * rebuild OpenSSL to version 3.1.x and include it statically while testing over 3.0.x and 3.1.x dynamically
     * investigate WASM support
+  * move provider package declarations to root
+  * move algorithms package declarations to root
 * Project structure:
     * decide on how additional android tests should be run
 * setup workflow, so that the next snapshot version will be developed in dev branch, and not publish dokka (or to separate page)
