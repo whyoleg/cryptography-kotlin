@@ -5,8 +5,7 @@
 import org.jetbrains.kotlin.gradle.*
 
 plugins {
-    //replace `kotlin` with `embeddedKotlin` with gradle 8.3
-    kotlin("multiplatform") version "1.8.20"
+    alias(kotlinLibs.plugins.multiplatform)
 }
 
 kotlin {
