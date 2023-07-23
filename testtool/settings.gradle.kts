@@ -9,6 +9,12 @@ pluginManagement {
         gradlePluginPortal()
         mavenCentral()
     }
+
+    includeBuild("../gradle/plugins/kotlin-version-catalog")
+}
+
+plugins {
+    id("kotlin-version-catalog")
 }
 
 dependencyResolutionManagement {

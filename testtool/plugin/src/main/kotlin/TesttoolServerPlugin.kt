@@ -22,24 +22,24 @@ open class TesttoolServerPlugin : Plugin<Project> {
             "testtool-server-service",
             TesttoolServerService::class.java
         ) {
-            parameters {
-                instanceId.set(serverInstanceId)
-                storage.set(serverStorage)
+            it.parameters {
+                it.instanceId.set(serverInstanceId)
+                it.storage.set(serverStorage)
             }
         }
 
         // TODO: for android use AndroidTestTask
         tasks.withType<AbstractTestTask>().configureEach {
-            doFirst {
+            it.doFirst {
                 if (serverInstanceId.isPresent) serverProvider.get()
             }
-            usesService(serverProvider)
+            it.usesService(serverProvider)
         }
 
         plugins.withId("org.jetbrains.kotlin.multiplatform") {
             extensions.configure<KotlinMultiplatformExtension>("kotlin") {
-                sourceSets.named("commonTest") {
-                    dependencies {
+                it.sourceSets.named("commonTest") {
+                    it.dependencies {
                         implementation("testtool:client")
                     }
                 }
@@ -69,7 +69,7 @@ open class TesttoolServerPlugin : Plugin<Project> {
 
         tasks.register<Copy>("restoreTesttoolServerStorage") {
             from(fileTree(serverStorageDumpDir) {
-                include("*.zip")
+                it.include("*.zip")
             }.map(::zipTree))
 
             into(serverStorageDir)

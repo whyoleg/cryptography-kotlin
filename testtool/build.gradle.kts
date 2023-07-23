@@ -3,9 +3,8 @@
  */
 
 plugins {
-    // replace `kotlin` with `embeddedKotlin` with gradle 8.3
-    kotlin("jvm") version "1.8.20" apply false
-    kotlin("multiplatform") version "1.8.20" apply false
+    alias(kotlinLibs.plugins.jvm) apply false
+    alias(kotlinLibs.plugins.multiplatform) apply false
 }
 
 group = "testtool"
