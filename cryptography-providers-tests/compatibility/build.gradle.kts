@@ -28,8 +28,8 @@ kotlin {
         Step.Generate to "*.generateStep",
         Step.Validate to "*.validateStep",
     ).filterKeys { it != buildParameters.tests.compatibility.step }.values.toTypedArray()
-    targets.configureEach {
-        if (this is KotlinTargetWithTests<*, *>) testRuns.configureEach {
+    targets.withType<KotlinTargetWithTests<*, *>>().configureEach {
+        testRuns.configureEach {
             filter {
                 setExcludePatterns(*excludedTests)
             }

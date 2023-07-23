@@ -19,9 +19,7 @@ tasks.withType<CInteropProcess>().configureEach {
 }
 
 kotlin {
-    targets.configureEach {
-        if (this !is KotlinNativeTarget) return@configureEach
-
+    targets.withType<KotlinNativeTarget>().configureEach {
         cinterop("declarations", "common")
     }
 }
