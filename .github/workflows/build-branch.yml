@@ -10,5 +10,7 @@ on:
 jobs:
   build:
     uses: ./.github/workflows/run-build.yml
+  default-tests:
+    uses: ./.github/workflows/run-tests-default.yml
   compatibility-tests:
-    uses: ./.github/workflows/run-compatibility-tests.yml
+    uses: ./.github/workflows/run-tests-compatibility.yml

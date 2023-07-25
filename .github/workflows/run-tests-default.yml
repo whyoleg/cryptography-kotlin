@@ -1,0 +1,29 @@
+name: Run default tests
+on: [ workflow_call ]
+
+jobs:
+  default:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ 'ubuntu-latest' ]
+        target: [ 'jvmAll', 'js', 'native' ]
+        include:
+          - os: 'macos-latest'
+            target: 'native'
+          - os: 'windows-latest'
+            target: 'native'
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/setup-gradle
+        with:
+          cache-read-only: true
+
+      - name: Run tests
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: |
+            ${{ matrix.target }}Test
+            --continue
+            --configuration-cache
