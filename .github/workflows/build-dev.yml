@@ -9,6 +9,19 @@ jobs:
   build:
     uses: ./.github/workflows/run-build.yml
 
+  default-tests:
+    needs: [ build ]
+    uses: ./.github/workflows/run-tests-default.yml
+
+  compatibility-tests:
+    needs: [ build ]
+    uses: ./.github/workflows/run-tests-compatibility.yml
+
+  publish:
+    needs: [ default-tests, compatibility-tests ]
+    uses: ./.github/workflows/publish-snapshot.yml
+    secrets: inherit
+
   build-docs:
     runs-on: macos-latest
     steps:
@@ -18,18 +31,7 @@ jobs:
           python-version: 3.x
       - run: pip install mkdocs-material
       - uses: ./.github/actions/setup-gradle
-        with:
-          cache-disabled: true
       - name: Build documentation
         uses: gradle/gradle-build-action@v2
         with:
           arguments: mkdocsBuild
-
-  compatibility-tests:
-    needs: [ build ]
-    uses: ./.github/workflows/run-compatibility-tests.yml
-
-  publish:
-    needs: [ build ]
-    uses: ./.github/workflows/publish-snapshot.yml
-    secrets: inherit

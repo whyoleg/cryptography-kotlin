@@ -20,6 +20,10 @@ on:
         description: When `true`, will use configuration cache
         type: boolean
         default: false
+      skip-tests:
+        description: When `true`, will skip running test tasks
+        type: string
+        default: 'true'
 
   workflow_dispatch:
     inputs:
@@ -41,6 +45,10 @@ on:
         description: When `true`, will use configuration cache
         type: boolean
         default: false
+      skip-tests:
+        description: When `true`, will skip running test tasks
+        type: string
+        default: 'true'
 
 jobs:
   build:
@@ -73,6 +81,7 @@ jobs:
             build
             publishToMavenLocal
             --continue
+            -Pskip.test=${{ inputs.skip-tests }}
             -Pkotlin.experimental.tryK2=${{ inputs.kotlin-use-k2 }}
             -PuseKotlin=${{ inputs.kotlin-version }}
-            ${{ steps.configuration-cache.outputs.ARGS }}"
+            ${{ steps.configuration-cache.outputs.ARGS }}
