@@ -6,10 +6,6 @@ plugins {
     `kotlin-dsl`
 }
 
-kotlin {
-    jvmToolchain(8)
-}
-
 dependencies {
     implementation("cryptography.build:build-parameters")
 }

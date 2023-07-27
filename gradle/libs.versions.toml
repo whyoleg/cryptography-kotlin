@@ -9,12 +9,16 @@ kotlinx-kover = "0.7.2"
 
 gradle-download = "5.4.0"
 
+android = "8.0.2"
+
 # test dependencies
 
 kotlinx-serialization = "1.5.1"
 kotlinx-coroutines = "1.6.4"
 
 bouncycastle = "1.75"
+
+androidx-test = "1.5.2"
 
 [libraries]
 
@@ -26,6 +30,7 @@ build-kotlinx-bcv = { module = "org.jetbrains.kotlinx:binary-compatibility-valid
 build-kotlinx-kover = { module = "org.jetbrains.kotlinx:kover-gradle-plugin", version.ref = "kotlinx-kover" }
 
 build-gradle-download = { module = "de.undercouch:gradle-download-task", version.ref = "gradle-download" }
+build-android = { module = "com.android.tools.build:gradle", version.ref = "android" }
 
 # test dependencies
 
@@ -37,5 +42,8 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 bouncycastle-jdk8 = { module = "org.bouncycastle:bcprov-jdk18on", version.ref = "bouncycastle" }
 bouncycastle-jdk5 = { module = "org.bouncycastle:bcprov-jdk15to18", version.ref = "bouncycastle" }
 
+androidx-test = { module = "androidx.test:runner", version.ref = "androidx-test" }
+
 [plugins]
 kotlin-dokka = { id = "org.jetbrains.dokka", version.ref = "kotlin-dokka" }
+android-library = { id = "com.android.library", version.ref = "android" }

@@ -9,6 +9,7 @@ plugins {
 
     alias(libs.plugins.kotlin.dokka)
 
+    alias(libs.plugins.android.library) apply false
     alias(kotlinLibs.plugins.multiplatform) apply false
     alias(kotlinLibs.plugins.serialization) apply false
 }
