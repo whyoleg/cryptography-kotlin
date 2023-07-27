@@ -8,6 +8,10 @@ fun LanguageSettingsBuilder.optInForTests() {
     optIn("kotlin.experimental.ExperimentalNativeApi")
     optIn("kotlin.io.encoding.ExperimentalEncodingApi")
     optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
-    optIn("dev.whyoleg.cryptography.provider.CryptographyProviderApi")
-    optIn("dev.whyoleg.cryptography.algorithms.InsecureAlgorithm")
+    optInForProvider()
+}
+
+fun LanguageSettingsBuilder.optInForProvider() {
+    optIn("dev.whyoleg.cryptography.CryptographyProviderApi")
+    optIn("dev.whyoleg.cryptography.InsecureAlgorithm")
 }
