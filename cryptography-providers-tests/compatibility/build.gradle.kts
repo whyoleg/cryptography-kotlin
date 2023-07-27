@@ -9,10 +9,18 @@ plugins {
     id("build-parameters")
     id("buildx-multiplatform")
     id("buildx-target-all")
+    id("buildx-target-android")
 
     id("org.jetbrains.kotlin.plugin.serialization")
     id("testtool.server")
 }
+
+val stepsToTest = mapOf(
+    Step.InMemory to "inMemoryTest",
+    Step.Generate to "generateStep",
+    Step.Validate to "validateStep",
+)
+val step = buildParameters.tests.compatibility.step
 
 kotlin {
     sourceSets {
@@ -23,16 +31,21 @@ kotlin {
         }
     }
 
-    val excludedTests = mapOf(
-        Step.InMemory to "*.inMemoryTest",
-        Step.Generate to "*.generateStep",
-        Step.Validate to "*.validateStep",
-    ).filterKeys { it != buildParameters.tests.compatibility.step }.values.toTypedArray()
+    val excludedTests = stepsToTest
+        .filterKeys { it != step }
+        .map { "*.${it.value}" }
+        .toTypedArray()
     targets.withType<KotlinTargetWithTests<*, *>>().configureEach {
         testRuns.configureEach {
             filter {
                 setExcludePatterns(*excludedTests)
             }
         }
+    }
+}
+
+android {
+    defaultConfig {
+        testInstrumentationRunnerArguments["tests_regex"] = ".*${stepsToTest.getValue(step)}"
     }
 }

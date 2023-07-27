@@ -4,6 +4,7 @@
 
 package dev.whyoleg.cryptography.providers.tests.support
 
+import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.materials.key.*
@@ -12,6 +13,10 @@ import dev.whyoleg.cryptography.materials.key.*
 fun AlgorithmTestScope<*>.supportsKeyFormat(format: KeyFormat): Boolean = supports {
     when {
         format.name == "JWK" && !provider.isWebCrypto -> "JWK"
+        // drop this after migrating to kotlin Base64
+        format.name == "PEM" &&
+                provider.isJdk &&
+                platform.isAndroid { apiLevel == 21 } -> "PEM on Android without Base64"
         else                                          -> null
     }
 }
@@ -43,9 +48,10 @@ fun AlgorithmTestScope<ECDSA>.supportsSignatureFormat(format: ECDSA.SignatureFor
         provider.isBouncyCastle &&
                 format == ECDSA.SignatureFormat.RAW -> "$format signature format"
 
-        // JDK.Default support the DER signature format only starting from java 9
-        provider.isJdkDefault && platform.isJdk { major <= 8 } &&
-                format == ECDSA.SignatureFormat.RAW -> "$format signature format on JDK < 9"
+        // JDK.Default support the DER signature format only starting from java 9 and there is no support at all on android
+        provider.isJdkDefault &&
+                (platform.isJdk { major <= 8 } || platform.isAndroid) &&
+                format == ECDSA.SignatureFormat.RAW -> "$format signature format on JDK < 9 or Android"
 
         else                                        -> null
     }
@@ -65,6 +71,20 @@ fun AlgorithmTestScope<ECDSA>.supportsPrivateKeyDerComparisonWith(
             "BouncyCastle always encodes additional parameters"
         }
         else                                                             -> null
+    }
+}
+
+fun ProviderTestScope.supports(algorithmId: CryptographyAlgorithmId<*>): Boolean = validate {
+    when {
+        algorithmId == RSA.PSS &&
+                provider.isJdkDefault &&
+                platform.isAndroid                    -> "JDK provider on Android doesn't support RSASSA-PSS"
+        provider.isJdkDefault &&
+                platform.isAndroid { apiLevel == 21 } -> "JDK provider on Android API 21 is super unstable"
+        algorithmId == ECDSA &&
+                provider.isJdkDefault &&
+                platform.isAndroid { apiLevel == 27 } -> "Key encoding of ECDSA DER key on Android API 27 is flaky - ignore for now"
+        else                                          -> null
     }
 }
 

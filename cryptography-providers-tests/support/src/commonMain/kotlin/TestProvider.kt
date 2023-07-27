@@ -14,12 +14,12 @@ sealed class TestProvider {
     @Serializable
     sealed class JDK : TestProvider() {
         @Serializable
-        data object Default : TestProvider() {
+        data object Default : JDK() {
             override fun toString(): String = "JDK.Default"
         }
 
         @Serializable
-        data object BouncyCastle : TestProvider() {
+        data object BouncyCastle : JDK() {
             override fun toString(): String = "JDK.BouncyCastle"
         }
     }

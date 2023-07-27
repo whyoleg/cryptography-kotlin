@@ -5,6 +5,7 @@
 plugins {
     id("buildx-multiplatform")
     id("buildx-target-all")
+    id("buildx-target-android")
 }
 
 kotlin {

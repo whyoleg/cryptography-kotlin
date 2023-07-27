@@ -5,6 +5,7 @@
 plugins {
     id("buildx-multiplatform-test")
     id("buildx-target-all")
+    id("buildx-target-android")
 
     id("org.jetbrains.kotlin.plugin.serialization")
 }
@@ -13,7 +14,6 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                api(kotlin("test"))
                 api(projects.cryptographyCore)
                 api(libs.kotlinx.coroutines.test)
                 api(libs.kotlinx.serialization.json)
@@ -21,13 +21,17 @@ kotlin {
         }
         jsMain {
             dependencies {
-                api(kotlin("test-js"))
                 implementation(projects.cryptographyProviderWebcrypto)
             }
         }
         jvmMain {
             dependencies {
-                api(kotlin("test-junit"))
+                implementation(projects.cryptographyProviderJdk)
+                implementation(libs.bouncycastle.jdk8)
+            }
+        }
+        androidMain {
+            dependencies {
                 implementation(projects.cryptographyProviderJdk)
                 implementation(libs.bouncycastle.jdk8)
             }

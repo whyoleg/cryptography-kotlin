@@ -22,6 +22,11 @@ sealed class TestPlatform {
     ) : JVM()
 
     @Serializable
+    data class Android(
+        val apiLevel: Int,
+    ) : JVM()
+
+    @Serializable
     data class Native(
         val os: String,
         val arch: String,
@@ -47,6 +52,8 @@ sealed class TestPlatform {
 }
 
 val TestPlatform.isBrowser: Boolean get() = this is TestPlatform.Browser
+val TestPlatform.isAndroid: Boolean get() = this is TestPlatform.Android
+inline fun TestPlatform.isAndroid(block: TestPlatform.Android.() -> Boolean): Boolean = this is TestPlatform.Android && block(this)
 
 val TestPlatform.isJdk: Boolean get() = this is TestPlatform.JDK
 inline fun TestPlatform.isJdk(block: TestPlatform.JDK.() -> Boolean): Boolean = this is TestPlatform.JDK && block(this)
