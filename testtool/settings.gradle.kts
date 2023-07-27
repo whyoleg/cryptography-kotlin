@@ -8,6 +8,7 @@ pluginManagement {
     repositories {
         gradlePluginPortal()
         mavenCentral()
+        google()
     }
 
     includeBuild("../gradle/plugins/kotlin-version-catalog")
@@ -21,11 +22,15 @@ dependencyResolutionManagement {
     repositories {
         gradlePluginPortal()
         mavenCentral()
+        google()
     }
 
     versionCatalogs {
         val libs by creating {
             from(files("libs.versions.toml"))
+        }
+        val rootLibs by creating {
+            from(files("../gradle/libs.versions.toml"))
         }
     }
 }

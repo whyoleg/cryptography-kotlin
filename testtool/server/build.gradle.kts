@@ -9,7 +9,6 @@ plugins {
 }
 
 kotlin {
-    jvmToolchain(8)
     compilerOptions {
         languageVersion.set(KotlinVersion.KOTLIN_1_8)
         apiVersion.set(KotlinVersion.KOTLIN_1_8)

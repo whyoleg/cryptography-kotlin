@@ -18,6 +18,7 @@ object TesttoolClient {
     private val client = HttpClient {
         expectSuccess = true
         install(DefaultRequest) {
+            host = hostOverride() ?: ""
             port = 9000
         }
         install(HttpRequestRetry)
@@ -59,3 +60,5 @@ private suspend fun ByteReadChannel.readIntOrNull(): Int? {
     if (packet.remaining == 0L) return null
     return packet.readInt()
 }
+
+internal expect fun hostOverride(): String?

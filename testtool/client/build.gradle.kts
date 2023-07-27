@@ -28,7 +28,15 @@ kotlin {
     mingwX64()
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
-    targetHierarchy.default()
+    targetHierarchy.default {
+        common {
+            group("nonJvm") {
+                withJs()
+                withWasm()
+                withNative()
+            }
+        }
+    }
 
     sourceSets {
         val commonMain by getting {

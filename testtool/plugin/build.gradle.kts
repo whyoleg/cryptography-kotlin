@@ -10,7 +10,6 @@ plugins {
 }
 
 kotlin {
-    jvmToolchain(8)
     compilerOptions {
         languageVersion.set(KotlinVersion.KOTLIN_1_8)
         apiVersion.set(KotlinVersion.KOTLIN_1_8)
@@ -22,6 +21,7 @@ dependencies {
     compileOnly(kotlinLibs.gradle.plugin)
     compileOnly("cryptography.build:build-parameters")
     implementation(projects.server)
+    implementation(rootLibs.build.android)
 }
 
 gradlePlugin {

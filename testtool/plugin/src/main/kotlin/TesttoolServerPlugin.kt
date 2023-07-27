@@ -4,6 +4,7 @@
 
 package dev.whyoleg.cryptography.testtool.plugin
 
+import com.android.build.gradle.internal.tasks.*
 import org.gradle.api.*
 import org.gradle.api.file.*
 import org.gradle.api.provider.*
@@ -28,8 +29,9 @@ open class TesttoolServerPlugin : Plugin<Project> {
             }
         }
 
-        // TODO: for android use AndroidTestTask
-        tasks.withType<AbstractTestTask>().configureEach {
+        tasks.matching {
+            it is AbstractTestTask || it is AndroidTestTask
+        }.configureEach {
             it.doFirst {
                 if (serverInstanceId.isPresent) serverProvider.get()
             }

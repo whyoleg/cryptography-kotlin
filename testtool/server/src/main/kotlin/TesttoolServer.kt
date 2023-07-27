@@ -18,7 +18,7 @@ fun startTesttoolServer(
     storagePath: Path,
 ): Closeable {
     println("TesttoolServer: starting...")
-    val server = embeddedServer(Netty, port = 9000) {
+    val server = embeddedServer(Netty, 9000) {
         //TODO: redirect logback to file
         install(CallLogging) {
             disableDefaultColors()
