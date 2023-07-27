@@ -36,6 +36,8 @@ suspend fun <A : CryptographyAlgorithm> TestScope.forEachAlgorithm(
     algorithmId: CryptographyAlgorithmId<A>,
     block: suspend AlgorithmTestScope<A>.() -> Unit,
 ): Unit = forEachProvider {
+    if (!supports(algorithmId)) return@forEachProvider
+
     val logger = logger.child(algorithmId.name)
     val algorithm = provider.getOrNull(algorithmId) ?: run {
         logger.print("not supported")
