@@ -6,6 +6,7 @@ pluginManagement {
     repositories {
         gradlePluginPortal()
         mavenCentral()
+        google()
     }
     includeBuild("../kotlin-version-catalog")
 }
@@ -14,6 +15,7 @@ dependencyResolutionManagement {
     repositories {
         gradlePluginPortal()
         mavenCentral()
+        google()
     }
 
     versionCatalogs {

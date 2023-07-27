@@ -3,7 +3,6 @@
  */
 
 import org.jetbrains.kotlin.gradle.*
-import org.jetbrains.kotlin.gradle.plugin.*
 
 plugins {
     kotlin("multiplatform")
@@ -17,11 +16,9 @@ kotlin {
     targetHierarchy.default {
         common {
             group("nonJvm") {
-                withCompilations {
-                    it.platformType != KotlinPlatformType.jvm &&
-                            it.platformType != KotlinPlatformType.androidJvm &&
-                            it.platformType != KotlinPlatformType.common
-                }
+                withJs()
+                withWasm()
+                withNative()
             }
         }
     }

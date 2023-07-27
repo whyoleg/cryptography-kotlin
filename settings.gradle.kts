@@ -8,6 +8,7 @@ pluginManagement {
     repositories {
         gradlePluginPortal()
         mavenCentral()
+        google()
     }
     includeBuild("gradle/plugins/build-parameters")
     includeBuild("gradle/plugins/build-logic")
@@ -25,6 +26,7 @@ plugins {
 dependencyResolutionManagement {
     repositories {
         mavenCentral()
+        google()
     }
 }
 

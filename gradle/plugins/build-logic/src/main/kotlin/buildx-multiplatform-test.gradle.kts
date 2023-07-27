@@ -7,7 +7,7 @@ plugins {
 }
 
 kotlin {
-    sourceSets.all {
+    sourceSets.configureEach {
         languageSettings {
             optInForTests()
         }
