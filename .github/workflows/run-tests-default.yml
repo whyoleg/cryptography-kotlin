@@ -14,16 +14,38 @@ jobs:
             target: 'native'
           - os: 'windows-latest'
             target: 'native'
+          - os: 'macos-latest'
+            target: 'android'
+            api-level: 21
+          - os: 'macos-latest'
+            target: 'android'
+            api-level: 27
+          - os: 'macos-latest'
+            target: 'android'
+            api-level: 30
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup-gradle
         with:
           cache-read-only: true
 
+      - if: matrix.os == 'windows-latest'
+        uses: msys2/setup-msys2@v2
+        with:
+          release: false
+          install: mingw-w64-x86_64-openssl
+
       - name: Run tests
+        if: ${{ matrix.target != 'android' }}
         uses: gradle/gradle-build-action@v2
         with:
           arguments: |
             ${{ matrix.target }}Test
             --continue
             --configuration-cache
+
+      - name: Run tests (android)
+        if: ${{ matrix.target == 'android' }}
+        uses: ./.github/actions/run-android-emulator-tests
+        with:
+          api-level: ${{ matrix.api-level }}

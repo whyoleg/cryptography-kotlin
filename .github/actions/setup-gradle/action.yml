@@ -23,11 +23,12 @@ runs:
     - uses: actions/setup-java@v3
       with:
         distribution: 'temurin'
+        # the latest listed version will be used for executions of gradle
         java-version: |
           8
           11
-          17
           20
+          17
     - name: Validate gradle wrapper
       uses: gradle/wrapper-validation-action@v1
     - name: Setup gradle

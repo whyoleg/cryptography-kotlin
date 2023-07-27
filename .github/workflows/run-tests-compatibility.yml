@@ -14,6 +14,15 @@ jobs:
             target: 'native'
           - os: 'windows-latest'
             target: 'native'
+          - os: 'macos-latest'
+            target: 'android-21'
+            api-level: 21
+          - os: 'macos-latest'
+            target: 'android-27'
+            api-level: 27
+          - os: 'macos-latest'
+            target: 'android-30'
+            api-level: 30
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup-gradle
@@ -21,6 +30,7 @@ jobs:
           cache-read-only: true
 
       - name: Run tests
+        if: ${{ !startsWith(matrix.target, 'android-') }}
         uses: gradle/gradle-build-action@v2
         with:
           arguments: |
@@ -29,6 +39,14 @@ jobs:
             -Ptesttool.instanceId=${{ matrix.os }}-${{ matrix.target }}
             --continue
             --configuration-cache
+
+      - name: Run tests (android)
+        if: ${{ startsWith(matrix.target, 'android-') }}
+        uses: ./.github/actions/run-android-emulator-tests
+        with:
+          api-level: ${{ matrix.api-level }}
+          project-path: "cryptography-providers-tests-compatibility:"
+          additional-arguments: -Ptests.compatibility.step=Generate -Ptesttool.instanceId=${{ matrix.os }}-${{ matrix.target }}
 
       - name: Dump testtool server-storage
         uses: gradle/gradle-build-action@v2
@@ -56,6 +74,15 @@ jobs:
             target: 'native'
           - os: 'windows-latest'
             target: 'native'
+          - os: 'macos-latest'
+            target: 'android-21'
+            api-level: 21
+          - os: 'macos-latest'
+            target: 'android-27'
+            api-level: 27
+          - os: 'macos-latest'
+            target: 'android-30'
+            api-level: 30
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup-gradle
@@ -74,6 +101,7 @@ jobs:
           arguments: restoreTesttoolServerStorage
 
       - name: Run tests
+        if: ${{ matrix.target != 'android' }}
         uses: gradle/gradle-build-action@v2
         with:
           arguments: |
@@ -82,3 +110,11 @@ jobs:
             -Ptesttool.instanceId=${{ matrix.os }}-${{ matrix.target }}
             --continue
             --configuration-cache
+
+      - name: Run tests (android)
+        if: ${{ matrix.target == 'android' }}
+        uses: ./.github/actions/run-android-emulator-tests
+        with:
+          api-level: ${{ matrix.api-level }}
+          project-path: "cryptography-providers-tests-compatibility:"
+          additional-arguments: -Ptests.compatibility.step=Validate -Ptesttool.instanceId=${{ matrix.os }}-${{ matrix.target }}
