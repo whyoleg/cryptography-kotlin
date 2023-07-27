@@ -7,11 +7,12 @@ plugins {
 }
 
 kotlin {
-    sourceSets {
-        all {
-            languageSettings.optIn("dev.whyoleg.cryptography.provider.CryptographyProviderApi")
-            languageSettings.optIn("dev.whyoleg.cryptography.algorithms.InsecureAlgorithm")
+    sourceSets.configureEach {
+        languageSettings {
+            optInForProvider()
         }
+    }
+    sourceSets {
         commonMain {
             dependencies {
                 api(project(":cryptography-core"))
