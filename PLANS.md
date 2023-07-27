@@ -6,8 +6,6 @@
     * SHA-3 (hash)
 * Other:
     * investigate WASM support
-    * move provider package declarations to root
-    * move algorithms package declarations to root
 * setup workflow, so that the next snapshot version will be developed in dev branch, and not publish dokka (or to separate page)
 
 ## 0.3.0: New operations, algorithms, engines
