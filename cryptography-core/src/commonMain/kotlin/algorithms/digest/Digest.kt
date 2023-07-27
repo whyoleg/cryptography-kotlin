@@ -7,7 +7,6 @@
 package dev.whyoleg.cryptography.algorithms.digest
 
 import dev.whyoleg.cryptography.*
-import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.operations.hash.*
 
 //simple hash algorithms, that can be used in HMAC/ECDSA contexts

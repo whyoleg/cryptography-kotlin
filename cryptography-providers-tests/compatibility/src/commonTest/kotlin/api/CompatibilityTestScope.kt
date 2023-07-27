@@ -5,7 +5,6 @@
 package dev.whyoleg.cryptography.providers.tests.compatibility.api
 
 import dev.whyoleg.cryptography.*
-import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.providers.tests.support.*
 
 open class CompatibilityTestScope<A : CryptographyAlgorithm>(
