@@ -1,0 +1,48 @@
+name: "Run Android emulator tests"
+description: "Setups android emulator caching and running"
+inputs:
+  api-level:
+    description: Android API level for testing
+    required: true
+  cache-disabled:
+    description: When 'true', all caching is disabled. No entries will be written to or read from the cache.
+    required: false
+    default: false
+  cache-read-only:
+    description: |
+      When 'true', existing entries will be read from the cache but no entries will be written.
+      By default this value is 'false' for workflows on the `dev` branch and 'true' for workflows on other branches.
+    required: false
+    default: ${{ github.ref_name != 'dev' }}
+  project-path:
+    description: Path to gradle project to run, by default all projects will be run (should contain colon at the end)
+    required: false
+    default: ''
+  additional-arguments:
+    description: Additional arguments for running connectedCheck
+    required: false
+    default: ''
+runs:
+  using: "composite"
+  steps:
+    - name: Build tests
+      uses: gradle/gradle-build-action@v2
+      with:
+        arguments: ${{ inputs.project-path }}packageDebugAndroidTest --continue --configuration-cache
+        cache-disabled: ${{ inputs.cache-disabled }}
+        cache-read-only: ${{ inputs.cache-read-only }}
+
+    - name: Run tests
+      uses: reactivecircus/android-emulator-runner@v2
+      with:
+        arch: x86_64
+        api-level: ${{ inputs.api-level }}
+        script: ./gradlew ${{ inputs.project-path }}connectedCheck --continue --configuration-cache ${{ inputs.additional-arguments }}
+
+    # Android test failures are not available in gradle build scans
+    - name: Upload test reports
+      if: success() || failure()
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-reports-${{ inputs.api-level }}
+        path: '**/build/reports/androidTests'
