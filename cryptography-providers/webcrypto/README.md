@@ -30,7 +30,7 @@ dependencies {
 }
 ```
 
-[CryptographyProvider]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.provider/-cryptography-provider/index.html
+[CryptographyProvider]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography/-cryptography-provider/index.html
 
 [WebCrypto]: https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API
 
@@ -40,7 +40,7 @@ dependencies {
 
 Provides implementation of [CryptographyProvider][CryptographyProvider] via [WebCrypto][WebCrypto]
 
-[CryptographyProvider]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.provider/-cryptography-provider/index.html
+[CryptographyProvider]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography/-cryptography-provider/index.html
 
 [WebCrypto]: https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API
 

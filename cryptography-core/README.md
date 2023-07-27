@@ -28,11 +28,11 @@ dependencies {
 }
 ```
 
-[CryptographyProvider]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.provider/-cryptography-provider/index.html
+[CryptographyProvider]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography/-cryptography-provider/index.html
 
-[CryptographyProvider.Default]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.provider/-cryptography-provider/-default/index.html
+[CryptographyProvider.Default]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography/-cryptography-provider/-default/index.html
 
-[CryptographyAlgorithm]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-cryptography-algorithm/index.html
+[CryptographyAlgorithm]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography/-cryptography-algorithm/index.html
 
 [AES]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms.symmetric/-a-e-s/index.html
 
@@ -40,13 +40,12 @@ dependencies {
 
 # Package dev.whyoleg.cryptography
 
-Provides core utility primitives
+Provides core primitives for creating and accessing [CryptographyAlgorithm][CryptographyAlgorithm]
+and [CryptographyProvider][CryptographyProvider]
 
-# Package dev.whyoleg.cryptography.algorithms
+[CryptographyProvider]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography/-cryptography-provider/index.html
 
-Provides API to construct [CryptographyAlgorithm][CryptographyAlgorithm]
-
-[CryptographyAlgorithm]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-cryptography-algorithm/index.html
+[CryptographyAlgorithm]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography/-cryptography-algorithm/index.html
 
 # Package dev.whyoleg.cryptography.algorithms.digest
 
@@ -108,11 +107,3 @@ Provides API for working with keys: [encoding][EncodableKey], [decoding][KeyDeco
 [KeyDecoder]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.materials.key/-key-decoder/index.html
 
 [KeyGenerator]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.materials.key/-key-generator/index.html
-
-# Package dev.whyoleg.cryptography.provider
-
-Provides API to create [CryptographyProvider][CryptographyProvider] as well as getting [CryptographyAlgorithm][CryptographyAlgorithm]
-
-[CryptographyProvider]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.provider/-cryptography-provider/index.html
-
-[CryptographyAlgorithm]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-cryptography-algorithm/index.html
