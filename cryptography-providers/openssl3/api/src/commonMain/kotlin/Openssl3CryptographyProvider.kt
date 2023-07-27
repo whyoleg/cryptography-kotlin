@@ -4,6 +4,7 @@
 
 package dev.whyoleg.cryptography.providers.openssl3
 
+import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.RSA
@@ -11,7 +12,6 @@ import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.providers.openssl3.algorithms.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
-import dev.whyoleg.cryptography.provider.*
 import kotlinx.cinterop.*
 
 private val defaultProvider = lazy { Openssl3CryptographyProvider }

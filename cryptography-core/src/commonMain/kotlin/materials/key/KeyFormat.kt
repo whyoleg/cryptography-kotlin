@@ -4,7 +4,7 @@
 
 package dev.whyoleg.cryptography.materials.key
 
-import dev.whyoleg.cryptography.provider.*
+import dev.whyoleg.cryptography.*
 
 @SubclassOptInRequired(CryptographyProviderApi::class)
 public interface KeyFormat {

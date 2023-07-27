@@ -4,8 +4,8 @@
 
 package dev.whyoleg.cryptography.providers.tests.support
 
+import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.provider.*
 
 open class TestScope(
     val logger: TestLogger,

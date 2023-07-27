@@ -4,7 +4,7 @@
 
 package dev.whyoleg.cryptography.operations.cipher
 
-import dev.whyoleg.cryptography.provider.*
+import dev.whyoleg.cryptography.*
 
 @SubclassOptInRequired(CryptographyProviderApi::class)
 public interface AuthenticatedCipher : Cipher, AuthenticatedEncryptor, AuthenticatedDecryptor

@@ -4,9 +4,9 @@
 
 package dev.whyoleg.cryptography.providers.tests.behavior
 
+import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
-import dev.whyoleg.cryptography.provider.*
 import dev.whyoleg.cryptography.providers.tests.support.*
 
 abstract class AesTest<A : AES<*>>(
