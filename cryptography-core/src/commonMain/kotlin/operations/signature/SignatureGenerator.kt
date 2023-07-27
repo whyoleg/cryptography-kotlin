@@ -5,7 +5,7 @@
 package dev.whyoleg.cryptography.operations.signature
 
 
-import dev.whyoleg.cryptography.provider.*
+import dev.whyoleg.cryptography.*
 
 @SubclassOptInRequired(CryptographyProviderApi::class)
 public interface SignatureGenerator {
