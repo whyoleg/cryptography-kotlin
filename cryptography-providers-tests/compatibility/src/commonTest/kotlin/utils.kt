@@ -4,7 +4,7 @@
 
 package dev.whyoleg.cryptography.providers.tests.compatibility
 
-import dev.whyoleg.cryptography.algorithms.*
+import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 
 import dev.whyoleg.cryptography.materials.key.*

@@ -5,7 +5,6 @@
 package dev.whyoleg.cryptography.providers.openssl3.internal
 
 import dev.whyoleg.cryptography.*
-import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 
 internal fun hashAlgorithm(digest: CryptographyAlgorithmId<Digest>): String = when (digest) {
