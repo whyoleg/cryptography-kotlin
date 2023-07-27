@@ -42,7 +42,7 @@ dependencies {
 }
 ```
 
-[CryptographyProvider]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.provider/-cryptography-provider/index.html
+[CryptographyProvider]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography/-cryptography-provider/index.html
 
 [OpenSSL 3.x]: https://www.openssl.org
 
@@ -52,7 +52,7 @@ dependencies {
 
 Provides implementation of [CryptographyProvider][CryptographyProvider] via [OpenSSL 3.x](https://www.openssl.org).
 
-[CryptographyProvider]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.provider/-cryptography-provider/index.html
+[CryptographyProvider]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography/-cryptography-provider/index.html
 
 [OpenSSL 3.x]: https://www.openssl.org
 
