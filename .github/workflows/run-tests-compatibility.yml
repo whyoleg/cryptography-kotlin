@@ -101,7 +101,7 @@ jobs:
           arguments: restoreTesttoolServerStorage
 
       - name: Run tests
-        if: ${{ matrix.target != 'android' }}
+        if: ${{ !startsWith(matrix.target, 'android-') }}
         uses: gradle/gradle-build-action@v2
         with:
           arguments: |
@@ -112,7 +112,7 @@ jobs:
             --configuration-cache
 
       - name: Run tests (android)
-        if: ${{ matrix.target == 'android' }}
+        if: ${{ startsWith(matrix.target, 'android-') }}
         uses: ./.github/actions/run-android-emulator-tests
         with:
           api-level: ${{ matrix.api-level }}
