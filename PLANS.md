@@ -4,22 +4,10 @@
 
 * Algorithms:
     * SHA-3 (hash)
-    * SHAKE (hash)
-    * AES-CTR (cipher)
-    * Ed25519 curve
-* Tests
-    * Android integration tests
-        * doesn't support RSASSA-PSS
-        * doesn't support java.util.Base64 on at least API 21 - need to handle this - migrate to kotlin.Base64 when available
-      * need to somehow be able to run tests from `random` with android emulator
-    * better caching in tests (ciphers/signature* like keys) - rework testtool to be more reliable (use WebSockets)
 * Other:
-    * rebuild OpenSSL to version 3.1.x and include it statically while testing over 3.0.x and 3.1.x dynamically
     * investigate WASM support
-  * move provider package declarations to root
-  * move algorithms package declarations to root
-* Project structure:
-    * decide on how additional android tests should be run
+    * move provider package declarations to root
+    * move algorithms package declarations to root
 * setup workflow, so that the next snapshot version will be developed in dev branch, and not publish dokka (or to separate page)
 
 ## 0.3.0: New operations, algorithms, engines
@@ -40,19 +28,31 @@
     * scrypt (prf)
     * brcypt (prf)
     * CMAC (mac) - how to configure it? check BC and OpenSSL
-        * Blowfish (cipher), Blake (hash) - try to find some implementations (?)
-        * TOTP/HOTP (otp)
+    * Blowfish (cipher), Blake (hash) - try to find some implementations (?)
+    * TOTP/HOTP (otp)
+    * AES-CTR (cipher)
+        * TBD: how API for it should look like regarding IV/Nonce/Counter - looks like better to be implicitly provided
+    * SHAKE (hash)
+    * Ed25519 curve
 * Engines
     * CryptoKit engine
     * Windows CNG engine
     * watchos/tvos: OpenSSL3/Apple
-    * Engine builder DSL + decide on how to better handle providers inside engine (lazy, cache, etc)
+    * OpenSSL3 update static to 3.1
+        * Engine builder DSL + decide on how to better handle providers inside engine (lazy, cache, etc)
+    * add testing on JDK + conscrypt
 * Tests
     * Add assertion in compatibility tests on number of tested combinations
     * write MORE tests for failures - decide on how to better test everything, specifically failures and exeptional situations
     * Integrate with https://github.com/google/wycheproof to test against test vectors
       (more tests here https://github.com/pyca/cryptography/blob/main/docs/development/test-vectors.rst)
-  * add some tracking on which combinations of tests are executed...
+    * add some tracking on which combinations of tests are executed...
+    * better caching in tests (ciphers/signature* like keys)
+    * rework testtool to use WebSockets
+    * setup testing of OpenSSL provider over multiple minor versions
+        * update static to version 3.1.x (while leaving dynamic to 3.0.x)
+        * setup testing over 3.0.x and 3.1.x dynamically
+    * decide on how additional android tests should be run (cryptography-random tests only for now)
 * Infrastructure:
     * setup Dependabot/Renovate
     * setup kover merged report
