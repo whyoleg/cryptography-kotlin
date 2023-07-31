@@ -14,7 +14,7 @@ android = "8.0.2"
 # test dependencies
 
 kotlinx-serialization = "1.5.1"
-kotlinx-coroutines = "1.6.4"
+kotlinx-coroutines = "1.7.3"
 
 bouncycastle = "1.75"
 

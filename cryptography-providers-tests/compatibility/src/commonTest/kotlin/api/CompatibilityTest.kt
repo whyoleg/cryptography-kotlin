@@ -5,6 +5,7 @@
 package dev.whyoleg.cryptography.providers.tests.compatibility.api
 
 import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.providers.tests.compatibility.*
 import dev.whyoleg.cryptography.providers.tests.support.*
 import kotlin.test.*
 
@@ -16,6 +17,7 @@ abstract class CompatibilityTest<A : CryptographyAlgorithm>(
 
     @Test
     fun generateStep() = runTest {
+        disableConsoleLogging()
         runCompatibilityTestStep(
             tag = "GENERATE",
             api = { ServerApi(algorithmId.name, context, logger) },
@@ -25,6 +27,7 @@ abstract class CompatibilityTest<A : CryptographyAlgorithm>(
 
     @Test
     fun validateStep() = runTest {
+        disableConsoleLogging()
         runCompatibilityTestStep(
             tag = "VALIDATE",
             api = { ServerApi(algorithmId.name, context, logger) },

@@ -49,3 +49,5 @@ fun digest(name: String): CryptographyAlgorithmId<Digest> = when (name) {
     SHA512.name -> SHA512
     else        -> error("Unknown digest: $name")
 }
+
+expect fun disableConsoleLogging()
