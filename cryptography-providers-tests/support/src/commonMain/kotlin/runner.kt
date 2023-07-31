@@ -6,6 +6,7 @@ package dev.whyoleg.cryptography.providers.tests.support
 
 import dev.whyoleg.cryptography.*
 import kotlinx.coroutines.test.*
+import kotlin.time.Duration.Companion.minutes
 
 private const val enableLogsGlobal = false
 
@@ -26,7 +27,7 @@ fun runTest(
     rootTag: String? = null,
     enableLogs: Boolean = enableLogsGlobal,
     block: suspend TestScope.() -> Unit,
-): TestResult = runTest(dispatchTimeoutMs = Long.MAX_VALUE) {
+): TestResult = runTest(timeout = 10.minutes) {
     val logger = TestLogger(enableLogs, rootTag)
     logger.print("PLATFORM: $currentTestPlatform")
     TestScope(logger).block()

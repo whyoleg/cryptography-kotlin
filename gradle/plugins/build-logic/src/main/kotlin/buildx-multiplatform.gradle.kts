@@ -20,6 +20,11 @@ kotlin {
                 withWasm()
                 withNative()
             }
+            group("nonJs") {
+                withJvm()
+                withWasm()
+                withNative()
+            }
         }
     }
 

@@ -1,7 +1,7 @@
 [versions]
 
 # don't update ktor because of issue with andoormous amount of logging
-ktor = "2.2.2"
+ktor = "2.3.2"
 logback = "1.2.11"
 
 [libraries]
