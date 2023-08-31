@@ -31,7 +31,8 @@ For supported algorithms, primitives and targets, please consult [Providers docu
 
 ## Using in your projects
 
-Make sure that you use Kotlin 1.8.10+.
+Make sure that you use Kotlin 1.9.10+.
+Using an earlier Kotlin version could still work, but not tested.  
 Additionally, it's possible to use [BOM][BOM] or [Gradle version catalog][Gradle version catalog] to add dependencies easier
 
 ```kotlin
