@@ -2,7 +2,7 @@
 
 # build dependencies
 
-kotlin-dokka = "1.8.20"
+kotlin-dokka = "1.9.0-dev-228" # TODO: temporary dev version
 
 kotlinx-bcv = "0.13.2"
 kotlinx-kover = "0.7.3"
