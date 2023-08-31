@@ -24,6 +24,7 @@ kotlin {
                 withJvm()
                 withWasm()
                 withNative()
+                withAndroidTarget()
             }
         }
     }
