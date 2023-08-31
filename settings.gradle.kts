@@ -6,6 +6,10 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
     repositories {
+        // TODO: temporary dev version
+        maven("https://maven.pkg.jetbrains.space/kotlin/p/dokka/dev") {
+            content { includeGroup("org.jetbrains.dokka") }
+        }
         gradlePluginPortal()
         mavenCentral()
         google()
@@ -25,6 +29,10 @@ plugins {
 
 dependencyResolutionManagement {
     repositories {
+        // TODO: temporary dev version
+        maven("https://maven.pkg.jetbrains.space/kotlin/p/dokka/dev") {
+            content { includeGroup("org.jetbrains.dokka") }
+        }
         mavenCentral()
         google()
     }
