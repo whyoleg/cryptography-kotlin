@@ -1,6 +1,6 @@
 [versions]
 
-ktor = "2.3.3"
+ktor = "2.3.4"
 logback = "1.2.11"
 
 [libraries]

@@ -4,8 +4,8 @@
 
 pluginManagement {
     repositories {
-        gradlePluginPortal()
         mavenCentral()
+        gradlePluginPortal()
         google()
     }
     includeBuild("../kotlin-version-catalog")
@@ -13,10 +13,6 @@ pluginManagement {
 
 dependencyResolutionManagement {
     repositories {
-        // TODO: temporary dev version
-        maven("https://maven.pkg.jetbrains.space/kotlin/p/dokka/dev") {
-            content { includeGroup("org.jetbrains.dokka") }
-        }
         mavenCentral()
         gradlePluginPortal()
         google()
