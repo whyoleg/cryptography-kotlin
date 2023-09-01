@@ -291,12 +291,32 @@ public final class dev/whyoleg/cryptography/algorithms/digest/SHA1 : dev/whyoleg
 	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/digest/SHA1;
 }
 
+public final class dev/whyoleg/cryptography/algorithms/digest/SHA224 : dev/whyoleg/cryptography/CryptographyAlgorithmId {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/digest/SHA224;
+}
+
 public final class dev/whyoleg/cryptography/algorithms/digest/SHA256 : dev/whyoleg/cryptography/CryptographyAlgorithmId {
 	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/digest/SHA256;
 }
 
 public final class dev/whyoleg/cryptography/algorithms/digest/SHA384 : dev/whyoleg/cryptography/CryptographyAlgorithmId {
 	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/digest/SHA384;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/digest/SHA3_224 : dev/whyoleg/cryptography/CryptographyAlgorithmId {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/digest/SHA3_224;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/digest/SHA3_256 : dev/whyoleg/cryptography/CryptographyAlgorithmId {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/digest/SHA3_256;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/digest/SHA3_384 : dev/whyoleg/cryptography/CryptographyAlgorithmId {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/digest/SHA3_384;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/digest/SHA3_512 : dev/whyoleg/cryptography/CryptographyAlgorithmId {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/digest/SHA3_512;
 }
 
 public final class dev/whyoleg/cryptography/algorithms/digest/SHA512 : dev/whyoleg/cryptography/CryptographyAlgorithmId {

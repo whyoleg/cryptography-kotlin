@@ -6,8 +6,23 @@ package dev.whyoleg.cryptography.providers.tests.support
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
+import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.materials.key.*
+
+fun AlgorithmTestScope<*>.supportsDigest(digest: CryptographyAlgorithmId<Digest>): Boolean = supports {
+    val sha3Algorithms = setOf(SHA3_224, SHA3_256, SHA3_384, SHA3_512)
+    when {
+        (digest == SHA224 || digest in sha3Algorithms) &&
+                provider.isWebCrypto                                  -> digest.name
+        digest in sha3Algorithms &&
+                provider.isApple                                      -> digest.name
+        digest in sha3Algorithms &&
+                provider.isJdkDefault &&
+                (platform.isJdk { major < 17 } || platform.isAndroid) -> "${digest.name} signatures on old JDK"
+        else                                                          -> null
+    }
+}
 
 // only WebCrypto supports JWK for now
 fun AlgorithmTestScope<*>.supportsKeyFormat(format: KeyFormat): Boolean = supports {

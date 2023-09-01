@@ -20,15 +20,19 @@ abstract class RsaBasedTest<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, 
     @Serializable
     protected data class KeyParameters(
         val keySizeBits: Int,
-        val digest: String,
+        val digestName: String,
         val digestSizeBytes: Int,
-    ) : TestParameters
+    ) : TestParameters {
+        val digest get() = digest(digestName)
+    }
 
     protected suspend fun CompatibilityTestScope<A>.generateKeys(
         block: suspend (keyPair: KP, keyReference: TestReference, keyParameters: KeyParameters) -> Unit,
     ) {
         generateRsaKeySizes { keySize ->
-            generateDigests { digest, digestSize ->
+            generateDigestsForCompatibility { digest, digestSize ->
+                if (!supportsDigest(digest)) return@generateDigestsForCompatibility
+
                 val keyParameters = KeyParameters(keySize.inBits, digest.name, digestSize)
                 val keyParametersId = api.keyPairs.saveParameters(keyParameters)
                 algorithm.keyPairGenerator(keySize, digest).generateKeys(keyIterations) { keyPair ->
@@ -45,11 +49,11 @@ abstract class RsaBasedTest<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, 
     }
 
     protected suspend fun CompatibilityTestScope<A>.validateKeys() = buildMap {
-        api.keyPairs.getParameters<KeyParameters> { (_, digestName), parametersId, _ ->
-            val digest = digest(digestName)
+        api.keyPairs.getParameters<KeyParameters> { parameters, parametersId, _ ->
+            if (!supportsDigest(parameters.digest)) return@getParameters
 
-            val privateKeyDecoder = algorithm.privateKeyDecoder(digest)
-            val publicKeyDecoder = algorithm.publicKeyDecoder(digest)
+            val privateKeyDecoder = algorithm.privateKeyDecoder(parameters.digest)
+            val publicKeyDecoder = algorithm.publicKeyDecoder(parameters.digest)
 
             api.keyPairs.getData<KeyPairData>(parametersId) { (public, private), keyReference, _ ->
                 val publicKeys = publicKeyDecoder.decodeFrom(

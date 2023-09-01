@@ -20,6 +20,7 @@ internal object AppleCryptographyProvider : CryptographyProvider() {
     override fun <A : CryptographyAlgorithm> getOrNull(identifier: CryptographyAlgorithmId<A>): A? = when (identifier) {
         MD5     -> CCDigest(CCHashAlgorithm.MD5, MD5)
         SHA1    -> CCDigest(CCHashAlgorithm.SHA1, SHA1)
+        SHA224  -> CCDigest(CCHashAlgorithm.SHA224, SHA224)
         SHA256  -> CCDigest(CCHashAlgorithm.SHA256, SHA256)
         SHA384  -> CCDigest(CCHashAlgorithm.SHA384, SHA384)
         SHA512  -> CCDigest(CCHashAlgorithm.SHA512, SHA512)

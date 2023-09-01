@@ -23,6 +23,8 @@ class RsaOaepTest {
     fun testSizes() = runTestForEachAlgorithm(RSA.OAEP) {
         generateRsaKeySizes { keySize ->
             generateDigests { digest, digestSize ->
+                if (!supportsDigest(digest)) return@generateDigests
+
                 val keyPair = algorithm.keyPairGenerator(keySize, digest).generateKey()
                 assertEquals(keySize.inBytes + 38, keyPair.publicKey.encodeTo(RSA.PublicKey.Format.DER).size)
 

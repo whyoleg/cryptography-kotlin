@@ -33,9 +33,16 @@ class SupportedAlgorithmsTest {
 
         assertSupports(MD5, !context.provider.isWebCrypto)
         assertSupports(SHA1)
+        assertSupports(SHA224, !context.provider.isWebCrypto)
         assertSupports(SHA256)
         assertSupports(SHA384)
         assertSupports(SHA512)
+
+        val supportsSha3 = !context.provider.isWebCrypto && !context.provider.isApple
+        assertSupports(SHA3_224, supportsSha3)
+        assertSupports(SHA3_256, supportsSha3)
+        assertSupports(SHA3_384, supportsSha3)
+        assertSupports(SHA3_512, supportsSha3)
 
         assertSupports(ECDSA, !context.provider.isApple)
 

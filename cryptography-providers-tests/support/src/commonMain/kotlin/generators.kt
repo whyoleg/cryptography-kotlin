@@ -22,9 +22,25 @@ inline fun generateRsaKeySizes(block: (keySize: BinarySize) -> Unit) {
 inline fun generateDigests(block: (digest: CryptographyAlgorithmId<Digest>, digestSize: Int) -> Unit) {
     listOf(
         SHA1 to 20,
+        SHA224 to 28,
         SHA256 to 32,
         SHA384 to 48,
         SHA512 to 64,
+        SHA3_224 to 28,
+        SHA3_256 to 32,
+        SHA3_384 to 48,
+        SHA3_512 to 64,
+    ).forEach { block(it.first, it.second) }
+}
+
+// workaround for now to reduce data for compatibility tests
+inline fun generateDigestsForCompatibility(block: (digest: CryptographyAlgorithmId<Digest>, digestSize: Int) -> Unit) {
+    listOf(
+        SHA1 to 20,
+        SHA256 to 32,
+        SHA512 to 64,
+        SHA3_256 to 32,
+        SHA3_512 to 64,
     ).forEach { block(it.first, it.second) }
 }
 

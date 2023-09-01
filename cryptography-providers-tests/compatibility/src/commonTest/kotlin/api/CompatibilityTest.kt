@@ -10,7 +10,7 @@ import dev.whyoleg.cryptography.providers.tests.support.*
 import kotlin.test.*
 
 abstract class CompatibilityTest<A : CryptographyAlgorithm>(
-    private val algorithmId: CryptographyAlgorithmId<A>,
+    protected val algorithmId: CryptographyAlgorithmId<A>,
 ) {
     abstract suspend fun CompatibilityTestScope<A>.generate()
     abstract suspend fun CompatibilityTestScope<A>.validate()
