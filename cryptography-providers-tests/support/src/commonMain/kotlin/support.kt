@@ -38,6 +38,17 @@ fun AlgorithmTestScope<out AES<*>>.supportsKeySize(keySizeBits: Int): Boolean = 
     }
 }
 
+fun AlgorithmTestScope<ECDSA>.supportsCurve(curve: EC.Curve): Boolean = supports {
+    // default curves supported everywhere now
+    if (curve.name != "secp256k1") return@supports null
+
+    when {
+        // JDK default and WebCrypto doesn't support it
+        provider.isJdkDefault || provider.isWebCrypto -> "ECDSA $curve"
+        else                                          -> null
+    }
+}
+
 fun AlgorithmTestScope<ECDSA>.supportsSignatureFormat(format: ECDSA.SignatureFormat): Boolean = supports {
     when {
         // WebCrypto doesn't support the DER signature format

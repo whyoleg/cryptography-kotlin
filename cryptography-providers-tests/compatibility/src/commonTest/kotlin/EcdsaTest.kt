@@ -16,19 +16,13 @@ private const val signatureIterations = 3
 private const val maxDataSize = 10000
 
 private inline fun generateCurves(block: (curve: EC.Curve) -> Unit) {
-    generate(block, EC.Curve.P256, EC.Curve.P384, EC.Curve.P521)
+    generate(block, EC.Curve.P256, EC.Curve.P384, EC.Curve.P521, EC.Curve("secp256k1"))
 }
 
 class EcdsaTest : CompatibilityTest<ECDSA>(ECDSA) {
     @Serializable
     private data class KeyParameters(val curveName: String) : TestParameters {
-        val curve
-            get() = when (curveName) {
-                EC.Curve.P256.name -> EC.Curve.P256
-                EC.Curve.P384.name -> EC.Curve.P384
-                EC.Curve.P521.name -> EC.Curve.P521
-                else               -> error("Unknown curve: $curveName")
-            }
+        val curve get() = EC.Curve(curveName)
     }
 
     @Serializable
@@ -50,6 +44,8 @@ class EcdsaTest : CompatibilityTest<ECDSA>(ECDSA) {
             }
         }
         generateCurves { curve ->
+            if (!supportsCurve(curve)) return@generateCurves
+
             val keyParametersId = api.keyPairs.saveParameters(KeyParameters(curve.name))
             algorithm.keyPairGenerator(curve).generateKeys(keyIterations) { keyPair ->
                 val keyReference = api.keyPairs.saveData(
@@ -85,6 +81,8 @@ class EcdsaTest : CompatibilityTest<ECDSA>(ECDSA) {
     override suspend fun CompatibilityTestScope<ECDSA>.validate() {
         val keyPairs = buildMap {
             api.keyPairs.getParameters<KeyParameters> { keyParameters, parametersId, _ ->
+                if (!supportsCurve(keyParameters.curve)) return@getParameters
+
                 val privateKeyDecoder = algorithm.privateKeyDecoder(keyParameters.curve)
                 val publicKeyDecoder = algorithm.publicKeyDecoder(keyParameters.curve)
 
