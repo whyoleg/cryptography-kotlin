@@ -28,10 +28,17 @@ class HmacTest {
         //all values are in bytes
         listOf(
             Triple(SHA1, 20, 64),
+            Triple(SHA224, 28, 64),
             Triple(SHA256, 32, 64),
             Triple(SHA384, 48, 128),
             Triple(SHA512, 64, 128),
+            Triple(SHA3_224, 28, 144),
+            Triple(SHA3_256, 32, 136),
+            Triple(SHA3_384, 48, 104),
+            Triple(SHA3_512, 64, 72),
         ).forEach { (digest, digestSize, digestBlockSize) ->
+            if (!supportsDigest(digest)) return@forEach
+
             block(HmacTestScope(logger, context, provider, algorithm, digest, digestSize, digestBlockSize))
         }
     }

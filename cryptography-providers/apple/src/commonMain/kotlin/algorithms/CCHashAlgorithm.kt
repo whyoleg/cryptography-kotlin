@@ -24,6 +24,15 @@ internal sealed class CCHashAlgorithm {
         ): CPointer<UByteVar>? = CC_SHA1(data, dataLength, digest)
     }
 
+    object SHA224 : CCHashAlgorithm() {
+        override val digestSize: Int get() = CC_SHA224_DIGEST_LENGTH
+        override fun ccHash(
+            data: CValuesRef<ByteVar>,
+            dataLength: CC_LONG,
+            digest: CValuesRef<UByteVar>,
+        ): CPointer<UByteVar>? = CC_SHA224(data, dataLength, digest)
+    }
+
     object SHA256 : CCHashAlgorithm() {
         override val digestSize: Int get() = CC_SHA256_DIGEST_LENGTH
         override fun ccHash(

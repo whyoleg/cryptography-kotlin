@@ -18,11 +18,15 @@ private const val maxDataSize = 10000
 class HmacTest : CompatibilityTest<HMAC>(HMAC) {
 
     @Serializable
-    private data class KeyParameters(val digest: String) : TestParameters
+    private data class KeyParameters(val digestName: String) : TestParameters {
+        val digest get() = digest(digestName)
+    }
 
     override suspend fun CompatibilityTestScope<HMAC>.generate() {
         val signatureParametersId = api.signatures.saveParameters(TestParameters.Empty)
         generateDigests { digest, _ ->
+            if (!supportsDigest(digest)) return@generateDigests
+
             val keyParametersId = api.keys.saveParameters(KeyParameters(digest.name))
             algorithm.keyGenerator(digest).generateKeys(keyIterations) { key ->
                 val keyReference = api.keys.saveData(
@@ -47,10 +51,13 @@ class HmacTest : CompatibilityTest<HMAC>(HMAC) {
         }
     }
 
+    @OptIn(ExperimentalStdlibApi::class)
     override suspend fun CompatibilityTestScope<HMAC>.validate() {
         val keys = buildMap {
-            api.keys.getParameters<KeyParameters> { (digestName), parametersId, _ ->
-                val keyDecoder = algorithm.keyDecoder(digest(digestName))
+            api.keys.getParameters<KeyParameters> { parameters, parametersId, _ ->
+                if (!supportsDigest(parameters.digest)) return@getParameters
+
+                val keyDecoder = algorithm.keyDecoder(parameters.digest)
                 api.keys.getData<KeyData>(parametersId) { (formats), keyReference, _ ->
                     val keys = keyDecoder.decodeFrom(
                         formats = formats,

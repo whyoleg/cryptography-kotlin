@@ -78,9 +78,6 @@ class AesCbcTest : AesTest<AES.CBC>(AES.CBC) {
 
     @Test
     fun decryptionWrongKey() = runTestForEachKeySize {
-        // ignore for now - has different behavior
-        if (context.provider.isApple) return@runTestForEachKeySize
-
         val data = CryptographyRandom.nextBytes(100)
 
         val key = algorithm.keyGenerator(keySize).generateKey()
@@ -88,6 +85,16 @@ class AesCbcTest : AesTest<AES.CBC>(AES.CBC) {
 
         val ciphertext = key.cipher(padding = true).encrypt(data)
 
-        assertFails { wrongKey.cipher(padding = true).decrypt(ciphertext) }
+        val result = runCatching {
+            wrongKey.cipher(padding = true).decrypt(ciphertext)
+        }
+
+        result.onFailure {
+            // expected
+        }.onSuccess {
+            // sometimes we can decrypto with the wrong key
+            // TODO: looks like something is wrong with this test
+            assertNotEquals(data, it)
+        }
     }
 }

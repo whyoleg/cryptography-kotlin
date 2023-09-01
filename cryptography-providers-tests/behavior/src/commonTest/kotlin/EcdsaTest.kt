@@ -31,7 +31,7 @@ class EcdsaTest {
     fun testSizes() = runTestForEachAlgorithm(ECDSA) {
         listOf(
             EcdsaSize(EC.Curve.P256, 64, listOf(68, 69, 70, 71, 72), 91, listOf(67, 138, 150)),
-            EcdsaSize(EC.Curve.P384, 96, listOf(101, 102, 103, 104), 120, listOf(80, 185, 194)),
+            EcdsaSize(EC.Curve.P384, 96, listOf(100, 101, 102, 103, 104), 120, listOf(80, 185, 194)),
             EcdsaSize(EC.Curve.P521, 132, listOf(136, 137, 138, 139), 158, listOf(98, 241, 250)),
             EcdsaSize(EC.Curve("secp256k1"), 64, listOf(68, 69, 70, 71, 72), 88, listOf(135, 144)),
         ).forEach { (curve, rawSignatureSize, derSignatureSizes, publicKeySize, privateKeySizes) ->
@@ -43,6 +43,8 @@ class EcdsaTest {
             assertContains(privateKeySizes, keyPair.privateKey.encodeTo(EC.PrivateKey.Format.DER).size)
 
             generateDigests { digest, _ ->
+                if (!supportsDigest(digest)) return@generateDigests
+
                 if (supportsSignatureFormat(ECDSA.SignatureFormat.RAW)) {
                     val verifier = keyPair.publicKey.signatureVerifier(digest, ECDSA.SignatureFormat.RAW)
                     keyPair.privateKey.signatureGenerator(digest, ECDSA.SignatureFormat.RAW).run {

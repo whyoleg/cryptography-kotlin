@@ -15,7 +15,9 @@ class RsaPkcs1Test {
     @Test
     fun testSizes() = runTestForEachAlgorithm(RSA.PKCS1) {
         generateRsaKeySizes { keySize ->
-            generateDigests { digest, digestSize ->
+            generateDigests { digest, _ ->
+                if (!supportsDigest(digest)) return@generateDigests
+
                 val keyPair = algorithm.keyPairGenerator(keySize, digest).generateKey()
                 assertEquals(keySize.inBytes + 38, keyPair.publicKey.encodeTo(RSA.PublicKey.Format.DER).size)
 

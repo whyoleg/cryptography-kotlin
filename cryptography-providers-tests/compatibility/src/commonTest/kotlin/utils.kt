@@ -43,11 +43,17 @@ suspend inline fun <KF : KeyFormat, K : EncodableKey<KF>> KeyDecoder<KF, K>.deco
 }
 
 fun digest(name: String): CryptographyAlgorithmId<Digest> = when (name) {
-    SHA1.name   -> SHA1
-    SHA256.name -> SHA256
-    SHA384.name -> SHA384
-    SHA512.name -> SHA512
-    else        -> error("Unknown digest: $name")
+    MD5.name      -> MD5
+    SHA1.name     -> SHA1
+    SHA224.name   -> SHA224
+    SHA256.name   -> SHA256
+    SHA384.name   -> SHA384
+    SHA512.name   -> SHA512
+    SHA3_224.name -> SHA3_224
+    SHA3_256.name -> SHA3_256
+    SHA3_384.name -> SHA3_384
+    SHA3_512.name -> SHA3_512
+    else          -> error("Unknown digest: $name")
 }
 
 expect fun disableConsoleLogging()

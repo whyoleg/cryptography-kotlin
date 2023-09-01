@@ -24,9 +24,14 @@ internal object Openssl3CryptographyProvider : CryptographyProvider() {
     override fun <A : CryptographyAlgorithm> getOrNull(identifier: CryptographyAlgorithmId<A>): A? = when (identifier) {
         MD5       -> Openssl3Digest("MD5", MD5)
         SHA1      -> Openssl3Digest("SHA1", SHA1)
+        SHA224    -> Openssl3Digest("SHA224", SHA224)
         SHA256    -> Openssl3Digest("SHA256", SHA256)
         SHA384    -> Openssl3Digest("SHA384", SHA384)
         SHA512    -> Openssl3Digest("SHA512", SHA512)
+        SHA3_224  -> Openssl3Digest("SHA3-224", SHA3_224)
+        SHA3_256  -> Openssl3Digest("SHA3-256", SHA3_256)
+        SHA3_384  -> Openssl3Digest("SHA3-384", SHA3_384)
+        SHA3_512  -> Openssl3Digest("SHA3-512", SHA3_512)
         HMAC      -> Openssl3Hmac
         AES.CBC   -> Openssl3AesCbc
         AES.GCM   -> Openssl3AesGcm

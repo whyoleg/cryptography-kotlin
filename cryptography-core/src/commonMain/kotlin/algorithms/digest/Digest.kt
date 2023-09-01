@@ -21,6 +21,19 @@ public object MD5 : CryptographyAlgorithmId<Digest>("MD5")
 
 @InsecureAlgorithm
 public object SHA1 : CryptographyAlgorithmId<Digest>("SHA-1")
+public object SHA224 : CryptographyAlgorithmId<Digest>("SHA-224")
 public object SHA256 : CryptographyAlgorithmId<Digest>("SHA-256")
 public object SHA384 : CryptographyAlgorithmId<Digest>("SHA-384")
 public object SHA512 : CryptographyAlgorithmId<Digest>("SHA-512")
+
+@Suppress("ClassName")
+public object SHA3_224 : CryptographyAlgorithmId<Digest>("SHA3-224")
+
+@Suppress("ClassName")
+public object SHA3_256 : CryptographyAlgorithmId<Digest>("SHA3-256")
+
+@Suppress("ClassName")
+public object SHA3_384 : CryptographyAlgorithmId<Digest>("SHA3-384")
+
+@Suppress("ClassName")
+public object SHA3_512 : CryptographyAlgorithmId<Digest>("SHA3-512")

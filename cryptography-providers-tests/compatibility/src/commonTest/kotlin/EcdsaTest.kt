@@ -27,16 +27,20 @@ class EcdsaTest : CompatibilityTest<ECDSA>(ECDSA) {
 
     @Serializable
     private data class SignatureParameters(
-        val digest: String,
+        val digestName: String,
         val signatureFormat: ECDSA.SignatureFormat,
-    ) : TestParameters
+    ) : TestParameters {
+        val digest get() = digest(digestName)
+    }
 
     override suspend fun CompatibilityTestScope<ECDSA>.generate() {
         val signatureParametersList = buildList {
             listOf(ECDSA.SignatureFormat.RAW, ECDSA.SignatureFormat.DER).forEach { signatureFormat ->
                 if (!supportsSignatureFormat(signatureFormat)) return@forEach
 
-                generateDigests { digest, _ ->
+                generateDigestsForCompatibility { digest, _ ->
+                    if (!supportsDigest(digest)) return@generateDigestsForCompatibility
+
                     val parameters = SignatureParameters(digest.name, signatureFormat)
                     val id = api.signatures.saveParameters(parameters)
                     add(id to parameters)
@@ -56,11 +60,11 @@ class EcdsaTest : CompatibilityTest<ECDSA>(ECDSA) {
                 )
 
                 signatureParametersList.forEach { (signatureParametersId, signatureParameters) ->
-                    logger.log { "digest = ${signatureParameters.digest}, signatureFormat = ${signatureParameters.signatureFormat}" }
+                    logger.log { "digest = ${signatureParameters.digestName}, signatureFormat = ${signatureParameters.signatureFormat}" }
                     val signer =
-                        keyPair.privateKey.signatureGenerator(digest(signatureParameters.digest), signatureParameters.signatureFormat)
+                        keyPair.privateKey.signatureGenerator(signatureParameters.digest, signatureParameters.signatureFormat)
                     val verifier =
-                        keyPair.publicKey.signatureVerifier(digest(signatureParameters.digest), signatureParameters.signatureFormat)
+                        keyPair.publicKey.signatureVerifier(signatureParameters.digest, signatureParameters.signatureFormat)
 
                     repeat(signatureIterations) {
                         val dataSize = CryptographyRandom.nextInt(maxDataSize)
@@ -118,14 +122,14 @@ class EcdsaTest : CompatibilityTest<ECDSA>(ECDSA) {
             }
         }
 
-        api.signatures.getParameters<SignatureParameters> { (digestName, signatureFormat), parametersId, _ ->
-            if (!supportsSignatureFormat(signatureFormat)) return@getParameters
+        api.signatures.getParameters<SignatureParameters> { signatureParameters, parametersId, _ ->
+            if (!supportsSignatureFormat(signatureParameters.signatureFormat)) return@getParameters
+            if (!supportsDigest(signatureParameters.digest)) return@getParameters
 
-            val digest = digest(digestName)
             api.signatures.getData<SignatureData>(parametersId) { (keyReference, data, signature), _, _ ->
                 val (publicKeys, privateKeys) = keyPairs[keyReference] ?: return@getData
-                val verifiers = publicKeys.map { it.signatureVerifier(digest, signatureFormat) }
-                val generators = privateKeys.map { it.signatureGenerator(digest, signatureFormat) }
+                val verifiers = publicKeys.map { it.signatureVerifier(signatureParameters.digest, signatureParameters.signatureFormat) }
+                val generators = privateKeys.map { it.signatureGenerator(signatureParameters.digest, signatureParameters.signatureFormat) }
 
                 verifiers.forEach { verifier ->
                     assertTrue(verifier.verifySignature(data, signature), "Verify")
