@@ -11,7 +11,7 @@ pluginManagement {
         google()
     }
 
-    includeBuild("../gradle/plugins/kotlin-version-catalog")
+    includeBuild("../kotlin-version-catalog")
 }
 
 plugins {
@@ -37,7 +37,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "testtool"
 
-includeBuild("../gradle/plugins/build-parameters")
+includeBuild("../build-parameters")
 
 include("client")
 include("server")
