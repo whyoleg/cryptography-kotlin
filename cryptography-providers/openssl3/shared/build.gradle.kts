@@ -22,8 +22,8 @@ kotlin {
         // which cause errors trying to link it with current K/N toolchain
         testRuns.configureEach {
             executionSource.binary.linkTaskProvider.configure {
-                dependsOn(openssl.prepareOpensslTaskProvider)
-                binary.linkerOpts("-L${openssl.libDir(konanTarget).get().absolutePath}")
+                dependsOn(tasks.setupOpenssl3)
+                binary.linkerOpts("-L${openssl3.libDirectory(konanTarget).get().asFile.absolutePath}")
             }
         }
     }

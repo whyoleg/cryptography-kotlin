@@ -11,6 +11,5 @@ dependencies {
     implementation(libs.build.kotlinx.bcv)
     implementation(libs.build.kotlinx.kover)
     implementation(libs.build.kotlin.dokka)
-    implementation(libs.build.gradle.download)
     implementation(libs.build.android)
 }
