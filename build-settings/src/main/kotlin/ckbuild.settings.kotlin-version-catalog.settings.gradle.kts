@@ -2,20 +2,29 @@
  * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
-val kotlinVersion = "1.9.10"
+import ckbuild.settings.*
+
 val kotlinVersionOverride = providers.gradleProperty("useKotlin").orNull?.takeIf(String::isNotBlank)
 
 if (kotlinVersionOverride != null) logger.lifecycle("Kotlin version override: $kotlinVersionOverride")
 
 pluginManagement {
     if (kotlinVersionOverride != null) repositories {
-        maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev")
+        maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev") {
+            content {
+                includeGroup("org.jetbrains.kotlin")
+            }
+        }
     }
 }
 
 dependencyResolutionManagement {
     if (kotlinVersionOverride != null) repositories {
-        maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev")
+        maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev") {
+            content {
+                includeGroup("org.jetbrains.kotlin")
+            }
+        }
     }
     versionCatalogs {
         create("kotlinLibs") {

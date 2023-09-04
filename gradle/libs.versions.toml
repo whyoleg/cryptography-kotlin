@@ -1,5 +1,7 @@
 [versions]
 
+kotlin = "1.9.10"
+
 # build dependencies
 
 kotlin-dokka = "1.9.0"
@@ -11,6 +13,11 @@ gradle-download = "5.5.0"
 
 android = "8.0.2"
 
+gradle-enterprise = "3.14.1"
+gradle-foojay = "0.7.0"
+
+buildconfig = "4.1.2"
+
 # test dependencies
 
 kotlinx-serialization = "1.6.0"
@@ -19,6 +26,11 @@ kotlinx-coroutines = "1.7.3"
 bouncycastle = "1.76"
 
 androidx-test = "1.5.2"
+
+# testtool dependencies
+
+ktor = "2.3.4"
+logback = "1.2.11"
 
 [libraries]
 
@@ -32,6 +44,9 @@ build-kotlinx-kover = { module = "org.jetbrains.kotlinx:kover-gradle-plugin", ve
 build-gradle-download = { module = "de.undercouch:gradle-download-task", version.ref = "gradle-download" }
 build-android = { module = "com.android.tools.build:gradle", version.ref = "android" }
 
+build-gradle-enterprise = { module = "com.gradle:gradle-enterprise-gradle-plugin", version.ref = "gradle-enterprise" }
+build-gradle-foojay = { module = "org.gradle.toolchains:foojay-resolver", version.ref = "gradle-foojay" }
+
 # test dependencies
 
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
@@ -44,6 +59,21 @@ bouncycastle-jdk5 = { module = "org.bouncycastle:bcprov-jdk15to18", version.ref 
 
 androidx-test = { module = "androidx.test:runner", version.ref = "androidx-test" }
 
+# testtool dependencies
+
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
+ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
+ktor-client-winhttp = { module = "io.ktor:ktor-client-winhttp", version.ref = "ktor" }
+
+ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
+ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor" }
+ktor-server-cors = { module = "io.ktor:ktor-server-cors", version.ref = "ktor" }
+ktor-server-calllogging = { module = "io.ktor:ktor-server-call-logging", version.ref = "ktor" }
+
+logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+
 [plugins]
 kotlin-dokka = { id = "org.jetbrains.dokka", version.ref = "kotlin-dokka" }
 android-library = { id = "com.android.library", version.ref = "android" }
+buildconfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildconfig" }
