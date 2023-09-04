@@ -1,13 +1,5 @@
 # Future versions planning
 
-## 0.2.0: New algorithms, more tests
-
-* Algorithms:
-    * SHA-3 (hash)
-* Other:
-    * investigate WASM support
-* setup workflow, so that the next snapshot version will be developed in dev branch, and not publish dokka (or to separate page)
-
 ## 0.3.0: New operations, algorithms, engines
 
 * Operations
@@ -32,6 +24,7 @@
         * TBD: how API for it should look like regarding IV/Nonce/Counter - looks like better to be implicitly provided
     * SHAKE (hash)
     * Ed25519 curve
+  * decide on Digest/SHA/Hash algorithms naming and usage
 * Engines
     * CryptoKit engine
     * Windows CNG engine
@@ -51,6 +44,7 @@
         * update static to version 3.1.x (while leaving dynamic to 3.0.x)
         * setup testing over 3.0.x and 3.1.x dynamically
     * decide on how additional android tests should be run (cryptography-random tests only for now)
+  * Need to decide on how to better check what is tested and what is not; what is supported and what is not
 * Infrastructure:
     * setup Dependabot/Renovate
     * setup kover merged report
