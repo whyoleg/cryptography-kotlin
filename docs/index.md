@@ -25,9 +25,9 @@ repositories {
     mavenCentral()
 }
 dependencies {
-    implementation("dev.whyoleg.cryptography:cryptography-core:0.1.0")
+    implementation("dev.whyoleg.cryptography:cryptography-core:0.2.0")
     // some provider
-    implementation("dev.whyoleg.cryptography:cryptography-provider-jdk:0.1.0")
+    implementation("dev.whyoleg.cryptography:cryptography-provider-jdk:0.2.0")
 }
 ```
 
@@ -40,9 +40,9 @@ repositories {
     maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
 }
 dependencies {
-    implementation("dev.whyoleg.cryptography:cryptography-core:0.2.0-SNAPSHOT")
+    implementation("dev.whyoleg.cryptography:cryptography-core:0.3.0-SNAPSHOT")
     // some provider
-    implementation("dev.whyoleg.cryptography:cryptography-provider-jdk:0.2.0-SNAPSHOT")
+    implementation("dev.whyoleg.cryptography:cryptography-provider-jdk:0.3.0-SNAPSHOT")
 }
 ```
 
