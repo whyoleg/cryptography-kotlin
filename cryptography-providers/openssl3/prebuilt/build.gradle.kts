@@ -14,8 +14,8 @@ plugins {
 description = "cryptography-kotlin OpenSSL3 provider (prebuilt)"
 
 tasks.withType<CInteropProcess>().configureEach {
-    dependsOn(openssl.prepareOpensslTaskProvider)
-    settings.extraOpts("-libraryPath", openssl.libDir(konanTarget).get().absolutePath)
+    dependsOn(tasks.setupOpenssl3)
+    settings.extraOpts("-libraryPath", openssl3.libDirectory(konanTarget).get().asFile.absolutePath)
 }
 
 kotlin {
