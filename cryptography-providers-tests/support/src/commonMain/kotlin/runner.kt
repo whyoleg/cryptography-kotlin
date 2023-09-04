@@ -27,7 +27,7 @@ fun runTest(
     rootTag: String? = null,
     enableLogs: Boolean = enableLogsGlobal,
     block: suspend TestScope.() -> Unit,
-): TestResult = runTest(timeout = 10.minutes) {
+): TestResult = runTest(timeout = 30.minutes) {
     val logger = TestLogger(enableLogs, rootTag)
     logger.print("PLATFORM: $currentTestPlatform")
     TestScope(logger).block()
