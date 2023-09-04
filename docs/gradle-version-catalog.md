@@ -23,6 +23,6 @@ Use version catalog in any of `build.gradle.kts`:
 dependencies {
     implementation(cryptographyLibs.core)
     // some provider
-    implementation(cryptographyLibs.jdk)
+    implementation(cryptographyLibs.provider.jdk)
 }
 ```
