@@ -10,7 +10,6 @@ pluginManagement {
         gradlePluginPortal()
         google()
     }
-    includeBuild("build-parameters")
     includeBuild("build-logic")
     includeBuild("build-settings")
 }

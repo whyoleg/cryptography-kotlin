@@ -19,7 +19,6 @@ kotlin {
 dependencies {
     compileOnly(gradleKotlinDsl())
     compileOnly(kotlinLibs.gradle.plugin)
-    compileOnly("cryptography.build:build-parameters")
     implementation(projects.server)
     implementation(rootLibs.build.android)
 }

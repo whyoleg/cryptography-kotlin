@@ -18,7 +18,7 @@ open class TesttoolServerPlugin : Plugin<Project> {
 
     override fun apply(target: Project): Unit = with(target) {
         val serverStorage = configureRootProject(rootProject)
-        val serverInstanceId = the<buildparameters.BuildParametersExtension>().testtool.instanceId
+        val serverInstanceId = providers.gradleProperty("testtool.instanceId")
         val serverProvider = gradle.sharedServices.registerIfAbsent(
             "testtool-server-service",
             TesttoolServerService::class.java
@@ -52,7 +52,7 @@ open class TesttoolServerPlugin : Plugin<Project> {
     private fun configureRootProject(project: Project): Provider<Directory> = with(project) {
         require(project == rootProject) { "Root project required" }
 
-        val instanceId = the<buildparameters.BuildParametersExtension>().testtool.instanceId
+        val instanceId = providers.gradleProperty("testtool.instanceId")
         val buildDir = layout.buildDirectory.dir("testtool")
         val serverStorageDir = buildDir.map { it.dir("server-storage") }
         val serverStorageDumpDir = buildDir.map { it.dir("server-storage-dump") }

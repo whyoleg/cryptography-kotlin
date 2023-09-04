@@ -37,8 +37,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "testtool"
 
-includeBuild("../build-parameters")
-
 include("client")
 include("server")
 include("plugin")

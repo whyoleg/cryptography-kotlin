@@ -17,5 +17,3 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "build-settings"
-
-includeBuild("../build-parameters")

@@ -7,5 +7,5 @@ plugins {
 }
 
 dependencies {
-    implementation("cryptography.build:build-parameters")
+
 }
