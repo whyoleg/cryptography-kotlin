@@ -2,14 +2,7 @@
  * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
-
 pluginManagement {
-    repositories {
-        mavenCentral()
-        gradlePluginPortal()
-        google()
-    }
     includeBuild("build-logic")
     includeBuild("build-settings")
 }
@@ -17,26 +10,7 @@ pluginManagement {
 includeBuild("testtool")
 
 plugins {
-    id("kotlin-version-catalog")
-    id("com.gradle.enterprise") version "3.14.1"
-    id("org.gradle.toolchains.foojay-resolver-convention") version "0.7.0"
-}
-
-dependencyResolutionManagement {
-    repositories {
-        mavenCentral()
-        google()
-    }
-}
-
-gradleEnterprise {
-    buildScan {
-        publishAlwaysIf(System.getenv("CI").toBoolean())
-        termsOfServiceUrl = "https://gradle.com/terms-of-service"
-        if (System.getenv("GITHUB_REPOSITORY") == "whyoleg/cryptography-kotlin") {
-            termsOfServiceAgree = "yes"
-        }
-    }
+    id("ckbuild.settings.default")
 }
 
 rootProject.name = "cryptography-kotlin"

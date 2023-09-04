@@ -20,7 +20,7 @@ dependencies {
     compileOnly(gradleKotlinDsl())
     compileOnly(kotlinLibs.gradle.plugin)
     implementation(projects.server)
-    implementation(rootLibs.build.android)
+    implementation(libs.build.android)
 }
 
 gradlePlugin {

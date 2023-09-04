@@ -3,30 +3,23 @@
  */
 
 pluginManagement {
-    repositories {
-        mavenCentral()
-        gradlePluginPortal()
-        google()
-    }
     includeBuild("../build-settings")
+}
+
+plugins {
+    id("ckbuild.settings.default")
 }
 
 dependencyResolutionManagement {
     repositories {
-        mavenCentral()
         gradlePluginPortal()
-        google()
     }
 
     versionCatalogs {
-        val libs by creating {
+        create("libs") {
             from(files("../gradle/libs.versions.toml"))
         }
     }
-}
-
-plugins {
-    id("kotlin-version-catalog")
 }
 
 rootProject.name = "build-logic"
