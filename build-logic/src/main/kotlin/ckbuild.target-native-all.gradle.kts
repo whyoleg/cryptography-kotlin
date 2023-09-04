@@ -3,8 +3,7 @@
  */
 
 plugins {
-    id("buildx-multiplatform")
-    id("buildx-target-js")
-    id("buildx-target-jvm")
-    id("buildx-target-native-all")
+    id("ckbuild.multiplatform-native")
+    id("ckbuild.target-native-apple")
+    id("ckbuild.target-native-desktop")
 }

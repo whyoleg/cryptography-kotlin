@@ -3,8 +3,8 @@
  */
 
 plugins {
-    id("ckbuild.multiplatform-provider")
+    id("ckbuild.multiplatform")
+    id("ckbuild.target-js")
     id("ckbuild.target-jvm")
+    id("ckbuild.target-native-all")
 }
-
-description = "cryptography-kotlin JDK provider"

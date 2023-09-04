@@ -4,7 +4,7 @@
 
 plugins {
     `version-catalog`
-    id("buildx-publish")
+    id("ckbuild.publish")
 }
 
 description = "cryptography-kotlin Gradle Version Catalog"
@@ -14,7 +14,7 @@ catalog {
         //just a hint on version used by the library
         version("kotlin", kotlinLibs.versions.kotlin.get())
         val cryptographyVersion = version("cryptography", version.toString())
-        (bom.artifacts + "cryptography-bom").forEach { name ->
+        (ckbuild.bom.artifacts + "cryptography-bom").forEach { name ->
             library(
                 /* alias =    */ name.substringAfter("cryptography-"),
                 /* group =    */ "dev.whyoleg.cryptography",

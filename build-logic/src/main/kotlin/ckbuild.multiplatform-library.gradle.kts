@@ -3,9 +3,9 @@
  */
 
 plugins {
-    id("buildx-multiplatform")
-    id("buildx-publish")
-    id("buildx-documentation")
+    id("ckbuild.multiplatform")
+    id("ckbuild.publish")
+    id("ckbuild.documentation")
 
     id("org.jetbrains.kotlinx.binary-compatibility-validator")
 }

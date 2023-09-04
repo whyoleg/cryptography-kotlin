@@ -3,8 +3,8 @@
  */
 
 plugins {
-    id("buildx-multiplatform")
-    id("buildx-target-native-all")
+    id("ckbuild.multiplatform")
+    id("ckbuild.target-native-all")
 }
 
 kotlin {

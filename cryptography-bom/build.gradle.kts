@@ -4,14 +4,14 @@
 
 plugins {
     `java-platform`
-    id("buildx-publish")
+    id("ckbuild.publish")
 }
 
 description = "cryptography-kotlin BOM"
 
 dependencies {
     constraints {
-        bom.artifacts.forEach {
+        ckbuild.bom.artifacts.forEach {
             api(project(":$it"))
         }
     }

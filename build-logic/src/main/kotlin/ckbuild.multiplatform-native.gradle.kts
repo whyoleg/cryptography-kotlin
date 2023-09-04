@@ -7,7 +7,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.*
 import org.jetbrains.kotlin.gradle.targets.native.tasks.*
 
 plugins {
-    id("buildx-multiplatform")
+    id("ckbuild.multiplatform")
 }
 
 kotlin {

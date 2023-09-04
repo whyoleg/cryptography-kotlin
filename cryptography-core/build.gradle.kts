@@ -3,8 +3,8 @@
  */
 
 plugins {
-    id("buildx-multiplatform-library")
-    id("buildx-target-all")
+    id("ckbuild.multiplatform-library")
+    id("ckbuild.target-all")
 }
 
 description = "cryptography-kotlin core API"

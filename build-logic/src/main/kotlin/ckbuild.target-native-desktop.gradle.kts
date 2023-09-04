@@ -3,7 +3,13 @@
  */
 
 plugins {
-    id("buildx-multiplatform-native")
-    id("buildx-target-native-apple")
-    id("buildx-target-native-desktop")
+    id("ckbuild.multiplatform-native")
+}
+
+kotlin {
+    macosX64()
+    macosArm64()
+
+    linuxX64()
+    mingwX64()
 }
