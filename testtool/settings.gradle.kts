@@ -11,7 +11,7 @@ pluginManagement {
         google()
     }
 
-    includeBuild("../kotlin-version-catalog")
+    includeBuild("../build-settings")
 }
 
 plugins {

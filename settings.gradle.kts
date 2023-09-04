@@ -12,7 +12,7 @@ pluginManagement {
     }
     includeBuild("build-parameters")
     includeBuild("build-logic")
-    includeBuild("kotlin-version-catalog")
+    includeBuild("build-settings")
 }
 
 includeBuild("testtool")

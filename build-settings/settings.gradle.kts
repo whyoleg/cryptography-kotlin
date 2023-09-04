@@ -16,6 +16,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "kotlin-version-catalog"
+rootProject.name = "build-settings"
 
 includeBuild("../build-parameters")

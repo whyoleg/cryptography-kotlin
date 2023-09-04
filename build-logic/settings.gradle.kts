@@ -8,7 +8,7 @@ pluginManagement {
         gradlePluginPortal()
         google()
     }
-    includeBuild("../kotlin-version-catalog")
+    includeBuild("../build-settings")
 }
 
 dependencyResolutionManagement {
