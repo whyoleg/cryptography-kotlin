@@ -3,9 +3,9 @@
  */
 
 plugins {
-    id("buildx-multiplatform")
-    id("buildx-target-all")
-    id("buildx-target-android")
+    id("ckbuild.multiplatform")
+    id("ckbuild.target-all")
+    id("ckbuild.target-android")
 }
 
 kotlin {

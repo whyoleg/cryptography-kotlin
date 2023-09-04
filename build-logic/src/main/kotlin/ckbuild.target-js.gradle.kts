@@ -3,7 +3,7 @@
  */
 
 plugins {
-    id("buildx-multiplatform")
+    id("ckbuild.multiplatform")
 }
 
 kotlin {

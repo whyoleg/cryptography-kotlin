@@ -3,9 +3,9 @@
  */
 
 plugins {
-    id("buildx-multiplatform-test")
-    id("buildx-target-all")
-    id("buildx-target-android")
+    id("ckbuild.multiplatform-test")
+    id("ckbuild.target-all")
+    id("ckbuild.target-android")
 
     id("org.jetbrains.kotlin.plugin.serialization")
 }

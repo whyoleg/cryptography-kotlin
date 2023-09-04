@@ -5,9 +5,9 @@
 import org.jetbrains.kotlin.gradle.plugin.*
 
 plugins {
-    id("buildx-multiplatform")
-    id("buildx-target-all")
-    id("buildx-target-android")
+    id("ckbuild.multiplatform")
+    id("ckbuild.target-all")
+    id("ckbuild.target-android")
 
     id("org.jetbrains.kotlin.plugin.serialization")
     id("testtool.server")

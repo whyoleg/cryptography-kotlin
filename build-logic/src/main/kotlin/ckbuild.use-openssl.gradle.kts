@@ -2,7 +2,7 @@
  * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
-import openssl.*
+import ckbuild.openssl.*
 
 val configuration = configurations.create("openssl3Dependency")
 
