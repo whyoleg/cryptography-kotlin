@@ -2,11 +2,9 @@
  * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
-import buildparameters.tests.compatibility.*
 import org.jetbrains.kotlin.gradle.plugin.*
 
 plugins {
-    id("build-parameters")
     id("buildx-multiplatform")
     id("buildx-target-all")
     id("buildx-target-android")
@@ -16,11 +14,11 @@ plugins {
 }
 
 val stepsToTest = mapOf(
-    Step.InMemory to "inMemoryTest",
-    Step.Generate to "generateStep",
-    Step.Validate to "validateStep",
+    "InMemory" to "inMemoryTest",
+    "Generate" to "generateStep",
+    "Validate" to "validateStep",
 )
-val step = buildParameters.tests.compatibility.step
+val step = providers.gradleProperty("tests.compatibility.step").getOrElse("InMemory")
 
 kotlin {
     sourceSets {

@@ -5,8 +5,6 @@
 import org.jetbrains.kotlin.gradle.targets.js.yarn.*
 
 plugins {
-    id("build-parameters")
-
     alias(libs.plugins.kotlin.dokka)
 
     alias(libs.plugins.android.library) apply false
@@ -32,8 +30,8 @@ tasks.register<Exec>("mkdocsBuild") {
     commandLine("mkdocs", "build", "--clean", "--strict")
 }
 
-val skipTest = buildParameters.skip.test
-val skipLink = buildParameters.skip.link
+val skipTest = providers.gradleProperty("skip.test").map(String::toBoolean).getOrElse(false)
+val skipLink = providers.gradleProperty("skip.link").map(String::toBoolean).getOrElse(false)
 
 subprojects {
     if (skipTest) tasks.matching { it.name.endsWith("test", ignoreCase = true) }.configureEach { onlyIf { false } }
