@@ -10,9 +10,9 @@ pluginManagement {
         gradlePluginPortal()
         google()
     }
-    includeBuild("gradle/plugins/build-parameters")
-    includeBuild("gradle/plugins/build-logic")
-    includeBuild("gradle/plugins/kotlin-version-catalog")
+    includeBuild("build-parameters")
+    includeBuild("build-logic")
+    includeBuild("kotlin-version-catalog")
 }
 
 includeBuild("testtool")
