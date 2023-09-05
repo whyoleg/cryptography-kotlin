@@ -16,7 +16,7 @@ dependencyResolutionManagement {
 
     versionCatalogs {
         create("cryptographyLibs") {
-            from("dev.whyoleg.cryptography:cryptography-version-catalog:0.1.0")
+            from("dev.whyoleg.cryptography:cryptography-version-catalog:0.2.0")
         }
     }
 }

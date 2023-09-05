@@ -3,7 +3,7 @@
  */
 
 plugins {
-    kotlin("multiplatform") version "1.8.10"
+    kotlin("multiplatform") version "1.9.10"
 }
 
 kotlin {
@@ -29,23 +29,23 @@ kotlin {
         commonTest {
             dependencies {
                 implementation(kotlin("test"))
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
             }
         }
         val jsMain by getting {
             dependencies {
-                implementation(cryptographyLibs.webcrypto)
+                implementation(cryptographyLibs.provider.webcrypto)
             }
         }
         val jvmMain by getting {
             dependencies {
-                implementation(cryptographyLibs.jdk)
+                implementation(cryptographyLibs.provider.jdk)
             }
         }
         val nativeMain by creating {
             dependsOn(commonMain.get())
             dependencies {
-                implementation(cryptographyLibs.openssl3.prebuilt)
+                implementation(cryptographyLibs.provider.openssl3.prebuilt)
             }
         }
         val nativeTest by creating {
