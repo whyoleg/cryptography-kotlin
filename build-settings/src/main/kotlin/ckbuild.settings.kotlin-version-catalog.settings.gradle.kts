@@ -12,7 +12,7 @@ pluginManagement {
     if (kotlinVersionOverride != null) repositories {
         maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev") {
             content {
-                includeGroup("org.jetbrains.kotlin")
+                includeGroupAndSubgroups("org.jetbrains.kotlin")
             }
         }
     }
@@ -22,7 +22,7 @@ dependencyResolutionManagement {
     if (kotlinVersionOverride != null) repositories {
         maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev") {
             content {
-                includeGroup("org.jetbrains.kotlin")
+                includeGroupAndSubgroups("org.jetbrains.kotlin")
             }
         }
     }
