@@ -2,8 +2,8 @@
  * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
+import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.digest.*
-import dev.whyoleg.cryptography.provider.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.test.*
 import kotlin.test.*
