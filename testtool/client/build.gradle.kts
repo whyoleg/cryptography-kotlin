@@ -28,7 +28,7 @@ kotlin {
     mingwX64()
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
-    targetHierarchy.default {
+    applyDefaultHierarchyTemplate {
         common {
             group("nonJvm") {
                 withJs()

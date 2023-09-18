@@ -9,19 +9,19 @@ plugins {
 kotlin {
     js {
         nodejs {
-            testTask(Action {
+            testTask {
                 useMocha {
                     timeout = "1800s"
                 }
-            })
+            }
         }
         browser {
-            testTask(Action {
+            testTask {
                 useKarma {
                     useConfigDirectory(project.rootDir.resolve("gradle/js/karma"))
                     useChromeHeadless()
                 }
-            })
+            }
         }
     }
 }

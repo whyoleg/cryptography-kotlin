@@ -2,12 +2,14 @@
  * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
+import org.jetbrains.kotlin.gradle.*
 import org.jetbrains.kotlin.gradle.targets.jvm.tasks.*
 
 plugins {
     id("ckbuild.multiplatform")
 }
 
+@OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
     jvm {
         compilations.configureEach {
@@ -33,7 +35,7 @@ kotlin {
         //version enforcement using bom works only for jvm
         getByName("jvmMain") {
             dependencies {
-                api(platform(project(":cryptography-bom")))
+                api(project.dependencies.platform(project(":cryptography-bom")))
             }
         }
         getByName("jvmTest") {

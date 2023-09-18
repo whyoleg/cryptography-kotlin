@@ -10,11 +10,11 @@ plugins {
     id("org.jetbrains.kotlinx.kover")
 }
 
+@OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
     jvmToolchain(8)
 
-    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-    targetHierarchy.default {
+    applyDefaultHierarchyTemplate {
         common {
             group("nonJvm") {
                 withJs()
