@@ -7,7 +7,7 @@ import ckbuild.openssl.*
 val configuration = configurations.create("openssl3Dependency")
 
 dependencies {
-    configuration("ckbuild.dependencies.openssl:openssl3-all:3.0.8-build-2@zip")
+    configuration("ckbuild.dependencies.openssl:openssl3-all:3.1.4-1@zip")
 }
 
 val archiveOperations = objects.newInstance<Injected>().archiveOperations
