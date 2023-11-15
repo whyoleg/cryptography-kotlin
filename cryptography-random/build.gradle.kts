@@ -15,4 +15,7 @@ kotlin {
     linuxX64 {
         cinterop("random", "linux")
     }
+    linuxArm64 {
+        cinterop("random", "linux")
+    }
 }

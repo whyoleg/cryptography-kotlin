@@ -18,11 +18,16 @@ kotlin {
     targets.withType<KotlinNativeTarget>().configureEach {
         cinterop("linking", "common")
     }
-    targets.withType<KotlinNativeTargetWithTests<*>>().matching { it.konanTarget.family == Family.LINUX }.configureEach {
-        // on CI, Linux by default has openssl built with newer glibc
-        // which cause errors trying to link it with current K/N toolchain
-        testRuns.configureEach {
-            executionSource.binary.linkTaskProvider.configure {
+
+    // We add prebuilt openssl to the library search path in 2 cases:
+    // 1. For Linux, runners on CI by default have openssl built with newer glibc,
+    // which causes errors trying to link it with the current K / N toolchain
+    // 2. When target and host differ, and there is no compatible openssl in default paths
+    targets.withType<KotlinNativeTarget>().matching {
+        it.konanTarget.family == Family.LINUX || it.konanTarget != HostManager.host
+    }.configureEach {
+        binaries.configureEach {
+            linkTaskProvider.configure {
                 dependsOn(tasks.setupOpenssl3)
                 binary.linkerOpts("-L${openssl3.libDirectory(konanTarget).get().asFile.absolutePath}")
             }

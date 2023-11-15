@@ -24,8 +24,9 @@ private fun KonanTarget.opensslTarget(): String = when (this) {
     KonanTarget.IOS_SIMULATOR_ARM64 -> "ios-simulator-arm64"
     KonanTarget.IOS_X64             -> "ios-simulator-x64"
     KonanTarget.LINUX_X64           -> "linux-x64"
+    KonanTarget.LINUX_ARM64         -> "linux-arm64"
     KonanTarget.MACOS_ARM64         -> "macos-arm64"
     KonanTarget.MACOS_X64           -> "macos-x64"
     KonanTarget.MINGW_X64           -> "mingw-x64"
-    else                            -> TODO("NOT SUPPORTED")
+    else                            -> TODO("KonanTarget ${this} is not supported by OpenSSL")
 }
