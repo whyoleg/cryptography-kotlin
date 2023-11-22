@@ -5,10 +5,10 @@
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
 
 import dev.whyoleg.cryptography.algorithms.asymmetric.RSA
+import dev.whyoleg.cryptography.operations.signature.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.providers.openssl3.operations.*
-import dev.whyoleg.cryptography.operations.signature.*
 import kotlinx.cinterop.*
 
 internal object Openssl3RsaPkcs1 : Openssl3Rsa<RSA.PKCS1.PublicKey, RSA.PKCS1.PrivateKey, RSA.PKCS1.KeyPair>(), RSA.PKCS1 {
@@ -47,8 +47,9 @@ private class RsaPkcs1SignatureGenerator(
     privateKey: CPointer<EVP_PKEY>,
     hashAlgorithm: String,
 ) : Openssl3DigestSignatureGenerator(privateKey, hashAlgorithm) {
+    @OptIn(UnsafeNumber::class)
     override fun MemScope.createParams(): CValuesRef<OSSL_PARAM> = OSSL_PARAM_array(
-        OSSL_PARAM_construct_utf8_string("pad-mode".cstr.ptr, "pkcs1".cstr.ptr, 0U),
+        OSSL_PARAM_construct_utf8_string("pad-mode".cstr.ptr, "pkcs1".cstr.ptr, 0.convert()),
     )
 }
 
@@ -56,7 +57,8 @@ private class RsaPkcs1SignatureVerifier(
     publicKey: CPointer<EVP_PKEY>,
     hashAlgorithm: String,
 ) : Openssl3DigestSignatureVerifier(publicKey, hashAlgorithm) {
+    @OptIn(UnsafeNumber::class)
     override fun MemScope.createParams(): CValuesRef<OSSL_PARAM> = OSSL_PARAM_array(
-        OSSL_PARAM_construct_utf8_string("pad-mode".cstr.ptr, "pkcs1".cstr.ptr, 0U),
+        OSSL_PARAM_construct_utf8_string("pad-mode".cstr.ptr, "pkcs1".cstr.ptr, 0.convert()),
     )
 }

@@ -4,9 +4,9 @@
 
 package dev.whyoleg.cryptography.providers.openssl3.operations
 
+import dev.whyoleg.cryptography.operations.signature.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
-import dev.whyoleg.cryptography.operations.signature.*
 import kotlinx.cinterop.*
 import kotlin.experimental.*
 
@@ -19,6 +19,7 @@ internal abstract class Openssl3DigestSignatureVerifier(
 
     protected abstract fun MemScope.createParams(): CValuesRef<OSSL_PARAM>?
 
+    @OptIn(UnsafeNumber::class)
     override fun verifySignatureBlocking(dataInput: ByteArray, signatureInput: ByteArray): Boolean = memScoped {
         val context = checkError(EVP_MD_CTX_new())
         try {

@@ -6,9 +6,9 @@ package dev.whyoleg.cryptography.providers.openssl3.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.digest.*
+import dev.whyoleg.cryptography.operations.hash.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
-import dev.whyoleg.cryptography.operations.hash.*
 import kotlinx.cinterop.*
 import kotlin.experimental.*
 import kotlin.native.ref.*
@@ -31,6 +31,7 @@ internal class Openssl3Digest(
         try {
             val digest = ByteArray(digestSize)
             checkError(EVP_DigestInit(context, md))
+            @OptIn(UnsafeNumber::class)
             checkError(EVP_DigestUpdate(context, dataInput.safeRefTo(0), dataInput.size.convert()))
             checkError(EVP_DigestFinal(context, digest.refToU(0), null))
             return digest

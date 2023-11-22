@@ -46,6 +46,7 @@ internal abstract class Openssl3KeyDecoder<KF : KeyFormat, K : Key>(
                 propquery = null
             )
         )
+        @OptIn(UnsafeNumber::class)
         try {
             val pdataLenVar = alloc(input.size.convert<size_t>())
             val pdataVar = alloc<CPointerVar<UByteVar>> { value = allocArrayOf(input).reinterpret() }

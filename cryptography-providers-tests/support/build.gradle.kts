@@ -50,6 +50,12 @@ kotlin {
             }
         }
 
+        androidNativeMain {
+            dependencies {
+                implementation(projects.cryptographyProviderOpenssl3Prebuilt)
+            }
+        }
+
         mingwMain {
             dependencies {
                 implementation(projects.cryptographyProviderOpenssl3Prebuilt)

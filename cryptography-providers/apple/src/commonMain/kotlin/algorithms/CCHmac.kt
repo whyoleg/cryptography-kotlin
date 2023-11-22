@@ -85,6 +85,7 @@ private class HmacSignature(
 ) : SignatureGenerator, SignatureVerifier {
     override fun generateSignatureBlocking(dataInput: ByteArray): ByteArray {
         val macOutput = ByteArray(digestSize)
+        @OptIn(UnsafeNumber::class)
         CCHmac(
             algorithm = hmacAlgorithm,
             key = key.refTo(0),

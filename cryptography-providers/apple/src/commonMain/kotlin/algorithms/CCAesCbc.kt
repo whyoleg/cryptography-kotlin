@@ -54,6 +54,7 @@ private fun wrapKey(key: ByteArray): AES.CBC.Key = object : AES.CBC.Key {
 private const val ivSizeBytes = 16 //bytes for CBC
 private const val blockSizeBytes = 16 //bytes for CBC
 
+@OptIn(UnsafeNumber::class)
 private class AesCbcCipher(
     private val key: ByteArray,
     private val padding: Boolean,

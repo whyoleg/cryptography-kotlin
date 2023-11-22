@@ -8,9 +8,9 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.operations.signature.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
-import dev.whyoleg.cryptography.operations.signature.*
 import dev.whyoleg.cryptography.random.*
 import kotlinx.cinterop.*
 
@@ -74,6 +74,7 @@ private class HmacSignature(
     private val key: ByteArray,
 ) : SignatureGenerator, SignatureVerifier {
 
+    @OptIn(UnsafeNumber::class)
     override fun generateSignatureBlocking(dataInput: ByteArray): ByteArray = memScoped {
         val mac = checkError(EVP_MAC_fetch(null, "HMAC", null))
         val context = checkError(EVP_MAC_CTX_new(mac))
@@ -84,7 +85,7 @@ private class HmacSignature(
                     key = key.refToU(0),
                     keylen = key.size.convert(),
                     params = OSSL_PARAM_array(
-                        OSSL_PARAM_construct_utf8_string("digest".cstr.ptr, hashAlgorithm.cstr.ptr, 0U)
+                        OSSL_PARAM_construct_utf8_string("digest".cstr.ptr, hashAlgorithm.cstr.ptr, 0.convert())
                     )
                 )
             )

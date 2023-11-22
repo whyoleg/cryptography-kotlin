@@ -3,6 +3,9 @@
  */
 
 import ckbuild.*
+import org.jetbrains.kotlin.gradle.*
+import org.jetbrains.kotlin.gradle.plugin.mpp.*
+import org.jetbrains.kotlin.konan.target.*
 
 plugins {
     id("ckbuild.multiplatform-library")
@@ -12,10 +15,19 @@ plugins {
 description = "cryptography-kotlin random API"
 
 kotlin {
-    linuxX64 {
-        cinterop("random", "linux")
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    applyDefaultHierarchyTemplate {
+        common {
+            group("linuxAndAndroidNative") {
+                withLinux()
+                withAndroidNative()
+            }
+        }
     }
-    linuxArm64 {
-        cinterop("random", "linux")
+
+    targets.withType<KotlinNativeTarget>().matching {
+        it.konanTarget.family == Family.LINUX || it.konanTarget.family == Family.ANDROID
+    }.configureEach {
+        cinterop("random", "linuxAndAndroidNative")
     }
 }

@@ -14,8 +14,9 @@ internal fun <T : Any> checkError(result: T?): T {
     fail(0)
 }
 
+@OptIn(UnsafeNumber::class)
 internal fun checkError(result: size_t): size_t {
-    if (result > 0u) return result
+    if (result > 0.convert()) return result
     fail(result.convert())
 }
 

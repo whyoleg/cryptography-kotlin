@@ -8,11 +8,11 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.operations.signature.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.providers.openssl3.materials.*
 import dev.whyoleg.cryptography.providers.openssl3.operations.*
-import dev.whyoleg.cryptography.operations.signature.*
 import kotlinx.cinterop.*
 import platform.posix.*
 
@@ -54,13 +54,14 @@ internal object Openssl3Ecdsa : ECDSA {
                 try {
                     checkError(EVP_PKEY_fromdata_init(context))
                     val pkeyVar = alloc<CPointerVar<EVP_PKEY>>()
+                    @OptIn(UnsafeNumber::class)
                     checkError(
                         EVP_PKEY_fromdata(
                             ctx = context,
                             ppkey = pkeyVar.ptr,
                             selection = EVP_PKEY_PUBLIC_KEY,
                             param = OSSL_PARAM_array(
-                                OSSL_PARAM_construct_utf8_string("group".cstr.ptr, curve.name.cstr.ptr, 0U),
+                                OSSL_PARAM_construct_utf8_string("group".cstr.ptr, curve.name.cstr.ptr, 0.convert()),
                                 OSSL_PARAM_construct_octet_string("pub".cstr.ptr, input.safeRefToU(0), input.size.convert())
                             )
                         )
@@ -83,8 +84,9 @@ internal object Openssl3Ecdsa : ECDSA {
     private class EcKeyGenerator(
         private val curve: EC.Curve,
     ) : Openssl3KeyPairGenerator<ECDSA.KeyPair>("EC") {
+        @OptIn(UnsafeNumber::class)
         override fun MemScope.createParams(): CValuesRef<OSSL_PARAM> = OSSL_PARAM_array(
-            OSSL_PARAM_construct_utf8_string("group".cstr.ptr, curve.name.cstr.ptr, 0U)
+            OSSL_PARAM_construct_utf8_string("group".cstr.ptr, curve.name.cstr.ptr, 0.convert())
         )
 
         override fun wrapKeyPair(keyPair: CPointer<EVP_PKEY>): ECDSA.KeyPair = EcKeyPair(
@@ -126,10 +128,11 @@ internal object Openssl3Ecdsa : ECDSA {
             EC.PublicKey.Format.JWK -> error("JWK format is not supported")
         }
 
+        @OptIn(UnsafeNumber::class)
         override fun encodeToBlocking(format: EC.PublicKey.Format): ByteArray = when (format) {
             EC.PublicKey.Format.RAW -> memScoped {
                 val outVar = alloc<size_tVar>()
-                checkError(EVP_PKEY_get_octet_string_param(key, "encoded-pub-key", null, 0U, outVar.ptr))
+                checkError(EVP_PKEY_get_octet_string_param(key, "encoded-pub-key", null, 0.convert(), outVar.ptr))
                 val output = ByteArray(outVar.value.convert())
                 checkError(EVP_PKEY_get_octet_string_param(key, "encoded-pub-key", output.safeRefToU(0), output.size.convert(), outVar.ptr))
                 output.ensureSizeExactly(outVar.value.convert())
@@ -146,13 +149,13 @@ internal object Openssl3Ecdsa : ECDSA {
         }
     }
 }
-
+@OptIn(UnsafeNumber::class)
 private fun EC_check_key_group(key: CPointer<EVP_PKEY>, expectedCurve: EC.Curve) = memScoped {
     //we need to construct a group, because our EC.Curve names are not the ones, which are used inside openssl
     val expectedGroup = checkError(
         EC_GROUP_new_from_params(
             OSSL_PARAM_array(
-                OSSL_PARAM_construct_utf8_string("group".cstr.ptr, expectedCurve.name.cstr.ptr, 0U)
+                OSSL_PARAM_construct_utf8_string("group".cstr.ptr, expectedCurve.name.cstr.ptr, 0.convert())
             ), null, null
         )
     )
@@ -161,7 +164,7 @@ private fun EC_check_key_group(key: CPointer<EVP_PKEY>, expectedCurve: EC.Curve)
         val expectedGroupName = checkError(OSSL_EC_curve_nid2name(expectedGroupNid)).toKString()
 
         val keyGroupName = allocArray<ByteVar>(256).also {
-            checkError(EVP_PKEY_get_utf8_string_param(key, "group", it, 256U, null))
+            checkError(EVP_PKEY_get_utf8_string_param(key, "group", it, 256.convert(), null))
         }.toKString()
 
         check(expectedGroupName == keyGroupName) {

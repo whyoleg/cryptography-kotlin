@@ -7,3 +7,10 @@ plugins {
     id("ckbuild.target-native-apple")
     id("ckbuild.target-native-desktop")
 }
+
+kotlin {
+    androidNativeX64()
+    androidNativeX86()
+    androidNativeArm64()
+    androidNativeArm32()
+}

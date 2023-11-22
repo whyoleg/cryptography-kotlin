@@ -6,10 +6,10 @@ package dev.whyoleg.cryptography.providers.openssl3.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.RSA
+import dev.whyoleg.cryptography.operations.signature.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.providers.openssl3.operations.*
-import dev.whyoleg.cryptography.operations.signature.*
 import kotlinx.cinterop.*
 
 internal object Openssl3RsaPss : Openssl3Rsa<RSA.PSS.PublicKey, RSA.PSS.PrivateKey, RSA.PSS.KeyPair>(), RSA.PSS {
@@ -51,8 +51,9 @@ private class RsaPssSignatureGenerator(
     hashAlgorithm: String,
     private val saltLengthBytes: Int,
 ) : Openssl3DigestSignatureGenerator(privateKey, hashAlgorithm) {
+    @OptIn(UnsafeNumber::class)
     override fun MemScope.createParams(): CValuesRef<OSSL_PARAM> = OSSL_PARAM_array(
-        OSSL_PARAM_construct_utf8_string("pad-mode".cstr.ptr, "pss".cstr.ptr, 0U),
+        OSSL_PARAM_construct_utf8_string("pad-mode".cstr.ptr, "pss".cstr.ptr, 0.convert()),
         OSSL_PARAM_construct_int("saltlen".cstr.ptr, alloc(saltLengthBytes).ptr),
     )
 }
@@ -62,8 +63,9 @@ private class RsaPssSignatureVerifier(
     hashAlgorithm: String,
     private val saltLengthBytes: Int,
 ) : Openssl3DigestSignatureVerifier(publicKey, hashAlgorithm) {
+    @OptIn(UnsafeNumber::class)
     override fun MemScope.createParams(): CValuesRef<OSSL_PARAM> = OSSL_PARAM_array(
-        OSSL_PARAM_construct_utf8_string("pad-mode".cstr.ptr, "pss".cstr.ptr, 0U),
+        OSSL_PARAM_construct_utf8_string("pad-mode".cstr.ptr, "pss".cstr.ptr, 0.convert()),
         OSSL_PARAM_construct_int("saltlen".cstr.ptr, alloc(saltLengthBytes).ptr),
     )
 }

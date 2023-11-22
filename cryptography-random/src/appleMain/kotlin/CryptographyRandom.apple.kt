@@ -13,6 +13,7 @@ private object CCCryptographyRandom : PlatformRandom() {
     override fun fillBytes(array: ByteArray) {
         val size = array.size
         val status = array.usePinned { pinned ->
+            @OptIn(UnsafeNumber::class)
             CCRandomGenerateBytes(pinned.addressOf(0), size.convert())
         }
         checkStatus(status)

@@ -5,9 +5,9 @@
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
 
 import dev.whyoleg.cryptography.algorithms.asymmetric.RSA
+import dev.whyoleg.cryptography.operations.cipher.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
-import dev.whyoleg.cryptography.operations.cipher.*
 import kotlinx.cinterop.*
 import platform.posix.*
 import kotlin.experimental.*
@@ -53,6 +53,7 @@ private class RsaOaepEncryptor(
     @OptIn(ExperimentalNativeApi::class)
     private val cleaner = publicKey.upRef().cleaner()
 
+    @OptIn(UnsafeNumber::class)
     override fun encryptBlocking(plaintextInput: ByteArray, associatedData: ByteArray?): ByteArray = memScoped {
         val context = checkError(EVP_PKEY_CTX_new_from_pkey(null, publicKey, null))
         try {
@@ -60,8 +61,8 @@ private class RsaOaepEncryptor(
                 EVP_PKEY_encrypt_init_ex(
                     ctx = context,
                     params = OSSL_PARAM_arrayNotNull(
-                        OSSL_PARAM_construct_utf8_string("pad-mode".cstr.ptr, "oaep".cstr.ptr, 0U),
-                        OSSL_PARAM_construct_utf8_string("digest".cstr.ptr, hashAlgorithm.cstr.ptr, 0U),
+                        OSSL_PARAM_construct_utf8_string("pad-mode".cstr.ptr, "oaep".cstr.ptr, 0.convert()),
+                        OSSL_PARAM_construct_utf8_string("digest".cstr.ptr, hashAlgorithm.cstr.ptr, 0.convert()),
                         associatedData?.let { OSSL_PARAM_construct_octet_string("oaep-label".cstr.ptr, it.safeRefTo(0), it.size.convert()) }
                     )
                 )
@@ -101,6 +102,7 @@ private class RsaOaepDecryptor(
     @OptIn(ExperimentalNativeApi::class)
     private val cleaner = privateKey.upRef().cleaner()
 
+    @OptIn(UnsafeNumber::class)
     override fun decryptBlocking(ciphertextInput: ByteArray, associatedData: ByteArray?): ByteArray = memScoped {
         val context = checkError(EVP_PKEY_CTX_new_from_pkey(null, privateKey, null))
         try {
@@ -108,8 +110,8 @@ private class RsaOaepDecryptor(
                 EVP_PKEY_decrypt_init_ex(
                     ctx = context,
                     params = OSSL_PARAM_arrayNotNull(
-                        OSSL_PARAM_construct_utf8_string("pad-mode".cstr.ptr, "oaep".cstr.ptr, 0U),
-                        OSSL_PARAM_construct_utf8_string("digest".cstr.ptr, hashAlgorithm.cstr.ptr, 0U),
+                        OSSL_PARAM_construct_utf8_string("pad-mode".cstr.ptr, "oaep".cstr.ptr, 0.convert()),
+                        OSSL_PARAM_construct_utf8_string("digest".cstr.ptr, hashAlgorithm.cstr.ptr, 0.convert()),
                         associatedData?.let { OSSL_PARAM_construct_octet_string("oaep-label".cstr.ptr, it.safeRefTo(0), it.size.convert()) }
                     )
                 )
