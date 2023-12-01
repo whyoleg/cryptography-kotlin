@@ -30,7 +30,7 @@ internal object AppleCryptographyProvider : CryptographyProvider() {
     } as A?
 }
 
-@Suppress("DEPRECATION", "INVISIBLE_MEMBER", "INVISIBLE_REFERENCE")
+@Suppress("DEPRECATION")
 @OptIn(ExperimentalStdlibApi::class)
 @EagerInitialization
-private val initHook = registerProvider(defaultProvider)
+private val initHook = CryptographyProvider.Registry.registerProvider(defaultProvider)

@@ -10,7 +10,9 @@ import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.providers.webcrypto.algorithms.*
 
-public val CryptographyProvider.Companion.WebCrypto: CryptographyProvider get() = WebCryptoCryptographyProvider
+private val defaultProvider = lazy { WebCryptoCryptographyProvider }
+
+public val CryptographyProvider.Companion.WebCrypto: CryptographyProvider by defaultProvider
 
 internal object WebCryptoCryptographyProvider : CryptographyProvider() {
     override val name: String get() = "WebCrypto"
@@ -32,9 +34,11 @@ internal object WebCryptoCryptographyProvider : CryptographyProvider() {
     } as A?
 }
 
-@Suppress("DEPRECATION", "INVISIBLE_MEMBER", "INVISIBLE_REFERENCE")
+// declaration should be public for EagerInitialization to work
+// Deprecated to make it `internal`ish
+@Suppress("DEPRECATION")
 @OptIn(ExperimentalStdlibApi::class, ExperimentalJsExport::class)
 @EagerInitialization
 @JsExport
 @Deprecated("", level = DeprecationLevel.HIDDEN)
-public val initHook: dynamic = registerProvider { WebCryptoCryptographyProvider }
+public val initHook: dynamic = CryptographyProvider.Registry.registerProvider(defaultProvider)

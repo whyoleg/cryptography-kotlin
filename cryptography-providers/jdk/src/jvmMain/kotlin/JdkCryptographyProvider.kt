@@ -91,7 +91,6 @@ internal class JdkCryptographyProvider(
     } as A?
 }
 
-@Suppress("INVISIBLE_REFERENCE", "CANNOT_OVERRIDE_INVISIBLE_MEMBER")
 internal class JdkCryptographyProviderContainer : CryptographyProviderContainer {
     override val provider: Lazy<CryptographyProvider> get() = defaultProvider
 }

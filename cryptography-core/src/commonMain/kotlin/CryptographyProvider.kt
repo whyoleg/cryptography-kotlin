@@ -12,14 +12,31 @@ public abstract class CryptographyProvider {
     public open fun <A : CryptographyAlgorithm> get(identifier: CryptographyAlgorithmId<A>): A =
         getOrNull(identifier) ?: throw CryptographyAlgorithmNotFoundException(identifier)
 
-    public object Default : CryptographyProvider() {
-        private val defaultProvider = defaultCryptographyProvider()
-        override val name: String get() = defaultProvider.name
-        override fun <A : CryptographyAlgorithm> getOrNull(identifier: CryptographyAlgorithmId<A>): A? =
-            defaultProvider.getOrNull(identifier)
+    @CryptographyProviderApi
+    public object Registry {
+        // TODO: make this thread safe (just synchronized will be enough)
+        private val providers = initProviders().toMutableList()
+        public val registeredProviders: Sequence<CryptographyProvider>
+            get() = providers.toList().asSequence().map(Lazy<CryptographyProvider>::value)
+
+        public fun registerProvider(provider: CryptographyProvider) {
+            providers.add(lazyOf(provider))
+        }
+
+        public fun registerProvider(provider: Lazy<CryptographyProvider>) {
+            providers.add(provider)
+        }
     }
 
-    public companion object
+    public companion object {
+        public val Default: CryptographyProvider by lazy {
+            @OptIn(CryptographyProviderApi::class)
+            checkNotNull(Registry.registeredProviders.firstOrNull()) {
+                "No providers registered. Please provide a dependency or register provider explicitly"
+            }
+        }
+    }
 }
 
-internal expect fun defaultCryptographyProvider(): CryptographyProvider
+// used only on JVM for ServiceLoader
+internal expect fun initProviders(): List<Lazy<CryptographyProvider>>
