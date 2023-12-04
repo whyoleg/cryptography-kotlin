@@ -17,6 +17,7 @@ internal val WebCrypto: Crypto by lazy {
     }
 }
 
+@Suppress("UNUSED_ANONYMOUS_PARAMETER")
 internal val encodeBase64: (ArrayBuffer) -> String = if (isNodeJs) {
     { array ->
         js("Buffer.from(array).toString('base64')").unsafeCast<String>()
@@ -27,6 +28,7 @@ internal val encodeBase64: (ArrayBuffer) -> String = if (isNodeJs) {
     }
 }
 
+@Suppress("UNUSED_ANONYMOUS_PARAMETER")
 internal val decodeBase64: (String) -> ByteArray = if (isNodeJs) {
     { string ->
         js("Buffer.from(string, 'base64')").unsafeCast<ByteArray>()

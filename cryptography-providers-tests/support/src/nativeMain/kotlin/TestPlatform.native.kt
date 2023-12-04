@@ -4,6 +4,9 @@
 
 package dev.whyoleg.cryptography.providers.tests.support
 
+import kotlin.experimental.*
+
+@OptIn(ExperimentalNativeApi::class)
 internal actual val currentTestPlatform: TestPlatform = TestPlatform.Native(
     os = Platform.osFamily.toString(),
     arch = Platform.cpuArchitecture.toString(),

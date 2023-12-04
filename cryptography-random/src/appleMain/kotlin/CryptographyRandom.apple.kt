@@ -10,10 +10,12 @@ import platform.CoreCrypto.*
 internal actual fun defaultCryptographyRandom(): CryptographyRandom = CCCryptographyRandom
 
 private object CCCryptographyRandom : PlatformRandom() {
+
     override fun fillBytes(array: ByteArray) {
         val size = array.size
+
+        @OptIn(ExperimentalForeignApi::class, UnsafeNumber::class)
         val status = array.usePinned { pinned ->
-            @OptIn(UnsafeNumber::class)
             CCRandomGenerateBytes(pinned.addressOf(0), size.convert())
         }
         checkStatus(status)

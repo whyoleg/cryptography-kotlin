@@ -11,15 +11,16 @@ import platform.posix.*
 internal fun createGetRandom(): CryptographyRandom? = if (getRandomAvailable()) GetRandom else null
 
 private object GetRandom : LinuxRandom() {
-    @OptIn(UnsafeNumber::class)
+    @OptIn(ExperimentalForeignApi::class, UnsafeNumber::class)
     override fun fillBytes(pointer: CPointer<ByteVar>, size: Int): Int = getrandom(pointer, size.convert(), 0.convert())
 }
 
 private fun getRandomAvailable(): Boolean {
     val stubArray = ByteArray(1)
     val stubSize = stubArray.size
+
+    @OptIn(ExperimentalForeignApi::class, UnsafeNumber::class)
     stubArray.usePinned {
-        @OptIn(UnsafeNumber::class)
         if (getrandom(it.addressOf(0), stubSize.convert(), GRND_NONBLOCK.convert()) >= 0) return true
     }
 
@@ -31,6 +32,6 @@ private fun getRandomAvailable(): Boolean {
 
 // TODO: SYS_getrandom=318 - not available in android native
 // https://docs.piston.rs/dev_menu/libc/constant.SYS_getrandom.html
-@OptIn(UnsafeNumber::class)
+@OptIn(ExperimentalForeignApi::class, UnsafeNumber::class)
 private fun getrandom(out: CPointer<ByteVar>?, outSize: size_t, flags: UInt): Int =
     syscall(/*SYS_getrandom*/318.convert(), out, outSize, flags).convert()

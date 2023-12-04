@@ -11,7 +11,7 @@ internal actual fun defaultCryptographyRandom(): CryptographyRandom = BCryptCryp
 
 private object BCryptCryptographyRandom : PlatformRandom() {
     override fun fillBytes(array: ByteArray) {
-        @OptIn(ExperimentalUnsignedTypes::class)
+        @OptIn(ExperimentalForeignApi::class)
         val status = array.asUByteArray().usePinned { pinned ->
             BCryptGenRandom(
                 hAlgorithm = null,

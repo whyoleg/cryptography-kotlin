@@ -14,7 +14,7 @@ internal fun createURandom(): CryptographyRandom {
 }
 
 private object URandom : LinuxRandom() {
-    @OptIn(UnsafeNumber::class)
+    @OptIn(ExperimentalForeignApi::class, UnsafeNumber::class)
     override fun fillBytes(pointer: CPointer<ByteVar>, size: Int): Int = read(FD.value, pointer, size.convert()).convert()
 }
 
@@ -23,6 +23,7 @@ private object FD {
     val value = open("/dev/urandom")
 }
 
+@OptIn(ExperimentalForeignApi::class)
 private fun awaitURandomReady() {
     val randomFd = open("/dev/random")
     try {

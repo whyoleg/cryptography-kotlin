@@ -6,6 +6,7 @@ package dev.whyoleg.cryptography.random
 
 import kotlinx.cinterop.*
 
+@OptIn(ExperimentalForeignApi::class)
 internal abstract class LinuxRandom : PlatformRandom() {
     protected abstract fun fillBytes(pointer: CPointer<ByteVar>, size: Int): Int
     final override fun fillBytes(array: ByteArray) {
