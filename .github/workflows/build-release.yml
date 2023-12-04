@@ -5,6 +5,10 @@ on:
       - '*'
 
 jobs:
+  checks:
+    uses: ./.github/workflows/run-checks.yml
+
   publish:
+    needs: [ checks ]
     uses: ./.github/workflows/publish-release.yml
     secrets: inherit

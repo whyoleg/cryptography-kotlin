@@ -1,14 +1,10 @@
-name: Build project and run tests
+name: Build project
 on:
   workflow_call:
     inputs:
       kotlin-version:
         description: Override Kotlin version
         type: string
-      kotlin-use-k2:
-        description: Use or not K2
-        type: string
-        default: 'false'
       cache-disabled:
         description: When 'true', all caching is disabled. No entries will be written to or read from the cache.
         type: boolean
@@ -16,10 +12,6 @@ on:
       patch-file:
         description: Path to git patch to apply
         type: string
-      configuration-cache-enabled:
-        description: When `true`, will use configuration cache
-        type: boolean
-        default: false
       skip-tests:
         description: When `true`, will skip running test tasks
         type: string
@@ -30,10 +22,6 @@ on:
       kotlin-version:
         description: Override Kotlin version
         type: string
-      kotlin-use-k2:
-        description: Use or not K2
-        type: string
-        default: 'false'
       cache-disabled:
         description: When 'true', all caching is disabled. No entries will be written to or read from the cache.
         type: boolean
@@ -41,10 +29,6 @@ on:
       patch-file:
         description: Path to git patch to apply
         type: string
-      configuration-cache-enabled:
-        description: When `true`, will use configuration cache
-        type: boolean
-        default: false
       skip-tests:
         description: When `true`, will skip running test tasks
         type: string
@@ -58,16 +42,12 @@ jobs:
       matrix:
         os: [ 'ubuntu-latest', 'macos-latest', 'windows-latest' ]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: git apply ${{ inputs.patch-file }}
         if: inputs.patch-file != ''
       - uses: ./.github/actions/setup-gradle
         with:
           cache-disabled: ${{ inputs.cache-disabled }}
-
-      - id: configuration-cache
-        if: ${{ inputs.configuration-cache-enabled }}
-        run: echo "ARGS=--configuration-cache" >> $GITHUB_OUTPUT
 
       - if: matrix.os == 'windows-latest'
         uses: msys2/setup-msys2@v2
@@ -82,6 +62,4 @@ jobs:
             publishToMavenLocal
             --continue
             -Pskip.test=${{ inputs.skip-tests }}
-            -Pkotlin.experimental.tryK2=${{ inputs.kotlin-use-k2 }}
             -PuseKotlin=${{ inputs.kotlin-version }}
-            ${{ steps.configuration-cache.outputs.ARGS }}

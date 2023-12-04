@@ -1,5 +1,11 @@
 name: Run compatibility tests
-on: [ workflow_call ]
+on:
+  workflow_dispatch:
+  workflow_call:
+
+concurrency:
+  group: compatibility-tests
+  cancel-in-progress: false
 
 jobs:
   generate:
@@ -24,7 +30,7 @@ jobs:
             target: 'android-30'
             api-level: 30
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-gradle
         with:
           cache-read-only: true
@@ -84,7 +90,7 @@ jobs:
             target: 'android-30'
             api-level: 30
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-gradle
         with:
           cache-read-only: true

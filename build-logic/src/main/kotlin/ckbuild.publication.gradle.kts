@@ -43,6 +43,10 @@ publishing {
                 password = sonatypePassword
             }
         }
+        maven {
+            name = "projectLocal"
+            url = uri(rootProject.layout.buildDirectory.dir("mavenProjectLocal"))
+        }
     }
 
     publications.withType<MavenPublication>().configureEach {

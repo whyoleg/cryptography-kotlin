@@ -1,15 +1,16 @@
 name: Publish release
 on: [ workflow_call ]
 
+concurrency:
+  group: publish-release
+  cancel-in-progress: false
+
 jobs:
   publish:
     if: github.repository == 'whyoleg/cryptography-kotlin'
     runs-on: macos-latest
-    concurrency:
-      group: publish-release
-      cancel-in-progress: false
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-gradle
         with:
           cache-disabled: true

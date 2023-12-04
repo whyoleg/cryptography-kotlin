@@ -1,13 +1,8 @@
-name: Publish snapshot
+name: Publish testing
 on: [ workflow_call ]
-
-concurrency:
-  group: publish-snapshot
-  cancel-in-progress: false
 
 jobs:
   publish:
-    if: github.repository == 'whyoleg/cryptography-kotlin'
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
@@ -25,10 +20,10 @@ jobs:
           ORG_GRADLE_PROJECT_sonatypeUsername: ${{secrets.sonatypeUsername}}
           ORG_GRADLE_PROJECT_sonatypePassword: ${{secrets.sonatypePassword}}
 
-      - name: Publish snapshot to Sonatype
+      - name: Publish signed packages to local directory
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: publishAllPublicationsToSnapshotRepository
+          arguments: publishAllPublicationsToProjectLocalRepository
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{secrets.signingKey}}
           ORG_GRADLE_PROJECT_signingPassword: ${{secrets.signingPassword}}

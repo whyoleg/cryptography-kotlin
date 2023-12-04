@@ -1,5 +1,7 @@
 name: Run default tests
-on: [ workflow_call ]
+on:
+  workflow_dispatch:
+  workflow_call:
 
 jobs:
   default:
@@ -24,7 +26,7 @@ jobs:
             target: 'android'
             api-level: 30
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-gradle
         with:
           cache-read-only: true
