@@ -2,7 +2,7 @@
 
 Provides implementation of [CryptographyProvider][CryptographyProvider] via [OpenSSL 3.x][OpenSSL 3.x]
 
-There are overall 3 modules which provide openssl3 provider:
+There are three modules that provide openssl3 provider:
 
 * cryptography-provider-openssl3-api - provides mapping from cinterop declarations of openssl to cryptography-kotlin API.
   Module doesn't provide any configuration of how it should be linked to `libcrypto` library, and so building final binary will fail
@@ -12,8 +12,8 @@ There are overall 3 modules which provide openssl3 provider:
   Embedded linking arguments use default paths, where openssl3 is installed, though if it's installed in a custom directory,
   additional configuration will be required
 * cryptography-provider-openssl3-prebuilt - unlike shared module, this module embed `libcrypto` inside module, so no additional setup is
-  needed
-  not to build final binary, not to run it
+  needed not to build final binary, not to run it.
+  Embedded OpenSSL version is 3.1.4
 
 For supported targets and algorithms, please consult [Supported primitives section][Supported primitives section]
 

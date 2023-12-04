@@ -23,14 +23,17 @@ For additional limitation please consult provider specific documentation.
 
 ### Supported targets per provider
 
-| Target                                    | jdk | webcrypto | apple | openssl3        |
-|-------------------------------------------|-----|-----------|-------|-----------------|
-| jvm                                       | ✅   | ➖         | ➖     | ❌               |
-| js                                        | ➖   | ✅         | ➖     | ❌               |
-| iosX64<br/>iosSimulatorArm64<br/>iosArm64 | ➖   | ➖         | ✅     | ✅ prebuilt only |
-| macosX64<br/>macosArm64                   | ➖   | ➖         | ✅     | ✅               |
-| linuxX64                                  | ➖   | ➖         | ➖     | ✅               |
-| mingwX64                                  | ➖   | ➖         | ➖     | ✅               |
+| Target                                                                                        | jdk | webcrypto | apple | openssl3        |
+|-----------------------------------------------------------------------------------------------|-----|-----------|-------|-----------------|
+| jvm                                                                                           | ✅   | ➖         | ➖     | ❌               |
+| js                                                                                            | ➖   | ✅         | ➖     | ❌               |
+| iosX64<br/>iosSimulatorArm64<br/>iosArm64                                                     | ➖   | ➖         | ✅     | ✅ prebuilt only |
+| watchosX64<br/>watchosArm32<br/>watchosArm64<br/>watchosSimulatorArm64<br/>watchosDeviceArm64 | ➖   | ➖         | ✅     | ✅ prebuilt only |
+| tvosX64<br/>tvosArm64<br/>tvosSimulatorArm64                                                  | ➖   | ➖         | ✅     | ✅ prebuilt only |
+| macosX64<br/>macosArm64                                                                       | ➖   | ➖         | ✅     | ✅               |
+| linuxX64<br/>linuxArm64                                                                       | ➖   | ➖         | ➖     | ✅               |
+| mingwX64                                                                                      | ➖   | ➖         | ➖     | ✅               |
+| androidNativeX64<br/>androidNativeX86<br/>androidNativeArm64<br/>androidNativeArm32           | ➖   | ➖         | ➖     | ✅ prebuilt only |
 
 > ✅ : supported
 >
