@@ -4,7 +4,7 @@
 
 plugins {
     `version-catalog`
-    id("ckbuild.publish")
+    id("ckbuild.publication")
 }
 
 description = "cryptography-kotlin Gradle Version Catalog"

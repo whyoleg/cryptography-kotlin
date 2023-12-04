@@ -22,8 +22,8 @@ signing {
 val javadocJar by tasks.registering(Jar::class) { archiveClassifier.set("javadoc") }
 
 // this is somewhat a hack because we have single javadoc artifact which is used for all publications
-tasks.withType<Sign>().configureEach { dependsOn(javadocJar) }
-tasks.withType<AbstractPublishToMaven>().configureEach { dependsOn(tasks.withType<Sign>()) }
+tasks.withType<Sign>().configureEach { mustRunAfter(javadocJar) }
+tasks.withType<AbstractPublishToMaven>().configureEach { mustRunAfter(tasks.withType<Sign>()) }
 
 publishing {
     repositories {
@@ -44,15 +44,14 @@ publishing {
             }
         }
     }
-}
 
-afterEvaluate {
-    val projectDescription = checkNotNull(project.description) { "Project description isn't set for project: ${project.path}" }
-    publishing.publications.withType<MavenPublication>().configureEach {
+    publications.withType<MavenPublication>().configureEach {
         artifact(javadocJar)
         pom {
             name.set(project.name)
-            description.set(projectDescription)
+            description.set(provider {
+                checkNotNull(project.description) { "Project description isn't set for project: ${project.path}" }
+            })
             url.set("https://github.com/whyoleg/cryptography-kotlin")
 
             licenses {

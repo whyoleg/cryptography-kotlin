@@ -3,26 +3,42 @@
  */
 
 import ckbuild.*
+import org.jetbrains.kotlin.gradle.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.*
 import org.jetbrains.kotlin.gradle.tasks.*
 
 plugins {
-    id("ckbuild.multiplatform-provider")
-    id("ckbuild.target-native-all")
+    id("ckbuild.multiplatform-library")
     id("ckbuild.use-openssl")
 }
 
 description = "cryptography-kotlin OpenSSL3 provider (API)"
 
-tasks.withType<CInteropProcess>().configureEach {
-    dependsOn(tasks.setupOpenssl3)
-    settings.includeDirs(openssl3.includeDirectory(konanTarget))
-}
-
+@OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
+    nativeTargets()
+
+    compilerOptions {
+        optIn.addAll(
+            OptIns.InsecureAlgorithm,
+            OptIns.CryptographyProviderApi,
+
+            OptIns.ExperimentalForeignApi,
+        )
+    }
+
+    sourceSets.commonMain.dependencies {
+        api(projects.cryptographyCore)
+    }
+
     targets.withType<KotlinNativeTarget>().configureEach {
         cinterop("declarations", "common")
     }
+}
+
+tasks.withType<CInteropProcess>().configureEach {
+    dependsOn(tasks.setupOpenssl3)
+    settings.includeDirs(openssl3.includeDirectory(konanTarget))
 }
 
 documentation {

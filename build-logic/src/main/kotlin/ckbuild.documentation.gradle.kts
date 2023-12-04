@@ -30,10 +30,8 @@ tasks.withType<DokkaTaskPartial>().configureEach {
         if (documentation.includes.isPresent) includes.from(documentation.includes)
         reportUndocumented.set(false) // set true later
         sourceLink {
-            val sourceSetPath = "src/$name/kotlin"
-            val relProjectPath = rootDir.toPath().relativize(projectDir.toPath())
-            localDirectory.set(projectDir.resolve(sourceSetPath))
-            remoteUrl.set(URL("https://github.com/whyoleg/cryptography-kotlin/tree/main/$relProjectPath/$sourceSetPath"))
+            localDirectory.set(rootDir)
+            remoteUrl.set(URI("https://github.com/whyoleg/cryptography-kotlin/tree/main/").toURL())
             remoteLineSuffix.set("#L")
         }
     }

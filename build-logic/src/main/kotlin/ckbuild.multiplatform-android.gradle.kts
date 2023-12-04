@@ -7,7 +7,7 @@ import org.jetbrains.kotlin.gradle.*
 import org.jetbrains.kotlin.gradle.plugin.*
 
 plugins {
-    id("ckbuild.multiplatform")
+    id("ckbuild.multiplatform-base")
     id("com.android.library")
 }
 

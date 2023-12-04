@@ -9,13 +9,16 @@ import org.jetbrains.kotlin.konan.target.*
 
 plugins {
     id("ckbuild.multiplatform-library")
-    id("ckbuild.target-all")
 }
 
 description = "cryptography-kotlin random API"
 
+@OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
-    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    jvmTarget()
+    jsTarget()
+    nativeTargets()
+
     applyDefaultHierarchyTemplate {
         common {
             group("linuxAndAndroidNative") {

@@ -4,7 +4,7 @@
 
 plugins {
     `java-platform`
-    id("ckbuild.publish")
+    id("ckbuild.publication")
 }
 
 description = "cryptography-kotlin BOM"

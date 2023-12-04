@@ -2,18 +2,25 @@
  * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
+import ckbuild.*
+import org.jetbrains.kotlin.gradle.*
+
 plugins {
-    id("ckbuild.multiplatform")
-    id("ckbuild.target-native-all")
+    id("ckbuild.multiplatform-base")
 }
 
+@OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
-    sourceSets {
-        commonMain {
-            dependencies {
-                api(kotlin("test"))
-                api(projects.cryptographyProviderOpenssl3Api)
-            }
-        }
+    nativeTargets()
+
+    compilerOptions {
+        optIn.addAll(
+            OptIns.ExperimentalForeignApi,
+        )
+    }
+
+    sourceSets.commonMain.dependencies {
+        api(kotlin("test"))
+        api(projects.cryptographyProviderOpenssl3Api)
     }
 }
