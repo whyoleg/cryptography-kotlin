@@ -1,6 +1,6 @@
-# Future versions planning
+# Future features planning
 
-## 0.3.0: New operations, algorithms, engines
+## New operations, algorithms, engines
 
 * Operations
     * Key agreement
@@ -24,13 +24,11 @@
         * TBD: how API for it should look like regarding IV/Nonce/Counter - looks like better to be implicitly provided
     * SHAKE (hash)
     * Ed25519 curve
-  * decide on Digest/SHA/Hash algorithms naming and usage
+    * decide on Digest/SHA/Hash algorithms naming and usage
 * Engines
     * CryptoKit engine
     * Windows CNG engine
-    * watchos/tvos: OpenSSL3/Apple
-    * OpenSSL3 update static to 3.1
-        * Engine builder DSL + decide on how to better handle providers inside engine (lazy, cache, etc)
+    * Engine builder DSL + decide on how to better handle providers inside engine (lazy, cache, etc)
     * add testing on JDK + conscrypt
 * Tests
     * Add assertion in compatibility tests on number of tested combinations
@@ -44,7 +42,7 @@
         * update static to version 3.1.x (while leaving dynamic to 3.0.x)
         * setup testing over 3.0.x and 3.1.x dynamically
     * decide on how additional android tests should be run (cryptography-random tests only for now)
-  * Need to decide on how to better check what is tested and what is not; what is supported and what is not
+    * Need to decide on how to better check what is tested and what is not; what is supported and what is not
 * Infrastructure:
     * setup Dependabot/Renovate
     * setup kover merged report
@@ -60,7 +58,7 @@
     * add documentation to declarations
     * setup dokka to fail on undocumented
 
-## 0.4.0: Certificates and Key management
+## Certificates and Key management
 
 * Materials
     * introduce materials: key, key pair, certificate, certificate chain, certificate+key pair etc
@@ -76,7 +74,7 @@
       (like different signature algorithms in ssh, tls, certificate)
     * Decode key from DER/PEM -> then decide on which algorithm it is (problems with WebCrypto)
 
-## 0.5.0: Enhanced operations for big data and streaming (some things can depend on IO library - if so, design or postpone)
+## Enhanced operations for big data and streaming (some things can depend on IO library - if so, design or postpone)
 
 * Function operations (cipher, signature, hash)
 * Operations with provided output buffer
@@ -96,7 +94,7 @@
 * use base64 from stdlib (1.9.0: still experimental)
 * setup configuration cache (1.9.0: has issues)
 
-## x.y.z plans:
+## Future plans:
 
 * compiler plugin to generate declarations with flatten parameters (related to 'general way to define algorithms')
 * Extensions - something, that can be linked automatically, but also can be configured explicitly
