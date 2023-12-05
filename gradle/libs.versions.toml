@@ -7,18 +7,18 @@ kotlin = "1.9.21"
 kotlin-dokka = "1.9.10"
 
 kotlinx-bcv = "0.13.2"
-kotlinx-kover = "0.7.4"
+kotlinx-kover = "0.7.5"
 
-android = "8.1.4"
+android = "8.2.0"
 
-gradle-enterprise = "3.15.1"
+gradle-enterprise = "3.16"
 gradle-foojay = "0.7.0"
 
 buildconfig = "4.2.0"
 
 # test dependencies
 
-kotlinx-serialization = "1.6.1"
+kotlinx-serialization = "1.6.2"
 kotlinx-coroutines = "1.7.3"
 
 bouncycastle = "1.77"

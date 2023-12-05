@@ -24,7 +24,7 @@ jobs:
             api-level: 27
           - os: 'macos-latest'
             target: 'android'
-            api-level: 30
+            api-level: 33
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-gradle

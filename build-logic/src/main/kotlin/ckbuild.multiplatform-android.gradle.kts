@@ -13,7 +13,7 @@ plugins {
 
 android {
     namespace = "${project.group}.${project.name.replace("-", ".")}"
-    compileSdk = 33
+    compileSdk = 34
     defaultConfig {
         minSdk = 21
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -24,17 +24,26 @@ android {
     testOptions {
         managedDevices {
             devices {
+                // minimal supported API
                 maybeCreate<ManagedVirtualDevice>("androidApi21").apply {
                     device = "Pixel 2"
                     apiLevel = 21
                     systemImageSource = "aosp"
                 }
+                // first API with full JDK 8 support
                 maybeCreate<ManagedVirtualDevice>("androidApi27").apply {
                     device = "Pixel 2"
                     apiLevel = 27
                     systemImageSource = "aosp"
                 }
-                maybeCreate<ManagedVirtualDevice>("androidApi30").apply {
+                // latest available for tests API
+                maybeCreate<ManagedVirtualDevice>("androidApi33").apply {
+                    device = "Pixel 2"
+                    apiLevel = 33
+                    systemImageSource = "aosp"
+                }
+                // atd image is fast
+                maybeCreate<ManagedVirtualDevice>("androidFast").apply {
                     device = "Pixel 2"
                     apiLevel = 30
                     systemImageSource = "aosp-atd"
@@ -49,8 +58,6 @@ android {
     }
 }
 
-val versionCatalog: VersionCatalog = extensions.getByType<VersionCatalogsExtension>().named("libs")
-
 @OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
     androidTarget {
@@ -61,7 +68,7 @@ kotlin {
     sourceSets {
         invokeWhenCreated("androidInstrumentedTest") {
             dependencies {
-                implementation(versionCatalog.findLibrary("androidx-test").get())
+                implementation(versionCatalogs.named("libs").findLibrary("androidx-test").get())
             }
         }
     }

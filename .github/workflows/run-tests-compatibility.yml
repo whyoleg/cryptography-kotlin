@@ -27,8 +27,8 @@ jobs:
             target: 'android-27'
             api-level: 27
           - os: 'macos-latest'
-            target: 'android-30'
-            api-level: 30
+            target: 'android-33'
+            api-level: 33
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-gradle
@@ -87,8 +87,8 @@ jobs:
             target: 'android-27'
             api-level: 27
           - os: 'macos-latest'
-            target: 'android-30'
-            api-level: 30
+            target: 'android-33'
+            api-level: 33
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-gradle
