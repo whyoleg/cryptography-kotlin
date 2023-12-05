@@ -1,0 +1,23 @@
+name: Build Kotlin EAP
+on:
+  push:
+    branches:
+      - kotlin-eap/*
+
+jobs:
+  build:
+    name: Kotlin=${{ matrix.kotlin-version }}
+    strategy:
+      fail-fast: false
+      matrix:
+        kotlin-version: [
+          '', # empty means a current project version
+          '[1.9.22,1.9.22-9999[',
+          '[2.0.0-Beta2,2.0.0-Beta2-9999[',
+          '[2.0.0-dev,2.0.0-dev-9999['
+        ]
+    uses: ./.github/workflows/run-build-project.yml
+    with:
+      kotlin-version: ${{ matrix.kotlin-version }}
+      cache-disabled: true
+      skip-tests: 'false'
