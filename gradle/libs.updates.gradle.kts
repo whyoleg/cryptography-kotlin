@@ -4,7 +4,7 @@
 
 /**
  * run to check for dependencies:
- *  ./gradlew dependencyUpdates --init-script gradle/libs.updates.gradle.kts
+ *  ./gradlew dependencyUpdates --init-script gradle/libs.updates.gradle.kts --no-configuration-cache
  */
 
 initscript {
