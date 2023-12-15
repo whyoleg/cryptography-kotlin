@@ -46,8 +46,8 @@ class SupportedAlgorithmsTest {
 
         assertSupports(ECDSA, !context.provider.isApple)
 
-        assertSupports(RSA.PSS, !context.provider.isApple)
-        assertSupports(RSA.OAEP, !context.provider.isApple)
-        assertSupports(RSA.PKCS1, !context.provider.isApple)
+        assertSupports(RSA.PSS)
+        assertSupports(RSA.OAEP)
+        assertSupports(RSA.PKCS1)
     }
 }

@@ -66,6 +66,13 @@ fun AlgorithmTestScope<RSA.PSS>.supportsSaltSize(saltSize: Int?): Boolean = supp
     }
 }
 
+fun AlgorithmTestScope<RSA.OAEP>.supportsAssociatedData(associatedDataSize: Int?): Boolean = supports {
+    when {
+        provider.isApple && associatedDataSize != null -> "associatedData"
+        else                                           -> null
+    }
+}
+
 fun AlgorithmTestScope<ECDSA>.supportsCurve(curve: EC.Curve): Boolean = supports {
     // default curves supported everywhere now
     if (curve.name != "secp256k1") return@supports null

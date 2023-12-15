@@ -10,6 +10,9 @@ import kotlin.time.Duration.Companion.minutes
 
 private const val enableLogsGlobal = false
 
+// TODO: timeout is really big because compatibility tests are running over a lot of data
+private val testTimeout = 40.minutes
+
 fun <A : CryptographyAlgorithm> runTestForEachAlgorithm(
     algorithmId: CryptographyAlgorithmId<A>,
     rootTag: String? = null,
@@ -27,7 +30,7 @@ fun runTest(
     rootTag: String? = null,
     enableLogs: Boolean = enableLogsGlobal,
     block: suspend TestScope.() -> Unit,
-): TestResult = runTest(timeout = 30.minutes) {
+): TestResult = runTest(timeout = testTimeout) {
     val logger = TestLogger(enableLogs, rootTag)
     logger.print("PLATFORM: $currentTestPlatform")
     TestScope(logger).block()

@@ -19,7 +19,10 @@ class RsaPkcs1Test {
                 if (!supportsDigest(digest)) return@generateDigests
 
                 val keyPair = algorithm.keyPairGenerator(keySize, digest).generateKey()
-                assertEquals(keySize.inBytes + 38, keyPair.publicKey.encodeTo(RSA.PublicKey.Format.DER).size)
+
+                if (supportsKeyFormat(RSA.PublicKey.Format.DER)) {
+                    assertEquals(keySize.inBytes + 38, keyPair.publicKey.encodeTo(RSA.PublicKey.Format.DER).size)
+                }
 
                 val signatureGenerator = keyPair.privateKey.signatureGenerator()
                 val signatureVerifier = keyPair.publicKey.signatureVerifier()

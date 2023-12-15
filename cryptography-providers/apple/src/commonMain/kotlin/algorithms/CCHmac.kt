@@ -10,6 +10,7 @@ import dev.whyoleg.cryptography.algorithms.symmetric.*
 
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.signature.*
+import dev.whyoleg.cryptography.providers.apple.internal.*
 import dev.whyoleg.cryptography.random.*
 import kotlinx.cinterop.*
 import platform.CoreCrypto.*

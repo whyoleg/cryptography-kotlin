@@ -12,11 +12,18 @@ import kotlin.test.*
 
 class RsaOaepTest {
 
-    private suspend fun RSA.OAEP.KeyPair.encryptAndDecrypt(expectedSize: Int, plaintext: ByteArray, associatedData: ByteArray?) {
-        val encryptor = publicKey.encryptor()
+    private suspend fun AlgorithmTestScope<RSA.OAEP>.encryptAndDecrypt(
+        keyPair: RSA.OAEP.KeyPair,
+        expectedSize: Int,
+        plaintext: ByteArray,
+        associatedData: ByteArray?,
+    ) {
+        if (!supportsAssociatedData(associatedData?.size)) return
+
+        val encryptor = keyPair.publicKey.encryptor()
         val ciphertext = encryptor.encrypt(plaintext, associatedData)
         assertEquals(expectedSize, ciphertext.size)
-        assertContentEquals(plaintext, privateKey.decryptor().decrypt(ciphertext, associatedData))
+        assertContentEquals(plaintext, keyPair.privateKey.decryptor().decrypt(ciphertext, associatedData))
     }
 
     @Test
@@ -26,22 +33,25 @@ class RsaOaepTest {
                 if (!supportsDigest(digest)) return@generateDigests
 
                 val keyPair = algorithm.keyPairGenerator(keySize, digest).generateKey()
-                assertEquals(keySize.inBytes + 38, keyPair.publicKey.encodeTo(RSA.PublicKey.Format.DER).size)
+
+                if (supportsKeyFormat(RSA.PublicKey.Format.DER)) {
+                    assertEquals(keySize.inBytes + 38, keyPair.publicKey.encodeTo(RSA.PublicKey.Format.DER).size)
+                }
 
                 val maxSize = keySize.inBytes - 2 - 2 * digestSize
 
-                keyPair.encryptAndDecrypt(keySize.inBytes, ByteArray(0), null)
-                keyPair.encryptAndDecrypt(keySize.inBytes, ByteArray(0), ByteArray(0))
-                keyPair.encryptAndDecrypt(keySize.inBytes, ByteArray(maxSize), null)
-                keyPair.encryptAndDecrypt(keySize.inBytes, ByteArray(maxSize), ByteArray(0))
+                encryptAndDecrypt(keyPair, keySize.inBytes, ByteArray(0), null)
+                encryptAndDecrypt(keyPair, keySize.inBytes, ByteArray(0), ByteArray(0))
+                encryptAndDecrypt(keyPair, keySize.inBytes, ByteArray(maxSize), null)
+                encryptAndDecrypt(keyPair, keySize.inBytes, ByteArray(maxSize), ByteArray(0))
 
                 repeat(8) { n ->
                     val size = 10.0.pow(n).toInt()
                     if (size < maxSize) {
                         val data = CryptographyRandom.Default.nextBytes(size)
-                        keyPair.encryptAndDecrypt(keySize.inBytes, data, null)
-                        keyPair.encryptAndDecrypt(keySize.inBytes, data, ByteArray(0))
-                        keyPair.encryptAndDecrypt(keySize.inBytes, data, data)
+                        encryptAndDecrypt(keyPair, keySize.inBytes, data, null)
+                        encryptAndDecrypt(keyPair, keySize.inBytes, data, ByteArray(0))
+                        encryptAndDecrypt(keyPair, keySize.inBytes, data, data)
                     }
                 }
             }

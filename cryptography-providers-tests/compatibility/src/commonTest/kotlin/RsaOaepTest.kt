@@ -7,6 +7,7 @@ package dev.whyoleg.cryptography.providers.tests.compatibility
 import dev.whyoleg.cryptography.BinarySize.Companion.bits
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.providers.tests.compatibility.api.*
+import dev.whyoleg.cryptography.providers.tests.support.*
 import dev.whyoleg.cryptography.random.*
 import kotlin.test.*
 
@@ -24,6 +25,8 @@ class RsaOaepTest : RsaBasedTest<RSA.OAEP.PublicKey, RSA.OAEP.PrivateKey, RSA.OA
             val decryptor = keyPair.privateKey.decryptor()
             repeat(associatedDataIterations) { adIndex ->
                 val associatedDataSize = if (adIndex == 0) null else CryptographyRandom.nextInt(maxAssociatedDataSize)
+                if (!supportsAssociatedData(associatedDataSize)) return@repeat
+
                 logger.log { "associatedData.size   = $associatedDataSize" }
                 val associatedData = associatedDataSize?.let(CryptographyRandom::nextBytes)
                 repeat(cipherIterations) {
@@ -46,6 +49,8 @@ class RsaOaepTest : RsaBasedTest<RSA.OAEP.PublicKey, RSA.OAEP.PrivateKey, RSA.OA
 
         api.ciphers.getParameters<TestParameters.Empty> { _, parametersId, _ ->
             api.ciphers.getData<AuthenticatedCipherData>(parametersId) { (keyReference, associatedData, plaintext, ciphertext), _, _ ->
+                if (!supportsAssociatedData(associatedData?.size)) return@getData
+
                 val (publicKeys, privateKeys) = keyPairs[keyReference] ?: return@getData
                 val encryptors = publicKeys.map { it.encryptor() }
                 val decryptors = privateKeys.map { it.decryptor() }

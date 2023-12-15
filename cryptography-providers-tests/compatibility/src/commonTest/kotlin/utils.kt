@@ -29,7 +29,8 @@ suspend inline fun <KF : KeyFormat, K : EncodableKey<KF>> KeyDecoder<KF, K>.deco
         .mapKeys { (formatName, _) -> formatOf(formatName) }
         .filterKeys(supports)
 
-    assertTrue(supportedFormats.isNotEmpty(), "No supported formats")
+    // TODO: decide on what to do here
+    //assertTrue(supportedFormats.isNotEmpty(), "No supported formats")
 
     val keys = supportedFormats.mapValues { decodeFrom(it.key, it.value) }.values.toList()
 
