@@ -5,6 +5,7 @@
 package dev.whyoleg.cryptography.providers.webcrypto.algorithms
 
 import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.BinarySize.Companion.bytes
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.materials.key.*
@@ -20,6 +21,9 @@ internal object WebCryptoRsaPss : RSA.PSS {
             RSA.PublicKey.Format.DER -> "spki"
             RSA.PublicKey.Format.PEM -> "pem-RSA-spki"
             RSA.PublicKey.Format.JWK -> "jwk"
+            RSA.PublicKey.Format.DER_RSA,
+            RSA.PublicKey.Format.PEM_RSA,
+            -> error("$it format is not supported")
         }
     }
     private val privateKeyFormat: (RSA.PrivateKey.Format) -> String = {
@@ -27,10 +31,17 @@ internal object WebCryptoRsaPss : RSA.PSS {
             RSA.PrivateKey.Format.DER -> "pkcs8"
             RSA.PrivateKey.Format.PEM -> "pem-RSA-pkcs8"
             RSA.PrivateKey.Format.JWK -> "jwk"
+            RSA.PrivateKey.Format.DER_RSA,
+            RSA.PrivateKey.Format.PEM_RSA,
+            -> error("$it format is not supported")
         }
     }
     private val publicKeyWrapper: (CryptoKey) -> RSA.PSS.PublicKey = { key ->
         object : RSA.PSS.PublicKey, EncodableKey<RSA.PublicKey.Format> by WebCryptoEncodableKey(key, publicKeyFormat) {
+            override fun signatureVerifier(): SignatureVerifier {
+                return signatureVerifier(hashSize(key.algorithm.asDynamic().hash.name.toString()).bytes)
+            }
+
             override fun signatureVerifier(saltLength: BinarySize): SignatureVerifier = WebCryptoSignatureVerifier(
                 algorithm = RsaPssParams(saltLength.inBytes),
                 key = key
@@ -39,6 +50,10 @@ internal object WebCryptoRsaPss : RSA.PSS {
     }
     private val privateKeyWrapper: (CryptoKey) -> RSA.PSS.PrivateKey = { key ->
         object : RSA.PSS.PrivateKey, EncodableKey<RSA.PrivateKey.Format> by WebCryptoEncodableKey(key, privateKeyFormat) {
+            override fun signatureGenerator(): SignatureGenerator {
+                return signatureGenerator(hashSize(key.algorithm.asDynamic().hash.name.toString()).bytes)
+            }
+
             override fun signatureGenerator(saltLength: BinarySize): SignatureGenerator = WebCryptoSignatureGenerator(
                 algorithm = RsaPssParams(saltLength.inBytes),
                 key = key

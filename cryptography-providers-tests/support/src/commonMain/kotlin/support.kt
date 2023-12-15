@@ -24,15 +24,21 @@ fun AlgorithmTestScope<*>.supportsDigest(digest: CryptographyAlgorithmId<Digest>
     }
 }
 
-// only WebCrypto supports JWK for now
 fun AlgorithmTestScope<*>.supportsKeyFormat(format: KeyFormat): Boolean = supports {
     when {
-        format.name == "JWK" && !provider.isWebCrypto -> "JWK"
+        // only WebCrypto supports JWK for now
+        format.name == "JWK" && !provider.isWebCrypto    -> "JWK"
         // drop this after migrating to kotlin Base64
         format.name == "PEM" &&
                 provider.isJdk &&
-                platform.isAndroid { apiLevel == 21 } -> "PEM on Android without Base64"
-        else                                          -> null
+                platform.isAndroid { apiLevel == 21 }    -> "PEM on Android without Base64"
+        // Apple provider doesn't have this formats out-of-the-box
+        format.name in setOf("PEM", "DER", "JWK") &&
+                provider.isApple                         -> "$format in Apple provider"
+        // will be supported if ASN.1 serialization is ready - TODO JDK support, may be it's available
+        format.name in setOf("PEM_RSA", "DER_RSA") &&
+                (provider.isJdk || provider.isWebCrypto) -> "$format not yet available in $provider"
+        else                                             -> null
     }
 }
 
@@ -50,6 +56,13 @@ fun AlgorithmTestScope<out AES<*>>.supportsKeySize(keySizeBits: Int): Boolean = 
     when {
         provider.isWebCrypto && platform.isBrowser && keySizeBits == 192 -> "192 bits key"
         else                                                             -> null
+    }
+}
+
+fun AlgorithmTestScope<RSA.PSS>.supportsSaltSize(saltSize: Int?): Boolean = supports {
+    when {
+        provider.isApple && saltSize != null -> "custom saltSize"
+        else                                 -> null
     }
 }
 

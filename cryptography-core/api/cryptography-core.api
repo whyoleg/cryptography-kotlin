@@ -224,10 +224,12 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/R
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PSS$PrivateKey : dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PrivateKey {
+	public abstract fun signatureGenerator ()Ldev/whyoleg/cryptography/operations/signature/SignatureGenerator;
 	public abstract fun signatureGenerator-6q1zMKY (I)Ldev/whyoleg/cryptography/operations/signature/SignatureGenerator;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PSS$PublicKey : dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicKey {
+	public abstract fun signatureVerifier ()Ldev/whyoleg/cryptography/operations/signature/SignatureVerifier;
 	public abstract fun signatureVerifier-6q1zMKY (I)Ldev/whyoleg/cryptography/operations/signature/SignatureVerifier;
 }
 
@@ -236,8 +238,10 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/R
 
 public final class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PrivateKey$Format : java/lang/Enum, dev/whyoleg/cryptography/materials/key/KeyFormat {
 	public static final field DER Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PrivateKey$Format;
+	public static final field DER_RSA Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PrivateKey$Format;
 	public static final field JWK Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PrivateKey$Format;
 	public static final field PEM Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PrivateKey$Format;
+	public static final field PEM_RSA Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PrivateKey$Format;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public synthetic fun getName ()Ljava/lang/String;
 	public static fun valueOf (Ljava/lang/String;)Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PrivateKey$Format;
@@ -276,8 +280,10 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/R
 
 public final class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicKey$Format : java/lang/Enum, dev/whyoleg/cryptography/materials/key/KeyFormat {
 	public static final field DER Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicKey$Format;
+	public static final field DER_RSA Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicKey$Format;
 	public static final field JWK Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicKey$Format;
 	public static final field PEM Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicKey$Format;
+	public static final field PEM_RSA Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicKey$Format;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public synthetic fun getName ()Ljava/lang/String;
 	public static fun valueOf (Ljava/lang/String;)Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicKey$Format;

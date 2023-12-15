@@ -44,12 +44,22 @@ public interface RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP : RS
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface PublicKey : EncodableKey<PublicKey.Format> {
-        public enum class Format : KeyFormat { DER, PEM, JWK, }
+        public enum class Format : KeyFormat {
+            DER, PEM, JWK,
+
+            // following PKCS1 standard, not PKCS8
+            DER_RSA, PEM_RSA,
+        }
     }
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface PrivateKey : EncodableKey<PrivateKey.Format> {
-        public enum class Format : KeyFormat { DER, PEM, JWK, }
+        public enum class Format : KeyFormat {
+            DER, PEM, JWK,
+
+            // following PKCS1 standard, not PKCS8
+            DER_RSA, PEM_RSA,
+        }
     }
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
@@ -83,11 +93,15 @@ public interface RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP : RS
 
         @SubclassOptInRequired(CryptographyProviderApi::class)
         public interface PublicKey : RSA.PublicKey {
+            // default salt = digest.outputSize
+            public fun signatureVerifier(): SignatureVerifier
             public fun signatureVerifier(saltLength: BinarySize): SignatureVerifier
         }
 
         @SubclassOptInRequired(CryptographyProviderApi::class)
         public interface PrivateKey : RSA.PrivateKey {
+            // default salt = digest.outputSize
+            public fun signatureGenerator(): SignatureGenerator
             public fun signatureGenerator(saltLength: BinarySize): SignatureGenerator
         }
     }

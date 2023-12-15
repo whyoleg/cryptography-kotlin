@@ -124,7 +124,7 @@ internal object Openssl3Ecdsa : ECDSA {
         override fun outputType(format: EC.PublicKey.Format): String = when (format) {
             EC.PublicKey.Format.DER -> "DER"
             EC.PublicKey.Format.PEM -> "PEM"
-            EC.PublicKey.Format.RAW -> error("should not be called")
+            EC.PublicKey.Format.RAW -> error("should not be called: handled explicitly in encodeToBlocking")
             EC.PublicKey.Format.JWK -> error("JWK format is not supported")
         }
 
@@ -149,6 +149,7 @@ internal object Openssl3Ecdsa : ECDSA {
         }
     }
 }
+
 @OptIn(UnsafeNumber::class)
 private fun EC_check_key_group(key: CPointer<EVP_PKEY>, expectedCurve: EC.Curve) = memScoped {
     //we need to construct a group, because our EC.Curve names are not the ones, which are used inside openssl

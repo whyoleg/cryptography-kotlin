@@ -62,9 +62,14 @@ abstract class RsaBasedTest<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, 
                     supports = ::supportsKeyFormat
                 ) { key, format, bytes ->
                     when (format) {
-                        RSA.PublicKey.Format.DER, RSA.PublicKey.Format.PEM ->
+                        RSA.PublicKey.Format.DER,
+                        RSA.PublicKey.Format.PEM,
+                        RSA.PublicKey.Format.DER_RSA,
+                        RSA.PublicKey.Format.PEM_RSA,
+                                                 ->
                             assertContentEquals(bytes, key.encodeTo(format), "Public Key $format encoding")
-                        RSA.PublicKey.Format.JWK                           -> {}
+                        RSA.PublicKey.Format.JWK -> {}
+
                     }
                 }
                 val privateKeys = privateKeyDecoder.decodeFrom(
@@ -73,10 +78,13 @@ abstract class RsaBasedTest<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, 
                     supports = ::supportsKeyFormat
                 ) { key, format, bytes ->
                     when (format) {
-                        RSA.PrivateKey.Format.DER, RSA.PrivateKey.Format.PEM -> {
+                        RSA.PrivateKey.Format.DER,
+                        RSA.PrivateKey.Format.PEM,
+                        RSA.PrivateKey.Format.DER_RSA,
+                        RSA.PrivateKey.Format.PEM_RSA,
+                                                  ->
                             assertContentEquals(bytes, key.encodeTo(format), "Private Key $format encoding")
-                        }
-                        RSA.PrivateKey.Format.JWK                            -> {}
+                        RSA.PrivateKey.Format.JWK -> {}
                     }
                 }
                 put(keyReference, publicKeys to privateKeys)

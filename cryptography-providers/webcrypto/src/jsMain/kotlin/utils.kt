@@ -28,3 +28,11 @@ internal fun CryptographyAlgorithmId<Digest>.hashAlgorithmName(): String = when 
     SHA512 -> "SHA-512"
     else -> throw CryptographyException("Unsupported hash algorithm: ${this}")
 }
+
+internal fun hashSize(hashAlgorithmName: String): Int = when (hashAlgorithmName) {
+    "SHA-1"   -> 20
+    "SHA-256" -> 32
+    "SHA-384" -> 48
+    "SHA-512" -> 64
+    else      -> throw CryptographyException("Unsupported hash algorithm: $hashAlgorithmName")
+}

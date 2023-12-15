@@ -20,6 +20,9 @@ internal object WebCryptoRsaPkcs1 : RSA.PKCS1 {
             RSA.PublicKey.Format.DER -> "spki"
             RSA.PublicKey.Format.PEM -> "pem-RSA-spki"
             RSA.PublicKey.Format.JWK -> "jwk"
+            RSA.PublicKey.Format.DER_RSA,
+            RSA.PublicKey.Format.PEM_RSA,
+            -> error("$it format is not supported")
         }
     }
     private val privateKeyFormat: (RSA.PrivateKey.Format) -> String = {
@@ -27,6 +30,9 @@ internal object WebCryptoRsaPkcs1 : RSA.PKCS1 {
             RSA.PrivateKey.Format.DER -> "pkcs8"
             RSA.PrivateKey.Format.PEM -> "pem-RSA-pkcs8"
             RSA.PrivateKey.Format.JWK -> "jwk"
+            RSA.PrivateKey.Format.DER_RSA,
+            RSA.PrivateKey.Format.PEM_RSA,
+            -> error("$it format is not supported")
         }
     }
     private val publicKeyWrapper: (CryptoKey) -> RSA.PKCS1.PublicKey = { key ->

@@ -5,13 +5,14 @@
 package dev.whyoleg.cryptography.providers.jdk.algorithms
 
 import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.BinarySize.Companion.bytes
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.algorithms.digest.*
+import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.operations.signature.*
 import dev.whyoleg.cryptography.providers.jdk.*
 import dev.whyoleg.cryptography.providers.jdk.materials.*
 import dev.whyoleg.cryptography.providers.jdk.operations.*
-import dev.whyoleg.cryptography.materials.key.*
-import dev.whyoleg.cryptography.operations.signature.*
 import java.math.*
 import java.security.spec.*
 
@@ -86,6 +87,11 @@ private class RsaPssPublicKey(
     private val key: JPublicKey,
     private val hashAlgorithmName: String,
 ) : RSA.PSS.PublicKey, EncodableKey<RSA.PublicKey.Format> by JdkEncodableKey(key, "RSA") {
+    override fun signatureVerifier(): SignatureVerifier {
+        val digestSize = state.messageDigest(hashAlgorithmName).use { it.digestLength }
+        return signatureVerifier(digestSize.bytes)
+    }
+
     override fun signatureVerifier(saltLength: BinarySize): SignatureVerifier {
         val parameters = PSSParameterSpec(
             hashAlgorithmName,
@@ -103,6 +109,11 @@ private class RsaPssPrivateKey(
     private val key: JPrivateKey,
     private val hashAlgorithmName: String,
 ) : RSA.PSS.PrivateKey, JdkEncodableKey<RSA.PrivateKey.Format>(key, "RSA") {
+    override fun signatureGenerator(): SignatureGenerator {
+        val digestSize = state.messageDigest(hashAlgorithmName).use { it.digestLength }
+        return signatureGenerator(digestSize.bytes)
+    }
+
     override fun signatureGenerator(saltLength: BinarySize): SignatureGenerator {
         val parameters = PSSParameterSpec(
             hashAlgorithmName,
