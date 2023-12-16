@@ -85,6 +85,15 @@ tasks.register("nativeTest") {
     dependsOn(tasks.withType<KotlinNativeTest>().matching { it.enabled })
 }
 
+listOf("ios", "watchos", "tvos", "macos").forEach { targetGroup ->
+    tasks.register("${targetGroup}Test") {
+        group = "verification"
+        dependsOn(tasks.withType<KotlinNativeTest>().matching {
+            it.enabled && it.name.startsWith(targetGroup, ignoreCase = true)
+        })
+    }
+}
+
 // on build, link even those binaries, which it's not possible to run
 tasks.build {
     dependsOn(tasks.withType<KotlinNativeLink>())

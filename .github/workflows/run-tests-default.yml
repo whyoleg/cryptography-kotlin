@@ -13,7 +13,13 @@ jobs:
         target: [ 'jvmAll', 'js', 'native' ]
         include:
           - os: 'macos-latest'
-            target: 'native'
+            target: 'macos'
+          - os: 'macos-latest'
+            target: 'ios'
+          - os: 'macos-latest'
+            target: 'watchos'
+          - os: 'macos-latest'
+            target: 'tvos'
           - os: 'windows-latest'
             target: 'native'
           - os: 'macos-latest'
