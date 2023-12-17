@@ -13,7 +13,7 @@ jobs:
       - name: Publish to Maven Local (prepare packages)
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: publishToMavenLocal
+          arguments: publishToMavenLocal --no-configuration-cache
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{secrets.signingKey}}
           ORG_GRADLE_PROJECT_signingPassword: ${{secrets.signingPassword}}
@@ -23,7 +23,7 @@ jobs:
       - name: Publish signed packages to local directory
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: publishAllPublicationsToProjectLocalRepository
+          arguments: publishAllPublicationsToProjectLocalRepository --no-configuration-cache
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{secrets.signingKey}}
           ORG_GRADLE_PROJECT_signingPassword: ${{secrets.signingPassword}}
