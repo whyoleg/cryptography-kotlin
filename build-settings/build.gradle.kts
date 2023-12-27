@@ -18,5 +18,5 @@ buildConfig {
         topLevelConstants = true
         internalVisibility = true
     }
-    buildConfigField("String", "kotlinVersion", libs.versions.kotlin.asProvider().map { "\"$it\"" })
+    buildConfigField("kotlinVersion", libs.versions.kotlin.asProvider())
 }

@@ -14,7 +14,7 @@ android = "8.2.0"
 gradle-enterprise = "3.16"
 gradle-foojay = "0.7.0"
 
-buildconfig = "4.2.0"
+buildconfig = "5.1.0"
 
 # test dependencies
 
@@ -43,6 +43,8 @@ build-android = { module = "com.android.tools.build:gradle", version.ref = "andr
 
 build-gradle-enterprise = { module = "com.gradle:gradle-enterprise-gradle-plugin", version.ref = "gradle-enterprise" }
 build-gradle-foojay = { module = "org.gradle.toolchains:foojay-resolver", version.ref = "gradle-foojay" }
+
+build-buildconfig = { module = "com.github.gmazzo.buildconfig:plugin", version.ref = "buildconfig" }
 
 # test dependencies
 
