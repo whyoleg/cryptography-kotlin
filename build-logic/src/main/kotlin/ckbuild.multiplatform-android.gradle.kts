@@ -45,7 +45,7 @@ android {
                 // atd image is fast
                 maybeCreate<ManagedVirtualDevice>("androidFast").apply {
                     device = "Pixel 2"
-                    apiLevel = 30
+                    apiLevel = 33
                     systemImageSource = "aosp-atd"
                 }
             }
@@ -72,10 +72,4 @@ kotlin {
             }
         }
     }
-}
-
-tasks.matching {
-    it.name.startsWith("lint", ignoreCase = true)
-}.configureEach {
-    onlyIf { false }
 }
