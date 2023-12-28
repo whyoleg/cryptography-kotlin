@@ -1,6 +1,6 @@
 [versions]
 
-kotlin = "1.9.21"
+kotlin = "1.9.22"
 
 # build dependencies
 
@@ -11,7 +11,7 @@ kotlinx-kover = "0.7.5"
 
 android = "8.2.0"
 
-gradle-enterprise = "3.16"
+gradle-enterprise = "3.16.1"
 gradle-foojay = "0.7.0"
 
 buildconfig = "5.1.0"
@@ -27,7 +27,7 @@ androidx-test = "1.5.2"
 
 # testtool dependencies
 
-ktor = "2.3.6"
+ktor = "2.3.7"
 logback = "1.2.11"
 
 [libraries]
