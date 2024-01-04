@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 pluginManagement {
@@ -45,16 +45,8 @@ includeProvider("openssl3", listOf("api", "shared", "prebuilt", "test"))
 
 // providers tests
 
-listOf(
-    "support",
-    "behavior",
-    "compatibility"
-).forEach { name ->
-    includeWithPath(
-        "cryptography-providers-tests-$name",
-        "cryptography-providers-tests/$name"
-    )
-}
+include("cryptography-providers-tests-api")
+include("cryptography-providers-tests")
 
 // utils
 
