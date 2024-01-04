@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 import org.jetbrains.kotlin.gradle.dsl.*
@@ -19,8 +19,9 @@ kotlin {
 dependencies {
     compileOnly(gradleKotlinDsl())
     compileOnly(kotlinLibs.gradle.plugin)
+    compileOnly(libs.build.android)
+
     implementation(projects.server)
-    implementation(libs.build.android)
 }
 
 gradlePlugin {
