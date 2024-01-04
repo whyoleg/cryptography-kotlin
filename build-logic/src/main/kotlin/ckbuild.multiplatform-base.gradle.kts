@@ -1,9 +1,12 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
+import ckbuild.tests.*
+import com.android.build.gradle.internal.tasks.*
 import org.gradle.kotlin.dsl.*
 import org.jetbrains.kotlin.gradle.*
+import org.jetbrains.kotlin.gradle.plugin.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.*
 import org.jetbrains.kotlin.gradle.targets.js.ir.*
 import org.jetbrains.kotlin.gradle.targets.jvm.*
@@ -75,23 +78,32 @@ kotlin {
     }
 }
 
-tasks.register("jvmAllTest") {
-    group = "verification"
-    dependsOn(tasks.withType<KotlinJvmTest>())
-}
+// for CI mainly
 
-tasks.register("nativeTest") {
-    group = "verification"
-    dependsOn(tasks.withType<KotlinNativeTest>().matching { it.enabled })
-}
+registerTestAggregationTask(
+    name = "jvmAllTest",
+    taskDependencies = { tasks.withType<KotlinJvmTest>() },
+    targetFilter = { it.platformType == KotlinPlatformType.jvm }
+)
+
+registerTestAggregationTask(
+    name = "nativeTest",
+    taskDependencies = { tasks.withType<KotlinNativeTest>().matching { it.enabled } },
+    targetFilter = { it.platformType == KotlinPlatformType.native }
+)
 
 listOf("ios", "watchos", "tvos", "macos").forEach { targetGroup ->
-    tasks.register("${targetGroup}Test") {
-        group = "verification"
-        dependsOn(tasks.withType<KotlinNativeTest>().matching {
-            it.enabled && it.name.startsWith(targetGroup, ignoreCase = true)
-        })
-    }
+    registerTestAggregationTask(
+        name = "${targetGroup}Test",
+        taskDependencies = {
+            tasks.withType<KotlinNativeTest>().matching {
+                it.enabled && it.name.startsWith(targetGroup, ignoreCase = true)
+            }
+        },
+        targetFilter = {
+            it.platformType == KotlinPlatformType.native && it.name.startsWith(targetGroup, ignoreCase = true)
+        }
+    )
 }
 
 // on build, link even those binaries, which it's not possible to run
@@ -99,3 +111,10 @@ tasks.build {
     dependsOn(tasks.withType<KotlinNativeLink>())
 }
 
+if (providers.gradleProperty("ckbuild.skipTest").map(String::toBoolean).getOrElse(false)) {
+    tasks.matching { it is AbstractTestTask || it is AndroidTestTask }.configureEach { onlyIf { false } }
+}
+
+if (providers.gradleProperty("ckbuild.skipNativeLink").map(String::toBoolean).getOrElse(false)) {
+    tasks.withType<KotlinNativeLink>().configureEach { onlyIf { false } }
+}

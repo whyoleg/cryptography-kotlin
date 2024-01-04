@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 import org.jetbrains.kotlin.gradle.targets.js.yarn.*
@@ -27,12 +27,4 @@ tasks.register<Exec>("mkdocsBuild") {
     dependsOn(tasks.dokkaHtmlMultiModule)
     dependsOn(subprojects.mapNotNull { it.tasks.findByName("mkdocsCopy") })
     commandLine("mkdocs", "build", "--clean", "--strict")
-}
-
-val skipTest = providers.gradleProperty("skip.test").map(String::toBoolean).getOrElse(false)
-val skipLink = providers.gradleProperty("skip.link").map(String::toBoolean).getOrElse(false)
-
-subprojects {
-    if (skipTest) tasks.matching { it.name.endsWith("test", ignoreCase = true) }.configureEach { onlyIf { false } }
-    if (skipLink) tasks.matching { it.name.startsWith("link", ignoreCase = true) }.configureEach { onlyIf { false } }
 }

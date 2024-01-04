@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 import com.android.build.api.dsl.*
@@ -60,6 +60,7 @@ android {
 
 @OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
+    jvmToolchain(8)
     androidTarget {
         instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
         unitTestVariant.sourceSetTree.set(KotlinSourceSetTree.unitTest)

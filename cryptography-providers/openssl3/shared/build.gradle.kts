@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 import ckbuild.*
@@ -10,6 +10,7 @@ import org.jetbrains.kotlin.konan.target.*
 plugins {
     id("ckbuild.multiplatform-library")
     id("ckbuild.use-openssl")
+    id("ckbuild.multiplatform-provider-tests")
 }
 
 description = "cryptography-kotlin OpenSSL3 provider (shared)"
@@ -55,4 +56,10 @@ kotlin {
 
 documentation {
     includes.set(null as String?)
+}
+
+providerTests {
+    packageName.set("dev.whyoleg.cryptography.providers.openssl3.shared")
+    imports.addAll("dev.whyoleg.cryptography.providers.openssl3.*")
+    providerInitializers.put("OpenSSL3_Shared", "CryptographyProvider.Openssl3")
 }

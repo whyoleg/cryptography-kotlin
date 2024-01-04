@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 plugins {
@@ -12,4 +12,5 @@ dependencies {
     implementation(libs.build.kotlinx.kover)
     implementation(libs.build.kotlin.dokka)
     implementation(libs.build.android)
+    implementation("testtool:plugin")
 }

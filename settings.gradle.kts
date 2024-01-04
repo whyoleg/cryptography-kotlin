@@ -38,10 +38,14 @@ include("cryptography-core")
 
 // providers
 
-includeProvider("jdk")
+includeProvider("jdk", submodules = listOf("android-tests"))
 includeProvider("apple")
 includeProvider("webcrypto")
-includeProvider("openssl3", listOf("api", "shared", "prebuilt", "test"))
+includeProvider(
+    name = "openssl3",
+    includeSelf = false,
+    submodules = listOf("api", "shared", "prebuilt", "test")
+)
 
 // providers tests
 
@@ -50,19 +54,20 @@ include("cryptography-providers-tests")
 
 // utils
 
-fun includeProvider(name: String, submodules: List<String> = emptyList()) {
-    if (submodules.isEmpty()) {
+fun includeProvider(
+    name: String,
+    includeSelf: Boolean = true,
+    submodules: List<String> = emptyList(),
+) {
+    if (includeSelf) includeWithPath(
+        name = "cryptography-provider-$name",
+        path = "cryptography-providers/$name"
+    )
+    submodules.forEach { submodule ->
         includeWithPath(
-            "cryptography-provider-$name",
-            "cryptography-providers/$name"
+            "cryptography-provider-$name-$submodule",
+            "cryptography-providers/$name/$submodule"
         )
-    } else {
-        submodules.forEach { submodule ->
-            includeWithPath(
-                "cryptography-provider-$name-$submodule",
-                "cryptography-providers/$name/$submodule"
-            )
-        }
     }
 }
 
