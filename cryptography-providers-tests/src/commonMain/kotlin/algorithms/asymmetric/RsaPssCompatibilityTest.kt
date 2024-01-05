@@ -14,8 +14,6 @@ import kotlinx.serialization.*
 import kotlin.math.*
 import kotlin.test.*
 
-private const val saltIterations = 3
-private const val signatureIterations = 3
 private const val maxDataSize = 10000
 
 abstract class RsaPssCompatibilityTest(provider: CryptographyProvider) :
@@ -24,8 +22,17 @@ abstract class RsaPssCompatibilityTest(provider: CryptographyProvider) :
     @Serializable
     private data class SignatureParameters(val saltSizeBytes: Int?) : TestParameters
 
-    override suspend fun CompatibilityTestScope<RSA.PSS>.generate() {
-        generateKeys { keyPair, keyReference, (keySizeBites, _, digestSizeBytes) ->
+    override suspend fun CompatibilityTestScope<RSA.PSS>.generate(isStressTest: Boolean) {
+        val saltIterations = when {
+            isStressTest -> 5
+            else         -> 2
+        }
+        val signatureIterations = when {
+            isStressTest -> 5
+            else         -> 2
+        }
+
+        generateKeys(isStressTest) { keyPair, keyReference, (keySizeBites, _, digestSizeBytes) ->
             val maxSaltSize = (ceil((keySizeBites - 1) / 8.0) - digestSizeBytes - 2).toInt()
             (List(saltIterations) { CryptographyRandom.nextInt(maxSaltSize) } + null).forEach { saltSizeBytes ->
                 if (!supportsSaltSize(saltSizeBytes)) return@forEach

@@ -12,13 +12,23 @@ abstract class CompatibilityTest<A : CryptographyAlgorithm>(
     protected val algorithmId: CryptographyAlgorithmId<A>,
     provider: CryptographyProvider,
 ) : ProviderTest(provider) {
-    abstract suspend fun CompatibilityTestScope<A>.generate()
+    abstract suspend fun CompatibilityTestScope<A>.generate(isStressTest: Boolean)
     abstract suspend fun CompatibilityTestScope<A>.validate()
 
     @Test
     fun generateStep() = testAlgorithm(algorithmId) {
         val logger = logger.child("GENERATE")
-        runCompatibilityTestStep(logger, ServerApi(algorithmId.name, context, logger)) { generate() }
+        runCompatibilityTestStep(logger, ServerApi(algorithmId.name, context, logger)) {
+            generate(isStressTest = false)
+        }
+    }
+
+    @Test
+    fun generateStressStep() = testAlgorithm(algorithmId) {
+        val logger = logger.child("GENERATE")
+        runCompatibilityTestStep(logger, ServerApi(algorithmId.name, context, logger)) {
+            generate(isStressTest = true)
+        }
     }
 
     @Test
@@ -28,11 +38,15 @@ abstract class CompatibilityTest<A : CryptographyAlgorithm>(
     }
 
     @Test
-    fun inMemoryTest() = testAlgorithm(algorithmId) {
+    fun loopStep() = testAlgorithm(algorithmId) {
         var logger = logger.child("GENERATE")
-        runCompatibilityTestStep(logger, InMemoryApi(algorithmId.name, context, logger)) { generate() }
+        runCompatibilityTestStep(logger, InMemoryApi(algorithmId.name, context, logger)) {
+            generate(isStressTest = false)
+        }
         logger = logger.child("VALIDATE")
-        runCompatibilityTestStep(logger, InMemoryApi(algorithmId.name, context, logger)) { validate() }
+        runCompatibilityTestStep(logger, InMemoryApi(algorithmId.name, context, logger)) {
+            validate()
+        }
     }
 
     private suspend fun AlgorithmTestScope<A>.runCompatibilityTestStep(

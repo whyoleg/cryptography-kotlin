@@ -12,16 +12,23 @@ import dev.whyoleg.cryptography.providers.tests.api.compatibility.*
 import dev.whyoleg.cryptography.random.*
 import kotlin.test.*
 
-private const val associatedDataIterations = 3
-private const val cipherIterations = 3
 private const val maxAssociatedDataSize = 10000
 
 abstract class RsaOaepCompatibilityTest(provider: CryptographyProvider) :
     RsaBasedCompatibilityTest<RSA.OAEP.PublicKey, RSA.OAEP.PrivateKey, RSA.OAEP.KeyPair, RSA.OAEP>(RSA.OAEP, provider) {
 
-    override suspend fun CompatibilityTestScope<RSA.OAEP>.generate() {
+    override suspend fun CompatibilityTestScope<RSA.OAEP>.generate(isStressTest: Boolean) {
+        val associatedDataIterations = when {
+            isStressTest -> 5
+            else         -> 2
+        }
+        val cipherIterations = when {
+            isStressTest -> 5
+            else         -> 2
+        }
+
         val cipherParametersId = api.ciphers.saveParameters(TestParameters.Empty)
-        generateKeys { keyPair, keyReference, keyParameters ->
+        generateKeys(isStressTest) { keyPair, keyReference, keyParameters ->
             val maxPlaintextSize = keyParameters.keySizeBits.bits.inBytes - 2 - 2 * keyParameters.digestSizeBytes
             logger.log { "maxPlaintextSize.size = $maxPlaintextSize" }
             val encryptor = keyPair.publicKey.encryptor()

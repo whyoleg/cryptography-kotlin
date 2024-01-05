@@ -11,7 +11,6 @@ import dev.whyoleg.cryptography.providers.tests.api.compatibility.*
 import dev.whyoleg.cryptography.random.*
 import kotlin.test.*
 
-private const val iterations = 100
 private const val maxDataSize = 10000
 
 abstract class Md5CompatibilityTest(provider: CryptographyProvider) : DigestCompatibilityTest(MD5, provider)
@@ -29,7 +28,12 @@ abstract class Sha3B512CompatibilityTest(provider: CryptographyProvider) : Diges
 
 abstract class DigestCompatibilityTest(algorithmId: CryptographyAlgorithmId<Digest>, provider: CryptographyProvider) :
     CompatibilityTest<Digest>(algorithmId, provider) {
-    override suspend fun CompatibilityTestScope<Digest>.generate() {
+    override suspend fun CompatibilityTestScope<Digest>.generate(isStressTest: Boolean) {
+        val iterations = when {
+            isStressTest -> 1000
+            else         -> 100
+        }
+
         if (!supportsDigest(algorithmId)) return
 
         val hasher = algorithm.hasher()

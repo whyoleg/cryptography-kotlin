@@ -10,15 +10,18 @@ import dev.whyoleg.cryptography.providers.tests.api.compatibility.*
 import dev.whyoleg.cryptography.random.*
 import kotlin.test.*
 
-private const val signatureIterations = 3
 private const val maxDataSize = 10000
 
 abstract class RsaPkcs1CompatibilityTest(provider: CryptographyProvider) :
     RsaBasedCompatibilityTest<RSA.PKCS1.PublicKey, RSA.PKCS1.PrivateKey, RSA.PKCS1.KeyPair, RSA.PKCS1>(RSA.PKCS1, provider) {
 
-    override suspend fun CompatibilityTestScope<RSA.PKCS1>.generate() {
+    override suspend fun CompatibilityTestScope<RSA.PKCS1>.generate(isStressTest: Boolean) {
+        val signatureIterations = when {
+            isStressTest -> 5
+            else         -> 2
+        }
         val signatureParametersId = api.signatures.saveParameters(TestParameters.Empty)
-        generateKeys { keyPair, keyReference, _ ->
+        generateKeys(isStressTest) { keyPair, keyReference, _ ->
             val signer = keyPair.privateKey.signatureGenerator()
             val verifier = keyPair.publicKey.signatureVerifier()
 

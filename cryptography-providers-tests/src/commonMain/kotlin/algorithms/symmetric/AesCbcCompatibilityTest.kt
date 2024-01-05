@@ -12,7 +12,6 @@ import dev.whyoleg.cryptography.random.*
 import kotlinx.serialization.*
 import kotlin.test.*
 
-private const val cipherIterations = 5
 private const val maxPlaintextSize = 10000
 private const val blockSize = 16 //for no padding
 
@@ -24,7 +23,12 @@ abstract class AesCbcCompatibilityTest(provider: CryptographyProvider) :
     @Serializable
     private data class CipherParameters(val padding: Boolean) : TestParameters
 
-    override suspend fun CompatibilityTestScope<AES.CBC>.generate() {
+    override suspend fun CompatibilityTestScope<AES.CBC>.generate(isStressTest: Boolean) {
+        val cipherIterations = when {
+            isStressTest -> 10
+            else         -> 5
+        }
+
         val paddings = buildList {
             generateBoolean { padding ->
                 if (!supportsPadding(padding)) return@generateBoolean
@@ -34,7 +38,7 @@ abstract class AesCbcCompatibilityTest(provider: CryptographyProvider) :
             }
         }
 
-        generateKeys { key, keyReference, _ ->
+        generateKeys(isStressTest) { key, keyReference, _ ->
             paddings.forEach { (cipherParametersId, padding) ->
                 logger.log { "padding = $padding" }
                 val cipher = key.cipher(padding)

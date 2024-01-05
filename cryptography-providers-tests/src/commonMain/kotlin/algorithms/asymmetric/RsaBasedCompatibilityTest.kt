@@ -11,8 +11,6 @@ import dev.whyoleg.cryptography.providers.tests.api.compatibility.*
 import kotlinx.serialization.*
 import kotlin.test.*
 
-private const val keyIterations = 3
-
 abstract class RsaBasedCompatibilityTest<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP : RSA.KeyPair<PublicK, PrivateK>, A : RSA<PublicK, PrivateK, KP>>(
     algorithmId: CryptographyAlgorithmId<A>,
     provider: CryptographyProvider,
@@ -28,8 +26,13 @@ abstract class RsaBasedCompatibilityTest<PublicK : RSA.PublicKey, PrivateK : RSA
     }
 
     protected suspend fun CompatibilityTestScope<A>.generateKeys(
+        isStressTest: Boolean,
         block: suspend (keyPair: KP, keyReference: TestReference, keyParameters: KeyParameters) -> Unit,
     ) {
+        val keyIterations = when {
+            isStressTest -> 5
+            else         -> 2
+        }
         generateRsaKeySizes { keySize ->
             generateDigestsForCompatibility { digest, digestSize ->
                 if (!supportsDigest(digest)) return@generateDigestsForCompatibility

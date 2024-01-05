@@ -11,8 +11,6 @@ import dev.whyoleg.cryptography.providers.tests.api.compatibility.*
 import kotlinx.serialization.*
 import kotlin.test.*
 
-private const val keyIterations = 5
-
 abstract class AesBasedCompatibilityTest<K : AES.Key, A : AES<K>>(
     algorithmId: CryptographyAlgorithmId<A>,
     provider: CryptographyProvider,
@@ -22,8 +20,14 @@ abstract class AesBasedCompatibilityTest<K : AES.Key, A : AES<K>>(
     protected data class KeyParameters(val keySizeBits: Int) : TestParameters
 
     protected suspend fun CompatibilityTestScope<A>.generateKeys(
+        isStressTest: Boolean,
         block: suspend (key: K, keyReference: TestReference, keyParameters: KeyParameters) -> Unit,
     ) {
+        val keyIterations = when {
+            isStressTest -> 10
+            else         -> 5
+        }
+
         generateSymmetricKeySize { keySize ->
             if (!supportsKeySize(keySize.value.inBits)) return@generateSymmetricKeySize
 

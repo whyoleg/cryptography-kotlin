@@ -12,8 +12,6 @@ import dev.whyoleg.cryptography.random.*
 import kotlinx.serialization.*
 import kotlin.test.*
 
-private const val associatedDataIterations = 5
-private const val cipherIterations = 5
 private const val maxPlaintextSize = 10000
 private const val maxAssociatedDataSize = 10000
 
@@ -23,13 +21,23 @@ abstract class AesGcmCompatibilityTest(provider: CryptographyProvider) :
     @Serializable
     private data class CipherParameters(val tagSizeBits: Int) : TestParameters
 
-    override suspend fun CompatibilityTestScope<AES.GCM>.generate() {
+    override suspend fun CompatibilityTestScope<AES.GCM>.generate(isStressTest: Boolean) {
+        val associatedDataIterations = when {
+            isStressTest -> 10
+            else         -> 5
+        }
+        val cipherIterations = when {
+            isStressTest -> 10
+            else         -> 5
+        }
+
+
         val tagSizes = listOf(96, 128).map { tagSizeBits ->
             val id = api.ciphers.saveParameters(CipherParameters(tagSizeBits))
             id to tagSizeBits.bits
         }
 
-        generateKeys { key, keyReference, _ ->
+        generateKeys(isStressTest) { key, keyReference, _ ->
             tagSizes.forEach { (cipherParametersId, tagSize) ->
                 logger.log { "tagSize = $tagSize" }
                 val cipher = key.cipher(tagSize)

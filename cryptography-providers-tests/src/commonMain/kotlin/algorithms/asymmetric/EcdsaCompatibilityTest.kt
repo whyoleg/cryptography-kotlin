@@ -12,8 +12,6 @@ import dev.whyoleg.cryptography.random.*
 import kotlinx.serialization.*
 import kotlin.test.*
 
-private const val keyIterations = 3
-private const val signatureIterations = 3
 private const val maxDataSize = 10000
 
 private inline fun generateCurves(block: (curve: EC.Curve) -> Unit) {
@@ -34,7 +32,16 @@ abstract class EcdsaCompatibilityTest(provider: CryptographyProvider) : Compatib
         val digest get() = digest(digestName)
     }
 
-    override suspend fun CompatibilityTestScope<ECDSA>.generate() {
+    override suspend fun CompatibilityTestScope<ECDSA>.generate(isStressTest: Boolean) {
+        val keyIterations = when {
+            isStressTest -> 5
+            else         -> 2
+        }
+        val signatureIterations = when {
+            isStressTest -> 5
+            else         -> 2
+        }
+
         val signatureParametersList = buildList {
             listOf(ECDSA.SignatureFormat.RAW, ECDSA.SignatureFormat.DER).forEach { signatureFormat ->
                 if (!supportsSignatureFormat(signatureFormat)) return@forEach

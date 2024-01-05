@@ -12,8 +12,6 @@ import dev.whyoleg.cryptography.random.*
 import kotlinx.serialization.*
 import kotlin.test.*
 
-private const val keyIterations = 5
-private const val dataIterations = 5
 private const val maxDataSize = 10000
 
 abstract class HmacCompatibilityTest(provider: CryptographyProvider) : CompatibilityTest<HMAC>(HMAC, provider) {
@@ -23,7 +21,16 @@ abstract class HmacCompatibilityTest(provider: CryptographyProvider) : Compatibi
         val digest get() = digest(digestName)
     }
 
-    override suspend fun CompatibilityTestScope<HMAC>.generate() {
+    override suspend fun CompatibilityTestScope<HMAC>.generate(isStressTest: Boolean) {
+        val keyIterations = when {
+            isStressTest -> 10
+            else         -> 5
+        }
+        val dataIterations = when {
+            isStressTest -> 10
+            else         -> 5
+        }
+
         val signatureParametersId = api.signatures.saveParameters(TestParameters.Empty)
         generateDigests { digest, _ ->
             if (!supportsDigest(digest)) return@generateDigests
