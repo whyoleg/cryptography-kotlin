@@ -16,6 +16,8 @@ gradle-foojay = "0.7.0"
 
 buildconfig = "5.1.0"
 
+apache-commons-compress = "1.25.0"
+
 # test dependencies
 
 kotlinx-serialization = "1.6.2"
@@ -45,6 +47,8 @@ build-gradle-enterprise = { module = "com.gradle:gradle-enterprise-gradle-plugin
 build-gradle-foojay = { module = "org.gradle.toolchains:foojay-resolver", version.ref = "gradle-foojay" }
 
 build-buildconfig = { module = "com.github.gmazzo.buildconfig:plugin", version.ref = "buildconfig" }
+
+build-apache-commons-compress = { module = "org.apache.commons:commons-compress", version.ref = "apache-commons-compress" }
 
 # test dependencies
 

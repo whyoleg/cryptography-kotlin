@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 import ckbuild.*
@@ -37,8 +37,8 @@ kotlin {
 }
 
 tasks.withType<CInteropProcess>().configureEach {
-    dependsOn(tasks.setupOpenssl3)
-    settings.includeDirs(openssl3.includeDirectory(konanTarget))
+    dependsOn(tasks.setupOpenssl_v3_0)
+    settings.includeDirs(openssl.v3_0.includeDirectory(konanTarget))
 }
 
 documentation {

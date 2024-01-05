@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.prebuilt
@@ -13,10 +13,10 @@ class PrebuiltLibCrypto3Test : LibCrypto3Test() {
 
     @Test
     fun testExactVersion() {
-        assertEquals("3.1.4", OpenSSL_version(OPENSSL_VERSION_STRING)?.toKString())
+        assertEquals("3.2.0", OpenSSL_version(OPENSSL_VERSION_STRING)?.toKString())
         assertEquals(3, OPENSSL_version_major().toInt())
-        assertEquals(1, OPENSSL_version_minor().toInt())
-        assertEquals(4, OPENSSL_version_patch().toInt())
+        assertEquals(2, OPENSSL_version_minor().toInt())
+        assertEquals(0, OPENSSL_version_patch().toInt())
     }
 
 }

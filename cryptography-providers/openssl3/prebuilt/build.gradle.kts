@@ -40,8 +40,8 @@ kotlin {
 }
 
 tasks.withType<CInteropProcess>().configureEach {
-    dependsOn(tasks.setupOpenssl3)
-    settings.extraOpts("-libraryPath", openssl3.libDirectory(konanTarget).get().asFile.absolutePath)
+    dependsOn(tasks.setupOpenssl_v3_2)
+    settings.extraOpts("-libraryPath", openssl.v3_2.libDirectory(konanTarget).get().asFile.absolutePath)
 }
 
 documentation {

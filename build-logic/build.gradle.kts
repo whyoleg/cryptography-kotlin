@@ -12,5 +12,6 @@ dependencies {
     implementation(libs.build.kotlinx.kover)
     implementation(libs.build.kotlin.dokka)
     implementation(libs.build.android)
+    implementation(libs.build.apache.commons.compress)
     implementation("testtool:plugin")
 }
