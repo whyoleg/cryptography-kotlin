@@ -23,14 +23,14 @@ jobs:
           - os: 'windows-latest'
             target: 'native'
           - os: 'macos-latest'
-            target: 'android'
-            api-level: 21
+            target: 'connectedAndroid'
+            android-api-level: 21
           - os: 'macos-latest'
-            target: 'android'
-            api-level: 27
+            target: 'connectedAndroid'
+            android-api-level: 27
           - os: 'macos-latest'
-            target: 'android'
-            api-level: 33
+            target: 'connectedAndroid'
+            android-api-level: 33
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-gradle
@@ -44,16 +44,15 @@ jobs:
           install: mingw-w64-x86_64-openssl
 
       - name: Run tests
-        if: ${{ matrix.target != 'android' }}
+        if: ${{ matrix.target != 'connectedAndroid' }}
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: |
-            ${{ matrix.target }}Test
-            --continue
-            --configuration-cache
+          arguments: ${{ matrix.target }}Test --continue
 
       - name: Run tests (android)
-        if: ${{ matrix.target == 'android' }}
+        if: ${{ matrix.target == 'connectedAndroid' }}
         uses: ./.github/actions/run-android-emulator-tests
         with:
-          api-level: ${{ matrix.api-level }}
+          api-level: ${{ matrix.android-api-level }}
+          test-reports-classifier: 'default'
+          arguments: ${{ matrix.target }}Test --continue

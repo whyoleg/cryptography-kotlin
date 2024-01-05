@@ -1,5 +1,5 @@
-name: "Setup Gradle"
-description: "Setup konan relocation and gradle caching specific to kotlin MPP"
+name: 'Setup Gradle'
+description: 'Setup konan relocation and gradle caching specific to kotlin MPP'
 inputs:
   cache-disabled:
     description: When 'true', all caching is disabled. No entries will be written to or read from the cache.
@@ -12,7 +12,7 @@ inputs:
     required: false
     default: ${{ github.ref_name != 'dev' }}
 runs:
-  using: "composite"
+  using: 'composite'
   steps:
     - if: runner.os != 'Windows'
       run: echo "KONAN_DATA_DIR=${HOME}/.gradle/konan" >> $GITHUB_ENV
