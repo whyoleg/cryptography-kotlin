@@ -8,7 +8,7 @@ import org.khronos.webgl.*
 
 internal actual fun defaultCryptographyRandom(): CryptographyRandom = WebCryptoCryptographyRandom
 
-private object WebCryptoCryptographyRandom : PlatformRandom() {
+private object WebCryptoCryptographyRandom : AbstractRandom() {
     private const val maxArraySize = 65536
     private val crypto: WebCrypto = when {
         isNodeJs() -> nodeJsWebCrypto()

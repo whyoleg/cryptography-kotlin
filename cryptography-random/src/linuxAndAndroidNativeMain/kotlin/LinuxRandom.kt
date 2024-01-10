@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.random
@@ -7,7 +7,7 @@ package dev.whyoleg.cryptography.random
 import kotlinx.cinterop.*
 
 @OptIn(ExperimentalForeignApi::class)
-internal abstract class LinuxRandom : PlatformRandom() {
+internal abstract class LinuxRandom : AbstractRandom() {
     protected abstract fun fillBytes(pointer: CPointer<ByteVar>, size: Int): Int
     final override fun fillBytes(array: ByteArray) {
         val size = array.size

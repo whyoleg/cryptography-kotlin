@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.random
@@ -9,7 +9,7 @@ import platform.windows.*
 
 internal actual fun defaultCryptographyRandom(): CryptographyRandom = BCryptCryptographyRandom
 
-private object BCryptCryptographyRandom : PlatformRandom() {
+private object BCryptCryptographyRandom : AbstractRandom() {
     override fun fillBytes(array: ByteArray) {
         @OptIn(ExperimentalForeignApi::class)
         val status = array.asUByteArray().usePinned { pinned ->

@@ -9,7 +9,7 @@ import kotlin.wasm.unsafe.*
 
 internal actual fun defaultCryptographyRandom(): CryptographyRandom = WasiPreview1CryptographyRandom
 
-private object WasiPreview1CryptographyRandom : PlatformRandom() {
+private object WasiPreview1CryptographyRandom : AbstractRandom() {
     @OptIn(UnsafeWasmMemoryApi::class)
     override fun fillBytes(array: ByteArray) {
         val size = array.size
