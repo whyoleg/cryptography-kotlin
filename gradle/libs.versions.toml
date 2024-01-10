@@ -9,12 +9,12 @@ kotlin-dokka = "1.9.10"
 kotlinx-bcv = "0.13.2"
 kotlinx-kover = "0.7.5"
 
-android = "8.2.0"
+android = "8.2.1"
 
 gradle-enterprise = "3.16.1"
 gradle-foojay = "0.7.0"
 
-buildconfig = "5.1.0"
+buildconfig = "5.3.3"
 
 apache-commons-compress = "1.25.0"
 
