@@ -1,2 +1,0 @@
-package = dev.whyoleg.cryptography.random.internal.cinterop
-headers = linux/random.h
