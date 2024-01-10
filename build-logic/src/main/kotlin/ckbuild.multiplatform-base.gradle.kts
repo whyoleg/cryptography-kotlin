@@ -9,6 +9,7 @@ import org.jetbrains.kotlin.gradle.*
 import org.jetbrains.kotlin.gradle.plugin.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.*
 import org.jetbrains.kotlin.gradle.targets.js.ir.*
+import org.jetbrains.kotlin.gradle.targets.js.testing.*
 import org.jetbrains.kotlin.gradle.targets.jvm.*
 import org.jetbrains.kotlin.gradle.targets.jvm.tasks.*
 import org.jetbrains.kotlin.gradle.targets.native.tasks.*
@@ -79,6 +80,12 @@ kotlin {
 }
 
 // for CI mainly
+
+registerTestAggregationTask(
+    name = "wasmTest",
+    taskDependencies = { tasks.withType<KotlinJsTest>().matching { it.compilation.platformType == KotlinPlatformType.wasm } },
+    targetFilter = { it.platformType == KotlinPlatformType.wasm }
+)
 
 registerTestAggregationTask(
     name = "jvmAllTest",

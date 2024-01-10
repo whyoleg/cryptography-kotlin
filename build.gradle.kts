@@ -2,6 +2,9 @@
  * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
+import org.jetbrains.kotlin.gradle.targets.js.nodejs.*
+import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin.Companion.kotlinNodeJsExtension
+import org.jetbrains.kotlin.gradle.targets.js.npm.tasks.*
 import org.jetbrains.kotlin.gradle.targets.js.yarn.*
 
 plugins {
@@ -10,6 +13,17 @@ plugins {
     alias(libs.plugins.android.library) apply false
     alias(kotlinLibs.plugins.multiplatform) apply false
     alias(kotlinLibs.plugins.serialization) apply false
+}
+
+// node version with WASM support
+plugins.withType<NodeJsRootPlugin> {
+    kotlinNodeJsExtension.apply {
+        nodeVersion = "21.0.0-v8-canary202310177990572111"
+        nodeDownloadBaseUrl = "https://nodejs.org/download/v8-canary"
+    }
+    tasks.withType<KotlinNpmInstallTask>().configureEach {
+        args.add("--ignore-engines")
+    }
 }
 
 plugins.withType<YarnPlugin> {

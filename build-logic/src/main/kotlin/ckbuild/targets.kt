@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package ckbuild
@@ -7,6 +7,7 @@ package ckbuild
 import org.gradle.jvm.toolchain.*
 import org.gradle.kotlin.dsl.*
 import org.jetbrains.kotlin.gradle.dsl.*
+import org.jetbrains.kotlin.gradle.targets.js.dsl.*
 
 fun KotlinMultiplatformExtension.appleTargets() {
     macosX64()
@@ -54,6 +55,25 @@ fun KotlinMultiplatformExtension.jsTarget(
     js {
         if (supportsNode) nodejs()
         if (supportsBrowser) browser()
+    }
+}
+
+@OptIn(ExperimentalWasmDsl::class)
+fun KotlinMultiplatformExtension.wasmTargets() {
+    wasmJs {
+        nodejs()
+        browser()
+    }
+    wasmWasi {
+        nodejs()
+    }
+}
+
+@OptIn(ExperimentalWasmDsl::class)
+fun KotlinMultiplatformExtension.wasmJsTarget() {
+    wasmJs {
+        nodejs()
+        browser()
     }
 }
 

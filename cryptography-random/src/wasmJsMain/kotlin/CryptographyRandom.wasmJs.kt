@@ -16,7 +16,10 @@ private object WebCryptoCryptographyRandom : PlatformRandom() {
     }
 
     override fun fillBytes(array: ByteArray) {
-        fillBytes(array.unsafeCast<Int8Array>())
+        val size = array.size
+        val jsArray = Int8Array(size)
+        fillBytes(jsArray)
+        repeat(size) { array[it] = jsArray[it] }
     }
 
     private fun fillBytes(jsArray: Int8Array) {
@@ -34,15 +37,15 @@ private object WebCryptoCryptographyRandom : PlatformRandom() {
     }
 }
 
-private external interface WebCrypto {
+private external interface WebCrypto : JsAny {
     fun getRandomValues(array: Int8Array)
 }
 
 private fun isNodeJs(): Boolean =
-    js("typeof process !== 'undefined' && process.versions != null && process.versions.node != null").unsafeCast<Boolean>()
+    js("typeof process !== 'undefined' && process.versions != null && process.versions.node != null")
 
 private fun browserWebCrypto(): WebCrypto =
-    js("(window ? (window.crypto ? window.crypto : window.msCrypto) : self.crypto)").unsafeCast<WebCrypto>()
+    js("(window ? (window.crypto ? window.crypto : window.msCrypto) : self.crypto)")
 
 private fun nodeJsWebCrypto(): WebCrypto =
-    js("eval('require')('node:crypto').webcrypto").unsafeCast<WebCrypto>()
+    js("eval('require')('node:crypto').webcrypto")

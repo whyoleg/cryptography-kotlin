@@ -32,8 +32,14 @@ registerTestAggregationTask(
 )
 
 registerTestAggregationTask(
+    name = "wasmProviderTest",
+    taskDependencies = { tasks.withType<KotlinJsTest>().matching { it.compilation.platformType == KotlinPlatformType.wasm } },
+    targetFilter = { it.platformType == KotlinPlatformType.wasm }
+)
+
+registerTestAggregationTask(
     name = "jsProviderTest",
-    taskDependencies = { tasks.withType<KotlinJsTest>() },
+    taskDependencies = { tasks.withType<KotlinJsTest>().matching { it.compilation.platformType == KotlinPlatformType.js } },
     targetFilter = { it.platformType == KotlinPlatformType.js }
 )
 
