@@ -1,10 +1,10 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 import ckbuild.settings.*
 
-val kotlinVersionOverride = providers.gradleProperty("useKotlin").orNull?.takeIf(String::isNotBlank)
+val kotlinVersionOverride = providers.gradleProperty("ckbuild.kotlinVersionOverride").orNull?.takeIf(String::isNotBlank)
 
 if (kotlinVersionOverride != null) logger.lifecycle("Kotlin version override: $kotlinVersionOverride")
 

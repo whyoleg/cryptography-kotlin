@@ -61,5 +61,5 @@ jobs:
             build
             publishToMavenLocal
             --continue
-            -Pckbuild.skipTest=${{ inputs.skip-tests }}
-            -PuseKotlin=${{ inputs.kotlin-version }}
+            -Pckbuild.skipTests=${{ inputs.skip-tests }}
+            -Pckbuild.kotlinVersionOverride=${{ inputs.kotlin-version }}

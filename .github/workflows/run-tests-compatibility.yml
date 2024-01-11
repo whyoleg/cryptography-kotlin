@@ -51,7 +51,7 @@ jobs:
         if: ${{ matrix.target != 'connectedAndroid' }}
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: ${{ matrix.target }}ProviderTest -Pckbuild.providerTests.step=compatibility.generate -Ptesttool.instanceId=${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }} --continue
+          arguments: ${{ matrix.target }}ProviderTest -Pckbuild.providerTests.step=compatibility.generate -Pckbuild.testtool.instanceId=${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }} --continue
 
       - name: Run tests (android)
         if: ${{ matrix.target == 'connectedAndroid' }}
@@ -59,14 +59,14 @@ jobs:
         with:
           api-level: ${{ matrix.android-api-level }}
           test-reports-classifier: 'compatibility-generate'
-          arguments: ${{ matrix.target }}ProviderTest -Pckbuild.providerTests.step=compatibility.generate -Ptesttool.instanceId=${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }} --continue
+          arguments: ${{ matrix.target }}ProviderTest -Pckbuild.providerTests.step=compatibility.generate -Pckbuild.testtool.instanceId=${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }} --continue
 
       - name: Dump testtool server-storage
         uses: gradle/gradle-build-action@v2
         with:
           arguments: |
             dumpTesttoolServerStorage
-            -Ptesttool.instanceId=${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }}
+            -Pckbuild.testtool.instanceId=${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }}
       - name: Upload testtool server-storage dump
         uses: actions/upload-artifact@v3
         with:
@@ -129,7 +129,7 @@ jobs:
         if: ${{ matrix.target != 'connectedAndroid' }}
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: ${{ matrix.target }}ProviderTest -Pckbuild.providerTests.step=compatibility.validate -Ptesttool.instanceId=${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }} --continue
+          arguments: ${{ matrix.target }}ProviderTest -Pckbuild.providerTests.step=compatibility.validate -Pckbuild.testtool.instanceId=${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }} --continue
 
       - name: Run tests (android)
         if: ${{ matrix.target == 'connectedAndroid' }}
@@ -137,4 +137,4 @@ jobs:
         with:
           api-level: ${{ matrix.android-api-level }}
           test-reports-classifier: 'compatibility-validate'
-          arguments: ${{ matrix.target }}ProviderTest -Pckbuild.providerTests.step=compatibility.validate -Ptesttool.instanceId=${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }} --continue
+          arguments: ${{ matrix.target }}ProviderTest -Pckbuild.providerTests.step=compatibility.validate -Pckbuild.testtool.instanceId=${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }} --continue

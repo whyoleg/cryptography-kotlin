@@ -17,7 +17,7 @@ runs:
     - name: Build tests
       uses: gradle/gradle-build-action@v2
       with:
-        arguments: ${{ inputs.arguments }} -Pckbuild.skipTest=true
+        arguments: ${{ inputs.arguments }} -Pckbuild.skipTests=true
 
     - name: Run tests
       uses: reactivecircus/android-emulator-runner@v2

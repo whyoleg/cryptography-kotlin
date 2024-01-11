@@ -118,7 +118,7 @@ tasks.build {
     dependsOn(tasks.withType<KotlinNativeLink>())
 }
 
-if (providers.gradleProperty("ckbuild.skipTest").map(String::toBoolean).getOrElse(false)) {
+if (providers.gradleProperty("ckbuild.skipTests").map(String::toBoolean).getOrElse(false)) {
     tasks.matching { it is AbstractTestTask || it is AndroidTestTask }.configureEach { onlyIf { false } }
 }
 
