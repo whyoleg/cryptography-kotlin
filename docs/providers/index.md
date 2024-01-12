@@ -27,6 +27,8 @@ For additional limitation please consult provider specific documentation.
 |-----------------------------------------------------------------------------------------------|-----|-----------|-------|-----------------|
 | jvm                                                                                           | ✅   | ➖         | ➖     | ❌               |
 | js                                                                                            | ➖   | ✅         | ➖     | ❌               |
+| wasmJs                                                                                        | ➖   | ✅         | ➖     | ❌               |
+| wasmWasi                                                                                      | ➖   | ➖         | ➖     | ❌               |
 | iosX64<br/>iosSimulatorArm64<br/>iosArm64                                                     | ➖   | ➖         | ✅     | ✅ prebuilt only |
 | watchosX64<br/>watchosArm32<br/>watchosArm64<br/>watchosSimulatorArm64<br/>watchosDeviceArm64 | ➖   | ➖         | ✅     | ✅ prebuilt only |
 | tvosX64<br/>tvosArm64<br/>tvosSimulatorArm64                                                  | ➖   | ➖         | ✅     | ✅ prebuilt only |
