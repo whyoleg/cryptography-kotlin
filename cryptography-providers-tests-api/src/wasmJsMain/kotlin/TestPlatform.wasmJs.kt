@@ -4,6 +4,10 @@
 
 package dev.whyoleg.cryptography.providers.tests.api
 
+import kotlin.test.*
+
+actual typealias WasmIgnore = Ignore
+
 internal actual val currentTestPlatform: TestPlatform = jsPlatform().run {
     when {
         isNode -> TestPlatform.WasmJs.NodeJS(
@@ -23,7 +27,7 @@ internal actual val currentTestPlatform: TestPlatform = jsPlatform().run {
 // https://developer.mozilla.org/en-US/docs/Web/API/Navigator/platform
 //language=JavaScript
 private fun jsPlatform(): JsPlatform {
-    return js(
+    js(
         code = """
 
         var isNodeJs = typeof process !== 'undefined' && process.versions != null && process.versions.node != null
@@ -45,10 +49,10 @@ private fun jsPlatform(): JsPlatform {
         }
         
                """
-    ).unsafeCast<JsPlatform>()
+    )
 }
 
-private external interface JsPlatform {
+private external interface JsPlatform : JsAny {
     val isNode: Boolean
 
     // nodeJs

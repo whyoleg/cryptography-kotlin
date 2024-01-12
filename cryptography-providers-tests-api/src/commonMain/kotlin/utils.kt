@@ -58,3 +58,8 @@ fun digest(name: String): CryptographyAlgorithmId<Digest> = when (name) {
 }
 
 expect fun disableJsConsoleDebug()
+
+// Wasm tests on browser cannot be filtered: https://youtrack.jetbrains.com/issue/KT-58291
+@OptIn(ExperimentalMultiplatform::class)
+@OptionalExpectation
+expect annotation class WasmIgnore()

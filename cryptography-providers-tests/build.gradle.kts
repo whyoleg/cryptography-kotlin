@@ -17,6 +17,7 @@ kotlin {
     jvmTarget()
     jsTarget()
     nativeTargets()
+    wasmJsTarget()
 
     compilerOptions {
         optIn.addAll(

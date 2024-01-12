@@ -34,24 +34,47 @@ sealed class TestPlatform {
     ) : TestPlatform()
 
     @Serializable
-    sealed class JS : TestPlatform()
+    sealed class JS : TestPlatform() {
+        @Serializable
+        data class Browser(
+            val brand: String,
+            val platform: String,
+            val userAgent: String,
+        ) : JS()
+
+        @Serializable
+        data class NodeJS(
+            val version: String,
+            val os: String,
+            val arch: String,
+        ) : JS()
+    }
 
     @Serializable
-    data class Browser(
-        val brand: String,
-        val platform: String,
-        val userAgent: String,
-    ) : JS()
+    sealed class Wasm : TestPlatform()
 
     @Serializable
-    data class NodeJS(
-        val version: String,
-        val os: String,
-        val arch: String,
-    ) : JS()
+    data object WasmWasi : Wasm()
+
+    @Serializable
+    sealed class WasmJs : Wasm() {
+        @Serializable
+        data class Browser(
+            val brand: String,
+            val platform: String,
+            val userAgent: String,
+        ) : JS()
+
+        @Serializable
+        data class NodeJS(
+            val version: String,
+            val os: String,
+            val arch: String,
+        ) : JS()
+    }
 }
 
-val TestPlatform.isBrowser: Boolean get() = this is TestPlatform.Browser
+val TestPlatform.isBrowser: Boolean get() = this is TestPlatform.JS.Browser || this is TestPlatform.WasmJs.Browser
 val TestPlatform.isAndroid: Boolean get() = this is TestPlatform.Android
 inline fun TestPlatform.isAndroid(block: TestPlatform.Android.() -> Boolean): Boolean = this is TestPlatform.Android && block(this)
 

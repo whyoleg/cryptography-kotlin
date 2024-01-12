@@ -15,6 +15,7 @@ abstract class CompatibilityTest<A : CryptographyAlgorithm>(
     abstract suspend fun CompatibilityTestScope<A>.generate(isStressTest: Boolean)
     abstract suspend fun CompatibilityTestScope<A>.validate()
 
+    @WasmIgnore
     @Test
     fun generateStep() = testAlgorithm(algorithmId) {
         val logger = logger.child("GENERATE")
@@ -23,6 +24,7 @@ abstract class CompatibilityTest<A : CryptographyAlgorithm>(
         }
     }
 
+    @WasmIgnore
     @Test
     fun generateStressStep() = testAlgorithm(algorithmId) {
         val logger = logger.child("GENERATE")
@@ -31,6 +33,7 @@ abstract class CompatibilityTest<A : CryptographyAlgorithm>(
         }
     }
 
+    @WasmIgnore
     @Test
     fun validateStep() = testAlgorithm(algorithmId) {
         val logger = logger.child("VALIDATE")

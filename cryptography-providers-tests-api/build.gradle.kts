@@ -4,6 +4,7 @@
 
 import ckbuild.*
 import org.jetbrains.kotlin.gradle.*
+import org.jetbrains.kotlin.gradle.plugin.*
 
 plugins {
     id("ckbuild.multiplatform-base")
@@ -17,14 +18,12 @@ kotlin {
     jvmTarget()
     jsTarget()
     nativeTargets()
+    wasmJsTarget()
 
     applyDefaultHierarchyTemplate {
         common {
             group("nonJs") {
-                withJvm()
-                withWasm()
-                withNative()
-                withAndroidTarget()
+                withCompilations { it.platformType != KotlinPlatformType.js }
             }
         }
     }
@@ -36,6 +35,7 @@ kotlin {
 
             OptIns.ExperimentalEncodingApi,
         )
+        freeCompilerArgs.add("-Xexpect-actual-classes")
     }
 
     sourceSets {

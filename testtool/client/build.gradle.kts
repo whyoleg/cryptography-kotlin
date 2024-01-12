@@ -1,20 +1,28 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 import org.jetbrains.kotlin.gradle.*
+import org.jetbrains.kotlin.gradle.plugin.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.*
+import org.jetbrains.kotlin.gradle.targets.js.dsl.*
 import org.jetbrains.kotlin.konan.target.*
 
 plugins {
     alias(kotlinLibs.plugins.multiplatform)
 }
 
+@OptIn(ExperimentalWasmDsl::class)
 kotlin {
     jvmToolchain(8)
 
     jvm()
     js(IR) {
+        nodejs()
+        browser()
+    }
+    wasmJs {
+        // No support from KTOR
         nodejs()
         browser()
     }
@@ -46,33 +54,27 @@ kotlin {
     androidNativeArm64()
     androidNativeArm32()
 
+    val supportsKtor: (KotlinCompilation<*>).() -> Boolean = {
+        val konanTarget = (target as? KotlinNativeTarget)?.konanTarget
+        when {
+            konanTarget == KonanTarget.WATCHOS_DEVICE_ARM64 -> false
+            konanTarget?.family == Family.ANDROID           -> false
+            platformType == KotlinPlatformType.wasm         -> false
+            else                                            -> true
+        }
+    }
+
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     applyDefaultHierarchyTemplate {
         common {
             group("nonJvm") {
-                withJs()
-                withWasm()
-                withNative()
+                withCompilations { it.platformType != KotlinPlatformType.jvm }
             }
             group("ktor") {
-                withCompilations {
-                    val target = (it.target as? KotlinNativeTarget)?.konanTarget
-                    when {
-                        target == KonanTarget.WATCHOS_DEVICE_ARM64 -> false
-                        target?.family == Family.ANDROID           -> false
-                        else                                       -> true
-                    }
-                }
+                withCompilations(supportsKtor)
             }
             group("nonKtor") {
-                withCompilations {
-                    val target = (it.target as? KotlinNativeTarget)?.konanTarget
-                    when {
-                        target == KonanTarget.WATCHOS_DEVICE_ARM64 -> true
-                        target?.family == Family.ANDROID           -> true
-                        else                                       -> false
-                    }
-                }
+                withCompilations { !supportsKtor(it) }
             }
             group("cio") {
                 withCompilations {
