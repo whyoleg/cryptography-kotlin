@@ -9,12 +9,8 @@ import org.khronos.webgl.*
 internal actual fun defaultCryptographyRandom(): CryptographyRandom = WebCryptoCryptographyRandom
 
 private object WebCryptoCryptographyRandom : AbstractRandom() {
-    private const val maxArraySize = 65536
-    private val crypto: WebCrypto = when {
-        isNodeJs() -> nodeJsWebCrypto()
-        else       -> browserWebCrypto()
-    }
-
+    private const val MAX_ARRAY_SIZE = 65536
+    private val crypto: Crypto = getCrypto()
     override fun fillBytes(array: ByteArray) {
         val size = array.size
         val jsArray = Int8Array(size)
@@ -24,12 +20,12 @@ private object WebCryptoCryptographyRandom : AbstractRandom() {
 
     private fun fillBytes(jsArray: Int8Array) {
         val size = jsArray.length
-        if (size <= maxArraySize) {
+        if (size <= MAX_ARRAY_SIZE) {
             crypto.getRandomValues(jsArray)
         } else {
             var filled = 0
             do {
-                val chunkSize = minOf(maxArraySize, size - filled)
+                val chunkSize = minOf(MAX_ARRAY_SIZE, size - filled)
                 crypto.getRandomValues(jsArray.subarray(filled, filled + chunkSize))
                 filled += chunkSize
             } while (filled < size)
@@ -37,15 +33,22 @@ private object WebCryptoCryptographyRandom : AbstractRandom() {
     }
 }
 
-private external interface WebCrypto : JsAny {
+private external interface Crypto : JsAny {
     fun getRandomValues(array: Int8Array)
 }
 
-private fun isNodeJs(): Boolean =
-    js("typeof process !== 'undefined' && process.versions != null && process.versions.node != null")
-
-private fun browserWebCrypto(): WebCrypto =
-    js("(window ? (window.crypto ? window.crypto : window.msCrypto) : self.crypto)")
-
-private fun nodeJsWebCrypto(): WebCrypto =
-    js("eval('require')('node:crypto').webcrypto")
+//language=JavaScript
+private fun getCrypto(): Crypto {
+    js(
+        code = """
+    
+        var isNodeJs = typeof process !== 'undefined' && process.versions != null && process.versions.node != null
+        if (isNodeJs) {
+            return (eval('require')('node:crypto').webcrypto);
+        } else {
+            return (window ? (window.crypto ? window.crypto : window.msCrypto) : self.crypto);
+        }
+    
+               """
+    )
+}
