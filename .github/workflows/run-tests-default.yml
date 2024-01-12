@@ -44,10 +44,16 @@ jobs:
           install: mingw-w64-x86_64-openssl
 
       - name: Run tests
-        if: ${{ matrix.target != 'connectedAndroid' }}
+        if: ${{ matrix.target != 'connectedAndroid' && matrix.target != 'wasm' }}
         uses: gradle/gradle-build-action@v2
         with:
           arguments: ${{ matrix.target }}Test --continue
+
+      - name: Run tests (wasm)
+        if: ${{ matrix.target == 'wasm' }}
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: ${{ matrix.target }}Test --continue --no-configuration-cache
 
       - name: Run tests (android)
         if: ${{ matrix.target == 'connectedAndroid' }}
