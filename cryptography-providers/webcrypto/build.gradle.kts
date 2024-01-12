@@ -15,12 +15,14 @@ description = "cryptography-kotlin WebCrypto provider"
 @OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
     jsTarget()
+    wasmJsTarget()
 
     compilerOptions {
         optIn.addAll(
             OptIns.InsecureAlgorithm,
             OptIns.CryptographyProviderApi,
         )
+        freeCompilerArgs.add("-Xexpect-actual-classes")
     }
 
     sourceSets.commonMain.dependencies {
