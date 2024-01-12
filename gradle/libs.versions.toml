@@ -21,7 +21,7 @@ apache-commons-compress = "1.25.0"
 # test dependencies
 
 kotlinx-serialization = "1.6.2"
-kotlinx-coroutines = "1.7.3"
+kotlinx-coroutines = "1.8.0-RC2"
 
 bouncycastle = "1.77"
 
