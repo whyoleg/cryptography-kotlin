@@ -26,13 +26,13 @@ jobs:
             target: 'tvos'
           - os: 'windows-latest'
             target: 'native'
-          - os: 'macos-latest'
+          - os: 'ubuntu-latest'
             target: 'connectedAndroid'
             android-api-level: 21
-          - os: 'macos-latest'
+          - os: 'ubuntu-latest'
             target: 'connectedAndroid'
             android-api-level: 27
-          - os: 'macos-latest'
+          - os: 'ubuntu-latest'
             target: 'connectedAndroid'
             android-api-level: 33
     steps:
@@ -93,13 +93,13 @@ jobs:
             target: 'tvos'
           - os: 'windows-latest'
             target: 'native'
-          - os: 'macos-latest'
+          - os: 'ubuntu-latest'
             target: 'connectedAndroid'
             android-api-level: 21
-          - os: 'macos-latest'
+          - os: 'ubuntu-latest'
             target: 'connectedAndroid'
             android-api-level: 27
-          - os: 'macos-latest'
+          - os: 'ubuntu-latest'
             target: 'connectedAndroid'
             android-api-level: 33
     steps:
