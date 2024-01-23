@@ -12,9 +12,9 @@ kotlinx-kover = "0.7.5"
 android = "8.2.1"
 
 gradle-enterprise = "3.16.1"
-gradle-foojay = "0.7.0"
+gradle-foojay = "0.8.0"
 
-buildconfig = "5.3.3"
+buildconfig = "5.3.5"
 
 apache-commons-compress = "1.25.0"
 
