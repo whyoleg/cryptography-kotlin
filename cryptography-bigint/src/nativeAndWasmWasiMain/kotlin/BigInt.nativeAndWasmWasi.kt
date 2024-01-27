@@ -6,6 +6,14 @@ package dev.whyoleg.cryptography.bigint
 
 import kotlin.math.*
 
+// In some operations, we are working with IntArray (instead of UIntArray) and then convert to UIntArray because it's significantly faster
+// f.e String.toBigInt(), BigInt.toString(), ByteArray.decodeToBigInt(), BigInt.encodeToByteArray()
+// Speed up for some operations:
+// - wasmWasi - 2x
+// - native(macos) debug - 8x
+// - native(macos) release - 1.5x
+// We are still using `UIntArray` as backing storage as it's much easier to work with it in other operations.
+// This is a balance between complexity and performance
 @OptIn(ExperimentalUnsignedTypes::class)
 public actual class BigInt internal constructor(
     public actual val sign: Int,
@@ -67,13 +75,13 @@ public actual class BigInt internal constructor(
 
         val chunks = ArrayDeque<String>()
 
-        var magnitude = this.magnitude.copyOf()
+        var magnitude = this.magnitude.toIntArray()
         while (true) {
-            var rem = 0UL
+            var rem = 0L
             repeat(magnitude.size) { index ->
-                val value = (rem shl 32) + magnitude[index]
+                val value = (rem shl 32) + (magnitude[index].toLong() and 0xffffffffL)
                 // replace value in place
-                magnitude[index] = (value / CHUNK_MULTIPLIER).toUInt()
+                magnitude[index] = (value / CHUNK_MULTIPLIER).toInt()
                 rem = value % CHUNK_MULTIPLIER
             }
             magnitude = magnitude.removeLeadingZeros()
@@ -160,33 +168,50 @@ public actual fun ULong.toBigInt(): BigInt = when (this) {
 public actual fun String.toBigInt(): BigInt {
 
     // returns carry
-    fun UIntArray.multiplyAndAdd(index: Int, multiplier: ULong, addition: ULong): ULong {
-        val sum = multiplier * this[index] + addition
-        this[index] = sum.toUInt()
-        return sum shr 32
+    fun IntArray.multiplyAndAdd(index: Int, multiplier: Long, addition: Long): Long {
+        val sum = multiplier * (this[index].toLong() and 0xffffffffL) + addition
+        this[index] = sum.toInt()
+        return sum ushr 32
     }
 
-    fun UIntArray.multiplyAndAdd(chunk: ULong) {
-        var carry = 0UL
+    fun IntArray.multiplyAndAdd(chunk: Int) {
+        var carry = 0L
 
-        repeat(size) { i -> carry = multiplyAndAdd(size - 1 - i, CHUNK_MULTIPLIER, carry) }
+        var i = size - 1
+        while (i >= 0) carry = multiplyAndAdd(i--, CHUNK_MULTIPLIER, carry)
 
-        check(carry == 0UL) { "carry.1=$carry" }
+        check(carry == 0L) { "carry.1=$carry" }
 
-        carry = multiplyAndAdd(size - 1, 1UL, chunk)
+        carry = multiplyAndAdd(size - 1, 1L, chunk.toLong())
 
-        repeat(size - 1) { i -> carry = multiplyAndAdd(size - 2 - i, 1UL, carry) }
+        i = size - 2
+        while (i >= 0) carry = multiplyAndAdd(i--, 1L, carry)
 
-        check(carry == 0UL) { "carry.2=$carry" }
+        check(carry == 0L) { "carry.2=$carry" }
     }
 
     require(isNotEmpty()) { "String is empty" }
 
-    val sign = if (this[0] == '-') -1 else 1
-    var stringIndex = when (this[0]) {
-        '-'  -> 1
-        '+'  -> 1
-        else -> 0
+    val indexOfMinus = lastIndexOf('-')
+    val indexOfPlus = lastIndexOf('+')
+
+    var stringIndex: Int
+    val sign: Int
+    when {
+        indexOfMinus >= 0 -> {
+            check(indexOfMinus == 0 && indexOfPlus < 0) { "embedded sign" }
+            stringIndex = 1
+            sign = -1
+        }
+        indexOfPlus >= 0  -> {
+            check(indexOfPlus == 0) { "embedded sign" }
+            stringIndex = 1
+            sign = 1
+        }
+        else              -> {
+            stringIndex = 0
+            sign = 1
+        }
     }
 
     require(stringIndex != length) { "String contains only `sign`" }
@@ -202,16 +227,16 @@ public actual fun String.toBigInt(): BigInt {
         else -> value
     }
 
-    val magnitude = UIntArray(numberOfDigits / CHUNK_SIZE + 1)
-    magnitude[magnitude.size - 1] = substring(stringIndex, stringIndex + firstChunkSize).toUInt()
+    val magnitude = IntArray(numberOfDigits / CHUNK_SIZE + 1)
+    magnitude[magnitude.size - 1] = substring(stringIndex, stringIndex + firstChunkSize).toInt()
     stringIndex += firstChunkSize
     while (stringIndex != length) {
-        magnitude.multiplyAndAdd(substring(stringIndex, stringIndex + CHUNK_SIZE).toULong())
+        magnitude.multiplyAndAdd(substring(stringIndex, stringIndex + CHUNK_SIZE).toInt())
         stringIndex += CHUNK_SIZE
     }
     val result = magnitude.removeLeadingZeros()
     if (result.isEmpty()) return BigInt.ZERO
-    return BigInt(sign, result)
+    return BigInt(sign, result.asUIntArray())
 }
 
 public actual fun String.toBigIntOrNull(): BigInt? = try {
@@ -228,31 +253,27 @@ public actual fun ByteArray.decodeToBigInt(): BigInt {
     val sign = if (this[0] < 0) -1 else 1
     // not used when sign < 0
     val bytes = copyOf().invertTwoComplementIfNeeded(sign)
-    val magnitude = UIntArray(size / 4 + 1)
+    val magnitude = IntArray(size / 4 + 1)
 
     repeat(bytes.size) {
         val byteIndex = bytes.size - 1 - it
         val intIndex = magnitude.size - 1 - it / 4
         val shiftedByte = bytes[byteIndex].toUInt() and 0xFFU shl (it % 4) * 8
-        magnitude[intIndex] += shiftedByte
+        magnitude[intIndex] += shiftedByte.toInt()
     }
 
     val result = magnitude.removeLeadingZeros()
     if (result.isEmpty()) return BigInt.ZERO
-    return BigInt(sign, result)
+    return BigInt(sign, result.asUIntArray())
 }
 
-// TODO - rewrite
 @OptIn(ExperimentalUnsignedTypes::class)
 public actual fun BigInt.encodeToByteArray(): ByteArray {
-    inline fun ByteArray.uint(byteCount: Int, byteOffset: Int, value: UInt) {
-        repeat(byteCount) { this[byteOffset + it] = (value shr (byteCount - 1 - it) * 8).toByte() }
-    }
-
     if (sign == 0) return byteArrayOf(0)
 
+    val magnitude = magnitude.asIntArray()
     val bytes = ByteArray(magnitude.size * 4 - (magnitude[0].countLeadingZeroBits() / 8)).also { bytes ->
-        var currentInt = 0U
+        var currentInt = 0
         repeat(bytes.size) {
             val byteIndex = bytes.size - 1 - it
             val byteInIntIndex = it % 4
@@ -260,7 +281,7 @@ public actual fun BigInt.encodeToByteArray(): ByteArray {
                 val intIndex = magnitude.size - 1 - it / 4
                 currentInt = magnitude[intIndex]
             }
-            val currentByte = (currentInt shr (byteInIntIndex) * 8).toByte()
+            val currentByte = (currentInt ushr (byteInIntIndex) * 8).toByte()
             bytes[byteIndex] = currentByte
         }
     }.invertTwoComplementIfNeeded(sign)
@@ -276,11 +297,9 @@ public actual fun BigInt.encodeToByteArray(): ByteArray {
     }
 }
 
-// inline
-@OptIn(ExperimentalUnsignedTypes::class)
-private fun UIntArray.removeLeadingZeros(): UIntArray {
-    return when (val index = indexOfFirst { it != 0U }) {
-        -1   -> EmptyUIntArray
+private fun IntArray.removeLeadingZeros(): IntArray {
+    return when (val index = indexOfFirst { it != 0 }) {
+        -1   -> EmptyIntArray
         0    -> this
         else -> copyOfRange(index, size)
     }
@@ -290,10 +309,9 @@ private fun UIntArray.removeLeadingZeros(): UIntArray {
 private const val CHUNK_SIZE: Int = 9
 
 // 9 zeros
-private const val CHUNK_MULTIPLIER: ULong = 1_000_000_000UL
+private const val CHUNK_MULTIPLIER: Long = 1_000_000_000L
 
-@OptIn(ExperimentalUnsignedTypes::class)
-private val EmptyUIntArray: UIntArray = uintArrayOf()
+private val EmptyIntArray: IntArray = intArrayOf()
 
 // works in place
 private fun ByteArray.invertTwoComplementIfNeeded(sign: Int): ByteArray {
