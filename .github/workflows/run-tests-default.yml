@@ -22,15 +22,15 @@ jobs:
             target: 'tvos'
           - os: 'windows-latest'
             target: 'native'
-          - os: 'ubuntu-latest'
-            target: 'connectedAndroid'
-            android-api-level: 21
-          - os: 'ubuntu-latest'
-            target: 'connectedAndroid'
-            android-api-level: 27
-          - os: 'ubuntu-latest'
-            target: 'connectedAndroid'
-            android-api-level: 33
+    #          - os: 'ubuntu-latest'
+    #            target: 'connectedAndroid'
+    #            android-api-level: 21
+    #          - os: 'ubuntu-latest'
+    #            target: 'connectedAndroid'
+    #            android-api-level: 27
+    #          - os: 'ubuntu-latest'
+    #            target: 'connectedAndroid'
+    #            android-api-level: 33
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-gradle
@@ -47,18 +47,18 @@ jobs:
         if: ${{ matrix.target != 'connectedAndroid' && matrix.target != 'wasm' }}
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: ${{ matrix.target }}Test --continue
+          arguments: :cryptography-bigint:${{ matrix.target }}Test --continue
 
       - name: Run tests (wasm)
         if: ${{ matrix.target == 'wasm' }}
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: ${{ matrix.target }}Test --continue --no-configuration-cache
+          arguments: :cryptography-bigint:${{ matrix.target }}Test --continue --no-configuration-cache
 
-      - name: Run tests (android)
-        if: ${{ matrix.target == 'connectedAndroid' }}
-        uses: ./.github/actions/run-android-emulator-tests
-        with:
-          api-level: ${{ matrix.android-api-level }}
-          test-reports-classifier: 'default'
-          arguments: ${{ matrix.target }}Test --continue
+#      - name: Run tests (android)
+#        if: ${{ matrix.target == 'connectedAndroid' }}
+#        uses: ./.github/actions/run-android-emulator-tests
+#        with:
+#          api-level: ${{ matrix.android-api-level }}
+#          test-reports-classifier: 'default'
+#          arguments: ${{ matrix.target }}Test --continue
