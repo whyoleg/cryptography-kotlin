@@ -32,6 +32,7 @@ projects {
     module("cryptography-version-catalog")
 
     // core util modules
+    module("cryptography-bigint")
     module("cryptography-random")
 
     // providers API, high-level API

@@ -1,0 +1,55 @@
+public final class dev/whyoleg/cryptography/bigint/BigInt : java/lang/Number, java/lang/Comparable {
+	public static final field Companion Ldev/whyoleg/cryptography/bigint/BigInt$Companion;
+	public final fun byteValue ()B
+	public final fun compareTo (B)I
+	public final fun compareTo (I)I
+	public final fun compareTo (J)I
+	public fun compareTo (Ldev/whyoleg/cryptography/bigint/BigInt;)I
+	public synthetic fun compareTo (Ljava/lang/Object;)I
+	public final fun compareTo (S)I
+	public final fun doubleValue ()D
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun floatValue ()F
+	public final fun getSign ()I
+	public fun hashCode ()I
+	public final fun intValue ()I
+	public final fun longValue ()J
+	public final fun shortValue ()S
+	public fun toByte ()B
+	public fun toDouble ()D
+	public fun toFloat ()F
+	public fun toInt ()I
+	public fun toLong ()J
+	public fun toShort ()S
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/whyoleg/cryptography/bigint/BigInt$Companion {
+	public final fun getZERO ()Ldev/whyoleg/cryptography/bigint/BigInt;
+}
+
+public final class dev/whyoleg/cryptography/bigint/BigIntKt {
+	public static final fun decodeToBigInt ([B)Ldev/whyoleg/cryptography/bigint/BigInt;
+	public static final fun encodeToByteArray (Ldev/whyoleg/cryptography/bigint/BigInt;)[B
+	public static final fun hexToBigInt (Ljava/lang/String;Lkotlin/text/HexFormat;)Ldev/whyoleg/cryptography/bigint/BigInt;
+	public static synthetic fun hexToBigInt$default (Ljava/lang/String;Lkotlin/text/HexFormat;ILjava/lang/Object;)Ldev/whyoleg/cryptography/bigint/BigInt;
+	public static final fun toBigInt (B)Ldev/whyoleg/cryptography/bigint/BigInt;
+	public static final fun toBigInt (I)Ldev/whyoleg/cryptography/bigint/BigInt;
+	public static final fun toBigInt (J)Ldev/whyoleg/cryptography/bigint/BigInt;
+	public static final fun toBigInt (Ljava/lang/String;)Ldev/whyoleg/cryptography/bigint/BigInt;
+	public static final fun toBigInt (S)Ldev/whyoleg/cryptography/bigint/BigInt;
+	public static final fun toBigInt-7apg3OU (B)Ldev/whyoleg/cryptography/bigint/BigInt;
+	public static final fun toBigInt-VKZWuLQ (J)Ldev/whyoleg/cryptography/bigint/BigInt;
+	public static final fun toBigInt-WZ4Q5Ns (I)Ldev/whyoleg/cryptography/bigint/BigInt;
+	public static final fun toBigInt-xj2QHRw (S)Ldev/whyoleg/cryptography/bigint/BigInt;
+	public static final fun toBigIntOrNull (Ljava/lang/String;)Ldev/whyoleg/cryptography/bigint/BigInt;
+	public static final fun toHexString (Ldev/whyoleg/cryptography/bigint/BigInt;Lkotlin/text/HexFormat;)Ljava/lang/String;
+	public static synthetic fun toHexString$default (Ldev/whyoleg/cryptography/bigint/BigInt;Lkotlin/text/HexFormat;ILjava/lang/Object;)Ljava/lang/String;
+	public static final fun toJavaBigInteger (Ldev/whyoleg/cryptography/bigint/BigInt;)Ljava/math/BigInteger;
+	public static final fun toKotlinBigInt (Ljava/math/BigInteger;)Ldev/whyoleg/cryptography/bigint/BigInt;
+	public static final fun toUByte (Ldev/whyoleg/cryptography/bigint/BigInt;)B
+	public static final fun toUInt (Ldev/whyoleg/cryptography/bigint/BigInt;)I
+	public static final fun toULong (Ldev/whyoleg/cryptography/bigint/BigInt;)J
+	public static final fun toUShort (Ldev/whyoleg/cryptography/bigint/BigInt;)S
+}
+

@@ -26,11 +26,3 @@ public interface ParameterizedDecryptor<P, B> {
 ## default openssl provider parameters
 
 - https://www.openssl.org/docs/man3.0/man7/OSSL_PROVIDER-default.html
-
-## WASM testing
-
-repository: https://maven.pkg.jetbrains.space/kotlin/p/wasm/experimental
-kotlin-version = "1.9.0"
-coroutines-version = "1.7.2-wasm0"
-atomicfu-version = "0.21.0-wasm0"
-serialization-version = "1.5.2-wasm0"
