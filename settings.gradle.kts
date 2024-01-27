@@ -26,52 +26,57 @@ dependencyResolutionManagement {
 
 rootProject.name = "cryptography-kotlin"
 
-// support modules
+projects {
+    // build-tools modules
+    module("cryptography-bom")
+    module("cryptography-version-catalog")
 
-include("cryptography-bom")
-include("cryptography-version-catalog")
+    // core util modules
+    module("cryptography-random")
 
-// core modules
+    // providers API, high-level API
+    module("cryptography-core")
 
-include("cryptography-random")
-include("cryptography-core")
-
-// providers
-
-includeProvider("jdk", submodules = listOf("android-tests"))
-includeProvider("apple")
-includeProvider("webcrypto")
-includeProvider(
-    name = "openssl3",
-    includeSelf = false,
-    submodules = listOf("api", "shared", "prebuilt", "test")
-)
-
-// providers tests
-
-include("cryptography-providers-tests-api")
-include("cryptography-providers-tests")
-
-// utils
-
-fun includeProvider(
-    name: String,
-    includeSelf: Boolean = true,
-    submodules: List<String> = emptyList(),
-) {
-    if (includeSelf) includeWithPath(
-        name = "cryptography-provider-$name",
-        path = "cryptography-providers/$name"
-    )
-    submodules.forEach { submodule ->
-        includeWithPath(
-            "cryptography-provider-$name-$submodule",
-            "cryptography-providers/$name/$submodule"
-        )
+    // providers
+    folder("cryptography-providers", prefix = "cryptography-provider") {
+        module("jdk") {
+            module("android-tests")
+        }
+        module("apple")
+        module("webcrypto")
+        folder("openssl3") {
+            module("api")
+            module("shared")
+            module("prebuilt")
+            module("test")
+        }
     }
+
+    // providers tests
+    module("cryptography-providers-tests-api")
+    module("cryptography-providers-tests")
 }
 
-fun includeWithPath(name: String, path: String) {
-    include(name)
-    project(":$name").projectDir = file(path)
+fun projects(block: ProjectsScope.() -> Unit) {
+    ProjectsScope(emptyList(), emptyList()).apply(block)
+}
+
+class ProjectsScope(private val pathParts: List<String>, private val prefixParts: List<String>) {
+
+    fun module(name: String) {
+        val moduleName = (prefixParts + name).joinToString("-")
+        val modulePath = (pathParts + name).joinToString("/")
+
+        include(moduleName)
+        project(":$moduleName").projectDir = file(modulePath)
+    }
+
+    fun module(name: String, prefix: String = name, nested: ProjectsScope.() -> Unit = {}) {
+        module(name)
+        folder(name, prefix, nested)
+    }
+
+    fun folder(name: String, prefix: String = name, block: ProjectsScope.() -> Unit) {
+        ProjectsScope(pathParts + name, prefixParts + prefix).apply(block)
+    }
 }
