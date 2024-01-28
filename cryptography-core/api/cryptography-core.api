@@ -163,8 +163,8 @@ public final class dev/whyoleg/cryptography/algorithms/asymmetric/ECDSA$Signatur
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/RSA : dev/whyoleg/cryptography/CryptographyAlgorithm {
-	public abstract fun keyPairGenerator-imL9hLU (ILdev/whyoleg/cryptography/CryptographyAlgorithmId;Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicExponent;)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
-	public static synthetic fun keyPairGenerator-imL9hLU$default (Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA;ILdev/whyoleg/cryptography/CryptographyAlgorithmId;Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicExponent;ILjava/lang/Object;)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
+	public abstract fun keyPairGenerator-imL9hLU (ILdev/whyoleg/cryptography/CryptographyAlgorithmId;Ldev/whyoleg/cryptography/bigint/BigInt;)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
+	public static synthetic fun keyPairGenerator-imL9hLU$default (Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA;ILdev/whyoleg/cryptography/CryptographyAlgorithmId;Ldev/whyoleg/cryptography/bigint/BigInt;ILjava/lang/Object;)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
 	public abstract fun privateKeyDecoder (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;)Ldev/whyoleg/cryptography/materials/key/KeyDecoder;
 	public abstract fun publicKeyDecoder (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;)Ldev/whyoleg/cryptography/materials/key/KeyDecoder;
 }
@@ -246,33 +246,6 @@ public final class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PrivateKey
 	public synthetic fun getName ()Ljava/lang/String;
 	public static fun valueOf (Ljava/lang/String;)Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PrivateKey$Format;
 	public static fun values ()[Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PrivateKey$Format;
-}
-
-public abstract class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicExponent {
-	public static final field Companion Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicExponent$Companion;
-}
-
-public final class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicExponent$Bytes : dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicExponent {
-	public final fun getValue ()[B
-}
-
-public final class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicExponent$Companion {
-	public final fun invoke (I)Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicExponent;
-	public final fun invoke (J)Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicExponent;
-	public final fun invoke (Ljava/lang/String;)Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicExponent;
-	public final fun invoke ([B)Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicExponent;
-}
-
-public final class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicExponent$F4 : dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicExponent {
-	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicExponent$F4;
-}
-
-public final class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicExponent$Number : dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicExponent {
-	public final fun getValue ()J
-}
-
-public final class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicExponent$Text : dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicExponent {
-	public final fun getValue ()Ljava/lang/String;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicKey : dev/whyoleg/cryptography/materials/key/EncodableKey {

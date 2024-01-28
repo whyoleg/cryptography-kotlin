@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.jdk.algorithms
@@ -7,12 +7,11 @@ package dev.whyoleg.cryptography.providers.jdk.algorithms
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.algorithms.digest.*
-
-import dev.whyoleg.cryptography.providers.jdk.*
-import dev.whyoleg.cryptography.providers.jdk.materials.*
+import dev.whyoleg.cryptography.bigint.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.cipher.*
-import java.math.*
+import dev.whyoleg.cryptography.providers.jdk.*
+import dev.whyoleg.cryptography.providers.jdk.materials.*
 import java.security.spec.*
 import javax.crypto.spec.*
 
@@ -29,16 +28,11 @@ internal class JdkRsaOaep(
     override fun keyPairGenerator(
         keySize: BinarySize,
         digest: CryptographyAlgorithmId<Digest>,
-        publicExponent: RSA.PublicExponent,
+        publicExponent: BigInt,
     ): KeyGenerator<RSA.OAEP.KeyPair> {
         val rsaParameters = RSAKeyGenParameterSpec(
             keySize.inBits,
-            when (publicExponent) {
-                RSA.PublicExponent.F4        -> RSAKeyGenParameterSpec.F4
-                is RSA.PublicExponent.Bytes  -> BigInteger(publicExponent.value)
-                is RSA.PublicExponent.Number -> publicExponent.value.toBigInteger()
-                is RSA.PublicExponent.Text   -> BigInteger(publicExponent.value)
-            }
+            publicExponent.toJavaBigInteger(),
         )
         return RsaOaepKeyPairGenerator(state, rsaParameters, digest.rsaHashAlgorithmName())
     }

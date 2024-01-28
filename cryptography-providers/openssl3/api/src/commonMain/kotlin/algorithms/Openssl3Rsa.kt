@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
@@ -7,6 +7,7 @@ package dev.whyoleg.cryptography.providers.openssl3.algorithms
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.RSA
 import dev.whyoleg.cryptography.algorithms.digest.*
+import dev.whyoleg.cryptography.bigint.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
@@ -63,16 +64,11 @@ internal abstract class Openssl3Rsa<PublicK : RSA.PublicKey, PrivateK : RSA.Priv
     final override fun keyPairGenerator(
         keySize: BinarySize,
         digest: CryptographyAlgorithmId<Digest>,
-        publicExponent: RSA.PublicExponent,
+        publicExponent: BigInt,
     ): KeyGenerator<KP> = RsaKeyGenerator(
         keySizeBits = keySize.inBits.toUInt(),
         hashAlgorithm = hashAlgorithm(digest),
-        publicExponent = when (publicExponent) {
-            RSA.PublicExponent.F4        -> 65537U
-            is RSA.PublicExponent.Number -> publicExponent.value.toUInt()
-            is RSA.PublicExponent.Text   -> publicExponent.value.toUInt()
-            is RSA.PublicExponent.Bytes  -> throw IllegalArgumentException("OpenSSL3 provider doesn't support PublicExponent.Bytes for now")
-        }
+        publicExponent = publicExponent.toUInt(),
     )
 
     private inner class RsaKeyGenerator(

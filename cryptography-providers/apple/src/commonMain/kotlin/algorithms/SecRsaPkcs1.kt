@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.apple.algorithms
@@ -7,6 +7,7 @@ package dev.whyoleg.cryptography.providers.apple.algorithms
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.algorithms.digest.*
+import dev.whyoleg.cryptography.bigint.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.signature.*
 import dev.whyoleg.cryptography.providers.apple.internal.*
@@ -27,9 +28,9 @@ internal object SecRsaPkcs1 : RSA.PKCS1 {
     override fun keyPairGenerator(
         keySize: BinarySize,
         digest: CryptographyAlgorithmId<Digest>,
-        publicExponent: RSA.PublicExponent,
+        publicExponent: BigInt,
     ): KeyGenerator<RSA.PKCS1.KeyPair> {
-        check(publicExponent == RSA.PublicExponent.F4) { "Only F4 public exponent is supported" }
+        check(publicExponent == 65537.toBigInt()) { "Only F4 public exponent is supported" }
 
         return RsaPkcs1KeyPairGenerator(keySize.inBits, digest.rsaPkcs1SecKeyAlgorithm())
     }

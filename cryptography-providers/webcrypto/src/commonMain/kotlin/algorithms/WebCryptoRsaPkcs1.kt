@@ -7,6 +7,7 @@ package dev.whyoleg.cryptography.providers.webcrypto.algorithms
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.algorithms.digest.*
+import dev.whyoleg.cryptography.bigint.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.signature.*
 import dev.whyoleg.cryptography.providers.webcrypto.internal.*
@@ -72,18 +73,13 @@ internal object WebCryptoRsaPkcs1 : RSA.PKCS1 {
     override fun keyPairGenerator(
         keySize: BinarySize,
         digest: CryptographyAlgorithmId<Digest>,
-        publicExponent: RSA.PublicExponent,
+        publicExponent: BigInt,
     ): KeyGenerator<RSA.PKCS1.KeyPair> = WebCryptoAsymmetricKeyGenerator(
         algorithm = RsaKeyGenerationAlgorithm(
             name = "RSASSA-PKCS1-v1_5",
             modulusLength = keySize.inBits,
-            publicExponent = when (publicExponent) {
-                RSA.PublicExponent.F4                                    -> byteArrayOf(0x01, 0x00, 0x01)
-                is RSA.PublicExponent.Bytes                              -> publicExponent.value
-                is RSA.PublicExponent.Number, is RSA.PublicExponent.Text ->
-                    throw IllegalArgumentException("WebCrypto supports only F4 or Bytes public exponent")
-            },
-            digest.hashAlgorithmName()
+            publicExponent = publicExponent.encodeToByteArray(),
+            hash = digest.hashAlgorithmName()
         ),
         keyUsages = arrayOf("sign", "verify"),
         keyPairWrapper = keyPairWrapper
