@@ -34,6 +34,9 @@ projects {
     // core util modules
     module("cryptography-bigint")
     module("cryptography-random")
+    folder("cryptography-serialization") {
+        module("pem")
+    }
 
     // providers API, high-level API
     module("cryptography-core")

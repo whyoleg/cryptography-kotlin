@@ -8,6 +8,7 @@ val artifacts
     get() = listOf(
         "cryptography-bigint",
         "cryptography-random",
+        "cryptography-serialization-pem",
         "cryptography-core",
         "cryptography-provider-jdk",
         "cryptography-provider-apple",
