@@ -27,6 +27,7 @@ kotlin {
 
     sourceSets.commonMain.dependencies {
         api(projects.cryptographyCore)
+        implementation(projects.cryptographySerializationPem)
     }
 }
 

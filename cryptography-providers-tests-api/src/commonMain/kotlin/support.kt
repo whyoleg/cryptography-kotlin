@@ -28,10 +28,6 @@ fun AlgorithmTestScope<*>.supportsKeyFormat(format: KeyFormat): Boolean = suppor
     when {
         // only WebCrypto supports JWK for now
         format.name == "JWK" && !provider.isWebCrypto    -> "JWK"
-        // drop this after migrating to kotlin Base64
-        format.name == "PEM" &&
-                provider.isJdk &&
-                platform.isAndroid { apiLevel == 21 }    -> "PEM on Android without Base64"
         // Apple provider doesn't have this formats out-of-the-box
         format.name in setOf("PEM", "DER", "JWK") &&
                 provider.isApple                         -> "$format in Apple provider"

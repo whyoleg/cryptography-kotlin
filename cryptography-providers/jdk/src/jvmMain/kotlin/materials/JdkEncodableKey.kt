@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.jdk.materials
 
-
-import dev.whyoleg.cryptography.providers.jdk.*
 import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.providers.jdk.*
+import dev.whyoleg.cryptography.serialization.pem.*
 
 internal open class JdkEncodableKey<KF : KeyFormat>(
     private val key: JKey,
@@ -23,12 +23,12 @@ internal open class JdkEncodableKey<KF : KeyFormat>(
             key.encoded
         }
         "PEM" -> {
-            val type = when (key.format) {
-                "PKCS#8" -> "PRIVATE KEY"
-                "X.509"  -> "PUBLIC KEY"
+            val label = when (key.format) {
+                "PKCS#8" -> PemLabel.PrivateKey
+                "X.509"  -> PemLabel.PublicKey
                 else     -> error("Wrong JDK Key format, expected `PKCS#8` or `X.509 got `${key.format}`")
             }
-            key.encoded.encodeToPem(type)
+            PEM.encodeToByteArray(PemContent(label, key.encoded))
         }
         else  -> error("$format is not supported")
     }

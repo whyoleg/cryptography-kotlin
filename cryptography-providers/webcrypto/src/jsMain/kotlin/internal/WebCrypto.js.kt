@@ -36,36 +36,14 @@ internal actual object WebCrypto {
         extractable: Boolean,
         keyUsages: Array<String>,
     ): CryptoKey {
-        val fixedFormat = format.substringAfterLast("-")
-        val key = when {
-            format == "jwk"          -> JSON.parse<Any>(keyData.decodeToString())
-            format.startsWith("pem") -> keyData.decodeFromPem(
-                type = when (fixedFormat) {
-                    "pkcs8" -> "PRIVATE KEY"
-                    "spki"  -> "PUBLIC KEY"
-                    else    -> error("Unsupported format: $fixedFormat")
-                }
-            )
-            else                     -> keyData
+        return decodeKey(format, keyData, json = { JSON.parse<Any>(it) }, binary = { it }) { fixedFormat, key ->
+            subtle.importKey(fixedFormat, key, algorithm, extractable, keyUsages).await()
         }
-
-        return subtle.importKey(fixedFormat, key, algorithm, extractable, keyUsages).await()
     }
 
     actual suspend fun exportKey(format: String, key: CryptoKey): ByteArray {
-        val fixedFormat = format.substringAfterLast("-")
-        val keyData = subtle.exportKey(fixedFormat, key).await()
-
-        return when {
-            format == "jwk"          -> JSON.stringify(keyData).encodeToByteArray()
-            format.startsWith("pem") -> keyData.unsafeCast<ArrayBuffer>().toByteArray().encodeToPem(
-                type = when (fixedFormat) {
-                    "pkcs8" -> "PRIVATE KEY"
-                    "spki"  -> "PUBLIC KEY"
-                    else    -> error("Unsupported format: $fixedFormat")
-                }
-            )
-            else                     -> keyData.unsafeCast<ArrayBuffer>().toByteArray()
+        return encodeKey(format, { JSON.stringify(it) }, { it.unsafeCast<ArrayBuffer>().toByteArray() }) { fixedFormat ->
+            subtle.exportKey(fixedFormat, key).await()
         }
     }
 

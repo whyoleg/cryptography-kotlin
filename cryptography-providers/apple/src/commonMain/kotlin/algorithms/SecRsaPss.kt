@@ -11,6 +11,7 @@ import dev.whyoleg.cryptography.bigint.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.signature.*
 import dev.whyoleg.cryptography.providers.apple.internal.*
+import dev.whyoleg.cryptography.serialization.pem.*
 import kotlinx.cinterop.*
 import platform.CoreFoundation.*
 import platform.Foundation.*
@@ -43,12 +44,12 @@ private class RsaPssPublicKeyDecoder(
         RSA.PublicKey.Format.DER     -> TODO()
         RSA.PublicKey.Format.PEM     -> TODO()
         RSA.PublicKey.Format.JWK     -> TODO()
-        RSA.PublicKey.Format.DER_RSA -> input.useNSData { decodeFromPkcs1(it) }
-        RSA.PublicKey.Format.PEM_RSA -> decodeFromPkcs1(input.decodeFromPem("RSA PUBLIC KEY") ?: error("Can't decode public key"))
+        RSA.PublicKey.Format.DER_RSA -> input.useNSData(::decodeFromPss)
+        RSA.PublicKey.Format.PEM_RSA -> PEM.decode(input).ensurePemLabel(PemLabel.RsaPublicKey).bytes.useNSData(::decodeFromPss)
     }
 
     @OptIn(UnsafeNumber::class)
-    private fun decodeFromPkcs1(input: NSData): RSA.PSS.PublicKey = memScoped {
+    private fun decodeFromPss(input: NSData): RSA.PSS.PublicKey = memScoped {
         CFMutableDictionary(2.convert()) {
             add(kSecAttrKeyType, kSecAttrKeyTypeRSA)
             add(kSecAttrKeyClass, kSecAttrKeyClassPublic)
@@ -78,12 +79,12 @@ private class RsaPssPrivateKeyDecoder(
         RSA.PrivateKey.Format.DER     -> TODO()
         RSA.PrivateKey.Format.PEM     -> TODO()
         RSA.PrivateKey.Format.JWK     -> TODO()
-        RSA.PrivateKey.Format.DER_RSA -> input.useNSData { decodeFromPkcs1(it) }
-        RSA.PrivateKey.Format.PEM_RSA -> decodeFromPkcs1(input.decodeFromPem("RSA PRIVATE KEY") ?: error("Can't decode private key"))
+        RSA.PrivateKey.Format.DER_RSA -> input.useNSData(::decodeFromPss)
+        RSA.PrivateKey.Format.PEM_RSA -> PEM.decode(input).ensurePemLabel(PemLabel.RsaPrivateKey).bytes.useNSData(::decodeFromPss)
     }
 
     @OptIn(UnsafeNumber::class)
-    private fun decodeFromPkcs1(input: NSData): RSA.PSS.PrivateKey = memScoped {
+    private fun decodeFromPss(input: NSData): RSA.PSS.PrivateKey = memScoped {
         CFMutableDictionary(2.convert()) {
             add(kSecAttrKeyType, kSecAttrKeyTypeRSA)
             add(kSecAttrKeyClass, kSecAttrKeyClassPrivate)
@@ -161,18 +162,18 @@ private class RsaPssPublicKey(
         RSA.PublicKey.Format.DER     -> TODO()
         RSA.PublicKey.Format.PEM     -> TODO()
         RSA.PublicKey.Format.JWK     -> TODO()
-        RSA.PublicKey.Format.PEM_RSA -> encodeToPkcs1().encodeToPem("RSA PUBLIC KEY")
-        RSA.PublicKey.Format.DER_RSA -> encodeToPkcs1().toByteArray()
+        RSA.PublicKey.Format.PEM_RSA -> PEM.encodeToByteArray(PemContent(PemLabel.RsaPublicKey, encodeToPss()))
+        RSA.PublicKey.Format.DER_RSA -> encodeToPss()
     }
 
-    private fun encodeToPkcs1(): NSData = memScoped {
+    private fun encodeToPss(): ByteArray = memScoped {
         val error = alloc<CFErrorRefVar>()
         val encodedKey = SecKeyCopyExternalRepresentation(publicKey, error.ptr)?.releaseBridgeAs<NSData>()
         if (encodedKey == null) {
             val nsError = error.value.releaseBridgeAs<NSError>()
             error("Failed to encode key: ${nsError?.description}")
         }
-        encodedKey
+        encodedKey.toByteArray()
     }
 }
 
@@ -194,18 +195,18 @@ private class RsaPssPrivateKey(
         RSA.PrivateKey.Format.DER     -> TODO()
         RSA.PrivateKey.Format.PEM     -> TODO()
         RSA.PrivateKey.Format.JWK     -> TODO()
-        RSA.PrivateKey.Format.PEM_RSA -> encodeToPkcs1().encodeToPem("RSA PRIVATE KEY")
-        RSA.PrivateKey.Format.DER_RSA -> encodeToPkcs1().toByteArray()
+        RSA.PrivateKey.Format.PEM_RSA -> PEM.encodeToByteArray(PemContent(PemLabel.RsaPrivateKey, encodeToPss()))
+        RSA.PrivateKey.Format.DER_RSA -> encodeToPss()
     }
 
-    private fun encodeToPkcs1(): NSData = memScoped {
+    private fun encodeToPss(): ByteArray = memScoped {
         val error = alloc<CFErrorRefVar>()
         val encodedKey = SecKeyCopyExternalRepresentation(privateKey, error.ptr)?.releaseBridgeAs<NSData>()
         if (encodedKey == null) {
             val nsError = error.value.releaseBridgeAs<NSError>()
             error("Failed to encode key: ${nsError?.description}")
         }
-        encodedKey
+        encodedKey.toByteArray()
     }
 }
 

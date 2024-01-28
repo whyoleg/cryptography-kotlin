@@ -36,59 +36,31 @@ internal actual object WebCrypto {
         extractable: Boolean,
         keyUsages: Array<String>,
     ): CryptoKey {
-        val fixedFormat = format.substringAfterLast("-")
-        val key = when {
-            format == "jwk"          -> jsonParse(keyData.decodeToString())
-            format.startsWith("pem") -> keyData.decodeFromPem(
-                type = when (fixedFormat) {
-                    "pkcs8" -> "PRIVATE KEY"
-                    "spki"  -> "PUBLIC KEY"
-                    else    -> error("Unsupported format: $fixedFormat")
-                }
-            ).toInt8Array()
-            else                     -> keyData.toInt8Array()
+        return decodeKey(format, keyData, json = ::jsonParse, binary = ByteArray::toInt8Array) { fixedFormat, key ->
+            subtle.importKey(fixedFormat, key, algorithm, extractable, mapKeyUsages(keyUsages)).await()
         }
-
-        return subtle.importKey(fixedFormat, key, algorithm, extractable, JsArray<JsString>().also {
-            keyUsages.forEachIndexed { index, value ->
-                it[index] = value.toJsString()
-            }
-        }).await()
     }
 
     actual suspend fun exportKey(format: String, key: CryptoKey): ByteArray {
-        val fixedFormat = format.substringAfterLast("-")
-        val keyData = subtle.exportKey(fixedFormat, key).await()
-
-        return when {
-            format == "jwk"          -> jsonStringify(keyData).encodeToByteArray()
-            format.startsWith("pem") -> keyData.unsafeCast<ArrayBuffer>().toByteArray().encodeToPem(
-                type = when (fixedFormat) {
-                    "pkcs8" -> "PRIVATE KEY"
-                    "spki"  -> "PUBLIC KEY"
-                    else    -> error("Unsupported format: $fixedFormat")
-                }
-            )
-            else                     -> keyData.unsafeCast<ArrayBuffer>().toByteArray()
+        return encodeKey(format, { jsonStringify(it) }, { it.unsafeCast<ArrayBuffer>().toByteArray() }) { fixedFormat ->
+            subtle.exportKey(fixedFormat, key).await()
         }
     }
 
     actual suspend fun generateKey(algorithm: Algorithm, extractable: Boolean, keyUsages: Array<String>): CryptoKey {
-        return subtle.generateKey(algorithm, extractable, JsArray<JsString>().also {
-            keyUsages.forEachIndexed { index, value ->
-                it[index] = value.toJsString()
-            }
-        }).await()
+        return subtle.generateKey(algorithm, extractable, mapKeyUsages(keyUsages)).await()
     }
 
     actual suspend fun generateKeyPair(algorithm: Algorithm, extractable: Boolean, keyUsages: Array<String>): CryptoKeyPair {
-        return subtle.generateKeyPair(algorithm, extractable, JsArray<JsString>().also {
-            keyUsages.forEachIndexed { index, value ->
-                it[index] = value.toJsString()
-            }
-        }).await()
+        return subtle.generateKeyPair(algorithm, extractable, mapKeyUsages(keyUsages)).await()
     }
 }
 
 private fun jsonParse(string: String): JsAny = js("JSON.parse(string)")
 private fun jsonStringify(any: JsAny): String = js("JSON.stringify(any)")
+
+private fun mapKeyUsages(keyUsages: Array<String>): JsArray<JsString> = JsArray<JsString>().also {
+    keyUsages.forEachIndexed { index, value ->
+        it[index] = value.toJsString()
+    }
+}

@@ -11,6 +11,7 @@ import dev.whyoleg.cryptography.bigint.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.cipher.*
 import dev.whyoleg.cryptography.providers.apple.internal.*
+import dev.whyoleg.cryptography.serialization.pem.*
 import kotlinx.cinterop.*
 import platform.CoreFoundation.*
 import platform.Foundation.*
@@ -43,8 +44,8 @@ private class RsaOaepPublicKeyDecoder(
         RSA.PublicKey.Format.DER     -> TODO()
         RSA.PublicKey.Format.PEM     -> TODO()
         RSA.PublicKey.Format.JWK     -> TODO()
-        RSA.PublicKey.Format.DER_RSA -> input.useNSData { decodeFromOaep(it) }
-        RSA.PublicKey.Format.PEM_RSA -> decodeFromOaep(input.decodeFromPem("RSA PUBLIC KEY") ?: error("Can't decode public key"))
+        RSA.PublicKey.Format.DER_RSA -> input.useNSData(::decodeFromOaep)
+        RSA.PublicKey.Format.PEM_RSA -> PEM.decode(input).ensurePemLabel(PemLabel.RsaPublicKey).bytes.useNSData(::decodeFromOaep)
     }
 
     @OptIn(UnsafeNumber::class)
@@ -78,8 +79,8 @@ private class RsaOaepPrivateKeyDecoder(
         RSA.PrivateKey.Format.DER     -> TODO()
         RSA.PrivateKey.Format.PEM     -> TODO()
         RSA.PrivateKey.Format.JWK     -> TODO()
-        RSA.PrivateKey.Format.DER_RSA -> input.useNSData { decodeFromOaep(it) }
-        RSA.PrivateKey.Format.PEM_RSA -> decodeFromOaep(input.decodeFromPem("RSA PRIVATE KEY") ?: error("Can't decode private key"))
+        RSA.PrivateKey.Format.DER_RSA -> input.useNSData(::decodeFromOaep)
+        RSA.PrivateKey.Format.PEM_RSA -> PEM.decode(input).ensurePemLabel(PemLabel.RsaPrivateKey).bytes.useNSData(::decodeFromOaep)
     }
 
     @OptIn(UnsafeNumber::class)
@@ -158,18 +159,18 @@ private class RsaOaepPublicKey(
         RSA.PublicKey.Format.DER     -> TODO()
         RSA.PublicKey.Format.PEM     -> TODO()
         RSA.PublicKey.Format.JWK     -> TODO()
-        RSA.PublicKey.Format.PEM_RSA -> encodeToOaep().encodeToPem("RSA PUBLIC KEY")
-        RSA.PublicKey.Format.DER_RSA -> encodeToOaep().toByteArray()
+        RSA.PublicKey.Format.PEM_RSA -> PEM.encodeToByteArray(PemContent(PemLabel.RsaPublicKey, encodeToOaep()))
+        RSA.PublicKey.Format.DER_RSA -> encodeToOaep()
     }
 
-    private fun encodeToOaep(): NSData = memScoped {
+    private fun encodeToOaep(): ByteArray = memScoped {
         val error = alloc<CFErrorRefVar>()
         val encodedKey = SecKeyCopyExternalRepresentation(publicKey, error.ptr)?.releaseBridgeAs<NSData>()
         if (encodedKey == null) {
             val nsError = error.value.releaseBridgeAs<NSError>()
             error("Failed to encode key: ${nsError?.description}")
         }
-        encodedKey
+        encodedKey.toByteArray()
     }
 }
 
@@ -186,18 +187,18 @@ private class RsaOaepPrivateKey(
         RSA.PrivateKey.Format.DER     -> TODO()
         RSA.PrivateKey.Format.PEM     -> TODO()
         RSA.PrivateKey.Format.JWK     -> TODO()
-        RSA.PrivateKey.Format.PEM_RSA -> encodeToOaep().encodeToPem("RSA PRIVATE KEY")
-        RSA.PrivateKey.Format.DER_RSA -> encodeToOaep().toByteArray()
+        RSA.PrivateKey.Format.PEM_RSA -> PEM.encodeToByteArray(PemContent(PemLabel.RsaPrivateKey, encodeToOaep()))
+        RSA.PrivateKey.Format.DER_RSA -> encodeToOaep()
     }
 
-    private fun encodeToOaep(): NSData = memScoped {
+    private fun encodeToOaep(): ByteArray = memScoped {
         val error = alloc<CFErrorRefVar>()
         val encodedKey = SecKeyCopyExternalRepresentation(privateKey, error.ptr)?.releaseBridgeAs<NSData>()
         if (encodedKey == null) {
             val nsError = error.value.releaseBridgeAs<NSError>()
             error("Failed to encode key: ${nsError?.description}")
         }
-        encodedKey
+        encodedKey.toByteArray()
     }
 }
 
