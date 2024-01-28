@@ -26,6 +26,25 @@ public final class dev/whyoleg/cryptography/bigint/BigInt : java/lang/Number, ja
 
 public final class dev/whyoleg/cryptography/bigint/BigInt$Companion {
 	public final fun getZERO ()Ldev/whyoleg/cryptography/bigint/BigInt;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/whyoleg/cryptography/bigint/BigIntAsByteArraySerializer : kotlinx/serialization/KSerializer {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/bigint/BigIntAsByteArraySerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/whyoleg/cryptography/bigint/BigInt;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/whyoleg/cryptography/bigint/BigInt;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+}
+
+public final class dev/whyoleg/cryptography/bigint/BigIntAsStringSerializer : kotlinx/serialization/KSerializer {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/bigint/BigIntAsStringSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/whyoleg/cryptography/bigint/BigInt;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/whyoleg/cryptography/bigint/BigInt;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 }
 
 public final class dev/whyoleg/cryptography/bigint/BigIntKt {

@@ -4,6 +4,9 @@
 
 package dev.whyoleg.cryptography.bigint
 
+import kotlinx.serialization.*
+
+@Serializable(with = BigIntAsStringSerializer::class)
 public actual class BigInt internal constructor(
     internal val jsBigInt: JsBigInt,
 ) : Number(), Comparable<BigInt> {

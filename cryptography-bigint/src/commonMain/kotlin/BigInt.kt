@@ -7,8 +7,10 @@
 
 package dev.whyoleg.cryptography.bigint
 
+import kotlinx.serialization.*
 import kotlin.jvm.*
 
+@Serializable(with = BigIntAsStringSerializer::class)
 public expect class BigInt : Number, Comparable<BigInt> {
     public companion object {
         public val ZERO: BigInt

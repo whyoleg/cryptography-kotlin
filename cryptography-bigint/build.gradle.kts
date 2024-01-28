@@ -4,11 +4,13 @@
 
 import ckbuild.*
 import org.jetbrains.kotlin.gradle.*
+import org.jetbrains.kotlin.gradle.plugin.*
 import org.jetbrains.kotlin.gradle.targets.js.*
 import org.jetbrains.kotlin.gradle.targets.js.ir.*
 
 plugins {
     id("ckbuild.multiplatform-library")
+    alias(kotlinLibs.plugins.serialization)
 }
 
 description = "cryptography-kotlin BigInt API"
@@ -36,6 +38,19 @@ kotlin {
                 group("native")
                 withCompilations { (it.target as? KotlinJsIrTarget)?.wasmTargetType == KotlinWasmTargetType.WASI }
             }
+            group("nonJvm") {
+                withCompilations { it.platformType != KotlinPlatformType.jvm }
+            }
+        }
+    }
+
+    sourceSets {
+        commonMain.dependencies {
+            compileOnly(libs.kotlinx.serialization.core)
+        }
+        // other targets don't support `compileOnly` dependencies
+        named("nonJvmMain").dependencies {
+            implementation(libs.kotlinx.serialization.core)
         }
     }
 }
