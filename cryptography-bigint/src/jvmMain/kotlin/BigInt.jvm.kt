@@ -7,8 +7,10 @@
 
 package dev.whyoleg.cryptography.bigint
 
+import kotlinx.serialization.*
 import java.math.*
 
+@Serializable(with = BigIntAsStringSerializer::class)
 public actual class BigInt internal constructor(
     @JvmField
     internal val javaBigInteger: BigInteger,

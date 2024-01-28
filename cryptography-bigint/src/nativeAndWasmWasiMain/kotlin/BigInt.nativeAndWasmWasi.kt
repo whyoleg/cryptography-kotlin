@@ -4,6 +4,7 @@
 
 package dev.whyoleg.cryptography.bigint
 
+import kotlinx.serialization.*
 import kotlin.math.*
 
 // In some operations, we are working with IntArray (instead of UIntArray) and then convert to UIntArray because it's significantly faster
@@ -15,6 +16,7 @@ import kotlin.math.*
 // We are still using `UIntArray` as backing storage as it's much easier to work with it in other operations.
 // This is a balance between complexity and performance
 @OptIn(ExperimentalUnsignedTypes::class)
+@Serializable(with = BigIntAsStringSerializer::class)
 public actual class BigInt internal constructor(
     public actual val sign: Int,
     internal val magnitude: UIntArray,
