@@ -62,7 +62,7 @@ kotlin {
         whenNodejsConfigured {
             testTask {
                 useMocha {
-                    timeout = "1800s"
+                    timeout = "300s"
                 }
             }
         }
