@@ -53,7 +53,7 @@ jobs:
         if: ${{ matrix.target == 'wasm' }}
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: ${{ matrix.target }}Test --continue --no-configuration-cache
+          arguments: ${{ matrix.target }}Test --continue --max-workers=1
 
       - name: Run tests (android)
         if: ${{ matrix.target == 'connectedAndroid' }}
