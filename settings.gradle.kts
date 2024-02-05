@@ -10,7 +10,7 @@ pluginManagement {
 includeBuild("testtool")
 
 plugins {
-    id("ckbuild.settings.default")
+    id("cksettings.default")
 }
 
 dependencyResolutionManagement {

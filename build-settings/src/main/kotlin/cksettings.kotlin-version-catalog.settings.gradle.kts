@@ -2,7 +2,7 @@
  * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
-import ckbuild.settings.*
+@file:Suppress("UnstableApiUsage")
 
 val kotlinVersionOverride = providers.gradleProperty("ckbuild.kotlinVersionOverride").orNull?.takeIf(String::isNotBlank)
 
@@ -28,7 +28,7 @@ dependencyResolutionManagement {
     }
     versionCatalogs {
         create("kotlinLibs") {
-            val kotlin = version("kotlin", kotlinVersionOverride ?: kotlinVersion)
+            val kotlin = version("kotlin", kotlinVersionOverride ?: cksettings.kotlinVersion)
 
             library("gradle-plugin", "org.jetbrains.kotlin", "kotlin-gradle-plugin").versionRef(kotlin)
 

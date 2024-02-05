@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 plugins {
@@ -9,11 +9,12 @@ plugins {
 
 dependencies {
     implementation(libs.build.gradle.enterprise)
+    implementation(libs.build.gradle.customUserData)
     implementation(libs.build.gradle.foojay)
 }
 
 buildConfig {
-    packageName("ckbuild.settings")
+    packageName("cksettings")
     useKotlinOutput {
         topLevelConstants = true
         internalVisibility = true

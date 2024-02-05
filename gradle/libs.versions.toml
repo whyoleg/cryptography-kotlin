@@ -12,6 +12,7 @@ kotlinx-kover = "0.7.5"
 android = "8.2.1"
 
 gradle-enterprise = "3.16.2"
+gradle-customUserData = "1.12.1"
 gradle-foojay = "0.8.0"
 
 buildconfig = "5.3.5"
@@ -44,6 +45,7 @@ build-kotlinx-kover = { module = "org.jetbrains.kotlinx:kover-gradle-plugin", ve
 build-android = { module = "com.android.tools.build:gradle", version.ref = "android" }
 
 build-gradle-enterprise = { module = "com.gradle:gradle-enterprise-gradle-plugin", version.ref = "gradle-enterprise" }
+build-gradle-customUserData = { module = "com.gradle:common-custom-user-data-gradle-plugin", version.ref = "gradle-customUserData" }
 build-gradle-foojay = { module = "org.gradle.toolchains:foojay-resolver", version.ref = "gradle-foojay" }
 
 build-buildconfig = { module = "com.github.gmazzo.buildconfig:plugin", version.ref = "buildconfig" }

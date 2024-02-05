@@ -8,7 +8,7 @@ pluginManagement {
 }
 
 plugins {
-    id("ckbuild.settings.default")
+    id("cksettings.default")
 }
 
 dependencyResolutionManagement {
