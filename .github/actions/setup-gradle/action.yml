@@ -1,46 +1,32 @@
 name: 'Setup Gradle'
-description: 'Setup konan relocation and gradle caching specific to kotlin MPP'
+description: 'Setup JDK and Gradle'
 inputs:
   cache-disabled:
-    description: When 'true', all caching is disabled. No entries will be written to or read from the cache.
-    required: false
-    default: false
+    description: 'gradle.cache-disabled'
+    default: 'false'
   cache-read-only:
-    description: |
-      When 'true', existing entries will be read from the cache but no entries will be written.
-      By default this value is 'false' for workflows on the `dev` branch and 'true' for workflows on other branches.
-    required: false
-    default: ${{ github.ref_name != 'dev' }}
+    description: 'gradle.cache-read-only'
+    default: 'true'
 runs:
   using: 'composite'
   steps:
-    - if: runner.os != 'Windows'
-      run: echo "KONAN_DATA_DIR=${HOME}/.gradle/konan" >> $GITHUB_ENV
-      shell: bash
-    - if: runner.os == 'Windows'
-      run: echo "KONAN_DATA_DIR=${USERPROFILE}\.gradle\konan" >> $GITHUB_ENV
-      shell: bash
-    - uses: actions/setup-java@v3
+    - uses: actions/setup-java@v4
       with:
-        distribution: 'temurin'
+        distribution: 'zulu'
         # the latest listed version will be used for executions of Gradle
         java-version: |
           8
           11
           17
           21
-    - name: Validate gradle wrapper
-      uses: gradle/wrapper-validation-action@v1
-    - name: Setup gradle
-      uses: gradle/gradle-build-action@v2
+    - uses: gradle/wrapper-validation-action@v2
+    - uses: gradle/actions/setup-gradle@v3
       with:
+        build-scan-publish: true
+        build-scan-terms-of-service-url: "https://gradle.com/terms-of-service"
+        build-scan-terms-of-service-agree: "yes"
+
         cache-disabled: ${{ inputs.cache-disabled }}
         cache-read-only: ${{ inputs.cache-read-only }}
-        # disabled on windows because of issue with long paths
-        gradle-home-cache-cleanup: ${{ runner.os != 'Windows' }}
-        gradle-home-cache-includes: |
-          caches
-          notifications
-          konan
-          nodejs
-          yarn
+
+        gradle-home-cache-cleanup: true

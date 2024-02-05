@@ -8,7 +8,7 @@ concurrency:
 jobs:
   publish:
     if: github.repository == 'whyoleg/cryptography-kotlin'
-    runs-on: macos-latest
+    runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-gradle
@@ -16,9 +16,7 @@ jobs:
           cache-disabled: true
 
       - name: Publish to Maven Local (prepare packages)
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: publishToMavenLocal --no-configuration-cache
+        run: ./gradlew publishToMavenLocal --no-configuration-cache
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{secrets.signingKey}}
           ORG_GRADLE_PROJECT_signingPassword: ${{secrets.signingPassword}}
@@ -26,9 +24,7 @@ jobs:
           ORG_GRADLE_PROJECT_sonatypePassword: ${{secrets.sonatypePassword}}
 
       - name: Publish snapshot to Sonatype
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: publishAllPublicationsToSnapshotRepository --no-configuration-cache
+        run: ./gradlew publishAllPublicationsToSnapshotRepository --no-configuration-cache
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{secrets.signingKey}}
           ORG_GRADLE_PROJECT_signingPassword: ${{secrets.signingPassword}}

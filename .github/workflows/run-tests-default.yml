@@ -3,8 +3,12 @@ on:
   workflow_dispatch:
   workflow_call:
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
-  default:
+  tests-default:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -12,13 +16,13 @@ jobs:
         os: [ 'ubuntu-latest' ]
         target: [ 'jvmAll', 'js', 'wasm', 'native' ]
         include:
-          - os: 'macos-latest'
+          - os: 'macos-14'
             target: 'macos'
-          - os: 'macos-latest'
+          - os: 'macos-14'
             target: 'ios'
-          - os: 'macos-latest'
+          - os: 'macos-14'
             target: 'watchos'
-          - os: 'macos-latest'
+          - os: 'macos-14'
             target: 'tvos'
           - os: 'windows-latest'
             target: 'native'
@@ -34,8 +38,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-gradle
-        with:
-          cache-read-only: true
 
       - if: matrix.os == 'windows-latest'
         uses: msys2/setup-msys2@v2
@@ -45,15 +47,11 @@ jobs:
 
       - name: Run tests
         if: ${{ matrix.target != 'connectedAndroid' && matrix.target != 'wasm' }}
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: ${{ matrix.target }}Test --continue
+        run: ./gradlew ${{ matrix.target }}Test --continue
 
       - name: Run tests (wasm)
         if: ${{ matrix.target == 'wasm' }}
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: ${{ matrix.target }}Test --continue --max-workers=1
+        run: ./gradlew ${{ matrix.target }}Test --continue --max-workers=1
 
       - name: Run tests (android)
         if: ${{ matrix.target == 'connectedAndroid' }}
@@ -61,4 +59,4 @@ jobs:
         with:
           api-level: ${{ matrix.android-api-level }}
           test-reports-classifier: 'default'
-          arguments: ${{ matrix.target }}Test --continue
+          run: ./gradlew ${{ matrix.target }}Test --continue

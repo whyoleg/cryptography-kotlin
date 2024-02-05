@@ -4,7 +4,7 @@ inputs:
   api-level:
     description: Android API level for testing
     required: true
-  arguments:
+  run:
     description: Arguments for running gradle with Android Emulator
     required: false
     default: ''
@@ -21,22 +21,17 @@ runs:
         sudo udevadm control --reload-rules
         sudo udevadm trigger --name-match=kvm
 
-    - name: Build tests
-      uses: gradle/gradle-build-action@v2
-      with:
-        arguments: ${{ inputs.arguments }} -Pckbuild.skipTests=true
-
     - name: Run tests
       uses: reactivecircus/android-emulator-runner@v2
       with:
         arch: x86_64
         api-level: ${{ inputs.api-level }}
-        script: ./gradlew ${{ inputs.arguments }}
+        script: ${{ inputs.run }}
 
     # Android test failures are not available in gradle build scans
     - name: Upload test reports
       if: failure()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: android-test-reports-${{ inputs.test-reports-classifier }}-${{ inputs.api-level }}
         path: '**/build/reports/androidTests'

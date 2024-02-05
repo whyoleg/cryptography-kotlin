@@ -7,8 +7,12 @@ concurrency:
   group: compatibility-tests
   cancel-in-progress: false
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
-  generate:
+  tests-compatibility-generate:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -16,13 +20,13 @@ jobs:
         os: [ 'ubuntu-latest' ]
         target: [ 'jvmAll', 'js', 'native' ]
         include:
-          - os: 'macos-latest'
+          - os: 'macos-14'
             target: 'macos'
-          - os: 'macos-latest'
+          - os: 'macos-14'
             target: 'ios'
-          - os: 'macos-latest'
+          - os: 'macos-14'
             target: 'watchos'
-          - os: 'macos-latest'
+          - os: 'macos-14'
             target: 'tvos'
           - os: 'windows-latest'
             target: 'native'
@@ -38,8 +42,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-gradle
-        with:
-          cache-read-only: true
 
       - if: matrix.os == 'windows-latest'
         uses: msys2/setup-msys2@v2
@@ -49,9 +51,7 @@ jobs:
 
       - name: Run tests
         if: ${{ matrix.target != 'connectedAndroid' }}
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: ${{ matrix.target }}ProviderTest -Pckbuild.providerTests.step=compatibility.generate -Pckbuild.testtool.instanceId=${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }} --continue
+        run: ./gradlew ${{ matrix.target }}ProviderTest -Pckbuild.providerTests.step=compatibility.generate -Pckbuild.testtool.instanceId=${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }} --continue
 
       - name: Run tests (android)
         if: ${{ matrix.target == 'connectedAndroid' }}
@@ -59,23 +59,19 @@ jobs:
         with:
           api-level: ${{ matrix.android-api-level }}
           test-reports-classifier: 'compatibility-generate'
-          arguments: ${{ matrix.target }}ProviderTest -Pckbuild.providerTests.step=compatibility.generate -Pckbuild.testtool.instanceId=${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }} --continue
+          run: ./gradlew ${{ matrix.target }}ProviderTest -Pckbuild.providerTests.step=compatibility.generate -Pckbuild.testtool.instanceId=${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }} --continue
 
       - name: Dump testtool server-storage
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: |
-            dumpTesttoolServerStorage
-            -Pckbuild.testtool.instanceId=${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }}
+        run: ./gradlew dumpTesttoolServerStorage -Pckbuild.testtool.instanceId=${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }}
       - name: Upload testtool server-storage dump
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: compatibility-tests-data
+          name: compatibility-tests-data-${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }}
           path: build/testtool/server-storage-dump
           if-no-files-found: error
 
-  validate:
-    needs: [ generate ]
+  tests-compatibility-validate:
+    needs: [ tests-compatibility-generate ]
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -83,13 +79,13 @@ jobs:
         os: [ 'ubuntu-latest' ]
         target: [ 'jvmAll', 'js', 'native' ]
         include:
-          - os: 'macos-latest'
+          - os: 'macos-14'
             target: 'macos'
-          - os: 'macos-latest'
+          - os: 'macos-14'
             target: 'ios'
-          - os: 'macos-latest'
+          - os: 'macos-14'
             target: 'watchos'
-          - os: 'macos-latest'
+          - os: 'macos-14'
             target: 'tvos'
           - os: 'windows-latest'
             target: 'native'
@@ -105,8 +101,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-gradle
-        with:
-          cache-read-only: true
 
       - if: matrix.os == 'windows-latest'
         uses: msys2/setup-msys2@v2
@@ -115,21 +109,18 @@ jobs:
           install: mingw-w64-x86_64-openssl
 
       - name: Download testtool server-storage dump
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
-          name: compatibility-tests-data
+          pattern: compatibility-tests-data-*
+          merge-multiple: true
           path: build/testtool/server-storage-dump
 
       - name: Restore testtool server-storage
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: restoreTesttoolServerStorage
+        run: ./gradlew restoreTesttoolServerStorage --no-daemon
 
       - name: Run tests
         if: ${{ matrix.target != 'connectedAndroid' }}
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: ${{ matrix.target }}ProviderTest -Pckbuild.providerTests.step=compatibility.validate -Pckbuild.testtool.instanceId=${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }} --continue
+        run: ./gradlew ${{ matrix.target }}ProviderTest -Pckbuild.providerTests.step=compatibility.validate -Pckbuild.testtool.instanceId=${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }} --continue
 
       - name: Run tests (android)
         if: ${{ matrix.target == 'connectedAndroid' }}
@@ -137,4 +128,4 @@ jobs:
         with:
           api-level: ${{ matrix.android-api-level }}
           test-reports-classifier: 'compatibility-validate'
-          arguments: ${{ matrix.target }}ProviderTest -Pckbuild.providerTests.step=compatibility.validate -Pckbuild.testtool.instanceId=${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }} --continue
+          run: ./gradlew ${{ matrix.target }}ProviderTest -Pckbuild.providerTests.step=compatibility.validate -Pckbuild.testtool.instanceId=${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }} --continue

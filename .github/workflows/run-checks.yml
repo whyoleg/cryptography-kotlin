@@ -12,6 +12,7 @@ jobs:
     uses: ./.github/workflows/run-build-website.yml
 
   default-tests:
+    needs: [ build-project ]
     uses: ./.github/workflows/run-tests-default.yml
 
   compatibility-tests:

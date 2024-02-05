@@ -5,21 +5,21 @@ on:
 
 jobs:
   website:
-    runs-on: macos-latest
+    runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: 3.x
       - run: pip install mkdocs-material
       - uses: ./.github/actions/setup-gradle
         with:
           cache-disabled: true
+
       - name: Build documentation
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: mkdocsBuild --no-configuration-cache
+        run: ./gradlew mkdocsBuild --no-configuration-cache
+
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v3
         with:
           path: site

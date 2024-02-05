@@ -3,7 +3,7 @@ on: [ workflow_call ]
 
 jobs:
   publish:
-    runs-on: macos-latest
+    runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-gradle
@@ -11,9 +11,7 @@ jobs:
           cache-disabled: true
 
       - name: Publish to Maven Local (prepare packages)
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: publishToMavenLocal --no-configuration-cache
+        run: ./gradlew publishToMavenLocal --no-configuration-cache
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{secrets.signingKey}}
           ORG_GRADLE_PROJECT_signingPassword: ${{secrets.signingPassword}}
@@ -21,9 +19,7 @@ jobs:
           ORG_GRADLE_PROJECT_sonatypePassword: ${{secrets.sonatypePassword}}
 
       - name: Publish signed packages to local directory
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: publishAllPublicationsToProjectLocalRepository --no-configuration-cache
+        run: ./gradlew publishAllPublicationsToProjectLocalRepository --no-configuration-cache
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{secrets.signingKey}}
           ORG_GRADLE_PROJECT_signingPassword: ${{secrets.signingPassword}}
