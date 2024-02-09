@@ -11,6 +11,8 @@ import dev.whyoleg.cryptography.bigint.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.cipher.*
 import dev.whyoleg.cryptography.providers.apple.internal.*
+import dev.whyoleg.cryptography.serialization.asn1.*
+import dev.whyoleg.cryptography.serialization.asn1.modules.*
 import dev.whyoleg.cryptography.serialization.pem.*
 import kotlinx.cinterop.*
 import platform.CoreFoundation.*
@@ -40,13 +42,22 @@ internal object SecRsaOaep : RSA.OAEP {
 private class RsaOaepPublicKeyDecoder(
     private val algorithm: SecKeyAlgorithm?,
 ) : KeyDecoder<RSA.PublicKey.Format, RSA.OAEP.PublicKey> {
+
+    private fun unwrapPem(label: PemLabel, key: ByteArray): ByteArray =
+        PEM.decode(key).ensurePemLabel(label).bytes
+
+    private fun unwrapPublicKey(algorithm: ObjectIdentifier, key: ByteArray): ByteArray =
+        DER.decodeFromByteArray(SubjectPublicKeyInfo.serializer(), key).also {
+            check(it.algorithm.algorithm == algorithm)
+        }.subjectPublicKey
+
     override fun decodeFromBlocking(format: RSA.PublicKey.Format, input: ByteArray): RSA.OAEP.PublicKey = when (format) {
-        RSA.PublicKey.Format.DER     -> TODO()
-        RSA.PublicKey.Format.PEM     -> TODO()
         RSA.PublicKey.Format.JWK     -> TODO()
-        RSA.PublicKey.Format.DER_RSA -> input.useNSData(::decodeFromOaep)
-        RSA.PublicKey.Format.PEM_RSA -> PEM.decode(input).ensurePemLabel(PemLabel.RsaPublicKey).bytes.useNSData(::decodeFromOaep)
-    }
+        RSA.PublicKey.Format.PEM     -> unwrapPublicKey(ObjectIdentifier.RSA_OAEP, unwrapPem(PemLabel.PublicKey, input))
+        RSA.PublicKey.Format.DER     -> unwrapPublicKey(ObjectIdentifier.RSA_OAEP, input)
+        RSA.PublicKey.Format.DER_RSA -> input
+        RSA.PublicKey.Format.PEM_RSA -> unwrapPem(PemLabel.RsaPublicKey, input)
+    }.useNSData(::decodeFromOaep)
 
     @OptIn(UnsafeNumber::class)
     private fun decodeFromOaep(input: NSData): RSA.OAEP.PublicKey = memScoped {
@@ -154,12 +165,18 @@ private class RsaOaepPublicKey(
 
     override fun encryptor(): AuthenticatedEncryptor = encryptor
 
-    @OptIn(UnsafeNumber::class)
+    private fun wrapPublicKey(identifier: KeyAlgorithmIdentifier, key: ByteArray): ByteArray = DER.encodeToByteArray(
+        SubjectPublicKeyInfo.serializer(),
+        SubjectPublicKeyInfo(identifier, key)
+    )
+
+    private fun wrapPem(label: PemLabel, key: ByteArray): ByteArray = PEM.encodeToByteArray(PemContent(label, key))
+
     override fun encodeToBlocking(format: RSA.PublicKey.Format): ByteArray = when (format) {
-        RSA.PublicKey.Format.DER     -> TODO()
-        RSA.PublicKey.Format.PEM     -> TODO()
         RSA.PublicKey.Format.JWK     -> TODO()
-        RSA.PublicKey.Format.PEM_RSA -> PEM.encodeToByteArray(PemContent(PemLabel.RsaPublicKey, encodeToOaep()))
+        RSA.PublicKey.Format.PEM     -> wrapPem(PemLabel.PublicKey, wrapPublicKey(RsaOaepKeyAlgorithmIdentifier(), encodeToOaep()))
+        RSA.PublicKey.Format.DER     -> wrapPublicKey(RsaOaepKeyAlgorithmIdentifier(), encodeToOaep())
+        RSA.PublicKey.Format.PEM_RSA -> wrapPem(PemLabel.RsaPublicKey, encodeToOaep())
         RSA.PublicKey.Format.DER_RSA -> encodeToOaep()
     }
 
