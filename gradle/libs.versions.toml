@@ -2,43 +2,32 @@
 
 kotlin = "1.9.22"
 
-# build dependencies
-
+# kotlin/kotlinx
 kotlin-dokka = "1.9.10"
-
 kotlinx-bcv = "0.14.0"
 kotlinx-kover = "0.7.5"
+kotlinx-serialization = "1.6.3"
+kotlinx-coroutines = "1.8.0"
+ktor = "2.3.8"
 
-android = "8.2.1"
+# android
+android = "8.2.2"
+androidx-test = "1.5.2"
 
+# gradle/build
 gradle-enterprise = "3.16.2"
 gradle-customUserData = "1.12.1"
 gradle-foojay = "0.8.0"
-
 buildconfig = "5.3.5"
-
 apache-commons-compress = "1.25.0"
 
-# test dependencies
-
-kotlinx-serialization = "1.6.2"
-kotlinx-coroutines = "1.8.0-RC2"
-
+# other
 bouncycastle = "1.77"
-
-androidx-test = "1.5.2"
-
-# testtool dependencies
-
-ktor = "2.3.7"
 logback = "1.2.11"
 
 [libraries]
 
-# build dependencies
-
 build-kotlin-dokka = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "kotlin-dokka" }
-
 build-kotlinx-bcv = { module = "org.jetbrains.kotlinx:binary-compatibility-validator", version.ref = "kotlinx-bcv" }
 build-kotlinx-kover = { module = "org.jetbrains.kotlinx:kover-gradle-plugin", version.ref = "kotlinx-kover" }
 
@@ -48,11 +37,7 @@ build-gradle-enterprise = { module = "com.gradle:gradle-enterprise-gradle-plugin
 build-gradle-customUserData = { module = "com.gradle:common-custom-user-data-gradle-plugin", version.ref = "gradle-customUserData" }
 build-gradle-foojay = { module = "org.gradle.toolchains:foojay-resolver", version.ref = "gradle-foojay" }
 
-build-buildconfig = { module = "com.github.gmazzo.buildconfig:plugin", version.ref = "buildconfig" }
-
 build-apache-commons-compress = { module = "org.apache.commons:commons-compress", version.ref = "apache-commons-compress" }
-
-# test dependencies
 
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
@@ -60,11 +45,8 @@ kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 
 bouncycastle-jdk8 = { module = "org.bouncycastle:bcprov-jdk18on", version.ref = "bouncycastle" }
-bouncycastle-jdk5 = { module = "org.bouncycastle:bcprov-jdk15to18", version.ref = "bouncycastle" }
 
 androidx-test = { module = "androidx.test:runner", version.ref = "androidx-test" }
-
-# testtool dependencies
 
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
@@ -79,6 +61,7 @@ ktor-server-calllogging = { module = "io.ktor:ktor-server-call-logging", version
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 
 [plugins]
+
 kotlin-dokka = { id = "org.jetbrains.dokka", version.ref = "kotlin-dokka" }
 android-library = { id = "com.android.library", version.ref = "android" }
 buildconfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildconfig" }
