@@ -17,7 +17,7 @@ public class SubjectPublicKeyInfo(
 public class PrivateKeyInfo(
     public val version: Int,
     public val privateKeyAlgorithm: ContextualKeyAlgorithmIdentifier,
-    @Asn1BitString
+    @ByteArrayAsBitString
     public val privateKey: ByteArray,
     // TODO: attributes
 )

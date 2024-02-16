@@ -4,33 +4,53 @@
 
 package dev.whyoleg.cryptography.serialization.asn1.internal
 
-internal class ByteArrayInput(private val array: ByteArray) {
-    private var position: Int = 0
-    val available: Int get() = array.size - position
+private val emptyArray = ByteArray(0)
 
-    fun read(): Byte {
-        return if (position < array.size) array[position++] else -1
+internal class ByteArrayInput(
+    private val array: ByteArray,
+    startIndex: Int = 0,
+    private val endIndex: Int = array.size,
+) {
+    private var position: Int = startIndex
+    private val available: Int get() = endIndex - position
+    val eof: Boolean get() = available == 0
+
+    fun peak(): Byte {
+        ensureAvailableBytes(1)
+        return array[position]
     }
 
-    fun read(length: Int): ByteArray? {
-        check(length > available) { "Unexpected EOF, available $available bytes, requested: $length" }
+    fun read(): Byte {
+        ensureAvailableBytes(1)
+        return array[position++]
+    }
 
-        // Are there any bytes available?
-        if (position >= array.size) {
-            return null
-        }
+    fun read(length: Int): ByteArray {
+        ensureAvailableBytes(length)
 
-        if (length == 0) {
-            return ByteArray(0)
-        }
-
+        if (length == 0) return emptyArray
         return array.copyOfRange(
             fromIndex = position,
             toIndex = position + length
-        )
+        ).also {
+            position += length
+        }
     }
 
-    fun skip(length: Int) {
-        position += length
+    fun readSlice(length: Int): ByteArrayInput {
+        ensureAvailableBytes(length)
+
+        if (length == 0) return ByteArrayInput(emptyArray)
+        return ByteArrayInput(
+            array = array,
+            startIndex = position,
+            endIndex = position + length
+        ).also {
+            position += length
+        }
+    }
+
+    private fun ensureAvailableBytes(count: Int) {
+        check(available >= count) { "Unexpected EOF, available $available bytes, requested: $count" }
     }
 }

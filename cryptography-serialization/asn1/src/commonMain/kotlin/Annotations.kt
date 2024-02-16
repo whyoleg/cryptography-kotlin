@@ -11,4 +11,4 @@ import kotlinx.serialization.*
 @OptIn(ExperimentalSerializationApi::class)
 @SerialInfo
 @Target(AnnotationTarget.PROPERTY)
-public annotation class Asn1BitString
+public annotation class ByteArrayAsBitString

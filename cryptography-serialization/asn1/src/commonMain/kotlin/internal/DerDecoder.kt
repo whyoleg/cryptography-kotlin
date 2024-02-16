@@ -4,8 +4,10 @@
 
 package dev.whyoleg.cryptography.serialization.asn1.internal
 
+import dev.whyoleg.cryptography.bigint.*
 import dev.whyoleg.cryptography.serialization.asn1.*
 import kotlinx.serialization.*
+import kotlinx.serialization.builtins.*
 import kotlinx.serialization.descriptors.*
 import kotlinx.serialization.encoding.*
 import kotlinx.serialization.modules.*
@@ -13,70 +15,62 @@ import kotlinx.serialization.modules.*
 @OptIn(ExperimentalSerializationApi::class)
 internal class DerDecoder(
     private val der: DER,
-    private val input: DerInput,
+    byteArrayInput: ByteArrayInput,
 ) : AbstractDecoder() {
-    override val serializersModule: SerializersModule
-        get() = der.serializersModule
+    private val input = DerInput(byteArrayInput)
 
-    override fun decodeElementIndex(descriptor: SerialDescriptor): Int {
-        TODO("Not yet implemented")
+    override val serializersModule: SerializersModule get() = der.serializersModule
+
+    private var currentIndex = 0
+    override fun decodeSequentially(): Boolean = true
+    override fun decodeElementIndex(descriptor: SerialDescriptor): Int = when {
+        input.eof -> CompositeDecoder.DECODE_DONE
+        else      -> currentIndex++
     }
 
-    override fun beginStructure(descriptor: SerialDescriptor): CompositeDecoder {
-        TODO("Not yet implemented")
+    override fun decodeNotNullMark(): Boolean = input.isNotNull()
+    override fun decodeNull(): Nothing? = input.readNull()
+    override fun decodeByte(): Byte = input.readInteger().toByte()
+    override fun decodeShort(): Short = input.readInteger().toShort()
+    override fun decodeInt(): Int = input.readInteger().toInt()
+    override fun decodeLong(): Long = input.readInteger().toLong()
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <T> decodeSerializableValue(deserializer: DeserializationStrategy<T>): T = when (deserializer.descriptor) {
+        ByteArraySerializer().descriptor         -> input.readOctetString() as T
+        ObjectIdentifier.serializer().descriptor -> input.readObjectIdentifier() as T
+        BigInt.serializer().descriptor           -> input.readInteger() as T
+        else                                     -> deserializer.deserialize(this)
     }
 
-    override fun decodeBoolean(): Boolean {
-        TODO("Not yet implemented")
+    @Suppress("UNCHECKED_CAST")
+    override fun <T> decodeSerializableElement(
+        descriptor: SerialDescriptor,
+        index: Int,
+        deserializer: DeserializationStrategy<T>,
+        previousValue: T?,
+    ): T = when {
+        descriptor.isElementBitString(index) -> input.readBitString() as T
+        else                                 -> decodeSerializableValue(deserializer)
     }
 
-    override fun decodeByte(): Byte {
-        TODO("Not yet implemented")
+    // structures: SEQUENCE and SEQUENCE OF
+    override fun beginStructure(descriptor: SerialDescriptor): CompositeDecoder = when (descriptor.kind) {
+        StructureKind.CLASS,
+//        PolymorphicKind.OPEN,
+//        PolymorphicKind.SEALED,
+             -> DerDecoder(der, input.readSequence())
+        else -> throw SerializationException("This serial kind is not supported as structure: $descriptor")
     }
 
-    override fun decodeChar(): Char {
-        TODO("Not yet implemented")
-    }
-
-    override fun decodeDouble(): Double {
-        TODO("Not yet implemented")
-    }
-
-    override fun decodeEnum(enumDescriptor: SerialDescriptor): Int {
-        TODO("Not yet implemented")
-    }
-
-    override fun decodeFloat(): Float {
-        TODO("Not yet implemented")
-    }
-
-    override fun decodeInline(descriptor: SerialDescriptor): Decoder {
-        TODO("Not yet implemented")
-    }
-
-    override fun decodeInt(): Int {
-        TODO("Not yet implemented")
-    }
-
-    override fun decodeLong(): Long {
-        TODO("Not yet implemented")
-    }
-
-    @ExperimentalSerializationApi
-    override fun decodeNotNullMark(): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    @ExperimentalSerializationApi
-    override fun decodeNull(): Nothing? {
-        TODO("Not yet implemented")
-    }
-
-    override fun decodeShort(): Short {
-        TODO("Not yet implemented")
-    }
-
-    override fun decodeString(): String {
-        TODO("Not yet implemented")
-    }
+    // could be supported, but later when it will be needed
+    override fun decodeInline(descriptor: SerialDescriptor): Decoder = error("Inline decoding is not supported")
+    override fun decodeInlineElement(descriptor: SerialDescriptor, index: Int): Decoder = error("Inline decoding is not supported")
+    override fun decodeEnum(enumDescriptor: SerialDescriptor): Int = error("Enum decoding is not supported")
+    override fun decodeString(): String = error("String decoding is not supported")
+    override fun decodeChar(): Char = error("Char decoding is not supported")
+    override fun decodeBoolean(): Boolean = error("Boolean decoding is not supported")
+    override fun decodeDouble(): Double = error("Double decoding is not supported")
+    override fun decodeFloat(): Float = error("Float decoding is not supported")
+    override fun decodeValue(): Any = error("should not be called")
 }

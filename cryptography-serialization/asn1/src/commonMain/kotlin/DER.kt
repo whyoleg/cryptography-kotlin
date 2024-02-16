@@ -24,7 +24,7 @@ public sealed class DER(
 
     override fun <T> decodeFromByteArray(deserializer: DeserializationStrategy<T>, bytes: ByteArray): T {
         val input = ByteArrayInput(bytes)
-        return DerDecoder(this, DerInput(input)).decodeSerializableValue(deserializer)
+        return DerDecoder(this, input).decodeSerializableValue(deserializer)
     }
 
     public class Builder internal constructor(der: DER) {

@@ -4,11 +4,21 @@
 
 package dev.whyoleg.cryptography.serialization.asn1.internal
 
-internal enum class DerTag(val value: Byte) {
-    INTEGER(0x02),
-    BIT_STRING(0x03),
-    OCTET_STRING(0x04),
-    NULL(0x05),
-    OID(0x06),
-    SEQUENCE(0x30),
+internal typealias DerTag = Byte
+
+internal const val DerTag_INTEGER: DerTag = 0x02
+internal const val DerTag_BIT_STRING: DerTag = 0x03
+internal const val DerTag_OCTET_STRING: DerTag = 0x04
+internal const val DerTag_NULL: DerTag = 0x05
+internal const val DerTag_OID: DerTag = 0x06
+internal const val DerTag_SEQUENCE: DerTag = 0x30
+
+internal fun name(tag: DerTag): String = when (tag) {
+    DerTag_INTEGER      -> "INTEGER"
+    DerTag_BIT_STRING   -> "BIT_STRING"
+    DerTag_OCTET_STRING -> "OCTET_STRING"
+    DerTag_NULL         -> "NULL"
+    DerTag_OID          -> "OID"
+    DerTag_SEQUENCE     -> "SEQUENCE"
+    else                -> "UNKNOWN[$tag]"
 }
