@@ -18,7 +18,7 @@ public sealed class DER(
 
     override fun <T> encodeToByteArray(serializer: SerializationStrategy<T>, value: T): ByteArray {
         val output = ByteArrayOutput()
-        DerEncoder(this, DerOutput(output)).encodeSerializableValue(serializer, value)
+        DerEncoder(this, output).encodeSerializableValue(serializer, value)
         return output.toByteArray()
     }
 

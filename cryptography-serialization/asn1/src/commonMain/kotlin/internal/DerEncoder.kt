@@ -12,88 +12,35 @@ import kotlinx.serialization.descriptors.*
 import kotlinx.serialization.encoding.*
 import kotlinx.serialization.modules.*
 
-// TODO: use AbstractEncoder
-internal class DerEncoder(private val der: DER, private val output: DerOutput) : Encoder {
-    override val serializersModule: SerializersModule
-        get() = der.serializersModule
+@OptIn(ExperimentalSerializationApi::class)
+internal open class DerEncoder(
+    private val der: DER,
+    byteArrayOutput: ByteArrayOutput,
+) : AbstractEncoder() {
+    private val output = DerOutput(byteArrayOutput)
 
-    @ExperimentalSerializationApi
-    override fun encodeNotNullMark() {
-        // TODO: do we need something here?
-    }
+    final override val serializersModule: SerializersModule get() = der.serializersModule
 
-    @ExperimentalSerializationApi
-    override fun encodeNull(): Unit = output.writeNull()
-    override fun encodeByte(value: Byte): Unit = output.writeInteger(value.toBigInt())
-    override fun encodeShort(value: Short): Unit = output.writeInteger(value.toBigInt())
-    override fun encodeInt(value: Int): Unit = output.writeInteger(value.toBigInt())
-    override fun encodeLong(value: Long): Unit = output.writeInteger(value.toBigInt())
+    final override fun shouldEncodeElementDefault(descriptor: SerialDescriptor, index: Int): Boolean = false // TODO
 
-    override fun <T> encodeSerializableValue(serializer: SerializationStrategy<T>, value: T) = when (serializer.descriptor) {
+    final override fun encodeElement(descriptor: SerialDescriptor, index: Int): Boolean = true
+
+    final override fun encodeNotNullMark() {}
+    final override fun encodeNull(): Unit = output.writeNull()
+    final override fun encodeByte(value: Byte): Unit = output.writeInteger(value.toBigInt())
+    final override fun encodeShort(value: Short): Unit = output.writeInteger(value.toBigInt())
+    final override fun encodeInt(value: Int): Unit = output.writeInteger(value.toBigInt())
+    final override fun encodeLong(value: Long): Unit = output.writeInteger(value.toBigInt())
+
+    final override fun <T> encodeSerializableValue(serializer: SerializationStrategy<T>, value: T): Unit = when (serializer.descriptor) {
         // TODO: how this works?
-        // TODO check BitString
         ByteArraySerializer().descriptor         -> output.writeOctetString(value as ByteArray)
         ObjectIdentifier.serializer().descriptor -> output.writeObjectIdentifier(value as ObjectIdentifier)
         BigInt.serializer().descriptor           -> output.writeInteger(value as BigInt)
-        else                                     -> super.encodeSerializableValue(serializer, value)
+        else -> serializer.serialize(this, value)
     }
 
-    @OptIn(ExperimentalSerializationApi::class)
-    override fun beginStructure(descriptor: SerialDescriptor): CompositeEncoder = when (descriptor.kind) {
-        StructureKind.CLASS,
-        PolymorphicKind.OPEN,
-        PolymorphicKind.SEALED,
-             -> DerSequenceEncoder(der, output)
-        else -> throw SerializationException("This serial kind is not supported as structure: $descriptor")
-    }
-
-    override fun beginCollection(descriptor: SerialDescriptor, collectionSize: Int): CompositeEncoder {
-        // SEQUENCE OF
-        error("Collections encoding is not supported")
-    }
-
-    // this could be supported, but later
-    override fun encodeInline(descriptor: SerialDescriptor): Encoder = error("Inline encoding is not supported")
-    override fun encodeEnum(enumDescriptor: SerialDescriptor, index: Int) = error("Enum encoding is not supported")
-
-    // Strings could be supported, but later
-    override fun encodeString(value: String): Unit = error("String encoding is not supported")
-
-    // TBD what to do here
-    override fun encodeChar(value: Char): Unit = error("Char encoding is not supported")
-    override fun encodeBoolean(value: Boolean): Unit = error("Boolean encoding is not supported")
-    override fun encodeFloat(value: Float): Unit = error("Float encoding is not supported")
-    override fun encodeDouble(value: Double): Unit = error("Double encoding is not supported")
-}
-
-private class DerSequenceEncoder(
-    private val der: DER,
-    private val parentOutput: DerOutput,
-) : CompositeEncoder {
-    private val byteArrayOutput = ByteArrayOutput()
-    private val output = DerOutput(byteArrayOutput)
-    private val encoder = DerEncoder(der, output)
-
-    override val serializersModule: SerializersModule get() = der.serializersModule
-
-    override fun endStructure(descriptor: SerialDescriptor): Unit = parentOutput.writeSequence(byteArrayOutput)
-
-    override fun encodeByteElement(descriptor: SerialDescriptor, index: Int, value: Byte): Unit = encoder.encodeByte(value)
-    override fun encodeShortElement(descriptor: SerialDescriptor, index: Int, value: Short): Unit = encoder.encodeShort(value)
-    override fun encodeIntElement(descriptor: SerialDescriptor, index: Int, value: Int): Unit = encoder.encodeInt(value)
-    override fun encodeLongElement(descriptor: SerialDescriptor, index: Int, value: Long): Unit = encoder.encodeLong(value)
-
-    override fun encodeBooleanElement(descriptor: SerialDescriptor, index: Int, value: Boolean): Unit = encoder.encodeBoolean(value)
-    override fun encodeFloatElement(descriptor: SerialDescriptor, index: Int, value: Float): Unit = encoder.encodeFloat(value)
-    override fun encodeDoubleElement(descriptor: SerialDescriptor, index: Int, value: Double): Unit = encoder.encodeDouble(value)
-
-    override fun encodeCharElement(descriptor: SerialDescriptor, index: Int, value: Char): Unit = encoder.encodeChar(value)
-    override fun encodeStringElement(descriptor: SerialDescriptor, index: Int, value: String): Unit = encoder.encodeString(value)
-
-    override fun encodeInlineElement(descriptor: SerialDescriptor, index: Int): Encoder = error("Inline encoding is not supported")
-
-    @OptIn(ExperimentalSerializationApi::class)
-    override fun <T> encodeSerializableElement(
+    final override fun <T> encodeSerializableElement(
         descriptor: SerialDescriptor,
         index: Int,
         serializer: SerializationStrategy<T>,
@@ -105,18 +52,59 @@ private class DerSequenceEncoder(
         ) {
             output.writeBitString(value as ByteArray)
         } else {
-            encoder.encodeSerializableValue(serializer, value)
+            encodeSerializableValue(serializer, value)
         }
     }
 
-    @ExperimentalSerializationApi
-    override fun <T : Any> encodeNullableSerializableElement(
+    final override fun <T : Any> encodeNullableSerializableElement(
         descriptor: SerialDescriptor,
         index: Int,
         serializer: SerializationStrategy<T>,
         value: T?,
-    ): Unit = encoder.encodeNullableSerializableValue(serializer, value)
+    ): Unit = encodeNullableSerializableValue(serializer, value)
 
-    @ExperimentalSerializationApi
-    override fun shouldEncodeElementDefault(descriptor: SerialDescriptor, index: Int): Boolean = false // TODO
+    final override fun <T : Any> encodeNullableSerializableValue(serializer: SerializationStrategy<T>, value: T?) {
+        super.encodeNullableSerializableValue(serializer, value)
+    }
+
+    // structures: SEQUENCE and SEQUENCE OF
+    // TODO: support lists
+    final override fun beginStructure(descriptor: SerialDescriptor): CompositeEncoder = when (descriptor.kind) {
+        StructureKind.CLASS,
+        PolymorphicKind.OPEN,
+        PolymorphicKind.SEALED,
+             -> DerSequenceEncoder(der, output)
+        else -> throw SerializationException("This serial kind is not supported as structure: $descriptor")
+    }
+
+    final override fun beginCollection(descriptor: SerialDescriptor, collectionSize: Int): CompositeEncoder = beginStructure(descriptor)
+
+    override fun endStructure(descriptor: SerialDescriptor) {
+        error("should not be called, need to override")
+    }
+
+    // this could be supported, but later
+    final override fun encodeInline(descriptor: SerialDescriptor): Encoder = error("Inline encoding is not supported")
+    final override fun encodeEnum(enumDescriptor: SerialDescriptor, index: Int) = error("Enum encoding is not supported")
+
+    // Strings could be supported, but later
+    final override fun encodeString(value: String): Unit = error("String encoding is not supported")
+
+    // TBD what to do here
+    final override fun encodeChar(value: Char): Unit = error("Char encoding is not supported")
+    final override fun encodeBoolean(value: Boolean): Unit = error("Boolean encoding is not supported")
+    final override fun encodeFloat(value: Float): Unit = error("Float encoding is not supported")
+    final override fun encodeDouble(value: Double): Unit = error("Double encoding is not supported")
+
+    final override fun encodeValue(value: Any): Unit = error("should not be called")
+}
+
+private class DerSequenceEncoder(
+    der: DER,
+    private val parentOutput: DerOutput,
+    private val byteArrayOutput: ByteArrayOutput = ByteArrayOutput(),
+) : DerEncoder(der, byteArrayOutput) {
+    override fun endStructure(descriptor: SerialDescriptor) {
+        parentOutput.writeSequence(byteArrayOutput)
+    }
 }
