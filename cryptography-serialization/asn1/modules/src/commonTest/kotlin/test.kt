@@ -4,6 +4,7 @@
 
 package dev.whyoleg.cryptography.serialization.asn1.modules
 
+import dev.whyoleg.cryptography.serialization.asn1.modules.rsa.*
 import kotlin.random.*
 
 private val s = SubjectPublicKeyInfo(

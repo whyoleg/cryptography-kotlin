@@ -9,14 +9,16 @@ import kotlinx.serialization.*
 
 @Serializable
 public class SubjectPublicKeyInfo(
-    public val algorithm: ContextualKeyAlgorithmIdentifier,
+    @Contextual
+    public val algorithm: KeyAlgorithmIdentifier,
     public val subjectPublicKey: ByteArray,
 )
 
 @Serializable
 public class PrivateKeyInfo(
     public val version: Int,
-    public val privateKeyAlgorithm: ContextualKeyAlgorithmIdentifier,
+    @Contextual
+    public val privateKeyAlgorithm: KeyAlgorithmIdentifier,
     @ByteArrayAsBitString
     public val privateKey: ByteArray,
     // TODO: attributes

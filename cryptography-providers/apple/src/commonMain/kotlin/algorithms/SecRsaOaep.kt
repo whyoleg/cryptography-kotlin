@@ -13,6 +13,7 @@ import dev.whyoleg.cryptography.operations.cipher.*
 import dev.whyoleg.cryptography.providers.apple.internal.*
 import dev.whyoleg.cryptography.serialization.asn1.*
 import dev.whyoleg.cryptography.serialization.asn1.modules.*
+import dev.whyoleg.cryptography.serialization.asn1.modules.rsa.*
 import dev.whyoleg.cryptography.serialization.pem.*
 import kotlinx.cinterop.*
 import platform.CoreFoundation.*
@@ -53,8 +54,8 @@ private class RsaOaepPublicKeyDecoder(
 
     override fun decodeFromBlocking(format: RSA.PublicKey.Format, input: ByteArray): RSA.OAEP.PublicKey = when (format) {
         RSA.PublicKey.Format.JWK     -> TODO()
-        RSA.PublicKey.Format.PEM     -> unwrapPublicKey(ObjectIdentifier.RSA_OAEP, unwrapPem(PemLabel.PublicKey, input))
-        RSA.PublicKey.Format.DER     -> unwrapPublicKey(ObjectIdentifier.RSA_OAEP, input)
+        RSA.PublicKey.Format.PEM -> unwrapPublicKey(ObjectIdentifier.RSA, unwrapPem(PemLabel.PublicKey, input))
+        RSA.PublicKey.Format.DER -> unwrapPublicKey(ObjectIdentifier.RSA, input)
         RSA.PublicKey.Format.DER_RSA -> input
         RSA.PublicKey.Format.PEM_RSA -> unwrapPem(PemLabel.RsaPublicKey, input)
     }.useNSData(::decodeFromOaep)
@@ -174,8 +175,8 @@ private class RsaOaepPublicKey(
 
     override fun encodeToBlocking(format: RSA.PublicKey.Format): ByteArray = when (format) {
         RSA.PublicKey.Format.JWK     -> TODO()
-        RSA.PublicKey.Format.PEM     -> wrapPem(PemLabel.PublicKey, wrapPublicKey(RsaOaepKeyAlgorithmIdentifier(), encodeToOaep()))
-        RSA.PublicKey.Format.DER     -> wrapPublicKey(RsaOaepKeyAlgorithmIdentifier(), encodeToOaep())
+        RSA.PublicKey.Format.PEM -> wrapPem(PemLabel.PublicKey, wrapPublicKey(RsaKeyAlgorithmIdentifier, encodeToOaep()))
+        RSA.PublicKey.Format.DER -> wrapPublicKey(RsaKeyAlgorithmIdentifier, encodeToOaep())
         RSA.PublicKey.Format.PEM_RSA -> wrapPem(PemLabel.RsaPublicKey, encodeToOaep())
         RSA.PublicKey.Format.DER_RSA -> encodeToOaep()
     }
