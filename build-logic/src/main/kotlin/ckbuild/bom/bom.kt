@@ -9,6 +9,8 @@ val artifacts
         "cryptography-bigint",
         "cryptography-random",
         "cryptography-serialization-pem",
+        "cryptography-serialization-asn1",
+        "cryptography-serialization-asn1-modules",
         "cryptography-core",
         "cryptography-provider-jdk",
         "cryptography-provider-apple",

@@ -36,6 +36,9 @@ projects {
     module("cryptography-random")
     folder("cryptography-serialization") {
         module("pem")
+        module("asn1") {
+            module("modules")
+        }
     }
 
     // providers API, high-level API

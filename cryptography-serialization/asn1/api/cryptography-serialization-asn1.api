@@ -1,0 +1,73 @@
+public final class dev/whyoleg/cryptography/serialization/asn1/BitArray {
+	public static final field Companion Ldev/whyoleg/cryptography/serialization/asn1/BitArray$Companion;
+	public fun <init> (I[B)V
+	public final fun getByteArray ()[B
+	public final fun getUnusedBits ()I
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/BitArray$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/serialization/asn1/BitArray$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/whyoleg/cryptography/serialization/asn1/BitArray;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/whyoleg/cryptography/serialization/asn1/BitArray;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/BitArray$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public abstract class dev/whyoleg/cryptography/serialization/asn1/DER : kotlinx/serialization/BinaryFormat {
+	public static final field Default Ldev/whyoleg/cryptography/serialization/asn1/DER$Default;
+	public synthetic fun <init> (Lkotlinx/serialization/modules/SerializersModule;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun decodeFromByteArray (Lkotlinx/serialization/DeserializationStrategy;[B)Ljava/lang/Object;
+	public fun encodeToByteArray (Lkotlinx/serialization/SerializationStrategy;Ljava/lang/Object;)[B
+	public fun getSerializersModule ()Lkotlinx/serialization/modules/SerializersModule;
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/DER$Builder {
+	public final fun getSerializersModule ()Lkotlinx/serialization/modules/SerializersModule;
+	public final fun setSerializersModule (Lkotlinx/serialization/modules/SerializersModule;)V
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/DER$Default : dev/whyoleg/cryptography/serialization/asn1/DER {
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/DERKt {
+	public static final fun DER (Ldev/whyoleg/cryptography/serialization/asn1/DER;Lkotlin/jvm/functions/Function1;)Ldev/whyoleg/cryptography/serialization/asn1/DER;
+	public static synthetic fun DER$default (Ldev/whyoleg/cryptography/serialization/asn1/DER;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ldev/whyoleg/cryptography/serialization/asn1/DER;
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/ObjectIdentifier {
+	public static final field Companion Ldev/whyoleg/cryptography/serialization/asn1/ObjectIdentifier$Companion;
+	public static final synthetic fun box-impl (Ljava/lang/String;)Ldev/whyoleg/cryptography/serialization/asn1/ObjectIdentifier;
+	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/ObjectIdentifier$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/serialization/asn1/ObjectIdentifier$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun deserialize-iVrrli8 (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/String;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun serialize-IHeWLgs (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/String;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/ObjectIdentifier$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
