@@ -28,13 +28,13 @@ internal abstract class Openssl3Rsa<PublicK : RSA.PublicKey, PrivateK : RSA.Priv
         private val hashAlgorithm: String,
     ) : Openssl3PublicKeyDecoder<RSA.PublicKey.Format, PublicK>("RSA") {
         override fun inputType(format: RSA.PublicKey.Format): String = when (format) {
-            RSA.PublicKey.Format.DER, RSA.PublicKey.Format.DER_RSA -> "DER"
-            RSA.PublicKey.Format.PEM, RSA.PublicKey.Format.PEM_RSA -> "PEM"
+            RSA.PublicKey.Format.DER, RSA.PublicKey.Format.DER.PKCS1 -> "DER"
+            RSA.PublicKey.Format.PEM, RSA.PublicKey.Format.PEM.PKCS1 -> "PEM"
             RSA.PublicKey.Format.JWK                               -> error("JWK format is not supported")
         }
 
         override fun inputStruct(format: RSA.PublicKey.Format): String = when (format) {
-            RSA.PublicKey.Format.DER_RSA, RSA.PublicKey.Format.PEM_RSA -> "pkcs1"
+            RSA.PublicKey.Format.DER.PKCS1, RSA.PublicKey.Format.PEM.PKCS1 -> "pkcs1"
             else                                                       -> super.inputStruct(format)
         }
 
@@ -48,13 +48,13 @@ internal abstract class Openssl3Rsa<PublicK : RSA.PublicKey, PrivateK : RSA.Priv
         private val hashAlgorithm: String,
     ) : Openssl3PrivateKeyDecoder<RSA.PrivateKey.Format, PrivateK>("RSA") {
         override fun inputType(format: RSA.PrivateKey.Format): String = when (format) {
-            RSA.PrivateKey.Format.DER, RSA.PrivateKey.Format.DER_RSA -> "DER"
-            RSA.PrivateKey.Format.PEM, RSA.PrivateKey.Format.PEM_RSA -> "PEM"
+            RSA.PrivateKey.Format.DER, RSA.PrivateKey.Format.DER.PKCS1 -> "DER"
+            RSA.PrivateKey.Format.PEM, RSA.PrivateKey.Format.PEM.PKCS1 -> "PEM"
             RSA.PrivateKey.Format.JWK                                -> error("JWK format is not supported")
         }
 
         override fun inputStruct(format: RSA.PrivateKey.Format): String = when (format) {
-            RSA.PrivateKey.Format.DER_RSA, RSA.PrivateKey.Format.PEM_RSA -> "pkcs1"
+            RSA.PrivateKey.Format.DER.PKCS1, RSA.PrivateKey.Format.PEM.PKCS1 -> "pkcs1"
             else                                                         -> super.inputStruct(format)
         }
 
@@ -88,13 +88,13 @@ internal abstract class Openssl3Rsa<PublicK : RSA.PublicKey, PrivateK : RSA.Priv
         key: CPointer<EVP_PKEY>,
     ) : RSA.PublicKey, Openssl3PublicKeyEncodable<RSA.PublicKey.Format>(key) {
         override fun outputType(format: RSA.PublicKey.Format): String = when (format) {
-            RSA.PublicKey.Format.DER, RSA.PublicKey.Format.DER_RSA -> "DER"
-            RSA.PublicKey.Format.PEM, RSA.PublicKey.Format.PEM_RSA -> "PEM"
+            RSA.PublicKey.Format.DER, RSA.PublicKey.Format.DER.PKCS1 -> "DER"
+            RSA.PublicKey.Format.PEM, RSA.PublicKey.Format.PEM.PKCS1 -> "PEM"
             RSA.PublicKey.Format.JWK                               -> error("JWK format is not supported")
         }
 
         override fun outputStruct(format: RSA.PublicKey.Format): String = when (format) {
-            RSA.PublicKey.Format.DER_RSA, RSA.PublicKey.Format.PEM_RSA -> "pkcs1"
+            RSA.PublicKey.Format.DER.PKCS1, RSA.PublicKey.Format.PEM.PKCS1 -> "pkcs1"
             else                                                       -> super.outputStruct(format)
         }
     }
@@ -103,13 +103,13 @@ internal abstract class Openssl3Rsa<PublicK : RSA.PublicKey, PrivateK : RSA.Priv
         key: CPointer<EVP_PKEY>,
     ) : RSA.PrivateKey, Openssl3PrivateKeyEncodable<RSA.PrivateKey.Format>(key) {
         override fun outputType(format: RSA.PrivateKey.Format): String = when (format) {
-            RSA.PrivateKey.Format.DER, RSA.PrivateKey.Format.DER_RSA -> "DER"
-            RSA.PrivateKey.Format.PEM, RSA.PrivateKey.Format.PEM_RSA -> "PEM"
+            RSA.PrivateKey.Format.DER, RSA.PrivateKey.Format.DER.PKCS1 -> "DER"
+            RSA.PrivateKey.Format.PEM, RSA.PrivateKey.Format.PEM.PKCS1 -> "PEM"
             RSA.PrivateKey.Format.JWK                                -> error("JWK format is not supported")
         }
 
         override fun outputStruct(format: RSA.PrivateKey.Format): String = when (format) {
-            RSA.PrivateKey.Format.DER_RSA, RSA.PrivateKey.Format.PEM_RSA -> "pkcs1"
+            RSA.PrivateKey.Format.DER.PKCS1, RSA.PrivateKey.Format.PEM.PKCS1 -> "pkcs1"
             else                                                         -> super.outputStruct(format)
         }
     }

@@ -11,7 +11,7 @@ For supported targets and algorithms, please consult [Supported primitives secti
 * AES.CBC: only `padding=true` is supported
 * ECDSA: only `RAW` signature format is supported
 * ECDSA (browser only): private key `DER` encoding can be different comparing to other providers
-  (though it will still work)
+  (but it will still work)
 
 ## Example
 

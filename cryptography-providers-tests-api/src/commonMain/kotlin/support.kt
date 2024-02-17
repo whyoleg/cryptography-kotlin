@@ -28,11 +28,8 @@ fun AlgorithmTestScope<*>.supportsKeyFormat(format: KeyFormat): Boolean = suppor
     when {
         // only WebCrypto supports JWK for now
         format.name == "JWK" && !provider.isWebCrypto    -> "JWK"
-        // Apple provider doesn't have this formats out-of-the-box
-        format.name in setOf("PEM", "DER", "JWK") &&
-                provider.isApple                         -> "$format in Apple provider"
         // will be supported if ASN.1 serialization is ready - TODO JDK support, may be it's available
-        format.name in setOf("PEM_RSA", "DER_RSA") &&
+        format.name in setOf("PEM/PKCS#1", "DER/PKCS#1") &&
                 (provider.isJdk || provider.isWebCrypto) -> "$format not yet available in $provider"
         else                                             -> null
     }

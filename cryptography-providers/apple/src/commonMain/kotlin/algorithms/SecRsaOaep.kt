@@ -7,198 +7,43 @@ package dev.whyoleg.cryptography.providers.apple.algorithms
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.algorithms.digest.*
-import dev.whyoleg.cryptography.bigint.*
-import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.cipher.*
 import dev.whyoleg.cryptography.providers.apple.internal.*
-import dev.whyoleg.cryptography.serialization.pem.*
 import kotlinx.cinterop.*
 import platform.CoreFoundation.*
 import platform.Foundation.*
 import platform.Security.*
-import kotlin.experimental.*
-import kotlin.native.ref.*
 
-internal object SecRsaOaep : RSA.OAEP {
-    override fun publicKeyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<RSA.PublicKey.Format, RSA.OAEP.PublicKey> =
-        RsaOaepPublicKeyDecoder(digest.rsaOaepSecKeyAlgorithm())
+internal object SecRsaOaep : SecRsa<RSA.OAEP.PublicKey, RSA.OAEP.PrivateKey, RSA.OAEP.KeyPair>(), RSA.OAEP {
+    override fun hashAlgorithm(digest: CryptographyAlgorithmId<Digest>): SecKeyAlgorithm? = digest.rsaOaepSecKeyAlgorithm()
 
-    override fun privateKeyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<RSA.PrivateKey.Format, RSA.OAEP.PrivateKey> =
-        RsaOaepPrivateKeyDecoder(digest.rsaOaepSecKeyAlgorithm())
+    override fun wrapKeyPair(algorithm: SecKeyAlgorithm?, publicKey: SecKeyRef, privateKey: SecKeyRef): RSA.OAEP.KeyPair = RsaOaepKeyPair(
+        publicKey = RsaOaepPublicKey(publicKey, algorithm),
+        privateKey = RsaOaepPrivateKey(privateKey, algorithm),
+    )
 
-    override fun keyPairGenerator(
-        keySize: BinarySize,
-        digest: CryptographyAlgorithmId<Digest>,
-        publicExponent: BigInt,
-    ): KeyGenerator<RSA.OAEP.KeyPair> {
-        check(publicExponent == 65537.toBigInt()) { "Only F4 public exponent is supported" }
+    override fun wrapPublicKey(algorithm: SecKeyAlgorithm?, key: SecKeyRef): RSA.OAEP.PublicKey = RsaOaepPublicKey(key, algorithm)
+    override fun wrapPrivateKey(algorithm: SecKeyAlgorithm?, key: SecKeyRef): RSA.OAEP.PrivateKey = RsaOaepPrivateKey(key, algorithm)
 
-        return RsaOaepKeyPairGenerator(keySize.inBits, digest.rsaOaepSecKeyAlgorithm())
-    }
-}
+    private class RsaOaepKeyPair(
+        override val publicKey: RSA.OAEP.PublicKey,
+        override val privateKey: RSA.OAEP.PrivateKey,
+    ) : RSA.OAEP.KeyPair
 
-private class RsaOaepPublicKeyDecoder(
-    private val algorithm: SecKeyAlgorithm?,
-) : KeyDecoder<RSA.PublicKey.Format, RSA.OAEP.PublicKey> {
-    override fun decodeFromBlocking(format: RSA.PublicKey.Format, input: ByteArray): RSA.OAEP.PublicKey = when (format) {
-        RSA.PublicKey.Format.DER     -> TODO()
-        RSA.PublicKey.Format.PEM     -> TODO()
-        RSA.PublicKey.Format.JWK     -> TODO()
-        RSA.PublicKey.Format.DER_RSA -> input.useNSData(::decodeFromOaep)
-        RSA.PublicKey.Format.PEM_RSA -> PEM.decode(input).ensurePemLabel(PemLabel.RsaPublicKey).bytes.useNSData(::decodeFromOaep)
+    private class RsaOaepPublicKey(
+        publicKey: SecKeyRef,
+        algorithm: SecKeyAlgorithm?,
+    ) : RsaPublicKey(publicKey), RSA.OAEP.PublicKey {
+        private val encryptor = RsaOaepEncryptor(publicKey, algorithm)
+        override fun encryptor(): AuthenticatedEncryptor = encryptor
     }
 
-    @OptIn(UnsafeNumber::class)
-    private fun decodeFromOaep(input: NSData): RSA.OAEP.PublicKey = memScoped {
-        CFMutableDictionary(2.convert()) {
-            add(kSecAttrKeyType, kSecAttrKeyTypeRSA)
-            add(kSecAttrKeyClass, kSecAttrKeyClassPublic)
-        }.use { attributes ->
-
-            val error = alloc<CFErrorRefVar>()
-
-            val publicKey = SecKeyCreateWithData(
-                input.retainBridgeAs<CFDataRef>(),
-                attributes,
-                error.ptr
-            )
-            if (publicKey == null) {
-                val nsError = error.value.releaseBridgeAs<NSError>()
-                error("Failed to decode public key: ${nsError?.description}")
-            }
-
-            RsaOaepPublicKey(publicKey, algorithm)
-        }
-    }
-}
-
-private class RsaOaepPrivateKeyDecoder(
-    private val algorithm: SecKeyAlgorithm?,
-) : KeyDecoder<RSA.PrivateKey.Format, RSA.OAEP.PrivateKey> {
-    override fun decodeFromBlocking(format: RSA.PrivateKey.Format, input: ByteArray): RSA.OAEP.PrivateKey = when (format) {
-        RSA.PrivateKey.Format.DER     -> TODO()
-        RSA.PrivateKey.Format.PEM     -> TODO()
-        RSA.PrivateKey.Format.JWK     -> TODO()
-        RSA.PrivateKey.Format.DER_RSA -> input.useNSData(::decodeFromOaep)
-        RSA.PrivateKey.Format.PEM_RSA -> PEM.decode(input).ensurePemLabel(PemLabel.RsaPrivateKey).bytes.useNSData(::decodeFromOaep)
-    }
-
-    @OptIn(UnsafeNumber::class)
-    private fun decodeFromOaep(input: NSData): RSA.OAEP.PrivateKey = memScoped {
-        CFMutableDictionary(2.convert()) {
-            add(kSecAttrKeyType, kSecAttrKeyTypeRSA)
-            add(kSecAttrKeyClass, kSecAttrKeyClassPrivate)
-        }.use { attributes ->
-
-            val error = alloc<CFErrorRefVar>()
-
-            val privateKey = SecKeyCreateWithData(
-                input.retainBridgeAs<CFDataRef>(),
-                attributes,
-                error.ptr
-            )
-            if (privateKey == null) {
-                val nsError = error.value.releaseBridgeAs<NSError>()
-                error("Failed to decode private key: ${nsError?.description}")
-            }
-
-            RsaOaepPrivateKey(privateKey, algorithm)
-        }
-    }
-}
-
-private class RsaOaepKeyPairGenerator(
-    private val keySizeBits: Int,
-    private val algorithm: SecKeyAlgorithm?,
-) : KeyGenerator<RSA.OAEP.KeyPair> {
-
-    @OptIn(UnsafeNumber::class)
-    override fun generateKeyBlocking(): RSA.OAEP.KeyPair = memScoped {
-        CFMutableDictionary(2.convert()) {
-            add(kSecAttrKeyType, kSecAttrKeyTypeRSA)
-            @Suppress("CAST_NEVER_SUCCEEDS")
-            add(kSecAttrKeySizeInBits, (keySizeBits as NSNumber).retainBridge())
-        }.use { attributes ->
-            val error = alloc<CFErrorRefVar>()
-
-            val privateKey = SecKeyCreateRandomKey(
-                parameters = attributes,
-                error = error.ptr
-            )
-            if (privateKey == null) {
-                val nsError = error.value.releaseBridgeAs<NSError>()
-                error("Failed to generate key pair: ${nsError?.description}")
-            }
-            val publicKey = SecKeyCopyPublicKey(privateKey)
-
-            RsaOaepKeyPair(
-                RsaOaepPublicKey(publicKey!!, algorithm),
-                RsaOaepPrivateKey(privateKey, algorithm)
-            )
-        }
-    }
-}
-
-private class RsaOaepKeyPair(
-    override val publicKey: RSA.OAEP.PublicKey,
-    override val privateKey: RSA.OAEP.PrivateKey,
-) : RSA.OAEP.KeyPair
-
-private class RsaOaepPublicKey(
-    private val publicKey: SecKeyRef,
-    algorithm: SecKeyAlgorithm?,
-) : RSA.OAEP.PublicKey {
-    @OptIn(ExperimentalNativeApi::class)
-    private val cleanup = createCleaner(publicKey, SecKeyRef::release)
-    private val encryptor = RsaOaepEncryptor(publicKey, algorithm)
-
-    override fun encryptor(): AuthenticatedEncryptor = encryptor
-
-    @OptIn(UnsafeNumber::class)
-    override fun encodeToBlocking(format: RSA.PublicKey.Format): ByteArray = when (format) {
-        RSA.PublicKey.Format.DER     -> TODO()
-        RSA.PublicKey.Format.PEM     -> TODO()
-        RSA.PublicKey.Format.JWK     -> TODO()
-        RSA.PublicKey.Format.PEM_RSA -> PEM.encodeToByteArray(PemContent(PemLabel.RsaPublicKey, encodeToOaep()))
-        RSA.PublicKey.Format.DER_RSA -> encodeToOaep()
-    }
-
-    private fun encodeToOaep(): ByteArray = memScoped {
-        val error = alloc<CFErrorRefVar>()
-        val encodedKey = SecKeyCopyExternalRepresentation(publicKey, error.ptr)?.releaseBridgeAs<NSData>()
-        if (encodedKey == null) {
-            val nsError = error.value.releaseBridgeAs<NSError>()
-            error("Failed to encode key: ${nsError?.description}")
-        }
-        encodedKey.toByteArray()
-    }
-}
-
-private class RsaOaepPrivateKey(
-    private val privateKey: SecKeyRef,
-    algorithm: SecKeyAlgorithm?,
-) : RSA.OAEP.PrivateKey {
-    @OptIn(ExperimentalNativeApi::class)
-    private val cleanup = createCleaner(privateKey, SecKeyRef::release)
-    private val decryptor = RsaOaepDecryptor(privateKey, algorithm)
-    override fun decryptor(): AuthenticatedDecryptor = decryptor
-
-    override fun encodeToBlocking(format: RSA.PrivateKey.Format): ByteArray = when (format) {
-        RSA.PrivateKey.Format.DER     -> TODO()
-        RSA.PrivateKey.Format.PEM     -> TODO()
-        RSA.PrivateKey.Format.JWK     -> TODO()
-        RSA.PrivateKey.Format.PEM_RSA -> PEM.encodeToByteArray(PemContent(PemLabel.RsaPrivateKey, encodeToOaep()))
-        RSA.PrivateKey.Format.DER_RSA -> encodeToOaep()
-    }
-
-    private fun encodeToOaep(): ByteArray = memScoped {
-        val error = alloc<CFErrorRefVar>()
-        val encodedKey = SecKeyCopyExternalRepresentation(privateKey, error.ptr)?.releaseBridgeAs<NSData>()
-        if (encodedKey == null) {
-            val nsError = error.value.releaseBridgeAs<NSError>()
-            error("Failed to encode key: ${nsError?.description}")
-        }
-        encodedKey.toByteArray()
+    private class RsaOaepPrivateKey(
+        privateKey: SecKeyRef,
+        algorithm: SecKeyAlgorithm?,
+    ) : RsaPrivateKey(privateKey), RSA.OAEP.PrivateKey {
+        private val decryptor = RsaOaepDecryptor(privateKey, algorithm)
+        override fun decryptor(): AuthenticatedDecryptor = decryptor
     }
 }
 

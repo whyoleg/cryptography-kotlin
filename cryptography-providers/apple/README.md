@@ -7,7 +7,6 @@ For supported targets and algorithms, please consult [Supported primitives secti
 ## Limitations
 
 * KeyFormat: doesn't support `JWK` key format yet
-* TODO: add limitations of other key formats (DER, PEM) if needed
 
 ## Example
 

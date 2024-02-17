@@ -31,21 +31,63 @@ public interface RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP : RS
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface PublicKey : EncodableKey<PublicKey.Format> {
-        public enum class Format : KeyFormat {
-            DER, PEM, JWK,
+        public sealed class Format : KeyFormat {
+            final override fun toString(): String = name
 
-            // following PKCS1 standard, not PKCS8
-            DER_RSA, PEM_RSA,
+            public data object JWK : Format() {
+                override val name: String get() = "JWK"
+            }
+
+            public sealed class DER : Format() {
+                public companion object Generic : DER() {
+                    override val name: String get() = "DER"
+                }
+
+                public data object PKCS1 : DER() {
+                    override val name: String get() = "DER/PKCS#1"
+                }
+            }
+
+            public sealed class PEM : Format() {
+                public companion object Generic : PEM() {
+                    override val name: String get() = "PEM"
+                }
+
+                public data object PKCS1 : PEM() {
+                    override val name: String get() = "PEM/PKCS#1"
+                }
+            }
         }
     }
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface PrivateKey : EncodableKey<PrivateKey.Format> {
-        public enum class Format : KeyFormat {
-            DER, PEM, JWK,
+        public sealed class Format : KeyFormat {
+            final override fun toString(): String = name
 
-            // following PKCS1 standard, not PKCS8
-            DER_RSA, PEM_RSA,
+            public data object JWK : Format() {
+                override val name: String get() = "JWK"
+            }
+
+            public sealed class DER : Format() {
+                public companion object Generic : DER() {
+                    override val name: String get() = "DER"
+                }
+
+                public data object PKCS1 : DER() {
+                    override val name: String get() = "DER/PKCS#1"
+                }
+            }
+
+            public sealed class PEM : Format() {
+                public companion object Generic : PEM() {
+                    override val name: String get() = "PEM"
+                }
+
+                public data object PKCS1 : PEM() {
+                    override val name: String get() = "PEM/PKCS#1"
+                }
+            }
         }
     }
 

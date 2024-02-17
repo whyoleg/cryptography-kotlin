@@ -11,6 +11,22 @@ import dev.whyoleg.cryptography.providers.tests.api.compatibility.*
 import kotlinx.serialization.*
 import kotlin.test.*
 
+private val publicKeyFormats = listOf(
+    RSA.PublicKey.Format.JWK,
+    RSA.PublicKey.Format.DER,
+    RSA.PublicKey.Format.PEM,
+    RSA.PublicKey.Format.DER.PKCS1,
+    RSA.PublicKey.Format.PEM.PKCS1,
+).associateBy { it.name }
+
+private val privateKeyFormats = listOf(
+    RSA.PrivateKey.Format.JWK,
+    RSA.PrivateKey.Format.DER,
+    RSA.PrivateKey.Format.PEM,
+    RSA.PrivateKey.Format.DER.PKCS1,
+    RSA.PrivateKey.Format.PEM.PKCS1,
+).associateBy { it.name }
+
 abstract class RsaBasedCompatibilityTest<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP : RSA.KeyPair<PublicK, PrivateK>, A : RSA<PublicK, PrivateK, KP>>(
     algorithmId: CryptographyAlgorithmId<A>,
     provider: CryptographyProvider,
@@ -42,8 +58,8 @@ abstract class RsaBasedCompatibilityTest<PublicK : RSA.PublicKey, PrivateK : RSA
                 algorithm.keyPairGenerator(keySize, digest).generateKeys(keyIterations) { keyPair ->
                     val keyReference = api.keyPairs.saveData(
                         keyParametersId, KeyPairData(
-                            public = KeyData(keyPair.publicKey.encodeTo(RSA.PublicKey.Format.entries, ::supportsKeyFormat)),
-                            private = KeyData(keyPair.privateKey.encodeTo(RSA.PrivateKey.Format.entries, ::supportsKeyFormat))
+                            public = KeyData(keyPair.publicKey.encodeTo(publicKeyFormats.values, ::supportsKeyFormat)),
+                            private = KeyData(keyPair.privateKey.encodeTo(privateKeyFormats.values, ::supportsKeyFormat))
                         )
                     )
                     block(keyPair, keyReference, keyParameters)
@@ -62,14 +78,14 @@ abstract class RsaBasedCompatibilityTest<PublicK : RSA.PublicKey, PrivateK : RSA
             api.keyPairs.getData<KeyPairData>(parametersId) { (public, private), keyReference, _ ->
                 val publicKeys = publicKeyDecoder.decodeFrom(
                     formats = public.formats,
-                    formatOf = RSA.PublicKey.Format::valueOf,
+                    formatOf = publicKeyFormats::getValue,
                     supports = ::supportsKeyFormat
                 ) { key, format, bytes ->
                     when (format) {
                         RSA.PublicKey.Format.DER,
                         RSA.PublicKey.Format.PEM,
-                        RSA.PublicKey.Format.DER_RSA,
-                        RSA.PublicKey.Format.PEM_RSA,
+                        RSA.PublicKey.Format.DER.PKCS1,
+                        RSA.PublicKey.Format.PEM.PKCS1,
                                                  ->
                             assertContentEquals(bytes, key.encodeTo(format), "Public Key $format encoding")
                         RSA.PublicKey.Format.JWK -> {}
@@ -78,14 +94,14 @@ abstract class RsaBasedCompatibilityTest<PublicK : RSA.PublicKey, PrivateK : RSA
                 }
                 val privateKeys = privateKeyDecoder.decodeFrom(
                     formats = private.formats,
-                    formatOf = RSA.PrivateKey.Format::valueOf,
+                    formatOf = privateKeyFormats::getValue,
                     supports = ::supportsKeyFormat
                 ) { key, format, bytes ->
                     when (format) {
                         RSA.PrivateKey.Format.DER,
                         RSA.PrivateKey.Format.PEM,
-                        RSA.PrivateKey.Format.DER_RSA,
-                        RSA.PrivateKey.Format.PEM_RSA,
+                        RSA.PrivateKey.Format.DER.PKCS1,
+                        RSA.PrivateKey.Format.PEM.PKCS1,
                                                   ->
                             assertContentEquals(bytes, key.encodeTo(format), "Private Key $format encoding")
                         RSA.PrivateKey.Format.JWK -> {}
