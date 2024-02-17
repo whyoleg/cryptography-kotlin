@@ -19,7 +19,7 @@ internal fun wrapPem(label: PemLabel, key: ByteArray): ByteArray = PEM.encodeToB
 
 internal fun unwrapPublicKey(algorithm: ObjectIdentifier, key: ByteArray): ByteArray =
     DER.decodeFromByteArray(SubjectPublicKeyInfo.serializer(), key).also {
-        check(it.algorithm.algorithm == algorithm)
+        check(it.algorithm.algorithm == algorithm) { "Expected algorithm '${algorithm.value}', received: '${it.algorithm.algorithm}'" }
     }.subjectPublicKey.byteArray
 
 internal fun wrapPublicKey(identifier: KeyAlgorithmIdentifier, key: ByteArray): ByteArray = DER.encodeToByteArray(

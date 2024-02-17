@@ -6,31 +6,18 @@ package dev.whyoleg.cryptography.providers.webcrypto.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
-import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.cipher.*
-import dev.whyoleg.cryptography.providers.webcrypto.*
 import dev.whyoleg.cryptography.providers.webcrypto.internal.*
 import dev.whyoleg.cryptography.providers.webcrypto.materials.*
 import dev.whyoleg.cryptography.random.*
 
-internal object WebCryptoAesGcm : AES.GCM {
-    private val keyUsages = arrayOf("encrypt", "decrypt")
-    private val keyFormat: (AES.Key.Format) -> String = {
-        when (it) {
-            AES.Key.Format.RAW -> "raw"
-            AES.Key.Format.JWK -> "jwk"
-        }
+internal object WebCryptoAesGcm : WebCryptoAes<AES.GCM.Key>(
+    algorithmName = "AES-GCM",
+    keyWrapper = WebCryptoKeyWrapper(arrayOf("encrypt", "decrypt"), ::AesGcmKey)
+), AES.GCM {
+    private class AesGcmKey(key: CryptoKey) : AesKey(key), AES.GCM.Key {
+        override fun cipher(tagSize: BinarySize): AuthenticatedCipher = AesGcmCipher(key, tagSize.inBits)
     }
-    private val wrapKey: (CryptoKey) -> AES.GCM.Key = { key ->
-        object : AES.GCM.Key, EncodableKey<AES.Key.Format> by WebCryptoEncodableKey(key, keyFormat) {
-            override fun cipher(tagSize: BinarySize): AuthenticatedCipher = AesGcmCipher(key, tagSize.inBits)
-        }
-    }
-    private val keyDecoder = WebCryptoKeyDecoder(Algorithm("AES-GCM"), keyUsages, keyFormat, wrapKey)
-
-    override fun keyDecoder(): KeyDecoder<AES.Key.Format, AES.GCM.Key> = keyDecoder
-    override fun keyGenerator(keySize: SymmetricKeySize): KeyGenerator<AES.GCM.Key> =
-        WebCryptoSymmetricKeyGenerator(AesKeyGenerationAlgorithm("AES-GCM", keySize.value.inBits), keyUsages, wrapKey)
 }
 
 private const val ivSizeBytes = 12 //bytes for GCM

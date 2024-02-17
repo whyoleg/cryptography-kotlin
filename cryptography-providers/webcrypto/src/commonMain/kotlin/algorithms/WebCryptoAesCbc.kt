@@ -5,34 +5,21 @@
 package dev.whyoleg.cryptography.providers.webcrypto.algorithms
 
 import dev.whyoleg.cryptography.algorithms.symmetric.*
-import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.cipher.*
-import dev.whyoleg.cryptography.providers.webcrypto.*
 import dev.whyoleg.cryptography.providers.webcrypto.internal.*
 import dev.whyoleg.cryptography.providers.webcrypto.materials.*
 import dev.whyoleg.cryptography.random.*
 
-internal object WebCryptoAesCbc : AES.CBC {
-    private val keyUsages = arrayOf("encrypt", "decrypt")
-    private val keyFormat: (AES.Key.Format) -> String = {
-        when (it) {
-            AES.Key.Format.RAW -> "raw"
-            AES.Key.Format.JWK -> "jwk"
+internal object WebCryptoAesCbc : WebCryptoAes<AES.CBC.Key>(
+    algorithmName = "AES-CBC",
+    keyWrapper = WebCryptoKeyWrapper(arrayOf("encrypt", "decrypt"), ::AesCbcKey)
+), AES.CBC {
+    private class AesCbcKey(key: CryptoKey) : AesKey(key), AES.CBC.Key {
+        override fun cipher(padding: Boolean): Cipher {
+            require(padding) { "Padding is required in WebCrypto" }
+            return AesCbcCipher(key)
         }
     }
-    private val wrapKey: (CryptoKey) -> AES.CBC.Key = { key ->
-        object : AES.CBC.Key, EncodableKey<AES.Key.Format> by WebCryptoEncodableKey(key, keyFormat) {
-            override fun cipher(padding: Boolean): Cipher {
-                require(padding) { "Padding is required in WebCrypto" }
-                return AesCbcCipher(key)
-            }
-        }
-    }
-    private val keyDecoder = WebCryptoKeyDecoder(Algorithm("AES-CBC"), keyUsages, keyFormat, wrapKey)
-
-    override fun keyDecoder(): KeyDecoder<AES.Key.Format, AES.CBC.Key> = keyDecoder
-    override fun keyGenerator(keySize: SymmetricKeySize): KeyGenerator<AES.CBC.Key> =
-        WebCryptoSymmetricKeyGenerator(AesKeyGenerationAlgorithm("AES-CBC", keySize.value.inBits), keyUsages, wrapKey)
 }
 
 private const val ivSizeBytes = 16 //bytes for CBC

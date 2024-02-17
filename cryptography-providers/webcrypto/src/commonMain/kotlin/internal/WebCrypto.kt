@@ -14,17 +14,14 @@ internal expect object WebCrypto {
     suspend fun verify(algorithm: Algorithm, key: CryptoKey, signature: ByteArray, data: ByteArray): Boolean
 
     suspend fun importKey(
-        format: String, /*"raw" | "pkcs8" | "spki"*/
-        keyData: ByteArray, /*JSON if jwk, ArrayBuffer otherwise*/
+        format: String,
+        keyData: ByteArray,
         algorithm: Algorithm,
         extractable: Boolean,
         keyUsages: Array<String>,
     ): CryptoKey
 
-    suspend fun exportKey(
-        format: String, /*"raw" | "pkcs8" | "spki"*/
-        key: CryptoKey,
-    ): ByteArray /*JSON if jwk, ArrayBuffer otherwise*/
+    suspend fun exportKey(format: String, key: CryptoKey): ByteArray
 
     suspend fun generateKey(algorithm: Algorithm, extractable: Boolean, keyUsages: Array<String>): CryptoKey
 

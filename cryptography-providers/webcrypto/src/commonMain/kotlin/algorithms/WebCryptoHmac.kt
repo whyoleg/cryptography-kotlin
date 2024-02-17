@@ -14,26 +14,34 @@ import dev.whyoleg.cryptography.providers.webcrypto.materials.*
 import dev.whyoleg.cryptography.providers.webcrypto.operations.*
 
 internal object WebCryptoHmac : HMAC {
-    private val keyUsages = arrayOf("sign", "verify")
-    private val keyFormat: (HMAC.Key.Format) -> String = {
-        when (it) {
-            HMAC.Key.Format.RAW -> "raw"
-            HMAC.Key.Format.JWK -> "jwk"
-        }
-    }
-    private val keyWrapper: (CryptoKey) -> HMAC.Key = { key ->
-        val algorithm = Algorithm("HMAC")
-        object : HMAC.Key, EncodableKey<HMAC.Key.Format> by WebCryptoEncodableKey(key, keyFormat) {
-            private val generator = WebCryptoSignatureGenerator(algorithm, key)
-            private val verifier = WebCryptoSignatureVerifier(algorithm, key)
-            override fun signatureGenerator(): SignatureGenerator = generator
-            override fun signatureVerifier(): SignatureVerifier = verifier
-        }
+    private val keyWrapper: WebCryptoKeyWrapper<HMAC.Key> = WebCryptoKeyWrapper(arrayOf("sign", "verify"), ::HmacKey)
+    override fun keyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<HMAC.Key.Format, HMAC.Key> = WebCryptoKeyDecoder(
+        algorithm = HmacKeyAlgorithm(digest.hashAlgorithmName(), digest.blockSize()),
+        keyProcessor = HmacKeyProcessor,
+        keyWrapper = keyWrapper,
+    )
+
+    override fun keyGenerator(digest: CryptographyAlgorithmId<Digest>): KeyGenerator<HMAC.Key> = WebCryptoSymmetricKeyGenerator(
+        algorithm = HmacKeyAlgorithm(digest.hashAlgorithmName(), digest.blockSize()),
+        keyWrapper = keyWrapper
+    )
+
+    private class HmacKey(private val key: CryptoKey) : WebCryptoEncodableKey<HMAC.Key.Format>(
+        key = key,
+        keyProcessor = HmacKeyProcessor
+    ), HMAC.Key {
+        override fun signatureGenerator(): SignatureGenerator = WebCryptoSignatureGenerator(Algorithm("HMAC"), key)
+        override fun signatureVerifier(): SignatureVerifier = WebCryptoSignatureVerifier(Algorithm("HMAC"), key)
     }
 
-    override fun keyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<HMAC.Key.Format, HMAC.Key> =
-        WebCryptoKeyDecoder(HmacKeyAlgorithm(digest.hashAlgorithmName(), digest.blockSize()), keyUsages, keyFormat, keyWrapper)
+}
 
-    override fun keyGenerator(digest: CryptographyAlgorithmId<Digest>): KeyGenerator<HMAC.Key> =
-        WebCryptoSymmetricKeyGenerator(HmacKeyAlgorithm(digest.hashAlgorithmName(), digest.blockSize()), keyUsages, keyWrapper)
+private object HmacKeyProcessor : WebCryptoKeyProcessor<HMAC.Key.Format>() {
+    override fun stringFormat(format: HMAC.Key.Format): String = when (format) {
+        HMAC.Key.Format.RAW -> "raw"
+        HMAC.Key.Format.JWK -> "jwk"
+    }
+
+    override fun beforeDecoding(format: HMAC.Key.Format, key: ByteArray): ByteArray = key
+    override fun afterEncoding(format: HMAC.Key.Format, key: ByteArray): ByteArray = key
 }

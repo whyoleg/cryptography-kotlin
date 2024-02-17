@@ -5,19 +5,16 @@
 package dev.whyoleg.cryptography.providers.webcrypto.materials
 
 import dev.whyoleg.cryptography.materials.key.*
-import dev.whyoleg.cryptography.providers.webcrypto.*
 import dev.whyoleg.cryptography.providers.webcrypto.internal.*
 
-internal class WebCryptoEncodableKey<KF : KeyFormat>(
+internal abstract class WebCryptoEncodableKey<KF : KeyFormat>(
     private val key: CryptoKey,
-    private val keyFormat: (KF) -> String,
+    private val keyProcessor: WebCryptoKeyProcessor<KF>,
 ) : EncodableKey<KF> {
-    override suspend fun encodeTo(format: KF): ByteArray {
-        return WebCrypto.exportKey(
-            format = keyFormat(format),
-            key = key
-        )
-    }
+    override suspend fun encodeTo(format: KF): ByteArray = keyProcessor.afterEncoding(
+        format = format,
+        key = WebCrypto.exportKey(keyProcessor.stringFormat(format), key)
+    )
 
     override fun encodeToBlocking(format: KF): ByteArray = nonBlocking()
 }

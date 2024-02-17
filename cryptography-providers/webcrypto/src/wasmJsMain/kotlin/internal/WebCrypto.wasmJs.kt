@@ -36,14 +36,18 @@ internal actual object WebCrypto {
         extractable: Boolean,
         keyUsages: Array<String>,
     ): CryptoKey {
-        return decodeKey(format, keyData, json = ::jsonParse, binary = ByteArray::toInt8Array) { fixedFormat, key ->
-            subtle.importKey(fixedFormat, key, algorithm, extractable, mapKeyUsages(keyUsages)).await()
+        val key = when (format) {
+            "jwk" -> jsonParse(keyData.decodeToString())
+            else  -> keyData.toInt8Array()
         }
+        return subtle.importKey(format, key, algorithm, extractable, mapKeyUsages(keyUsages)).await()
     }
 
     actual suspend fun exportKey(format: String, key: CryptoKey): ByteArray {
-        return encodeKey(format, { jsonStringify(it) }, { it.unsafeCast<ArrayBuffer>().toByteArray() }) { fixedFormat ->
-            subtle.exportKey(fixedFormat, key).await()
+        val keyData = subtle.exportKey(format, key).await()
+        return when (format) {
+            "jwk" -> jsonStringify(keyData).encodeToByteArray()
+            else  -> keyData.unsafeCast<ArrayBuffer>().toByteArray()
         }
     }
 

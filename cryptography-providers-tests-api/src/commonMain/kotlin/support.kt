@@ -27,11 +27,10 @@ fun AlgorithmTestScope<*>.supportsDigest(digest: CryptographyAlgorithmId<Digest>
 fun AlgorithmTestScope<*>.supportsKeyFormat(format: KeyFormat): Boolean = supports {
     when {
         // only WebCrypto supports JWK for now
-        format.name == "JWK" && !provider.isWebCrypto    -> "JWK"
+        format.name == "JWK" && !provider.isWebCrypto                      -> "JWK"
         // will be supported if ASN.1 serialization is ready - TODO JDK support, may be it's available
-        format.name in setOf("PEM/PKCS#1", "DER/PKCS#1") &&
-                (provider.isJdk || provider.isWebCrypto) -> "$format not yet available in $provider"
-        else                                             -> null
+        format.name in setOf("PEM/PKCS#1", "DER/PKCS#1") && provider.isJdk -> "$format not yet available in $provider"
+        else                                                               -> null
     }
 }
 

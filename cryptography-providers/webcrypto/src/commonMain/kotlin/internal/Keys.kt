@@ -4,6 +4,8 @@
 
 package dev.whyoleg.cryptography.providers.webcrypto.internal
 
+import dev.whyoleg.cryptography.serialization.asn1.*
+import dev.whyoleg.cryptography.serialization.asn1.modules.*
 import dev.whyoleg.cryptography.serialization.pem.*
 
 internal expect interface CryptoKey
@@ -15,53 +17,27 @@ internal expect interface CryptoKeyPair {
 
 internal expect val CryptoKey.algorithmName: String
 
-internal inline fun <T> decodeKey(
-    format: String,
-    keyData: ByteArray,
-    json: (string: String) -> T,
-    binary: (ByteArray) -> T,
-    import: (fixedFormat: String, key: T) -> CryptoKey,
-): CryptoKey {
-    val fixedFormat = format.substringAfterLast("-")
-    val key = whenFormat(
-        format = format,
-        jwk = { json(keyData.decodeToString()) },
-        der = { binary(keyData) },
-        pem = { binary(PEM.decode(keyData).ensurePemLabel(pemLabel(fixedFormat)).bytes) },
-    )
+internal fun unwrapPem(label: PemLabel, key: ByteArray): ByteArray =
+    PEM.decode(key).ensurePemLabel(label).bytes
 
-    return import(fixedFormat, key)
-}
+internal fun wrapPem(label: PemLabel, key: ByteArray): ByteArray = PEM.encodeToByteArray(PemContent(label, key))
 
-internal inline fun <T> encodeKey(
-    format: String,
-    json: (T) -> String,
-    binary: (T) -> ByteArray,
-    export: (fixedFormat: String) -> T,
-): ByteArray {
-    val fixedFormat = format.substringAfterLast("-")
-    val keyData = export(fixedFormat)
-    return whenFormat(
-        format = format,
-        jwk = { json(keyData).encodeToByteArray() },
-        der = { binary(keyData) },
-        pem = { PEM.encodeToByteArray(PemContent(pemLabel(fixedFormat), binary(keyData))) },
-    )
-}
+internal fun unwrapPublicKey(algorithm: ObjectIdentifier, key: ByteArray): ByteArray =
+    DER.decodeFromByteArray(SubjectPublicKeyInfo.serializer(), key).also {
+        check(it.algorithm.algorithm == algorithm) { "Expected algorithm '${algorithm.value}', received: '${it.algorithm.algorithm}'" }
+    }.subjectPublicKey.byteArray
 
-private inline fun <T> whenFormat(
-    format: String,
-    jwk: () -> T,
-    der: () -> T,
-    pem: () -> T,
-): T = when {
-    format == "jwk"          -> jwk()
-    format.startsWith("pem") -> pem()
-    else                     -> der()
-}
+internal fun wrapPublicKey(identifier: KeyAlgorithmIdentifier, key: ByteArray): ByteArray = DER.encodeToByteArray(
+    SubjectPublicKeyInfo.serializer(),
+    SubjectPublicKeyInfo(identifier, BitArray(0, key))
+)
 
-private fun pemLabel(fixedFormat: String): PemLabel = when (fixedFormat) {
-    "pkcs8" -> PemLabel.PrivateKey
-    "spki"  -> PemLabel.PublicKey
-    else    -> error("Unsupported format: $fixedFormat")
-}
+internal fun unwrapPrivateKey(algorithm: ObjectIdentifier, key: ByteArray): ByteArray =
+    DER.decodeFromByteArray(PrivateKeyInfo.serializer(), key).also {
+        check(it.privateKeyAlgorithm.algorithm == algorithm)
+    }.privateKey
+
+internal fun wrapPrivateKey(version: Int, identifier: KeyAlgorithmIdentifier, key: ByteArray): ByteArray = DER.encodeToByteArray(
+    PrivateKeyInfo.serializer(),
+    PrivateKeyInfo(version, identifier, key)
+)

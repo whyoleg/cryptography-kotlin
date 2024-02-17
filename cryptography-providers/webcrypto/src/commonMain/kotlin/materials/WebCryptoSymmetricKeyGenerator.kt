@@ -5,17 +5,19 @@
 package dev.whyoleg.cryptography.providers.webcrypto.materials
 
 import dev.whyoleg.cryptography.materials.key.*
-import dev.whyoleg.cryptography.providers.webcrypto.*
 import dev.whyoleg.cryptography.providers.webcrypto.internal.*
 
 internal class WebCryptoSymmetricKeyGenerator<K : Key>(
     private val algorithm: Algorithm,
-    private val keyUsages: Array<String>,
-    private val keyWrapper: (CryptoKey) -> K,
+    private val keyWrapper: WebCryptoKeyWrapper<K>,
 ) : KeyGenerator<K> {
-    override suspend fun generateKey(): K {
-        return keyWrapper(WebCrypto.generateKey(algorithm, true, keyUsages))
-    }
+    override suspend fun generateKey(): K = keyWrapper.wrap(
+        WebCrypto.generateKey(
+            algorithm = algorithm,
+            extractable = true,
+            keyUsages = keyWrapper.usages
+        )
+    )
 
     override fun generateKeyBlocking(): K = nonBlocking()
 }

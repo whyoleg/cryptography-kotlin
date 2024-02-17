@@ -5,7 +5,6 @@
 package dev.whyoleg.cryptography.providers.webcrypto.materials
 
 import dev.whyoleg.cryptography.materials.key.*
-import dev.whyoleg.cryptography.providers.webcrypto.*
 import dev.whyoleg.cryptography.providers.webcrypto.internal.*
 
 internal class WebCryptoAsymmetricKeyGenerator<K : Key>(
