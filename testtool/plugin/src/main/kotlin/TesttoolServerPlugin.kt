@@ -11,8 +11,6 @@ import org.gradle.kotlin.dsl.*
 
 open class TesttoolServerPlugin : Plugin<Project> {
     override fun apply(target: Project): Unit = with(target) {
-        rootProject.apply<TesttoolServerRootPlugin>()
-
         val instance = TesttoolServerConfiguration(rootProject)
         val serverProvider = gradle.sharedServices.registerIfAbsent(
             "testtool-server-service",

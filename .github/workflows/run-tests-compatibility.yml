@@ -62,12 +62,12 @@ jobs:
           run: ./gradlew ${{ matrix.target }}ProviderTest -Pckbuild.providerTests.step=compatibility.generate -Pckbuild.testtool.instanceId=${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }} --continue
 
       - name: Dump testtool server-storage
-        run: ./gradlew dumpTesttoolServerStorage -Pckbuild.testtool.instanceId=${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }}
-      - name: Upload testtool server-storage dump
+        run: tar -cf ${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }}.tar build/testtool/server-storage
+      - name: Upload testtool server-storage
         uses: actions/upload-artifact@v4
         with:
           name: compatibility-tests-data-${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }}
-          path: build/testtool/server-storage-dump
+          path: ${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }}.tar
           if-no-files-found: error
 
   tests-compatibility-validate:
@@ -108,15 +108,15 @@ jobs:
           release: false
           install: mingw-w64-x86_64-openssl
 
-      - name: Download testtool server-storage dump
+      - name: Download testtool server-storage
         uses: actions/download-artifact@v4
         with:
           pattern: compatibility-tests-data-*
           merge-multiple: true
-          path: build/testtool/server-storage-dump
-
       - name: Restore testtool server-storage
-        run: ./gradlew restoreTesttoolServerStorage --no-daemon
+        run: for file in *.tar; do tar -xf "$file"; done
+      - name: Delete downloaded testtool server-storage
+        run: rm *.tar
 
       - name: Run tests
         if: ${{ matrix.target != 'connectedAndroid' }}
