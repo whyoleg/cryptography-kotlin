@@ -11,7 +11,7 @@ import dev.whyoleg.cryptography.materials.key.*
 import kotlin.test.*
 
 suspend fun <KF : KeyFormat> EncodableKey<KF>.encodeTo(
-    formats: List<KF>,
+    formats: Collection<KF>,
     supports: (KF) -> Boolean,
 ): Map<String, ByteArray> = formats.filter(supports).associate {
     it.name to encodeTo(it)

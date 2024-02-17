@@ -21,8 +21,8 @@ internal object WebCryptoRsaPss : RSA.PSS {
             RSA.PublicKey.Format.DER -> "spki"
             RSA.PublicKey.Format.PEM -> "pem-RSA-spki"
             RSA.PublicKey.Format.JWK -> "jwk"
-            RSA.PublicKey.Format.DER_RSA,
-            RSA.PublicKey.Format.PEM_RSA,
+            RSA.PublicKey.Format.DER.PKCS1,
+            RSA.PublicKey.Format.PEM.PKCS1,
             -> error("$it format is not supported")
         }
     }
@@ -31,8 +31,8 @@ internal object WebCryptoRsaPss : RSA.PSS {
             RSA.PrivateKey.Format.DER -> "pkcs8"
             RSA.PrivateKey.Format.PEM -> "pem-RSA-pkcs8"
             RSA.PrivateKey.Format.JWK -> "jwk"
-            RSA.PrivateKey.Format.DER_RSA,
-            RSA.PrivateKey.Format.PEM_RSA,
+            RSA.PrivateKey.Format.DER.PKCS1,
+            RSA.PrivateKey.Format.PEM.PKCS1,
             -> error("$it format is not supported")
         }
     }

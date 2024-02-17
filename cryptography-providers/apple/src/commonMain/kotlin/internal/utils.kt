@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.apple.internal
@@ -17,6 +17,8 @@ internal fun ByteArray.refToFixed(index: Int): CValuesRef<ByteVar> {
     if (index == size) return almostEmptyArray.refTo(0)
     return refTo(index)
 }
+
+internal val CFErrorRefVar.releaseAndGetMessage get() = value.releaseBridgeAs<NSError>()?.description
 
 @Suppress("UNCHECKED_CAST")
 internal fun <T : Any> Any?.retainBridgeAs(): T? = retainBridge()?.let { it as T }
@@ -40,9 +42,10 @@ internal fun CFMutableDictionaryRef?.add(key: CFTypeRef?, value: CFTypeRef?) {
     CFDictionaryAddValue(this, key, value)
 }
 
+@Suppress("FunctionName")
 @OptIn(UnsafeNumber::class)
-internal inline fun CFMutableDictionary(size: CFIndex, block: CFMutableDictionaryRef?.() -> Unit): CFMutableDictionaryRef? {
-    val dict = CFDictionaryCreateMutable(null, size, null, null)
+internal inline fun CFMutableDictionary(size: Int, block: CFMutableDictionaryRef?.() -> Unit): CFMutableDictionaryRef? {
+    val dict = CFDictionaryCreateMutable(null, size.convert(), null, null)
     dict.block()
     return dict
 }

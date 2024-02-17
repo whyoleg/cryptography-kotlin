@@ -1,0 +1,204 @@
+public abstract interface class dev/whyoleg/cryptography/serialization/asn1/modules/AlgorithmIdentifier {
+	public abstract fun getAlgorithm-STa95mE ()Ljava/lang/String;
+	public abstract fun getParameters ()Ljava/lang/Object;
+}
+
+public abstract class dev/whyoleg/cryptography/serialization/asn1/modules/AlgorithmIdentifierSerializer : kotlinx/serialization/KSerializer {
+	public fun <init> ()V
+	protected final fun decodeParameters (Lkotlinx/serialization/encoding/CompositeDecoder;Lkotlinx/serialization/KSerializer;)Ljava/lang/Object;
+	protected abstract fun decodeParameters-IHeWLgs (Lkotlinx/serialization/encoding/CompositeDecoder;Ljava/lang/String;)Ldev/whyoleg/cryptography/serialization/asn1/modules/AlgorithmIdentifier;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/whyoleg/cryptography/serialization/asn1/modules/AlgorithmIdentifier;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	protected abstract fun encodeParameters (Lkotlinx/serialization/encoding/CompositeEncoder;Ldev/whyoleg/cryptography/serialization/asn1/modules/AlgorithmIdentifier;)V
+	protected final fun encodeParameters (Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/KSerializer;Ljava/lang/Object;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/whyoleg/cryptography/serialization/asn1/modules/AlgorithmIdentifier;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+}
+
+public abstract interface class dev/whyoleg/cryptography/serialization/asn1/modules/HashAlgorithmIdentifier : dev/whyoleg/cryptography/serialization/asn1/modules/AlgorithmIdentifier {
+}
+
+public abstract interface class dev/whyoleg/cryptography/serialization/asn1/modules/KeyAlgorithmIdentifier : dev/whyoleg/cryptography/serialization/asn1/modules/AlgorithmIdentifier {
+	public static final field Companion Ldev/whyoleg/cryptography/serialization/asn1/modules/KeyAlgorithmIdentifier$Companion;
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/modules/KeyAlgorithmIdentifier$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public abstract interface class dev/whyoleg/cryptography/serialization/asn1/modules/MaskGenAlgorithmIdentifier : dev/whyoleg/cryptography/serialization/asn1/modules/AlgorithmIdentifier {
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/modules/PrivateKeyInfo {
+	public static final field Companion Ldev/whyoleg/cryptography/serialization/asn1/modules/PrivateKeyInfo$Companion;
+	public fun <init> (ILdev/whyoleg/cryptography/serialization/asn1/modules/KeyAlgorithmIdentifier;[B)V
+	public final fun getPrivateKey ()[B
+	public final fun getPrivateKeyAlgorithm ()Ldev/whyoleg/cryptography/serialization/asn1/modules/KeyAlgorithmIdentifier;
+	public final fun getVersion ()I
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/modules/PrivateKeyInfo$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/serialization/asn1/modules/PrivateKeyInfo$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/whyoleg/cryptography/serialization/asn1/modules/PrivateKeyInfo;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/whyoleg/cryptography/serialization/asn1/modules/PrivateKeyInfo;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/modules/PrivateKeyInfo$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/modules/SubjectPublicKeyInfo {
+	public static final field Companion Ldev/whyoleg/cryptography/serialization/asn1/modules/SubjectPublicKeyInfo$Companion;
+	public fun <init> (Ldev/whyoleg/cryptography/serialization/asn1/modules/KeyAlgorithmIdentifier;Ldev/whyoleg/cryptography/serialization/asn1/BitArray;)V
+	public final fun getAlgorithm ()Ldev/whyoleg/cryptography/serialization/asn1/modules/KeyAlgorithmIdentifier;
+	public final fun getSubjectPublicKey ()Ldev/whyoleg/cryptography/serialization/asn1/BitArray;
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/modules/SubjectPublicKeyInfo$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/serialization/asn1/modules/SubjectPublicKeyInfo$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/whyoleg/cryptography/serialization/asn1/modules/SubjectPublicKeyInfo;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/whyoleg/cryptography/serialization/asn1/modules/SubjectPublicKeyInfo;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/modules/SubjectPublicKeyInfo$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/modules/UnknownKeyAlgorithmIdentifier : dev/whyoleg/cryptography/serialization/asn1/modules/KeyAlgorithmIdentifier {
+	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getAlgorithm-STa95mE ()Ljava/lang/String;
+	public synthetic fun getParameters ()Ljava/lang/Object;
+	public fun getParameters ()Ljava/lang/Void;
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/modules/rsa/PSourceAlgorithmIdentifier : dev/whyoleg/cryptography/serialization/asn1/modules/AlgorithmIdentifier {
+	public static final field Companion Ldev/whyoleg/cryptography/serialization/asn1/modules/rsa/PSourceAlgorithmIdentifier$Companion;
+	public fun <init> ([B)V
+	public fun getAlgorithm-STa95mE ()Ljava/lang/String;
+	public synthetic fun getParameters ()Ljava/lang/Object;
+	public fun getParameters ()[B
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/modules/rsa/PSourceAlgorithmIdentifier$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/modules/rsa/RSAKt {
+	public static final fun getRSA (Ldev/whyoleg/cryptography/serialization/asn1/ObjectIdentifier$Companion;)Ljava/lang/String;
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/modules/rsa/RSA_OAEPKt {
+	public static final fun getRSA_OAEP (Ldev/whyoleg/cryptography/serialization/asn1/ObjectIdentifier$Companion;)Ljava/lang/String;
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/modules/rsa/RSA_PSSKt {
+	public static final fun getRSA_PSS (Ldev/whyoleg/cryptography/serialization/asn1/ObjectIdentifier$Companion;)Ljava/lang/String;
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/modules/rsa/RsaKeyAlgorithmIdentifier : dev/whyoleg/cryptography/serialization/asn1/modules/KeyAlgorithmIdentifier {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/serialization/asn1/modules/rsa/RsaKeyAlgorithmIdentifier;
+	public fun getAlgorithm-STa95mE ()Ljava/lang/String;
+	public synthetic fun getParameters ()Ljava/lang/Object;
+	public fun getParameters ()Ljava/lang/Void;
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/modules/rsa/RsaOaepAlgorithmIdentifier : dev/whyoleg/cryptography/serialization/asn1/modules/AlgorithmIdentifier {
+	public fun <init> ()V
+	public fun <init> (Ldev/whyoleg/cryptography/serialization/asn1/modules/rsa/RsaOaepAlgorithmParameters;)V
+	public synthetic fun <init> (Ldev/whyoleg/cryptography/serialization/asn1/modules/rsa/RsaOaepAlgorithmParameters;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getAlgorithm-STa95mE ()Ljava/lang/String;
+	public fun getParameters ()Ldev/whyoleg/cryptography/serialization/asn1/modules/rsa/RsaOaepAlgorithmParameters;
+	public synthetic fun getParameters ()Ljava/lang/Object;
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/modules/rsa/RsaOaepAlgorithmParameters {
+	public static final field Companion Ldev/whyoleg/cryptography/serialization/asn1/modules/rsa/RsaOaepAlgorithmParameters$Companion;
+	public fun <init> (Ldev/whyoleg/cryptography/serialization/asn1/modules/HashAlgorithmIdentifier;Ldev/whyoleg/cryptography/serialization/asn1/modules/MaskGenAlgorithmIdentifier;Ldev/whyoleg/cryptography/serialization/asn1/modules/rsa/PSourceAlgorithmIdentifier;)V
+	public synthetic fun <init> (Ldev/whyoleg/cryptography/serialization/asn1/modules/HashAlgorithmIdentifier;Ldev/whyoleg/cryptography/serialization/asn1/modules/MaskGenAlgorithmIdentifier;Ldev/whyoleg/cryptography/serialization/asn1/modules/rsa/PSourceAlgorithmIdentifier;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getHashFunc ()Ldev/whyoleg/cryptography/serialization/asn1/modules/HashAlgorithmIdentifier;
+	public final fun getMaskGenFunc ()Ldev/whyoleg/cryptography/serialization/asn1/modules/MaskGenAlgorithmIdentifier;
+	public final fun getPSourceFunc ()Ldev/whyoleg/cryptography/serialization/asn1/modules/rsa/PSourceAlgorithmIdentifier;
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/modules/rsa/RsaOaepAlgorithmParameters$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/serialization/asn1/modules/rsa/RsaOaepAlgorithmParameters$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/whyoleg/cryptography/serialization/asn1/modules/rsa/RsaOaepAlgorithmParameters;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/whyoleg/cryptography/serialization/asn1/modules/rsa/RsaOaepAlgorithmParameters;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/modules/rsa/RsaOaepAlgorithmParameters$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/modules/rsa/RsaPssAlgorithmIdentifier : dev/whyoleg/cryptography/serialization/asn1/modules/AlgorithmIdentifier {
+	public fun <init> ()V
+	public fun <init> (Ldev/whyoleg/cryptography/serialization/asn1/modules/rsa/RsaPssAlgorithmParameters;)V
+	public synthetic fun <init> (Ldev/whyoleg/cryptography/serialization/asn1/modules/rsa/RsaPssAlgorithmParameters;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getAlgorithm-STa95mE ()Ljava/lang/String;
+	public fun getParameters ()Ldev/whyoleg/cryptography/serialization/asn1/modules/rsa/RsaPssAlgorithmParameters;
+	public synthetic fun getParameters ()Ljava/lang/Object;
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/modules/rsa/RsaPssAlgorithmParameters {
+	public static final field Companion Ldev/whyoleg/cryptography/serialization/asn1/modules/rsa/RsaPssAlgorithmParameters$Companion;
+	public fun <init> (Ldev/whyoleg/cryptography/serialization/asn1/modules/HashAlgorithmIdentifier;Ldev/whyoleg/cryptography/serialization/asn1/modules/MaskGenAlgorithmIdentifier;II)V
+	public synthetic fun <init> (Ldev/whyoleg/cryptography/serialization/asn1/modules/HashAlgorithmIdentifier;Ldev/whyoleg/cryptography/serialization/asn1/modules/MaskGenAlgorithmIdentifier;IIILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getHashAlgorithm ()Ldev/whyoleg/cryptography/serialization/asn1/modules/HashAlgorithmIdentifier;
+	public final fun getMaskGenAlgorithm ()Ldev/whyoleg/cryptography/serialization/asn1/modules/MaskGenAlgorithmIdentifier;
+	public final fun getSaltLength ()I
+	public final fun getTrailerField ()I
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/modules/rsa/RsaPssAlgorithmParameters$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/serialization/asn1/modules/rsa/RsaPssAlgorithmParameters$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/whyoleg/cryptography/serialization/asn1/modules/rsa/RsaPssAlgorithmParameters;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/whyoleg/cryptography/serialization/asn1/modules/rsa/RsaPssAlgorithmParameters;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/modules/rsa/RsaPssAlgorithmParameters$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/modules/rsa/RsaPublicKey {
+	public static final field Companion Ldev/whyoleg/cryptography/serialization/asn1/modules/rsa/RsaPublicKey$Companion;
+	public fun <init> (Ldev/whyoleg/cryptography/bigint/BigInt;Ldev/whyoleg/cryptography/bigint/BigInt;)V
+	public final fun getModulus ()Ldev/whyoleg/cryptography/bigint/BigInt;
+	public final fun getPublicExponent ()Ldev/whyoleg/cryptography/bigint/BigInt;
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/modules/rsa/RsaPublicKey$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/serialization/asn1/modules/rsa/RsaPublicKey$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/whyoleg/cryptography/serialization/asn1/modules/rsa/RsaPublicKey;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/whyoleg/cryptography/serialization/asn1/modules/rsa/RsaPublicKey;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/modules/rsa/RsaPublicKey$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
