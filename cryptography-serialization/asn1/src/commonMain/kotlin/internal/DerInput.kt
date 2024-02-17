@@ -24,7 +24,7 @@ internal class DerInput(private val input: ByteArrayInput) {
         return input.readTagBytes(DerTag_INTEGER).decodeToBigInt()
     }
 
-    fun readBitString(): ByteArray {
+    fun readBitString(): BitArray {
         val length = input.readTagLength(DerTag_BIT_STRING)
         val unusedBits = input.read().toInt()
         val bytes = input.read(length - 1)
@@ -34,12 +34,15 @@ internal class DerInput(private val input: ByteArrayInput) {
                 "wrong number of unused bits, expected 0, received: $unusedBits"
             }
             // in DER unused bits should be all zero
-            else            -> check(unusedBits == bytes.last().countTrailingZeroBits()) {
-                "Not all unused bits are zeros, expected $unusedBits, received ${bytes.last().countTrailingZeroBits()}"
+            else -> {
+                val trailingZeros = bytes.last().countTrailingZeroBits()
+                check(unusedBits <= trailingZeros) {
+                    "Not all unused bits are zeros, expected at least $unusedBits trailing zeros, received $trailingZeros"
+                }
             }
         }
 
-        return bytes
+        return BitArray(unusedBits, bytes)
     }
 
     fun readOctetString(): ByteArray {
@@ -81,7 +84,7 @@ private fun ByteArrayInput.readLength(): Int {
     check(numberOfLengthBytes <= Int.SIZE_BYTES) { "Supported number of bytes for tag length are in range 1..4, but was: $numberOfLengthBytes " }
 
     var length = 0
-    repeat(numberOfLengthBytes) { length = (length shl 8) + read().toInt() }
+    repeat(numberOfLengthBytes) { length = (length shl 8) + (read().toInt() and 0b11111111) }
     check(length > 0) { "length overflow: $length" }
     return length
 }

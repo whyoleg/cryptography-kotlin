@@ -34,31 +34,18 @@ internal class DerEncoder(
     override fun encodeLong(value: Long): Unit = output.writeInteger(value.toBigInt())
 
     override fun <T> encodeSerializableValue(serializer: SerializationStrategy<T>, value: T): Unit = when (serializer.descriptor) {
-        // TODO: how this works?
         ByteArraySerializer().descriptor         -> output.writeOctetString(value as ByteArray)
+        BitArray.serializer().descriptor -> output.writeBitString(value as BitArray)
         ObjectIdentifier.serializer().descriptor -> output.writeObjectIdentifier(value as ObjectIdentifier)
         BigInt.serializer().descriptor           -> output.writeInteger(value as BigInt)
-        else -> serializer.serialize(this, value)
-    }
-
-    override fun <T> encodeSerializableElement(
-        descriptor: SerialDescriptor,
-        index: Int,
-        serializer: SerializationStrategy<T>,
-        value: T,
-    ): Unit = when {
-        descriptor.isElementBitString(index) -> output.writeBitString(value as ByteArray)
-        else                                 -> encodeSerializableValue(serializer, value)
+        else                             -> serializer.serialize(this, value)
     }
 
     // structures: SEQUENCE and SEQUENCE OF
     // TODO: support lists
     override fun beginStructure(descriptor: SerialDescriptor): CompositeEncoder = when (descriptor.kind) {
-        StructureKind.CLASS,
-//        PolymorphicKind.OPEN,
-//        PolymorphicKind.SEALED,
-        -> DerEncoder(der, ByteArrayOutput(), output)
-        else -> throw SerializationException("This serial kind is not supported as structure: $descriptor")
+        StructureKind.CLASS, is PolymorphicKind -> DerEncoder(der, ByteArrayOutput(), output)
+        else                                    -> throw SerializationException("This serial kind is not supported as structure: $descriptor")
     }
 
     override fun endStructure(descriptor: SerialDescriptor) {

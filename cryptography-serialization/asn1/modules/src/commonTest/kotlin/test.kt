@@ -4,12 +4,13 @@
 
 package dev.whyoleg.cryptography.serialization.asn1.modules
 
+import dev.whyoleg.cryptography.serialization.asn1.*
 import dev.whyoleg.cryptography.serialization.asn1.modules.rsa.*
 import kotlin.random.*
 
 private val s = SubjectPublicKeyInfo(
     algorithm = RsaKeyAlgorithmIdentifier,
-    subjectPublicKey = Random.nextBytes(10)
+    subjectPublicKey = BitArray(0, Random.nextBytes(10))
 )
 
 private val p = PrivateKeyInfo(

@@ -15,6 +15,10 @@ internal class ByteArrayInput(
     private val available: Int get() = endIndex - position
     val eof: Boolean get() = available == 0
 
+    override fun toString(): String {
+        return "ByteArrayInput(size=${array.size}, endIndex=$endIndex, position=$position, available=$available)"
+    }
+
     fun peak(): Byte {
         ensureAvailableBytes(1)
         return array[position]

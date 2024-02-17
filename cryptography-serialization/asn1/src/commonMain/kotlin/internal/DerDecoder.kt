@@ -38,29 +38,16 @@ internal class DerDecoder(
     @Suppress("UNCHECKED_CAST")
     override fun <T> decodeSerializableValue(deserializer: DeserializationStrategy<T>): T = when (deserializer.descriptor) {
         ByteArraySerializer().descriptor         -> input.readOctetString() as T
+        BitArray.serializer().descriptor -> input.readBitString() as T
         ObjectIdentifier.serializer().descriptor -> input.readObjectIdentifier() as T
         BigInt.serializer().descriptor           -> input.readInteger() as T
         else                                     -> deserializer.deserialize(this)
     }
 
-    @Suppress("UNCHECKED_CAST")
-    override fun <T> decodeSerializableElement(
-        descriptor: SerialDescriptor,
-        index: Int,
-        deserializer: DeserializationStrategy<T>,
-        previousValue: T?,
-    ): T = when {
-        descriptor.isElementBitString(index) -> input.readBitString() as T
-        else                                 -> decodeSerializableValue(deserializer)
-    }
-
     // structures: SEQUENCE and SEQUENCE OF
     override fun beginStructure(descriptor: SerialDescriptor): CompositeDecoder = when (descriptor.kind) {
-        StructureKind.CLASS,
-//        PolymorphicKind.OPEN,
-//        PolymorphicKind.SEALED,
-             -> DerDecoder(der, input.readSequence())
-        else -> throw SerializationException("This serial kind is not supported as structure: $descriptor")
+        StructureKind.CLASS, is PolymorphicKind -> DerDecoder(der, input.readSequence())
+        else                                    -> throw SerializationException("This serial kind is not supported as structure: $descriptor")
     }
 
     // could be supported, but later when it will be needed

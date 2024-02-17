@@ -16,10 +16,10 @@ internal class DerOutput(private val output: ByteArrayOutput) {
         output.writeTag(DerTag_INTEGER, value.encodeToByteArray())
     }
 
-    fun writeBitString(bytes: ByteArray) {
-        output.writeTag(DerTag_BIT_STRING, bytes.size + 1)
-        output.write(bytes.last().countTrailingZeroBits())
-        output.write(bytes)
+    fun writeBitString(bits: BitArray) {
+        output.writeTag(DerTag_BIT_STRING, bits.byteArray.size + 1)
+        output.write(bits.unusedBits)
+        output.write(bits.byteArray)
     }
 
     fun writeOctetString(bytes: ByteArray) {
