@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.testtool.client
@@ -22,12 +22,12 @@ private val client = HttpClient {
     install(HttpRequestRetry)
 }
 
-internal actual suspend fun postCompatibility(path: String, bytes: ByteArray): String = client.post("compatibility/$path") {
+internal actual suspend fun postData(path: String, bytes: ByteArray): String = client.post(path) {
     setBody(ByteArrayContent(bytes))
 }.bodyAsText()
 
-internal actual fun getCompatibility(path: String): Flow<Pair<String, ByteArray>> = flow {
-    val channel = client.get("compatibility/$path").bodyAsChannel()
+internal actual fun getData(path: String): Flow<Pair<String, ByteArray>> = flow {
+    val channel = client.get(path).bodyAsChannel()
     while (true) {
         val idLength = channel.readIntOrNull() ?: break
         val id = channel.readPacket(idLength).readText()

@@ -8,11 +8,7 @@ import dev.whyoleg.cryptography.providers.tests.api.*
 import dev.whyoleg.cryptography.testtool.client.*
 import kotlinx.coroutines.flow.*
 import kotlinx.serialization.*
-import kotlinx.serialization.descriptors.*
-import kotlinx.serialization.encoding.*
 import kotlinx.serialization.json.*
-import kotlinx.serialization.modules.*
-import kotlin.io.encoding.*
 import kotlin.reflect.*
 
 class ServerApi(
@@ -28,25 +24,10 @@ class ServerApi(
     override val ciphers: CompatibilityStorageApi = api("ciphers")
 }
 
-private object Base64ByteArraySerializer : KSerializer<ByteArray> {
-    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Base64", PrimitiveKind.STRING)
-
-    override fun deserialize(decoder: Decoder): ByteArray {
-        return Base64.decode(decoder.decodeString())
-    }
-
-    override fun serialize(encoder: Encoder, value: ByteArray) {
-        encoder.encodeString(Base64.encode(value))
-    }
-}
-
 private val json = Json {
-    encodeDefaults = true
     prettyPrint = true
+    classDiscriminator = "_"
     useAlternativeNames = false
-    serializersModule = SerializersModule {
-        contextual(Base64ByteArraySerializer)
-    }
 }
 
 @Serializable
@@ -61,23 +42,17 @@ private class ServerStorageApi(
     storageName: String,
     logger: TestLogger,
 ) : CompatibilityStorageApi(storageName, logger) {
-    private val cache = mutableMapOf<KType, KSerializer<Any?>>()
+    private val cachedSerializers = mutableMapOf<KType, KSerializer<Payload<Any?>>>()
 
     @Suppress("UNCHECKED_CAST")
-    private fun <T> serializer(type: KType): KSerializer<T> =
-        cache.getOrPut(type) { json.serializersModule.serializer(type) } as KSerializer<T>
+    private fun <T> cachedSerializer(type: KType): KSerializer<Payload<T>> =
+        cachedSerializers.getOrPut(type) { Payload.serializer(json.serializersModule.serializer(type)) } as KSerializer<Payload<T>>
 
     private fun <T> encode(value: T, type: KType): ByteArray =
-        json.encodeToString(
-            Payload.serializer(serializer(type)),
-            Payload(context, value)
-        ).encodeToByteArray()
+        json.encodeToString(cachedSerializer(type), Payload(context, value)).encodeToByteArray()
 
     private fun <T> decode(id: String, bytes: ByteArray, type: KType): TestContent<T> {
-        val payload = json.decodeFromString(
-            Payload.serializer<T>(serializer(type)),
-            bytes.decodeToString()
-        )
+        val payload = json.decodeFromString(cachedSerializer<T>(type), bytes.decodeToString())
         return TestContent(id, payload.content, payload.context)
     }
 

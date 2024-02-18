@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.testtool.server
@@ -13,43 +13,45 @@ import java.nio.file.*
 import java.util.concurrent.atomic.*
 import kotlin.io.path.*
 
-internal fun Route.compatibility(
+internal fun Route.routes(
     instanceId: String,
     storagePath: Path,
-): Route = route("compatibility/{algorithm}") {
-    fun Route.storage(path: String, idPrefix: String): Route = route(path) {
-        fun ApplicationCall.parametersPath() = storagePath / parameters["algorithm"]!! / path
-        fun ApplicationCall.dataPath() = parametersPath() / parameters["parametersId"]!! / "data"
-        fun AtomicInteger.generateId(kind: String) = "$instanceId-$idPrefix-$kind${incrementAndGet()}"
+) {
+    val parametersIdGenerator = AtomicInteger()
+    val dataIdGenerator = AtomicInteger()
 
-        val parametersIdGenerator = AtomicInteger()
-        val dataIdGenerator = AtomicInteger()
+    route("compatibility/{algorithm}") {
+        fun Route.storage(path: String): Route = route(path) {
+            fun ApplicationCall.parametersPath() = storagePath / "compatibility" / parameters["algorithm"]!! / path
+            fun ApplicationCall.dataPath() = parametersPath() / parameters["parametersId"]!! / "data"
+            fun AtomicInteger.generateId() = "$instanceId-${incrementAndGet()}"
 
-        post {
-            val id = parametersIdGenerator.generateId("P")
-            call.saveFile(call.parametersPath().resolve(id), "parameters.json")
-            call.respondText(id)
-        }
-        get {
-            call.getFiles(call.parametersPath()) { name to resolve("parameters.json") }
-        }
-        route("{parametersId}/data") {
             post {
-                val id = dataIdGenerator.generateId("D")
-                call.saveFile(call.dataPath(), "$id.json")
+                val id = parametersIdGenerator.generateId()
+                call.saveFile(call.parametersPath().resolve(id), "parameters.json")
                 call.respondText(id)
             }
             get {
-                call.getFiles(call.dataPath()) { nameWithoutExtension to this }
+                call.getFiles(call.parametersPath()) { name to resolve("parameters.json") }
+            }
+            route("{parametersId}/data") {
+                post {
+                    val id = dataIdGenerator.generateId()
+                    call.saveFile(call.dataPath(), "$id.json")
+                    call.respondText(id)
+                }
+                get {
+                    call.getFiles(call.dataPath()) { nameWithoutExtension to this }
+                }
             }
         }
-    }
 
-    storage("keys", "K")
-    storage("key-pairs", "KP")
-    storage("digests", "D")
-    storage("signatures", "S")
-    storage("ciphers", "C")
+        storage("keys")
+        storage("key-pairs")
+        storage("digests")
+        storage("signatures")
+        storage("ciphers")
+    }
 }
 
 private suspend fun ApplicationCall.saveFile(path: Path, name: String) {
@@ -59,6 +61,8 @@ private suspend fun ApplicationCall.saveFile(path: Path, name: String) {
 }
 
 private suspend fun ApplicationCall.getFiles(path: Path, get: Path.() -> Pair<String, Path>) = respondBytesWriter {
+    if (!path.exists()) return@respondBytesWriter
+
     path.forEachDirectoryEntry { entry ->
         val (id, contentPath) = get(entry)
         if (!contentPath.isRegularFile()) {

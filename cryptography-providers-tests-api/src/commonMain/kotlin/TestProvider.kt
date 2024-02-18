@@ -10,23 +10,28 @@ import kotlinx.serialization.*
 sealed class TestProvider {
     @Serializable
     sealed class JDK : TestProvider() {
+        @SerialName("jdk.default")
         @Serializable
         data object Default : JDK() {
             override fun toString(): String = "JDK.Default"
         }
 
+        @SerialName("jdk.bc")
         @Serializable
         data object BouncyCastle : JDK() {
             override fun toString(): String = "JDK.BouncyCastle"
         }
     }
 
+    @SerialName("webcrypto")
     @Serializable
     data object WebCrypto : TestProvider()
 
+    @SerialName("apple")
     @Serializable
     data object Apple : TestProvider()
 
+    @SerialName("openssl3")
     @Serializable
     data class OpenSSL3(val version: String) : TestProvider()
 }

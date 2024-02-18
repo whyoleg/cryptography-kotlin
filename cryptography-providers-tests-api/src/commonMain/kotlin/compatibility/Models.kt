@@ -38,16 +38,13 @@ data class TestReference(
     override fun toString(): String = "R(${parametersId.value} -> ${dataId.value})"
 }
 
-
-typealias SerializableBuffer = @Contextual ByteArray
-
 @Serializable
-data class DigestData(val data: SerializableBuffer, val digest: SerializableBuffer) : TestData {
+data class DigestData(val data: Base64ByteArray, val digest: Base64ByteArray) : TestData {
     override fun toString(): String = "DigestData(data.size=${data.size}, digest.size=${digest.size})"
 }
 
 @Serializable
-data class KeyData(val formats: Map<String, SerializableBuffer>) : TestData {
+data class KeyData(val formats: Map<String, Base64ByteArray>) : TestData {
     override fun toString(): String = "KeyData(formats=${formats.mapValues { it.value.size }})"
 }
 
@@ -59,8 +56,8 @@ data class KeyPairData(val public: KeyData, val private: KeyData) : TestData
 @Serializable
 data class CipherData(
     val keyReference: TestReference,
-    val plaintext: SerializableBuffer,
-    val ciphertext: SerializableBuffer,
+    val plaintext: Base64ByteArray,
+    val ciphertext: Base64ByteArray,
 ) : TestData {
     override fun toString(): String {
         return "CipherData(keyReference=$keyReference, plaintext.size=${plaintext.size}, ciphertext.size=${ciphertext.size})"
@@ -70,9 +67,9 @@ data class CipherData(
 @Serializable
 data class AuthenticatedCipherData(
     val keyReference: TestReference,
-    val associatedData: SerializableBuffer?,
-    val plaintext: SerializableBuffer,
-    val ciphertext: SerializableBuffer,
+    val associatedData: Base64ByteArray?,
+    val plaintext: Base64ByteArray,
+    val ciphertext: Base64ByteArray,
 ) : TestData {
     override fun toString(): String {
         return "AuthenticatedCipherData(keyReference=$keyReference, associatedData.size=${associatedData?.size}, plaintext.size=${plaintext.size}, ciphertext.size=${ciphertext.size})"
@@ -82,8 +79,8 @@ data class AuthenticatedCipherData(
 @Serializable
 data class SignatureData(
     val keyReference: TestReference,
-    val data: SerializableBuffer,
-    val signature: SerializableBuffer,
+    val data: Base64ByteArray,
+    val signature: Base64ByteArray,
 ) : TestData {
     override fun toString(): String {
         return "SignatureData(keyReference=$keyReference, data.size=${data.size}, signature.size=${signature.size})"

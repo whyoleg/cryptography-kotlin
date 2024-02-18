@@ -13,6 +13,7 @@ sealed class TestPlatform {
     @Serializable
     sealed class JVM : TestPlatform()
 
+    @SerialName("jdk")
     @Serializable
     data class JDK(
         val major: Int,
@@ -21,11 +22,13 @@ sealed class TestPlatform {
         val arch: String,
     ) : JVM()
 
+    @SerialName("android")
     @Serializable
     data class Android(
         val apiLevel: Int,
     ) : JVM()
 
+    @SerialName("native")
     @Serializable
     data class Native(
         val os: String,
@@ -35,6 +38,7 @@ sealed class TestPlatform {
 
     @Serializable
     sealed class JS : TestPlatform() {
+        @SerialName("js.browser")
         @Serializable
         data class Browser(
             val brand: String,
@@ -42,6 +46,7 @@ sealed class TestPlatform {
             val userAgent: String,
         ) : JS()
 
+        @SerialName("js.nodejs")
         @Serializable
         data class NodeJS(
             val version: String,
@@ -53,11 +58,13 @@ sealed class TestPlatform {
     @Serializable
     sealed class Wasm : TestPlatform()
 
+    @SerialName("wasm.wasi")
     @Serializable
     data object WasmWasi : Wasm()
 
     @Serializable
     sealed class WasmJs : Wasm() {
+        @SerialName("wasm.js.browser")
         @Serializable
         data class Browser(
             val brand: String,
@@ -65,6 +72,7 @@ sealed class TestPlatform {
             val userAgent: String,
         ) : JS()
 
+        @SerialName("wasm.js.nodejs")
         @Serializable
         data class NodeJS(
             val version: String,
