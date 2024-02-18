@@ -10,12 +10,17 @@ inputs:
 runs:
   using: 'composite'
   steps:
+    # On Windows/Linux runners temurin JDK 8, 11, 17, 21 are cached
+    # On macOS arm64 runners temurin JDK 11, 17, 21 are cached; temurin JDK 8 is not available to download
     - uses: actions/setup-java@v4
       with:
-        distribution: 'zulu'
+        distribution: ${{ (runner.os == 'macOS' && runner.arch == 'ARM64') && 'zulu' || 'temurin' }}
+        java-version: 8
+    - uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
         # the latest listed version will be used for executions of Gradle
         java-version: |
-          8
           11
           17
           21
