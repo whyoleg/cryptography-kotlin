@@ -1,25 +1,28 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.jdk.algorithms
 
 import dev.whyoleg.cryptography.algorithms.symmetric.*
-
-import dev.whyoleg.cryptography.providers.jdk.*
-import dev.whyoleg.cryptography.providers.jdk.materials.*
-import dev.whyoleg.cryptography.providers.jdk.operations.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.cipher.*
 import dev.whyoleg.cryptography.operations.signature.*
+import dev.whyoleg.cryptography.providers.jdk.*
+import dev.whyoleg.cryptography.providers.jdk.materials.*
+import dev.whyoleg.cryptography.providers.jdk.operations.*
 import javax.crypto.spec.*
 
 internal class JdkAesCbc(
     private val state: JdkCryptographyState,
 ) : AES.CBC {
     private val keyWrapper: (JSecretKey) -> AES.CBC.Key = { key ->
-        object : AES.CBC.Key, EncodableKey<AES.Key.Format> by JdkEncodableKey(key) {
+        object : AES.CBC.Key, JdkEncodableKey<AES.Key.Format>(key) {
             override fun cipher(padding: Boolean): Cipher = AesCbcCipher(state, key, padding)
+            override fun encodeToBlocking(format: AES.Key.Format): ByteArray = when (format) {
+                AES.Key.Format.JWK -> error("$format is not supported")
+                AES.Key.Format.RAW -> encodeToRaw()
+            }
         }
     }
     private val keyDecoder = JdkSecretKeyDecoder<AES.Key.Format, _>("AES", keyWrapper)

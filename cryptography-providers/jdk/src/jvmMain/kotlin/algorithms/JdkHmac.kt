@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.jdk.algorithms
@@ -17,10 +17,15 @@ internal class JdkHmac(
     private val state: JdkCryptographyState,
 ) : HMAC {
     private val keyWrapper: (JSecretKey) -> HMAC.Key = { key ->
-        object : HMAC.Key, EncodableKey<HMAC.Key.Format> by JdkEncodableKey(key) {
+        object : HMAC.Key, JdkEncodableKey<HMAC.Key.Format>(key) {
             private val signature = JdkMacSignature(state, key, key.algorithm)
             override fun signatureGenerator(): SignatureGenerator = signature
             override fun signatureVerifier(): SignatureVerifier = signature
+
+            override fun encodeToBlocking(format: HMAC.Key.Format): ByteArray = when (format) {
+                HMAC.Key.Format.JWK -> error("$format is not supported")
+                HMAC.Key.Format.RAW -> encodeToRaw()
+            }
         }
     }
 

@@ -1,13 +1,14 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.jdk.algorithms
 
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
+import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.providers.jdk.*
 import dev.whyoleg.cryptography.providers.jdk.materials.*
-import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.serialization.pem.*
 import java.math.*
 import java.security.interfaces.*
 import java.security.spec.*
@@ -69,6 +70,7 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP
         }
 
         override fun decodeFromBlocking(format: EC.PublicKey.Format, input: ByteArray): PublicK = when (format) {
+            EC.PublicKey.Format.JWK -> error("$format is not supported")
             EC.PublicKey.Format.RAW -> {
                 check(input.isNotEmpty() && input[0].toInt() == 4) { "Encoded key should be in uncompressed format" }
                 val parameters = algorithmParameters.use {
@@ -86,7 +88,8 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP
                     it.generatePublic(ECPublicKeySpec(point, parameters))
                 }.convert()
             }
-            else                    -> super.decodeFromBlocking(format, input)
+            EC.PublicKey.Format.DER -> decodeFromDer(input)
+            EC.PublicKey.Format.PEM -> decodeFromDer(unwrapPem(PemLabel.PublicKey, input))
         }
     }
 
@@ -100,6 +103,12 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP
             check(curveName == keyCurve) { "Key curve $keyCurve is not equal to expected curve $curveName" }
 
             return with(this@JdkEc) { convert() }
+        }
+
+        override fun decodeFromBlocking(format: EC.PrivateKey.Format, input: ByteArray): PrivateK = when (format) {
+            EC.PrivateKey.Format.JWK -> error("$format is not supported")
+            EC.PrivateKey.Format.DER -> decodeFromDer(input)
+            EC.PrivateKey.Format.PEM -> decodeFromDer(unwrapPem(PemLabel.PrivateKey, input))
         }
     }
 }

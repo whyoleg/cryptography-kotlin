@@ -1,25 +1,29 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.jdk.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
-
+import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.operations.cipher.*
 import dev.whyoleg.cryptography.providers.jdk.*
 import dev.whyoleg.cryptography.providers.jdk.algorithms.*
 import dev.whyoleg.cryptography.providers.jdk.materials.*
-import dev.whyoleg.cryptography.materials.key.*
-import dev.whyoleg.cryptography.operations.cipher.*
 import javax.crypto.spec.*
 
 internal class JdkAesGcm(
     private val state: JdkCryptographyState,
 ) : AES.GCM {
     private val keyWrapper: (JSecretKey) -> AES.GCM.Key = { key ->
-        object : AES.GCM.Key, EncodableKey<AES.Key.Format> by JdkEncodableKey(key) {
+        object : AES.GCM.Key, JdkEncodableKey<AES.Key.Format>(key) {
             override fun cipher(tagSize: BinarySize): AuthenticatedCipher = AesGcmCipher(state, key, tagSize)
+
+            override fun encodeToBlocking(format: AES.Key.Format): ByteArray = when (format) {
+                AES.Key.Format.JWK -> error("$format is not supported")
+                AES.Key.Format.RAW -> encodeToRaw()
+            }
         }
     }
     private val keyDecoder = JdkSecretKeyDecoder<AES.Key.Format, _>("AES", keyWrapper)

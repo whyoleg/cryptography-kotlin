@@ -43,14 +43,14 @@ internal class JdkRsaPss(
 private class RsaPssPublicKeyDecoder(
     state: JdkCryptographyState,
     private val hashAlgorithmName: String,
-) : JdkPublicKeyDecoder<RSA.PublicKey.Format, RSA.PSS.PublicKey>(state, "RSA") {
+) : RsaPublicKeyDecoder<RSA.PSS.PublicKey>(state) {
     override fun JPublicKey.convert(): RSA.PSS.PublicKey = RsaPssPublicKey(state, this, hashAlgorithmName)
 }
 
 private class RsaPssPrivateKeyDecoder(
     state: JdkCryptographyState,
     private val hashAlgorithmName: String,
-) : JdkPrivateKeyDecoder<RSA.PrivateKey.Format, RSA.PSS.PrivateKey>(state, "RSA") {
+) : RsaPrivateKeyDecoder<RSA.PSS.PrivateKey>(state) {
     override fun JPrivateKey.convert(): RSA.PSS.PrivateKey = RsaPssPrivateKey(state, this, hashAlgorithmName)
 }
 
@@ -81,7 +81,7 @@ private class RsaPssPublicKey(
     private val state: JdkCryptographyState,
     private val key: JPublicKey,
     private val hashAlgorithmName: String,
-) : RSA.PSS.PublicKey, EncodableKey<RSA.PublicKey.Format> by JdkEncodableKey(key, "RSA") {
+) : RSA.PSS.PublicKey, RsaPublicEncodableKey(key) {
     override fun signatureVerifier(): SignatureVerifier {
         val digestSize = state.messageDigest(hashAlgorithmName).use { it.digestLength }
         return signatureVerifier(digestSize.bytes)
@@ -103,7 +103,7 @@ private class RsaPssPrivateKey(
     private val state: JdkCryptographyState,
     private val key: JPrivateKey,
     private val hashAlgorithmName: String,
-) : RSA.PSS.PrivateKey, JdkEncodableKey<RSA.PrivateKey.Format>(key, "RSA") {
+) : RSA.PSS.PrivateKey, RsaPrivateEncodableKey(key) {
     override fun signatureGenerator(): SignatureGenerator {
         val digestSize = state.messageDigest(hashAlgorithmName).use { it.digestLength }
         return signatureGenerator(digestSize.bytes)

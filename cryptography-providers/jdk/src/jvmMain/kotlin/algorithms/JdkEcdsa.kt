@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.jdk.algorithms
@@ -7,10 +7,11 @@ package dev.whyoleg.cryptography.providers.jdk.algorithms
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.algorithms.digest.*
+import dev.whyoleg.cryptography.operations.signature.*
 import dev.whyoleg.cryptography.providers.jdk.*
 import dev.whyoleg.cryptography.providers.jdk.materials.*
 import dev.whyoleg.cryptography.providers.jdk.operations.*
-import dev.whyoleg.cryptography.operations.signature.*
+import dev.whyoleg.cryptography.serialization.pem.*
 import java.security.interfaces.*
 
 internal class JdkEcdsa(state: JdkCryptographyState) : JdkEc<ECDSA.PublicKey, ECDSA.PrivateKey, ECDSA.KeyPair>(state), ECDSA {
@@ -33,6 +34,7 @@ private class EcdsaPublicKey(
     }
 
     override fun encodeToBlocking(format: EC.PublicKey.Format): ByteArray = when (format) {
+        EC.PublicKey.Format.JWK -> error("$format is not supported")
         EC.PublicKey.Format.RAW -> {
             key as ECPublicKey
 
@@ -50,7 +52,8 @@ private class EcdsaPublicKey(
 
             output
         }
-        else                    -> super.encodeToBlocking(format)
+        EC.PublicKey.Format.DER -> encodeToDer()
+        EC.PublicKey.Format.PEM -> wrapPem(PemLabel.PublicKey, encodeToDer())
     }
 }
 
@@ -60,6 +63,12 @@ private class EcdsaPrivateKey(
 ) : ECDSA.PrivateKey, JdkEncodableKey<EC.PrivateKey.Format>(key, "EC") {
     override fun signatureGenerator(digest: CryptographyAlgorithmId<Digest>, format: ECDSA.SignatureFormat): SignatureGenerator {
         return JdkSignatureGenerator(state, key, digest.hashAlgorithmName() + "withECDSA" + format.algorithmSuffix(), null)
+    }
+
+    override fun encodeToBlocking(format: EC.PrivateKey.Format): ByteArray = when (format) {
+        EC.PrivateKey.Format.JWK -> error("$format is not supported")
+        EC.PrivateKey.Format.DER -> encodeToDer()
+        EC.PrivateKey.Format.PEM -> wrapPem(PemLabel.PrivateKey, encodeToDer())
     }
 }
 

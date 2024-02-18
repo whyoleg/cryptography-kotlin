@@ -27,10 +27,8 @@ fun AlgorithmTestScope<*>.supportsDigest(digest: CryptographyAlgorithmId<Digest>
 fun AlgorithmTestScope<*>.supportsKeyFormat(format: KeyFormat): Boolean = supports {
     when {
         // only WebCrypto supports JWK for now
-        format.name == "JWK" && !provider.isWebCrypto                      -> "JWK"
-        // will be supported if ASN.1 serialization is ready - TODO JDK support, may be it's available
-        format.name in setOf("PEM/PKCS#1", "DER/PKCS#1") && provider.isJdk -> "$format not yet available in $provider"
-        else                                                               -> null
+        format.name == "JWK" && !provider.isWebCrypto -> "JWK"
+        else                                          -> null
     }
 }
 
@@ -66,13 +64,10 @@ fun AlgorithmTestScope<RSA.OAEP>.supportsAssociatedData(associatedDataSize: Int?
 }
 
 fun AlgorithmTestScope<ECDSA>.supportsCurve(curve: EC.Curve): Boolean = supports {
-    // default curves supported everywhere now
-    if (curve.name != "secp256k1") return@supports null
-
     when {
-        // JDK default and WebCrypto doesn't support it
-        provider.isJdkDefault || provider.isWebCrypto -> "ECDSA $curve"
-        else                                          -> null
+        // JDK default and WebCrypto doesn't support secp256k1
+        curve.name == "secp256k1" && (provider.isJdkDefault || provider.isWebCrypto) -> "ECDSA ${curve.name}"
+        else                                                                         -> null
     }
 }
 

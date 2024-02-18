@@ -1,15 +1,15 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.jdk.operations
 
 
-import dev.whyoleg.cryptography.providers.jdk.*
 import dev.whyoleg.cryptography.operations.signature.*
+import dev.whyoleg.cryptography.providers.jdk.*
 
 internal class JdkMacSignature(
-    private val state: JdkCryptographyState,
+    state: JdkCryptographyState,
     private val key: JSecretKey,
     algorithm: String,
 ) : SignatureGenerator, SignatureVerifier {

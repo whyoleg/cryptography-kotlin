@@ -41,7 +41,7 @@ internal class JdkRsaOaep(
 private class RsaOaepPublicKeyDecoder(
     state: JdkCryptographyState,
     private val hashAlgorithmName: String,
-) : JdkPublicKeyDecoder<RSA.PublicKey.Format, RSA.OAEP.PublicKey>(state, "RSA") {
+) : RsaPublicKeyDecoder<RSA.OAEP.PublicKey>(state) {
     override fun JPublicKey.convert(): RSA.OAEP.PublicKey {
         return RsaOaepPublicKey(state, this, hashAlgorithmName)
     }
@@ -50,7 +50,7 @@ private class RsaOaepPublicKeyDecoder(
 private class RsaOaepPrivateKeyDecoder(
     state: JdkCryptographyState,
     private val hashAlgorithmName: String,
-) : JdkPrivateKeyDecoder<RSA.PrivateKey.Format, RSA.OAEP.PrivateKey>(state, "RSA") {
+) : RsaPrivateKeyDecoder<RSA.OAEP.PrivateKey>(state) {
     override fun JPrivateKey.convert(): RSA.OAEP.PrivateKey = RsaOaepPrivateKey(state, this, hashAlgorithmName)
 }
 
@@ -80,7 +80,7 @@ private class RsaOaepPublicKey(
     private val state: JdkCryptographyState,
     private val key: JPublicKey,
     hashAlgorithmName: String,
-) : RSA.OAEP.PublicKey, JdkEncodableKey<RSA.PublicKey.Format>(key, "RSA") {
+) : RSA.OAEP.PublicKey, RsaPublicEncodableKey(key) {
     private val encryptor = RsaOaepEncryptor(state, key, hashAlgorithmName)
     override fun encryptor(): AuthenticatedEncryptor = encryptor
 }
@@ -89,7 +89,7 @@ private class RsaOaepPrivateKey(
     private val state: JdkCryptographyState,
     private val key: JPrivateKey,
     hashAlgorithmName: String,
-) : RSA.OAEP.PrivateKey, JdkEncodableKey<RSA.PrivateKey.Format>(key, "RSA") {
+) : RSA.OAEP.PrivateKey, RsaPrivateEncodableKey(key) {
     private val decryptor = RsaOaepDecryptor(state, key, hashAlgorithmName)
     override fun decryptor(): AuthenticatedDecryptor = decryptor
 }

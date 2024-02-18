@@ -6,7 +6,6 @@ package dev.whyoleg.cryptography.providers.jdk.materials
 
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.providers.jdk.*
-import dev.whyoleg.cryptography.serialization.pem.*
 import java.security.spec.*
 
 internal abstract class JdkPrivateKeyDecoder<KF : KeyFormat, K : Key>(
@@ -16,13 +15,7 @@ internal abstract class JdkPrivateKeyDecoder<KF : KeyFormat, K : Key>(
 ) : KeyDecoder<KF, K> {
     private val keyFactory = state.keyFactory(algorithm)
 
-    private fun decode(input: ByteArray): JPrivateKey = keyFactory.use { it.generatePrivate(PKCS8EncodedKeySpec(input)) }
+    protected fun decodeFromDer(input: ByteArray): K = keyFactory.use { it.generatePrivate(PKCS8EncodedKeySpec(input)) }.convert()
 
     protected abstract fun JPrivateKey.convert(): K
-
-    final override fun decodeFromBlocking(format: KF, input: ByteArray): K = when (format.name) {
-        "DER" -> decode(input)
-        "PEM" -> decode(PEM.decode(input).ensurePemLabel(PemLabel.PrivateKey).bytes)
-        else  -> error("$format is not supported")
-    }.convert()
 }

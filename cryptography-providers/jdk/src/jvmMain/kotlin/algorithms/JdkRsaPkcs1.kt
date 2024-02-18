@@ -41,14 +41,14 @@ internal class JdkRsaPkcs1(
 private class RsaPkcs1PublicKeyDecoder(
     state: JdkCryptographyState,
     private val hashAlgorithmName: String,
-) : JdkPublicKeyDecoder<RSA.PublicKey.Format, RSA.PKCS1.PublicKey>(state, "RSA") {
+) : RsaPublicKeyDecoder<RSA.PKCS1.PublicKey>(state) {
     override fun JPublicKey.convert(): RSA.PKCS1.PublicKey = RsaPkcs1PublicKey(state, this, hashAlgorithmName)
 }
 
 private class RsaPkcs1PrivateKeyDecoder(
     state: JdkCryptographyState,
     private val hashAlgorithmName: String,
-) : JdkPrivateKeyDecoder<RSA.PrivateKey.Format, RSA.PKCS1.PrivateKey>(state, "RSA") {
+) : RsaPrivateKeyDecoder<RSA.PKCS1.PrivateKey>(state) {
     override fun JPrivateKey.convert(): RSA.PKCS1.PrivateKey = RsaPkcs1PrivateKey(state, this, hashAlgorithmName)
 }
 
@@ -79,7 +79,7 @@ private class RsaPkcs1PublicKey(
     private val state: JdkCryptographyState,
     private val key: JPublicKey,
     private val hashAlgorithmName: String,
-) : RSA.PKCS1.PublicKey, EncodableKey<RSA.PublicKey.Format> by JdkEncodableKey(key, "RSA") {
+) : RSA.PKCS1.PublicKey, RsaPublicEncodableKey(key) {
     override fun signatureVerifier(): SignatureVerifier {
         return JdkSignatureVerifier(state, key, hashAlgorithmName + "withRSA", null)
     }
@@ -89,7 +89,7 @@ private class RsaPkcs1PrivateKey(
     private val state: JdkCryptographyState,
     private val key: JPrivateKey,
     private val hashAlgorithmName: String,
-) : RSA.PKCS1.PrivateKey, JdkEncodableKey<RSA.PrivateKey.Format>(key, "RSA") {
+) : RSA.PKCS1.PrivateKey, RsaPrivateEncodableKey(key) {
     override fun signatureGenerator(): SignatureGenerator {
         return JdkSignatureGenerator(state, key, hashAlgorithmName + "withRSA", null)
     }
