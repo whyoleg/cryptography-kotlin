@@ -69,6 +69,9 @@ private class EcdsaPrivateKey(
         EC.PrivateKey.Format.JWK -> error("$format is not supported")
         EC.PrivateKey.Format.DER -> encodeToDer()
         EC.PrivateKey.Format.PEM -> wrapPem(PemLabel.PrivateKey, encodeToDer())
+        EC.PrivateKey.Format.DER.SEC1 -> TODO()
+        EC.PrivateKey.Format.PEM.SEC1 -> TODO()
+        EC.PrivateKey.Format.RAW      -> TODO()
     }
 }
 

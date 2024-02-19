@@ -109,6 +109,9 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP
             EC.PrivateKey.Format.JWK -> error("$format is not supported")
             EC.PrivateKey.Format.DER -> decodeFromDer(input)
             EC.PrivateKey.Format.PEM -> decodeFromDer(unwrapPem(PemLabel.PrivateKey, input))
+            EC.PrivateKey.Format.DER.SEC1 -> TODO()
+            EC.PrivateKey.Format.PEM.SEC1 -> TODO()
+            EC.PrivateKey.Format.RAW      -> TODO()
         }
     }
 }

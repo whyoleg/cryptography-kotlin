@@ -80,17 +80,26 @@ private object EcPrivateKeyProcessor : WebCryptoKeyProcessor<EC.PrivateKey.Forma
         EC.PrivateKey.Format.DER,
         EC.PrivateKey.Format.PEM,
                                  -> "pkcs8"
+        EC.PrivateKey.Format.DER.SEC1 -> TODO()
+        EC.PrivateKey.Format.PEM.SEC1 -> TODO()
+        EC.PrivateKey.Format.RAW      -> TODO()
     }
 
     override fun beforeDecoding(format: EC.PrivateKey.Format, key: ByteArray): ByteArray = when (format) {
         EC.PrivateKey.Format.JWK -> key
         EC.PrivateKey.Format.DER -> key
         EC.PrivateKey.Format.PEM -> unwrapPem(PemLabel.PrivateKey, key)
+        EC.PrivateKey.Format.DER.SEC1 -> TODO()
+        EC.PrivateKey.Format.PEM.SEC1 -> TODO()
+        EC.PrivateKey.Format.RAW      -> TODO()
     }
 
     override fun afterEncoding(format: EC.PrivateKey.Format, key: ByteArray): ByteArray = when (format) {
         EC.PrivateKey.Format.JWK -> key
         EC.PrivateKey.Format.DER -> key
         EC.PrivateKey.Format.PEM -> wrapPem(PemLabel.PrivateKey, key)
+        EC.PrivateKey.Format.DER.SEC1 -> TODO()
+        EC.PrivateKey.Format.PEM.SEC1 -> TODO()
+        EC.PrivateKey.Format.RAW      -> TODO()
     }
 }

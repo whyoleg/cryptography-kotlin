@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.algorithms.asymmetric
@@ -34,7 +34,7 @@ public interface ECDSA : EC<ECDSA.PublicKey, ECDSA.PrivateKey, ECDSA.KeyPair> {
     }
 
     public enum class SignatureFormat {
-        //IEEE P1363 format
+        //IEEE P1363 / X9.63 format
         RAW,
 
         //X.509 format

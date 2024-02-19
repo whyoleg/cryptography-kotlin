@@ -39,8 +39,9 @@ public interface RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP : RS
             }
 
             public sealed class DER : Format() {
-                public companion object Generic : DER() {
-                    override val name: String get() = "DER"
+                // SPKI = SubjectPublicKeyInfo
+                public companion object SPKI : DER() {
+                    override val name: String get() = "DER/SPKI"
                 }
 
                 public data object PKCS1 : DER() {
@@ -49,8 +50,8 @@ public interface RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP : RS
             }
 
             public sealed class PEM : Format() {
-                public companion object Generic : PEM() {
-                    override val name: String get() = "PEM"
+                public companion object SPKI : PEM() {
+                    override val name: String get() = "PEM/SPKI"
                 }
 
                 public data object PKCS1 : PEM() {
@@ -70,8 +71,9 @@ public interface RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP : RS
             }
 
             public sealed class DER : Format() {
-                public companion object Generic : DER() {
-                    override val name: String get() = "DER"
+                // via PrivateKeyInfo from PKCS8
+                public companion object PKCS8 : DER() {
+                    override val name: String get() = "DER/SPKI"
                 }
 
                 public data object PKCS1 : DER() {
@@ -80,8 +82,8 @@ public interface RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP : RS
             }
 
             public sealed class PEM : Format() {
-                public companion object Generic : PEM() {
-                    override val name: String get() = "PEM"
+                public companion object PKCS8 : PEM() {
+                    override val name: String get() = "PEM/SPKI"
                 }
 
                 public data object PKCS1 : PEM() {

@@ -12,6 +12,22 @@ import dev.whyoleg.cryptography.random.*
 import kotlinx.serialization.*
 import kotlin.test.*
 
+private val publicKeyFormats = listOf(
+    EC.PublicKey.Format.JWK,
+    EC.PublicKey.Format.RAW,
+    EC.PublicKey.Format.DER,
+    EC.PublicKey.Format.PEM,
+).associateBy { it.name }
+
+private val privateKeyFormats = listOf(
+    EC.PrivateKey.Format.JWK,
+    EC.PrivateKey.Format.RAW,
+    EC.PrivateKey.Format.DER,
+    EC.PrivateKey.Format.PEM,
+    EC.PrivateKey.Format.DER.SEC1,
+    EC.PrivateKey.Format.PEM.SEC1,
+).associateBy { it.name }
+
 private const val maxDataSize = 10000
 
 private inline fun generateCurves(block: (curve: EC.Curve) -> Unit) {
@@ -62,8 +78,8 @@ abstract class EcdsaCompatibilityTest(provider: CryptographyProvider) : Compatib
             algorithm.keyPairGenerator(curve).generateKeys(keyIterations) { keyPair ->
                 val keyReference = api.keyPairs.saveData(
                     keyParametersId, KeyPairData(
-                        public = KeyData(keyPair.publicKey.encodeTo(EC.PublicKey.Format.entries, ::supportsKeyFormat)),
-                        private = KeyData(keyPair.privateKey.encodeTo(EC.PrivateKey.Format.entries, ::supportsKeyFormat))
+                        public = KeyData(keyPair.publicKey.encodeTo(publicKeyFormats.values, ::supportsKeyFormat)),
+                        private = KeyData(keyPair.privateKey.encodeTo(privateKeyFormats.values, ::supportsKeyFormat))
                     )
                 )
 
@@ -101,28 +117,36 @@ abstract class EcdsaCompatibilityTest(provider: CryptographyProvider) : Compatib
                 api.keyPairs.getData<KeyPairData>(parametersId) { (public, private), keyReference, otherContext ->
                     val publicKeys = publicKeyDecoder.decodeFrom(
                         formats = public.formats,
-                        formatOf = EC.PublicKey.Format::valueOf,
+                        formatOf = publicKeyFormats::getValue,
                         supports = ::supportsKeyFormat
                     ) { key, format, bytes ->
                         when (format) {
-                            EC.PublicKey.Format.RAW, EC.PublicKey.Format.DER, EC.PublicKey.Format.PEM -> {
+                            EC.PublicKey.Format.JWK -> {}
+                            EC.PublicKey.Format.RAW,
+                            EC.PublicKey.Format.DER,
+                            EC.PublicKey.Format.PEM,
+                                                    -> {
                                 assertContentEquals(bytes, key.encodeTo(format), "Public Key $format encoding")
                             }
-                            EC.PublicKey.Format.JWK                                                   -> {}
                         }
                     }
                     val privateKeys = privateKeyDecoder.decodeFrom(
                         formats = private.formats,
-                        formatOf = EC.PrivateKey.Format::valueOf,
+                        formatOf = privateKeyFormats::getValue,
                         supports = ::supportsKeyFormat
                     ) { key, format, bytes ->
                         when (format) {
-                            EC.PrivateKey.Format.DER, EC.PrivateKey.Format.PEM -> {
+                            EC.PrivateKey.Format.JWK -> {}
+                            EC.PrivateKey.Format.RAW,
+                            EC.PrivateKey.Format.DER,
+                            EC.PrivateKey.Format.PEM,
+                            EC.PrivateKey.Format.DER.SEC1,
+                            EC.PrivateKey.Format.PEM.SEC1,
+                                                     -> {
                                 if (supportsPrivateKeyDerComparisonWith(otherContext)) {
                                     assertContentEquals(bytes, key.encodeTo(format), "Private Key $format encoding")
                                 }
                             }
-                            EC.PrivateKey.Format.JWK                           -> {}
                         }
                     }
                     put(keyReference, publicKeys to privateKeys)
