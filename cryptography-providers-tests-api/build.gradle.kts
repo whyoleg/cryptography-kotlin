@@ -30,7 +30,7 @@ kotlin {
 
     compilerOptions {
         optIn.addAll(
-            OptIns.InsecureAlgorithm,
+            OptIns.DelicateCryptographyApi,
             OptIns.CryptographyProviderApi,
 
             OptIns.ExperimentalEncodingApi,

@@ -71,7 +71,7 @@ public abstract interface class dev/whyoleg/cryptography/CryptographyProviderCon
 	public abstract fun getProvider ()Lkotlin/Lazy;
 }
 
-public abstract interface annotation class dev/whyoleg/cryptography/InsecureAlgorithm : java/lang/annotation/Annotation {
+public abstract interface annotation class dev/whyoleg/cryptography/DelicateCryptographyApi : java/lang/annotation/Annotation {
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/EC : dev/whyoleg/cryptography/CryptographyAlgorithm {

@@ -18,7 +18,6 @@ inline fun generateRsaKeySizes(block: (keySize: BinarySize) -> Unit) {
     generate(block, 2048.bits, 3072.bits, 4096.bits)
 }
 
-@OptIn(InsecureAlgorithm::class)
 inline fun generateDigests(block: (digest: CryptographyAlgorithmId<Digest>, digestSize: Int) -> Unit) {
     listOf(
         SHA1 to 20,

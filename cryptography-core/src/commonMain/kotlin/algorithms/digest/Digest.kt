@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 @file:OptIn(CryptographyProviderApi::class)
@@ -16,10 +16,10 @@ public interface Digest : CryptographyAlgorithm {
     public fun hasher(): Hasher
 }
 
-@InsecureAlgorithm
+@DelicateCryptographyApi
 public object MD5 : CryptographyAlgorithmId<Digest>("MD5")
 
-@InsecureAlgorithm
+@DelicateCryptographyApi
 public object SHA1 : CryptographyAlgorithmId<Digest>("SHA-1")
 public object SHA224 : CryptographyAlgorithmId<Digest>("SHA-224")
 public object SHA256 : CryptographyAlgorithmId<Digest>("SHA-256")
