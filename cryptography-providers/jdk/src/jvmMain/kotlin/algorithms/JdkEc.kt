@@ -107,11 +107,25 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP
 
         override fun decodeFromBlocking(format: EC.PrivateKey.Format, input: ByteArray): PrivateK = when (format) {
             EC.PrivateKey.Format.JWK -> error("$format is not supported")
+            EC.PrivateKey.Format.RAW -> {
+                check(input.isNotEmpty() && input[0].toInt() == 4) { "Encoded key should start with 4" }
+                val parameters = algorithmParameters.use {
+                    it.init(ECGenParameterSpec(curveName))
+                    it.getParameterSpec(ECParameterSpec::class.java)
+                }
+                val fieldSize = (parameters.curve.field.fieldSize + 7) / 8
+                check(input.size == fieldSize * 3 + 1) { "Wrong encoded key size" }
+
+                // we really need to get only S here
+                val s = input.copyOfRange(fieldSize * 2 + 1, input.size)
+                keyFactory.use {
+                    it.generatePrivate(ECPrivateKeySpec(BigInteger(s), parameters))
+                }.convert()
+            }
             EC.PrivateKey.Format.DER -> decodeFromDer(input)
             EC.PrivateKey.Format.PEM -> decodeFromDer(unwrapPem(PemLabel.PrivateKey, input))
             EC.PrivateKey.Format.DER.SEC1 -> TODO()
             EC.PrivateKey.Format.PEM.SEC1 -> TODO()
-            EC.PrivateKey.Format.RAW      -> TODO()
         }
     }
 }

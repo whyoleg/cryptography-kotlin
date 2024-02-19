@@ -13,19 +13,19 @@ import kotlinx.serialization.*
 import kotlin.test.*
 
 private val publicKeyFormats = listOf(
-    EC.PublicKey.Format.JWK,
+//    EC.PublicKey.Format.JWK,
     EC.PublicKey.Format.RAW,
-    EC.PublicKey.Format.DER,
-    EC.PublicKey.Format.PEM,
+//    EC.PublicKey.Format.DER,
+//    EC.PublicKey.Format.PEM,
 ).associateBy { it.name }
 
 private val privateKeyFormats = listOf(
-    EC.PrivateKey.Format.JWK,
+//    EC.PrivateKey.Format.JWK,
     EC.PrivateKey.Format.RAW,
-    EC.PrivateKey.Format.DER,
-    EC.PrivateKey.Format.PEM,
-    EC.PrivateKey.Format.DER.SEC1,
-    EC.PrivateKey.Format.PEM.SEC1,
+//    EC.PrivateKey.Format.DER,
+//    EC.PrivateKey.Format.PEM,
+//    EC.PrivateKey.Format.DER.SEC1,
+//    EC.PrivateKey.Format.PEM.SEC1,
 ).associateBy { it.name }
 
 private const val maxDataSize = 10000

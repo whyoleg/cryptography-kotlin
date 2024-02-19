@@ -13,6 +13,7 @@ import dev.whyoleg.cryptography.providers.jdk.materials.*
 import dev.whyoleg.cryptography.providers.jdk.operations.*
 import dev.whyoleg.cryptography.serialization.pem.*
 import java.security.interfaces.*
+import java.security.spec.*
 
 internal class JdkEcdsa(state: JdkCryptographyState) : JdkEc<ECDSA.PublicKey, ECDSA.PrivateKey, ECDSA.KeyPair>(state), ECDSA {
     override fun JPublicKey.convert(): ECDSA.PublicKey = EcdsaPublicKey(state, this)
@@ -35,23 +36,7 @@ private class EcdsaPublicKey(
 
     override fun encodeToBlocking(format: EC.PublicKey.Format): ByteArray = when (format) {
         EC.PublicKey.Format.JWK -> error("$format is not supported")
-        EC.PublicKey.Format.RAW -> {
-            key as ECPublicKey
-
-            val point = key.w
-            val fieldSize = (key.params.curve.field.fieldSize + 7) / 8
-            val output = ByteArray(fieldSize * 2 + 1)
-            output[0] = 4
-
-            val x = point.affineX.toByteArray().trimLeadingZeros()
-            val y = point.affineY.toByteArray().trimLeadingZeros()
-            check(x.size <= fieldSize && y.size <= fieldSize)
-
-            x.copyInto(output, fieldSize - x.size + 1)
-            y.copyInto(output, fieldSize * 2 - y.size + 1)
-
-            output
-        }
+        EC.PublicKey.Format.RAW -> (key as ECPublicKey).encodeToRaw()
         EC.PublicKey.Format.DER -> encodeToDer()
         EC.PublicKey.Format.PEM -> wrapPem(PemLabel.PublicKey, encodeToDer())
     }
@@ -61,17 +46,31 @@ private class EcdsaPrivateKey(
     private val state: JdkCryptographyState,
     private val key: JPrivateKey,
 ) : ECDSA.PrivateKey, JdkEncodableKey<EC.PrivateKey.Format>(key, "EC") {
+    private val keyFactory = state.keyFactory("EC")
+
     override fun signatureGenerator(digest: CryptographyAlgorithmId<Digest>, format: ECDSA.SignatureFormat): SignatureGenerator {
         return JdkSignatureGenerator(state, key, digest.hashAlgorithmName() + "withECDSA" + format.algorithmSuffix(), null)
     }
 
     override fun encodeToBlocking(format: EC.PrivateKey.Format): ByteArray = when (format) {
         EC.PrivateKey.Format.JWK -> error("$format is not supported")
+        EC.PrivateKey.Format.RAW -> {
+            key as ECPrivateKey
+            // TODO: this doesn't work - we can't infer it from private key with public API
+            val publicKey = (keyFactory.use {
+                it.generatePublic(ECPrivateKeySpec(key.s, key.params))
+            } as ECPublicKey).encodeToRaw()
+            val fieldSize = (key.params.curve.field.fieldSize + 7) / 8
+            val s = key.s.toByteArray().trimLeadingZeros()
+            check(s.size <= fieldSize)
+            val privateKey = ByteArray(fieldSize)
+            s.copyInto(privateKey, fieldSize - s.size + 1)
+            publicKey + privateKey
+        }
         EC.PrivateKey.Format.DER -> encodeToDer()
         EC.PrivateKey.Format.PEM -> wrapPem(PemLabel.PrivateKey, encodeToDer())
         EC.PrivateKey.Format.DER.SEC1 -> TODO()
         EC.PrivateKey.Format.PEM.SEC1 -> TODO()
-        EC.PrivateKey.Format.RAW      -> TODO()
     }
 }
 
@@ -84,4 +83,19 @@ private fun ByteArray.trimLeadingZeros(): ByteArray {
     val firstNonZeroIndex = indexOfFirst { it != 0.toByte() }
     if (firstNonZeroIndex == -1) return this
     return copyOfRange(firstNonZeroIndex, size)
+}
+
+private fun ECPublicKey.encodeToRaw(): ByteArray {
+    val fieldSize = (params.curve.field.fieldSize + 7) / 8
+    val output = ByteArray(fieldSize * 2 + 1)
+    output[0] = 4 // uncompressed
+
+    val x = w.affineX.toByteArray().trimLeadingZeros()
+    val y = w.affineY.toByteArray().trimLeadingZeros()
+    check(x.size <= fieldSize && y.size <= fieldSize)
+
+    x.copyInto(output, fieldSize - x.size + 1)
+    y.copyInto(output, fieldSize * 2 - y.size + 1)
+
+    return output
 }

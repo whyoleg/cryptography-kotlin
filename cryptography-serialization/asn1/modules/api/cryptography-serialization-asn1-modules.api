@@ -16,6 +16,34 @@ public abstract class dev/whyoleg/cryptography/serialization/asn1/modules/Algori
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 }
 
+public final class dev/whyoleg/cryptography/serialization/asn1/modules/EcKeyAlgorithmIdentifier : dev/whyoleg/cryptography/serialization/asn1/modules/KeyAlgorithmIdentifier {
+	public fun <init> (Ldev/whyoleg/cryptography/serialization/asn1/modules/EcKeyAlgorithmParameters;)V
+	public fun getAlgorithm-STa95mE ()Ljava/lang/String;
+	public fun getParameters ()Ldev/whyoleg/cryptography/serialization/asn1/modules/EcKeyAlgorithmParameters;
+	public synthetic fun getParameters ()Ljava/lang/Object;
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/modules/EcKeyAlgorithmParameters {
+	public static final field Companion Ldev/whyoleg/cryptography/serialization/asn1/modules/EcKeyAlgorithmParameters$Companion;
+	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getNamedCurve-STa95mE ()Ljava/lang/String;
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/modules/EcKeyAlgorithmParameters$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/serialization/asn1/modules/EcKeyAlgorithmParameters$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/whyoleg/cryptography/serialization/asn1/modules/EcKeyAlgorithmParameters;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/whyoleg/cryptography/serialization/asn1/modules/EcKeyAlgorithmParameters;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/modules/EcKeyAlgorithmParameters$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
 public abstract interface class dev/whyoleg/cryptography/serialization/asn1/modules/KeyAlgorithmIdentifier : dev/whyoleg/cryptography/serialization/asn1/modules/AlgorithmIdentifier {
 	public static final field Companion Ldev/whyoleg/cryptography/serialization/asn1/modules/KeyAlgorithmIdentifier$Companion;
 }
@@ -25,7 +53,9 @@ public final class dev/whyoleg/cryptography/serialization/asn1/modules/KeyAlgori
 }
 
 public final class dev/whyoleg/cryptography/serialization/asn1/modules/KeyAlgorithmIdentifierKt {
+	public static final fun getEC (Ldev/whyoleg/cryptography/serialization/asn1/ObjectIdentifier$Companion;)Ljava/lang/String;
 	public static final fun getRSA (Ldev/whyoleg/cryptography/serialization/asn1/ObjectIdentifier$Companion;)Ljava/lang/String;
+	public static final fun getSecp521r1 (Ldev/whyoleg/cryptography/serialization/asn1/ObjectIdentifier$Companion;)Ljava/lang/String;
 }
 
 public final class dev/whyoleg/cryptography/serialization/asn1/modules/PrivateKeyInfo {

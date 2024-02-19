@@ -14,9 +14,22 @@ public class UnknownKeyAlgorithmIdentifier(override val algorithm: ObjectIdentif
     override val parameters: Nothing? get() = null
 }
 
+public val ObjectIdentifier.Companion.RSA: ObjectIdentifier get() = ObjectIdentifier("1.2.840.113549.1.1.1")
+
 public object RsaKeyAlgorithmIdentifier : KeyAlgorithmIdentifier {
     override val algorithm: ObjectIdentifier get() = ObjectIdentifier.RSA
     override val parameters: Nothing? get() = null
 }
 
-public val ObjectIdentifier.Companion.RSA: ObjectIdentifier get() = ObjectIdentifier("1.2.840.113549.1.1.1")
+public val ObjectIdentifier.Companion.EC: ObjectIdentifier get() = ObjectIdentifier("1.2.840.10045.2")
+
+public class EcKeyAlgorithmIdentifier(override val parameters: EcKeyAlgorithmParameters?) : KeyAlgorithmIdentifier {
+    override val algorithm: ObjectIdentifier get() = ObjectIdentifier.EC
+}
+
+@Serializable
+public class EcKeyAlgorithmParameters(
+    public val namedCurve: ObjectIdentifier,
+)
+
+public val ObjectIdentifier.Companion.secp521r1: ObjectIdentifier get() = ObjectIdentifier("1.3.132.0.35")

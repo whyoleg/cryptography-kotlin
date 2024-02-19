@@ -13,7 +13,7 @@ internal abstract class JdkPrivateKeyDecoder<KF : KeyFormat, K : Key>(
     algorithm: String,
     private val pemAlgorithm: String = algorithm,
 ) : KeyDecoder<KF, K> {
-    private val keyFactory = state.keyFactory(algorithm)
+    protected val keyFactory = state.keyFactory(algorithm)
 
     protected fun decodeFromDer(input: ByteArray): K = keyFactory.use { it.generatePrivate(PKCS8EncodedKeySpec(input)) }.convert()
 
