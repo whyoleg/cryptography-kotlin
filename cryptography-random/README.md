@@ -1,6 +1,6 @@
 # Module cryptography-random
 
-Provides [CryptographyRandom][CryptographyRandom] zero-dependency platform-dependent CSPRNG exposed via [kotlin.Random][kotlin.Random] API
+[CryptographyRandom][CryptographyRandom]: zero-dependency platform-dependent CSPRNG exposed via [kotlin.Random][kotlin.Random] API
 
 Depending on target/platform uses:
 
@@ -34,7 +34,7 @@ dependencies {
 
 # Package dev.whyoleg.cryptography.random
 
-Provides [CryptographyRandom][CryptographyRandom] zero-dependency platform-dependent CSPRNG exposed via [kotlin.Random][kotlin.Random] API
+[CryptographyRandom][CryptographyRandom]: zero-dependency platform-dependent CSPRNG exposed via [kotlin.Random][kotlin.Random] API
 
 [kotlin.Random]: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.random/-random/
 

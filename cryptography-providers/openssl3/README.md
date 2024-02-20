@@ -13,7 +13,7 @@ There are three modules that provide openssl3 provider:
   additional configuration will be required
 * cryptography-provider-openssl3-prebuilt - unlike shared module, this module embed `libcrypto` inside module, so no additional setup is
   needed not to build final binary, not to run it.
-  Embedded OpenSSL version is 3.1.4
+  Embedded OpenSSL version is 3.2.0
 
 For supported targets and algorithms, please consult [Supported primitives section][Supported primitives section]
 

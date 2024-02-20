@@ -26,11 +26,10 @@ provider.get(SHA512)
 
 ## Android support
 
-JDK provider is also tested via Android emulator on API level 21, 27 and 30.
+JDK provider is also tested via Android emulator on API level 21, 27 and 33.
 Supported algorithms on Android highly depend on Android API level and used provider.
 Some limitations are:
 
-* PEM support requires Android API level with Java 8 support because of dependency on `java.util.Base64`
 * default provider doesn't support `RSA-SSA-PSS` or `SHA3` algorithms
 
 For better compatibility, you can use [BouncyCastle](https://www.bouncycastle.org) provider as shown
