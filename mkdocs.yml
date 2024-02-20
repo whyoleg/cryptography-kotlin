@@ -22,12 +22,19 @@ extra:
 
 nav:
   - 'Overview':
-      - index.md
-      - 'Secure Random': modules/cryptography-random.md
-      - 'Core primitives': modules/cryptography-core.md
-      - 'Code examples': examples.md
-      - 'BOM': bom.md
-      - 'Gradle version catalog': gradle-version-catalog.md
+      - README.md
+      - 'Changelog': CHANGELOG.md
+      - 'Examples': examples.md
+      - 'Modules':
+          - 'Secure Random': modules/cryptography-random.md
+          - 'BigInt': modules/cryptography-bigint.md
+          - 'Core primitives': modules/cryptography-core.md
+          - 'PEM': modules/cryptography-serialization-pem.md
+          - 'ASN.1/DER': modules/cryptography-serialization-asn1.md
+          - 'ASN.1/DER modules': modules/cryptography-serialization-asn1-modules.md
+      - 'Dependency management':
+          - 'Gradle version catalog': gradle-version-catalog.md
+          - 'BOM': bom.md
   - 'Providers':
       - providers/index.md
       - 'JDK': modules/cryptography-provider-jdk.md

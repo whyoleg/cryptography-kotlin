@@ -13,4 +13,6 @@ build/
 /local.properties
 /docs/api
 /docs/modules
+/docs/README.md
+/docs/CHANGELOG.md
 /site

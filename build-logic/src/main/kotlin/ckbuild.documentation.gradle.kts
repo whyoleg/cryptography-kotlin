@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 import ckbuild.documentation.*
@@ -24,7 +24,8 @@ tasks.register<Copy>("mkdocsCopy") {
 
 tasks.withType<DokkaTaskPartial>().configureEach {
     moduleName.set(documentation.moduleName)
-    suppressInheritedMembers.set(true)
+    // we don't suppress inherited members explicitly as without it classes like RSA.OAEP don't show functions like keyGenerator
+    suppressInheritedMembers.set(false)
     failOnWarning.set(true)
     dokkaSourceSets.configureEach {
         if (documentation.includes.isPresent) includes.from(documentation.includes)
