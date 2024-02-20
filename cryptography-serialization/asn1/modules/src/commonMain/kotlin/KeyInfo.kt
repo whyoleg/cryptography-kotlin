@@ -20,5 +20,4 @@ public class PrivateKeyInfo(
     @Contextual
     public val privateKeyAlgorithm: KeyAlgorithmIdentifier,
     public val privateKey: ByteArray,
-    // TODO: attributes
 )

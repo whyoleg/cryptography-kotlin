@@ -49,6 +49,6 @@ class OpensslXExtension(
         KonanTarget.ANDROID_X86             -> "android-x86"
         KonanTarget.ANDROID_ARM32           -> "android-arm32"
         KonanTarget.ANDROID_ARM64           -> "android-arm64"
-        else                                -> TODO("$target is not supported by OpenSSL")
+        else -> error("$target is not supported by OpenSSL")
     }
 }

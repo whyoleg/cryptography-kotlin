@@ -37,15 +37,6 @@ abstract class AesCbcTest(provider: CryptographyProvider) : AesBasedTest<AES.CBC
             assertFails { decrypt(ByteArray(17)) }
             assertFails { decrypt(ByteArray(319)) }
             assertFails { decrypt(ByteArray(321)) }
-
-            // TODO: flacky
-//            if (!context.provider.isApple) {
-//                // only IV, empty ciphertext
-//                // what is expected behavior here?
-//                // assertFails { decrypt(ByteArray(ivSize)) }
-//                // wrong ciphertext
-//                assertFails { decrypt(ByteArray(320)) }
-//            }
         }
         if (supportsPadding(padding = false)) key.cipher(padding = false).run {
             assertEquals(ivSize + blockSize * 0, encrypt(ByteArray(0)).size)

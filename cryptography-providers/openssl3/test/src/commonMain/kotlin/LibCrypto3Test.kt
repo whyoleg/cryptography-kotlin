@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.test
@@ -9,7 +9,7 @@ import kotlinx.cinterop.*
 import platform.posix.*
 import kotlin.test.*
 
-@OptIn(UnsafeNumber::class) //TODO
+@OptIn(UnsafeNumber::class)
 abstract class LibCrypto3Test {
 
     @Test

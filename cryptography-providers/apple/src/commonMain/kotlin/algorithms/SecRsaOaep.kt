@@ -85,7 +85,6 @@ private class RsaOaepDecryptor(
         return memScoped {
             val error = alloc<CFErrorRefVar>()
             ciphertextInput.useNSData { ciphertext ->
-                // TODO: may be there could be an issue with retain/release?
                 val plaintext = SecKeyCreateDecryptedData(
                     key = privateKey,
                     algorithm = algorithm,

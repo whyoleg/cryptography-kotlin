@@ -18,7 +18,6 @@ private const val maxPlaintextSize = 10000
 abstract class AesCtrCompatibilityTest(provider: CryptographyProvider) :
     AesBasedCompatibilityTest<AES.CTR.Key, AES.CTR>(AES.CTR, provider) {
 
-    // TODO: add basic tests for CTR with explicit IV
     @Serializable
     private data class CipherParameters(
         val iv: Base64ByteArray?,

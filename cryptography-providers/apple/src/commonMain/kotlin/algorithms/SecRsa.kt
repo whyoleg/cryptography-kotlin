@@ -34,7 +34,7 @@ internal abstract class SecRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKe
 
         override fun decodeFromBlocking(format: RSA.PublicKey.Format, input: ByteArray): PublicK {
             val pkcs1DerKey = when (format) {
-                RSA.PublicKey.Format.JWK       -> TODO()
+                RSA.PublicKey.Format.JWK -> error("$format is not supported")
                 RSA.PublicKey.Format.DER.PKCS1 -> input
                 RSA.PublicKey.Format.PEM.PKCS1 -> unwrapPem(PemLabel.RsaPublicKey, input)
                 RSA.PublicKey.Format.DER       -> unwrapPublicKey(ObjectIdentifier.RSA, input)
@@ -59,7 +59,7 @@ internal abstract class SecRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKe
 
         override fun decodeFromBlocking(format: RSA.PrivateKey.Format, input: ByteArray): PrivateK {
             val pkcs1DerKey = when (format) {
-                RSA.PrivateKey.Format.JWK       -> TODO()
+                RSA.PrivateKey.Format.JWK -> error("$format is not supported")
                 RSA.PrivateKey.Format.DER.PKCS1 -> input
                 RSA.PrivateKey.Format.PEM.PKCS1 -> unwrapPem(PemLabel.RsaPrivateKey, input)
                 RSA.PrivateKey.Format.DER       -> unwrapPrivateKey(ObjectIdentifier.RSA, input)
@@ -115,7 +115,7 @@ internal abstract class SecRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKe
             val pkcs1Key = exportSecKey(publicKey)
 
             return when (format) {
-                RSA.PublicKey.Format.JWK       -> TODO()
+                RSA.PublicKey.Format.JWK -> error("$format is not supported")
                 RSA.PublicKey.Format.DER.PKCS1 -> pkcs1Key
                 RSA.PublicKey.Format.PEM.PKCS1 -> wrapPem(PemLabel.RsaPublicKey, pkcs1Key)
                 RSA.PublicKey.Format.DER       -> wrapPublicKey(RsaKeyAlgorithmIdentifier, pkcs1Key)
@@ -134,7 +134,7 @@ internal abstract class SecRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKe
             val pkcs1Key = exportSecKey(privateKey)
 
             return when (format) {
-                RSA.PrivateKey.Format.JWK       -> TODO()
+                RSA.PrivateKey.Format.JWK -> error("$format is not supported")
                 RSA.PrivateKey.Format.DER.PKCS1 -> pkcs1Key
                 RSA.PrivateKey.Format.PEM.PKCS1 -> wrapPem(PemLabel.RsaPrivateKey, pkcs1Key)
                 RSA.PrivateKey.Format.DER       -> wrapPrivateKey(0, RsaKeyAlgorithmIdentifier, pkcs1Key)

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography
@@ -14,7 +14,6 @@ public abstract class CryptographyProvider {
 
     @CryptographyProviderApi
     public object Registry {
-        // TODO: make this thread safe (just synchronized will be enough)
         private val providers = initProviders().toMutableList()
         public val registeredProviders: Sequence<CryptographyProvider>
             get() = providers.toList().asSequence().map(Lazy<CryptographyProvider>::value)

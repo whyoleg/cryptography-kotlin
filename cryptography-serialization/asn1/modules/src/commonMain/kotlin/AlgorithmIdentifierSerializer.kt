@@ -46,6 +46,6 @@ public abstract class AlgorithmIdentifierSerializer<AI : AlgorithmIdentifier> : 
                 deserializer = ObjectIdentifier.serializer()
             )
             decodeParameters(algorithm)
-        } else TODO()
+        } else error("For now only sequential decoding is supported")
     }
 }

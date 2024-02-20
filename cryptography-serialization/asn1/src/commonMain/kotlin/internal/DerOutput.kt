@@ -62,7 +62,6 @@ private fun ByteArrayOutput.writeLength(length: Int) {
     repeat(numberOfLengthBytes) { write(length ushr 8 * (numberOfLengthBytes - 1 - it)) }
 }
 
-// TODO: add checks
 private fun ByteArrayOutput.writeOidElements(elements: List<String>) {
     check(elements.size >= 2) { "at least 2 components expected but was ${elements.size}" }
     fun element(index: Int): Int = elements[index].toInt()
@@ -74,7 +73,6 @@ private fun ByteArrayOutput.writeOidElements(elements: List<String>) {
 private fun ByteArrayOutput.writeOidElement(element: Int) {
     if (element < 128) return write(element)
 
-    // TODO: recheck l
     val l = (Int.SIZE_BITS - element.countLeadingZeroBits()) / 7
     repeat(l) { write(((element ushr (l - it) * 7) and 0b01111111) or 0b10000000) }
     write(element and 0b01111111)

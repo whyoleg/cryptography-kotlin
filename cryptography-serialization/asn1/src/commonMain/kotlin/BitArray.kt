@@ -11,5 +11,11 @@ public class BitArray(
     public val unusedBits: Int,
     public val byteArray: ByteArray,
 ) {
-    // TODO: validate
+    init {
+        if (byteArray.isEmpty()) {
+            check(unusedBits == 0) { "empty array couldn't have unused bits" }
+        } else {
+            check(unusedBits <= byteArray.last().countTrailingZeroBits()) { "At least $unusedBits last bits should be unused" }
+        }
+    }
 }

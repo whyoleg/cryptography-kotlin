@@ -22,7 +22,6 @@ private fun Int.withPadding(padding: Boolean): Int = if (padding) this else this
 abstract class AesCbcCompatibilityTest(provider: CryptographyProvider) :
     AesBasedCompatibilityTest<AES.CBC.Key, AES.CBC>(AES.CBC, provider) {
 
-    // TODO: add basic tests for CBC with explicit IV
     @Serializable
     private data class CipherParameters(
         val padding: Boolean,

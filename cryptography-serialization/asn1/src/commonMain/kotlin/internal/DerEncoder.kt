@@ -22,7 +22,6 @@ internal class DerEncoder(
 
     override val serializersModule: SerializersModule get() = der.serializersModule
 
-    // TODO
     override fun shouldEncodeElementDefault(descriptor: SerialDescriptor, index: Int): Boolean = false
 
     override fun encodeElement(descriptor: SerialDescriptor, index: Int): Boolean = true
@@ -42,7 +41,6 @@ internal class DerEncoder(
     }
 
     // structures: SEQUENCE and SEQUENCE OF
-    // TODO: support lists
     override fun beginStructure(descriptor: SerialDescriptor): CompositeEncoder = when (descriptor.kind) {
         StructureKind.CLASS, is PolymorphicKind -> DerEncoder(der, ByteArrayOutput(), output)
         else                                    -> throw SerializationException("This serial kind is not supported as structure: $descriptor")

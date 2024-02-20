@@ -11,7 +11,7 @@ import kotlin.time.Duration.Companion.minutes
 
 abstract class ProviderTest(provider: CryptographyProvider) {
 
-    private val timeout: Duration = 1000.minutes // TODO reduce
+    private val timeout: Duration = 30.minutes
     private val logger = TestLogger(enabled = false, tag = provider.name)
     private val context = TestContext(
         platform = currentTestPlatform,

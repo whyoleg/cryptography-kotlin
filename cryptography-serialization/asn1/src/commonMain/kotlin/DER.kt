@@ -8,7 +8,6 @@ import dev.whyoleg.cryptography.serialization.asn1.internal.*
 import kotlinx.serialization.*
 import kotlinx.serialization.modules.*
 
-// TODO: support default values, unknown keys, optional values, context-specific class( x [0] INTEGER OPTIONAL )
 public sealed class DER(
     override val serializersModule: SerializersModule,
 ) : BinaryFormat {

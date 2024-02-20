@@ -7,7 +7,6 @@ package dev.whyoleg.cryptography.providers.tests
 import dev.whyoleg.cryptography.*
 import kotlin.test.*
 
-// TODO: improve test by introducing module with all providers
 abstract class DefaultProviderTest(private val provider: CryptographyProvider) {
     @Test
     fun test() {
