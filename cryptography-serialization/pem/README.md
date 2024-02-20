@@ -32,7 +32,7 @@ println(decodedPemContent.bytes.decodeToString()) // prints "Hello World"
 
 ```kotlin
 dependencies {
-    implementation("dev.whyoleg.cryptography:cryptography-serialization-pem:0.2.0")
+    implementation("dev.whyoleg.cryptography:cryptography-serialization-pem:0.3.0")
 }
 ```
 

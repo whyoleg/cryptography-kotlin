@@ -30,7 +30,7 @@ println(decoded.algorithm.value) // prints "1.2.840.113549.1.1.11"
 
 ```kotlin
 dependencies {
-    implementation("dev.whyoleg.cryptography:cryptography-serialization-asn1:0.2.0")
+    implementation("dev.whyoleg.cryptography:cryptography-serialization-asn1:0.3.0")
 }
 ```
 
