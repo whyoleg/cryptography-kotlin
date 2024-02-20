@@ -50,7 +50,43 @@ public interface AES<K : AES.Key> : CryptographyAlgorithm {
             @DelicateCryptographyApi
             public fun decryptBlocking(iv: ByteArray, ciphertextInput: ByteArray): ByteArray
         }
+    }
 
+    @SubclassOptInRequired(CryptographyProviderApi::class)
+    public interface CTR : AES<CTR.Key> {
+        override val id: CryptographyAlgorithmId<CTR> get() = Companion
+
+        public companion object : CryptographyAlgorithmId<CTR>("AES-CTR")
+
+        @SubclassOptInRequired(CryptographyProviderApi::class)
+        public interface Key : AES.Key {
+            public fun cipher(): Cipher
+        }
+
+        @SubclassOptInRequired(CryptographyProviderApi::class)
+        public interface Cipher : dev.whyoleg.cryptography.operations.cipher.Cipher, Encryptor, Decryptor
+
+        @SubclassOptInRequired(CryptographyProviderApi::class)
+        public interface Encryptor : dev.whyoleg.cryptography.operations.cipher.Encryptor {
+            @DelicateCryptographyApi
+            public suspend fun encrypt(iv: ByteArray, plaintextInput: ByteArray): ByteArray {
+                return encryptBlocking(iv, plaintextInput)
+            }
+
+            @DelicateCryptographyApi
+            public fun encryptBlocking(iv: ByteArray, plaintextInput: ByteArray): ByteArray
+        }
+
+        @SubclassOptInRequired(CryptographyProviderApi::class)
+        public interface Decryptor : dev.whyoleg.cryptography.operations.cipher.Decryptor {
+            @DelicateCryptographyApi
+            public suspend fun decrypt(iv: ByteArray, ciphertextInput: ByteArray): ByteArray {
+                return decryptBlocking(iv, ciphertextInput)
+            }
+
+            @DelicateCryptographyApi
+            public fun decryptBlocking(iv: ByteArray, ciphertextInput: ByteArray): ByteArray
+        }
     }
 
     @SubclassOptInRequired(CryptographyProviderApi::class)

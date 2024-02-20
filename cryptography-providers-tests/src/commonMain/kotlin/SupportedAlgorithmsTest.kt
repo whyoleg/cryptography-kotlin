@@ -27,6 +27,7 @@ abstract class SupportedAlgorithmsTest(provider: CryptographyProvider) : Provide
     @Test
     fun testSupported() = test {
         assertSupports(AES.CBC)
+        assertSupports(AES.CTR)
         assertSupports(AES.GCM, !context.provider.isApple)
 
         assertSupports(HMAC)

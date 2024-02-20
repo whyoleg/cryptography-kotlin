@@ -15,6 +15,8 @@ internal expect fun AesKeyGenerationAlgorithm(name: String, length: Int): Algori
 
 internal expect fun AesCbcCipherAlgorithm(iv: ByteArray): Algorithm
 
+internal expect fun AesCtrCipherAlgorithm(counter: ByteArray, length: Int): Algorithm
+
 internal expect fun AesGcmCipherAlgorithm(additionalData: ByteArray?, iv: ByteArray, tagLength: Int): Algorithm
 
 internal expect fun HmacKeyAlgorithm(hash: String, length: Int): Algorithm

@@ -59,6 +59,7 @@ For additional limitation please consult provider specific documentation.
 |                                             | SHA3 family   |  ✅  |     ❌     |   ❌   |    ✅     |
 | **MAC**                                     | HMAC          |  ✅  |     ✅     |   ✅   |    ✅     |
 | **Symmetric-key<br/>encryption/decryption** | AES-CBC       |  ✅  |     ✅     |   ✅   |    ✅     |
+|                                             | AES-CTR       |  ✅  |     ✅     |   ✅   |    ✅     |
 |                                             | AES-GCM       |  ✅  |     ✅     |   ❌   |    ✅     |
 | **Public-key<br/>encryption/decryption**    | RSA-OAEP      |  ✅  |     ✅     |   ✅   |    ✅     |
 | **Digital Signatures**                      | ECDSA         |  ✅  |     ✅     |   ❌   |    ✅     |

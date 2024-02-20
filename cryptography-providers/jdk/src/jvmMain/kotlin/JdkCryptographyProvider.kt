@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.jdk
@@ -81,6 +81,7 @@ internal class JdkCryptographyProvider(
             SHA3_512  -> JdkDigest(state, "SHA3-512", SHA3_512)
             HMAC      -> JdkHmac(state)
             AES.CBC   -> JdkAesCbc(state)
+            AES.CTR -> JdkAesCtr(state)
             AES.GCM   -> JdkAesGcm(state)
             RSA.OAEP  -> JdkRsaOaep(state)
             RSA.PSS   -> JdkRsaPss(state)

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3
@@ -34,6 +34,7 @@ internal object Openssl3CryptographyProvider : CryptographyProvider() {
         SHA3_512  -> Openssl3Digest("SHA3-512", SHA3_512)
         HMAC      -> Openssl3Hmac
         AES.CBC   -> Openssl3AesCbc
+        AES.CTR -> Openssl3AesCtr
         AES.GCM   -> Openssl3AesGcm
         ECDSA     -> Openssl3Ecdsa
         RSA.PSS   -> Openssl3RsaPss

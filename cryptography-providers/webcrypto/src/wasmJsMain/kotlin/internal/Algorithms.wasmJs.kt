@@ -18,10 +18,17 @@ internal actual fun Algorithm(name: String): Algorithm =
 internal actual fun AesKeyGenerationAlgorithm(name: String, length: Int): Algorithm =
     js("({ name, length })")
 
-internal actual fun AesCbcCipherAlgorithm(iv: ByteArray): Algorithm = jsAesCbcCipherAlgorithm(iv.toInt8Array())
+internal actual fun AesCbcCipherAlgorithm(iv: ByteArray): Algorithm =
+    jsAesCbcCipherAlgorithm(iv.toInt8Array())
 
 private fun jsAesCbcCipherAlgorithm(iv: Int8Array): Algorithm =
     js("({ name: 'AES-CBC', iv })")
+
+internal actual fun AesCtrCipherAlgorithm(counter: ByteArray, length: Int): Algorithm =
+    jsAesCtrCipherAlgorithm(counter.toInt8Array(), length)
+
+private fun jsAesCtrCipherAlgorithm(counter: Int8Array, length: Int): Algorithm =
+    js("({ name: 'AES-CTR', counter, length })")
 
 internal actual fun AesGcmCipherAlgorithm(additionalData: ByteArray?, iv: ByteArray, tagLength: Int): Algorithm = when (additionalData) {
     null -> jsAesGcmCipherAlgorithm(iv.toInt8Array(), tagLength)

@@ -25,6 +25,7 @@ internal object WebCryptoCryptographyProvider : CryptographyProvider() {
         SHA512    -> WebCryptoDigest.sha512
         HMAC      -> WebCryptoHmac
         AES.CBC   -> WebCryptoAesCbc
+        AES.CTR -> WebCryptoAesCtr
         AES.GCM   -> WebCryptoAesGcm
         RSA.OAEP  -> WebCryptoRsaOaep
         RSA.PSS   -> WebCryptoRsaPss

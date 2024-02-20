@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 @file:Suppress("ArrayInDataClass")
@@ -8,30 +8,25 @@ package dev.whyoleg.cryptography.providers.tests.algorithms.symmetric
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
-import dev.whyoleg.cryptography.providers.tests.api.*
 import dev.whyoleg.cryptography.providers.tests.api.compatibility.*
 import dev.whyoleg.cryptography.random.*
 import kotlinx.serialization.*
 import kotlin.test.*
 
 private const val maxPlaintextSize = 10000
-private const val blockSize = 16 //for no padding
 
-private fun Int.withPadding(padding: Boolean): Int = if (padding) this else this + blockSize - this % blockSize
+abstract class AesCtrCompatibilityTest(provider: CryptographyProvider) :
+    AesBasedCompatibilityTest<AES.CTR.Key, AES.CTR>(AES.CTR, provider) {
 
-abstract class AesCbcCompatibilityTest(provider: CryptographyProvider) :
-    AesBasedCompatibilityTest<AES.CBC.Key, AES.CBC>(AES.CBC, provider) {
-
-    // TODO: add basic tests for CBC with explicit IV
+    // TODO: add basic tests for CTR with explicit IV
     @Serializable
     private data class CipherParameters(
-        val padding: Boolean,
         val iv: Base64ByteArray?,
     ) : TestParameters {
-        override fun toString(): String = "CipherParameters(padding=${padding}, iv.size=${iv?.size})"
+        override fun toString(): String = "CipherParameters(iv.size=${iv?.size})"
     }
 
-    override suspend fun CompatibilityTestScope<AES.CBC>.generate(isStressTest: Boolean) {
+    override suspend fun CompatibilityTestScope<AES.CTR>.generate(isStressTest: Boolean) {
         val cipherIterations = when {
             isStressTest -> 10
             else         -> 5
@@ -44,22 +39,18 @@ abstract class AesCbcCompatibilityTest(provider: CryptographyProvider) :
         val parametersList = buildList {
             // size of IV = 16
             (List(ivIterations) { CryptographyRandom.nextBytes(16) } + listOf(null)).forEach { iv ->
-                generateBoolean { padding ->
-                    if (!supportsPadding(padding)) return@generateBoolean
-
-                    val parameters = CipherParameters(padding, iv)
-                    val id = api.ciphers.saveParameters(parameters)
-                    add(id to parameters)
-                }
+                val parameters = CipherParameters(iv)
+                val id = api.ciphers.saveParameters(parameters)
+                add(id to parameters)
             }
         }
 
         generateKeys(isStressTest) { key, keyReference, _ ->
             parametersList.forEach { (cipherParametersId, parameters) ->
                 logger.log { "parameters = $parameters" }
-                val cipher = key.cipher(parameters.padding)
+                val cipher = key.cipher()
                 repeat(cipherIterations) {
-                    val plaintextSize = CryptographyRandom.nextInt(maxPlaintextSize).withPadding(parameters.padding)
+                    val plaintextSize = CryptographyRandom.nextInt(maxPlaintextSize)
                     logger.log { "plaintext.size  = $plaintextSize" }
                     val plaintext = CryptographyRandom.nextBytes(plaintextSize)
 
@@ -84,23 +75,27 @@ abstract class AesCbcCompatibilityTest(provider: CryptographyProvider) :
         }
     }
 
-    override suspend fun CompatibilityTestScope<AES.CBC>.validate() {
+    override suspend fun CompatibilityTestScope<AES.CTR>.validate() {
         val keys = validateKeys()
 
-        api.ciphers.getParameters<CipherParameters> { (padding, iv), parametersId, _ ->
-            if (!supportsPadding(padding)) return@getParameters
-
-            api.ciphers.getData<CipherData>(parametersId) { (keyReference, plaintext, ciphertext), _, _ ->
+        api.ciphers.getParameters<CipherParameters> { (iv), parametersId, _ ->
+            api.ciphers.getData<CipherData>(parametersId) { (keyReference, plaintext, ciphertext), _, context ->
                 keys[keyReference]?.forEach { key ->
-                    val cipher = key.cipher(padding)
+                    val cipher = key.cipher()
                     when (iv) {
                         null -> {
-                            assertContentEquals(plaintext, cipher.decrypt(ciphertext), "Decrypt")
-                            assertContentEquals(plaintext, cipher.decrypt(cipher.encrypt(plaintext)), "Encrypt-Decrypt")
+                            assertContentEquals(plaintext, cipher.decrypt(ciphertext), "Decrypt from $context")
+                            assertContentEquals(
+                                plaintext, cipher.decrypt(cipher.encrypt(plaintext)),
+                                "Encrypt-Decrypt from $context"
+                            )
                         }
                         else -> {
-                            assertContentEquals(plaintext, cipher.decrypt(iv, ciphertext), "Decrypt")
-                            assertContentEquals(plaintext, cipher.decrypt(iv, cipher.encrypt(iv, plaintext)), "Encrypt-Decrypt")
+                            assertContentEquals(plaintext, cipher.decrypt(iv, ciphertext), "Decrypt from $context")
+                            assertContentEquals(
+                                plaintext, cipher.decrypt(iv, cipher.encrypt(iv, plaintext)),
+                                "Encrypt-Decrypt from $context"
+                            )
                         }
                     }
                 }

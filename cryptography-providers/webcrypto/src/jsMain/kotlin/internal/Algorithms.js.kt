@@ -20,6 +20,9 @@ internal actual fun AesKeyGenerationAlgorithm(name: String, length: Int): Algori
 internal actual fun AesCbcCipherAlgorithm(iv: ByteArray): Algorithm =
     js("{ name: 'AES-CBC', iv: iv }").unsafeCast<Algorithm>()
 
+internal actual fun AesCtrCipherAlgorithm(counter: ByteArray, length: Int): Algorithm =
+    js("{ name: 'AES-CTR', counter: counter, length: length }").unsafeCast<Algorithm>()
+
 internal actual fun AesGcmCipherAlgorithm(additionalData: ByteArray?, iv: ByteArray, tagLength: Int): Algorithm {
     return when (additionalData) {
         null -> js("{ name: 'AES-GCM', iv: iv, tagLength: tagLength }")

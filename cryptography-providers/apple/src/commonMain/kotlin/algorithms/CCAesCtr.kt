@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.apple.algorithms
@@ -13,15 +13,15 @@ import kotlinx.cinterop.*
 import platform.CoreCrypto.*
 import platform.posix.*
 
-internal object CCAesCbc : AES.CBC {
-    override fun keyDecoder(): KeyDecoder<AES.Key.Format, AES.CBC.Key> = AesCbcKeyDecoder
+internal object CCAesCtr : AES.CTR {
+    override fun keyDecoder(): KeyDecoder<AES.Key.Format, AES.CTR.Key> = AesCtrKeyDecoder
 
-    override fun keyGenerator(keySize: SymmetricKeySize): KeyGenerator<AES.CBC.Key> =
-        AesCbcKeyGenerator(keySize.value.inBytes)
+    override fun keyGenerator(keySize: SymmetricKeySize): KeyGenerator<AES.CTR.Key> =
+        AesCtrKeyGenerator(keySize.value.inBytes)
 }
 
-private object AesCbcKeyDecoder : KeyDecoder<AES.Key.Format, AES.CBC.Key> {
-    override fun decodeFromBlocking(format: AES.Key.Format, input: ByteArray): AES.CBC.Key = when (format) {
+private object AesCtrKeyDecoder : KeyDecoder<AES.Key.Format, AES.CTR.Key> {
+    override fun decodeFromBlocking(format: AES.Key.Format, input: ByteArray): AES.CTR.Key = when (format) {
         AES.Key.Format.RAW -> {
             require(input.size == 16 || input.size == 24 || input.size == 32) {
                 "AES key size must be 128, 192 or 256 bits"
@@ -32,17 +32,17 @@ private object AesCbcKeyDecoder : KeyDecoder<AES.Key.Format, AES.CBC.Key> {
     }
 }
 
-private class AesCbcKeyGenerator(
+private class AesCtrKeyGenerator(
     private val keySizeBytes: Int,
-) : KeyGenerator<AES.CBC.Key> {
-    override fun generateKeyBlocking(): AES.CBC.Key {
+) : KeyGenerator<AES.CTR.Key> {
+    override fun generateKeyBlocking(): AES.CTR.Key {
         val key = CryptographyRandom.nextBytes(keySizeBytes)
         return wrapKey(key)
     }
 }
 
-private fun wrapKey(key: ByteArray): AES.CBC.Key = object : AES.CBC.Key {
-    override fun cipher(padding: Boolean): AES.CBC.Cipher = AesCbcCipher(key, padding)
+private fun wrapKey(key: ByteArray): AES.CTR.Key = object : AES.CTR.Key {
+    override fun cipher(): AES.CTR.Cipher = AesCtrCipher(key)
 
     override fun encodeToBlocking(format: AES.Key.Format): ByteArray = when (format) {
         AES.Key.Format.RAW -> key.copyOf()
@@ -50,14 +50,13 @@ private fun wrapKey(key: ByteArray): AES.CBC.Key = object : AES.CBC.Key {
     }
 }
 
-private const val ivSizeBytes = 16 //bytes for CBC
-private const val blockSizeBytes = 16 //bytes for CBC
+private const val ivSizeBytes = 16 //bytes for CTR
+private const val blockSizeBytes = 16 //bytes for CTR
 
 @OptIn(UnsafeNumber::class)
-private class AesCbcCipher(
+private class AesCtrCipher(
     private val key: ByteArray,
-    private val padding: Boolean,
-) : AES.CBC.Cipher {
+) : AES.CTR.Cipher {
 
     override fun encryptBlocking(plaintextInput: ByteArray): ByteArray {
         val iv = CryptographyRandom.nextBytes(ivSizeBytes)
@@ -89,7 +88,6 @@ private class AesCbcCipher(
 
     override fun decryptBlocking(ciphertextInput: ByteArray): ByteArray {
         require(ciphertextInput.size >= ivSizeBytes) { "Ciphertext is too short" }
-        require(ciphertextInput.size % blockSizeBytes == 0) { "Ciphertext is not padded" }
 
         return decrypt(
             iv = ciphertextInput,
@@ -101,7 +99,6 @@ private class AesCbcCipher(
     @DelicateCryptographyApi
     override fun decryptBlocking(iv: ByteArray, ciphertextInput: ByteArray): ByteArray {
         require(iv.size == ivSizeBytes) { "IV size is wrong" }
-        require(ciphertextInput.size % blockSizeBytes == 0) { "Ciphertext is not padded" }
 
         return decrypt(
             iv = iv,
@@ -158,8 +155,8 @@ private class AesCbcCipher(
                 op = op,
                 cryptorRef = ptr,
                 alg = kCCAlgorithmAES,
-                mode = kCCModeCBC,
-                padding = if (padding) ccPKCS7Padding else ccNoPadding,
+                mode = kCCModeCTR,
+                padding = 0.convert(), // not applicable
                 key = key.refTo(0),
                 keyLength = key.size.convert(),
                 iv = iv,
