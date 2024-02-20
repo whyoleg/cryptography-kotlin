@@ -377,12 +377,27 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AE
 	public fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
 }
 
+public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES$CBC$Cipher : dev/whyoleg/cryptography/algorithms/symmetric/AES$CBC$Decryptor, dev/whyoleg/cryptography/algorithms/symmetric/AES$CBC$Encryptor, dev/whyoleg/cryptography/operations/cipher/Cipher {
+}
+
 public final class dev/whyoleg/cryptography/algorithms/symmetric/AES$CBC$Companion : dev/whyoleg/cryptography/CryptographyAlgorithmId {
 }
 
+public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES$CBC$Decryptor : dev/whyoleg/cryptography/operations/cipher/Decryptor {
+	public fun decrypt ([B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun decrypt$suspendImpl (Ldev/whyoleg/cryptography/algorithms/symmetric/AES$CBC$Decryptor;[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun decryptBlocking ([B[B)[B
+}
+
+public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES$CBC$Encryptor : dev/whyoleg/cryptography/operations/cipher/Encryptor {
+	public fun encrypt ([B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun encrypt$suspendImpl (Ldev/whyoleg/cryptography/algorithms/symmetric/AES$CBC$Encryptor;[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun encryptBlocking ([B[B)[B
+}
+
 public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES$CBC$Key : dev/whyoleg/cryptography/algorithms/symmetric/AES$Key {
-	public abstract fun cipher (Z)Ldev/whyoleg/cryptography/operations/cipher/Cipher;
-	public static synthetic fun cipher$default (Ldev/whyoleg/cryptography/algorithms/symmetric/AES$CBC$Key;ZILjava/lang/Object;)Ldev/whyoleg/cryptography/operations/cipher/Cipher;
+	public abstract fun cipher (Z)Ldev/whyoleg/cryptography/algorithms/symmetric/AES$CBC$Cipher;
+	public static synthetic fun cipher$default (Ldev/whyoleg/cryptography/algorithms/symmetric/AES$CBC$Key;ZILjava/lang/Object;)Ldev/whyoleg/cryptography/algorithms/symmetric/AES$CBC$Cipher;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES$GCM : dev/whyoleg/cryptography/algorithms/symmetric/AES {

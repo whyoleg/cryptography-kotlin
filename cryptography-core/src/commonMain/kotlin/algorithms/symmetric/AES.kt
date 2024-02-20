@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.algorithms.symmetric
@@ -29,6 +29,28 @@ public interface AES<K : AES.Key> : CryptographyAlgorithm {
         public interface Key : AES.Key {
             public fun cipher(padding: Boolean = true): Cipher
         }
+
+        @SubclassOptInRequired(CryptographyProviderApi::class)
+        public interface Cipher : dev.whyoleg.cryptography.operations.cipher.Cipher, Encryptor, Decryptor
+
+        @SubclassOptInRequired(CryptographyProviderApi::class)
+        public interface Encryptor : dev.whyoleg.cryptography.operations.cipher.Encryptor {
+            @DelicateCryptographyApi
+            public suspend fun encrypt(iv: ByteArray, plaintextInput: ByteArray): ByteArray = encryptBlocking(iv, plaintextInput)
+
+            @DelicateCryptographyApi
+            public fun encryptBlocking(iv: ByteArray, plaintextInput: ByteArray): ByteArray
+        }
+
+        @SubclassOptInRequired(CryptographyProviderApi::class)
+        public interface Decryptor : dev.whyoleg.cryptography.operations.cipher.Decryptor {
+            @DelicateCryptographyApi
+            public suspend fun decrypt(iv: ByteArray, ciphertextInput: ByteArray): ByteArray = decryptBlocking(iv, ciphertextInput)
+
+            @DelicateCryptographyApi
+            public fun decryptBlocking(iv: ByteArray, ciphertextInput: ByteArray): ByteArray
+        }
+
     }
 
     @SubclassOptInRequired(CryptographyProviderApi::class)

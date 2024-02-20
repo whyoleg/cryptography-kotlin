@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.apple.algorithms
@@ -7,7 +7,6 @@ package dev.whyoleg.cryptography.providers.apple.algorithms
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.materials.key.*
-import dev.whyoleg.cryptography.operations.cipher.*
 import dev.whyoleg.cryptography.providers.apple.internal.*
 import dev.whyoleg.cryptography.random.*
 import kotlinx.cinterop.*
@@ -43,7 +42,7 @@ private class AesCbcKeyGenerator(
 }
 
 private fun wrapKey(key: ByteArray): AES.CBC.Key = object : AES.CBC.Key {
-    override fun cipher(padding: Boolean): Cipher = AesCbcCipher(key, padding)
+    override fun cipher(padding: Boolean): AES.CBC.Cipher = AesCbcCipher(key, padding)
 
     override fun encodeToBlocking(format: AES.Key.Format): ByteArray = when (format) {
         AES.Key.Format.RAW -> key.copyOf()
@@ -58,9 +57,16 @@ private const val blockSizeBytes = 16 //bytes for CBC
 private class AesCbcCipher(
     private val key: ByteArray,
     private val padding: Boolean,
-) : Cipher {
-    override fun encryptBlocking(plaintextInput: ByteArray): ByteArray = useCryptor { cryptorRef, dataOutMoved ->
-        val iv = ByteArray(ivSizeBytes).also { CryptographyRandom.nextBytes(it) }
+) : AES.CBC.Cipher {
+
+    override fun encryptBlocking(plaintextInput: ByteArray): ByteArray {
+        val iv = CryptographyRandom.nextBytes(ivSizeBytes)
+        return iv + encryptBlocking(iv, plaintextInput)
+    }
+
+    @DelicateCryptographyApi
+    override fun encryptBlocking(iv: ByteArray, plaintextInput: ByteArray): ByteArray = useCryptor { cryptorRef, dataOutMoved ->
+        require(iv.size == ivSizeBytes) { "IV size is wrong" }
 
         cryptorRef.create(kCCEncrypt, iv.refTo(0))
         val ciphertextOutput = ByteArray(cryptorRef.outputLength(plaintextInput.size))
@@ -78,21 +84,41 @@ private class AesCbcCipher(
             dataOutAvailable = ciphertextOutput.size - moved,
             dataOutMoved = dataOutMoved,
         )
-        iv + ciphertextOutput
+        ciphertextOutput
     }
 
     override fun decryptBlocking(ciphertextInput: ByteArray): ByteArray {
         require(ciphertextInput.size >= ivSizeBytes) { "Ciphertext is too short" }
         require(ciphertextInput.size % blockSizeBytes == 0) { "Ciphertext is not padded" }
 
-        return useCryptor { cryptorRef, dataOutMoved ->
-            cryptorRef.create(kCCDecrypt, ciphertextInput.refTo(0))
+        return decrypt(
+            iv = ciphertextInput,
+            ciphertext = ciphertextInput,
+            ciphertextStartIndex = ivSizeBytes
+        )
+    }
 
-            val plaintextOutput = ByteArray(cryptorRef.outputLength(ciphertextInput.size - ivSizeBytes))
+    @DelicateCryptographyApi
+    override fun decryptBlocking(iv: ByteArray, ciphertextInput: ByteArray): ByteArray {
+        require(iv.size == ivSizeBytes) { "IV size is wrong" }
+        require(ciphertextInput.size % blockSizeBytes == 0) { "Ciphertext is not padded" }
+
+        return decrypt(
+            iv = iv,
+            ciphertext = ciphertextInput,
+            ciphertextStartIndex = 0
+        )
+    }
+
+    private fun decrypt(iv: ByteArray, ciphertext: ByteArray, ciphertextStartIndex: Int): ByteArray =
+        useCryptor { cryptorRef, dataOutMoved ->
+            cryptorRef.create(kCCDecrypt, iv.refTo(0))
+
+            val plaintextOutput = ByteArray(cryptorRef.outputLength(ciphertext.size - ciphertextStartIndex))
 
             var moved = cryptorRef.update(
-                dataIn = ciphertextInput.refToFixed(ivSizeBytes),
-                dataInLength = ciphertextInput.size - ivSizeBytes,
+                dataIn = ciphertext.refToFixed(ciphertextStartIndex),
+                dataInLength = ciphertext.size - ciphertextStartIndex,
                 dataOut = plaintextOutput.refToFixed(0),
                 dataOutAvailable = plaintextOutput.size,
                 dataOutMoved = dataOutMoved
@@ -110,7 +136,6 @@ private class AesCbcCipher(
                 plaintextOutput.copyOf(moved)
             }
         }
-    }
 
     private inline fun <T> useCryptor(
         block: MemScope.(

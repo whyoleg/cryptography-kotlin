@@ -1,13 +1,13 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
 
+import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
-import dev.whyoleg.cryptography.operations.cipher.*
 import dev.whyoleg.cryptography.random.*
 import kotlinx.cinterop.*
 import kotlin.experimental.*
@@ -24,7 +24,7 @@ internal object Openssl3AesCbc : AES.CBC, Openssl3Aes<AES.CBC.Key>() {
             else                  -> error("Unsupported key size")
         }
 
-        override fun cipher(padding: Boolean): Cipher = AesCbcCipher(algorithm, key, padding)
+        override fun cipher(padding: Boolean): AES.CBC.Cipher = AesCbcCipher(algorithm, key, padding)
     }
 }
 
@@ -34,18 +34,24 @@ private class AesCbcCipher(
     algorithm: String,
     private val key: ByteArray,
     private val padding: Boolean,
-) : Cipher {
+) : AES.CBC.Cipher {
 
     private val cipher = EVP_CIPHER_fetch(null, algorithm, null)
 
     @OptIn(ExperimentalNativeApi::class)
     private val cleaner = createCleaner(cipher, ::EVP_CIPHER_free)
 
-    override fun encryptBlocking(plaintextInput: ByteArray): ByteArray = memScoped {
+    override fun encryptBlocking(plaintextInput: ByteArray): ByteArray {
+        val iv = CryptographyRandom.nextBytes(ivSizeBytes)
+        return iv + encryptBlocking(iv, plaintextInput)
+    }
+
+    @DelicateCryptographyApi
+    override fun encryptBlocking(iv: ByteArray, plaintextInput: ByteArray): ByteArray = memScoped {
+        require(iv.size == ivSizeBytes) { "IV size is wrong" }
+
         val context = EVP_CIPHER_CTX_new()
         try {
-            val iv = ByteArray(ivSizeBytes).also { CryptographyRandom.nextBytes(it) }
-
             checkError(
                 EVP_EncryptInit_ex2(
                     ctx = context,
@@ -83,15 +89,34 @@ private class AesCbcCipher(
             )
 
             val produced = producedByUpdate + outl.value
-            iv + ciphertextOutput.ensureSizeExactly(produced)
+            ciphertextOutput.ensureSizeExactly(produced)
         } finally {
             EVP_CIPHER_CTX_free(context)
         }
     }
 
-    override fun decryptBlocking(ciphertextInput: ByteArray): ByteArray = memScoped {
+    override fun decryptBlocking(ciphertextInput: ByteArray): ByteArray {
         require(ciphertextInput.size >= ivSizeBytes) { "Ciphertext is too short" }
 
+        return decrypt(
+            iv = ciphertextInput,
+            ciphertext = ciphertextInput,
+            ciphertextStartIndex = ivSizeBytes,
+        )
+    }
+
+    @DelicateCryptographyApi
+    override fun decryptBlocking(iv: ByteArray, ciphertextInput: ByteArray): ByteArray {
+        require(iv.size == ivSizeBytes) { "IV size is wrong" }
+
+        return decrypt(
+            iv = iv,
+            ciphertext = ciphertextInput,
+            ciphertextStartIndex = 0,
+        )
+    }
+
+    private fun decrypt(iv: ByteArray, ciphertext: ByteArray, ciphertextStartIndex: Int): ByteArray = memScoped {
         val context = EVP_CIPHER_CTX_new()
         try {
             checkError(
@@ -99,14 +124,14 @@ private class AesCbcCipher(
                     ctx = context,
                     cipher = cipher,
                     key = key.refToU(0),
-                    iv = ciphertextInput.refToU(0),
+                    iv = iv.refToU(0),
                     params = null
                 )
             )
             checkError(EVP_CIPHER_CTX_set_padding(context, if (padding) 1 else 0))
 
             val blockSize = checkError(EVP_CIPHER_CTX_get_block_size(context))
-            val plaintextOutput = ByteArray(blockSize + ciphertextInput.size - ivSizeBytes)
+            val plaintextOutput = ByteArray(blockSize + ciphertext.size - ciphertextStartIndex)
 
             val outl = alloc<IntVar>()
 
@@ -115,8 +140,8 @@ private class AesCbcCipher(
                     ctx = context,
                     out = plaintextOutput.refToU(0),
                     outl = outl.ptr,
-                    `in` = ciphertextInput.safeRefToU(ivSizeBytes),
-                    inl = ciphertextInput.size - ivSizeBytes
+                    `in` = ciphertext.safeRefToU(ciphertextStartIndex),
+                    inl = ciphertext.size - ciphertextStartIndex
                 )
             )
 

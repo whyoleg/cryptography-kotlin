@@ -2,6 +2,8 @@
  * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
+@file:Suppress("ArrayInDataClass")
+
 package dev.whyoleg.cryptography.providers.tests.algorithms.symmetric
 
 import dev.whyoleg.cryptography.*
@@ -20,36 +22,61 @@ private fun Int.withPadding(padding: Boolean): Int = if (padding) this else this
 abstract class AesCbcCompatibilityTest(provider: CryptographyProvider) :
     AesBasedCompatibilityTest<AES.CBC.Key, AES.CBC>(AES.CBC, provider) {
 
+    // TODO: add basic tests for CBC with explicit IV
     @Serializable
-    private data class CipherParameters(val padding: Boolean) : TestParameters
+    private data class CipherParameters(
+        val padding: Boolean,
+        val iv: Base64ByteArray?,
+    ) : TestParameters {
+        override fun toString(): String = "CipherParameters(padding=${padding}, iv.size=${iv?.size})"
+    }
 
     override suspend fun CompatibilityTestScope<AES.CBC>.generate(isStressTest: Boolean) {
         val cipherIterations = when {
             isStressTest -> 10
             else         -> 5
         }
+        val ivIterations = when {
+            isStressTest -> 10
+            else         -> 5
+        }
 
         val paddings = buildList {
-            generateBoolean { padding ->
-                if (!supportsPadding(padding)) return@generateBoolean
+            // size of IV = 16
+            (List(ivIterations) { CryptographyRandom.nextBytes(16) } + listOf(null)).forEach { iv ->
+                generateBoolean { padding ->
+                    if (!supportsPadding(padding)) return@generateBoolean
 
-                val id = api.ciphers.saveParameters(CipherParameters(padding))
-                add(id to padding)
+                    val parameters = CipherParameters(padding, iv)
+                    val id = api.ciphers.saveParameters(parameters)
+                    add(id to parameters)
+                }
             }
         }
 
         generateKeys(isStressTest) { key, keyReference, _ ->
-            paddings.forEach { (cipherParametersId, padding) ->
-                logger.log { "padding = $padding" }
-                val cipher = key.cipher(padding)
+            paddings.forEach { (cipherParametersId, parameters) ->
+                logger.log { "parameters = $parameters" }
+                val cipher = key.cipher(parameters.padding)
                 repeat(cipherIterations) {
-                    val plaintextSize = CryptographyRandom.nextInt(maxPlaintextSize).withPadding(padding)
+                    val plaintextSize = CryptographyRandom.nextInt(maxPlaintextSize).withPadding(parameters.padding)
                     logger.log { "plaintext.size  = $plaintextSize" }
                     val plaintext = CryptographyRandom.nextBytes(plaintextSize)
-                    val ciphertext = cipher.encrypt(plaintext)
-                    logger.log { "ciphertext.size = ${ciphertext.size}" }
 
-                    assertContentEquals(plaintext, cipher.decrypt(ciphertext), "Initial Decrypt")
+                    val ciphertext = when (val iv = parameters.iv) {
+                        null -> {
+                            val ciphertext = cipher.encrypt(plaintext)
+                            logger.log { "ciphertext.size = ${ciphertext.size}" }
+                            assertContentEquals(plaintext, cipher.decrypt(ciphertext), "Initial Decrypt")
+                            ciphertext
+                        }
+                        else -> {
+                            val ciphertext = cipher.encrypt(iv, plaintext)
+                            logger.log { "ciphertext.size = ${ciphertext.size}" }
+                            assertContentEquals(plaintext, cipher.decrypt(iv, ciphertext), "Initial Decrypt")
+                            ciphertext
+                        }
+                    }
 
                     api.ciphers.saveData(cipherParametersId, CipherData(keyReference, plaintext, ciphertext))
                 }
@@ -60,14 +87,22 @@ abstract class AesCbcCompatibilityTest(provider: CryptographyProvider) :
     override suspend fun CompatibilityTestScope<AES.CBC>.validate() {
         val keys = validateKeys()
 
-        api.ciphers.getParameters<CipherParameters> { (padding), parametersId, _ ->
+        api.ciphers.getParameters<CipherParameters> { (padding, iv), parametersId, _ ->
             if (!supportsPadding(padding)) return@getParameters
 
             api.ciphers.getData<CipherData>(parametersId) { (keyReference, plaintext, ciphertext), _, _ ->
                 keys[keyReference]?.forEach { key ->
                     val cipher = key.cipher(padding)
-                    assertContentEquals(plaintext, cipher.decrypt(ciphertext), "Decrypt")
-                    assertContentEquals(plaintext, cipher.decrypt(cipher.encrypt(plaintext)), "Encrypt-Decrypt")
+                    when (iv) {
+                        null -> {
+                            assertContentEquals(plaintext, cipher.decrypt(ciphertext), "Decrypt")
+                            assertContentEquals(plaintext, cipher.decrypt(cipher.encrypt(plaintext)), "Encrypt-Decrypt")
+                        }
+                        else -> {
+                            assertContentEquals(plaintext, cipher.decrypt(iv, ciphertext), "Decrypt")
+                            assertContentEquals(plaintext, cipher.decrypt(iv, cipher.encrypt(iv, plaintext)), "Encrypt-Decrypt")
+                        }
+                    }
                 }
             }
         }
