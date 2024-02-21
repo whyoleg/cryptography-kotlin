@@ -32,7 +32,7 @@ tasks.withType<DokkaTaskPartial>().configureEach {
         reportUndocumented.set(false) // set true later
         sourceLink {
             localDirectory.set(rootDir)
-            remoteUrl.set(URI("https://github.com/whyoleg/cryptography-kotlin/tree/main/").toURL())
+            remoteUrl.set(URI("https://github.com/whyoleg/cryptography-kotlin/tree/0.3.0/").toURL())
             remoteLineSuffix.set("#L")
         }
     }

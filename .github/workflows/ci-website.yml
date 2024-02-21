@@ -1,0 +1,15 @@
+name: Deploy website
+on:
+  workflow_dispatch:
+
+jobs:
+  build-website:
+    uses: ./.github/workflows/run-build-website.yml
+
+  publish-website:
+    needs: [ build-website ]
+    uses: ./.github/workflows/publish-website.yml
+    permissions:
+      contents: read
+      pages: write
+      id-token: write

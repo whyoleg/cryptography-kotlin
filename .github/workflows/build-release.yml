@@ -12,11 +12,3 @@ jobs:
     needs: [ checks ]
     uses: ./.github/workflows/publish-release.yml
     secrets: inherit
-
-  publish-website:
-    needs: [ publish ]
-    uses: ./.github/workflows/publish-website.yml
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
