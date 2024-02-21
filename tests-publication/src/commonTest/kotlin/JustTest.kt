@@ -1,16 +1,14 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.digest.*
-import kotlinx.coroutines.*
 import kotlinx.coroutines.test.*
 import kotlin.test.*
 
 class JustTest {
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun test() = runTest {
         val digest =
