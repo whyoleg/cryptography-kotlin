@@ -6,6 +6,7 @@ package dev.whyoleg.cryptography.serialization.pem
 
 import kotlin.io.encoding.*
 
+// TODO: do we need kotlinx-io ByteString/Source here?
 @OptIn(ExperimentalEncodingApi::class)
 public object PEM {
     private const val BEGIN_PREFIX = "-----BEGIN "

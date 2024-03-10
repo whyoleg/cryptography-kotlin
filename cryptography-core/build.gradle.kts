@@ -30,5 +30,6 @@ kotlin {
     sourceSets.commonMain.dependencies {
         api(projects.cryptographyBigint)
         api(projects.cryptographyRandom)
+        api(libs.kotlinx.io.core)
     }
 }

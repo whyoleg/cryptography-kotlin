@@ -5,7 +5,11 @@
 package dev.whyoleg.cryptography
 
 @RequiresOptIn(
-    message = "API marked with this annotation should be used only when you know what you are doing. Avoid usage of such declarations as much as possible. They are provided mostly for backward compatibility with older services that require them.",
-    level = RequiresOptIn.Level.ERROR
+    level = RequiresOptIn.Level.ERROR,
+    message = """
+              API marked with this annotation should be used only when you know what you are doing.
+              Avoid usage of such declarations as much as possible.
+              They are provided mostly for backward compatibility with older services that require them.
+              """
 )
 public annotation class DelicateCryptographyApi

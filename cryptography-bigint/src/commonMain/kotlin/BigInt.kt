@@ -57,6 +57,7 @@ public fun BigInt.toULong(): ULong = toLong().toULong()
 public expect fun String.toBigInt(): BigInt
 public expect fun String.toBigIntOrNull(): BigInt?
 
+// TODO: do we need kotlinx-io ByteString here?
 // two's complement
 public expect fun ByteArray.decodeToBigInt(): BigInt
 public expect fun BigInt.encodeToByteArray(): ByteArray

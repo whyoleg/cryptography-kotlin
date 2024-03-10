@@ -8,6 +8,7 @@ import dev.whyoleg.cryptography.serialization.asn1.internal.*
 import kotlinx.serialization.*
 import kotlinx.serialization.modules.*
 
+// TODO: do we need kotlinx-io ByteString/Source here, or should we wait for kotlinx-serialization to support it?
 public sealed class DER(
     override val serializersModule: SerializersModule,
 ) : BinaryFormat {
