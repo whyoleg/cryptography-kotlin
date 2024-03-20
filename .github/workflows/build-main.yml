@@ -2,6 +2,8 @@ name: Build main
 on:
   workflow_dispatch:
   push:
+    paths-ignore:
+      - samples/**
     branches:
       - main
 

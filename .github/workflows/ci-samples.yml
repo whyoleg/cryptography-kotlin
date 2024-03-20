@@ -1,0 +1,29 @@
+name: Samples CI
+on:
+  push:
+    paths:
+      - samples/**
+
+jobs:
+  build:
+    name: Build ${{ matrix.sample }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-22.04, ubuntu-20.04, macos-13, macos-14, windows-latest ]
+        sample: [ multiplatform, openssl-shared, openssl-shared-no-cache ]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-gradle
+        with:
+          cache-disabled: true
+
+      - if: matrix.os == 'windows-latest'
+        uses: msys2/setup-msys2@v2
+        with:
+          release: false
+          install: mingw-w64-x86_64-openssl
+
+      - run: ./gradlew build --continue
+        working-directory: samples/${{ matrix.sample }}
