@@ -8,11 +8,11 @@ jobs:
     uses: ./.github/workflows/run-build-project.yml
 
   build-website:
-    needs: [ build-project ]
+    # needs: [ build-project ]
     uses: ./.github/workflows/run-build-website.yml
 
   default-tests:
-    needs: [ build-project ]
+    # needs: [ build-project ]
     uses: ./.github/workflows/run-tests-default.yml
 
   compatibility-tests:
