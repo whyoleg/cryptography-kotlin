@@ -2,6 +2,7 @@
  * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
+import ckbuild.*
 import ckbuild.tests.*
 import com.android.build.gradle.internal.tasks.*
 import org.gradle.kotlin.dsl.*
@@ -26,6 +27,7 @@ kotlin {
         allWarningsAsErrors.set(true)
         progressiveMode.set(true)
         freeCompilerArgs.add("-Xrender-internal-diagnostic-names")
+        optIn.addAll(OptIns.ExperimentalSubclassOptIn)
     }
 
     // for some reason just applying `kotlin-test` doesn't work for JVM - revisit after Kotlin 2.0
@@ -43,8 +45,10 @@ kotlin {
 
     targets.withType<KotlinJvmTarget>().configureEach {
         compilations.configureEach {
-            compilerOptions.configure {
-                freeCompilerArgs.add("-Xjvm-default=all")
+            compileTaskProvider.configure {
+                compilerOptions {
+                    freeCompilerArgs.add("-Xjvm-default=all")
+                }
             }
         }
     }

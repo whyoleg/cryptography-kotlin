@@ -5,13 +5,13 @@ public final class dev/whyoleg/cryptography/serialization/asn1/BitArray {
 	public final fun getUnusedBits ()I
 }
 
-public final class dev/whyoleg/cryptography/serialization/asn1/BitArray$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class dev/whyoleg/cryptography/serialization/asn1/BitArray$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Ldev/whyoleg/cryptography/serialization/asn1/BitArray$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/whyoleg/cryptography/serialization/asn1/BitArray;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/whyoleg/cryptography/serialization/asn1/BitArray;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/whyoleg/cryptography/serialization/asn1/BitArray;)V
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/whyoleg/cryptography/serialization/asn1/BitArray;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
@@ -56,14 +56,14 @@ public final class dev/whyoleg/cryptography/serialization/asn1/ObjectIdentifier 
 	public final synthetic fun unbox-impl ()Ljava/lang/String;
 }
 
-public final class dev/whyoleg/cryptography/serialization/asn1/ObjectIdentifier$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public synthetic class dev/whyoleg/cryptography/serialization/asn1/ObjectIdentifier$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Ldev/whyoleg/cryptography/serialization/asn1/ObjectIdentifier$$serializer;
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun deserialize-iVrrli8 (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/String;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun deserialize-iVrrli8 (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/String;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun serialize-IHeWLgs (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/String;)V
+	public final fun serialize-IHeWLgs (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/String;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
