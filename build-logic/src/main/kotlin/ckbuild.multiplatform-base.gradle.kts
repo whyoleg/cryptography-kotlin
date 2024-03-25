@@ -9,6 +9,7 @@ import org.gradle.kotlin.dsl.*
 import org.jetbrains.kotlin.gradle.*
 import org.jetbrains.kotlin.gradle.plugin.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.*
+import org.jetbrains.kotlin.gradle.targets.js.*
 import org.jetbrains.kotlin.gradle.targets.js.ir.*
 import org.jetbrains.kotlin.gradle.targets.js.testing.*
 import org.jetbrains.kotlin.gradle.targets.jvm.*
@@ -63,7 +64,8 @@ kotlin {
                 }
             }
         }
-        whenNodejsConfigured {
+        // not used/supported by wasm
+        if (platformType == KotlinPlatformType.js) whenNodejsConfigured {
             testTask {
                 useMocha {
                     timeout = "300s"
