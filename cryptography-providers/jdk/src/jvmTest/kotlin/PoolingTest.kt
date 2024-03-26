@@ -17,7 +17,7 @@ class PoolingTest {
     }
 
     @Test
-    fun testOverlappingUseCachedPool() = runTest {
+    fun testOverlappingUseCachedPool() {
         val pool = Pooled.Cached(::Any)
         val first = pool.use { it }
         pool.use { i1 ->
