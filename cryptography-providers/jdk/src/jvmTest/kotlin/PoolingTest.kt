@@ -7,27 +7,44 @@ import kotlin.test.*
 class PoolingTest {
 
     @Test
-    fun testSequentialAccessOnCachedPoolShouldReuseInstance() {
-        var instantiateCount = 0
-        val pool = Pooled.Cached { instantiateCount++; Any() }
-        repeat(3) {
-            pool.use { }
-        }
-        assertEquals(1, instantiateCount)
+    fun testSequentialUseCachedPool() {
+        val pool = Pooled.Cached(::Any)
+        val first = pool.use { it }
+        val second = pool.use { it }
+        assertSame(first, second)
+        val third = pool.use { it }
+        assertSame(second, third)
     }
 
     @Test
-    fun testConcurrentAccessOnCachedPoolShouldNotReuseInstances() = runTest {
-        var instantiateCount = 0
-        val pool = Pooled.Cached { instantiateCount++; Any() }
-        pool.use { } // prime the pool with 1 instance; we should not be able to reuse that instance for all 3 concurrent usages below
-        List(3) {
-            launch {
-                pool.use {
-                    delay(1000)
+    fun testOverlappingUseCachedPool() = runTest {
+        val pool = Pooled.Cached(::Any)
+        val first = pool.use { it }
+        pool.use { i1 ->
+            assertSame(first, i1)
+            pool.use { i2 ->
+                assertNotSame(i1, i2)
+                pool.use { i3 ->
+                    assertNotSame(i2, i3)
                 }
             }
-        }.joinAll()
-        assertEquals(3, instantiateCount)
+        }
+    }
+
+    @Test
+    fun testConcurrentUseCachedPool() = runTest {
+        val pool = Pooled.Cached(::Any)
+        val first = pool.use { it }
+        val instances = List(3) {
+            async {
+                pool.use { instance ->
+                    delay(1000)
+                    instance
+                }
+            }
+        }.awaitAll()
+        assertSame(first, instances[0])
+        assertNotSame(instances[0], instances[1])
+        assertNotSame(instances[1], instances[2])
     }
 }
