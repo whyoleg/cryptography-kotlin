@@ -16,11 +16,9 @@ internal sealed class Pooled<T>(protected val instantiate: () -> T) {
         private val pooled = ArrayDeque<T>()
 
         override fun get(): T {
-            synchronized(this) {
-                pooled.firstOrNull()
-            }?.let { return it }
-
-            return instantiate()
+            return synchronized(this) {
+                pooled.removeLastOrNull()
+            } ?: instantiate()
         }
 
         override fun put(value: T) {
