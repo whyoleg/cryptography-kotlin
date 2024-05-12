@@ -3,9 +3,7 @@
  */
 
 import org.jetbrains.kotlin.gradle.targets.js.nodejs.*
-import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin.Companion.kotlinNodeJsExtension
-import org.jetbrains.kotlin.gradle.targets.js.npm.tasks.*
-import org.jetbrains.kotlin.gradle.targets.js.yarn.*
+import org.jetbrains.kotlin.gradle.targets.js.npm.*
 
 plugins {
     alias(libs.plugins.kotlin.dokka)
@@ -15,21 +13,11 @@ plugins {
     alias(libs.plugins.kotlin.plugin.serialization) apply false
 }
 
-// node version with WASM support
 plugins.withType<NodeJsRootPlugin> {
-    kotlinNodeJsExtension.apply {
-        nodeVersion = "21.0.0-v8-canary202310177990572111"
-        nodeDownloadBaseUrl = "https://nodejs.org/download/v8-canary"
-    }
-    tasks.withType<KotlinNpmInstallTask>().configureEach {
-        args.add("--ignore-engines")
-    }
-}
-
-plugins.withType<YarnPlugin> {
-    yarn.apply {
-        lockFileDirectory = rootDir.resolve("gradle/js")
-        yarnLockMismatchReport = YarnLockMismatchReport.NONE
+    // ignore package lock
+    extensions.configure<NpmExtension> {
+        lockFileDirectory.set(layout.buildDirectory.dir("kotlin-js-store"))
+        packageLockMismatchReport.set(LockFileMismatchReport.NONE)
     }
 }
 

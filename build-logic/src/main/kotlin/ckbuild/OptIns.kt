@@ -9,6 +9,7 @@ object OptIns {
     const val CryptographyProviderApi = "dev.whyoleg.cryptography.CryptographyProviderApi"
     const val DelicateCryptographyApi = "dev.whyoleg.cryptography.DelicateCryptographyApi"
 
+    const val ExperimentalSubclassOptIn = "kotlin.ExperimentalSubclassOptIn"
     const val ExperimentalForeignApi = "kotlinx.cinterop.ExperimentalForeignApi"
     const val ExperimentalEncodingApi = "kotlin.io.encoding.ExperimentalEncodingApi"
 }
