@@ -11,8 +11,8 @@ plugins {
     alias(libs.plugins.kotlin.dokka)
 
     alias(libs.plugins.android.library) apply false
-    alias(kotlinLibs.plugins.multiplatform) apply false
-    alias(kotlinLibs.plugins.serialization) apply false
+    alias(libs.plugins.kotlin.multiplatform) apply false
+    alias(libs.plugins.kotlin.plugin.serialization) apply false
 }
 
 // node version with WASM support

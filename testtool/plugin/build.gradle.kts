@@ -5,7 +5,7 @@
 import org.jetbrains.kotlin.gradle.dsl.*
 
 plugins {
-    alias(kotlinLibs.plugins.jvm)
+    alias(libs.plugins.kotlin.jvm)
     `java-gradle-plugin`
 }
 
@@ -18,8 +18,8 @@ kotlin {
 
 dependencies {
     compileOnly(gradleKotlinDsl())
-    compileOnly(kotlinLibs.gradle.plugin)
-    compileOnly(libs.build.android)
+    compileOnly(libs.kotlin.gradle.plugin)
+    compileOnly(libs.android.gradle.plugin)
 
     implementation(projects.server)
 }

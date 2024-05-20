@@ -10,7 +10,7 @@ import org.jetbrains.kotlin.gradle.targets.js.ir.*
 
 plugins {
     id("ckbuild.multiplatform-library")
-    alias(kotlinLibs.plugins.serialization)
+    alias(libs.plugins.kotlin.plugin.serialization)
 }
 
 description = "cryptography-kotlin BigInt API"

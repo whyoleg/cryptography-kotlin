@@ -31,7 +31,7 @@ kotlin {
             implementation(projects.cryptographySerializationAsn1Modules)
         }
         jvmTest.dependencies {
-            implementation(libs.bouncycastle.jdk8)
+            implementation(libs.bouncycastle)
         }
     }
 }

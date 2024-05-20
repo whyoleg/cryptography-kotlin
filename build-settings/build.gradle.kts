@@ -4,20 +4,10 @@
 
 plugins {
     `kotlin-dsl`
-    alias(libs.plugins.buildconfig)
 }
 
 dependencies {
-    implementation(libs.build.gradle.enterprise)
-    implementation(libs.build.gradle.customUserData)
-    implementation(libs.build.gradle.foojay)
-}
-
-buildConfig {
-    packageName("cksettings")
-    useKotlinOutput {
-        topLevelConstants = true
-        internalVisibility = true
-    }
-    buildConfigField("kotlinVersion", libs.versions.kotlin.asProvider())
+    implementation("com.gradle:gradle-enterprise-gradle-plugin:3.17.3")
+    implementation("com.gradle:common-custom-user-data-gradle-plugin:2.0.1")
+    implementation("org.gradle.toolchains:foojay-resolver:0.8.0")
 }

@@ -9,7 +9,7 @@ import org.jetbrains.kotlin.gradle.targets.js.dsl.*
 import org.jetbrains.kotlin.konan.target.*
 
 plugins {
-    alias(kotlinLibs.plugins.multiplatform)
+    alias(libs.plugins.kotlin.multiplatform)
 }
 
 @OptIn(ExperimentalWasmDsl::class)

@@ -3,7 +3,7 @@
  */
 
 plugins {
-    id("cksettings.kotlin-version-catalog")
+    id("cksettings.kotlin-version-override")
     id("cksettings.repositories")
     id("cksettings.gradle")
 }

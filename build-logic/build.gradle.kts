@@ -7,12 +7,12 @@ plugins {
 }
 
 dependencies {
-    implementation(kotlinLibs.gradle.plugin)
-    implementation(libs.build.kotlinx.bcv)
-    implementation(libs.build.kotlinx.kover)
-    implementation(libs.build.kotlin.dokka)
-    implementation(libs.build.android)
-    implementation(libs.build.apache.commons.compress)
+    implementation(libs.kotlin.gradle.plugin)
+    implementation(libs.kotlin.dokka.gradle.plugin)
+    implementation(libs.kotlinx.bcv.gradle.plugin)
+    implementation(libs.kotlinx.kover.gradle.plugin)
+    implementation(libs.android.gradle.plugin)
     implementation(libs.maven.publish.gradle.plugin)
+    implementation(libs.apache.commons.compress)
     implementation("testtool:plugin")
 }

@@ -6,7 +6,7 @@ import ckbuild.*
 
 plugins {
     id("ckbuild.multiplatform-library")
-    alias(kotlinLibs.plugins.serialization)
+    alias(libs.plugins.kotlin.plugin.serialization)
 }
 
 description = "cryptography-kotlin ASN.1 modules"

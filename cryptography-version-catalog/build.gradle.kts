@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 plugins {
@@ -12,7 +12,7 @@ description = "cryptography-kotlin Gradle Version Catalog"
 catalog {
     versionCatalog {
         //just a hint on version used by the library
-        version("kotlin", kotlinLibs.versions.kotlin.get())
+        version("kotlin", libs.versions.kotlin.asProvider().get())
         val cryptographyVersion = version("cryptography", version.toString())
         (ckbuild.bom.artifacts + "cryptography-bom").forEach { name ->
             library(

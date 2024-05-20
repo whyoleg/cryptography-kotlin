@@ -12,7 +12,7 @@ kotlin {
     sourceSets {
         androidInstrumentedTest.dependencies {
             implementation(projects.cryptographyProviderJdk)
-            implementation(libs.bouncycastle.jdk8)
+            implementation(libs.bouncycastle)
         }
     }
 }

@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 import org.jetbrains.kotlin.gradle.dsl.*
 
 plugins {
-    alias(kotlinLibs.plugins.jvm)
+    alias(libs.plugins.kotlin.jvm)
 }
 
 kotlin {
