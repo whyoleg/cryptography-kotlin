@@ -20,13 +20,13 @@ jobs:
         os: [ 'ubuntu-latest' ]
         target: [ 'jvmAll', 'js', 'native' ]
         include:
-          - os: 'macos-14'
+          - os: 'macos-latest'
             target: 'macos'
-          - os: 'macos-14'
+          - os: 'macos-latest'
             target: 'ios'
-          - os: 'macos-14'
+          - os: 'macos-latest'
             target: 'watchos'
-          - os: 'macos-14'
+          - os: 'macos-latest'
             target: 'tvos'
           - os: 'windows-latest'
             target: 'native'
@@ -79,13 +79,13 @@ jobs:
         os: [ 'ubuntu-latest' ]
         target: [ 'jvmAll', 'js', 'native' ]
         include:
-          - os: 'macos-14'
+          - os: 'macos-latest'
             target: 'macos'
-          - os: 'macos-14'
+          - os: 'macos-latest'
             target: 'ios'
-          - os: 'macos-14'
+          - os: 'macos-latest'
             target: 'watchos'
-          - os: 'macos-14'
+          - os: 'macos-latest'
             target: 'tvos'
           - os: 'windows-latest'
             target: 'native'

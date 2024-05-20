@@ -3,7 +3,7 @@ on: [ workflow_call ]
 
 jobs:
   publish:
-    runs-on: macos-14
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-gradle
