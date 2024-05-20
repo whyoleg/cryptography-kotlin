@@ -5,11 +5,11 @@ on:
 
 jobs:
   build-project:
-    uses: ./.github/workflows/run-build-project.yml
+    uses: ./.github/workflows/build-project.yml
 
   build-website:
     needs: [ build-project ]
-    uses: ./.github/workflows/run-build-website.yml
+    uses: ./.github/workflows/build-website.yml
 
   default-tests:
     needs: [ build-project ]

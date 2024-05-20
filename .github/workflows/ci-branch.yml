@@ -1,0 +1,16 @@
+name: Branch CI
+on:
+  workflow_dispatch:
+  push:
+    branches-ignore:
+      - main
+      - kotlin-eap/*
+
+jobs:
+  checks:
+    uses: ./.github/workflows/run-checks.yml
+
+  publish:
+    needs: [ checks ]
+    uses: ./.github/workflows/publish-test.yml
+    secrets: inherit

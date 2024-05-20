@@ -4,7 +4,7 @@ on:
 
 jobs:
   build-website:
-    uses: ./.github/workflows/run-build-website.yml
+    uses: ./.github/workflows/build-website.yml
 
   publish-website:
     needs: [ build-website ]

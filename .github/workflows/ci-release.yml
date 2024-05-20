@@ -1,9 +1,8 @@
-name: Build main
+name: Release CI
 on:
-  workflow_dispatch:
   push:
-    branches:
-      - main
+    tags:
+      - '*'
 
 jobs:
   checks:
@@ -11,5 +10,5 @@ jobs:
 
   publish:
     needs: [ checks ]
-    uses: ./.github/workflows/publish-snapshot.yml
+    uses: ./.github/workflows/publish-release.yml
     secrets: inherit
