@@ -1,0 +1,7 @@
+name: Pull Request CI
+on:
+  pull_request
+
+jobs:
+  test:
+    uses: ./.github/workflows/run-checks.yml
