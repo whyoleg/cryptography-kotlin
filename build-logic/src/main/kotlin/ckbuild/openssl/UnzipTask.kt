@@ -25,6 +25,7 @@ abstract class UnzipTask : DefaultTask() {
     fun unzipAction() {
         val outputRoot = outputDirectory.get().asFile.toPath()
         outputRoot.deleteRecursively()
+        @Suppress("DEPRECATION")
         ZipFile(inputFile.get().asFile).use { zipFile ->
             val entries = zipFile.entries
             while (entries.hasMoreElements()) {
