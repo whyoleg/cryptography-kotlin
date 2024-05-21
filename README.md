@@ -40,9 +40,9 @@ repositories {
     mavenCentral()
 }
 dependencies {
-    implementation("dev.whyoleg.cryptography:cryptography-core:0.3.0")
+    implementation("dev.whyoleg.cryptography:cryptography-core:0.3.1")
     // some provider
-    implementation("dev.whyoleg.cryptography:cryptography-provider-jdk:0.3.0")
+    implementation("dev.whyoleg.cryptography:cryptography-provider-jdk:0.3.1")
 }
 ```
 

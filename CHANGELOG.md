@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.3.1
+
+> Published 21 May 2024
+
+* Fix concurrency issue in jdk provider ([#26](https://github.com/whyoleg/cryptography-kotlin/pull/26))
+
 ## 0.3.0 - Support for ALL targets, new experimental modules
 
 > Published 21 Feb 2024

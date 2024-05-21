@@ -24,7 +24,7 @@ val bytes: ByteArray = CryptographyRandom.nextBytes(20)
 
 ```kotlin
 dependencies {
-    implementation("dev.whyoleg.cryptography:cryptography-random:0.3.0")
+    implementation("dev.whyoleg.cryptography:cryptography-random:0.3.1")
 }
 ```
 

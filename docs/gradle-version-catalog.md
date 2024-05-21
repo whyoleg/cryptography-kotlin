@@ -11,7 +11,7 @@ Configure `settings.gradle.kts`:
 dependencyResolutionManagement {
     versionCatalogs {
         create("cryptographyLibs") {
-            from("dev.whyoleg.cryptography:cryptography-version-catalog:0.3.0")
+            from("dev.whyoleg.cryptography:cryptography-version-catalog:0.3.1")
         }
     }
 }
