@@ -14,24 +14,10 @@ internal actual external interface JsBigInt : JsAny {
 }
 
 @JsName("BigInt")
-internal actual external fun jsBigIntOrThrow(value: Int): JsBigInt
+internal actual external fun jsBigInt(value: Int): JsBigInt
 
-internal actual fun jsBigIntOrThrow(value: String): JsBigInt {
-    return checkNotNull(jsBigIntOrNull(value)) { "Failed to parse BigInt from string" }
-}
-
-internal actual fun jsBigIntOrNull(value: String): JsBigInt? {
-    js(
-        code = """
-        try {
-            return BigInt(value);
-        } catch (error) {
-            return undefined;
-        }
-        
-               """
-    )
-}
+@JsName("BigInt")
+internal actual external fun jsBigInt(value: String): JsBigInt
 
 internal actual fun jsBigIntNegate(value: JsBigInt): JsBigInt = js("-value")
 

@@ -11,7 +11,7 @@ public actual class BigInt internal constructor(
     internal val jsBigInt: JsBigInt,
 ) : Number(), Comparable<BigInt> {
     public actual companion object {
-        public actual val ZERO: BigInt = BigInt(jsBigIntOrThrow(0))
+        public actual val ZERO: BigInt = BigInt(jsBigInt(0))
     }
 
     public actual val sign: Int get() = jsBigIntSign(jsBigInt)
@@ -45,12 +45,12 @@ public actual fun Short.toBigInt(): BigInt = toInt().toBigInt()
 
 public actual fun Int.toBigInt(): BigInt = when (this) {
     0    -> BigInt.ZERO
-    else -> BigInt(jsBigIntOrThrow(this))
+    else -> BigInt(jsBigInt(this))
 }
 
 public actual fun Long.toBigInt(): BigInt = when (this) {
     0L   -> BigInt.ZERO
-    else -> BigInt(jsBigIntOrThrow(toString()))
+    else -> BigInt(jsBigInt(toString()))
 }
 
 public actual fun UByte.toBigInt(): BigInt = toInt().toBigInt()
@@ -58,23 +58,27 @@ public actual fun UShort.toBigInt(): BigInt = toInt().toBigInt()
 
 public actual fun UInt.toBigInt(): BigInt = when (this) {
     0U   -> BigInt.ZERO
-    else -> BigInt(jsBigIntOrThrow(toString()))
+    else -> BigInt(jsBigInt(toString()))
 }
 
 public actual fun ULong.toBigInt(): BigInt = when (this) {
     0UL  -> BigInt.ZERO
-    else -> BigInt(jsBigIntOrThrow(toString()))
+    else -> BigInt(jsBigInt(toString()))
 }
 
 public actual fun String.toBigInt(): BigInt {
     check(isNotBlank()) { "empty or blank string" }
-    return BigInt(jsBigIntOrThrow(this))
+    return BigInt(jsBigInt(this))
 }
 
 public actual fun String.toBigIntOrNull(): BigInt? {
     if (isBlank()) return null
 
-    return jsBigIntOrNull(this)?.let(::BigInt)
+    return try {
+        BigInt(jsBigInt(this))
+    } catch (cause: Throwable) {
+        return null
+    }
 }
 
 @OptIn(ExperimentalStdlibApi::class)
@@ -85,8 +89,8 @@ public actual fun ByteArray.decodeToBigInt(): BigInt {
     val positive = this[0] >= 0
 
     val jsBigInt = when {
-        positive -> jsBigIntOrThrow("0x" + toHexString())
-        else     -> jsBigIntNegate(jsBigIntOrThrow("0x" + copyOf().invertTwoComplement().toHexString()))
+        positive -> jsBigInt("0x" + toHexString())
+        else     -> jsBigIntNegate(jsBigInt("0x" + copyOf().invertTwoComplement().toHexString()))
     }
 
     return BigInt(jsBigInt)

@@ -9,9 +9,8 @@ internal expect interface JsBigInt {
     fun convertToString(radix: Int): String
 }
 
-internal expect fun jsBigIntOrThrow(value: Int): JsBigInt
-internal expect fun jsBigIntOrThrow(value: String): JsBigInt
-internal expect fun jsBigIntOrNull(value: String): JsBigInt?
+internal expect fun jsBigInt(value: Int): JsBigInt
+internal expect fun jsBigInt(value: String): JsBigInt
 
 internal expect fun jsBigIntNegate(value: JsBigInt): JsBigInt
 

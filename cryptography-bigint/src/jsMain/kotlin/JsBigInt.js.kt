@@ -13,18 +13,12 @@ internal actual external interface JsBigInt {
 }
 
 @JsName("BigInt")
-internal actual external fun jsBigIntOrThrow(value: Int): JsBigInt
+internal actual external fun jsBigInt(value: Int): JsBigInt
 
 @JsName("BigInt")
-internal actual external fun jsBigIntOrThrow(value: String): JsBigInt
+internal actual external fun jsBigInt(value: String): JsBigInt
 
 internal actual fun jsBigIntNegate(value: JsBigInt): JsBigInt = js("-value").unsafeCast<JsBigInt>()
-
-internal actual fun jsBigIntOrNull(value: String): JsBigInt? = try {
-    jsBigIntOrThrow(value)
-} catch (cause: Throwable) {
-    null
-}
 
 internal actual fun jsBigIntSign(value: JsBigInt): Int {
     return js(
