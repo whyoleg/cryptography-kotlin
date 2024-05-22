@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 plugins {
@@ -22,8 +22,8 @@ signing {
 val javadocJar by tasks.registering(Jar::class) { archiveClassifier.set("javadoc") }
 
 // this is somewhat a hack because we have single javadoc artifact which is used for all publications
-tasks.withType<Sign>().configureEach { mustRunAfter(javadocJar) }
-tasks.withType<AbstractPublishToMaven>().configureEach { mustRunAfter(tasks.withType<Sign>()) }
+tasks.withType<Sign>().configureEach { dependsOn(javadocJar) }
+tasks.withType<AbstractPublishToMaven>().configureEach { dependsOn(tasks.withType<Sign>()) }
 
 publishing {
     repositories {
