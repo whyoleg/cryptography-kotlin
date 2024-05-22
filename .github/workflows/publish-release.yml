@@ -24,7 +24,7 @@ jobs:
           ORG_GRADLE_PROJECT_sonatypePassword: ${{secrets.sonatypePassword}}
 
       - name: Publish release to Maven Central
-        run: ./gradlew publishAllPublicationsToMavenCentralRepository -Pversion=${{ github.ref_name }} --no-configuration-cache
+        run: ./gradlew publishAllPublicationsToMavenCentralRepository -Pversion=${{ github.ref_name }} --no-configuration-cache --no-parallel
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{secrets.signingKey}}
           ORG_GRADLE_PROJECT_signingPassword: ${{secrets.signingPassword}}
