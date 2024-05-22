@@ -4,9 +4,6 @@
 
 import ckbuild.*
 import org.jetbrains.kotlin.gradle.*
-import org.jetbrains.kotlin.gradle.plugin.*
-import org.jetbrains.kotlin.gradle.targets.js.*
-import org.jetbrains.kotlin.gradle.targets.js.ir.*
 
 plugins {
     id("ckbuild.multiplatform-library")
@@ -28,18 +25,17 @@ kotlin {
 
     applyDefaultHierarchyTemplate {
         common {
-            // js and wasmJs
-            group("jsAndWasmJs") {
-                withJs()
-                withCompilations { (it.target as? KotlinJsIrTarget)?.wasmTargetType == KotlinWasmTargetType.JS }
-            }
-            // all native targets + wasmWasi
-            group("nativeAndWasmWasi") {
-                group("native")
-                withCompilations { (it.target as? KotlinJsIrTarget)?.wasmTargetType == KotlinWasmTargetType.WASI }
-            }
             group("nonJvm") {
-                withCompilations { it.platformType != KotlinPlatformType.jvm }
+                // js and wasmJs
+                group("jsAndWasmJs") {
+                    withJs()
+                    withWasmJs()
+                }
+                // all native targets + wasmWasi
+                group("nativeAndWasmWasi") {
+                    group("native")
+                    withWasmWasi()
+                }
             }
         }
     }

@@ -4,7 +4,6 @@
 
 import ckbuild.*
 import org.jetbrains.kotlin.gradle.*
-import org.jetbrains.kotlin.gradle.plugin.*
 
 plugins {
     id("ckbuild.multiplatform-library")
@@ -22,7 +21,10 @@ kotlin {
     applyDefaultHierarchyTemplate {
         common {
             group("nonJvm") {
-                withCompilations { it.platformType != KotlinPlatformType.jvm }
+                withJs()
+                withWasmJs()
+                withWasmWasi()
+                group("native")
             }
         }
     }

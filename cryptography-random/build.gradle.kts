@@ -21,8 +21,8 @@ kotlin {
     applyDefaultHierarchyTemplate {
         common {
             group("linuxAndAndroidNative") {
-                withLinux()
-                withAndroidNative()
+                group("linux")
+                group("androidNative")
             }
         }
     }
