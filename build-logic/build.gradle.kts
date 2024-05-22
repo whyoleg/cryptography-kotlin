@@ -13,5 +13,6 @@ dependencies {
     implementation(libs.build.kotlin.dokka)
     implementation(libs.build.android)
     implementation(libs.build.apache.commons.compress)
+    implementation(libs.maven.publish.gradle.plugin)
     implementation("testtool:plugin")
 }

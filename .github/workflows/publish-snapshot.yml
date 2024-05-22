@@ -15,18 +15,10 @@ jobs:
         with:
           cache-disabled: true
 
-      - name: Publish to Maven Local (prepare packages)
-        run: ./gradlew publishToMavenLocal -Pversion=0.4.0-SNAPSHOT --no-configuration-cache
+      - name: Publish snapshot to Maven Central
+        run: ./gradlew publishToMavenCentral -Pversion=0.4.0-SNAPSHOT --no-configuration-cache
         env:
-          ORG_GRADLE_PROJECT_signingKey: ${{secrets.signingKey}}
-          ORG_GRADLE_PROJECT_signingPassword: ${{secrets.signingPassword}}
-          ORG_GRADLE_PROJECT_sonatypeUsername: ${{secrets.sonatypeUsername}}
-          ORG_GRADLE_PROJECT_sonatypePassword: ${{secrets.sonatypePassword}}
-
-      - name: Publish snapshot to Sonatype
-        run: ./gradlew publishAllPublicationsToSnapshotRepository -Pversion=0.4.0-SNAPSHOT --no-configuration-cache
-        env:
-          ORG_GRADLE_PROJECT_signingKey: ${{secrets.signingKey}}
-          ORG_GRADLE_PROJECT_signingPassword: ${{secrets.signingPassword}}
-          ORG_GRADLE_PROJECT_sonatypeUsername: ${{secrets.sonatypeUsername}}
-          ORG_GRADLE_PROJECT_sonatypePassword: ${{secrets.sonatypePassword}}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{secrets.signingKey}}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{secrets.signingPassword}}
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{secrets.sonatypeUsername}}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{secrets.sonatypePassword}}
