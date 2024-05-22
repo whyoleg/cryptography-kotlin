@@ -12,5 +12,5 @@ jobs:
 
   publish:
     needs: [ checks ]
-    uses: ./.github/workflows/publish-test.yml
+    uses: ./.github/workflows/publish-local.yml
     secrets: inherit
