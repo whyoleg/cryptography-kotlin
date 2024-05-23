@@ -21,10 +21,13 @@ plugins {
     id("org.jetbrains.kotlinx.kover")
 }
 
+// true by default
+val warningsAsErrors = providers.gradleProperty("ckbuild.warningsAsErrors").orNull?.toBoolean() ?: true
+
 @OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
     compilerOptions {
-        allWarningsAsErrors.set(true)
+        allWarningsAsErrors.set(warningsAsErrors)
         progressiveMode.set(true)
         freeCompilerArgs.add("-Xrender-internal-diagnostic-names")
         optIn.addAll(OptIns.ExperimentalSubclassOptIn)
