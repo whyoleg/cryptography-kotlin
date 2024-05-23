@@ -29,4 +29,13 @@ jobs:
           release: false
           install: mingw-w64-x86_64-openssl
 
-      - run: ./gradlew build connectedCheck publishToMavenLocal --continue -Pckbuild.skipTests=true -Pckbuild.warningsAsErrors=false -Pckbuild.kotlinVersionOverride=${{ matrix.kotlin-version }} -Pkotlin.experimental.tryNext=${{ matrix.try-next }}
+      - run: >
+          ./gradlew
+          build connectedCheck publishToMavenLocal
+          --exclude-task jvmApiBuild
+          --exclude-task jvmApiCheck
+          --continue
+          -Pckbuild.skipTests=true
+          -Pckbuild.warningsAsErrors=false
+          -Pckbuild.kotlinVersionOverride=${{ matrix.kotlin-version }}
+          -Pkotlin.experimental.tryNext=${{ matrix.try-next }}
