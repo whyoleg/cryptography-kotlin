@@ -1,0 +1,14 @@
+// Klib ABI Dump
+// Targets: [js, wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <dev.whyoleg.cryptography:cryptography-provider-webcrypto>
+final val dev.whyoleg.cryptography.providers.webcrypto/WebCrypto // dev.whyoleg.cryptography.providers.webcrypto/WebCrypto|@dev.whyoleg.cryptography.CryptographyProvider.Companion{}WebCrypto[0]
+    final fun (dev.whyoleg.cryptography/CryptographyProvider.Companion).<get-WebCrypto>(): dev.whyoleg.cryptography/CryptographyProvider // dev.whyoleg.cryptography.providers.webcrypto/WebCrypto.<get-WebCrypto>|<get-WebCrypto>@dev.whyoleg.cryptography.CryptographyProvider.Companion(){}[0]
+
+// Targets: [js]
+final val dev.whyoleg.cryptography.providers.webcrypto/initHook // dev.whyoleg.cryptography.providers.webcrypto/initHook|{}initHook[0]
+    final fun <get-initHook>(): dynamic // dev.whyoleg.cryptography.providers.webcrypto/initHook.<get-initHook>|<get-initHook>(){}[0]

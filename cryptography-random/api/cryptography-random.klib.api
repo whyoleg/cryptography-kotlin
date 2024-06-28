@@ -1,0 +1,29 @@
+// Klib ABI Dump
+// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, wasmJs, wasmWasi, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <dev.whyoleg.cryptography:cryptography-random>
+abstract class dev.whyoleg.cryptography.random/CryptographyRandom : kotlin.random/Random { // dev.whyoleg.cryptography.random/CryptographyRandom|null[0]
+    constructor <init>() // dev.whyoleg.cryptography.random/CryptographyRandom.<init>|<init>(){}[0]
+
+    final object Default : dev.whyoleg.cryptography.random/CryptographyRandom { // dev.whyoleg.cryptography.random/CryptographyRandom.Default|null[0]
+        final fun nextBits(kotlin/Int): kotlin/Int // dev.whyoleg.cryptography.random/CryptographyRandom.Default.nextBits|nextBits(kotlin.Int){}[0]
+        final fun nextBoolean(): kotlin/Boolean // dev.whyoleg.cryptography.random/CryptographyRandom.Default.nextBoolean|nextBoolean(){}[0]
+        final fun nextBytes(kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.random/CryptographyRandom.Default.nextBytes|nextBytes(kotlin.ByteArray){}[0]
+        final fun nextBytes(kotlin/ByteArray, kotlin/Int, kotlin/Int): kotlin/ByteArray // dev.whyoleg.cryptography.random/CryptographyRandom.Default.nextBytes|nextBytes(kotlin.ByteArray;kotlin.Int;kotlin.Int){}[0]
+        final fun nextBytes(kotlin/Int): kotlin/ByteArray // dev.whyoleg.cryptography.random/CryptographyRandom.Default.nextBytes|nextBytes(kotlin.Int){}[0]
+        final fun nextDouble(): kotlin/Double // dev.whyoleg.cryptography.random/CryptographyRandom.Default.nextDouble|nextDouble(){}[0]
+        final fun nextDouble(kotlin/Double): kotlin/Double // dev.whyoleg.cryptography.random/CryptographyRandom.Default.nextDouble|nextDouble(kotlin.Double){}[0]
+        final fun nextDouble(kotlin/Double, kotlin/Double): kotlin/Double // dev.whyoleg.cryptography.random/CryptographyRandom.Default.nextDouble|nextDouble(kotlin.Double;kotlin.Double){}[0]
+        final fun nextFloat(): kotlin/Float // dev.whyoleg.cryptography.random/CryptographyRandom.Default.nextFloat|nextFloat(){}[0]
+        final fun nextInt(): kotlin/Int // dev.whyoleg.cryptography.random/CryptographyRandom.Default.nextInt|nextInt(){}[0]
+        final fun nextInt(kotlin/Int): kotlin/Int // dev.whyoleg.cryptography.random/CryptographyRandom.Default.nextInt|nextInt(kotlin.Int){}[0]
+        final fun nextInt(kotlin/Int, kotlin/Int): kotlin/Int // dev.whyoleg.cryptography.random/CryptographyRandom.Default.nextInt|nextInt(kotlin.Int;kotlin.Int){}[0]
+        final fun nextLong(): kotlin/Long // dev.whyoleg.cryptography.random/CryptographyRandom.Default.nextLong|nextLong(){}[0]
+        final fun nextLong(kotlin/Long): kotlin/Long // dev.whyoleg.cryptography.random/CryptographyRandom.Default.nextLong|nextLong(kotlin.Long){}[0]
+        final fun nextLong(kotlin/Long, kotlin/Long): kotlin/Long // dev.whyoleg.cryptography.random/CryptographyRandom.Default.nextLong|nextLong(kotlin.Long;kotlin.Long){}[0]
+    }
+}
