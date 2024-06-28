@@ -5,18 +5,18 @@ kotlin = "2.0.0"
 # kotlin/kotlinx
 kotlin-dokka = "1.9.20"
 kotlinx-bcv = "0.14.0"
-kotlinx-kover = "0.7.6"
-kotlinx-serialization = "1.6.3"
+kotlinx-kover = "0.8.2"
+kotlinx-serialization = "1.7.1"
 kotlinx-coroutines = "1.8.1"
-ktor = "2.3.11"
+ktor = "2.3.12"
 
 # android
-android = "8.4.0"
-androidx-test = "1.5.2"
+android = "8.5.0"
+androidx-test = "1.6.1"
 
 # gradle/build
-apache-commons-compress = "1.26.1"
-maven-publish = "0.28.0"
+apache-commons-compress = "1.26.2"
+maven-publish = "0.29.0"
 
 # other
 bouncycastle = "1.78.1"
