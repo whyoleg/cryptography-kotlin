@@ -106,7 +106,7 @@ internal abstract class SecRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKe
     }
 
     protected abstract class RsaPublicKey(
-        private val publicKey: SecKeyRef,
+        protected val publicKey: SecKeyRef,
     ) : RSA.PublicKey {
         @OptIn(ExperimentalNativeApi::class)
         private val cleanup = createCleaner(publicKey, SecKeyRef::release)
@@ -125,7 +125,7 @@ internal abstract class SecRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKe
     }
 
     protected abstract class RsaPrivateKey(
-        private val privateKey: SecKeyRef,
+        protected val privateKey: SecKeyRef,
     ) : RSA.PrivateKey {
         @OptIn(ExperimentalNativeApi::class)
         private val cleanup = createCleaner(privateKey, SecKeyRef::release)

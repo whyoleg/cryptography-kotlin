@@ -48,24 +48,25 @@ For additional limitation please consult provider specific documentation.
 > `supported` here means that those algorithms are tested and works at least in some configuration
 > (f.e. different Java versions or Java providers can have different algorithms supported)
 
-| Operation                                   | Algorithm     | jdk | webcrypto | apple | openssl3 |
-|---------------------------------------------|---------------|:---:|:---------:|:-----:|:--------:|
-| **Digest**                                  | ⚠️ MD5        |  ✅  |     ❌     |   ✅   |    ✅     |
-|                                             | ⚠️ SHA1       |  ✅  |     ✅     |   ✅   |    ✅     |
-|                                             | SHA224        |  ✅  |     ❌     |   ✅   |    ✅     |
-|                                             | SHA256        |  ✅  |     ✅     |   ✅   |    ✅     |
-|                                             | SHA384        |  ✅  |     ✅     |   ✅   |    ✅     |
-|                                             | SHA512        |  ✅  |     ✅     |   ✅   |    ✅     |
-|                                             | SHA3 family   |  ✅  |     ❌     |   ❌   |    ✅     |
-| **MAC**                                     | HMAC          |  ✅  |     ✅     |   ✅   |    ✅     |
-| **Symmetric-key<br/>encryption/decryption** | AES-CBC       |  ✅  |     ✅     |   ✅   |    ✅     |
-|                                             | AES-CTR       |  ✅  |     ✅     |   ✅   |    ✅     |
-|                                             | AES-GCM       |  ✅  |     ✅     |   ❌   |    ✅     |
-|                                             | ⚠️ AES-ECB    |  ✅  |     ❌     |   ✅   |    ✅     |
-| **Public-key<br/>encryption/decryption**    | RSA-OAEP      |  ✅  |     ✅     |   ✅   |    ✅     |
-| **Digital Signatures**                      | ECDSA         |  ✅  |     ✅     |   ❌   |    ✅     |
-|                                             | RSA-SSA-PSS   |  ✅  |     ✅     |   ✅   |    ✅     |
-|                                             | RSA-PKS1-v1_5 |  ✅  |     ✅     |   ✅   |    ✅     |
+| Operation                                   | Algorithm        | jdk | webcrypto | apple | openssl3 |
+|---------------------------------------------|------------------|:---:|:---------:|:-----:|:--------:|
+| **Digest**                                  | ⚠️ MD5           |  ✅  |     ❌     |   ✅   |    ✅     |
+|                                             | ⚠️ SHA1          |  ✅  |     ✅     |   ✅   |    ✅     |
+|                                             | SHA224           |  ✅  |     ❌     |   ✅   |    ✅     |
+|                                             | SHA256           |  ✅  |     ✅     |   ✅   |    ✅     |
+|                                             | SHA384           |  ✅  |     ✅     |   ✅   |    ✅     |
+|                                             | SHA512           |  ✅  |     ✅     |   ✅   |    ✅     |
+|                                             | SHA3 family      |  ✅  |     ❌     |   ❌   |    ✅     |
+| **MAC**                                     | HMAC             |  ✅  |     ✅     |   ✅   |    ✅     |
+| **Symmetric-key<br/>encryption/decryption** | AES-CBC          |  ✅  |     ✅     |   ✅   |    ✅     |
+|                                             | AES-CTR          |  ✅  |     ✅     |   ✅   |    ✅     |
+|                                             | AES-GCM          |  ✅  |     ✅     |   ❌   |    ✅     |
+|                                             | ⚠️ AES-ECB       |  ✅  |     ❌     |   ✅   |    ✅     |
+| **Public-key<br/>encryption/decryption**    | RSA-OAEP         |  ✅  |     ✅     |   ✅   |    ✅     |
+|                                             | ⚠️ RSA-PKS1-v1_5 |  ✅  |     ❌     |   ✅   |    ✅     |
+| **Digital Signatures**                      | ECDSA            |  ✅  |     ✅     |   ❌   |    ✅     |
+|                                             | RSA-SSA-PSS      |  ✅  |     ✅     |   ✅   |    ✅     |
+|                                             | RSA-PKS1-v1_5    |  ✅  |     ✅     |   ✅   |    ✅     |
 
 > ⚠️ : use carefully
 >

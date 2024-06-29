@@ -147,11 +147,19 @@ public interface RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP : RS
         @SubclassOptInRequired(CryptographyProviderApi::class)
         public interface PublicKey : RSA.PublicKey {
             public fun signatureVerifier(): SignatureVerifier
+
+            // digest is not used at all
+            @DelicateCryptographyApi
+            public fun encryptor(): Encryptor
         }
 
         @SubclassOptInRequired(CryptographyProviderApi::class)
         public interface PrivateKey : RSA.PrivateKey {
             public fun signatureGenerator(): SignatureGenerator
+
+            // digest is not used at all
+            @DelicateCryptographyApi
+            public fun decryptor(): Decryptor
         }
     }
 }

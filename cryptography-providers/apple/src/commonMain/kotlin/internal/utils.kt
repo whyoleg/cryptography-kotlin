@@ -72,9 +72,9 @@ internal fun <R> ByteArray.useNSData(block: (NSData) -> R): R {
         block(
             NSData.dataWithBytesNoCopy(
                 bytes = it.addressOf(0),
-                length = size.convert()
+                length = size.convert(),
+                freeWhenDone = true
             )
         )
     }
 }
-

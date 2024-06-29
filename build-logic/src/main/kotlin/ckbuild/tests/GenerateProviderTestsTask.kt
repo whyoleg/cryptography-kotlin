@@ -102,6 +102,7 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
             "dev.whyoleg.cryptography.providers.tests.algorithms.asymmetric.RsaOaepCompatibilityTest",
             "dev.whyoleg.cryptography.providers.tests.algorithms.asymmetric.RsaPkcs1Test",
             "dev.whyoleg.cryptography.providers.tests.algorithms.asymmetric.RsaPkcs1CompatibilityTest",
+            "dev.whyoleg.cryptography.providers.tests.algorithms.asymmetric.RsaPkcs1EsCompatibilityTest",
             "dev.whyoleg.cryptography.providers.tests.algorithms.asymmetric.RsaPssTest",
             "dev.whyoleg.cryptography.providers.tests.algorithms.asymmetric.RsaPssCompatibilityTest",
         )

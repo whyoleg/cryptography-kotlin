@@ -205,10 +205,12 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/R
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PKCS1$PrivateKey : dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PrivateKey {
+	public abstract fun decryptor ()Ldev/whyoleg/cryptography/operations/cipher/Decryptor;
 	public abstract fun signatureGenerator ()Ldev/whyoleg/cryptography/operations/signature/SignatureGenerator;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PKCS1$PublicKey : dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicKey {
+	public abstract fun encryptor ()Ldev/whyoleg/cryptography/operations/cipher/Encryptor;
 	public abstract fun signatureVerifier ()Ldev/whyoleg/cryptography/operations/signature/SignatureVerifier;
 }
 

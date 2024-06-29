@@ -7,6 +7,7 @@ package dev.whyoleg.cryptography.providers.apple.algorithms
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.algorithms.digest.*
+import dev.whyoleg.cryptography.operations.cipher.*
 import dev.whyoleg.cryptography.operations.signature.*
 import dev.whyoleg.cryptography.providers.apple.internal.*
 import kotlinx.cinterop.*
@@ -32,18 +33,18 @@ internal object SecRsaPkcs1 : SecRsa<RSA.PKCS1.PublicKey, RSA.PKCS1.PrivateKey, 
 
     private class RsaPkcs1PublicKey(
         publicKey: SecKeyRef,
-        algorithm: SecKeyAlgorithm?,
+        private val algorithm: SecKeyAlgorithm?,
     ) : RsaPublicKey(publicKey), RSA.PKCS1.PublicKey {
-        private val verifier = RsaPkcs1SignatureVerifier(publicKey, algorithm)
-        override fun signatureVerifier(): SignatureVerifier = verifier
+        override fun signatureVerifier(): SignatureVerifier = RsaPkcs1SignatureVerifier(publicKey, algorithm)
+        override fun encryptor(): Encryptor = RsaPkcs1Encryptor(publicKey)
     }
 
     private class RsaPkcs1PrivateKey(
         privateKey: SecKeyRef,
-        algorithm: SecKeyAlgorithm?,
+        private val algorithm: SecKeyAlgorithm?,
     ) : RsaPrivateKey(privateKey), RSA.PKCS1.PrivateKey {
-        private val generator = RsaPkcs1SignatureGenerator(privateKey, algorithm)
-        override fun signatureGenerator(): SignatureGenerator = generator
+        override fun signatureGenerator(): SignatureGenerator = RsaPkcs1SignatureGenerator(privateKey, algorithm)
+        override fun decryptor(): Decryptor = RsaPkcs1Decryptor(privateKey)
     }
 }
 
@@ -92,6 +93,52 @@ private class RsaPkcs1SignatureVerifier(
                 }
                 result
             }
+        }
+    }
+}
+
+private class RsaPkcs1Encryptor(
+    private val publicKey: SecKeyRef,
+) : Encryptor {
+    override fun encryptBlocking(plaintextInput: ByteArray): ByteArray = memScoped {
+        val error = alloc<CFErrorRefVar>()
+        plaintextInput.useNSData { plaintext ->
+            val ciphertext = SecKeyCreateEncryptedData(
+                key = publicKey,
+                algorithm = kSecKeyAlgorithmRSAEncryptionPKCS1,
+                plaintext = plaintext.retainBridgeAs<CFDataRef>(),
+                error = error.ptr
+            )?.releaseBridgeAs<NSData>()
+
+            if (ciphertext == null) {
+                val nsError = error.value.releaseBridgeAs<NSError>()
+                error("Failed to encrypt: ${nsError?.description}")
+            }
+
+            ciphertext.toByteArray()
+        }
+    }
+}
+
+private class RsaPkcs1Decryptor(
+    private val privateKey: SecKeyRef,
+) : Decryptor {
+    override fun decryptBlocking(ciphertextInput: ByteArray): ByteArray = memScoped {
+        val error = alloc<CFErrorRefVar>()
+        ciphertextInput.useNSData { ciphertext ->
+            val plaintext = SecKeyCreateDecryptedData(
+                key = privateKey,
+                algorithm = kSecKeyAlgorithmRSAEncryptionPKCS1,
+                ciphertext = ciphertext.retainBridgeAs<CFDataRef>(),
+                error = error.ptr
+            )?.releaseBridgeAs<NSData>()
+
+            if (plaintext == null) {
+                val nsError = error.value.releaseBridgeAs<NSError>()
+                error("Failed to decrypt: ${nsError?.description}")
+            }
+
+            plaintext.toByteArray()
         }
     }
 }

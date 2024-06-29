@@ -63,6 +63,13 @@ fun AlgorithmTestScope<RSA.OAEP>.supportsAssociatedData(associatedDataSize: Int?
     }
 }
 
+fun AlgorithmTestScope<RSA.PKCS1>.supportsEncryption(): Boolean = supports {
+    when {
+        provider.isWebCrypto -> "PKCS1 encryption"
+        else                 -> null
+    }
+}
+
 fun AlgorithmTestScope<ECDSA>.supportsCurve(curve: EC.Curve): Boolean = supports {
     when {
         // JDK default and WebCrypto doesn't support secp256k1
