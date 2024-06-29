@@ -50,7 +50,7 @@ kotlin {
     }.configureEach {
         binaries.configureEach {
             linkerOpts("-L${openssl.v3_0.libDirectory(konanTarget).get().asFile.absolutePath}")
-            linkTaskProvider.configure { dependsOn(openssl.v3_0.setupTask) }
+            linkTaskProvider.configure { uses(openssl.v3_0) }
         }
     }
 
@@ -63,7 +63,7 @@ kotlin {
                     (this as ExecutionTaskHolder<KotlinNativeTest>).executionTask.configure {
                         val providerTestsStep = providers.gradleProperty("ckbuild.providerTests.step").orNull
                         onlyIf { providerTestsStep == null }
-                        dependsOn(extension.setupTask)
+                        uses(extension)
                         when (konanTarget.family) {
                             Family.OSX   -> environment("DYLD_LIBRARY_PATH", extension.libDirectory(konanTarget).get().asFile.absolutePath)
                             Family.LINUX -> environment("LD_LIBRARY_PATH", extension.libDirectory(konanTarget).get().asFile.absolutePath)

@@ -3,6 +3,7 @@
  */
 
 import ckbuild.*
+import ckbuild.openssl.*
 import org.jetbrains.kotlin.gradle.*
 import org.jetbrains.kotlin.gradle.plugin.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.*
@@ -81,8 +82,9 @@ kotlin {
 }
 
 tasks.withType<CInteropProcess>().configureEach {
-    dependsOn(tasks.setupOpenssl_v3_2)
-    settings.extraOpts("-libraryPath", openssl.v3_2.libDirectory(konanTarget).get().asFile.absolutePath)
+    uses(openssl.v3_2) {
+        settings.extraOpts("-libraryPath", libDirectory(konanTarget).get().asFile.absolutePath)
+    }
 }
 
 documentation {

@@ -3,6 +3,7 @@
  */
 
 import ckbuild.*
+import ckbuild.openssl.*
 import org.jetbrains.kotlin.gradle.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.*
 import org.jetbrains.kotlin.gradle.tasks.*
@@ -37,8 +38,9 @@ kotlin {
 }
 
 tasks.withType<CInteropProcess>().configureEach {
-    dependsOn(tasks.setupOpenssl_v3_0)
-    settings.includeDirs(openssl.v3_0.includeDirectory(konanTarget))
+    uses(openssl.v3_0) {
+        settings.includeDirs(includeDirectory(konanTarget))
+    }
 }
 
 documentation {
