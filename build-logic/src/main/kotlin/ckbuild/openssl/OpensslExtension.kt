@@ -4,23 +4,32 @@
 
 package ckbuild.openssl
 
+import org.gradle.api.*
 import org.gradle.api.file.*
 import org.gradle.api.provider.*
-import org.gradle.api.tasks.*
+import org.gradle.api.services.*
 import org.jetbrains.kotlin.konan.target.*
 
 @Suppress("PropertyName")
-class OpensslExtension(
-    val v3_0: OpensslXExtension,
-    val v3_1: OpensslXExtension,
-    val v3_2: OpensslXExtension,
-)
+abstract class OpensslService : BuildService<BuildServiceParameters.None> {
+    abstract val v3_0: DirectoryProperty
+    abstract val v3_1: DirectoryProperty
+    abstract val v3_2: DirectoryProperty
+}
 
-class OpensslXExtension(
-    val setupTask: TaskProvider<UnzipTask>,
-) {
-    private val directory: Provider<Directory> = setupTask.map { it.outputDirectory.get() }
+@Suppress("PropertyName")
+class OpensslExtension(service: Provider<OpensslService>) {
+    val v3_0: OpensslXExtension = OpensslXExtension(service.flatMap { it.v3_0 })
+    val v3_1: OpensslXExtension = OpensslXExtension(service.flatMap { it.v3_1 })
+    val v3_2: OpensslXExtension = OpensslXExtension(service.flatMap { it.v3_2 })
+}
 
+fun Task.uses(openssl: OpensslXExtension, block: OpensslXExtension.() -> Unit = {}) {
+    dependsOn(openssl.directory)
+    block(openssl)
+}
+
+class OpensslXExtension(internal val directory: Provider<Directory>) {
     fun libDirectory(target: KonanTarget): Provider<Directory> = libDirectory(opensslTarget(target))
     fun includeDirectory(target: KonanTarget): Provider<Directory> = includeDirectory(opensslTarget(target))
 
