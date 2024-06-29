@@ -14,8 +14,10 @@ jobs:
       fail-fast: false
       matrix:
         os: [ 'ubuntu-latest' ]
-        target: [ 'jvmAll', 'js', 'wasm', 'native' ]
+        target: [ 'jvmAll', 'js', 'native' ]
         include:
+          - os: 'macos-latest'
+            target: 'wasm'
           - os: 'macos-latest'
             target: 'macos'
           - os: 'macos-latest'
@@ -46,12 +48,8 @@ jobs:
           install: mingw-w64-x86_64-openssl
 
       - name: Run tests
-        if: ${{ matrix.target != 'connectedAndroid' && matrix.target != 'wasm' }}
+        if: ${{ matrix.target != 'connectedAndroid' }}
         run: ./gradlew ${{ matrix.target }}Test --continue
-
-      - name: Run tests (wasm)
-        if: ${{ matrix.target == 'wasm' }}
-        run: ./gradlew ${{ matrix.target }}Test --continue --max-workers=1
 
       - name: Run tests (android)
         if: ${{ matrix.target == 'connectedAndroid' }}
