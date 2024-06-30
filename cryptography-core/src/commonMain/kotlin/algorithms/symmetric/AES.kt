@@ -19,6 +19,19 @@ public interface AES<K : AES.Key> : CryptographyAlgorithm {
         public enum class Format : KeyFormat { RAW, JWK }
     }
 
+    @DelicateCryptographyApi
+    @SubclassOptInRequired(CryptographyProviderApi::class)
+    public interface ECB : AES<ECB.Key> {
+        override val id: CryptographyAlgorithmId<ECB> get() = Companion
+
+        public companion object : CryptographyAlgorithmId<ECB>("AES-ECB")
+
+        @SubclassOptInRequired(CryptographyProviderApi::class)
+        public interface Key : AES.Key {
+            public fun cipher(padding: Boolean = true): Cipher
+        }
+    }
+
     @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface CBC : AES<CBC.Key> {
         override val id: CryptographyAlgorithmId<CBC> get() = Companion
@@ -27,28 +40,7 @@ public interface AES<K : AES.Key> : CryptographyAlgorithm {
 
         @SubclassOptInRequired(CryptographyProviderApi::class)
         public interface Key : AES.Key {
-            public fun cipher(padding: Boolean = true): Cipher
-        }
-
-        @SubclassOptInRequired(CryptographyProviderApi::class)
-        public interface Cipher : dev.whyoleg.cryptography.operations.cipher.Cipher, Encryptor, Decryptor
-
-        @SubclassOptInRequired(CryptographyProviderApi::class)
-        public interface Encryptor : dev.whyoleg.cryptography.operations.cipher.Encryptor {
-            @DelicateCryptographyApi
-            public suspend fun encrypt(iv: ByteArray, plaintextInput: ByteArray): ByteArray = encryptBlocking(iv, plaintextInput)
-
-            @DelicateCryptographyApi
-            public fun encryptBlocking(iv: ByteArray, plaintextInput: ByteArray): ByteArray
-        }
-
-        @SubclassOptInRequired(CryptographyProviderApi::class)
-        public interface Decryptor : dev.whyoleg.cryptography.operations.cipher.Decryptor {
-            @DelicateCryptographyApi
-            public suspend fun decrypt(iv: ByteArray, ciphertextInput: ByteArray): ByteArray = decryptBlocking(iv, ciphertextInput)
-
-            @DelicateCryptographyApi
-            public fun decryptBlocking(iv: ByteArray, ciphertextInput: ByteArray): ByteArray
+            public fun cipher(padding: Boolean = true): IvCipher
         }
     }
 
@@ -60,32 +52,7 @@ public interface AES<K : AES.Key> : CryptographyAlgorithm {
 
         @SubclassOptInRequired(CryptographyProviderApi::class)
         public interface Key : AES.Key {
-            public fun cipher(): Cipher
-        }
-
-        @SubclassOptInRequired(CryptographyProviderApi::class)
-        public interface Cipher : dev.whyoleg.cryptography.operations.cipher.Cipher, Encryptor, Decryptor
-
-        @SubclassOptInRequired(CryptographyProviderApi::class)
-        public interface Encryptor : dev.whyoleg.cryptography.operations.cipher.Encryptor {
-            @DelicateCryptographyApi
-            public suspend fun encrypt(iv: ByteArray, plaintextInput: ByteArray): ByteArray {
-                return encryptBlocking(iv, plaintextInput)
-            }
-
-            @DelicateCryptographyApi
-            public fun encryptBlocking(iv: ByteArray, plaintextInput: ByteArray): ByteArray
-        }
-
-        @SubclassOptInRequired(CryptographyProviderApi::class)
-        public interface Decryptor : dev.whyoleg.cryptography.operations.cipher.Decryptor {
-            @DelicateCryptographyApi
-            public suspend fun decrypt(iv: ByteArray, ciphertextInput: ByteArray): ByteArray {
-                return decryptBlocking(iv, ciphertextInput)
-            }
-
-            @DelicateCryptographyApi
-            public fun decryptBlocking(iv: ByteArray, ciphertextInput: ByteArray): ByteArray
+            public fun cipher(): IvCipher
         }
     }
 
@@ -99,5 +66,26 @@ public interface AES<K : AES.Key> : CryptographyAlgorithm {
         public interface Key : AES.Key {
             public fun cipher(tagSize: BinarySize = 128.bits): AuthenticatedCipher
         }
+    }
+
+    @SubclassOptInRequired(CryptographyProviderApi::class)
+    public interface IvCipher : IvEncryptor, IvDecryptor
+
+    @SubclassOptInRequired(CryptographyProviderApi::class)
+    public interface IvEncryptor : Encryptor {
+        @DelicateCryptographyApi
+        public suspend fun encrypt(iv: ByteArray, plaintextInput: ByteArray): ByteArray = encryptBlocking(iv, plaintextInput)
+
+        @DelicateCryptographyApi
+        public fun encryptBlocking(iv: ByteArray, plaintextInput: ByteArray): ByteArray
+    }
+
+    @SubclassOptInRequired(CryptographyProviderApi::class)
+    public interface IvDecryptor : Decryptor {
+        @DelicateCryptographyApi
+        public suspend fun decrypt(iv: ByteArray, ciphertextInput: ByteArray): ByteArray = decryptBlocking(iv, ciphertextInput)
+
+        @DelicateCryptographyApi
+        public fun decryptBlocking(iv: ByteArray, ciphertextInput: ByteArray): ByteArray
     }
 }

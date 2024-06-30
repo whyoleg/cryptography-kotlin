@@ -15,7 +15,7 @@ internal object WebCryptoAesCtr : WebCryptoAes<AES.CTR.Key>(
     keyWrapper = WebCryptoKeyWrapper(arrayOf("encrypt", "decrypt"), ::AesCtrKey)
 ), AES.CTR {
     private class AesCtrKey(key: CryptoKey) : AesKey(key), AES.CTR.Key {
-        override fun cipher(): AES.CTR.Cipher = AesCtrCipher(key)
+        override fun cipher(): AES.IvCipher = AesCtrCipher(key)
     }
 }
 
@@ -24,7 +24,7 @@ private const val ivSizeBytes = 16 //bytes for CTR
 // we use full IV as counter in AesCtrCipherAlgorithm
 private const val ivSizeBits = ivSizeBytes * 8 //bits for CTR
 
-private class AesCtrCipher(private val key: CryptoKey) : AES.CTR.Cipher {
+private class AesCtrCipher(private val key: CryptoKey) : AES.IvCipher {
 
     override suspend fun encrypt(plaintextInput: ByteArray): ByteArray {
         val iv = CryptographyRandom.nextBytes(ivSizeBytes)

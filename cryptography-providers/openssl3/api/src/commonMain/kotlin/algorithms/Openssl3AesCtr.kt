@@ -24,7 +24,7 @@ internal object Openssl3AesCtr : AES.CTR, Openssl3Aes<AES.CTR.Key>() {
             else                  -> error("Unsupported key size")
         }
 
-        override fun cipher(): AES.CTR.Cipher = AesCtrCipher(algorithm, key)
+        override fun cipher(): AES.IvCipher = AesCtrCipher(algorithm, key)
     }
 }
 
@@ -33,7 +33,7 @@ private const val ivSizeBytes = 16 //bytes for CTR
 private class AesCtrCipher(
     algorithm: String,
     private val key: ByteArray,
-) : AES.CTR.Cipher {
+) : AES.IvCipher {
 
     private val cipher = EVP_CIPHER_fetch(null, algorithm, null)
 

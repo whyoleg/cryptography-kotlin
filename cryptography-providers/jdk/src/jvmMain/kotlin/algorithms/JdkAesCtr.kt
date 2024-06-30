@@ -16,7 +16,7 @@ internal class JdkAesCtr(
 ) : AES.CTR {
     private val keyWrapper: (JSecretKey) -> AES.CTR.Key = { key ->
         object : AES.CTR.Key, JdkEncodableKey<AES.Key.Format>(key) {
-            override fun cipher(): AES.CTR.Cipher = AesCtrCipher(state, key)
+            override fun cipher(): AES.IvCipher = AesCtrCipher(state, key)
             override fun encodeToBlocking(format: AES.Key.Format): ByteArray = when (format) {
                 AES.Key.Format.JWK -> error("$format is not supported")
                 AES.Key.Format.RAW -> encodeToRaw()
@@ -36,7 +36,7 @@ private const val ivSizeBytes = 16 //bytes for CTR
 private class AesCtrCipher(
     private val state: JdkCryptographyState,
     private val key: JSecretKey,
-) : AES.CTR.Cipher {
+) : AES.IvCipher {
     private val cipher = state.cipher("AES/CTR/NoPadding")
 
     override fun encryptBlocking(plaintextInput: ByteArray): ByteArray {
