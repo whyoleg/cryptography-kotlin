@@ -19,7 +19,7 @@ internal class JdkAesCbc(
 ) : AES.CBC {
     private val keyWrapper: (JSecretKey) -> AES.CBC.Key = { key ->
         object : AES.CBC.Key, JdkEncodableKey<AES.Key.Format>(key) {
-            override fun cipher(padding: Boolean): AES.CBC.Cipher = AesCbcCipher(state, key, padding)
+            override fun cipher(padding: Boolean): AES.IvCipher = AesCbcCipher(state, key, padding)
             override fun encodeToBlocking(format: AES.Key.Format): ByteArray = when (format) {
                 AES.Key.Format.JWK -> error("$format is not supported")
                 AES.Key.Format.RAW -> encodeToRaw()
@@ -40,7 +40,7 @@ private class AesCbcCipher(
     private val state: JdkCryptographyState,
     private val key: JSecretKey,
     padding: Boolean,
-) : AES.CBC.Cipher {
+) : AES.IvCipher {
     private val cipher = state.cipher(
         when {
             padding -> "AES/CBC/PKCS5Padding"

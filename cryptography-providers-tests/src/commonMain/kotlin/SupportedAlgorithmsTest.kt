@@ -26,6 +26,7 @@ abstract class SupportedAlgorithmsTest(provider: CryptographyProvider) : Provide
 
     @Test
     fun testSupported() = test {
+        assertSupports(AES.ECB, !context.provider.isWebCrypto)
         assertSupports(AES.CBC)
         assertSupports(AES.CTR)
         assertSupports(AES.GCM, !context.provider.isApple)

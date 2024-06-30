@@ -24,7 +24,7 @@ internal object Openssl3AesCbc : AES.CBC, Openssl3Aes<AES.CBC.Key>() {
             else                  -> error("Unsupported key size")
         }
 
-        override fun cipher(padding: Boolean): AES.CBC.Cipher = AesCbcCipher(algorithm, key, padding)
+        override fun cipher(padding: Boolean): AES.IvCipher = AesCbcCipher(algorithm, key, padding)
     }
 }
 
@@ -34,7 +34,7 @@ private class AesCbcCipher(
     algorithm: String,
     private val key: ByteArray,
     private val padding: Boolean,
-) : AES.CBC.Cipher {
+) : AES.IvCipher {
 
     private val cipher = EVP_CIPHER_fetch(null, algorithm, null)
 

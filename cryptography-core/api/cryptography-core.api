@@ -377,27 +377,12 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AE
 	public fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
 }
 
-public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES$CBC$Cipher : dev/whyoleg/cryptography/algorithms/symmetric/AES$CBC$Decryptor, dev/whyoleg/cryptography/algorithms/symmetric/AES$CBC$Encryptor, dev/whyoleg/cryptography/operations/cipher/Cipher {
-}
-
 public final class dev/whyoleg/cryptography/algorithms/symmetric/AES$CBC$Companion : dev/whyoleg/cryptography/CryptographyAlgorithmId {
 }
 
-public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES$CBC$Decryptor : dev/whyoleg/cryptography/operations/cipher/Decryptor {
-	public fun decrypt ([B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun decrypt$suspendImpl (Ldev/whyoleg/cryptography/algorithms/symmetric/AES$CBC$Decryptor;[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun decryptBlocking ([B[B)[B
-}
-
-public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES$CBC$Encryptor : dev/whyoleg/cryptography/operations/cipher/Encryptor {
-	public fun encrypt ([B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun encrypt$suspendImpl (Ldev/whyoleg/cryptography/algorithms/symmetric/AES$CBC$Encryptor;[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun encryptBlocking ([B[B)[B
-}
-
 public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES$CBC$Key : dev/whyoleg/cryptography/algorithms/symmetric/AES$Key {
-	public abstract fun cipher (Z)Ldev/whyoleg/cryptography/algorithms/symmetric/AES$CBC$Cipher;
-	public static synthetic fun cipher$default (Ldev/whyoleg/cryptography/algorithms/symmetric/AES$CBC$Key;ZILjava/lang/Object;)Ldev/whyoleg/cryptography/algorithms/symmetric/AES$CBC$Cipher;
+	public abstract fun cipher (Z)Ldev/whyoleg/cryptography/algorithms/symmetric/AES$IvCipher;
+	public static synthetic fun cipher$default (Ldev/whyoleg/cryptography/algorithms/symmetric/AES$CBC$Key;ZILjava/lang/Object;)Ldev/whyoleg/cryptography/algorithms/symmetric/AES$IvCipher;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES$CTR : dev/whyoleg/cryptography/algorithms/symmetric/AES {
@@ -405,26 +390,24 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AE
 	public fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
 }
 
-public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES$CTR$Cipher : dev/whyoleg/cryptography/algorithms/symmetric/AES$CTR$Decryptor, dev/whyoleg/cryptography/algorithms/symmetric/AES$CTR$Encryptor, dev/whyoleg/cryptography/operations/cipher/Cipher {
-}
-
 public final class dev/whyoleg/cryptography/algorithms/symmetric/AES$CTR$Companion : dev/whyoleg/cryptography/CryptographyAlgorithmId {
 }
 
-public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES$CTR$Decryptor : dev/whyoleg/cryptography/operations/cipher/Decryptor {
-	public fun decrypt ([B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun decrypt$suspendImpl (Ldev/whyoleg/cryptography/algorithms/symmetric/AES$CTR$Decryptor;[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun decryptBlocking ([B[B)[B
-}
-
-public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES$CTR$Encryptor : dev/whyoleg/cryptography/operations/cipher/Encryptor {
-	public fun encrypt ([B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun encrypt$suspendImpl (Ldev/whyoleg/cryptography/algorithms/symmetric/AES$CTR$Encryptor;[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun encryptBlocking ([B[B)[B
-}
-
 public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES$CTR$Key : dev/whyoleg/cryptography/algorithms/symmetric/AES$Key {
-	public abstract fun cipher ()Ldev/whyoleg/cryptography/algorithms/symmetric/AES$CTR$Cipher;
+	public abstract fun cipher ()Ldev/whyoleg/cryptography/algorithms/symmetric/AES$IvCipher;
+}
+
+public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES$ECB : dev/whyoleg/cryptography/algorithms/symmetric/AES {
+	public static final field Companion Ldev/whyoleg/cryptography/algorithms/symmetric/AES$ECB$Companion;
+	public fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/symmetric/AES$ECB$Companion : dev/whyoleg/cryptography/CryptographyAlgorithmId {
+}
+
+public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES$ECB$Key : dev/whyoleg/cryptography/algorithms/symmetric/AES$Key {
+	public abstract fun cipher (Z)Ldev/whyoleg/cryptography/operations/cipher/Cipher;
+	public static synthetic fun cipher$default (Ldev/whyoleg/cryptography/algorithms/symmetric/AES$ECB$Key;ZILjava/lang/Object;)Ldev/whyoleg/cryptography/operations/cipher/Cipher;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES$GCM : dev/whyoleg/cryptography/algorithms/symmetric/AES {
@@ -438,6 +421,21 @@ public final class dev/whyoleg/cryptography/algorithms/symmetric/AES$GCM$Compani
 public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES$GCM$Key : dev/whyoleg/cryptography/algorithms/symmetric/AES$Key {
 	public abstract fun cipher-6q1zMKY (I)Ldev/whyoleg/cryptography/operations/cipher/AuthenticatedCipher;
 	public static synthetic fun cipher-6q1zMKY$default (Ldev/whyoleg/cryptography/algorithms/symmetric/AES$GCM$Key;IILjava/lang/Object;)Ldev/whyoleg/cryptography/operations/cipher/AuthenticatedCipher;
+}
+
+public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES$IvCipher : dev/whyoleg/cryptography/algorithms/symmetric/AES$IvDecryptor, dev/whyoleg/cryptography/algorithms/symmetric/AES$IvEncryptor {
+}
+
+public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES$IvDecryptor : dev/whyoleg/cryptography/operations/cipher/Decryptor {
+	public fun decrypt ([B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun decrypt$suspendImpl (Ldev/whyoleg/cryptography/algorithms/symmetric/AES$IvDecryptor;[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun decryptBlocking ([B[B)[B
+}
+
+public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES$IvEncryptor : dev/whyoleg/cryptography/operations/cipher/Encryptor {
+	public fun encrypt ([B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun encrypt$suspendImpl (Ldev/whyoleg/cryptography/algorithms/symmetric/AES$IvEncryptor;[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun encryptBlocking ([B[B)[B
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES$Key : dev/whyoleg/cryptography/materials/key/EncodableKey {
