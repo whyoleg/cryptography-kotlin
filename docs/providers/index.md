@@ -61,6 +61,7 @@ For additional limitation please consult provider specific documentation.
 | **Symmetric-key<br/>encryption/decryption** | AES-CBC       |  ✅  |     ✅     |   ✅   |    ✅     |
 |                                             | AES-CTR       |  ✅  |     ✅     |   ✅   |    ✅     |
 |                                             | AES-GCM       |  ✅  |     ✅     |   ❌   |    ✅     |
+|                                             | ⚠️ AES-ECB    |  ✅  |     ❌     |   ✅   |    ✅     |
 | **Public-key<br/>encryption/decryption**    | RSA-OAEP      |  ✅  |     ✅     |   ✅   |    ✅     |
 | **Digital Signatures**                      | ECDSA         |  ✅  |     ✅     |   ❌   |    ✅     |
 |                                             | RSA-SSA-PSS   |  ✅  |     ✅     |   ✅   |    ✅     |

@@ -90,6 +90,7 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
             "dev.whyoleg.cryptography.providers.tests.algorithms.symmetric.AesCbcCompatibilityTest",
             //"dev.whyoleg.cryptography.providers.tests.algorithms.symmetric.AesCtrTest",
             "dev.whyoleg.cryptography.providers.tests.algorithms.symmetric.AesCtrCompatibilityTest",
+            "dev.whyoleg.cryptography.providers.tests.algorithms.symmetric.AesEcbCompatibilityTest",
             "dev.whyoleg.cryptography.providers.tests.algorithms.symmetric.AesGcmTest",
             "dev.whyoleg.cryptography.providers.tests.algorithms.symmetric.AesGcmCompatibilityTest",
             "dev.whyoleg.cryptography.providers.tests.algorithms.symmetric.HmacTest",
