@@ -8,6 +8,9 @@ import kotlinx.cinterop.*
 import platform.CoreFoundation.*
 import platform.Foundation.*
 
+private val EmptyNSData = NSData()
+private val EmptyByteArray = ByteArray(0)
+
 private val almostEmptyArray = ByteArray(1)
 
 //this hack will be dropped with introducing of new IO or functions APIs
@@ -52,7 +55,7 @@ internal inline fun CFMutableDictionary(size: Int, block: CFMutableDictionaryRef
 
 @OptIn(UnsafeNumber::class)
 internal fun NSData.toByteArray(): ByteArray {
-    if (length.convert<Int>() == 0) return emptyArray
+    if (length.convert<Int>() == 0) return EmptyByteArray
 
     return ByteArray(length.convert()).apply {
         usePinned {
@@ -63,7 +66,7 @@ internal fun NSData.toByteArray(): ByteArray {
 
 @OptIn(UnsafeNumber::class)
 internal fun <R> ByteArray.useNSData(block: (NSData) -> R): R {
-    if (isEmpty()) return block(emptyNSData)
+    if (isEmpty()) return block(EmptyNSData)
 
     return usePinned {
         block(
@@ -75,5 +78,3 @@ internal fun <R> ByteArray.useNSData(block: (NSData) -> R): R {
     }
 }
 
-private val emptyNSData = NSData()
-private val emptyArray = ByteArray(0)

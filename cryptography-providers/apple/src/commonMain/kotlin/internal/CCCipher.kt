@@ -16,9 +16,9 @@ internal class CCCipher(
     private val padding: CCPadding,
     private val key: ByteArray,
 ) {
-    fun encrypt(iv: ByteArray, plaintext: ByteArray): ByteArray = memScoped {
+    fun encrypt(iv: ByteArray?, plaintext: ByteArray): ByteArray = memScoped {
         useCryptor { cryptorRef ->
-            cryptorRef.create(kCCEncrypt, iv.refTo(0))
+            cryptorRef.create(kCCEncrypt, iv?.refTo(0))
             val ciphertextOutput = ByteArray(cryptorRef.outputLength(plaintext.size))
 
             val dataOutMoved = alloc<size_tVar>()
@@ -39,9 +39,9 @@ internal class CCCipher(
         }
     }
 
-    fun decrypt(iv: ByteArray, ciphertext: ByteArray, ciphertextStartIndex: Int): ByteArray = memScoped {
+    fun decrypt(iv: ByteArray?, ciphertext: ByteArray, ciphertextStartIndex: Int): ByteArray = memScoped {
         useCryptor { cryptorRef ->
-            cryptorRef.create(kCCDecrypt, iv.refTo(0))
+            cryptorRef.create(kCCDecrypt, iv?.refTo(0))
 
             val plaintextOutput = ByteArray(cryptorRef.outputLength(ciphertext.size - ciphertextStartIndex))
 
@@ -77,7 +77,7 @@ internal class CCCipher(
         }
     }
 
-    private fun CCCryptorRefVar.create(op: CCOperation, iv: CValuesRef<*>) {
+    private fun CCCryptorRefVar.create(op: CCOperation, iv: CValuesRef<*>?) {
         checkResult(
             CCCryptorCreateWithMode(
                 op = op,

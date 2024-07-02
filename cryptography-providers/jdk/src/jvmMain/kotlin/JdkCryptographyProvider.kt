@@ -82,6 +82,7 @@ internal class JdkCryptographyProvider(
             HMAC      -> JdkHmac(state)
             AES.CBC   -> JdkAesCbc(state)
             AES.CTR -> JdkAesCtr(state)
+            AES.ECB -> JdkAesEcb(state)
             AES.GCM   -> JdkAesGcm(state)
             RSA.OAEP  -> JdkRsaOaep(state)
             RSA.PSS   -> JdkRsaPss(state)
