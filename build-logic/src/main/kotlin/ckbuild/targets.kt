@@ -7,7 +7,6 @@ package ckbuild
 import org.gradle.jvm.toolchain.*
 import org.gradle.kotlin.dsl.*
 import org.jetbrains.kotlin.gradle.dsl.*
-import org.jetbrains.kotlin.gradle.targets.js.dsl.*
 
 fun KotlinMultiplatformExtension.appleTargets() {
     macosX64()
@@ -58,7 +57,7 @@ fun KotlinMultiplatformExtension.jsTarget(
     }
 }
 
-@OptIn(ExperimentalWasmDsl::class)
+//@OptIn(ExperimentalWasmDsl::class)
 fun KotlinMultiplatformExtension.wasmTargets() {
     wasmJs {
         nodejs()
@@ -69,7 +68,7 @@ fun KotlinMultiplatformExtension.wasmTargets() {
     }
 }
 
-@OptIn(ExperimentalWasmDsl::class)
+//@OptIn(ExperimentalWasmDsl::class)
 fun KotlinMultiplatformExtension.wasmJsTarget() {
     wasmJs {
         nodejs()

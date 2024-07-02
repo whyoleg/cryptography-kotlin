@@ -4,7 +4,7 @@
 
 @file:Suppress("UnstableApiUsage")
 
-val kotlinVersionOverride = providers.gradleProperty("ckbuild.kotlinVersionOverride").orNull?.takeIf(String::isNotBlank)
+val kotlinVersionOverride = "2.1.0-dev-+"
 
 // we need to create it eagerly to be able to override later
 dependencyResolutionManagement {

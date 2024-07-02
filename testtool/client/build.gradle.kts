@@ -5,14 +5,13 @@
 import org.jetbrains.kotlin.gradle.*
 import org.jetbrains.kotlin.gradle.plugin.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.*
-import org.jetbrains.kotlin.gradle.targets.js.dsl.*
 import org.jetbrains.kotlin.konan.target.*
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
 }
 
-@OptIn(ExperimentalWasmDsl::class)
+//@OptIn(ExperimentalWasmDsl::class)
 kotlin {
     jvmToolchain(8)
 
