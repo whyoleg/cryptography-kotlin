@@ -162,4 +162,26 @@ public interface RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP : RS
             public fun decryptor(): Decryptor
         }
     }
+
+    // digest is not used at all
+    @DelicateCryptographyApi
+    @SubclassOptInRequired(CryptographyProviderApi::class)
+    public interface RAW : RSA<RAW.PublicKey, RAW.PrivateKey, RAW.KeyPair> {
+        override val id: CryptographyAlgorithmId<RAW> get() = Companion
+
+        public companion object : CryptographyAlgorithmId<RAW>("RSA-RAW")
+
+        @SubclassOptInRequired(CryptographyProviderApi::class)
+        public interface KeyPair : RSA.KeyPair<PublicKey, PrivateKey>
+
+        @SubclassOptInRequired(CryptographyProviderApi::class)
+        public interface PublicKey : RSA.PublicKey {
+            public fun encryptor(): Encryptor
+        }
+
+        @SubclassOptInRequired(CryptographyProviderApi::class)
+        public interface PrivateKey : RSA.PrivateKey {
+            public fun decryptor(): Decryptor
+        }
+    }
 }

@@ -6,6 +6,7 @@ package dev.whyoleg.cryptography.providers.tests.algorithms.asymmetric
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
+import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.providers.tests.api.*
 import dev.whyoleg.cryptography.providers.tests.api.compatibility.*
 import kotlinx.serialization.*
@@ -43,14 +44,22 @@ abstract class RsaBasedCompatibilityTest<PublicK : RSA.PublicKey, PrivateK : RSA
 
     protected suspend fun CompatibilityTestScope<A>.generateKeys(
         isStressTest: Boolean,
+        // hack for RSA RAW and RSA PKCS1 encryption
+        singleDigest: CryptographyAlgorithmId<Digest>? = null,
         block: suspend (keyPair: KP, keyReference: TestReference, keyParameters: KeyParameters) -> Unit,
     ) {
+        singleDigest?.let {
+            require(supportsDigest(it)) { "Unsupported digest: $it" }
+        }
         val keyIterations = when {
             isStressTest -> 5
             else         -> 2
         }
         generateRsaKeySizes { keySize ->
             generateDigestsForCompatibility { digest, digestSize ->
+                // hack for RSA RAW and RSA PKCS1 encryption:
+                // there is no need to run for every digest as it's not used
+                if (singleDigest != null && singleDigest != digest) return@generateDigestsForCompatibility
                 if (!supportsDigest(digest)) return@generateDigestsForCompatibility
 
                 val keyParameters = KeyParameters(keySize.inBits, digest.name, digestSize)

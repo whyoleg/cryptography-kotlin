@@ -51,5 +51,6 @@ abstract class SupportedAlgorithmsTest(provider: CryptographyProvider) : Provide
         assertSupports(RSA.PSS)
         assertSupports(RSA.OAEP)
         assertSupports(RSA.PKCS1)
+        assertSupports(RSA.RAW, !context.provider.isWebCrypto)
     }
 }

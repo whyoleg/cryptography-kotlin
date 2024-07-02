@@ -41,6 +41,7 @@ internal object Openssl3CryptographyProvider : CryptographyProvider() {
         RSA.PSS   -> Openssl3RsaPss
         RSA.PKCS1 -> Openssl3RsaPkcs1
         RSA.OAEP  -> Openssl3RsaOaep
+        RSA.RAW -> Openssl3RsaRaw
         else      -> null
     } as A?
 }

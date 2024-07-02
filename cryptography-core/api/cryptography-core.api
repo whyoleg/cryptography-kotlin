@@ -323,6 +323,25 @@ public final class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicKey$
 	public fun hashCode ()I
 }
 
+public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$RAW : dev/whyoleg/cryptography/algorithms/asymmetric/RSA {
+	public static final field Companion Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA$RAW$Companion;
+	public fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$RAW$Companion : dev/whyoleg/cryptography/CryptographyAlgorithmId {
+}
+
+public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$RAW$KeyPair : dev/whyoleg/cryptography/algorithms/asymmetric/RSA$KeyPair {
+}
+
+public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$RAW$PrivateKey : dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PrivateKey {
+	public abstract fun decryptor ()Ldev/whyoleg/cryptography/operations/cipher/Decryptor;
+}
+
+public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$RAW$PublicKey : dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicKey {
+	public abstract fun encryptor ()Ldev/whyoleg/cryptography/operations/cipher/Encryptor;
+}
+
 public abstract interface class dev/whyoleg/cryptography/algorithms/digest/Digest : dev/whyoleg/cryptography/CryptographyAlgorithm {
 	public abstract fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
 	public abstract fun hasher ()Ldev/whyoleg/cryptography/operations/hash/Hasher;

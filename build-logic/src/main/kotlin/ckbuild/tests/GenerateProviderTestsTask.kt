@@ -88,7 +88,6 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
 
             "dev.whyoleg.cryptography.providers.tests.algorithms.symmetric.AesCbcTest",
             "dev.whyoleg.cryptography.providers.tests.algorithms.symmetric.AesCbcCompatibilityTest",
-            //"dev.whyoleg.cryptography.providers.tests.algorithms.symmetric.AesCtrTest",
             "dev.whyoleg.cryptography.providers.tests.algorithms.symmetric.AesCtrCompatibilityTest",
             "dev.whyoleg.cryptography.providers.tests.algorithms.symmetric.AesEcbCompatibilityTest",
             "dev.whyoleg.cryptography.providers.tests.algorithms.symmetric.AesGcmTest",
@@ -105,6 +104,7 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
             "dev.whyoleg.cryptography.providers.tests.algorithms.asymmetric.RsaPkcs1EsCompatibilityTest",
             "dev.whyoleg.cryptography.providers.tests.algorithms.asymmetric.RsaPssTest",
             "dev.whyoleg.cryptography.providers.tests.algorithms.asymmetric.RsaPssCompatibilityTest",
+            "dev.whyoleg.cryptography.providers.tests.algorithms.asymmetric.RsaRawCompatibilityTest",
         )
     }
 }

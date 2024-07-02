@@ -87,6 +87,7 @@ internal class JdkCryptographyProvider(
             RSA.OAEP  -> JdkRsaOaep(state)
             RSA.PSS   -> JdkRsaPss(state)
             RSA.PKCS1 -> JdkRsaPkcs1(state)
+            RSA.RAW -> JdkRsaRaw(state)
             ECDSA     -> JdkEcdsa(state)
             else      -> null
         }
