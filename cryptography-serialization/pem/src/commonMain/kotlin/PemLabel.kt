@@ -13,5 +13,6 @@ public value class PemLabel(public val representation: String) {
         public val PrivateKey: PemLabel = PemLabel("PRIVATE KEY")
         public val RsaPublicKey: PemLabel = PemLabel("RSA PUBLIC KEY")
         public val RsaPrivateKey: PemLabel = PemLabel("RSA PRIVATE KEY")
+        public val EcPrivateKey: PemLabel = PemLabel("EC PRIVATE KEY")
     }
 }
