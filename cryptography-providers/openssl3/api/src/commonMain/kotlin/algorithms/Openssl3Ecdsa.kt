@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
@@ -27,9 +27,14 @@ internal object Openssl3Ecdsa : ECDSA {
         private val curve: EC.Curve,
     ) : Openssl3PrivateKeyDecoder<EC.PrivateKey.Format, ECDSA.PrivateKey>("EC") {
         override fun inputType(format: EC.PrivateKey.Format): String = when (format) {
-            EC.PrivateKey.Format.DER -> "DER"
-            EC.PrivateKey.Format.PEM -> "PEM"
-            EC.PrivateKey.Format.JWK -> error("JWK format is not supported")
+            EC.PrivateKey.Format.DER, EC.PrivateKey.Format.DER.SEC1 -> "DER"
+            EC.PrivateKey.Format.PEM, EC.PrivateKey.Format.PEM.SEC1 -> "PEM"
+            EC.PrivateKey.Format.JWK                                -> error("JWK format is not supported")
+        }
+
+        override fun inputStruct(format: EC.PrivateKey.Format): String = when (format) {
+            EC.PrivateKey.Format.DER.SEC1, EC.PrivateKey.Format.PEM.SEC1 -> "EC"
+            else                                                         -> super.inputStruct(format)
         }
 
         override fun wrapKey(key: CPointer<EVP_PKEY>): ECDSA.PrivateKey {
@@ -44,34 +49,12 @@ internal object Openssl3Ecdsa : ECDSA {
         override fun inputType(format: EC.PublicKey.Format): String = when (format) {
             EC.PublicKey.Format.DER -> "DER"
             EC.PublicKey.Format.PEM -> "PEM"
-            EC.PublicKey.Format.RAW -> error("should not be called")
+            EC.PublicKey.Format.RAW -> error("should not be called: handled explicitly in decodeFromBlocking")
             EC.PublicKey.Format.JWK -> error("JWK format is not supported")
         }
 
         override fun decodeFromBlocking(format: EC.PublicKey.Format, input: ByteArray): ECDSA.PublicKey = when (format) {
-            EC.PublicKey.Format.RAW -> memScoped {
-                val context = checkError(EVP_PKEY_CTX_new_from_name(null, "EC", null))
-                try {
-                    checkError(EVP_PKEY_fromdata_init(context))
-                    val pkeyVar = alloc<CPointerVar<EVP_PKEY>>()
-                    @OptIn(UnsafeNumber::class)
-                    checkError(
-                        EVP_PKEY_fromdata(
-                            ctx = context,
-                            ppkey = pkeyVar.ptr,
-                            selection = EVP_PKEY_PUBLIC_KEY,
-                            param = OSSL_PARAM_array(
-                                OSSL_PARAM_construct_utf8_string("group".cstr.ptr, curve.name.cstr.ptr, 0.convert()),
-                                OSSL_PARAM_construct_octet_string("pub".cstr.ptr, input.safeRefToU(0), input.size.convert())
-                            )
-                        )
-                    )
-                    val pkey = checkError(pkeyVar.value)
-                    wrapKey(pkey)
-                } finally {
-                    EVP_PKEY_CTX_free(context)
-                }
-            }
+            EC.PublicKey.Format.RAW -> wrapKey(decodePublicRawKey(curve, input))
             else                    -> super.decodeFromBlocking(format, input)
         }
 
@@ -104,9 +87,14 @@ internal object Openssl3Ecdsa : ECDSA {
         key: CPointer<EVP_PKEY>,
     ) : ECDSA.PrivateKey, Openssl3PrivateKeyEncodable<EC.PrivateKey.Format>(key) {
         override fun outputType(format: EC.PrivateKey.Format): String = when (format) {
-            EC.PrivateKey.Format.DER -> "DER"
-            EC.PrivateKey.Format.PEM -> "PEM"
-            EC.PrivateKey.Format.JWK -> error("JWK format is not supported")
+            EC.PrivateKey.Format.DER, EC.PrivateKey.Format.DER.SEC1 -> "DER"
+            EC.PrivateKey.Format.PEM, EC.PrivateKey.Format.PEM.SEC1 -> "PEM"
+            EC.PrivateKey.Format.JWK                                -> error("JWK format is not supported")
+        }
+
+        override fun outputStruct(format: EC.PrivateKey.Format): String = when (format) {
+            EC.PrivateKey.Format.DER.SEC1, EC.PrivateKey.Format.PEM.SEC1 -> "EC"
+            else                                                         -> super.outputStruct(format)
         }
 
         override fun signatureGenerator(digest: CryptographyAlgorithmId<Digest>, format: ECDSA.SignatureFormat): SignatureGenerator {
@@ -128,15 +116,8 @@ internal object Openssl3Ecdsa : ECDSA {
             EC.PublicKey.Format.JWK -> error("JWK format is not supported")
         }
 
-        @OptIn(UnsafeNumber::class)
         override fun encodeToBlocking(format: EC.PublicKey.Format): ByteArray = when (format) {
-            EC.PublicKey.Format.RAW -> memScoped {
-                val outVar = alloc<size_tVar>()
-                checkError(EVP_PKEY_get_octet_string_param(key, "encoded-pub-key", null, 0.convert(), outVar.ptr))
-                val output = ByteArray(outVar.value.convert())
-                checkError(EVP_PKEY_get_octet_string_param(key, "encoded-pub-key", output.safeRefToU(0), output.size.convert(), outVar.ptr))
-                output.ensureSizeExactly(outVar.value.convert())
-            }
+            EC.PublicKey.Format.RAW -> encodePublicRawKey(key)
             else                    -> super.encodeToBlocking(format)
         }
 
@@ -148,6 +129,41 @@ internal object Openssl3Ecdsa : ECDSA {
             }
         }
     }
+}
+
+@OptIn(UnsafeNumber::class)
+private fun decodePublicRawKey(
+    curve: EC.Curve,
+    input: ByteArray,
+): CPointer<EVP_PKEY> = memScoped {
+    val context = checkError(EVP_PKEY_CTX_new_from_name(null, "EC", null))
+    try {
+        checkError(EVP_PKEY_fromdata_init(context))
+        val pkeyVar = alloc<CPointerVar<EVP_PKEY>>()
+        checkError(
+            EVP_PKEY_fromdata(
+                ctx = context,
+                ppkey = pkeyVar.ptr,
+                selection = EVP_PKEY_PUBLIC_KEY,
+                param = OSSL_PARAM_array(
+                    OSSL_PARAM_construct_utf8_string("group".cstr.ptr, curve.name.cstr.ptr, 0.convert()),
+                    OSSL_PARAM_construct_octet_string("pub".cstr.ptr, input.safeRefToU(0), input.size.convert())
+                )
+            )
+        )
+        checkError(pkeyVar.value)
+    } finally {
+        EVP_PKEY_CTX_free(context)
+    }
+}
+
+@OptIn(UnsafeNumber::class)
+private fun encodePublicRawKey(key: CPointer<EVP_PKEY>): ByteArray = memScoped {
+    val outVar = alloc<size_tVar>()
+    checkError(EVP_PKEY_get_octet_string_param(key, "encoded-pub-key", null, 0.convert(), outVar.ptr))
+    val output = ByteArray(outVar.value.convert())
+    checkError(EVP_PKEY_get_octet_string_param(key, "encoded-pub-key", output.safeRefToU(0), output.size.convert(), outVar.ptr))
+    output.ensureSizeExactly(outVar.value.convert())
 }
 
 @OptIn(UnsafeNumber::class)
@@ -181,7 +197,7 @@ private fun EC_order_size(key: CPointer<EVP_PKEY>): Int = memScoped {
     checkError(EVP_PKEY_get_bn_param(key, "order", orderVar.ptr))
     val order = checkError(orderVar.value)
     try {
-        return (checkError(BN_num_bits(order)) + 7) / 8
+        (checkError(BN_num_bits(order)) + 7) / 8
     } finally {
         BN_free(order)
     }

@@ -11,7 +11,7 @@ internal actual external interface CryptoKeyPair {
     actual val publicKey: CryptoKey
 }
 
-internal actual val CryptoKey.algorithmName: String get() = keyAlgorithmName(this)
+internal actual val CryptoKey.algorithm: Algorithm get() = keyAlgorithm(this)
 
 @Suppress("UNUSED_PARAMETER")
-private fun keyAlgorithmName(key: CryptoKey): String = js("key.algorithm.hash.name").unsafeCast<String>()
+private fun keyAlgorithm(key: CryptoKey): Algorithm = js("key.algorithm").unsafeCast<Algorithm>()

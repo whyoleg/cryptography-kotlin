@@ -26,6 +26,8 @@ internal expect fun EcKeyAlgorithm(
     namedCurve: String, //P-256, P-384, P-521
 ): Algorithm
 
+internal expect val Algorithm.ecKeyAlgorithmNamedCurve: String
+
 internal expect fun EcdsaSignatureAlgorithm(hash: String): Algorithm
 
 internal expect fun RsaKeyGenerationAlgorithm(
@@ -43,3 +45,5 @@ internal expect fun RsaKeyImportAlgorithm(
 internal expect fun RsaOaepCipherAlgorithm(label: ByteArray?): Algorithm
 
 internal expect fun RsaPssSignatureAlgorithm(saltLength: Int): Algorithm
+
+internal expect val Algorithm.rsaKeyAlgorithmHashName: String

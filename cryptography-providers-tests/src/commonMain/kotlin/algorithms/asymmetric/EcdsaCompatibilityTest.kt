@@ -9,8 +9,26 @@ import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.providers.tests.api.*
 import dev.whyoleg.cryptography.providers.tests.api.compatibility.*
 import dev.whyoleg.cryptography.random.*
+import dev.whyoleg.cryptography.serialization.asn1.*
+import dev.whyoleg.cryptography.serialization.asn1.modules.*
+import dev.whyoleg.cryptography.serialization.pem.*
 import kotlinx.serialization.*
 import kotlin.test.*
+
+private val publicKeyFormats = listOf(
+    EC.PublicKey.Format.JWK,
+    EC.PublicKey.Format.RAW,
+    EC.PublicKey.Format.DER,
+    EC.PublicKey.Format.PEM,
+).associateBy { it.name }
+
+private val privateKeyFormats = listOf(
+    EC.PrivateKey.Format.JWK,
+    EC.PrivateKey.Format.DER,
+    EC.PrivateKey.Format.PEM,
+    EC.PrivateKey.Format.DER.SEC1,
+    EC.PrivateKey.Format.PEM.SEC1,
+).associateBy { it.name }
 
 private const val maxDataSize = 10000
 
@@ -44,8 +62,6 @@ abstract class EcdsaCompatibilityTest(provider: CryptographyProvider) : Compatib
 
         val signatureParametersList = buildList {
             listOf(ECDSA.SignatureFormat.RAW, ECDSA.SignatureFormat.DER).forEach { signatureFormat ->
-                if (!supportsSignatureFormat(signatureFormat)) return@forEach
-
                 generateDigestsForCompatibility { digest, _ ->
                     if (!supportsDigest(digest)) return@generateDigestsForCompatibility
 
@@ -62,8 +78,8 @@ abstract class EcdsaCompatibilityTest(provider: CryptographyProvider) : Compatib
             algorithm.keyPairGenerator(curve).generateKeys(keyIterations) { keyPair ->
                 val keyReference = api.keyPairs.saveData(
                     keyParametersId, KeyPairData(
-                        public = KeyData(keyPair.publicKey.encodeTo(EC.PublicKey.Format.entries, ::supportsKeyFormat)),
-                        private = KeyData(keyPair.privateKey.encodeTo(EC.PrivateKey.Format.entries, ::supportsKeyFormat))
+                        public = KeyData(keyPair.publicKey.encodeTo(publicKeyFormats.values, ::supportsKeyFormat)),
+                        private = KeyData(keyPair.privateKey.encodeTo(privateKeyFormats.values, ::supportsKeyFormat))
                     )
                 )
 
@@ -101,28 +117,48 @@ abstract class EcdsaCompatibilityTest(provider: CryptographyProvider) : Compatib
                 api.keyPairs.getData<KeyPairData>(parametersId) { (public, private), keyReference, otherContext ->
                     val publicKeys = publicKeyDecoder.decodeFrom(
                         formats = public.formats,
-                        formatOf = EC.PublicKey.Format::valueOf,
+                        formatOf = publicKeyFormats::getValue,
                         supports = ::supportsKeyFormat
                     ) { key, format, bytes ->
                         when (format) {
-                            EC.PublicKey.Format.RAW, EC.PublicKey.Format.DER, EC.PublicKey.Format.PEM -> {
+                            EC.PublicKey.Format.JWK -> {}
+                            EC.PublicKey.Format.RAW,
+                            EC.PublicKey.Format.DER,
+                            EC.PublicKey.Format.PEM,
+                                                    -> {
                                 assertContentEquals(bytes, key.encodeTo(format), "Public Key $format encoding")
                             }
-                            EC.PublicKey.Format.JWK                                                   -> {}
                         }
                     }
                     val privateKeys = privateKeyDecoder.decodeFrom(
                         formats = private.formats,
-                        formatOf = EC.PrivateKey.Format::valueOf,
+                        formatOf = privateKeyFormats::getValue,
                         supports = ::supportsKeyFormat
                     ) { key, format, bytes ->
                         when (format) {
-                            EC.PrivateKey.Format.DER, EC.PrivateKey.Format.PEM -> {
-                                if (supportsPrivateKeyDerComparisonWith(otherContext)) {
-                                    assertContentEquals(bytes, key.encodeTo(format), "Private Key $format encoding")
-                                }
+                            EC.PrivateKey.Format.JWK      -> {}
+                            EC.PrivateKey.Format.DER.SEC1 -> {
+                                assertEcPrivateKeyEquals(bytes, key.encodeTo(format))
                             }
-                            EC.PrivateKey.Format.JWK                           -> {}
+                            EC.PrivateKey.Format.PEM.SEC1 -> {
+                                val expected = PEM.decode(bytes)
+                                val actual = PEM.decode(key.encodeTo(format))
+
+                                assertEquals(expected.label, actual.label)
+
+                                assertEcPrivateKeyEquals(expected.bytes, actual.bytes)
+                            }
+                            EC.PrivateKey.Format.DER      -> {
+                                assertPkcs8EcPrivateKeyEquals(bytes, key.encodeTo(format))
+                            }
+                            EC.PrivateKey.Format.PEM      -> {
+                                val expected = PEM.decode(bytes)
+                                val actual = PEM.decode(key.encodeTo(format))
+
+                                assertEquals(expected.label, actual.label)
+
+                                assertPkcs8EcPrivateKeyEquals(expected.bytes, actual.bytes)
+                            }
                         }
                     }
                     put(keyReference, publicKeys to privateKeys)
@@ -131,7 +167,6 @@ abstract class EcdsaCompatibilityTest(provider: CryptographyProvider) : Compatib
         }
 
         api.signatures.getParameters<SignatureParameters> { signatureParameters, parametersId, _ ->
-            if (!supportsSignatureFormat(signatureParameters.signatureFormat)) return@getParameters
             if (!supportsDigest(signatureParameters.digest)) return@getParameters
 
             api.signatures.getData<SignatureData>(parametersId) { (keyReference, data, signature), _, _ ->
@@ -149,4 +184,42 @@ abstract class EcdsaCompatibilityTest(provider: CryptographyProvider) : Compatib
             }
         }
     }
+}
+
+private fun assertEcPrivateKeyEquals(
+    expectedBytes: ByteArray,
+    actualBytes: ByteArray,
+    requireParametersCheck: Boolean = true,
+) {
+    val expected = DER.decodeFromByteArray(EcPrivateKey.serializer(), expectedBytes)
+    val actual = DER.decodeFromByteArray(EcPrivateKey.serializer(), actualBytes)
+
+    assertEquals(expected.version, actual.version, "EcPrivateKey.version")
+    assertContentEquals(expected.privateKey, actual.privateKey, "EcPrivateKey.privateKey")
+
+    if (requireParametersCheck || expected.parameters != null && actual.parameters != null) {
+        assertEquals(expected.parameters, actual.parameters, "EcPrivateKey.parameters")
+    }
+
+    if (expected.publicKey != null && actual.publicKey != null) {
+        assertEquals(expected.publicKey?.unusedBits, actual.publicKey?.unusedBits, "EcPrivateKey.publicKey.unusedBits")
+        assertContentEquals(expected.publicKey?.byteArray, actual.publicKey?.byteArray, "EcPrivateKey.publicKey.byteArray")
+    }
+}
+
+private fun assertPkcs8EcPrivateKeyEquals(expectedBytes: ByteArray, actualBytes: ByteArray) {
+    val expected = DER.decodeFromByteArray(PrivateKeyInfo.serializer(), expectedBytes)
+    val actual = DER.decodeFromByteArray(PrivateKeyInfo.serializer(), actualBytes)
+
+    assertEquals(expected.version, actual.version, "PrivateKeyInfo.version")
+    val expectedAlgorithm = assertIs<EcKeyAlgorithmIdentifier>(expected.privateKeyAlgorithm)
+    val actualAlgorithm = assertIs<EcKeyAlgorithmIdentifier>(actual.privateKeyAlgorithm)
+    assertEquals(expectedAlgorithm.parameters, actualAlgorithm.parameters, "PrivateKeyInfo.parameters")
+
+    assertEcPrivateKeyEquals(
+        expectedBytes = expected.privateKey,
+        actualBytes = actual.privateKey,
+        // different providers could encode or not encode parameters inside
+        requireParametersCheck = false
+    )
 }

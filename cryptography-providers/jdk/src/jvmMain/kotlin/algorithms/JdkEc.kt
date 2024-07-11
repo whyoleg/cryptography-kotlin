@@ -8,6 +8,8 @@ import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.providers.jdk.*
 import dev.whyoleg.cryptography.providers.jdk.materials.*
+import dev.whyoleg.cryptography.serialization.asn1.*
+import dev.whyoleg.cryptography.serialization.asn1.modules.*
 import dev.whyoleg.cryptography.serialization.pem.*
 import java.math.*
 import java.security.interfaces.*
@@ -108,7 +110,22 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP
         override fun decodeFromBlocking(format: EC.PrivateKey.Format, input: ByteArray): PrivateK = when (format) {
             EC.PrivateKey.Format.JWK -> error("$format is not supported")
             EC.PrivateKey.Format.DER -> decodeFromDer(input)
-            EC.PrivateKey.Format.PEM -> decodeFromDer(unwrapPem(PemLabel.PrivateKey, input))
+            EC.PrivateKey.Format.PEM      -> decodeFromDer(unwrapPem(PemLabel.PrivateKey, input))
+            EC.PrivateKey.Format.DER.SEC1 -> decodeFromDer(convertSec1ToPkcs8(input))
+            EC.PrivateKey.Format.PEM.SEC1 -> decodeFromDer(convertSec1ToPkcs8(unwrapPem(PemLabel.EcPrivateKey, input)))
+        }
+
+        private fun convertSec1ToPkcs8(input: ByteArray): ByteArray {
+            val ecPrivateKey = DER.decodeFromByteArray(EcPrivateKey.serializer(), input)
+
+            checkNotNull(ecPrivateKey.parameters) { "EC Parameters are not present in the key" }
+
+            val privateKeyInfo = PrivateKeyInfo(
+                version = 0,
+                privateKeyAlgorithm = EcKeyAlgorithmIdentifier(ecPrivateKey.parameters),
+                privateKey = input
+            )
+            return DER.encodeToByteArray(PrivateKeyInfo.serializer(), privateKeyInfo)
         }
     }
 }

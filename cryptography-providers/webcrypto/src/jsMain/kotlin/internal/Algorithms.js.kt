@@ -36,6 +36,11 @@ internal actual fun HmacKeyAlgorithm(hash: String, length: Int): Algorithm =
 internal actual fun EcKeyAlgorithm(name: String, namedCurve: String): Algorithm =
     js("{ name: name, namedCurve: namedCurve }").unsafeCast<Algorithm>()
 
+internal actual val Algorithm.ecKeyAlgorithmNamedCurve: String get() = ecKeyAlgorithmNamedCurve(this)
+
+@Suppress("UNUSED_PARAMETER")
+private fun ecKeyAlgorithmNamedCurve(algorithm: Algorithm): String = js("algorithm.namedCurve").unsafeCast<String>()
+
 internal actual fun EcdsaSignatureAlgorithm(hash: String): Algorithm =
     js("{ name: 'ECDSA', hash: hash }").unsafeCast<Algorithm>()
 
@@ -56,3 +61,8 @@ internal actual fun RsaOaepCipherAlgorithm(label: ByteArray?): Algorithm {
 
 internal actual fun RsaPssSignatureAlgorithm(saltLength: Int): Algorithm =
     js("{ name: 'RSA-PSS', saltLength: saltLength }").unsafeCast<Algorithm>()
+
+internal actual val Algorithm.rsaKeyAlgorithmHashName: String get() = rsaKeyAlgorithmHashName(this)
+
+@Suppress("UNUSED_PARAMETER")
+private fun rsaKeyAlgorithmHashName(algorithm: Algorithm): String = js("algorithm.hash.name").unsafeCast<String>()

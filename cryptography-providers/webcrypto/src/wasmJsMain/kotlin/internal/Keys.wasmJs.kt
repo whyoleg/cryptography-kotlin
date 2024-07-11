@@ -13,5 +13,7 @@ internal actual external interface CryptoKeyPair : JsAny {
     actual val publicKey: CryptoKey
 }
 
-internal actual val CryptoKey.algorithmName: String get() = keyAlgorithmName(this)
-private fun keyAlgorithmName(key: CryptoKey): String = js("key.algorithm.hash.name")
+internal actual val CryptoKey.algorithm: Algorithm get() = keyAlgorithm(this)
+
+@Suppress("UNUSED_PARAMETER")
+private fun keyAlgorithm(key: CryptoKey): Algorithm = js("key.algorithm")

@@ -109,28 +109,80 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/E
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey : dev/whyoleg/cryptography/materials/key/EncodableKey {
 }
 
-public final class dev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey$Format : java/lang/Enum, dev/whyoleg/cryptography/materials/key/KeyFormat {
-	public static final field DER Ldev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey$Format;
-	public static final field JWK Ldev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey$Format;
-	public static final field PEM Ldev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey$Format;
-	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public synthetic fun getName ()Ljava/lang/String;
-	public static fun valueOf (Ljava/lang/String;)Ldev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey$Format;
-	public static fun values ()[Ldev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey$Format;
+public abstract class dev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey$Format : dev/whyoleg/cryptography/materials/key/KeyFormat {
+	public final fun toString ()Ljava/lang/String;
+}
+
+public abstract class dev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey$Format$DER : dev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey$Format {
+	public static final field Generic Ldev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey$Format$DER$Generic;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey$Format$DER$Generic : dev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey$Format$DER {
+	public fun getName ()Ljava/lang/String;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey$Format$DER$SEC1 : dev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey$Format$DER {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey$Format$DER$SEC1;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+}
+
+public final class dev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey$Format$JWK : dev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey$Format {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey$Format$JWK;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+}
+
+public abstract class dev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey$Format$PEM : dev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey$Format {
+	public static final field Generic Ldev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey$Format$PEM$Generic;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey$Format$PEM$Generic : dev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey$Format$PEM {
+	public fun getName ()Ljava/lang/String;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey$Format$PEM$SEC1 : dev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey$Format$PEM {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey$Format$PEM$SEC1;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/EC$PublicKey : dev/whyoleg/cryptography/materials/key/EncodableKey {
 }
 
-public final class dev/whyoleg/cryptography/algorithms/asymmetric/EC$PublicKey$Format : java/lang/Enum, dev/whyoleg/cryptography/materials/key/KeyFormat {
-	public static final field DER Ldev/whyoleg/cryptography/algorithms/asymmetric/EC$PublicKey$Format;
-	public static final field JWK Ldev/whyoleg/cryptography/algorithms/asymmetric/EC$PublicKey$Format;
-	public static final field PEM Ldev/whyoleg/cryptography/algorithms/asymmetric/EC$PublicKey$Format;
-	public static final field RAW Ldev/whyoleg/cryptography/algorithms/asymmetric/EC$PublicKey$Format;
-	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public synthetic fun getName ()Ljava/lang/String;
-	public static fun valueOf (Ljava/lang/String;)Ldev/whyoleg/cryptography/algorithms/asymmetric/EC$PublicKey$Format;
-	public static fun values ()[Ldev/whyoleg/cryptography/algorithms/asymmetric/EC$PublicKey$Format;
+public abstract class dev/whyoleg/cryptography/algorithms/asymmetric/EC$PublicKey$Format : dev/whyoleg/cryptography/materials/key/KeyFormat {
+	public final fun toString ()Ljava/lang/String;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/asymmetric/EC$PublicKey$Format$DER : dev/whyoleg/cryptography/algorithms/asymmetric/EC$PublicKey$Format {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/asymmetric/EC$PublicKey$Format$DER;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+}
+
+public final class dev/whyoleg/cryptography/algorithms/asymmetric/EC$PublicKey$Format$JWK : dev/whyoleg/cryptography/algorithms/asymmetric/EC$PublicKey$Format {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/asymmetric/EC$PublicKey$Format$JWK;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+}
+
+public final class dev/whyoleg/cryptography/algorithms/asymmetric/EC$PublicKey$Format$PEM : dev/whyoleg/cryptography/algorithms/asymmetric/EC$PublicKey$Format {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/asymmetric/EC$PublicKey$Format$PEM;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+}
+
+public final class dev/whyoleg/cryptography/algorithms/asymmetric/EC$PublicKey$Format$RAW : dev/whyoleg/cryptography/algorithms/asymmetric/EC$PublicKey$Format {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/asymmetric/EC$PublicKey$Format$RAW;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/ECDSA : dev/whyoleg/cryptography/algorithms/asymmetric/EC {
@@ -146,12 +198,10 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/E
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/ECDSA$PrivateKey : dev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey {
 	public abstract fun signatureGenerator (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;Ldev/whyoleg/cryptography/algorithms/asymmetric/ECDSA$SignatureFormat;)Ldev/whyoleg/cryptography/operations/signature/SignatureGenerator;
-	public static synthetic fun signatureGenerator$default (Ldev/whyoleg/cryptography/algorithms/asymmetric/ECDSA$PrivateKey;Ldev/whyoleg/cryptography/CryptographyAlgorithmId;Ldev/whyoleg/cryptography/algorithms/asymmetric/ECDSA$SignatureFormat;ILjava/lang/Object;)Ldev/whyoleg/cryptography/operations/signature/SignatureGenerator;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/ECDSA$PublicKey : dev/whyoleg/cryptography/algorithms/asymmetric/EC$PublicKey {
 	public abstract fun signatureVerifier (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;Ldev/whyoleg/cryptography/algorithms/asymmetric/ECDSA$SignatureFormat;)Ldev/whyoleg/cryptography/operations/signature/SignatureVerifier;
-	public static synthetic fun signatureVerifier$default (Ldev/whyoleg/cryptography/algorithms/asymmetric/ECDSA$PublicKey;Ldev/whyoleg/cryptography/CryptographyAlgorithmId;Ldev/whyoleg/cryptography/algorithms/asymmetric/ECDSA$SignatureFormat;ILjava/lang/Object;)Ldev/whyoleg/cryptography/operations/signature/SignatureVerifier;
 }
 
 public final class dev/whyoleg/cryptography/algorithms/asymmetric/ECDSA$SignatureFormat : java/lang/Enum {

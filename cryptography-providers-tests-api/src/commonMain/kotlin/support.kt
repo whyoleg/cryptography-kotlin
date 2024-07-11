@@ -27,8 +27,9 @@ fun AlgorithmTestScope<*>.supportsDigest(digest: CryptographyAlgorithmId<Digest>
 fun AlgorithmTestScope<*>.supportsKeyFormat(format: KeyFormat): Boolean = supports {
     when {
         // only WebCrypto supports JWK for now
-        format.name == "JWK" && !provider.isWebCrypto -> "JWK"
-        else                                          -> null
+        format.name == "JWK" &&
+                !provider.isWebCrypto -> "JWK key format"
+        else                          -> null
     }
 }
 
@@ -72,45 +73,11 @@ fun AlgorithmTestScope<RSA.PKCS1>.supportsEncryption(): Boolean = supports {
 
 fun AlgorithmTestScope<ECDSA>.supportsCurve(curve: EC.Curve): Boolean = supports {
     when {
-        // JDK default and WebCrypto doesn't support secp256k1
-        curve.name == "secp256k1" && (provider.isJdkDefault || provider.isWebCrypto) -> "ECDSA ${curve.name}"
-        else                                                                         -> null
-    }
-}
-
-fun AlgorithmTestScope<ECDSA>.supportsSignatureFormat(format: ECDSA.SignatureFormat): Boolean = supports {
-    when {
-        // WebCrypto doesn't support the DER signature format
-        provider.isWebCrypto &&
-                format == ECDSA.SignatureFormat.DER -> "$format signature format"
-
-        // BouncyCastle doesn't support the RAW signature format
-        provider.isBouncyCastle &&
-                format == ECDSA.SignatureFormat.RAW -> "$format signature format"
-
-        // JDK.Default support the DER signature format only starting from java 9 and there is no support at all on android
-        provider.isJdkDefault &&
-                (platform.isJdk { major <= 8 } || platform.isAndroid) &&
-                format == ECDSA.SignatureFormat.RAW -> "$format signature format on JDK < 9 or Android"
-
-        else                                        -> null
-    }
-}
-
-// Private key DER encoding of EC keys could be different per providers
-//  while it can be both decoded and encoded successfully, their encoding will be not equal
-fun AlgorithmTestScope<ECDSA>.supportsPrivateKeyDerComparisonWith(
-    other: TestContext,
-): Boolean = validate {
-    fun TestContext.isWebCryptoBrowser(): Boolean = provider.isWebCrypto && platform.isBrowser
-    when {
-        context.isWebCryptoBrowser() != other.isWebCryptoBrowser()       -> {
-            "WebCrypto on browser always encodes additional parameters"
-        }
-        context.provider.isBouncyCastle != other.provider.isBouncyCastle -> {
-            "BouncyCastle always encodes additional parameters"
-        }
-        else                                                             -> null
+        // JDK default, WebCrypto and Apple doesn't support secp256k1
+        curve.name == "secp256k1" && (
+                provider.isJdkDefault || provider.isWebCrypto || provider.isApple
+                ) -> "ECDSA ${curve.name}"
+        else      -> null
     }
 }
 

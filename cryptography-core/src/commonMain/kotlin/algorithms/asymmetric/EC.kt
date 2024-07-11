@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.algorithms.asymmetric
@@ -31,14 +31,63 @@ public interface EC<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP : EC.Ke
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface PublicKey : EncodableKey<PublicKey.Format> {
-        public enum class Format : KeyFormat {
-            RAW, //only uncompressed format is supported
-            DER, PEM, JWK,
+        public sealed class Format : KeyFormat {
+            final override fun toString(): String = name
+
+            public data object JWK : Format() {
+                override val name: String get() = "JWK"
+            }
+
+            // only uncompressed format is supported
+            // format defined in X963: 04 | X | Y
+            public data object RAW : Format() {
+                override val name: String get() = "RAW"
+            }
+
+            // SPKI = SubjectPublicKeyInfo
+            public data object DER : Format() {
+                override val name: String get() = "DER"
+            }
+
+            // SPKI = SubjectPublicKeyInfo
+            public data object PEM : Format() {
+                override val name: String get() = "PEM"
+            }
         }
     }
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface PrivateKey : EncodableKey<PrivateKey.Format> {
-        public enum class Format : KeyFormat { DER, PEM, JWK, }
+        public sealed class Format : KeyFormat {
+            final override fun toString(): String = name
+
+            public data object JWK : Format() {
+                override val name: String get() = "JWK"
+            }
+
+            public sealed class DER : Format() {
+                // via PrivateKeyInfo from PKCS8
+                public companion object Generic : DER() {
+                    override val name: String get() = "DER"
+                }
+
+                // via ECPrivateKey structure / RFC 5915
+                public data object SEC1 : DER() {
+                    override val name: String get() = "DER/SEC1"
+                }
+            }
+
+            public sealed class PEM : Format() {
+                // via PrivateKeyInfo from PKCS8
+                public companion object Generic : PEM() {
+                    override val name: String get() = "PEM"
+                }
+
+                // via ECPrivateKey structure / RFC 5915
+                public data object SEC1 : PEM() {
+                    override val name: String get() = "PEM/SEC1"
+                }
+            }
+        }
     }
 }

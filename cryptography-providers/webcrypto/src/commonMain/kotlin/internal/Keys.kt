@@ -15,7 +15,7 @@ internal expect interface CryptoKeyPair {
     val publicKey: CryptoKey
 }
 
-internal expect val CryptoKey.algorithmName: String
+internal expect val CryptoKey.algorithm: Algorithm
 
 internal fun unwrapPem(label: PemLabel, key: ByteArray): ByteArray =
     PEM.decode(key).ensurePemLabel(label).bytes
@@ -34,7 +34,7 @@ internal fun wrapPublicKey(identifier: KeyAlgorithmIdentifier, key: ByteArray): 
 
 internal fun unwrapPrivateKey(algorithm: ObjectIdentifier, key: ByteArray): ByteArray =
     DER.decodeFromByteArray(PrivateKeyInfo.serializer(), key).also {
-        check(it.privateKeyAlgorithm.algorithm == algorithm)
+        check(it.privateKeyAlgorithm.algorithm == algorithm) { "Expected algorithm '${algorithm.value}', received: '${it.privateKeyAlgorithm.algorithm}'" }
     }.privateKey
 
 internal fun wrapPrivateKey(version: Int, identifier: KeyAlgorithmIdentifier, key: ByteArray): ByteArray = DER.encodeToByteArray(

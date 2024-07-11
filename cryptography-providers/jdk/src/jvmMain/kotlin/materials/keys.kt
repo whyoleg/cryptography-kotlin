@@ -25,7 +25,7 @@ internal fun wrapPublicKey(identifier: KeyAlgorithmIdentifier, key: ByteArray): 
 
 internal fun unwrapPrivateKey(algorithm: ObjectIdentifier, key: ByteArray): ByteArray =
     DER.decodeFromByteArray(PrivateKeyInfo.serializer(), key).also {
-        check(it.privateKeyAlgorithm.algorithm == algorithm)
+        check(it.privateKeyAlgorithm.algorithm == algorithm) { "Expected algorithm '${algorithm.value}', received: '${it.privateKeyAlgorithm.algorithm}'" }
     }.privateKey
 
 internal fun wrapPrivateKey(version: Int, identifier: KeyAlgorithmIdentifier, key: ByteArray): ByteArray = DER.encodeToByteArray(

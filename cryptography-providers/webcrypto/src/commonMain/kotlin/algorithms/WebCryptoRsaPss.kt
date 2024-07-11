@@ -25,7 +25,7 @@ internal object WebCryptoRsaPss : WebCryptoRsa<RSA.PSS.PublicKey, RSA.PSS.Privat
 
     private class RsaPssPublicKey(publicKey: CryptoKey) : RsaPublicKey(publicKey), RSA.PSS.PublicKey {
         override fun signatureVerifier(): SignatureVerifier {
-            return signatureVerifier(hashSize(publicKey.algorithmName).bytes)
+            return signatureVerifier(hashSize(publicKey.algorithm.rsaKeyAlgorithmHashName).bytes)
         }
 
         override fun signatureVerifier(saltLength: BinarySize): SignatureVerifier {
@@ -35,7 +35,7 @@ internal object WebCryptoRsaPss : WebCryptoRsa<RSA.PSS.PublicKey, RSA.PSS.Privat
 
     private class RsaPssPrivateKey(privateKey: CryptoKey) : RsaPrivateKey(privateKey), RSA.PSS.PrivateKey {
         override fun signatureGenerator(): SignatureGenerator {
-            return signatureGenerator(hashSize(privateKey.algorithmName).bytes)
+            return signatureGenerator(hashSize(privateKey.algorithm.rsaKeyAlgorithmHashName).bytes)
         }
 
         override fun signatureGenerator(saltLength: BinarySize): SignatureGenerator {

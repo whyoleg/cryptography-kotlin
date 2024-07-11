@@ -46,7 +46,8 @@ abstract class EcdsaTest(provider: CryptographyProvider) : ProviderTest(provider
             generateDigests { digest, _ ->
                 if (!supportsDigest(digest)) return@generateDigests
 
-                if (supportsSignatureFormat(ECDSA.SignatureFormat.RAW)) {
+                // RAW signature
+                run {
                     val verifier = keyPair.publicKey.signatureVerifier(digest, ECDSA.SignatureFormat.RAW)
                     keyPair.privateKey.signatureGenerator(digest, ECDSA.SignatureFormat.RAW).run {
                         assertEquals(rawSignatureSize, generateSignature(ByteArray(0)).size)
@@ -59,7 +60,8 @@ abstract class EcdsaTest(provider: CryptographyProvider) : ProviderTest(provider
                         }
                     }
                 }
-                if (supportsSignatureFormat(ECDSA.SignatureFormat.DER)) {
+                // DER signature
+                run {
                     val verifier = keyPair.publicKey.signatureVerifier(digest, ECDSA.SignatureFormat.DER)
                     keyPair.privateKey.signatureGenerator(digest, ECDSA.SignatureFormat.DER).run {
                         fun assertSignatureSize(signature: ByteArray) {

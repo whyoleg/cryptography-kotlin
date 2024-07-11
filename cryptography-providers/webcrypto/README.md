@@ -9,9 +9,6 @@ For supported targets and algorithms, please consult [Supported primitives secti
 * only `suspend` functions are supported, because `WebCrypto` API is async by default
 * AES.* (browser only): may not support `192 bit` keys
 * AES.CBC: only `padding=true` is supported
-* ECDSA: only `RAW` signature format is supported
-* ECDSA (browser only): private key `DER` encoding can be different comparing to other providers
-  (but it will still work)
 
 ## Example
 

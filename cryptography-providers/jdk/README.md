@@ -6,7 +6,6 @@ For supported targets and algorithms, please consult [Supported primitives secti
 
 ## Limitations
 
-* ECDSA: only `DER` signature format is supported for java < 9
 * KeyFormat: doesn't support `JWK` key format yet
 
 ## Custom Java providers
