@@ -22,37 +22,66 @@ internal class DerDecoder(
     override val serializersModule: SerializersModule get() = der.serializersModule
 
     private var currentIndex = 0
-    override fun decodeSequentially(): Boolean = true
-    override fun decodeElementIndex(descriptor: SerialDescriptor): Int = when {
-        input.eof -> CompositeDecoder.DECODE_DONE
-        else      -> currentIndex++
+    private var tagOverride: ContextSpecificTag? = null
+    private fun getAndResetTagOverride(): ContextSpecificTag? {
+        val tag = tagOverride
+        tagOverride = null
+        return tag
+    }
+
+    override fun decodeElementIndex(descriptor: SerialDescriptor): Int {
+        if (input.eof) return CompositeDecoder.DECODE_DONE
+
+        val tag = input.peakTag()
+
+        while (true) {
+            val index = currentIndex
+            tagOverride = descriptor.getElementContextSpecificTag(index)
+
+            if (descriptor.isElementOptional(index)) {
+                val requiredTag = checkNotNull(tagOverride) {
+                    "Optional element $descriptor[$index] must have context specific tag"
+                }
+
+                // if the tag is different,
+                // then an optional element is absent,
+                // and so we need to increment the index
+                if (tag != requiredTag.tag) {
+                    currentIndex++
+                    continue
+                }
+            }
+
+            return currentIndex++
+        }
     }
 
     override fun decodeNotNullMark(): Boolean = input.isNotNull()
     override fun decodeNull(): Nothing? = input.readNull()
-    override fun decodeByte(): Byte = input.readInteger().toByte()
-    override fun decodeShort(): Short = input.readInteger().toShort()
-    override fun decodeInt(): Int = input.readInteger().toInt()
-    override fun decodeLong(): Long = input.readInteger().toLong()
+    override fun decodeByte(): Byte = input.readInteger(getAndResetTagOverride()).toByte()
+    override fun decodeShort(): Short = input.readInteger(getAndResetTagOverride()).toShort()
+    override fun decodeInt(): Int = input.readInteger(getAndResetTagOverride()).toInt()
+    override fun decodeLong(): Long = input.readInteger(getAndResetTagOverride()).toLong()
 
     @Suppress("UNCHECKED_CAST")
     override fun <T> decodeSerializableValue(deserializer: DeserializationStrategy<T>): T = when (deserializer.descriptor) {
-        ByteArraySerializer().descriptor         -> input.readOctetString() as T
-        BitArray.serializer().descriptor         -> input.readBitString() as T
-        ObjectIdentifier.serializer().descriptor -> input.readObjectIdentifier() as T
-        BigInt.serializer().descriptor           -> input.readInteger() as T
+        ByteArraySerializer().descriptor         -> input.readOctetString(getAndResetTagOverride()) as T
+        BitArray.serializer().descriptor         -> input.readBitString(getAndResetTagOverride()) as T
+        ObjectIdentifier.serializer().descriptor -> input.readObjectIdentifier(getAndResetTagOverride()) as T
+        BigInt.serializer().descriptor           -> input.readInteger(getAndResetTagOverride()) as T
         else                                     -> deserializer.deserialize(this)
     }
 
     // structures: SEQUENCE and SEQUENCE OF
     override fun beginStructure(descriptor: SerialDescriptor): CompositeDecoder = when (descriptor.kind) {
-        StructureKind.CLASS, is PolymorphicKind -> DerDecoder(der, input.readSequence())
+        StructureKind.CLASS, is PolymorphicKind -> DerDecoder(der, input.readSequence(getAndResetTagOverride()))
         else                                    -> throw SerializationException("This serial kind is not supported as structure: $descriptor")
     }
 
+    override fun decodeInline(descriptor: SerialDescriptor): Decoder = this
+    override fun decodeInlineElement(descriptor: SerialDescriptor, index: Int): Decoder = this
+
     // could be supported, but later when it will be needed
-    override fun decodeInline(descriptor: SerialDescriptor): Decoder = error("Inline decoding is not supported")
-    override fun decodeInlineElement(descriptor: SerialDescriptor, index: Int): Decoder = error("Inline decoding is not supported")
     override fun decodeEnum(enumDescriptor: SerialDescriptor): Int = error("Enum decoding is not supported")
     override fun decodeString(): String = error("String decoding is not supported")
     override fun decodeChar(): Char = error("Char decoding is not supported")

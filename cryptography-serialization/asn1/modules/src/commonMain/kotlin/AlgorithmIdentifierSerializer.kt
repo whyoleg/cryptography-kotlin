@@ -15,11 +15,11 @@ public abstract class AlgorithmIdentifierSerializer<AI : AlgorithmIdentifier> : 
     protected abstract fun CompositeDecoder.decodeParameters(algorithm: ObjectIdentifier): AI
 
     protected fun <P : Any> CompositeEncoder.encodeParameters(serializer: KSerializer<P>, value: P?) {
-        encodeNullableSerializableElement(serializer.descriptor, 1, serializer, value)
+        encodeNullableSerializableElement(descriptor, 1, serializer, value)
     }
 
     protected fun <P : Any> CompositeDecoder.decodeParameters(serializer: KSerializer<P>): P? {
-        return decodeNullableSerializableElement(serializer.descriptor, 1, serializer)
+        return decodeNullableSerializableElement(descriptor, 1, serializer)
     }
 
     @OptIn(InternalSerializationApi::class)
@@ -30,7 +30,7 @@ public abstract class AlgorithmIdentifierSerializer<AI : AlgorithmIdentifier> : 
 
     final override fun serialize(encoder: Encoder, value: AI): Unit = encoder.encodeStructure(descriptor) {
         encodeSerializableElement(
-            descriptor = ObjectIdentifier.serializer().descriptor,
+            descriptor = descriptor,
             index = 0,
             serializer = ObjectIdentifier.serializer(),
             value = value.algorithm
@@ -39,13 +39,15 @@ public abstract class AlgorithmIdentifierSerializer<AI : AlgorithmIdentifier> : 
     }
 
     final override fun deserialize(decoder: Decoder): AI = decoder.decodeStructure(descriptor) {
-        if (decodeSequentially()) {
-            val algorithm = decodeSerializableElement(
-                descriptor = ObjectIdentifier.serializer().descriptor,
-                index = 0,
-                deserializer = ObjectIdentifier.serializer()
-            )
-            decodeParameters(algorithm)
-        } else error("For now only sequential decoding is supported")
+        check(decodeElementIndex(descriptor) == 0)
+        val algorithm = decodeSerializableElement(
+            descriptor = descriptor,
+            index = 0,
+            deserializer = ObjectIdentifier.serializer()
+        )
+        check(decodeElementIndex(descriptor) == 1)
+        val parameters = decodeParameters(algorithm)
+        check(decodeElementIndex(descriptor) == CompositeDecoder.DECODE_DONE)
+        parameters
     }
 }

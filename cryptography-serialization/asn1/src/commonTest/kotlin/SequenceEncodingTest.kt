@@ -8,7 +8,7 @@ import kotlinx.serialization.*
 import kotlin.test.*
 
 @OptIn(ExperimentalStdlibApi::class)
-class SequenceEncoding {
+class SequenceEncodingTest {
 
     @Serializable
     class SimpleAlgorithmIdentifier(

@@ -9,7 +9,7 @@ import kotlinx.serialization.*
 import kotlin.test.*
 
 @OptIn(ExperimentalStdlibApi::class)
-class ObjectIdentifierEncoding {
+class ObjectIdentifierEncodingTest {
 
     @Test
     fun testSha256WithRSAEncryption() = checkOid(
@@ -23,15 +23,27 @@ class ObjectIdentifierEncoding {
         hex = "06092a864886f70d010101"
     )
 
+    @Test
+    fun testOidWithZeroElement() = checkOid(
+        oid = "1.3.132.0.34",
+        hex = "06052b81040022"
+    )
+
+    @Test
+    fun testOidWithRedundantZero() = checkOid(
+        oid = "1.2.840.10045.2.1",
+        hex = "06072a8648ce3d0201"
+    )
+
     private fun checkOid(
         oid: String,
         hex: String,
     ) {
         val value = ObjectIdentifier(oid)
-        val bytes = ByteArrayOutput().also { DerOutput(it).writeObjectIdentifier(value) }.toByteArray()
+        val bytes = ByteArrayOutput().also { DerOutput(it).writeObjectIdentifier(null, value) }.toByteArray()
 
         assertEquals(hex, bytes.toHexString())
-        assertEquals(value, DerInput(ByteArrayInput(bytes)).readObjectIdentifier())
+        assertEquals(value, DerInput(ByteArrayInput(bytes)).readObjectIdentifier(null))
 
         assertContentEquals(bytes, DER.encodeToByteArray(value))
         assertEquals(value, DER.decodeFromByteArray(bytes))

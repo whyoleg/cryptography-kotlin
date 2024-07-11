@@ -9,49 +9,79 @@ import dev.whyoleg.cryptography.serialization.asn1.*
 
 internal class DerOutput(private val output: ByteArrayOutput) {
     fun writeNull() {
-        output.writeTag(DerTag_NULL, 0)
+        output.write(DerTag_NULL)
+        output.writeLength(0)
     }
 
-    fun writeInteger(value: BigInt) {
-        output.writeTag(DerTag_INTEGER, value.encodeToByteArray())
+    fun writeInteger(tagOverride: ContextSpecificTag?, value: BigInt) {
+        output.writeTagWithOverride(tagOverride, DerTag_INTEGER) {
+            writeBytes(value.encodeToByteArray())
+        }
     }
 
-    fun writeBitString(bits: BitArray) {
-        output.writeTag(DerTag_BIT_STRING, bits.byteArray.size + 1)
-        output.write(bits.unusedBits)
-        output.write(bits.byteArray)
+    fun writeBitString(tagOverride: ContextSpecificTag?, bits: BitArray) {
+        output.writeTagWithOverride(tagOverride, DerTag_BIT_STRING) {
+            writeLength(bits.byteArray.size + 1)
+            write(bits.unusedBits)
+            write(bits.byteArray)
+        }
     }
 
-    fun writeOctetString(bytes: ByteArray) {
-        output.writeTag(DerTag_OCTET_STRING, bytes)
+    fun writeOctetString(tagOverride: ContextSpecificTag?, bytes: ByteArray) {
+        output.writeTagWithOverride(tagOverride, DerTag_OCTET_STRING) {
+            writeBytes(bytes)
+        }
     }
 
-    fun writeObjectIdentifier(value: ObjectIdentifier) {
-        val intermediate = ByteArrayOutput()
-        val strings = value.value.split(".")
-        intermediate.writeOidElements(strings)
-        output.writeTag(DerTag_OID, intermediate)
+    fun writeObjectIdentifier(tagOverride: ContextSpecificTag?, value: ObjectIdentifier) {
+        output.writeTagWithOverride(tagOverride, DerTag_OID) {
+            writeBytes {
+                writeOidElements(value.value.split("."))
+            }
+        }
     }
 
-    fun writeSequence(bytes: DerOutput) {
-        output.writeTag(DerTag_SEQUENCE, bytes.output)
+    fun writeSequence(tagOverride: ContextSpecificTag?, bytes: DerOutput) {
+        output.writeTagWithOverride(tagOverride, DerTag_SEQUENCE) {
+            writeBytes(bytes.output)
+        }
     }
 
 }
 
-private fun ByteArrayOutput.writeTag(tag: DerTag, bytes: ByteArray) {
-    writeTag(tag, bytes.size)
+private inline fun ByteArrayOutput.writeTagWithOverride(
+    tagOverride: ContextSpecificTag?,
+    tag: DerTag,
+    block: ByteArrayOutput.() -> Unit,
+) {
+    if (tagOverride == null) {
+        write(tag)
+        block()
+        return
+    }
+
+    write(tagOverride.tag)
+    when (tagOverride.type) {
+        ContextSpecificTag.TagType.IMPLICIT -> block()
+        ContextSpecificTag.TagType.EXPLICIT -> writeBytes {
+            write(tag)
+            block()
+        }
+    }
+}
+
+private fun ByteArrayOutput.writeBytes(bytes: ByteArray) {
+    writeLength(bytes.size)
     write(bytes)
 }
 
-private fun ByteArrayOutput.writeTag(tag: DerTag, bytes: ByteArrayOutput) {
-    writeTag(tag, bytes.size)
+private fun ByteArrayOutput.writeBytes(bytes: ByteArrayOutput) {
+    writeLength(bytes.size)
     write(bytes)
 }
 
-private fun ByteArrayOutput.writeTag(tag: DerTag, length: Int) {
-    write(tag)
-    writeLength(length)
+private inline fun ByteArrayOutput.writeBytes(block: ByteArrayOutput.() -> Unit) {
+    writeBytes(ByteArrayOutput().apply(block))
 }
 
 private fun ByteArrayOutput.writeLength(length: Int) {
@@ -74,6 +104,10 @@ private fun ByteArrayOutput.writeOidElement(element: Int) {
     if (element < 128) return write(element)
 
     val l = (Int.SIZE_BITS - element.countLeadingZeroBits()) / 7
-    repeat(l) { write(((element ushr (l - it) * 7) and 0b01111111) or 0b10000000) }
+    repeat(l) {
+        // zero should not be encoded
+        val value = element ushr (l - it) * 7
+        if (value != 0) write((value and 0b01111111) or 0b10000000)
+    }
     write(element and 0b01111111)
 }

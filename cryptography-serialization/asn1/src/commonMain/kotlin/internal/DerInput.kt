@@ -10,24 +10,28 @@ import dev.whyoleg.cryptography.serialization.asn1.*
 internal class DerInput(private val input: ByteArrayInput) {
     val eof: Boolean get() = input.eof
 
-    fun isNotNull(): Boolean {
-        return input.peak() != DerTag_NULL
-    }
+    fun peakTag(): DerTag = input.peak()
+
+    fun isNotNull(): Boolean = peakTag() != DerTag_NULL
 
     fun readNull(): Nothing? {
-        val length = input.readTagLength(DerTag_NULL)
+        input.readRequestedTag(DerTag_NULL)
+
+        val length = input.readLength()
         check(length == 0) { "NULL tag length should be zero, but was: $length" }
         return null
     }
 
-    fun readInteger(): BigInt {
-        return input.readTagBytes(DerTag_INTEGER).decodeToBigInt()
+    fun readInteger(tagOverride: ContextSpecificTag?): BigInt = input.readTagWithOverride(tagOverride, DerTag_INTEGER) {
+        val length = readLength()
+        val bytes = read(length)
+        bytes.decodeToBigInt()
     }
 
-    fun readBitString(): BitArray {
-        val length = input.readTagLength(DerTag_BIT_STRING)
-        val unusedBits = input.read().toInt()
-        val bytes = input.read(length - 1)
+    fun readBitString(tagOverride: ContextSpecificTag?): BitArray = input.readTagWithOverride(tagOverride, DerTag_BIT_STRING) {
+        val length = readLength()
+        val unusedBits = read().toInt()
+        val bytes = read(length - 1)
 
         when {
             bytes.isEmpty() -> check(unusedBits == 0) {
@@ -42,36 +46,51 @@ internal class DerInput(private val input: ByteArrayInput) {
             }
         }
 
-        return BitArray(unusedBits, bytes)
+        BitArray(unusedBits, bytes)
     }
 
-    fun readOctetString(): ByteArray {
-        return input.readTagBytes(DerTag_OCTET_STRING)
+    fun readOctetString(tagOverride: ContextSpecificTag?): ByteArray = input.readTagWithOverride(tagOverride, DerTag_OCTET_STRING) {
+        val length = readLength()
+        read(length)
     }
 
-    fun readObjectIdentifier(): ObjectIdentifier {
-        return ObjectIdentifier(input.readTagSlice(DerTag_OID).readOidElements())
+    fun readObjectIdentifier(tagOverride: ContextSpecificTag?): ObjectIdentifier = input.readTagWithOverride(tagOverride, DerTag_OID) {
+        val length = readLength()
+        val slice = readSlice(length)
+        ObjectIdentifier(slice.readOidElements())
     }
 
-    fun readSequence(): ByteArrayInput {
-        return input.readTagSlice(DerTag_SEQUENCE)
+    fun readSequence(tagOverride: ContextSpecificTag?): ByteArrayInput = input.readTagWithOverride(tagOverride, DerTag_SEQUENCE) {
+        val length = readLength()
+        readSlice(length)
     }
-
 }
 
-private fun ByteArrayInput.readTagLength(tag: DerTag): Int {
+private inline fun <T> ByteArrayInput.readTagWithOverride(
+    tagOverride: ContextSpecificTag?,
+    tag: DerTag,
+    block: ByteArrayInput.() -> T,
+): T {
+    if (tagOverride == null) {
+        readRequestedTag(tag)
+        return block()
+    }
+
+    readRequestedTag(tagOverride.tag)
+    return when (tagOverride.type) {
+        ContextSpecificTag.TagType.IMPLICIT -> block()
+        ContextSpecificTag.TagType.EXPLICIT -> {
+            val length = readLength()
+            val explicitInput = readSlice(length)
+            explicitInput.readRequestedTag(tag)
+            explicitInput.block()
+        }
+    }
+}
+
+private fun ByteArrayInput.readRequestedTag(tag: DerTag) {
     val currentTag = read()
-    check(currentTag == tag) { "Requested tag '$tag', received: '${name(currentTag)}'" }
-
-    return readLength()
-}
-
-private fun ByteArrayInput.readTagBytes(tag: DerTag): ByteArray {
-    return read(readTagLength(tag))
-}
-
-private fun ByteArrayInput.readTagSlice(tag: DerTag): ByteArrayInput {
-    return readSlice(readTagLength(tag))
+    check(currentTag == tag) { "Requested tag '${DerTag_name(tag)}', received: '${DerTag_name(currentTag)}'" }
 }
 
 private fun ByteArrayInput.readLength(): Int {
@@ -109,6 +128,6 @@ private fun ByteArrayInput.readOidElement(): Int {
         val b = read().toInt()
         element = (element shl 7) + (b and 0b01111111)
     } while (b and 0b10000000 == 0b10000000)
-    check(element > 0) { "element overflow: $element" }
+    check(element >= 0) { "element overflow: $element" }
     return element
 }

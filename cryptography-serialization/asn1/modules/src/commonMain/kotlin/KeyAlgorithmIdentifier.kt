@@ -14,9 +14,3 @@ public class UnknownKeyAlgorithmIdentifier(override val algorithm: ObjectIdentif
     override val parameters: Nothing? get() = null
 }
 
-public object RsaKeyAlgorithmIdentifier : KeyAlgorithmIdentifier {
-    override val algorithm: ObjectIdentifier get() = ObjectIdentifier.RSA
-    override val parameters: Nothing? get() = null
-}
-
-public val ObjectIdentifier.Companion.RSA: ObjectIdentifier get() = ObjectIdentifier("1.2.840.113549.1.1.1")

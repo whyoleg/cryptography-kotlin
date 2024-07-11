@@ -6,6 +6,14 @@ package dev.whyoleg.cryptography.serialization.asn1.modules
 
 import dev.whyoleg.cryptography.serialization.asn1.*
 
+/**
+ * ```
+ * AlgorithmIdentifier ::= SEQUENCE {
+ *   algorithm  OBJECT IDENTIFIER,
+ *   parameters ANY DEFINED BY algorithm OPTIONAL
+ * }
+ * ```
+ */
 public interface AlgorithmIdentifier {
     public val algorithm: ObjectIdentifier
     public val parameters: Any?

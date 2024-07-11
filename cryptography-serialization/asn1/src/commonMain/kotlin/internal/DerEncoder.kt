@@ -24,19 +24,31 @@ internal class DerEncoder(
 
     override fun shouldEncodeElementDefault(descriptor: SerialDescriptor, index: Int): Boolean = false
 
-    override fun encodeElement(descriptor: SerialDescriptor, index: Int): Boolean = true
+    // TODO: this may not work if it's specified for sequence
+    private var tagOverride: ContextSpecificTag? = null
+    private fun getAndResetTagOverride(): ContextSpecificTag? {
+        val tag = tagOverride
+        tagOverride = null
+        return tag
+    }
+
+    override fun encodeElement(descriptor: SerialDescriptor, index: Int): Boolean {
+        tagOverride = descriptor.getElementContextSpecificTag(index)
+        return true
+    }
+
     override fun encodeNotNullMark() {}
     override fun encodeNull(): Unit = output.writeNull()
-    override fun encodeByte(value: Byte): Unit = output.writeInteger(value.toBigInt())
-    override fun encodeShort(value: Short): Unit = output.writeInteger(value.toBigInt())
-    override fun encodeInt(value: Int): Unit = output.writeInteger(value.toBigInt())
-    override fun encodeLong(value: Long): Unit = output.writeInteger(value.toBigInt())
+    override fun encodeByte(value: Byte): Unit = output.writeInteger(getAndResetTagOverride(), value.toBigInt())
+    override fun encodeShort(value: Short): Unit = output.writeInteger(getAndResetTagOverride(), value.toBigInt())
+    override fun encodeInt(value: Int): Unit = output.writeInteger(getAndResetTagOverride(), value.toBigInt())
+    override fun encodeLong(value: Long): Unit = output.writeInteger(getAndResetTagOverride(), value.toBigInt())
 
     override fun <T> encodeSerializableValue(serializer: SerializationStrategy<T>, value: T): Unit = when (serializer.descriptor) {
-        ByteArraySerializer().descriptor         -> output.writeOctetString(value as ByteArray)
-        BitArray.serializer().descriptor         -> output.writeBitString(value as BitArray)
-        ObjectIdentifier.serializer().descriptor -> output.writeObjectIdentifier(value as ObjectIdentifier)
-        BigInt.serializer().descriptor           -> output.writeInteger(value as BigInt)
+        ByteArraySerializer().descriptor         -> output.writeOctetString(getAndResetTagOverride(), value as ByteArray)
+        BitArray.serializer().descriptor         -> output.writeBitString(getAndResetTagOverride(), value as BitArray)
+        ObjectIdentifier.serializer().descriptor -> output.writeObjectIdentifier(getAndResetTagOverride(), value as ObjectIdentifier)
+        BigInt.serializer().descriptor           -> output.writeInteger(getAndResetTagOverride(), value as BigInt)
         else                                     -> serializer.serialize(this, value)
     }
 
@@ -47,11 +59,12 @@ internal class DerEncoder(
     }
 
     override fun endStructure(descriptor: SerialDescriptor) {
-        checkNotNull(parentOutput) { "Should be called after beginStructure" }.writeSequence(output)
+        checkNotNull(parentOutput) { "Should be called after beginStructure" }.writeSequence(getAndResetTagOverride(), output)
     }
 
+    override fun encodeInline(descriptor: SerialDescriptor): Encoder = this
+
     // could be supported, but later when it will be needed
-    override fun encodeInline(descriptor: SerialDescriptor): Encoder = error("Inline encoding is not supported")
     override fun encodeEnum(enumDescriptor: SerialDescriptor, index: Int) = error("Enum encoding is not supported")
     override fun encodeString(value: String): Unit = error("String encoding is not supported")
     override fun encodeChar(value: Char): Unit = error("Char encoding is not supported")

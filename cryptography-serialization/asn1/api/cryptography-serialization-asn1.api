@@ -20,6 +20,25 @@ public final class dev/whyoleg/cryptography/serialization/asn1/BitArray$Companio
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
+public abstract interface annotation class dev/whyoleg/cryptography/serialization/asn1/ContextSpecificTag : java/lang/annotation/Annotation {
+	public abstract fun classIndex ()B
+	public abstract fun type ()Ldev/whyoleg/cryptography/serialization/asn1/ContextSpecificTag$TagType;
+}
+
+public synthetic class dev/whyoleg/cryptography/serialization/asn1/ContextSpecificTag$Impl : dev/whyoleg/cryptography/serialization/asn1/ContextSpecificTag {
+	public fun <init> (BLdev/whyoleg/cryptography/serialization/asn1/ContextSpecificTag$TagType;)V
+	public final synthetic fun classIndex ()B
+	public final synthetic fun type ()Ldev/whyoleg/cryptography/serialization/asn1/ContextSpecificTag$TagType;
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/ContextSpecificTag$TagType : java/lang/Enum {
+	public static final field EXPLICIT Ldev/whyoleg/cryptography/serialization/asn1/ContextSpecificTag$TagType;
+	public static final field IMPLICIT Ldev/whyoleg/cryptography/serialization/asn1/ContextSpecificTag$TagType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Ldev/whyoleg/cryptography/serialization/asn1/ContextSpecificTag$TagType;
+	public static fun values ()[Ldev/whyoleg/cryptography/serialization/asn1/ContextSpecificTag$TagType;
+}
+
 public abstract class dev/whyoleg/cryptography/serialization/asn1/DER : kotlinx/serialization/BinaryFormat {
 	public static final field Default Ldev/whyoleg/cryptography/serialization/asn1/DER$Default;
 	public synthetic fun <init> (Lkotlinx/serialization/modules/SerializersModule;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
