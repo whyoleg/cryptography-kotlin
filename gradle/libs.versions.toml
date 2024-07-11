@@ -4,7 +4,7 @@ kotlin = "2.0.0"
 
 # kotlin/kotlinx
 kotlin-dokka = "1.9.20"
-kotlinx-bcv = "0.14.0"
+kotlinx-bcv = "0.15.1"
 kotlinx-kover = "0.8.2"
 kotlinx-serialization = "1.7.1"
 kotlinx-coroutines = "1.8.1"

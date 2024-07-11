@@ -1,0 +1,10 @@
+// Klib ABI Dump
+// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <dev.whyoleg.cryptography:cryptography-provider-openssl3-api>
+final val dev.whyoleg.cryptography.providers.openssl3/Openssl3 // dev.whyoleg.cryptography.providers.openssl3/Openssl3|@dev.whyoleg.cryptography.CryptographyProvider.Companion{}Openssl3[0]
+    final fun (dev.whyoleg.cryptography/CryptographyProvider.Companion).<get-Openssl3>(): dev.whyoleg.cryptography/CryptographyProvider // dev.whyoleg.cryptography.providers.openssl3/Openssl3.<get-Openssl3>|<get-Openssl3>@dev.whyoleg.cryptography.CryptographyProvider.Companion(){}[0]

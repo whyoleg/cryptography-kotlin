@@ -1,0 +1,49 @@
+// Klib ABI Dump
+// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, wasmJs, wasmWasi, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <dev.whyoleg.cryptography:cryptography-serialization-pem>
+final class dev.whyoleg.cryptography.serialization.pem/PemContent { // dev.whyoleg.cryptography.serialization.pem/PemContent|null[0]
+    constructor <init>(dev.whyoleg.cryptography.serialization.pem/PemLabel, kotlin/ByteArray) // dev.whyoleg.cryptography.serialization.pem/PemContent.<init>|<init>(dev.whyoleg.cryptography.serialization.pem.PemLabel;kotlin.ByteArray){}[0]
+
+    final val bytes // dev.whyoleg.cryptography.serialization.pem/PemContent.bytes|{}bytes[0]
+        final fun <get-bytes>(): kotlin/ByteArray // dev.whyoleg.cryptography.serialization.pem/PemContent.bytes.<get-bytes>|<get-bytes>(){}[0]
+    final val label // dev.whyoleg.cryptography.serialization.pem/PemContent.label|{}label[0]
+        final fun <get-label>(): dev.whyoleg.cryptography.serialization.pem/PemLabel // dev.whyoleg.cryptography.serialization.pem/PemContent.label.<get-label>|<get-label>(){}[0]
+}
+
+final value class dev.whyoleg.cryptography.serialization.pem/PemLabel { // dev.whyoleg.cryptography.serialization.pem/PemLabel|null[0]
+    constructor <init>(kotlin/String) // dev.whyoleg.cryptography.serialization.pem/PemLabel.<init>|<init>(kotlin.String){}[0]
+
+    final val representation // dev.whyoleg.cryptography.serialization.pem/PemLabel.representation|{}representation[0]
+        final fun <get-representation>(): kotlin/String // dev.whyoleg.cryptography.serialization.pem/PemLabel.representation.<get-representation>|<get-representation>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.whyoleg.cryptography.serialization.pem/PemLabel.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.whyoleg.cryptography.serialization.pem/PemLabel.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.whyoleg.cryptography.serialization.pem/PemLabel.toString|toString(){}[0]
+
+    final object Companion { // dev.whyoleg.cryptography.serialization.pem/PemLabel.Companion|null[0]
+        final val EcPrivateKey // dev.whyoleg.cryptography.serialization.pem/PemLabel.Companion.EcPrivateKey|{}EcPrivateKey[0]
+            final fun <get-EcPrivateKey>(): dev.whyoleg.cryptography.serialization.pem/PemLabel // dev.whyoleg.cryptography.serialization.pem/PemLabel.Companion.EcPrivateKey.<get-EcPrivateKey>|<get-EcPrivateKey>(){}[0]
+        final val PrivateKey // dev.whyoleg.cryptography.serialization.pem/PemLabel.Companion.PrivateKey|{}PrivateKey[0]
+            final fun <get-PrivateKey>(): dev.whyoleg.cryptography.serialization.pem/PemLabel // dev.whyoleg.cryptography.serialization.pem/PemLabel.Companion.PrivateKey.<get-PrivateKey>|<get-PrivateKey>(){}[0]
+        final val PublicKey // dev.whyoleg.cryptography.serialization.pem/PemLabel.Companion.PublicKey|{}PublicKey[0]
+            final fun <get-PublicKey>(): dev.whyoleg.cryptography.serialization.pem/PemLabel // dev.whyoleg.cryptography.serialization.pem/PemLabel.Companion.PublicKey.<get-PublicKey>|<get-PublicKey>(){}[0]
+        final val RsaPrivateKey // dev.whyoleg.cryptography.serialization.pem/PemLabel.Companion.RsaPrivateKey|{}RsaPrivateKey[0]
+            final fun <get-RsaPrivateKey>(): dev.whyoleg.cryptography.serialization.pem/PemLabel // dev.whyoleg.cryptography.serialization.pem/PemLabel.Companion.RsaPrivateKey.<get-RsaPrivateKey>|<get-RsaPrivateKey>(){}[0]
+        final val RsaPublicKey // dev.whyoleg.cryptography.serialization.pem/PemLabel.Companion.RsaPublicKey|{}RsaPublicKey[0]
+            final fun <get-RsaPublicKey>(): dev.whyoleg.cryptography.serialization.pem/PemLabel // dev.whyoleg.cryptography.serialization.pem/PemLabel.Companion.RsaPublicKey.<get-RsaPublicKey>|<get-RsaPublicKey>(){}[0]
+    }
+}
+
+final object dev.whyoleg.cryptography.serialization.pem/PEM { // dev.whyoleg.cryptography.serialization.pem/PEM|null[0]
+    final fun decode(kotlin/ByteArray): dev.whyoleg.cryptography.serialization.pem/PemContent // dev.whyoleg.cryptography.serialization.pem/PEM.decode|decode(kotlin.ByteArray){}[0]
+    final fun decode(kotlin/String): dev.whyoleg.cryptography.serialization.pem/PemContent // dev.whyoleg.cryptography.serialization.pem/PEM.decode|decode(kotlin.String){}[0]
+    final fun encode(dev.whyoleg.cryptography.serialization.pem/PemContent): kotlin/String // dev.whyoleg.cryptography.serialization.pem/PEM.encode|encode(dev.whyoleg.cryptography.serialization.pem.PemContent){}[0]
+    final fun encodeToByteArray(dev.whyoleg.cryptography.serialization.pem/PemContent): kotlin/ByteArray // dev.whyoleg.cryptography.serialization.pem/PEM.encodeToByteArray|encodeToByteArray(dev.whyoleg.cryptography.serialization.pem.PemContent){}[0]
+}
+
+final fun (dev.whyoleg.cryptography.serialization.pem/PemContent).dev.whyoleg.cryptography.serialization.pem/ensurePemLabel(dev.whyoleg.cryptography.serialization.pem/PemLabel): dev.whyoleg.cryptography.serialization.pem/PemContent // dev.whyoleg.cryptography.serialization.pem/ensurePemLabel|ensurePemLabel@dev.whyoleg.cryptography.serialization.pem.PemContent(dev.whyoleg.cryptography.serialization.pem.PemLabel){}[0]
