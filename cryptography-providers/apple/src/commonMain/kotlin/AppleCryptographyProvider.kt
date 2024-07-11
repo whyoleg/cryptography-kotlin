@@ -33,6 +33,7 @@ internal object AppleCryptographyProvider : CryptographyProvider() {
         RSA.PKCS1 -> SecRsaPkcs1
         RSA.OAEP  -> SecRsaOaep
         RSA.RAW -> SecRsaRaw
+        ECDSA -> SecEcdsa
         else      -> null
     } as A?
 }

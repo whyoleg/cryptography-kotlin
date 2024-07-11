@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.apple.internal
@@ -32,5 +32,14 @@ internal fun CryptographyAlgorithmId<Digest>.rsaOaepSecKeyAlgorithm(): SecKeyAlg
     SHA256 -> kSecKeyAlgorithmRSAEncryptionOAEPSHA256
     SHA384 -> kSecKeyAlgorithmRSAEncryptionOAEPSHA384
     SHA512 -> kSecKeyAlgorithmRSAEncryptionOAEPSHA512
+    else   -> throw CryptographyException("Unsupported hash algorithm: $this")
+}
+
+internal fun CryptographyAlgorithmId<Digest>.ecdsaSecKeyAlgorithm(): SecKeyAlgorithm? = when (this) {
+    SHA1   -> kSecKeyAlgorithmECDSASignatureMessageX962SHA1
+    SHA224 -> kSecKeyAlgorithmECDSASignatureMessageX962SHA224
+    SHA256 -> kSecKeyAlgorithmECDSASignatureMessageX962SHA256
+    SHA384 -> kSecKeyAlgorithmECDSASignatureMessageX962SHA384
+    SHA512 -> kSecKeyAlgorithmECDSASignatureMessageX962SHA512
     else   -> throw CryptographyException("Unsupported hash algorithm: $this")
 }

@@ -46,7 +46,7 @@ abstract class SupportedAlgorithmsTest(provider: CryptographyProvider) : Provide
         assertSupports(SHA3_384, supportsSha3)
         assertSupports(SHA3_512, supportsSha3)
 
-        assertSupports(ECDSA, !context.provider.isApple)
+        assertSupports(ECDSA)
 
         assertSupports(RSA.PSS)
         assertSupports(RSA.OAEP)

@@ -9,6 +9,9 @@ import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.serialization.asn1.*
+import dev.whyoleg.cryptography.serialization.asn1.modules.*
+import dev.whyoleg.cryptography.serialization.pem.*
 
 fun AlgorithmTestScope<*>.supportsDigest(digest: CryptographyAlgorithmId<Digest>): Boolean = supports {
     val sha3Algorithms = setOf(SHA3_224, SHA3_256, SHA3_384, SHA3_512)
@@ -78,6 +81,32 @@ fun AlgorithmTestScope<ECDSA>.supportsCurve(curve: EC.Curve): Boolean = supports
                 provider.isJdkDefault || provider.isWebCrypto || provider.isApple
                 ) -> "ECDSA ${curve.name}"
         else      -> null
+    }
+}
+
+fun AlgorithmTestScope<ECDSA>.supportsDecoding(
+    format: EC.PrivateKey.Format,
+    key: ByteArray,
+    otherContext: TestContext,
+): Boolean = supports {
+    fun supportedByAppleProvider(): Boolean {
+        fun validateEcPrivateKey(bytes: ByteArray) = DER.decodeFromByteArray(EcPrivateKey.serializer(), bytes).publicKey != null
+        fun decodePki(bytes: ByteArray): ByteArray = DER.decodeFromByteArray(PrivateKeyInfo.serializer(), bytes).privateKey
+
+        return validateEcPrivateKey(
+            when (format) {
+                EC.PrivateKey.Format.JWK      -> return true
+                EC.PrivateKey.Format.DER      -> decodePki(key)
+                EC.PrivateKey.Format.DER.SEC1 -> key
+                EC.PrivateKey.Format.PEM      -> decodePki(PEM.decode(key).bytes)
+                EC.PrivateKey.Format.PEM.SEC1 -> PEM.decode(key).bytes
+            }
+        )
+    }
+
+    when {
+        provider.isApple && !supportedByAppleProvider() -> "private key '$format' format without 'publicKey' from ${otherContext.provider}"
+        else                                            -> null
     }
 }
 

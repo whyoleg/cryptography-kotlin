@@ -7,6 +7,10 @@ For supported targets and algorithms, please consult [Supported primitives secti
 ## Limitations
 
 * KeyFormat: doesn't support `JWK` key format yet
+* ECDSA: to decode private key, `publicKey` field should be present in `EcPrivateKey` structure specified
+  in [RFC5915](https://datatracker.ietf.org/doc/html/rfc5915).
+  Not all implementations in the wild include this field, as it's optional.
+  This limitation applies to all supported key formats: `DER`, `PEM`, `DER.SEC1`, `PEM.SEC1`
 
 ## Example
 

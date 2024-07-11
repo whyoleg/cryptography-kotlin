@@ -23,16 +23,16 @@ suspend inline fun <KF : KeyFormat, K : EncodableKey<KF>> KeyDecoder<KF, K>.deco
     formats: Map<String, ByteArray>,
     formatOf: (String) -> KF,
     supports: (KF) -> Boolean,
+    supportsDecoding: (KF, ByteArray) -> Boolean = { _, _ -> true },
     validate: (key: K, format: KF, bytes: ByteArray) -> Unit,
 ): List<K> {
     val supportedFormats = formats
         .mapKeys { (formatName, _) -> formatOf(formatName) }
         .filterKeys(supports)
 
-    // TODO: decide on what to do here
-    //assertTrue(supportedFormats.isNotEmpty(), "No supported formats")
-
-    val keys = supportedFormats.mapValues { decodeFrom(it.key, it.value) }.values.toList()
+    val keys = supportedFormats.mapNotNull {
+        if (supportsDecoding(it.key, it.value)) decodeFrom(it.key, it.value) else null
+    }
 
     keys.forEach { key ->
         supportedFormats.forEach { (format, bytes) ->

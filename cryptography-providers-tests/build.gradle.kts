@@ -31,9 +31,6 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(projects.cryptographyProvidersTestsApi)
-            api(projects.cryptographySerializationPem)
-            api(projects.cryptographySerializationAsn1)
-            api(projects.cryptographySerializationAsn1Modules)
         }
     }
 }

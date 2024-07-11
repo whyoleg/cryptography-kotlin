@@ -133,10 +133,11 @@ abstract class EcdsaCompatibilityTest(provider: CryptographyProvider) : Compatib
                     val privateKeys = privateKeyDecoder.decodeFrom(
                         formats = private.formats,
                         formatOf = privateKeyFormats::getValue,
-                        supports = ::supportsKeyFormat
+                        supports = ::supportsKeyFormat,
+                        supportsDecoding = { f, b -> supportsDecoding(f, b, otherContext) }
                     ) { key, format, bytes ->
                         when (format) {
-                            EC.PrivateKey.Format.JWK      -> {}
+                            EC.PrivateKey.Format.JWK -> {}
                             EC.PrivateKey.Format.DER.SEC1 -> {
                                 assertEcPrivateKeyEquals(bytes, key.encodeTo(format))
                             }
@@ -148,10 +149,10 @@ abstract class EcdsaCompatibilityTest(provider: CryptographyProvider) : Compatib
 
                                 assertEcPrivateKeyEquals(expected.bytes, actual.bytes)
                             }
-                            EC.PrivateKey.Format.DER      -> {
+                            EC.PrivateKey.Format.DER -> {
                                 assertPkcs8EcPrivateKeyEquals(bytes, key.encodeTo(format))
                             }
-                            EC.PrivateKey.Format.PEM      -> {
+                            EC.PrivateKey.Format.PEM -> {
                                 val expected = PEM.decode(bytes)
                                 val actual = PEM.decode(key.encodeTo(format))
 
