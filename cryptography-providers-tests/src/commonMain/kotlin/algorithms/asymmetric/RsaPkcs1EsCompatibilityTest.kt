@@ -26,13 +26,14 @@ abstract class RsaPkcs1EsCompatibilityTest(provider: CryptographyProvider) :
 
         val cipherParametersId = api.ciphers.saveParameters(TestParameters.Empty)
         generateKeys(isStressTest, singleDigest = SHA512) { keyPair, keyReference, keyParameters ->
-            val maxPlaintextSize = keyParameters.keySizeBits.bits.inBytes - 2 - 2 * keyParameters.digestSizeBytes
+            val maxPlaintextSize = keyParameters.keySizeBits.bits.inBytes - 11 // PKCS1 padding
             logger.log { "maxPlaintextSize.size = $maxPlaintextSize" }
             val encryptor = keyPair.publicKey.encryptor()
             val decryptor = keyPair.privateKey.decryptor()
 
             repeat(cipherIterations) {
-                val plaintextSize = CryptographyRandom.nextInt(maxPlaintextSize)
+                // zero plaintexts are not supported for Apple provider
+                val plaintextSize = CryptographyRandom.nextInt(1, maxPlaintextSize)
                 logger.log { "plaintext.size        = $plaintextSize" }
                 val plaintext = CryptographyRandom.nextBytes(plaintextSize)
                 val ciphertext = encryptor.encrypt(plaintext)

@@ -9,9 +9,6 @@ import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.operations.cipher.*
 import dev.whyoleg.cryptography.providers.apple.internal.*
-import kotlinx.cinterop.*
-import platform.CoreFoundation.*
-import platform.Foundation.*
 import platform.Security.*
 
 internal object SecRsaRaw : SecRsa<RSA.RAW.PublicKey, RSA.RAW.PrivateKey, RSA.RAW.KeyPair>(), RSA.RAW {
@@ -30,61 +27,23 @@ internal object SecRsaRaw : SecRsa<RSA.RAW.PublicKey, RSA.RAW.PrivateKey, RSA.RA
         override val privateKey: RSA.RAW.PrivateKey,
     ) : RSA.RAW.KeyPair
 
-    private class RsaRawPublicKey(
-        publicKey: SecKeyRef,
-    ) : RsaPublicKey(publicKey), RSA.RAW.PublicKey {
+    private class RsaRawPublicKey(publicKey: SecKeyRef) : RsaPublicKey(publicKey), RSA.RAW.PublicKey {
         override fun encryptor(): Encryptor = RsaRawEncryptor(publicKey)
     }
 
-    private class RsaRawPrivateKey(
-        privateKey: SecKeyRef,
-    ) : RsaPrivateKey(privateKey), RSA.RAW.PrivateKey {
+    private class RsaRawPrivateKey(privateKey: SecKeyRef) : RsaPrivateKey(privateKey), RSA.RAW.PrivateKey {
         override fun decryptor(): Decryptor = RsaRawDecryptor(privateKey)
     }
 }
 
-private class RsaRawEncryptor(
-    private val publicKey: SecKeyRef,
-) : Encryptor {
-    override fun encryptBlocking(plaintextInput: ByteArray): ByteArray = memScoped {
-        val error = alloc<CFErrorRefVar>()
-        plaintextInput.useNSData { plaintext ->
-            val ciphertext = SecKeyCreateEncryptedData(
-                key = publicKey,
-                algorithm = kSecKeyAlgorithmRSAEncryptionRaw,
-                plaintext = plaintext.retainBridgeAs<CFDataRef>(),
-                error = error.ptr
-            )?.releaseBridgeAs<NSData>()
-
-            if (ciphertext == null) {
-                val nsError = error.value.releaseBridgeAs<NSError>()
-                error("Failed to encrypt: ${nsError?.description}")
-            }
-
-            ciphertext.toByteArray()
-        }
+private class RsaRawEncryptor(private val publicKey: SecKeyRef) : Encryptor {
+    override fun encryptBlocking(plaintextInput: ByteArray): ByteArray {
+        return secEncrypt(publicKey, kSecKeyAlgorithmRSAEncryptionRaw, plaintextInput)
     }
 }
 
-private class RsaRawDecryptor(
-    private val privateKey: SecKeyRef,
-) : Decryptor {
-    override fun decryptBlocking(ciphertextInput: ByteArray): ByteArray = memScoped {
-        val error = alloc<CFErrorRefVar>()
-        ciphertextInput.useNSData { ciphertext ->
-            val plaintext = SecKeyCreateDecryptedData(
-                key = privateKey,
-                algorithm = kSecKeyAlgorithmRSAEncryptionRaw,
-                ciphertext = ciphertext.retainBridgeAs<CFDataRef>(),
-                error = error.ptr
-            )?.releaseBridgeAs<NSData>()
-
-            if (plaintext == null) {
-                val nsError = error.value.releaseBridgeAs<NSError>()
-                error("Failed to decrypt: ${nsError?.description}")
-            }
-
-            plaintext.toByteArray()
-        }
+private class RsaRawDecryptor(private val privateKey: SecKeyRef) : Decryptor {
+    override fun decryptBlocking(ciphertextInput: ByteArray): ByteArray {
+        return secDecrypt(privateKey, kSecKeyAlgorithmRSAEncryptionRaw, ciphertextInput)
     }
 }

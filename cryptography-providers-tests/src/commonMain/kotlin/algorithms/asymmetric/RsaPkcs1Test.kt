@@ -6,6 +6,7 @@ package dev.whyoleg.cryptography.providers.tests.algorithms.asymmetric
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
+import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.providers.tests.api.*
 import dev.whyoleg.cryptography.random.*
 import kotlin.math.*
@@ -37,6 +38,37 @@ abstract class RsaPkcs1Test(provider: CryptographyProvider) : ProviderTest(provi
                     assertTrue(signatureVerifier.verifySignature(data, signature))
                 }
             }
+
+            if (supportsEncryption()) {
+                // digest is not used for encryption
+                val keyPair = algorithm.keyPairGenerator(keySize, SHA1).generateKey()
+
+                val maxSize = keySize.inBytes - 11 // PKCS1 padding
+
+                encryptAndDecrypt(keyPair, keySize.inBytes, ByteArray(maxSize))
+
+                repeat(4) { n ->
+                    val size = 10.0.pow(n).toInt()
+                    if (size < maxSize) {
+                        println(size)
+                        val data = CryptographyRandom.nextBytes(size)
+                        encryptAndDecrypt(keyPair, keySize.inBytes, data)
+                    }
+                }
+            }
         }
     }
+
+    private suspend fun encryptAndDecrypt(
+        keyPair: RSA.PKCS1.KeyPair,
+        expectedSize: Int,
+        plaintext: ByteArray,
+    ) {
+        val encryptor = keyPair.publicKey.encryptor()
+        val decryptor = keyPair.privateKey.decryptor()
+        val ciphertext = encryptor.encrypt(plaintext)
+        assertEquals(expectedSize, ciphertext.size, "plaintext size: ${plaintext.size}")
+        assertContentEquals(plaintext, decryptor.decrypt(ciphertext))
+    }
+
 }

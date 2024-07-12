@@ -15,7 +15,6 @@ import dev.whyoleg.cryptography.serialization.asn1.*
 import dev.whyoleg.cryptography.serialization.asn1.modules.*
 import dev.whyoleg.cryptography.serialization.pem.*
 import kotlinx.cinterop.*
-import platform.CoreFoundation.*
 import platform.Foundation.*
 import platform.Security.*
 import kotlin.experimental.*
@@ -165,7 +164,7 @@ private class EcdsaPublicKey(
     private val cleanup = createCleaner(publicKey, SecKeyRef::release)
 
     override fun signatureVerifier(digest: CryptographyAlgorithmId<Digest>, format: ECDSA.SignatureFormat): SignatureVerifier {
-        val verifier = EcdsaDerSignatureVerifier(publicKey, digest.ecdsaSecKeyAlgorithm())
+        val verifier = SecSignatureVerifier(publicKey, digest.ecdsaSecKeyAlgorithm())
         return when (format) {
             ECDSA.SignatureFormat.DER -> verifier
             ECDSA.SignatureFormat.RAW -> EcdsaRawSignatureVerifier(verifier, curve.orderSize)
@@ -201,7 +200,7 @@ private class EcdsaPrivateKey(
     private val cleanup = createCleaner(privateKey, SecKeyRef::release)
 
     override fun signatureGenerator(digest: CryptographyAlgorithmId<Digest>, format: ECDSA.SignatureFormat): SignatureGenerator {
-        val generator = EcdsaDerSignatureGenerator(privateKey, digest.ecdsaSecKeyAlgorithm())
+        val generator = SecSignatureGenerator(privateKey, digest.ecdsaSecKeyAlgorithm())
         return when (format) {
             ECDSA.SignatureFormat.DER -> generator
             ECDSA.SignatureFormat.RAW -> EcdsaRawSignatureGenerator(generator, curve.orderSize)
@@ -237,55 +236,6 @@ private class EcdsaPrivateKey(
         )
 
         return DER.encodeToByteArray(EcPrivateKey.serializer(), ecPrivateKey)
-    }
-}
-
-private class EcdsaDerSignatureGenerator(
-    private val privateKey: SecKeyRef,
-    private val algorithm: SecKeyAlgorithm?,
-) : SignatureGenerator {
-    override fun generateSignatureBlocking(dataInput: ByteArray): ByteArray = memScoped {
-        val error = alloc<CFErrorRefVar>()
-        dataInput.useNSData { data ->
-            val signature = SecKeyCreateSignature(
-                key = privateKey,
-                algorithm = algorithm,
-                dataToSign = data.retainBridgeAs<CFDataRef>(),
-                error = error.ptr
-            )?.releaseBridgeAs<NSData>()
-
-            if (signature == null) {
-                val nsError = error.value.releaseBridgeAs<NSError>()
-                error("Failed to generate signature: ${nsError?.description}")
-            }
-
-            signature.toByteArray()
-        }
-    }
-}
-
-private class EcdsaDerSignatureVerifier(
-    private val publicKey: SecKeyRef,
-    private val algorithm: SecKeyAlgorithm?,
-) : SignatureVerifier {
-    override fun verifySignatureBlocking(dataInput: ByteArray, signatureInput: ByteArray): Boolean = memScoped {
-        val error = alloc<CFErrorRefVar>()
-        dataInput.useNSData { data ->
-            signatureInput.useNSData { signature ->
-                val result = SecKeyVerifySignature(
-                    key = publicKey,
-                    algorithm = algorithm,
-                    signedData = data.retainBridgeAs<CFDataRef>(),
-                    error = error.ptr,
-                    signature = signature.retainBridgeAs<CFDataRef>()
-                )
-                if (!result) {
-                    val nsError = error.value.releaseBridgeAs<NSError>()
-                    error("Failed to verify signature: ${nsError?.description}")
-                }
-                result
-            }
-        }
     }
 }
 
