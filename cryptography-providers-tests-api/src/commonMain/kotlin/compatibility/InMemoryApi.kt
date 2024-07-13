@@ -14,10 +14,11 @@ class InMemoryApi(
 ) : CompatibilityApi() {
     private fun api(storageName: String): CompatibilityStorageApi = InMemoryStorageApi(algorithm, context, storageName, logger)
     override val keys: CompatibilityStorageApi = api("keys")
-    override val keyPairs: CompatibilityStorageApi = api("key-pairs")
+    override val keyPairs: CompatibilityStorageApi = api("keyPairs")
     override val digests: CompatibilityStorageApi = api("digests")
     override val signatures: CompatibilityStorageApi = api("signatures")
     override val ciphers: CompatibilityStorageApi = api("ciphers")
+    override val sharedSecrets: CompatibilityStorageApi = api("sharedSecrets")
 }
 
 @Suppress("UNCHECKED_CAST")

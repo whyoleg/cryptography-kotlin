@@ -47,10 +47,11 @@ internal fun Route.routes(
         }
 
         storage("keys")
-        storage("key-pairs")
+        storage("keyPairs")
         storage("digests")
         storage("signatures")
         storage("ciphers")
+        storage("sharedSecrets")
     }
 }
 

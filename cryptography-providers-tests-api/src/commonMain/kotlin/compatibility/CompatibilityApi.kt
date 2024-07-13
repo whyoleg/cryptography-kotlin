@@ -10,4 +10,5 @@ sealed class CompatibilityApi {
     abstract val digests: CompatibilityStorageApi
     abstract val signatures: CompatibilityStorageApi
     abstract val ciphers: CompatibilityStorageApi
+    abstract val sharedSecrets: CompatibilityStorageApi
 }

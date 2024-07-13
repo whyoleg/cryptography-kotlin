@@ -74,7 +74,7 @@ fun AlgorithmTestScope<RSA.PKCS1>.supportsEncryption(): Boolean = supports {
     }
 }
 
-fun AlgorithmTestScope<ECDSA>.supportsCurve(curve: EC.Curve): Boolean = supports {
+fun AlgorithmTestScope<out EC<*, *, *>>.supportsCurve(curve: EC.Curve): Boolean = supports {
     when {
         // JDK default, WebCrypto and Apple doesn't support secp256k1
         curve.name == "secp256k1" && (
@@ -84,7 +84,7 @@ fun AlgorithmTestScope<ECDSA>.supportsCurve(curve: EC.Curve): Boolean = supports
     }
 }
 
-fun AlgorithmTestScope<ECDSA>.supportsDecoding(
+fun AlgorithmTestScope<out EC<*, *, *>>.supportsDecoding(
     format: EC.PrivateKey.Format,
     key: ByteArray,
     otherContext: TestContext,
@@ -117,9 +117,9 @@ fun ProviderTestScope.supports(algorithmId: CryptographyAlgorithmId<*>): Boolean
                 platform.isAndroid                    -> "JDK provider on Android doesn't support RSASSA-PSS"
         provider.isJdkDefault &&
                 platform.isAndroid { apiLevel == 21 } -> "JDK provider on Android API 21 is super unstable"
-        algorithmId == ECDSA &&
+        (algorithmId == ECDH || algorithmId == ECDSA) &&
                 provider.isJdkDefault &&
-                platform.isAndroid { apiLevel == 27 } -> "Key encoding of ECDSA DER key on Android API 27 is flaky - ignore for now"
+                platform.isAndroid { apiLevel == 27 } -> "Key encoding of EC DER private key on Android API 27 is flaky"
         else                                          -> null
     }
 }

@@ -86,3 +86,14 @@ data class SignatureData(
         return "SignatureData(keyReference=$keyReference, data.size=${data.size}, signature.size=${signature.size})"
     }
 }
+
+@Serializable
+data class SharedSecretData(
+    val keyReference: TestReference,
+    val otherKeyReference: TestReference,
+    val sharedSecret: Base64ByteArray,
+) : TestData {
+    override fun toString(): String {
+        return "SharedSecretData(keyReference=$keyReference, otherKeyReference=$otherKeyReference, sharedSecret.size=${sharedSecret.size})"
+    }
+}
