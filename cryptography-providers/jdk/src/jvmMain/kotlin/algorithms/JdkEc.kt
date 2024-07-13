@@ -7,6 +7,7 @@ package dev.whyoleg.cryptography.providers.jdk.algorithms
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.providers.jdk.*
+import dev.whyoleg.cryptography.providers.jdk.internal.*
 import dev.whyoleg.cryptography.providers.jdk.materials.*
 import dev.whyoleg.cryptography.serialization.asn1.*
 import dev.whyoleg.cryptography.serialization.asn1.modules.*
@@ -128,4 +129,65 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP
             return DER.encodeToByteArray(PrivateKeyInfo.serializer(), privateKeyInfo)
         }
     }
+
+    protected abstract class BaseEcPublicKey(
+        private val key: JPublicKey,
+    ) : EC.PublicKey, JdkEncodableKey<EC.PublicKey.Format>(key, "EC") {
+        final override fun encodeToBlocking(format: EC.PublicKey.Format): ByteArray = when (format) {
+            EC.PublicKey.Format.JWK -> error("$format is not supported")
+            EC.PublicKey.Format.RAW -> {
+                key as ECPublicKey
+
+                val fieldSize = key.curveOrderSize()
+                val x = key.w.affineX.toByteArray().trimLeadingZeros()
+                val y = key.w.affineY.toByteArray().trimLeadingZeros()
+                check(x.size <= fieldSize && y.size <= fieldSize)
+
+                val output = ByteArray(fieldSize * 2 + 1)
+                output[0] = 4 // uncompressed
+                x.copyInto(output, fieldSize - x.size + 1)
+                y.copyInto(output, fieldSize * 2 - y.size + 1)
+                output
+            }
+            EC.PublicKey.Format.DER -> encodeToDer()
+            EC.PublicKey.Format.PEM -> wrapPem(PemLabel.PublicKey, encodeToDer())
+        }
+    }
+
+    protected abstract class BaseEcPrivateKey(
+        key: JPrivateKey,
+    ) : EC.PrivateKey, JdkEncodableKey<EC.PrivateKey.Format>(key, "EC") {
+        final override fun encodeToBlocking(format: EC.PrivateKey.Format): ByteArray = when (format) {
+            EC.PrivateKey.Format.JWK      -> error("$format is not supported")
+            EC.PrivateKey.Format.DER      -> encodeToDer()
+            EC.PrivateKey.Format.PEM      -> wrapPem(PemLabel.PrivateKey, encodeToDer())
+            EC.PrivateKey.Format.DER.SEC1 -> convertPkcs8ToSec1(encodeToDer())
+            EC.PrivateKey.Format.PEM.SEC1 -> wrapPem(PemLabel.EcPrivateKey, convertPkcs8ToSec1(encodeToDer()))
+        }
+
+        private fun convertPkcs8ToSec1(input: ByteArray): ByteArray {
+            val privateKeyInfo = DER.decodeFromByteArray(PrivateKeyInfo.serializer(), input)
+
+            val privateKeyAlgorithm = privateKeyInfo.privateKeyAlgorithm
+            check(privateKeyAlgorithm is EcKeyAlgorithmIdentifier) {
+                "Expected algorithm '${ObjectIdentifier.EC}', received: '${privateKeyAlgorithm.algorithm}'"
+            }
+            // the produced key could not contain parameters in underlying EcPrivateKey,
+            // but they are available in `privateKeyAlgorithm`
+            val ecPrivateKey = DER.decodeFromByteArray(EcPrivateKey.serializer(), privateKeyInfo.privateKey)
+            if (ecPrivateKey.parameters != null) return privateKeyInfo.privateKey
+
+            val enhancedEcPrivateKey = EcPrivateKey(
+                version = ecPrivateKey.version,
+                privateKey = ecPrivateKey.privateKey,
+                parameters = privateKeyAlgorithm.parameters,
+                publicKey = ecPrivateKey.publicKey
+            )
+            return DER.encodeToByteArray(EcPrivateKey.serializer(), enhancedEcPrivateKey)
+        }
+    }
+}
+
+internal fun ECKey.curveOrderSize(): Int {
+    return (params.curve.field.fieldSize + 7) / 8
 }

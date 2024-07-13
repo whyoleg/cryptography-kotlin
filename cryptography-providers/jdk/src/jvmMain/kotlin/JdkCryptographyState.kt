@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.jdk
@@ -22,6 +22,7 @@ internal class JdkCryptographyState(
     private val keyPairGenerators: ConcurrentHashMap<String, Pooled<JKeyPairGenerator>> = ConcurrentHashMap()
     private val keyFactories: ConcurrentHashMap<String, Pooled<JKeyFactory>> = ConcurrentHashMap()
     private val algorithmParameters: ConcurrentHashMap<String, Pooled<JAlgorithmParameters>> = ConcurrentHashMap()
+    private val keyAgreements: ConcurrentHashMap<String, Pooled<JKeyAgreement>> = ConcurrentHashMap()
 
     private inline fun <T> ConcurrentHashMap<String, Pooled<T>>.get(
         algorithm: String,
@@ -66,6 +67,10 @@ internal class JdkCryptographyState(
 
     fun algorithmParameters(algorithm: String): Pooled<JAlgorithmParameters> =
         algorithmParameters.get(algorithm, JAlgorithmParameters::getInstance, JAlgorithmParameters::getInstance, cached = false)
+
+    fun keyAgreement(algorithm: String): Pooled<JKeyAgreement> =
+        keyAgreements.get(algorithm, JKeyAgreement::getInstance, JKeyAgreement::getInstance)
+
 }
 
 internal fun CryptographyAlgorithmId<Digest>.hashAlgorithmName(): String = when (this) {

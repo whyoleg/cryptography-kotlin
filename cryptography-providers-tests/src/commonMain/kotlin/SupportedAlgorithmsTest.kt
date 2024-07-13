@@ -47,6 +47,7 @@ abstract class SupportedAlgorithmsTest(provider: CryptographyProvider) : Provide
         assertSupports(SHA3_512, supportsSha3)
 
         assertSupports(ECDSA)
+        assertSupports(ECDH, context.provider.isJdk)
 
         assertSupports(RSA.PSS)
         assertSupports(RSA.OAEP)

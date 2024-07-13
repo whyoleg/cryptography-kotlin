@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.jdk
@@ -22,3 +22,4 @@ internal typealias JSignature = Signature
 internal typealias JSecureRandom = SecureRandom
 internal typealias JKeyFactory = KeyFactory
 internal typealias JAlgorithmParameters = AlgorithmParameters
+internal typealias JKeyAgreement = KeyAgreement

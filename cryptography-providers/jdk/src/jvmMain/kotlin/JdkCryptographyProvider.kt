@@ -89,6 +89,7 @@ internal class JdkCryptographyProvider(
             RSA.PKCS1 -> JdkRsaPkcs1(state)
             RSA.RAW -> JdkRsaRaw(state)
             ECDSA     -> JdkEcdsa(state)
+            ECDH    -> JdkEcdh(state)
             else      -> null
         }
     } as A?
