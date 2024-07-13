@@ -30,6 +30,8 @@ internal expect val Algorithm.ecKeyAlgorithmNamedCurve: String
 
 internal expect fun EcdsaSignatureAlgorithm(hash: String): Algorithm
 
+internal expect fun EcdhKeyDeriveAlgorithm(publicKey: CryptoKey): Algorithm
+
 internal expect fun RsaKeyGenerationAlgorithm(
     name: String, //RSA-PSS | RSA-OAEP
     modulusLength: Int,

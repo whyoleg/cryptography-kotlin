@@ -41,12 +41,12 @@ internal sealed class WebCryptoEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateK
         keyPairWrapper = keyPairWrapper
     )
 
-    protected abstract class EcPublicKey(protected val publicKey: CryptoKey) : WebCryptoEncodableKey<EC.PublicKey.Format>(
+    protected abstract class EcPublicKey(val publicKey: CryptoKey) : WebCryptoEncodableKey<EC.PublicKey.Format>(
         key = publicKey,
         keyProcessor = EcPublicKeyProcessor
     ), EC.PublicKey
 
-    protected abstract class EcPrivateKey(protected val privateKey: CryptoKey) : WebCryptoEncodableKey<EC.PrivateKey.Format>(
+    protected abstract class EcPrivateKey(val privateKey: CryptoKey) : WebCryptoEncodableKey<EC.PrivateKey.Format>(
         key = privateKey,
         keyProcessor = EcPrivateKeyProcessor
     ), EC.PrivateKey

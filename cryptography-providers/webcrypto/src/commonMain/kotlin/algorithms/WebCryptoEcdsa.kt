@@ -98,7 +98,7 @@ private fun ByteArray.trimLeadingZeros(): ByteArray {
     return copyOfRange(firstNonZeroIndex, size)
 }
 
-private fun curveOrderSize(namedCurve: String): Int = when (namedCurve) {
+internal fun curveOrderSize(namedCurve: String): Int = when (namedCurve) {
     EC.Curve.P256.name -> 32
     EC.Curve.P384.name -> 48
     EC.Curve.P521.name -> 66

@@ -13,6 +13,8 @@ internal expect object WebCrypto {
     suspend fun sign(algorithm: Algorithm, key: CryptoKey, data: ByteArray): ByteArray
     suspend fun verify(algorithm: Algorithm, key: CryptoKey, signature: ByteArray, data: ByteArray): Boolean
 
+    suspend fun deriveBits(algorithm: Algorithm, baseKey: CryptoKey, length: Int): ByteArray
+
     suspend fun importKey(
         format: String,
         keyData: ByteArray,

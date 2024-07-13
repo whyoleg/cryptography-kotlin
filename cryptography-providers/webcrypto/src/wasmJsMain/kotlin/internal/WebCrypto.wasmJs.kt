@@ -29,6 +29,10 @@ internal actual object WebCrypto {
         return subtle.verify(algorithm, key, signature.toInt8Array(), data.toInt8Array()).await().toBoolean()
     }
 
+    actual suspend fun deriveBits(algorithm: Algorithm, baseKey: CryptoKey, length: Int): ByteArray {
+        return subtle.deriveBits(algorithm, baseKey, length).await().toByteArray()
+    }
+
     actual suspend fun importKey(
         format: String,
         keyData: ByteArray,

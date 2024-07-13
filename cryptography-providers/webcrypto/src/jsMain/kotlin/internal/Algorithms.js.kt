@@ -44,6 +44,9 @@ private fun ecKeyAlgorithmNamedCurve(algorithm: Algorithm): String = js("algorit
 internal actual fun EcdsaSignatureAlgorithm(hash: String): Algorithm =
     js("{ name: 'ECDSA', hash: hash }").unsafeCast<Algorithm>()
 
+internal actual fun EcdhKeyDeriveAlgorithm(publicKey: CryptoKey): Algorithm =
+    js("{ name: 'ECDH', public: publicKey }").unsafeCast<Algorithm>()
+
 internal actual fun RsaKeyGenerationAlgorithm(name: String, modulusLength: Int, publicExponent: ByteArray, hash: String): Algorithm {
     val publicExponent2 = publicExponent.toInt8Array().let { Uint8Array(it.buffer, it.byteOffset, it.length) }
     return js("{ name: name, modulusLength: modulusLength, publicExponent: publicExponent2, hash: hash }").unsafeCast<Algorithm>()

@@ -16,6 +16,8 @@ internal external interface SubtleCrypto {
     fun sign(algorithm: Algorithm, key: CryptoKey, data: Int8Array): Promise<ArrayBuffer>
     fun verify(algorithm: Algorithm, key: CryptoKey, signature: Int8Array, data: Int8Array): Promise<JsBoolean>
 
+    fun deriveBits(algorithm: Algorithm, baseKey: CryptoKey, length: Int): Promise<ArrayBuffer>
+
     fun importKey(
         format: String, /*"raw" | "pkcs8" | "spki"*/
         keyData: JsAny, /*JSON if jwk, ArrayBuffer otherwise*/
