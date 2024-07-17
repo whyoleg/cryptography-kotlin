@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.materials
@@ -26,7 +26,7 @@ internal abstract class Openssl3PublicKeyEncodable<KF : KeyFormat>(
 }
 
 internal abstract class Openssl3KeyEncodable<KF : KeyFormat>(
-    protected val key: CPointer<EVP_PKEY>,
+    val key: CPointer<EVP_PKEY>,
 ) : EncodableKey<KF> {
     @OptIn(ExperimentalNativeApi::class)
     private val cleaner = key.cleaner()
