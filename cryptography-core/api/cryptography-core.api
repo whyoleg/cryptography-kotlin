@@ -185,6 +185,25 @@ public final class dev/whyoleg/cryptography/algorithms/asymmetric/EC$PublicKey$F
 	public fun hashCode ()I
 }
 
+public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/ECDH : dev/whyoleg/cryptography/algorithms/asymmetric/EC {
+	public static final field Companion Ldev/whyoleg/cryptography/algorithms/asymmetric/ECDH$Companion;
+	public fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/asymmetric/ECDH$Companion : dev/whyoleg/cryptography/CryptographyAlgorithmId {
+}
+
+public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/ECDH$KeyPair : dev/whyoleg/cryptography/algorithms/asymmetric/EC$KeyPair {
+}
+
+public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/ECDH$PrivateKey : dev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey {
+	public abstract fun sharedSecretDerivation ()Ldev/whyoleg/cryptography/operations/SharedSecretDerivation;
+}
+
+public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/ECDH$PublicKey : dev/whyoleg/cryptography/algorithms/asymmetric/EC$PublicKey {
+	public abstract fun sharedSecretDerivation ()Ldev/whyoleg/cryptography/operations/SharedSecretDerivation;
+}
+
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/ECDSA : dev/whyoleg/cryptography/algorithms/asymmetric/EC {
 	public static final field Companion Ldev/whyoleg/cryptography/algorithms/asymmetric/ECDSA$Companion;
 	public fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
@@ -591,6 +610,11 @@ public abstract interface class dev/whyoleg/cryptography/materials/key/KeyGenera
 	public fun generateKey (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun generateKey$suspendImpl (Ldev/whyoleg/cryptography/materials/key/KeyGenerator;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun generateKeyBlocking ()Ldev/whyoleg/cryptography/materials/key/Key;
+}
+
+public abstract interface class dev/whyoleg/cryptography/operations/SharedSecretDerivation {
+	public abstract fun deriveSharedSecret (Ldev/whyoleg/cryptography/materials/key/Key;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun deriveSharedSecretBlocking (Ldev/whyoleg/cryptography/materials/key/Key;)[B
 }
 
 public abstract interface class dev/whyoleg/cryptography/operations/cipher/AuthenticatedCipher : dev/whyoleg/cryptography/operations/cipher/AuthenticatedDecryptor, dev/whyoleg/cryptography/operations/cipher/AuthenticatedEncryptor, dev/whyoleg/cryptography/operations/cipher/Cipher {
