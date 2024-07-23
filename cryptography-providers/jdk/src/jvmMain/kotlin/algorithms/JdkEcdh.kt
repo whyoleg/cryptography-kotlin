@@ -7,6 +7,7 @@ package dev.whyoleg.cryptography.providers.jdk.algorithms
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.jdk.*
+import dev.whyoleg.cryptography.providers.jdk.operations.*
 
 internal class JdkEcdh(state: JdkCryptographyState) : JdkEc<ECDH.PublicKey, ECDH.PrivateKey, ECDH.KeyPair>(state), ECDH {
     override fun JPublicKey.convert(): ECDH.PublicKey = EcdhPublicKey(state, this)
@@ -21,52 +22,30 @@ internal class JdkEcdh(state: JdkCryptographyState) : JdkEc<ECDH.PublicKey, ECDH
     private class EcdhPublicKey(
         private val state: JdkCryptographyState,
         val key: JPublicKey,
-    ) : ECDH.PublicKey, BaseEcPublicKey(key) {
-        override fun sharedSecretDerivation(): SharedSecretDerivation<ECDH.PrivateKey> = EcdhPublicKeySecretDerivation(state, key)
+    ) : ECDH.PublicKey, BaseEcPublicKey(key), SharedSecretDerivation<ECDH.PrivateKey> {
+        private val keyAgreement = state.keyAgreement("ECDH")
+        override fun sharedSecretDerivation(): SharedSecretDerivation<ECDH.PrivateKey> = this
+        override suspend fun deriveSharedSecret(other: ECDH.PrivateKey): ByteArray = deriveSharedSecretBlocking(other)
+
+        override fun deriveSharedSecretBlocking(other: ECDH.PrivateKey): ByteArray {
+            check(other is EcdhPrivateKey) { "Only key produced by JDK provider is supported" }
+
+            return keyAgreement.doAgreement(state, other.key, key)
+        }
     }
 
     private class EcdhPrivateKey(
         private val state: JdkCryptographyState,
         val key: JPrivateKey,
-    ) : ECDH.PrivateKey, BaseEcPrivateKey(key) {
-        override fun sharedSecretDerivation(): SharedSecretDerivation<ECDH.PublicKey> = EcdhPrivateKeySecretDerivation(state, key)
-    }
-
-    private class EcdhPublicKeySecretDerivation(
-        private val state: JdkCryptographyState,
-        private val publicKey: JPublicKey,
-    ) : SharedSecretDerivation<ECDH.PrivateKey> {
+    ) : ECDH.PrivateKey, BaseEcPrivateKey(key), SharedSecretDerivation<ECDH.PublicKey> {
         private val keyAgreement = state.keyAgreement("ECDH")
-
-        override fun deriveSharedSecretBlocking(other: ECDH.PrivateKey): ByteArray {
-            check(other is EcdhPrivateKey) { "Only ${EcdhPrivateKey::class} supported" }
-
-            return keyAgreement.use {
-                it.init(other.key, state.secureRandom)
-                it.doPhase(publicKey, true)
-                it.generateSecret()
-            }
-        }
-
-        override suspend fun deriveSharedSecret(other: ECDH.PrivateKey): ByteArray = deriveSharedSecretBlocking(other)
-    }
-
-    private class EcdhPrivateKeySecretDerivation(
-        private val state: JdkCryptographyState,
-        private val privateKey: JPrivateKey,
-    ) : SharedSecretDerivation<ECDH.PublicKey> {
-        private val keyAgreement = state.keyAgreement("ECDH")
+        override fun sharedSecretDerivation(): SharedSecretDerivation<ECDH.PublicKey> = this
+        override suspend fun deriveSharedSecret(other: ECDH.PublicKey): ByteArray = deriveSharedSecretBlocking(other)
 
         override fun deriveSharedSecretBlocking(other: ECDH.PublicKey): ByteArray {
-            check(other is EcdhPublicKey) { "Only ${EcdhPublicKey::class} supported" }
+            check(other is EcdhPublicKey) { "Only key produced by JDK provider is supported" }
 
-            return keyAgreement.use {
-                it.init(privateKey, state.secureRandom)
-                it.doPhase(other.key, true)
-                it.generateSecret()
-            }
+            return keyAgreement.doAgreement(state, key, other.key)
         }
-
-        override suspend fun deriveSharedSecret(other: ECDH.PublicKey): ByteArray = deriveSharedSecretBlocking(other)
     }
 }

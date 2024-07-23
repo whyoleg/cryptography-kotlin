@@ -19,11 +19,8 @@ import java.security.spec.*
 internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP : EC.KeyPair<PublicK, PrivateK>>(
     protected val state: JdkCryptographyState,
 ) : EC<PublicK, PrivateK, KP> {
-    private val algorithmParameters = state.algorithmParameters("EC")
-
-    private fun curveName(params: AlgorithmParameterSpec): String = algorithmParameters.use {
-        it.init(params)
-        it.getParameterSpec(ECGenParameterSpec::class.java).name
+    private fun algorithmParameters(spec: AlgorithmParameterSpec): JAlgorithmParameters {
+        return state.algorithmParameters("EC").also { it.init(spec) }
     }
 
     protected abstract fun JPublicKey.convert(): PublicK
@@ -31,11 +28,11 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP
     protected abstract fun JKeyPair.convert(): KP
 
     final override fun publicKeyDecoder(curve: EC.Curve): KeyDecoder<EC.PublicKey.Format, PublicK> {
-        return EcPublicKeyDecoder(curveName(ECGenParameterSpec(curve.jdkName)))
+        return EcPublicKeyDecoder(algorithmParameters(ECGenParameterSpec(curve.jdkName)).curveName())
     }
 
     final override fun privateKeyDecoder(curve: EC.Curve): KeyDecoder<EC.PrivateKey.Format, PrivateK> {
-        return EcPrivateKeyDecoder(curveName(ECGenParameterSpec(curve.jdkName)))
+        return EcPrivateKeyDecoder(algorithmParameters(ECGenParameterSpec(curve.jdkName)).curveName())
     }
 
     final override fun keyPairGenerator(curve: EC.Curve): KeyGenerator<KP> {
@@ -66,7 +63,7 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP
         override fun JPublicKey.convert(): PublicK {
             check(this is ECPublicKey)
 
-            val keyCurve = curveName(params)
+            val keyCurve = algorithmParameters(params).curveName()
             check(curveName == keyCurve) { "Key curve $keyCurve is not equal to expected curve $curveName" }
 
             return with(this@JdkEc) { convert() }
@@ -76,11 +73,8 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP
             EC.PublicKey.Format.JWK -> error("$format is not supported")
             EC.PublicKey.Format.RAW -> {
                 check(input.isNotEmpty() && input[0].toInt() == 4) { "Encoded key should be in uncompressed format" }
-                val parameters = algorithmParameters.use {
-                    it.init(ECGenParameterSpec(curveName))
-                    it.getParameterSpec(ECParameterSpec::class.java)
-                }
-                val fieldSize = (parameters.curve.field.fieldSize + 7) / 8
+                val parameters = algorithmParameters(ECGenParameterSpec(curveName)).getParameterSpec(ECParameterSpec::class.java)
+                val fieldSize = parameters.curveOrderSize()
                 check(input.size == fieldSize * 2 + 1) { "Wrong encoded key size" }
 
                 val x = input.copyOfRange(1, fieldSize + 1)
@@ -102,7 +96,7 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP
         override fun JPrivateKey.convert(): PrivateK {
             check(this is ECPrivateKey)
 
-            val keyCurve = curveName(params)
+            val keyCurve = algorithmParameters(params).curveName()
             check(curveName == keyCurve) { "Key curve $keyCurve is not equal to expected curve $curveName" }
 
             return with(this@JdkEc) { convert() }
@@ -132,13 +126,13 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP
 
     protected abstract class BaseEcPublicKey(
         private val key: JPublicKey,
-    ) : EC.PublicKey, JdkEncodableKey<EC.PublicKey.Format>(key, "EC") {
+    ) : EC.PublicKey, JdkEncodableKey<EC.PublicKey.Format>(key) {
         final override fun encodeToBlocking(format: EC.PublicKey.Format): ByteArray = when (format) {
             EC.PublicKey.Format.JWK -> error("$format is not supported")
             EC.PublicKey.Format.RAW -> {
                 key as ECPublicKey
 
-                val fieldSize = key.curveOrderSize()
+                val fieldSize = key.params.curveOrderSize()
                 val x = key.w.affineX.toByteArray().trimLeadingZeros()
                 val y = key.w.affineY.toByteArray().trimLeadingZeros()
                 check(x.size <= fieldSize && y.size <= fieldSize)
@@ -156,7 +150,7 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP
 
     protected abstract class BaseEcPrivateKey(
         key: JPrivateKey,
-    ) : EC.PrivateKey, JdkEncodableKey<EC.PrivateKey.Format>(key, "EC") {
+    ) : EC.PrivateKey, JdkEncodableKey<EC.PrivateKey.Format>(key) {
         final override fun encodeToBlocking(format: EC.PrivateKey.Format): ByteArray = when (format) {
             EC.PrivateKey.Format.JWK      -> error("$format is not supported")
             EC.PrivateKey.Format.DER      -> encodeToDer()
@@ -188,6 +182,10 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP
     }
 }
 
-internal fun ECKey.curveOrderSize(): Int {
-    return (params.curve.field.fieldSize + 7) / 8
+internal fun ECParameterSpec.curveOrderSize(): Int {
+    return (curve.field.fieldSize + 7) / 8
+}
+
+private fun JAlgorithmParameters.curveName(): String {
+    return getParameterSpec(ECGenParameterSpec::class.java).name
 }

@@ -22,4 +22,5 @@ internal typealias JSignature = Signature
 internal typealias JSecureRandom = SecureRandom
 internal typealias JKeyFactory = KeyFactory
 internal typealias JAlgorithmParameters = AlgorithmParameters
+internal typealias JAlgorithmParameterGenerator = AlgorithmParameterGenerator
 internal typealias JKeyAgreement = KeyAgreement

@@ -11,7 +11,6 @@ import java.security.spec.*
 internal abstract class JdkPrivateKeyDecoder<KF : KeyFormat, K : Key>(
     protected val state: JdkCryptographyState,
     algorithm: String,
-    private val pemAlgorithm: String = algorithm,
 ) : KeyDecoder<KF, K> {
     private val keyFactory = state.keyFactory(algorithm)
 

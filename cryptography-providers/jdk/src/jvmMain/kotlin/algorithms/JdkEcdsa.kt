@@ -34,7 +34,7 @@ internal class JdkEcdsa(state: JdkCryptographyState) : JdkEc<ECDSA.PublicKey, EC
             val verifier = JdkSignatureVerifier(state, key, digest.hashAlgorithmName() + "withECDSA", null)
             return when (format) {
                 ECDSA.SignatureFormat.DER -> verifier
-                ECDSA.SignatureFormat.RAW -> EcdsaRawSignatureVerifier(verifier, (key as ECKey).curveOrderSize())
+                ECDSA.SignatureFormat.RAW -> EcdsaRawSignatureVerifier(verifier, (key as ECKey).params.curveOrderSize())
             }
         }
     }
@@ -47,7 +47,7 @@ internal class JdkEcdsa(state: JdkCryptographyState) : JdkEc<ECDSA.PublicKey, EC
             val generator = JdkSignatureGenerator(state, key, digest.hashAlgorithmName() + "withECDSA", null)
             return when (format) {
                 ECDSA.SignatureFormat.DER -> generator
-                ECDSA.SignatureFormat.RAW -> EcdsaRawSignatureGenerator(generator, (key as ECKey).curveOrderSize())
+                ECDSA.SignatureFormat.RAW -> EcdsaRawSignatureGenerator(generator, (key as ECKey).params.curveOrderSize())
             }
         }
     }

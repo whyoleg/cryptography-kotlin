@@ -57,7 +57,7 @@ internal abstract class RsaPrivateKeyDecoder<K : RSA.PrivateKey>(
 
 internal abstract class RsaPublicEncodableKey(
     key: JPublicKey,
-) : JdkEncodableKey<RSA.PublicKey.Format>(key, "RSA") {
+) : JdkEncodableKey<RSA.PublicKey.Format>(key) {
     override fun encodeToBlocking(format: RSA.PublicKey.Format): ByteArray = when (format) {
         RSA.PublicKey.Format.JWK       -> error("$format is not supported")
         RSA.PublicKey.Format.DER       -> encodeToDer()
@@ -72,7 +72,7 @@ internal abstract class RsaPublicEncodableKey(
 
 internal abstract class RsaPrivateEncodableKey(
     key: JPrivateKey,
-) : JdkEncodableKey<RSA.PrivateKey.Format>(key, "RSA") {
+) : JdkEncodableKey<RSA.PrivateKey.Format>(key) {
     override fun encodeToBlocking(format: RSA.PrivateKey.Format): ByteArray = when (format) {
         RSA.PrivateKey.Format.JWK       -> error("$format is not supported")
         RSA.PrivateKey.Format.DER       -> encodeToDer()

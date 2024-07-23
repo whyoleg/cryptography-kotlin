@@ -9,7 +9,6 @@ import dev.whyoleg.cryptography.providers.jdk.*
 
 internal abstract class JdkEncodableKey<KF : KeyFormat>(
     private val key: JKey,
-    private val pemAlgorithm: String = key.algorithm,
 ) : EncodableKey<KF> {
 
     protected fun encodeToRaw(): ByteArray {
