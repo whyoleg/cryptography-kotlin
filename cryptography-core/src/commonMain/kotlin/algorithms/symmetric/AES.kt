@@ -64,7 +64,7 @@ public interface AES<K : AES.Key> : CryptographyAlgorithm {
 
         @SubclassOptInRequired(CryptographyProviderApi::class)
         public interface Key : AES.Key {
-            public fun cipher(tagSize: BinarySize = 128.bits): AuthenticatedCipher
+            public fun cipher(tagSize: BinarySize = 128.bits): IvAuthenticatedCipher
         }
     }
 
@@ -87,5 +87,26 @@ public interface AES<K : AES.Key> : CryptographyAlgorithm {
 
         @DelicateCryptographyApi
         public fun decryptBlocking(iv: ByteArray, ciphertextInput: ByteArray): ByteArray
+    }
+
+    @SubclassOptInRequired(CryptographyProviderApi::class)
+    public interface IvAuthenticatedCipher : IvAuthenticatedEncryptor, IvAuthenticatedDecryptor
+
+    @SubclassOptInRequired(CryptographyProviderApi::class)
+    public interface IvAuthenticatedEncryptor : AuthenticatedEncryptor {
+        @DelicateCryptographyApi
+        public suspend fun encrypt(iv: ByteArray, plaintextInput: ByteArray, associatedData: ByteArray? = null): ByteArray = encryptBlocking(iv, plaintextInput, associatedData)
+
+        @DelicateCryptographyApi
+        public fun encryptBlocking(iv: ByteArray, plaintextInput: ByteArray, associatedData: ByteArray? = null): ByteArray
+    }
+
+    @SubclassOptInRequired(CryptographyProviderApi::class)
+    public interface IvAuthenticatedDecryptor : AuthenticatedDecryptor {
+        @DelicateCryptographyApi
+        public suspend fun decrypt(iv: ByteArray, ciphertextInput: ByteArray, associatedData: ByteArray? = null): ByteArray = decryptBlocking(iv, ciphertextInput, associatedData)
+
+        @DelicateCryptographyApi
+        public fun decryptBlocking(iv: ByteArray, ciphertextInput: ByteArray, associatedData: ByteArray? = null): ByteArray
     }
 }

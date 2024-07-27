@@ -18,7 +18,7 @@ internal class JdkAesGcm(
 ) : AES.GCM {
     private val keyWrapper: (JSecretKey) -> AES.GCM.Key = { key ->
         object : AES.GCM.Key, JdkEncodableKey<AES.Key.Format>(key) {
-            override fun cipher(tagSize: BinarySize): AuthenticatedCipher = AesGcmCipher(state, key, tagSize)
+            override fun cipher(tagSize: BinarySize): AES.IvAuthenticatedCipher = AesGcmCipher(state, key, tagSize)
 
             override fun encodeToBlocking(format: AES.Key.Format): ByteArray = when (format) {
                 AES.Key.Format.JWK -> error("$format is not supported")
@@ -40,19 +40,31 @@ private class AesGcmCipher(
     private val state: JdkCryptographyState,
     private val key: JSecretKey,
     private val tagSize: BinarySize,
-) : AuthenticatedCipher {
+) : AES.IvAuthenticatedCipher {
     private val cipher = state.cipher("AES/GCM/NoPadding")
 
     override fun encryptBlocking(plaintextInput: ByteArray, associatedData: ByteArray?): ByteArray = cipher.use { cipher ->
         val iv = ByteArray(ivSizeBytes).also(state.secureRandom::nextBytes)
+        iv + encryptBlocking(iv, plaintextInput, associatedData)
+    }
+
+    @DelicateCryptographyApi
+    override fun encryptBlocking(iv: ByteArray, plaintextInput: ByteArray, associatedData: ByteArray?): ByteArray = cipher.use { cipher ->
         cipher.init(JCipher.ENCRYPT_MODE, key, GCMParameterSpec(tagSize.inBits, iv), state.secureRandom)
         associatedData?.let(cipher::updateAAD)
-        iv + cipher.doFinal(plaintextInput)
+        cipher.doFinal(plaintextInput)
     }
 
     override fun decryptBlocking(ciphertextInput: ByteArray, associatedData: ByteArray?): ByteArray = cipher.use { cipher ->
         cipher.init(JCipher.DECRYPT_MODE, key, GCMParameterSpec(tagSize.inBits, ciphertextInput, 0, ivSizeBytes), state.secureRandom)
         associatedData?.let(cipher::updateAAD)
         cipher.doFinal(ciphertextInput, ivSizeBytes, ciphertextInput.size - ivSizeBytes)
+    }
+
+    @DelicateCryptographyApi
+    override fun decryptBlocking(iv: ByteArray, ciphertextInput: ByteArray, associatedData: ByteArray?): ByteArray= cipher.use { cipher ->
+        cipher.init(JCipher.DECRYPT_MODE, key, GCMParameterSpec(tagSize.inBits, iv), state.secureRandom)
+        associatedData?.let(cipher::updateAAD)
+        cipher.doFinal(ciphertextInput)
     }
 }
