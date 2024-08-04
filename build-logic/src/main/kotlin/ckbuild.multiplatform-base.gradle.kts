@@ -5,7 +5,6 @@
 import ckbuild.*
 import ckbuild.tests.*
 import com.android.build.gradle.internal.tasks.*
-import org.gradle.kotlin.dsl.*
 import org.jetbrains.kotlin.gradle.*
 import org.jetbrains.kotlin.gradle.plugin.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.*
@@ -117,8 +116,7 @@ listOf("ios", "watchos", "tvos", "macos").forEach { targetGroup ->
     )
 }
 
-// on build, link even those binaries, which it's not possible to run
-tasks.build {
+tasks.register("linkAll") {
     dependsOn(tasks.withType<KotlinNativeLink>())
 }
 

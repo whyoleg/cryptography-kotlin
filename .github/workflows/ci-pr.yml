@@ -3,5 +3,5 @@ on:
   pull_request
 
 jobs:
-  test:
+  checks:
     uses: ./.github/workflows/run-checks.yml

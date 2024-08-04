@@ -5,11 +5,11 @@ on:
 
 jobs:
   build-project:
-    uses: ./.github/workflows/build-project.yml
+    uses: ./.github/workflows/run-build-project.yml
 
   build-website:
     needs: [ build-project ]
-    uses: ./.github/workflows/build-website.yml
+    uses: ./.github/workflows/run-build-website.yml
 
   default-tests:
     needs: [ build-project ]
@@ -18,3 +18,7 @@ jobs:
   compatibility-tests:
     needs: [ default-tests ]
     uses: ./.github/workflows/run-tests-compatibility.yml
+
+  slow-tasks:
+    needs: [ compatibility-tests ]
+    uses: ./.github/workflows/run-slow-tasks.yml

@@ -1,5 +1,5 @@
-name: 'Setup Gradle'
-description: 'Setup JDK and Gradle'
+name: 'Setup environment for the build'
+description: 'Setup JDK, Gradle, Mingw'
 inputs:
   cache-disabled:
     description: 'gradle.cache-disabled'
@@ -35,3 +35,9 @@ runs:
         cache-read-only: ${{ inputs.cache-read-only }}
 
         gradle-home-cache-cleanup: true
+
+    - if: runner.os == 'Windows'
+      uses: msys2/setup-msys2@v2
+      with:
+        release: false
+        install: mingw-w64-x86_64-openssl

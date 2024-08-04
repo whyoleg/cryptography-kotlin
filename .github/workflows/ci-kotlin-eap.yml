@@ -1,6 +1,12 @@
 name: Kotlin EAP CI
 on:
   workflow_dispatch:
+    inputs:
+      kotlinVersion:
+        description: 'Kotlin version'
+        required: false
+        default: '2.1.0-dev-+'
+
   schedule:
     - cron: '0 0 * * MON'
 
@@ -9,31 +15,23 @@ defaults:
     shell: bash
 
 jobs:
-  build:
+  kotlin-eap:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         os: [ 'ubuntu-latest', 'macos-latest', 'windows-latest' ]
-        kotlin-version: [ '', '2.0.20-dev-+' ]
+        kotlin-version: [ '', '${{ inputs.kotlinVersion }}' ]
         try-next: [ 'true', 'false' ]
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-gradle
+      - uses: ./.github/actions/setup-environment
         with:
           cache-disabled: true
 
-      - if: matrix.os == 'windows-latest'
-        uses: msys2/setup-msys2@v2
-        with:
-          release: false
-          install: mingw-w64-x86_64-openssl
-
       - run: >
           ./gradlew
-          build connectedCheck publishToMavenLocal
-          --exclude-task jvmApiBuild
-          --exclude-task jvmApiCheck
+          build publishToMavenLocal
           --continue
           -Pckbuild.skipTests=true
           -Pckbuild.warningsAsErrors=false

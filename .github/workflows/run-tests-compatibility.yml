@@ -41,17 +41,16 @@ jobs:
             android-api-level: 33
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-gradle
-
-      - if: matrix.os == 'windows-latest'
-        uses: msys2/setup-msys2@v2
-        with:
-          release: false
-          install: mingw-w64-x86_64-openssl
+      - uses: ./.github/actions/setup-environment
 
       - name: Run tests
         if: ${{ matrix.target != 'connectedAndroid' }}
-        run: ./gradlew ${{ matrix.target }}ProviderTest -Pckbuild.providerTests.step=compatibility.generate -Pckbuild.testtool.instanceId=${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }} --continue
+        run: >
+          ./gradlew
+          ${{ matrix.target }}ProviderTest
+          --continue
+          -Pckbuild.providerTests.step=compatibility.generate
+          -Pckbuild.testtool.instanceId=${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }}
 
       - name: Run tests (android)
         if: ${{ matrix.target == 'connectedAndroid' }}
@@ -59,7 +58,12 @@ jobs:
         with:
           api-level: ${{ matrix.android-api-level }}
           test-reports-classifier: 'compatibility-generate'
-          run: ./gradlew ${{ matrix.target }}ProviderTest -Pckbuild.providerTests.step=compatibility.generate -Pckbuild.testtool.instanceId=${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }} --continue
+          run: >
+            ./gradlew
+            ${{ matrix.target }}ProviderTest
+            --continue
+            -Pckbuild.providerTests.step=compatibility.generate
+            -Pckbuild.testtool.instanceId=${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }}
 
       - name: Dump testtool server-storage
         run: tar -cf ${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }}.tar build/testtool/server-storage
@@ -100,13 +104,7 @@ jobs:
             android-api-level: 33
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-gradle
-
-      - if: matrix.os == 'windows-latest'
-        uses: msys2/setup-msys2@v2
-        with:
-          release: false
-          install: mingw-w64-x86_64-openssl
+      - uses: ./.github/actions/setup-environment
 
       - name: Download testtool server-storage
         uses: actions/download-artifact@v4
@@ -120,7 +118,12 @@ jobs:
 
       - name: Run tests
         if: ${{ matrix.target != 'connectedAndroid' }}
-        run: ./gradlew ${{ matrix.target }}ProviderTest -Pckbuild.providerTests.step=compatibility.validate -Pckbuild.testtool.instanceId=${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }} --continue
+        run: >
+          ./gradlew
+          ${{ matrix.target }}ProviderTest
+          --continue
+          -Pckbuild.providerTests.step=compatibility.validate
+          -Pckbuild.testtool.instanceId=${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }}
 
       - name: Run tests (android)
         if: ${{ matrix.target == 'connectedAndroid' }}
@@ -128,4 +131,9 @@ jobs:
         with:
           api-level: ${{ matrix.android-api-level }}
           test-reports-classifier: 'compatibility-validate'
-          run: ./gradlew ${{ matrix.target }}ProviderTest -Pckbuild.providerTests.step=compatibility.validate -Pckbuild.testtool.instanceId=${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }} --continue
+          run: >
+            ./gradlew
+            ${{ matrix.target }}ProviderTest
+            --continue
+            -Pckbuild.providerTests.step=compatibility.validate
+            -Pckbuild.testtool.instanceId=${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }}
