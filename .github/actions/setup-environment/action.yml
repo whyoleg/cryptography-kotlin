@@ -24,8 +24,7 @@ runs:
           11
           17
           21
-    - uses: gradle/wrapper-validation-action@v2
-    - uses: gradle/actions/setup-gradle@v3
+    - uses: gradle/actions/setup-gradle@v4
       with:
         build-scan-publish: true
         build-scan-terms-of-use-url: "https://gradle.com/terms-of-service"
@@ -33,9 +32,6 @@ runs:
 
         cache-disabled: ${{ inputs.cache-disabled }}
         cache-read-only: ${{ inputs.cache-read-only }}
-
-        gradle-home-cache-cleanup: true
-
     - if: runner.os == 'Windows'
       uses: msys2/setup-msys2@v2
       with:
