@@ -39,13 +39,7 @@ jobs:
             android-api-level: 33
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-gradle
-
-      - if: matrix.os == 'windows-latest'
-        uses: msys2/setup-msys2@v2
-        with:
-          release: false
-          install: mingw-w64-x86_64-openssl
+      - uses: ./.github/actions/setup-environment
 
       - name: Run tests
         if: ${{ matrix.target != 'connectedAndroid' }}
