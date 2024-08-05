@@ -19,4 +19,4 @@ jobs:
       - uses: ./.github/actions/setup-environment
         with:
           cache-read-only: ${{ github.ref_name != 'main' }}
-      - run: ./gradlew build publishToMavenLocal --continue -Pckbuild.skipTests=true -Pckbuild.skipNativeLink=true
+      - run: ./gradlew build publishToMavenLocal --continue -Pckbuild.skipTests=true -Pckbuild.skipNativeLink=true --no-configuration-cache
