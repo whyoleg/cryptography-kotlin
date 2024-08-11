@@ -7,6 +7,7 @@ import org.jetbrains.kotlin.gradle.*
 
 plugins {
     id("ckbuild.multiplatform-library")
+    id("ckbuild.multiplatform-sweetspi")
     id("ckbuild.multiplatform-provider-tests")
 }
 

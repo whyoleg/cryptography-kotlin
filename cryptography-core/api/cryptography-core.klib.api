@@ -735,14 +735,6 @@ abstract class dev.whyoleg.cryptography/CryptographyProvider { // dev.whyoleg.cr
         final val Default // dev.whyoleg.cryptography/CryptographyProvider.Companion.Default|{}Default[0]
             final fun <get-Default>(): dev.whyoleg.cryptography/CryptographyProvider // dev.whyoleg.cryptography/CryptographyProvider.Companion.Default.<get-Default>|<get-Default>(){}[0]
     }
-
-    final object Registry { // dev.whyoleg.cryptography/CryptographyProvider.Registry|null[0]
-        final val registeredProviders // dev.whyoleg.cryptography/CryptographyProvider.Registry.registeredProviders|{}registeredProviders[0]
-            final fun <get-registeredProviders>(): kotlin.sequences/Sequence<dev.whyoleg.cryptography/CryptographyProvider> // dev.whyoleg.cryptography/CryptographyProvider.Registry.registeredProviders.<get-registeredProviders>|<get-registeredProviders>(){}[0]
-
-        final fun registerProvider(dev.whyoleg.cryptography/CryptographyProvider) // dev.whyoleg.cryptography/CryptographyProvider.Registry.registerProvider|registerProvider(dev.whyoleg.cryptography.CryptographyProvider){}[0]
-        final fun registerProvider(kotlin/Lazy<dev.whyoleg.cryptography/CryptographyProvider>) // dev.whyoleg.cryptography/CryptographyProvider.Registry.registerProvider|registerProvider(kotlin.Lazy<dev.whyoleg.cryptography.CryptographyProvider>){}[0]
-    }
 }
 
 final class dev.whyoleg.cryptography/CryptographyAlgorithmNotFoundException : dev.whyoleg.cryptography/CryptographyException { // dev.whyoleg.cryptography/CryptographyAlgorithmNotFoundException|null[0]
@@ -820,3 +812,7 @@ final object dev.whyoleg.cryptography.algorithms/SHA3_384 : dev.whyoleg.cryptogr
 final object dev.whyoleg.cryptography.algorithms/SHA3_512 : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest> // dev.whyoleg.cryptography.algorithms/SHA3_512|null[0]
 
 final object dev.whyoleg.cryptography.algorithms/SHA512 : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest> // dev.whyoleg.cryptography.algorithms/SHA512|null[0]
+
+// Targets: [js]
+final val dev.whyoleg.cryptography/init_dev_whyoleg_cryptography // dev.whyoleg.cryptography/init_dev_whyoleg_cryptography|{}init_dev_whyoleg_cryptography[0]
+    final fun <get-init_dev_whyoleg_cryptography>(): dynamic // dev.whyoleg.cryptography/init_dev_whyoleg_cryptography.<get-init_dev_whyoleg_cryptography>|<get-init_dev_whyoleg_cryptography>(){}[0]

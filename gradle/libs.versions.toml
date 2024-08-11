@@ -1,6 +1,8 @@
 [versions]
 
 kotlin = "2.0.20"
+ksp = "2.0.20-1.0.24"
+sweetspi = "0.1.2"
 
 # kotlin/kotlinx
 kotlin-dokka = "1.9.20"
@@ -30,6 +32,8 @@ kotlinx-bcv-gradle-plugin = { module = "org.jetbrains.kotlinx:binary-compatibili
 kotlinx-kover-gradle-plugin = { module = "org.jetbrains.kotlinx:kover-gradle-plugin", version.ref = "kotlinx-kover" }
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "android" }
 maven-publish-gradle-plugin = { module = "com.vanniktech:gradle-maven-publish-plugin", version.ref = "maven-publish" }
+ksp-gradle-plugin = { module = "com.google.devtools.ksp:symbol-processing-gradle-plugin", version.ref = "ksp" }
+sweetspi-gradle-plugin = { module = "dev.whyoleg.sweetspi:sweetspi-gradle-plugin", version.ref = "sweetspi" }
 
 apache-commons-compress = { module = "org.apache.commons:commons-compress", version.ref = "apache-commons-compress" }
 
@@ -63,3 +67,5 @@ kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref 
 kotlin-plugin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-dokka = { id = "org.jetbrains.dokka", version.ref = "kotlin-dokka" }
 android-library = { id = "com.android.library", version.ref = "android" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+sweetspi = { id = "dev.whyoleg.sweetspi", version.ref = "sweetspi" }

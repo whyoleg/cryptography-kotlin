@@ -7,10 +7,12 @@ package dev.whyoleg.cryptography.providers.webcrypto
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.providers.webcrypto.algorithms.*
+import dev.whyoleg.sweetspi.*
 
-internal val defaultProvider = lazy { WebCryptoCryptographyProvider }
+@ServiceProvider
+internal val defaultProvider by lazy { WebCryptoCryptographyProvider }
 
-public val CryptographyProvider.Companion.WebCrypto: CryptographyProvider by defaultProvider
+public val CryptographyProvider.Companion.WebCrypto: CryptographyProvider get() = defaultProvider
 
 internal object WebCryptoCryptographyProvider : CryptographyProvider() {
     override val name: String get() = "WebCrypto"

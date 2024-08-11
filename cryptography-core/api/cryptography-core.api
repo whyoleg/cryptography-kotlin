@@ -57,18 +57,7 @@ public final class dev/whyoleg/cryptography/CryptographyProvider$Companion {
 	public final fun getDefault ()Ldev/whyoleg/cryptography/CryptographyProvider;
 }
 
-public final class dev/whyoleg/cryptography/CryptographyProvider$Registry {
-	public static final field INSTANCE Ldev/whyoleg/cryptography/CryptographyProvider$Registry;
-	public final fun getRegisteredProviders ()Lkotlin/sequences/Sequence;
-	public final fun registerProvider (Ldev/whyoleg/cryptography/CryptographyProvider;)V
-	public final fun registerProvider (Lkotlin/Lazy;)V
-}
-
 public abstract interface annotation class dev/whyoleg/cryptography/CryptographyProviderApi : java/lang/annotation/Annotation {
-}
-
-public abstract interface class dev/whyoleg/cryptography/CryptographyProviderContainer {
-	public abstract fun getProvider ()Lkotlin/Lazy;
 }
 
 public abstract interface annotation class dev/whyoleg/cryptography/DelicateCryptographyApi : java/lang/annotation/Annotation {

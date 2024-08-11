@@ -7,10 +7,12 @@ package dev.whyoleg.cryptography.providers.apple
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.providers.apple.algorithms.*
+import dev.whyoleg.sweetspi.*
 
-private val defaultProvider = lazy { AppleCryptographyProvider }
+@ServiceProvider
+internal val defaultProvider by lazy { AppleCryptographyProvider }
 
-public val CryptographyProvider.Companion.Apple: CryptographyProvider by defaultProvider
+public val CryptographyProvider.Companion.Apple: CryptographyProvider get() = defaultProvider
 
 internal object AppleCryptographyProvider : CryptographyProvider() {
     override val name: String get() = "Apple"
@@ -37,8 +39,3 @@ internal object AppleCryptographyProvider : CryptographyProvider() {
         else      -> null
     } as A?
 }
-
-@Suppress("DEPRECATION")
-@OptIn(ExperimentalStdlibApi::class)
-@EagerInitialization
-private val initHook = CryptographyProvider.Registry.registerProvider(defaultProvider)

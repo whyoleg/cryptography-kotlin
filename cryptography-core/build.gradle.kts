@@ -3,10 +3,10 @@
  */
 
 import ckbuild.*
-import org.jetbrains.kotlin.gradle.*
 
 plugins {
     id("ckbuild.multiplatform-library")
+    id("ckbuild.multiplatform-sweetspi")
 }
 
 description = "cryptography-kotlin core API"
@@ -16,18 +16,6 @@ kotlin {
     jsTarget()
     nativeTargets()
     wasmTargets()
-
-    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-    applyDefaultHierarchyTemplate {
-        common {
-            group("nonJvm") {
-                withJs()
-                withWasmJs()
-                withWasmWasi()
-                group("native")
-            }
-        }
-    }
 
     sourceSets.commonMain.dependencies {
         api(projects.cryptographyBigint)

@@ -3,10 +3,3 @@
  */
 
 package dev.whyoleg.cryptography.providers.webcrypto
-
-import dev.whyoleg.cryptography.*
-
-@Suppress("DEPRECATION")
-@OptIn(ExperimentalStdlibApi::class)
-@EagerInitialization
-internal val initHook = CryptographyProvider.Registry.registerProvider(defaultProvider)
