@@ -33,7 +33,7 @@ jobs:
           ./gradlew
           build publishToMavenLocal
           --continue
-          -Pckbuild.skipTests=true
+          -Pckbuild.skipTestTasks=true
           -Pckbuild.warningsAsErrors=false
           -Pckbuild.kotlinVersionOverride=${{ matrix.kotlin-version }}
           -Pkotlin.experimental.tryNext=${{ matrix.try-next }}

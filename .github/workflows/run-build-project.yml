@@ -23,5 +23,5 @@ jobs:
           ./gradlew
           build publishToMavenLocal
           --continue
-          -Pckbuild.skipTests=true
-          -Pckbuild.skipNativeLink=true
+          -Pckbuild.skipTestTasks=true
+          -Pckbuild.skipLinkTasks=true

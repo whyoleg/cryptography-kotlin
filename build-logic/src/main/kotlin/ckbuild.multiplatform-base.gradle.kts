@@ -120,10 +120,10 @@ tasks.register("linkAll") {
     dependsOn(tasks.withType<KotlinNativeLink>())
 }
 
-if (providers.gradleProperty("ckbuild.skipTests").map(String::toBoolean).getOrElse(false)) {
+if (providers.gradleProperty("ckbuild.skipTestTasks").map(String::toBoolean).getOrElse(false)) {
     tasks.matching { it is AbstractTestTask || it is AndroidTestTask }.configureEach { onlyIf { false } }
 }
 
-if (providers.gradleProperty("ckbuild.skipNativeLink").map(String::toBoolean).getOrElse(false)) {
+if (providers.gradleProperty("ckbuild.skipLinkTasks").map(String::toBoolean).getOrElse(false)) {
     tasks.withType<KotlinNativeLink>().configureEach { onlyIf { false } }
 }
