@@ -33,6 +33,7 @@ projects("cryptography-kotlin") {
 
     // core util modules
     module("cryptography-bigint")
+    module("cryptography-binary")
     module("cryptography-random")
     folder("cryptography-serialization") {
         module("pem")

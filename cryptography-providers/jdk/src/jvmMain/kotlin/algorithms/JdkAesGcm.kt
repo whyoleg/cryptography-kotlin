@@ -6,6 +6,7 @@ package dev.whyoleg.cryptography.providers.jdk.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
+import dev.whyoleg.cryptography.binary.BinarySize
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.cipher.*
 import dev.whyoleg.cryptography.providers.jdk.*

@@ -30,6 +30,7 @@ kotlin {
     }
 
     sourceSets.commonMain.dependencies {
+        api(projects.cryptographyBinary)
         api(projects.cryptographyBigint)
         api(projects.cryptographyRandom)
     }

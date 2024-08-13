@@ -138,7 +138,7 @@ abstract interface <#A: dev.whyoleg.cryptography.algorithms.asymmetric/EC.Public
 }
 
 abstract interface <#A: dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PublicKey, #B: dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PrivateKey, #C: dev.whyoleg.cryptography.algorithms.asymmetric/RSA.KeyPair<#A, #B>> dev.whyoleg.cryptography.algorithms.asymmetric/RSA : dev.whyoleg.cryptography/CryptographyAlgorithm { // dev.whyoleg.cryptography.algorithms.asymmetric/RSA|null[0]
-    abstract fun keyPairGenerator(dev.whyoleg.cryptography/BinarySize = ..., dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest/Digest> = ..., dev.whyoleg.cryptography.bigint/BigInt = ...): dev.whyoleg.cryptography.materials.key/KeyGenerator<#C> // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.keyPairGenerator|keyPairGenerator(dev.whyoleg.cryptography.BinarySize;dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest.Digest>;dev.whyoleg.cryptography.bigint.BigInt){}[0]
+    abstract fun keyPairGenerator(dev.whyoleg.cryptography.binary/BinarySize = ..., dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest/Digest> = ..., dev.whyoleg.cryptography.bigint/BigInt = ...): dev.whyoleg.cryptography.materials.key/KeyGenerator<#C> // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.keyPairGenerator|keyPairGenerator(dev.whyoleg.cryptography.binary.BinarySize;dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest.Digest>;dev.whyoleg.cryptography.bigint.BigInt){}[0]
     abstract fun privateKeyDecoder(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest/Digest>): dev.whyoleg.cryptography.materials.key/KeyDecoder<dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PrivateKey.Format, #B> // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.privateKeyDecoder|privateKeyDecoder(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest.Digest>){}[0]
     abstract fun publicKeyDecoder(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest/Digest>): dev.whyoleg.cryptography.materials.key/KeyDecoder<dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PublicKey.Format, #A> // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.publicKeyDecoder|publicKeyDecoder(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest.Digest>){}[0]
 
@@ -193,12 +193,12 @@ abstract interface <#A: dev.whyoleg.cryptography.algorithms.asymmetric/RSA.Publi
 
         abstract interface PrivateKey : dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PrivateKey { // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PSS.PrivateKey|null[0]
             abstract fun signatureGenerator(): dev.whyoleg.cryptography.operations.signature/SignatureGenerator // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PSS.PrivateKey.signatureGenerator|signatureGenerator(){}[0]
-            abstract fun signatureGenerator(dev.whyoleg.cryptography/BinarySize): dev.whyoleg.cryptography.operations.signature/SignatureGenerator // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PSS.PrivateKey.signatureGenerator|signatureGenerator(dev.whyoleg.cryptography.BinarySize){}[0]
+            abstract fun signatureGenerator(dev.whyoleg.cryptography.binary/BinarySize): dev.whyoleg.cryptography.operations.signature/SignatureGenerator // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PSS.PrivateKey.signatureGenerator|signatureGenerator(dev.whyoleg.cryptography.binary.BinarySize){}[0]
         }
 
         abstract interface PublicKey : dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PublicKey { // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PSS.PublicKey|null[0]
             abstract fun signatureVerifier(): dev.whyoleg.cryptography.operations.signature/SignatureVerifier // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PSS.PublicKey.signatureVerifier|signatureVerifier(){}[0]
-            abstract fun signatureVerifier(dev.whyoleg.cryptography/BinarySize): dev.whyoleg.cryptography.operations.signature/SignatureVerifier // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PSS.PublicKey.signatureVerifier|signatureVerifier(dev.whyoleg.cryptography.BinarySize){}[0]
+            abstract fun signatureVerifier(dev.whyoleg.cryptography.binary/BinarySize): dev.whyoleg.cryptography.operations.signature/SignatureVerifier // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PSS.PublicKey.signatureVerifier|signatureVerifier(dev.whyoleg.cryptography.binary.BinarySize){}[0]
         }
 
         final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PSS> // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PSS.Companion|null[0]
@@ -364,7 +364,7 @@ abstract interface <#A: dev.whyoleg.cryptography.algorithms.symmetric/AES.Key> d
             open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.symmetric/AES.GCM> // dev.whyoleg.cryptography.algorithms.symmetric/AES.GCM.id.<get-id>|<get-id>(){}[0]
 
         abstract interface Key : dev.whyoleg.cryptography.algorithms.symmetric/AES.Key { // dev.whyoleg.cryptography.algorithms.symmetric/AES.GCM.Key|null[0]
-            abstract fun cipher(dev.whyoleg.cryptography/BinarySize = ...): dev.whyoleg.cryptography.operations.cipher/AuthenticatedCipher // dev.whyoleg.cryptography.algorithms.symmetric/AES.GCM.Key.cipher|cipher(dev.whyoleg.cryptography.BinarySize){}[0]
+            abstract fun cipher(dev.whyoleg.cryptography.binary/BinarySize = ...): dev.whyoleg.cryptography.operations.cipher/AuthenticatedCipher // dev.whyoleg.cryptography.algorithms.symmetric/AES.GCM.Key.cipher|cipher(dev.whyoleg.cryptography.binary.BinarySize){}[0]
         }
 
         final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.symmetric/AES.GCM> // dev.whyoleg.cryptography.algorithms.symmetric/AES.GCM.Companion|null[0]
@@ -586,10 +586,10 @@ final class dev.whyoleg.cryptography/CryptographyAlgorithmNotFoundException : de
 }
 
 final value class dev.whyoleg.cryptography.algorithms.symmetric/SymmetricKeySize { // dev.whyoleg.cryptography.algorithms.symmetric/SymmetricKeySize|null[0]
-    constructor <init>(dev.whyoleg.cryptography/BinarySize) // dev.whyoleg.cryptography.algorithms.symmetric/SymmetricKeySize.<init>|<init>(dev.whyoleg.cryptography.BinarySize){}[0]
+    constructor <init>(dev.whyoleg.cryptography.binary/BinarySize) // dev.whyoleg.cryptography.algorithms.symmetric/SymmetricKeySize.<init>|<init>(dev.whyoleg.cryptography.binary.BinarySize){}[0]
 
     final val value // dev.whyoleg.cryptography.algorithms.symmetric/SymmetricKeySize.value|{}value[0]
-        final fun <get-value>(): dev.whyoleg.cryptography/BinarySize // dev.whyoleg.cryptography.algorithms.symmetric/SymmetricKeySize.value.<get-value>|<get-value>(){}[0]
+        final fun <get-value>(): dev.whyoleg.cryptography.binary/BinarySize // dev.whyoleg.cryptography.algorithms.symmetric/SymmetricKeySize.value.<get-value>|<get-value>(){}[0]
 
     final fun equals(kotlin/Any?): kotlin/Boolean // dev.whyoleg.cryptography.algorithms.symmetric/SymmetricKeySize.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // dev.whyoleg.cryptography.algorithms.symmetric/SymmetricKeySize.hashCode|hashCode(){}[0]
@@ -602,30 +602,6 @@ final value class dev.whyoleg.cryptography.algorithms.symmetric/SymmetricKeySize
             final fun <get-B192>(): dev.whyoleg.cryptography.algorithms.symmetric/SymmetricKeySize // dev.whyoleg.cryptography.algorithms.symmetric/SymmetricKeySize.Companion.B192.<get-B192>|<get-B192>(){}[0]
         final val B256 // dev.whyoleg.cryptography.algorithms.symmetric/SymmetricKeySize.Companion.B256|{}B256[0]
             final fun <get-B256>(): dev.whyoleg.cryptography.algorithms.symmetric/SymmetricKeySize // dev.whyoleg.cryptography.algorithms.symmetric/SymmetricKeySize.Companion.B256.<get-B256>|<get-B256>(){}[0]
-    }
-}
-
-final value class dev.whyoleg.cryptography/BinarySize : kotlin/Comparable<dev.whyoleg.cryptography/BinarySize> { // dev.whyoleg.cryptography/BinarySize|null[0]
-    final val inBits // dev.whyoleg.cryptography/BinarySize.inBits|{}inBits[0]
-        final fun <get-inBits>(): kotlin/Int // dev.whyoleg.cryptography/BinarySize.inBits.<get-inBits>|<get-inBits>(){}[0]
-    final val inBytes // dev.whyoleg.cryptography/BinarySize.inBytes|{}inBytes[0]
-        final fun <get-inBytes>(): kotlin/Int // dev.whyoleg.cryptography/BinarySize.inBytes.<get-inBytes>|<get-inBytes>(){}[0]
-
-    final fun compareTo(dev.whyoleg.cryptography/BinarySize): kotlin/Int // dev.whyoleg.cryptography/BinarySize.compareTo|compareTo(dev.whyoleg.cryptography.BinarySize){}[0]
-    final fun div(kotlin/Int): dev.whyoleg.cryptography/BinarySize // dev.whyoleg.cryptography/BinarySize.div|div(kotlin.Int){}[0]
-    final fun equals(kotlin/Any?): kotlin/Boolean // dev.whyoleg.cryptography/BinarySize.equals|equals(kotlin.Any?){}[0]
-    final fun hashCode(): kotlin/Int // dev.whyoleg.cryptography/BinarySize.hashCode|hashCode(){}[0]
-    final fun minus(dev.whyoleg.cryptography/BinarySize): dev.whyoleg.cryptography/BinarySize // dev.whyoleg.cryptography/BinarySize.minus|minus(dev.whyoleg.cryptography.BinarySize){}[0]
-    final fun plus(dev.whyoleg.cryptography/BinarySize): dev.whyoleg.cryptography/BinarySize // dev.whyoleg.cryptography/BinarySize.plus|plus(dev.whyoleg.cryptography.BinarySize){}[0]
-    final fun rem(kotlin/Int): dev.whyoleg.cryptography/BinarySize // dev.whyoleg.cryptography/BinarySize.rem|rem(kotlin.Int){}[0]
-    final fun times(kotlin/Int): dev.whyoleg.cryptography/BinarySize // dev.whyoleg.cryptography/BinarySize.times|times(kotlin.Int){}[0]
-    final fun toString(): kotlin/String // dev.whyoleg.cryptography/BinarySize.toString|toString(){}[0]
-
-    final object Companion { // dev.whyoleg.cryptography/BinarySize.Companion|null[0]
-        final val bits // dev.whyoleg.cryptography/BinarySize.Companion.bits|@kotlin.Int{}bits[0]
-            final fun (kotlin/Int).<get-bits>(): dev.whyoleg.cryptography/BinarySize // dev.whyoleg.cryptography/BinarySize.Companion.bits.<get-bits>|<get-bits>@kotlin.Int(){}[0]
-        final val bytes // dev.whyoleg.cryptography/BinarySize.Companion.bytes|@kotlin.Int{}bytes[0]
-            final fun (kotlin/Int).<get-bytes>(): dev.whyoleg.cryptography/BinarySize // dev.whyoleg.cryptography/BinarySize.Companion.bytes.<get-bytes>|<get-bytes>@kotlin.Int(){}[0]
     }
 }
 

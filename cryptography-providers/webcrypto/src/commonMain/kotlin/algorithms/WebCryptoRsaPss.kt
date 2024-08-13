@@ -4,9 +4,9 @@
 
 package dev.whyoleg.cryptography.providers.webcrypto.algorithms
 
-import dev.whyoleg.cryptography.*
-import dev.whyoleg.cryptography.BinarySize.Companion.bytes
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
+import dev.whyoleg.cryptography.binary.*
+import dev.whyoleg.cryptography.binary.BinarySize.Companion.bytes
 import dev.whyoleg.cryptography.operations.signature.*
 import dev.whyoleg.cryptography.providers.webcrypto.internal.*
 import dev.whyoleg.cryptography.providers.webcrypto.materials.*

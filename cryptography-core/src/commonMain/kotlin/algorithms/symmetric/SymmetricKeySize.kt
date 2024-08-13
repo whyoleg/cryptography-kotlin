@@ -4,8 +4,8 @@
 
 package dev.whyoleg.cryptography.algorithms.symmetric
 
-import dev.whyoleg.cryptography.*
-import dev.whyoleg.cryptography.BinarySize.Companion.bits
+import dev.whyoleg.cryptography.binary.*
+import dev.whyoleg.cryptography.binary.BinarySize.Companion.bits
 import kotlin.jvm.*
 
 @JvmInline

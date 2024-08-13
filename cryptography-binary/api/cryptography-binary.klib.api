@@ -1,0 +1,51 @@
+// Klib ABI Dump
+// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, wasmJs, wasmWasi, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <dev.whyoleg.cryptography:cryptography-binary>
+final value class dev.whyoleg.cryptography.binary/BinaryData { // dev.whyoleg.cryptography.binary/BinaryData|null[0]
+    final val size // dev.whyoleg.cryptography.binary/BinaryData.size|{}size[0]
+        final fun <get-size>(): dev.whyoleg.cryptography.binary/BinarySize // dev.whyoleg.cryptography.binary/BinaryData.size.<get-size>|<get-size>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.whyoleg.cryptography.binary/BinaryData.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.whyoleg.cryptography.binary/BinaryData.hashCode|hashCode(){}[0]
+    final fun toBase64String(kotlin.io.encoding/Base64 = ...): kotlin/String // dev.whyoleg.cryptography.binary/BinaryData.toBase64String|toBase64String(kotlin.io.encoding.Base64){}[0]
+    final fun toByteArray(): kotlin/ByteArray // dev.whyoleg.cryptography.binary/BinaryData.toByteArray|toByteArray(){}[0]
+    final fun toHexString(kotlin.text/HexFormat = ...): kotlin/String // dev.whyoleg.cryptography.binary/BinaryData.toHexString|toHexString(kotlin.text.HexFormat){}[0]
+    final fun toString(): kotlin/String // dev.whyoleg.cryptography.binary/BinaryData.toString|toString(){}[0]
+    final fun toUtf8String(): kotlin/String // dev.whyoleg.cryptography.binary/BinaryData.toUtf8String|toUtf8String(){}[0]
+
+    final object Companion { // dev.whyoleg.cryptography.binary/BinaryData.Companion|null[0]
+        final fun fromBase64String(kotlin/String, kotlin.io.encoding/Base64): dev.whyoleg.cryptography.binary/BinaryData // dev.whyoleg.cryptography.binary/BinaryData.Companion.fromBase64String|fromBase64String(kotlin.String;kotlin.io.encoding.Base64){}[0]
+        final fun fromByteArray(kotlin/ByteArray): dev.whyoleg.cryptography.binary/BinaryData // dev.whyoleg.cryptography.binary/BinaryData.Companion.fromByteArray|fromByteArray(kotlin.ByteArray){}[0]
+        final fun fromHexString(kotlin/String, kotlin.text/HexFormat = ...): dev.whyoleg.cryptography.binary/BinaryData // dev.whyoleg.cryptography.binary/BinaryData.Companion.fromHexString|fromHexString(kotlin.String;kotlin.text.HexFormat){}[0]
+        final fun fromUtf8String(kotlin/String): dev.whyoleg.cryptography.binary/BinaryData // dev.whyoleg.cryptography.binary/BinaryData.Companion.fromUtf8String|fromUtf8String(kotlin.String){}[0]
+    }
+}
+
+final value class dev.whyoleg.cryptography.binary/BinarySize : kotlin/Comparable<dev.whyoleg.cryptography.binary/BinarySize> { // dev.whyoleg.cryptography.binary/BinarySize|null[0]
+    final val inBits // dev.whyoleg.cryptography.binary/BinarySize.inBits|{}inBits[0]
+        final fun <get-inBits>(): kotlin/Int // dev.whyoleg.cryptography.binary/BinarySize.inBits.<get-inBits>|<get-inBits>(){}[0]
+    final val inBytes // dev.whyoleg.cryptography.binary/BinarySize.inBytes|{}inBytes[0]
+        final fun <get-inBytes>(): kotlin/Int // dev.whyoleg.cryptography.binary/BinarySize.inBytes.<get-inBytes>|<get-inBytes>(){}[0]
+
+    final fun compareTo(dev.whyoleg.cryptography.binary/BinarySize): kotlin/Int // dev.whyoleg.cryptography.binary/BinarySize.compareTo|compareTo(dev.whyoleg.cryptography.binary.BinarySize){}[0]
+    final fun div(kotlin/Int): dev.whyoleg.cryptography.binary/BinarySize // dev.whyoleg.cryptography.binary/BinarySize.div|div(kotlin.Int){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.whyoleg.cryptography.binary/BinarySize.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.whyoleg.cryptography.binary/BinarySize.hashCode|hashCode(){}[0]
+    final fun minus(dev.whyoleg.cryptography.binary/BinarySize): dev.whyoleg.cryptography.binary/BinarySize // dev.whyoleg.cryptography.binary/BinarySize.minus|minus(dev.whyoleg.cryptography.binary.BinarySize){}[0]
+    final fun plus(dev.whyoleg.cryptography.binary/BinarySize): dev.whyoleg.cryptography.binary/BinarySize // dev.whyoleg.cryptography.binary/BinarySize.plus|plus(dev.whyoleg.cryptography.binary.BinarySize){}[0]
+    final fun rem(kotlin/Int): dev.whyoleg.cryptography.binary/BinarySize // dev.whyoleg.cryptography.binary/BinarySize.rem|rem(kotlin.Int){}[0]
+    final fun times(kotlin/Int): dev.whyoleg.cryptography.binary/BinarySize // dev.whyoleg.cryptography.binary/BinarySize.times|times(kotlin.Int){}[0]
+    final fun toString(): kotlin/String // dev.whyoleg.cryptography.binary/BinarySize.toString|toString(){}[0]
+
+    final object Companion { // dev.whyoleg.cryptography.binary/BinarySize.Companion|null[0]
+        final val bits // dev.whyoleg.cryptography.binary/BinarySize.Companion.bits|@kotlin.Int{}bits[0]
+            final fun (kotlin/Int).<get-bits>(): dev.whyoleg.cryptography.binary/BinarySize // dev.whyoleg.cryptography.binary/BinarySize.Companion.bits.<get-bits>|<get-bits>@kotlin.Int(){}[0]
+        final val bytes // dev.whyoleg.cryptography.binary/BinarySize.Companion.bytes|@kotlin.Int{}bytes[0]
+            final fun (kotlin/Int).<get-bytes>(): dev.whyoleg.cryptography.binary/BinarySize // dev.whyoleg.cryptography.binary/BinarySize.Companion.bytes.<get-bytes>|<get-bytes>@kotlin.Int(){}[0]
+    }
+}
