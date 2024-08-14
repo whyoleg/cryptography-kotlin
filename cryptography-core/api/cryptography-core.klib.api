@@ -401,9 +401,9 @@ abstract interface <#A: dev.whyoleg.cryptography.materials.key/Key> dev.whyoleg.
     open suspend fun generateKey(): #A // dev.whyoleg.cryptography.materials.key/KeyGenerator.generateKey|generateKey(){}[0]
 }
 
-abstract interface <#A: dev.whyoleg.cryptography.materials.key/Key> dev.whyoleg.cryptography.operations/SharedSecretDerivation { // dev.whyoleg.cryptography.operations/SharedSecretDerivation|null[0]
-    abstract fun deriveSharedSecretBlocking(#A): kotlin/ByteArray // dev.whyoleg.cryptography.operations/SharedSecretDerivation.deriveSharedSecretBlocking|deriveSharedSecretBlocking(1:0){}[0]
-    abstract suspend fun deriveSharedSecret(#A): kotlin/ByteArray // dev.whyoleg.cryptography.operations/SharedSecretDerivation.deriveSharedSecret|deriveSharedSecret(1:0){}[0]
+abstract interface <#A: dev.whyoleg.cryptography.materials.key/Key> dev.whyoleg.cryptography.operations/SharedSecretGenerator { // dev.whyoleg.cryptography.operations/SharedSecretGenerator|null[0]
+    abstract fun generateSharedSecretBlocking(#A): kotlin/ByteArray // dev.whyoleg.cryptography.operations/SharedSecretGenerator.generateSharedSecretBlocking|generateSharedSecretBlocking(1:0){}[0]
+    abstract suspend fun generateSharedSecret(#A): kotlin/ByteArray // dev.whyoleg.cryptography.operations/SharedSecretGenerator.generateSharedSecret|generateSharedSecret(1:0){}[0]
 }
 
 abstract interface <#A: dev.whyoleg.cryptography.materials.key/KeyFormat, #B: dev.whyoleg.cryptography.materials.key/Key> dev.whyoleg.cryptography.materials.key/KeyDecoder { // dev.whyoleg.cryptography.materials.key/KeyDecoder|null[0]
@@ -423,11 +423,11 @@ abstract interface dev.whyoleg.cryptography.algorithms.asymmetric/ECDH : dev.why
     abstract interface KeyPair : dev.whyoleg.cryptography.algorithms.asymmetric/EC.KeyPair<dev.whyoleg.cryptography.algorithms.asymmetric/ECDH.PublicKey, dev.whyoleg.cryptography.algorithms.asymmetric/ECDH.PrivateKey> // dev.whyoleg.cryptography.algorithms.asymmetric/ECDH.KeyPair|null[0]
 
     abstract interface PrivateKey : dev.whyoleg.cryptography.algorithms.asymmetric/EC.PrivateKey { // dev.whyoleg.cryptography.algorithms.asymmetric/ECDH.PrivateKey|null[0]
-        abstract fun sharedSecretDerivation(): dev.whyoleg.cryptography.operations/SharedSecretDerivation<dev.whyoleg.cryptography.algorithms.asymmetric/ECDH.PublicKey> // dev.whyoleg.cryptography.algorithms.asymmetric/ECDH.PrivateKey.sharedSecretDerivation|sharedSecretDerivation(){}[0]
+        abstract fun sharedSecretGenerator(): dev.whyoleg.cryptography.operations/SharedSecretGenerator<dev.whyoleg.cryptography.algorithms.asymmetric/ECDH.PublicKey> // dev.whyoleg.cryptography.algorithms.asymmetric/ECDH.PrivateKey.sharedSecretGenerator|sharedSecretGenerator(){}[0]
     }
 
     abstract interface PublicKey : dev.whyoleg.cryptography.algorithms.asymmetric/EC.PublicKey { // dev.whyoleg.cryptography.algorithms.asymmetric/ECDH.PublicKey|null[0]
-        abstract fun sharedSecretDerivation(): dev.whyoleg.cryptography.operations/SharedSecretDerivation<dev.whyoleg.cryptography.algorithms.asymmetric/ECDH.PrivateKey> // dev.whyoleg.cryptography.algorithms.asymmetric/ECDH.PublicKey.sharedSecretDerivation|sharedSecretDerivation(){}[0]
+        abstract fun sharedSecretGenerator(): dev.whyoleg.cryptography.operations/SharedSecretGenerator<dev.whyoleg.cryptography.algorithms.asymmetric/ECDH.PrivateKey> // dev.whyoleg.cryptography.algorithms.asymmetric/ECDH.PublicKey.sharedSecretGenerator|sharedSecretGenerator(){}[0]
     }
 
     final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.asymmetric/ECDH> // dev.whyoleg.cryptography.algorithms.asymmetric/ECDH.Companion|null[0]

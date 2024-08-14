@@ -22,10 +22,10 @@ internal object WebCryptoEcdh : WebCryptoEc<ECDH.PublicKey, ECDH.PrivateKey, ECD
 
     private class EcdhPublicKey(
         publicKey: CryptoKey,
-    ) : EcPublicKey(publicKey), ECDH.PublicKey, SharedSecretDerivation<ECDH.PrivateKey> {
-        override fun sharedSecretDerivation(): SharedSecretDerivation<ECDH.PrivateKey> = this
+    ) : EcPublicKey(publicKey), ECDH.PublicKey, SharedSecretGenerator<ECDH.PrivateKey> {
+        override fun sharedSecretGenerator(): SharedSecretGenerator<ECDH.PrivateKey> = this
 
-        override suspend fun deriveSharedSecret(other: ECDH.PrivateKey): ByteArray {
+        override suspend fun generateSharedSecret(other: ECDH.PrivateKey): ByteArray {
             check(other is EcdhPrivateKey)
             return WebCrypto.deriveBits(
                 algorithm = EcdhKeyDeriveAlgorithm(publicKey),
@@ -34,14 +34,14 @@ internal object WebCryptoEcdh : WebCryptoEc<ECDH.PublicKey, ECDH.PrivateKey, ECD
             )
         }
 
-        override fun deriveSharedSecretBlocking(other: ECDH.PrivateKey): ByteArray = nonBlocking()
+        override fun generateSharedSecretBlocking(other: ECDH.PrivateKey): ByteArray = nonBlocking()
     }
 
     private class EcdhPrivateKey(
         privateKey: CryptoKey,
-    ) : EcPrivateKey(privateKey), ECDH.PrivateKey, SharedSecretDerivation<ECDH.PublicKey> {
-        override fun sharedSecretDerivation(): SharedSecretDerivation<ECDH.PublicKey> = this
-        override suspend fun deriveSharedSecret(other: ECDH.PublicKey): ByteArray {
+    ) : EcPrivateKey(privateKey), ECDH.PrivateKey, SharedSecretGenerator<ECDH.PublicKey> {
+        override fun sharedSecretGenerator(): SharedSecretGenerator<ECDH.PublicKey> = this
+        override suspend fun generateSharedSecret(other: ECDH.PublicKey): ByteArray {
             check(other is EcdhPublicKey)
             return WebCrypto.deriveBits(
                 algorithm = EcdhKeyDeriveAlgorithm(other.publicKey),
@@ -50,6 +50,6 @@ internal object WebCryptoEcdh : WebCryptoEc<ECDH.PublicKey, ECDH.PrivateKey, ECD
             )
         }
 
-        override fun deriveSharedSecretBlocking(other: ECDH.PublicKey): ByteArray = nonBlocking()
+        override fun generateSharedSecretBlocking(other: ECDH.PublicKey): ByteArray = nonBlocking()
     }
 }

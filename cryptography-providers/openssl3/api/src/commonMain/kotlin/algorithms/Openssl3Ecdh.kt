@@ -82,7 +82,7 @@ internal object Openssl3Ecdh : ECDH {
 
     private class EcPrivateKey(
         key: CPointer<EVP_PKEY>,
-    ) : ECDH.PrivateKey, Openssl3PrivateKeyEncodable<EC.PrivateKey.Format>(key), SharedSecretDerivation<ECDH.PublicKey> {
+    ) : ECDH.PrivateKey, Openssl3PrivateKeyEncodable<EC.PrivateKey.Format>(key), SharedSecretGenerator<ECDH.PublicKey> {
         override fun outputType(format: EC.PrivateKey.Format): String = when (format) {
             EC.PrivateKey.Format.DER, EC.PrivateKey.Format.DER.SEC1 -> "DER"
             EC.PrivateKey.Format.PEM, EC.PrivateKey.Format.PEM.SEC1 -> "PEM"
@@ -94,20 +94,20 @@ internal object Openssl3Ecdh : ECDH {
             else                                                         -> super.outputStruct(format)
         }
 
-        override fun sharedSecretDerivation(): SharedSecretDerivation<ECDH.PublicKey> = this
+        override fun sharedSecretGenerator(): SharedSecretGenerator<ECDH.PublicKey> = this
 
-        override fun deriveSharedSecretBlocking(other: ECDH.PublicKey): ByteArray {
+        override fun generateSharedSecretBlocking(other: ECDH.PublicKey): ByteArray {
             check(other is EcPublicKey)
 
             return deriveSharedSecret(publicKey = other.key, privateKey = key)
         }
 
-        override suspend fun deriveSharedSecret(other: ECDH.PublicKey): ByteArray = deriveSharedSecretBlocking(other)
+        override suspend fun generateSharedSecret(other: ECDH.PublicKey): ByteArray = generateSharedSecretBlocking(other)
     }
 
     private class EcPublicKey(
         key: CPointer<EVP_PKEY>,
-    ) : ECDH.PublicKey, Openssl3PublicKeyEncodable<EC.PublicKey.Format>(key), SharedSecretDerivation<ECDH.PrivateKey> {
+    ) : ECDH.PublicKey, Openssl3PublicKeyEncodable<EC.PublicKey.Format>(key), SharedSecretGenerator<ECDH.PrivateKey> {
         override fun outputType(format: EC.PublicKey.Format): String = when (format) {
             EC.PublicKey.Format.DER -> "DER"
             EC.PublicKey.Format.PEM -> "PEM"
@@ -120,15 +120,15 @@ internal object Openssl3Ecdh : ECDH {
             else                    -> super.encodeToBlocking(format)
         }
 
-        override fun sharedSecretDerivation(): SharedSecretDerivation<ECDH.PrivateKey> = this
+        override fun sharedSecretGenerator(): SharedSecretGenerator<ECDH.PrivateKey> = this
 
-        override fun deriveSharedSecretBlocking(other: ECDH.PrivateKey): ByteArray {
+        override fun generateSharedSecretBlocking(other: ECDH.PrivateKey): ByteArray {
             check(other is EcPrivateKey)
 
             return deriveSharedSecret(publicKey = key, privateKey = other.key)
         }
 
-        override suspend fun deriveSharedSecret(other: ECDH.PrivateKey): ByteArray = deriveSharedSecretBlocking(other)
+        override suspend fun generateSharedSecret(other: ECDH.PrivateKey): ByteArray = generateSharedSecretBlocking(other)
     }
 }
 

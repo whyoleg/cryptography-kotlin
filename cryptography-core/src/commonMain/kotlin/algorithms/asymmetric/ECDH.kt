@@ -18,11 +18,11 @@ public interface ECDH : EC<ECDH.PublicKey, ECDH.PrivateKey, ECDH.KeyPair> {
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface PublicKey : EC.PublicKey {
-        public fun sharedSecretDerivation(): SharedSecretDerivation<PrivateKey>
+        public fun sharedSecretGenerator(): SharedSecretGenerator<PrivateKey>
     }
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface PrivateKey : EC.PrivateKey {
-        public fun sharedSecretDerivation(): SharedSecretDerivation<PublicKey>
+        public fun sharedSecretGenerator(): SharedSecretGenerator<PublicKey>
     }
 }

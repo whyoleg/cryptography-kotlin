@@ -32,10 +32,10 @@ abstract class EcdhCompatibilityTest(
                 ) { otherKeyPair, otherKeyReference, _ ->
 
                     val secrets = listOf(
-                        keyPair.privateKey.sharedSecretDerivation().deriveSharedSecret(otherKeyPair.publicKey),
-                        keyPair.publicKey.sharedSecretDerivation().deriveSharedSecret(otherKeyPair.privateKey),
-                        otherKeyPair.privateKey.sharedSecretDerivation().deriveSharedSecret(keyPair.publicKey),
-                        otherKeyPair.publicKey.sharedSecretDerivation().deriveSharedSecret(keyPair.privateKey),
+                        keyPair.privateKey.sharedSecretGenerator().generateSharedSecret(otherKeyPair.publicKey),
+                        keyPair.publicKey.sharedSecretGenerator().generateSharedSecret(otherKeyPair.privateKey),
+                        otherKeyPair.privateKey.sharedSecretGenerator().generateSharedSecret(keyPair.publicKey),
+                        otherKeyPair.publicKey.sharedSecretGenerator().generateSharedSecret(keyPair.privateKey),
                     )
 
                     repeat(secrets.size) { i ->
@@ -69,12 +69,12 @@ abstract class EcdhCompatibilityTest(
                     otherPrivateKeys.forEach { otherPrivateKey ->
                         assertContentEquals(
                             sharedSecret,
-                            publicKey.sharedSecretDerivation().deriveSharedSecret(otherPrivateKey),
+                            publicKey.sharedSecretGenerator().generateSharedSecret(otherPrivateKey),
                             "Public + Other Private"
                         )
                         assertContentEquals(
                             sharedSecret,
-                            otherPrivateKey.sharedSecretDerivation().deriveSharedSecret(publicKey),
+                            otherPrivateKey.sharedSecretGenerator().generateSharedSecret(publicKey),
                             "Other Private + Public"
                         )
                     }
@@ -83,12 +83,12 @@ abstract class EcdhCompatibilityTest(
                     otherPublicKeys.forEach { otherPublicKey ->
                         assertContentEquals(
                             sharedSecret,
-                            otherPublicKey.sharedSecretDerivation().deriveSharedSecret(privateKey),
+                            otherPublicKey.sharedSecretGenerator().generateSharedSecret(privateKey),
                             "Other Public + Private"
                         )
                         assertContentEquals(
                             sharedSecret,
-                            privateKey.sharedSecretDerivation().deriveSharedSecret(otherPublicKey),
+                            privateKey.sharedSecretGenerator().generateSharedSecret(otherPublicKey),
                             "Private + Other Public"
                         )
                     }
