@@ -5,6 +5,7 @@
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
 
 import dev.whyoleg.cryptography.algorithms.symmetric.*
+import dev.whyoleg.cryptography.binary.*
 import dev.whyoleg.cryptography.operations.cipher.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
@@ -13,14 +14,14 @@ import kotlin.experimental.*
 import kotlin.native.ref.*
 
 internal object Openssl3AesEcb : AES.ECB, Openssl3Aes<AES.ECB.Key>() {
-    override fun wrapKey(keySize: SymmetricKeySize, key: ByteArray): AES.ECB.Key = AesEcbKey(keySize, key)
+    override fun wrapKey(keySize: BinarySize, key: ByteArray): AES.ECB.Key = AesEcbKey(keySize, key)
 
-    private class AesEcbKey(keySize: SymmetricKeySize, key: ByteArray) : AES.ECB.Key, AesKey(key) {
+    private class AesEcbKey(keySize: BinarySize, key: ByteArray) : AES.ECB.Key, AesKey(key) {
         private val algorithm = when (keySize) {
-            SymmetricKeySize.B128 -> "AES-128-ECB"
-            SymmetricKeySize.B192 -> "AES-192-ECB"
-            SymmetricKeySize.B256 -> "AES-256-ECB"
-            else                  -> error("Unsupported key size")
+            AES.Key.Size.B128 -> "AES-128-ECB"
+            AES.Key.Size.B192 -> "AES-192-ECB"
+            AES.Key.Size.B256 -> "AES-256-ECB"
+            else              -> error("Unsupported key size")
         }
 
         override fun cipher(padding: Boolean): Cipher = AesEcbCipher(algorithm, key, padding)

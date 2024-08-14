@@ -5,6 +5,7 @@
 package dev.whyoleg.cryptography.providers.apple.algorithms
 
 import dev.whyoleg.cryptography.algorithms.symmetric.*
+import dev.whyoleg.cryptography.binary.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.random.*
 
@@ -13,8 +14,8 @@ internal abstract class CCAes<K : AES.Key> : AES<K> {
 
     final override fun keyDecoder(): KeyDecoder<AES.Key.Format, K> = AesKeyDecoder()
 
-    final override fun keyGenerator(keySize: SymmetricKeySize): KeyGenerator<K> =
-        AesCtrKeyGenerator(keySize.value.inBytes)
+    final override fun keyGenerator(keySize: BinarySize): KeyGenerator<K> =
+        AesCtrKeyGenerator(keySize.inBytes)
 
     private inner class AesKeyDecoder : KeyDecoder<AES.Key.Format, K> {
         override fun decodeFromBlocking(format: AES.Key.Format, input: ByteArray): K = when (format) {

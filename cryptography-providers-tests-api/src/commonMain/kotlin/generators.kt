@@ -11,8 +11,8 @@ import dev.whyoleg.cryptography.binary.BinarySize
 import dev.whyoleg.cryptography.binary.BinarySize.Companion.bits
 import dev.whyoleg.cryptography.materials.key.*
 
-inline fun generateSymmetricKeySize(block: (keySize: SymmetricKeySize) -> Unit) {
-    generate(block, SymmetricKeySize.B128, SymmetricKeySize.B192, SymmetricKeySize.B256)
+inline fun generateSymmetricKeySize(block: (keySize: BinarySize) -> Unit) {
+    generate(block, AES.Key.Size.B128, AES.Key.Size.B192, AES.Key.Size.B256)
 }
 
 inline fun generateRsaKeySizes(block: (keySize: BinarySize) -> Unit) {

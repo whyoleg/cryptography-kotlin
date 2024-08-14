@@ -6,6 +6,7 @@ package dev.whyoleg.cryptography.providers.jdk.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
+import dev.whyoleg.cryptography.binary.BinarySize
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.providers.jdk.*
 import dev.whyoleg.cryptography.providers.jdk.materials.*
@@ -26,8 +27,8 @@ internal class JdkAesCtr(
     private val keyDecoder = JdkSecretKeyDecoder<AES.Key.Format, _>("AES", keyWrapper)
 
     override fun keyDecoder(): KeyDecoder<AES.Key.Format, AES.CTR.Key> = keyDecoder
-    override fun keyGenerator(keySize: SymmetricKeySize): KeyGenerator<AES.CTR.Key> = JdkSecretKeyGenerator(state, "AES", keyWrapper) {
-        init(keySize.value.inBits, state.secureRandom)
+    override fun keyGenerator(keySize: BinarySize): KeyGenerator<AES.CTR.Key> = JdkSecretKeyGenerator(state, "AES", keyWrapper) {
+        init(keySize.inBits, state.secureRandom)
     }
 }
 

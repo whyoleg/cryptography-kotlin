@@ -13,11 +13,24 @@ import dev.whyoleg.cryptography.operations.cipher.*
 @SubclassOptInRequired(CryptographyProviderApi::class)
 public interface AES<K : AES.Key> : CryptographyAlgorithm {
     public fun keyDecoder(): KeyDecoder<Key.Format, K>
-    public fun keyGenerator(keySize: SymmetricKeySize = SymmetricKeySize.B256): KeyGenerator<K>
+    public fun keyGenerator(keySize: BinarySize = Key.Size.B256): KeyGenerator<K>
+
+    @Suppress("DEPRECATION_ERROR")
+    @Deprecated(
+        "Replaced by overload with BinarySize",
+        ReplaceWith("keyGenerator(keySize.value)"),
+        DeprecationLevel.ERROR
+    )
+    public fun keyGenerator(keySize: SymmetricKeySize = SymmetricKeySize.B256): KeyGenerator<K> = keyGenerator(keySize.value)
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface Key : EncodableKey<Key.Format> {
         public enum class Format : KeyFormat { RAW, JWK }
+        public object Size {
+            public val B128: BinarySize get() = 128.bits
+            public val B192: BinarySize get() = 192.bits
+            public val B256: BinarySize get() = 256.bits
+        }
     }
 
     @DelicateCryptographyApi

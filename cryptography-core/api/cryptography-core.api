@@ -430,8 +430,10 @@ public final class dev/whyoleg/cryptography/algorithms/digest/SHA512 : dev/whyol
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES : dev/whyoleg/cryptography/CryptographyAlgorithm {
 	public abstract fun keyDecoder ()Ldev/whyoleg/cryptography/materials/key/KeyDecoder;
-	public abstract fun keyGenerator-__FLmac (I)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
+	public fun keyGenerator-__FLmac (I)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
 	public static synthetic fun keyGenerator-__FLmac$default (Ldev/whyoleg/cryptography/algorithms/symmetric/AES;IILjava/lang/Object;)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
+	public abstract fun keyGenerator-iDh_w9I (I)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
+	public static synthetic fun keyGenerator-iDh_w9I$default (Ldev/whyoleg/cryptography/algorithms/symmetric/AES;IILjava/lang/Object;)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES$CBC : dev/whyoleg/cryptography/algorithms/symmetric/AES {
@@ -510,6 +512,13 @@ public final class dev/whyoleg/cryptography/algorithms/symmetric/AES$Key$Format 
 	public synthetic fun getName ()Ljava/lang/String;
 	public static fun valueOf (Ljava/lang/String;)Ldev/whyoleg/cryptography/algorithms/symmetric/AES$Key$Format;
 	public static fun values ()[Ldev/whyoleg/cryptography/algorithms/symmetric/AES$Key$Format;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/symmetric/AES$Key$Size {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/symmetric/AES$Key$Size;
+	public final fun getB128-gFjLbCQ ()I
+	public final fun getB192-gFjLbCQ ()I
+	public final fun getB256-gFjLbCQ ()I
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/HMAC : dev/whyoleg/cryptography/CryptographyAlgorithm {

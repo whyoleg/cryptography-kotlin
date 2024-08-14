@@ -29,9 +29,9 @@ abstract class AesBasedCompatibilityTest<K : AES.Key, A : AES<K>>(
         }
 
         generateSymmetricKeySize { keySize ->
-            if (!supportsKeySize(keySize.value.inBits)) return@generateSymmetricKeySize
+            if (!supportsKeySize(keySize.inBits)) return@generateSymmetricKeySize
 
-            val keyParameters = KeyParameters(keySize.value.inBits)
+            val keyParameters = KeyParameters(keySize.inBits)
             val keyParametersId = api.keys.saveParameters(keyParameters)
             algorithm.keyGenerator(keySize).generateKeys(keyIterations) { key ->
                 val keyReference = api.keys.saveData(

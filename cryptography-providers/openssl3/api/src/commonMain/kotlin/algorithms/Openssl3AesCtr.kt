@@ -6,6 +6,7 @@ package dev.whyoleg.cryptography.providers.openssl3.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
+import dev.whyoleg.cryptography.binary.BinarySize
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.random.*
@@ -14,14 +15,14 @@ import kotlin.experimental.*
 import kotlin.native.ref.*
 
 internal object Openssl3AesCtr : AES.CTR, Openssl3Aes<AES.CTR.Key>() {
-    override fun wrapKey(keySize: SymmetricKeySize, key: ByteArray): AES.CTR.Key = AesCtrKey(keySize, key)
+    override fun wrapKey(keySize: BinarySize, key: ByteArray): AES.CTR.Key = AesCtrKey(keySize, key)
 
-    private class AesCtrKey(keySize: SymmetricKeySize, key: ByteArray) : AES.CTR.Key, AesKey(key) {
+    private class AesCtrKey(keySize: BinarySize, key: ByteArray) : AES.CTR.Key, AesKey(key) {
         private val algorithm = when (keySize) {
-            SymmetricKeySize.B128 -> "AES-128-CTR"
-            SymmetricKeySize.B192 -> "AES-192-CTR"
-            SymmetricKeySize.B256 -> "AES-256-CTR"
-            else                  -> error("Unsupported key size")
+            AES.Key.Size.B128 -> "AES-128-CTR"
+            AES.Key.Size.B192 -> "AES-192-CTR"
+            AES.Key.Size.B256 -> "AES-256-CTR"
+            else              -> error("Unsupported key size")
         }
 
         override fun cipher(): AES.IvCipher = AesCtrCipher(algorithm, key)

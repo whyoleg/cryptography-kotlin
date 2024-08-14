@@ -5,6 +5,7 @@
 package dev.whyoleg.cryptography.providers.webcrypto.algorithms
 
 import dev.whyoleg.cryptography.algorithms.symmetric.*
+import dev.whyoleg.cryptography.binary.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.providers.webcrypto.internal.*
 import dev.whyoleg.cryptography.providers.webcrypto.materials.*
@@ -19,8 +20,8 @@ internal abstract class WebCryptoAes<K : AES.Key>(
         keyWrapper = keyWrapper
     )
 
-    final override fun keyGenerator(keySize: SymmetricKeySize): KeyGenerator<K> = WebCryptoSymmetricKeyGenerator(
-        algorithm = AesKeyGenerationAlgorithm(algorithmName, keySize.value.inBits),
+    final override fun keyGenerator(keySize: BinarySize): KeyGenerator<K> = WebCryptoSymmetricKeyGenerator(
+        algorithm = AesKeyGenerationAlgorithm(algorithmName, keySize.inBits),
         keyWrapper = keyWrapper
     )
 

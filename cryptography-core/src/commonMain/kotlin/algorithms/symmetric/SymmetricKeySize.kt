@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.algorithms.symmetric
@@ -8,8 +8,25 @@ import dev.whyoleg.cryptography.binary.*
 import dev.whyoleg.cryptography.binary.BinarySize.Companion.bits
 import kotlin.jvm.*
 
+@Suppress("DEPRECATION_ERROR")
+@Deprecated(
+    "Replaced by BinarySize as wrapper class is not needed",
+    ReplaceWith("BinarySize"),
+    DeprecationLevel.ERROR
+)
 @JvmInline
-public value class SymmetricKeySize(public val value: BinarySize) {
+public value class SymmetricKeySize
+@Deprecated(
+    "Replaced by BinarySize as wrapper class is not needed",
+    ReplaceWith("value"),
+    DeprecationLevel.ERROR
+)
+constructor(public val value: BinarySize) {
+    @Deprecated(
+        "Replaced by AES.Key.Size as it's not really needed outside of AES",
+        ReplaceWith("AES.Key.Size"),
+        DeprecationLevel.ERROR
+    )
     public companion object {
         public val B128: SymmetricKeySize get() = SymmetricKeySize(128.bits)
         public val B192: SymmetricKeySize get() = SymmetricKeySize(192.bits)

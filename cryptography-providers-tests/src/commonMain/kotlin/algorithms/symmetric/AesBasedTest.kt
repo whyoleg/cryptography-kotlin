@@ -6,6 +6,7 @@ package dev.whyoleg.cryptography.providers.tests.algorithms.symmetric
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
+import dev.whyoleg.cryptography.binary.BinarySize
 import dev.whyoleg.cryptography.providers.tests.api.*
 
 abstract class AesBasedTest<A : AES<*>>(
@@ -18,12 +19,12 @@ abstract class AesBasedTest<A : AES<*>>(
         context: TestContext,
         provider: CryptographyProvider,
         algorithm: A,
-        val keySize: SymmetricKeySize,
+        val keySize: BinarySize,
     ) : AlgorithmTestScope<A>(logger, context, provider, algorithm)
 
     protected fun runTestForEachKeySize(block: suspend AesTestScope.() -> Unit) = testAlgorithm(algorithmId) {
         generateSymmetricKeySize { keySize ->
-            if (!supportsKeySize(keySize.value.inBits)) return@generateSymmetricKeySize
+            if (!supportsKeySize(keySize.inBits)) return@generateSymmetricKeySize
 
             block(AesTestScope(logger, context, provider, algorithm, keySize))
         }

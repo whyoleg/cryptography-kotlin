@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
@@ -15,14 +15,14 @@ import kotlin.experimental.*
 import kotlin.native.ref.*
 
 internal object Openssl3AesGcm : AES.GCM, Openssl3Aes<AES.GCM.Key>() {
-    override fun wrapKey(keySize: SymmetricKeySize, key: ByteArray): AES.GCM.Key = AesGcmKey(keySize, key)
+    override fun wrapKey(keySize: BinarySize, key: ByteArray): AES.GCM.Key = AesGcmKey(keySize, key)
 
-    private class AesGcmKey(keySize: SymmetricKeySize, key: ByteArray) : AES.GCM.Key, AesKey(key) {
+    private class AesGcmKey(keySize: BinarySize, key: ByteArray) : AES.GCM.Key, AesKey(key) {
         private val algorithm = when (keySize) {
-            SymmetricKeySize.B128 -> "AES-128-GCM"
-            SymmetricKeySize.B192 -> "AES-192-GCM"
-            SymmetricKeySize.B256 -> "AES-256-GCM"
-            else                  -> error("Unsupported key size")
+            AES.Key.Size.B128 -> "AES-128-GCM"
+            AES.Key.Size.B192 -> "AES-192-GCM"
+            AES.Key.Size.B256 -> "AES-256-GCM"
+            else              -> error("Unsupported key size")
         }
 
         override fun cipher(tagSize: BinarySize): AuthenticatedCipher = AesGcmCipher(algorithm, key, tagSize)
