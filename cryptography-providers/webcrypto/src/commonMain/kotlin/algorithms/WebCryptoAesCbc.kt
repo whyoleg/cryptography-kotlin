@@ -26,43 +26,43 @@ private const val ivSizeBytes = 16 //bytes for CBC
 
 private class AesCbcCipher(private val key: CryptoKey) : AES.IvCipher {
 
-    override suspend fun encrypt(plaintextInput: ByteArray): ByteArray {
+    override suspend fun encrypt(plaintext: ByteArray): ByteArray {
         val iv = CryptographyRandom.nextBytes(ivSizeBytes)
-        return iv + encrypt(iv, plaintextInput)
+        return iv + encrypt(iv, plaintext)
     }
 
     @DelicateCryptographyApi
-    override suspend fun encrypt(iv: ByteArray, plaintextInput: ByteArray): ByteArray {
+    override suspend fun encrypt(iv: ByteArray, plaintext: ByteArray): ByteArray {
         return WebCrypto.encrypt(
             algorithm = AesCbcCipherAlgorithm(iv),
             key = key,
-            data = plaintextInput
+            data = plaintext
         )
     }
 
-    override suspend fun decrypt(ciphertextInput: ByteArray): ByteArray {
-        require(ciphertextInput.size >= ivSizeBytes) { "Ciphertext is too short" }
+    override suspend fun decrypt(ciphertext: ByteArray): ByteArray {
+        require(ciphertext.size >= ivSizeBytes) { "Ciphertext is too short" }
 
         return WebCrypto.decrypt(
-            algorithm = AesCbcCipherAlgorithm(ciphertextInput.copyOfRange(0, ivSizeBytes)),
+            algorithm = AesCbcCipherAlgorithm(ciphertext.copyOfRange(0, ivSizeBytes)),
             key = key,
-            data = ciphertextInput.copyOfRange(ivSizeBytes, ciphertextInput.size)
+            data = ciphertext.copyOfRange(ivSizeBytes, ciphertext.size)
         )
     }
 
     @DelicateCryptographyApi
-    override suspend fun decrypt(iv: ByteArray, ciphertextInput: ByteArray): ByteArray {
+    override suspend fun decrypt(iv: ByteArray, ciphertext: ByteArray): ByteArray {
         require(iv.size == ivSizeBytes) { "IV size is wrong" }
 
         return WebCrypto.decrypt(
             algorithm = AesCbcCipherAlgorithm(iv),
             key = key,
-            data = ciphertextInput
+            data = ciphertext
         )
     }
 
-    override fun decryptBlocking(ciphertextInput: ByteArray): ByteArray = nonBlocking()
-    override fun encryptBlocking(plaintextInput: ByteArray): ByteArray = nonBlocking()
-    override fun decryptBlocking(iv: ByteArray, ciphertextInput: ByteArray): ByteArray = nonBlocking()
-    override fun encryptBlocking(iv: ByteArray, plaintextInput: ByteArray): ByteArray = nonBlocking()
+    override fun decryptBlocking(ciphertext: ByteArray): ByteArray = nonBlocking()
+    override fun encryptBlocking(plaintext: ByteArray): ByteArray = nonBlocking()
+    override fun decryptBlocking(iv: ByteArray, ciphertext: ByteArray): ByteArray = nonBlocking()
+    override fun encryptBlocking(iv: ByteArray, plaintext: ByteArray): ByteArray = nonBlocking()
 }

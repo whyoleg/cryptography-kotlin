@@ -49,7 +49,7 @@ private class RsaRawEncryptor(
     private val cleaner = publicKey.upRef().cleaner()
 
     @OptIn(UnsafeNumber::class)
-    override fun encryptBlocking(plaintextInput: ByteArray): ByteArray = memScoped {
+    override fun encryptBlocking(plaintext: ByteArray): ByteArray = memScoped {
         val context = checkError(EVP_PKEY_CTX_new_from_pkey(null, publicKey, null))
         try {
             checkError(
@@ -67,8 +67,8 @@ private class RsaRawEncryptor(
                     ctx = context,
                     out = null,
                     outlen = outlen.ptr,
-                    `in` = plaintextInput.safeRefToU(0),
-                    inlen = plaintextInput.size.convert()
+                    `in` = plaintext.safeRefToU(0),
+                    inlen = plaintext.size.convert()
                 )
             )
             val ciphertext = ByteArray(outlen.value.convert())
@@ -77,8 +77,8 @@ private class RsaRawEncryptor(
                     ctx = context,
                     out = ciphertext.refToU(0),
                     outlen = outlen.ptr,
-                    `in` = plaintextInput.safeRefToU(0),
-                    inlen = plaintextInput.size.convert()
+                    `in` = plaintext.safeRefToU(0),
+                    inlen = plaintext.size.convert()
                 )
             )
             ciphertext.ensureSizeExactly(outlen.value.convert())
@@ -95,7 +95,7 @@ private class RsaRawDecryptor(
     private val cleaner = privateKey.upRef().cleaner()
 
     @OptIn(UnsafeNumber::class)
-    override fun decryptBlocking(ciphertextInput: ByteArray): ByteArray = memScoped {
+    override fun decryptBlocking(ciphertext: ByteArray): ByteArray = memScoped {
         val context = checkError(EVP_PKEY_CTX_new_from_pkey(null, privateKey, null))
         try {
             checkError(
@@ -113,8 +113,8 @@ private class RsaRawDecryptor(
                     ctx = context,
                     out = null,
                     outlen = outlen.ptr,
-                    `in` = ciphertextInput.safeRefToU(0),
-                    inlen = ciphertextInput.size.convert()
+                    `in` = ciphertext.safeRefToU(0),
+                    inlen = ciphertext.size.convert()
                 )
             )
             val plaintext = ByteArray(outlen.value.convert())
@@ -123,8 +123,8 @@ private class RsaRawDecryptor(
                     ctx = context,
                     out = plaintext.refToU(0),
                     outlen = outlen.ptr,
-                    `in` = ciphertextInput.safeRefToU(0),
-                    inlen = ciphertextInput.size.convert()
+                    `in` = ciphertext.safeRefToU(0),
+                    inlen = ciphertext.size.convert()
                 )
             )
             plaintext.ensureSizeExactly(outlen.value.convert())

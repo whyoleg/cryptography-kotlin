@@ -22,9 +22,9 @@ internal class WebCryptoDigest private constructor(
 
     override fun hasher(): Hasher = this
 
-    override suspend fun hash(dataInput: ByteArray): ByteArray {
-        return WebCrypto.digest(algorithm, dataInput)
+    override suspend fun hash(data: ByteArray): ByteArray {
+        return WebCrypto.digest(algorithm, data)
     }
 
-    override fun hashBlocking(dataInput: ByteArray): ByteArray = nonBlocking()
+    override fun hashBlocking(data: ByteArray): ByteArray = nonBlocking()
 }

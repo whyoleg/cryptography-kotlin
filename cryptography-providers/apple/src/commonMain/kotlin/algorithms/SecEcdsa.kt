@@ -56,12 +56,12 @@ internal object SecEcdsa : ECDSA {
 private class EcdsaPublicKeyDecoder(
     private val curve: EcCurveData,
 ) : KeyDecoder<EC.PublicKey.Format, ECDSA.PublicKey> {
-    override fun decodeFromBlocking(format: EC.PublicKey.Format, input: ByteArray): ECDSA.PublicKey {
+    override fun decodeFromBlocking(format: EC.PublicKey.Format, data: ByteArray): ECDSA.PublicKey {
         val rawKey = when (format) {
             EC.PublicKey.Format.JWK -> error("$format is not supported")
-            EC.PublicKey.Format.RAW -> input
-            EC.PublicKey.Format.DER -> decodeDer(input)
-            EC.PublicKey.Format.PEM -> decodeDer(unwrapPem(PemLabel.PublicKey, input))
+            EC.PublicKey.Format.RAW -> data
+            EC.PublicKey.Format.DER -> decodeDer(data)
+            EC.PublicKey.Format.PEM -> decodeDer(unwrapPem(PemLabel.PublicKey, data))
         }
         check(rawKey.size == curve.orderSize * 2 + 1) {
             "Invalid raw key size: ${rawKey.size}, expected: ${curve.orderSize * 2 + 1}"
@@ -86,13 +86,13 @@ private class EcdsaPublicKeyDecoder(
 private class EcdsaPrivateKeyDecoder(
     private val curve: EcCurveData,
 ) : KeyDecoder<EC.PrivateKey.Format, ECDSA.PrivateKey> {
-    override fun decodeFromBlocking(format: EC.PrivateKey.Format, input: ByteArray): ECDSA.PrivateKey {
+    override fun decodeFromBlocking(format: EC.PrivateKey.Format, data: ByteArray): ECDSA.PrivateKey {
         val rawKey = when (format) {
             EC.PrivateKey.Format.JWK      -> error("$format is not supported")
-            EC.PrivateKey.Format.DER      -> decodeDerPkcs8(input)
-            EC.PrivateKey.Format.PEM      -> decodeDerPkcs8(unwrapPem(PemLabel.PrivateKey, input))
-            EC.PrivateKey.Format.DER.SEC1 -> decodeDerSec1(input)
-            EC.PrivateKey.Format.PEM.SEC1 -> decodeDerSec1(unwrapPem(PemLabel.EcPrivateKey, input))
+            EC.PrivateKey.Format.DER      -> decodeDerPkcs8(data)
+            EC.PrivateKey.Format.PEM      -> decodeDerPkcs8(unwrapPem(PemLabel.PrivateKey, data))
+            EC.PrivateKey.Format.DER.SEC1 -> decodeDerSec1(data)
+            EC.PrivateKey.Format.PEM.SEC1 -> decodeDerSec1(unwrapPem(PemLabel.EcPrivateKey, data))
         }
         check(rawKey.size == curve.orderSize * 3 + 1) {
             "Invalid raw key size: ${rawKey.size}, expected: ${curve.orderSize * 3 + 1}"
@@ -243,13 +243,13 @@ private class EcdsaRawSignatureGenerator(
     private val derGenerator: SignatureGenerator,
     private val curveOrderSize: Int,
 ) : SignatureGenerator {
-    override fun generateSignatureBlocking(dataInput: ByteArray): ByteArray {
-        val derSignature = derGenerator.generateSignatureBlocking(dataInput)
+    override fun generateSignatureBlocking(data: ByteArray): ByteArray {
+        val derSignature = derGenerator.generateSignatureBlocking(data)
 
-        val signature = DER.decodeFromByteArray(EcdsaSignatureValue.serializer(), derSignature)
+        val signatureValue = DER.decodeFromByteArray(EcdsaSignatureValue.serializer(), derSignature)
 
-        val r = signature.r.encodeToByteArray().trimLeadingZeros()
-        val s = signature.s.encodeToByteArray().trimLeadingZeros()
+        val r = signatureValue.r.encodeToByteArray().trimLeadingZeros()
+        val s = signatureValue.s.encodeToByteArray().trimLeadingZeros()
 
         val rawSignature = ByteArray(curveOrderSize * 2)
 
@@ -264,22 +264,22 @@ private class EcdsaRawSignatureVerifier(
     private val derVerifier: SignatureVerifier,
     private val curveOrderSize: Int,
 ) : SignatureVerifier {
-    override fun verifySignatureBlocking(dataInput: ByteArray, signatureInput: ByteArray): Boolean {
-        check(signatureInput.size == curveOrderSize * 2) {
-            "Expected signature size ${curveOrderSize * 2}, received: ${signatureInput.size}"
+    override fun verifySignatureBlocking(data: ByteArray, signature: ByteArray): Boolean {
+        check(signature.size == curveOrderSize * 2) {
+            "Expected signature size ${curveOrderSize * 2}, received: ${signature.size}"
         }
 
-        val r = signatureInput.copyOfRange(0, curveOrderSize).makePositive()
-        val s = signatureInput.copyOfRange(curveOrderSize, signatureInput.size).makePositive()
+        val r = signature.copyOfRange(0, curveOrderSize).makePositive()
+        val s = signature.copyOfRange(curveOrderSize, signature.size).makePositive()
 
-        val signature = EcdsaSignatureValue(
+        val signatureValue = EcdsaSignatureValue(
             r = r.decodeToBigInt(),
             s = s.decodeToBigInt()
         )
 
-        val derSignature = DER.encodeToByteArray(EcdsaSignatureValue.serializer(), signature)
+        val derSignature = DER.encodeToByteArray(EcdsaSignatureValue.serializer(), signatureValue)
 
-        return derVerifier.verifySignatureBlocking(dataInput, derSignature)
+        return derVerifier.verifySignatureBlocking(data, derSignature)
     }
 }
 

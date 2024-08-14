@@ -42,7 +42,7 @@ private class AesGcmCipher(
     @OptIn(ExperimentalNativeApi::class)
     private val cleaner = createCleaner(cipher, ::EVP_CIPHER_free)
 
-    override fun encryptBlocking(plaintextInput: ByteArray, associatedData: ByteArray?): ByteArray = memScoped {
+    override fun encryptBlocking(plaintext: ByteArray, associatedData: ByteArray?): ByteArray = memScoped {
         val context = EVP_CIPHER_CTX_new()
         try {
             val iv = ByteArray(ivSizeBytes).also { CryptographyRandom.nextBytes(it) }
@@ -70,15 +70,15 @@ private class AesGcmCipher(
                 check(outl.value == ad.size) { "Unexpected output length: got ${outl.value} expected ${ad.size}" }
             }
 
-            val ciphertextOutput = ByteArray(plaintextInput.size + tagSize.inBytes)
+            val ciphertextOutput = ByteArray(plaintext.size + tagSize.inBytes)
 
             checkError(
                 EVP_EncryptUpdate(
                     ctx = context,
                     out = ciphertextOutput.refToU(0),
                     outl = outl.ptr,
-                    `in` = plaintextInput.safeRefToU(0),
-                    inl = plaintextInput.size
+                    `in` = plaintext.safeRefToU(0),
+                    inl = plaintext.size
                 )
             )
             val producedByUpdate = outl.value
@@ -107,8 +107,8 @@ private class AesGcmCipher(
         }
     }
 
-    override fun decryptBlocking(ciphertextInput: ByteArray, associatedData: ByteArray?): ByteArray = memScoped {
-        require(ciphertextInput.size >= ivSizeBytes + tagSize.inBytes) { "Ciphertext is too short" }
+    override fun decryptBlocking(ciphertext: ByteArray, associatedData: ByteArray?): ByteArray = memScoped {
+        require(ciphertext.size >= ivSizeBytes + tagSize.inBytes) { "Ciphertext is too short" }
         val context = EVP_CIPHER_CTX_new()
         try {
             checkError(
@@ -116,7 +116,7 @@ private class AesGcmCipher(
                     ctx = context,
                     cipher = cipher,
                     key = key.refToU(0),
-                    iv = ciphertextInput.refToU(0),
+                    iv = ciphertext.refToU(0),
                     params = null
                 )
             )
@@ -135,14 +135,14 @@ private class AesGcmCipher(
                 check(outl.value == ad.size) { "Unexpected output length: got ${outl.value} expected ${ad.size}" }
             }
 
-            val plaintextOutput = ByteArray(ciphertextInput.size - ivSizeBytes - tagSize.inBytes)
+            val plaintextOutput = ByteArray(ciphertext.size - ivSizeBytes - tagSize.inBytes)
             checkError(
                 EVP_DecryptUpdate(
                     ctx = context,
                     out = plaintextOutput.safeRefToU(0),
                     outl = outl.ptr,
-                    `in` = ciphertextInput.refToU(ivSizeBytes),
-                    inl = ciphertextInput.size - ivSizeBytes - tagSize.inBytes
+                    `in` = ciphertext.refToU(ivSizeBytes),
+                    inl = ciphertext.size - ivSizeBytes - tagSize.inBytes
                 )
             )
             if (plaintextOutput.isEmpty()) check(outl.value == 0) { "Unexpected output length: got ${outl.value} expected 0" }
@@ -154,7 +154,7 @@ private class AesGcmCipher(
                     ctx = context,
                     type = EVP_CTRL_AEAD_SET_TAG,
                     arg = tagSize.inBytes,
-                    ptr = ciphertextInput.refToU(ciphertextInput.size - tagSize.inBytes)
+                    ptr = ciphertext.refToU(ciphertext.size - tagSize.inBytes)
                 )
             )
 

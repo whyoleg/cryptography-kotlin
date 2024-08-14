@@ -11,9 +11,9 @@ internal class WebCryptoSignatureGenerator(
     private val algorithm: Algorithm,
     private val key: CryptoKey,
 ) : SignatureGenerator {
-    override suspend fun generateSignature(dataInput: ByteArray): ByteArray {
-        return WebCrypto.sign(algorithm, key, dataInput)
+    override suspend fun generateSignature(data: ByteArray): ByteArray {
+        return WebCrypto.sign(algorithm, key, data)
     }
 
-    override fun generateSignatureBlocking(dataInput: ByteArray): ByteArray = nonBlocking()
+    override fun generateSignatureBlocking(data: ByteArray): ByteArray = nonBlocking()
 }

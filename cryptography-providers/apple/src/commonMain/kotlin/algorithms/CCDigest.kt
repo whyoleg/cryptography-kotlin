@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.apple.algorithms
@@ -17,11 +17,11 @@ internal class CCDigest(
     override fun hasher(): Hasher = this
 
     @OptIn(ExperimentalUnsignedTypes::class)
-    override fun hashBlocking(dataInput: ByteArray): ByteArray {
+    override fun hashBlocking(data: ByteArray): ByteArray {
         val output = ByteArray(hashAlgorithm.digestSize)
         hashAlgorithm.ccHash(
-            data = dataInput.fixEmpty().refTo(0),
-            dataLength = dataInput.size.convert(),
+            data = data.fixEmpty().refTo(0),
+            dataLength = data.size.convert(),
             digest = output.asUByteArray().refTo(0)
         )
         return output

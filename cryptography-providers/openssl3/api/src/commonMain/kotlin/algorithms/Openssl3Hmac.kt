@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
@@ -36,10 +36,10 @@ private class HmacKeyDecoder(
     private val hashAlgorithm: String,
     private val keySizeBytes: Int,
 ) : KeyDecoder<HMAC.Key.Format, HMAC.Key> {
-    override fun decodeFromBlocking(format: HMAC.Key.Format, input: ByteArray): HMAC.Key = when (format) {
+    override fun decodeFromBlocking(format: HMAC.Key.Format, data: ByteArray): HMAC.Key = when (format) {
         HMAC.Key.Format.RAW -> {
-            require(input.size == keySizeBytes) { "Invalid key size: ${input.size}, expected: $keySizeBytes" }
-            wrapKey(hashAlgorithm, input.copyOf())
+            require(data.size == keySizeBytes) { "Invalid key size: ${data.size}, expected: $keySizeBytes" }
+            wrapKey(hashAlgorithm, data.copyOf())
         }
         HMAC.Key.Format.JWK -> error("JWK is not supported")
     }
@@ -75,7 +75,7 @@ private class HmacSignature(
 ) : SignatureGenerator, SignatureVerifier {
 
     @OptIn(UnsafeNumber::class)
-    override fun generateSignatureBlocking(dataInput: ByteArray): ByteArray = memScoped {
+    override fun generateSignatureBlocking(data: ByteArray): ByteArray = memScoped {
         val mac = checkError(EVP_MAC_fetch(null, "HMAC", null))
         val context = checkError(EVP_MAC_CTX_new(mac))
         try {
@@ -89,7 +89,7 @@ private class HmacSignature(
                     )
                 )
             )
-            checkError(EVP_MAC_update(context, dataInput.safeRefToU(0), dataInput.size.convert()))
+            checkError(EVP_MAC_update(context, data.safeRefToU(0), data.size.convert()))
             val signature = ByteArray(checkError(EVP_MAC_CTX_get_mac_size(context)).convert())
             checkError(EVP_MAC_final(context, signature.refToU(0), null, signature.size.convert()))
             signature
@@ -99,7 +99,7 @@ private class HmacSignature(
         }
     }
 
-    override fun verifySignatureBlocking(dataInput: ByteArray, signatureInput: ByteArray): Boolean {
-        return generateSignatureBlocking(dataInput).contentEquals(signatureInput)
+    override fun verifySignatureBlocking(data: ByteArray, signature: ByteArray): Boolean {
+        return generateSignatureBlocking(data).contentEquals(signature)
     }
 }

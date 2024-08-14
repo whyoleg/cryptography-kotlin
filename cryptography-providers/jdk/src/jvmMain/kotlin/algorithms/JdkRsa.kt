@@ -30,13 +30,13 @@ internal fun CryptographyAlgorithmId<Digest>.rsaHashAlgorithmName(): String = wh
 internal abstract class RsaPublicKeyDecoder<K : RSA.PublicKey>(
     state: JdkCryptographyState,
 ) : JdkPublicKeyDecoder<RSA.PublicKey.Format, K>(state, "RSA") {
-    override fun decodeFromBlocking(format: RSA.PublicKey.Format, input: ByteArray): K = decodeFromDer(
+    override fun decodeFromBlocking(format: RSA.PublicKey.Format, data: ByteArray): K = decodeFromDer(
         when (format) {
             RSA.PublicKey.Format.JWK       -> error("$format is not supported")
-            RSA.PublicKey.Format.DER       -> input
-            RSA.PublicKey.Format.PEM       -> unwrapPem(PemLabel.PublicKey, input)
-            RSA.PublicKey.Format.DER.PKCS1 -> wrapPublicKey(RsaKeyAlgorithmIdentifier, input)
-            RSA.PublicKey.Format.PEM.PKCS1 -> wrapPublicKey(RsaKeyAlgorithmIdentifier, unwrapPem(PemLabel.RsaPublicKey, input))
+            RSA.PublicKey.Format.DER       -> data
+            RSA.PublicKey.Format.PEM       -> unwrapPem(PemLabel.PublicKey, data)
+            RSA.PublicKey.Format.DER.PKCS1 -> wrapPublicKey(RsaKeyAlgorithmIdentifier, data)
+            RSA.PublicKey.Format.PEM.PKCS1 -> wrapPublicKey(RsaKeyAlgorithmIdentifier, unwrapPem(PemLabel.RsaPublicKey, data))
         }
     )
 }
@@ -44,13 +44,13 @@ internal abstract class RsaPublicKeyDecoder<K : RSA.PublicKey>(
 internal abstract class RsaPrivateKeyDecoder<K : RSA.PrivateKey>(
     state: JdkCryptographyState,
 ) : JdkPrivateKeyDecoder<RSA.PrivateKey.Format, K>(state, "RSA") {
-    override fun decodeFromBlocking(format: RSA.PrivateKey.Format, input: ByteArray): K = decodeFromDer(
+    override fun decodeFromBlocking(format: RSA.PrivateKey.Format, data: ByteArray): K = decodeFromDer(
         when (format) {
             RSA.PrivateKey.Format.JWK       -> error("$format is not supported")
-            RSA.PrivateKey.Format.DER       -> input
-            RSA.PrivateKey.Format.PEM       -> unwrapPem(PemLabel.PrivateKey, input)
-            RSA.PrivateKey.Format.DER.PKCS1 -> wrapPrivateKey(0, RsaKeyAlgorithmIdentifier, input)
-            RSA.PrivateKey.Format.PEM.PKCS1 -> wrapPrivateKey(0, RsaKeyAlgorithmIdentifier, unwrapPem(PemLabel.RsaPrivateKey, input))
+            RSA.PrivateKey.Format.DER       -> data
+            RSA.PrivateKey.Format.PEM       -> unwrapPem(PemLabel.PrivateKey, data)
+            RSA.PrivateKey.Format.DER.PKCS1 -> wrapPrivateKey(0, RsaKeyAlgorithmIdentifier, data)
+            RSA.PrivateKey.Format.PEM.PKCS1 -> wrapPrivateKey(0, RsaKeyAlgorithmIdentifier, unwrapPem(PemLabel.RsaPrivateKey, data))
         }
     )
 }

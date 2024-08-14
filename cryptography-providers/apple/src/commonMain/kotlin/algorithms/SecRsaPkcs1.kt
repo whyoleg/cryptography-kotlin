@@ -46,13 +46,13 @@ internal object SecRsaPkcs1 : SecRsa<RSA.PKCS1.PublicKey, RSA.PKCS1.PrivateKey, 
 }
 
 private class RsaPkcs1Encryptor(private val publicKey: SecKeyRef) : Encryptor {
-    override fun encryptBlocking(plaintextInput: ByteArray): ByteArray {
-        return secEncrypt(publicKey, kSecKeyAlgorithmRSAEncryptionPKCS1, plaintextInput)
+    override fun encryptBlocking(plaintext: ByteArray): ByteArray {
+        return secEncrypt(publicKey, kSecKeyAlgorithmRSAEncryptionPKCS1, plaintext)
     }
 }
 
 private class RsaPkcs1Decryptor(private val privateKey: SecKeyRef) : Decryptor {
-    override fun decryptBlocking(ciphertextInput: ByteArray): ByteArray {
-        return secDecrypt(privateKey, kSecKeyAlgorithmRSAEncryptionPKCS1, ciphertextInput)
+    override fun decryptBlocking(ciphertext: ByteArray): ByteArray {
+        return secDecrypt(privateKey, kSecKeyAlgorithmRSAEncryptionPKCS1, ciphertext)
     }
 }

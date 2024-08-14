@@ -88,12 +88,12 @@ private class RsaPssPublicKey(
         return signatureVerifier(digestSize.bytes)
     }
 
-    override fun signatureVerifier(saltLength: BinarySize): SignatureVerifier {
+    override fun signatureVerifier(saltSize: BinarySize): SignatureVerifier {
         val parameters = PSSParameterSpec(
             hashAlgorithmName,
             "MGF1",
             MGF1ParameterSpec(hashAlgorithmName),
-            saltLength.inBytes,
+            saltSize.inBytes,
             1
         )
         return JdkSignatureVerifier(state, key, "RSASSA-PSS", parameters)
@@ -110,12 +110,12 @@ private class RsaPssPrivateKey(
         return signatureGenerator(digestSize.bytes)
     }
 
-    override fun signatureGenerator(saltLength: BinarySize): SignatureGenerator {
+    override fun signatureGenerator(saltSize: BinarySize): SignatureGenerator {
         val parameters = PSSParameterSpec(
             hashAlgorithmName,
             "MGF1",
             MGF1ParameterSpec(hashAlgorithmName),
-            saltLength.inBytes,
+            saltSize.inBytes,
             1
         )
         return JdkSignatureGenerator(state, key, "RSASSA-PSS", parameters)

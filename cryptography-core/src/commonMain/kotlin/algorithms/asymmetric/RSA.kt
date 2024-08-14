@@ -129,14 +129,14 @@ public interface RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP : RS
         public interface PublicKey : RSA.PublicKey {
             // default salt = digest.outputSize
             public fun signatureVerifier(): SignatureVerifier
-            public fun signatureVerifier(saltLength: BinarySize): SignatureVerifier
+            public fun signatureVerifier(saltSize: BinarySize): SignatureVerifier
         }
 
         @SubclassOptInRequired(CryptographyProviderApi::class)
         public interface PrivateKey : RSA.PrivateKey {
             // default salt = digest.outputSize
             public fun signatureGenerator(): SignatureGenerator
-            public fun signatureGenerator(saltLength: BinarySize): SignatureGenerator
+            public fun signatureGenerator(saltSize: BinarySize): SignatureGenerator
         }
     }
 

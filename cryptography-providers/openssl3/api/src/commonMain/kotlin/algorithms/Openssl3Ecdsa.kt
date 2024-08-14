@@ -52,9 +52,9 @@ internal object Openssl3Ecdsa : ECDSA {
             EC.PublicKey.Format.JWK -> error("JWK format is not supported")
         }
 
-        override fun decodeFromBlocking(format: EC.PublicKey.Format, input: ByteArray): ECDSA.PublicKey = when (format) {
-            EC.PublicKey.Format.RAW -> wrapKey(decodePublicRawKey(curve, input))
-            else                    -> super.decodeFromBlocking(format, input)
+        override fun decodeFromBlocking(format: EC.PublicKey.Format, data: ByteArray): ECDSA.PublicKey = when (format) {
+            EC.PublicKey.Format.RAW -> wrapKey(decodePublicRawKey(curve, data))
+            else                    -> super.decodeFromBlocking(format, data)
         }
 
         override fun wrapKey(key: CPointer<EVP_PKEY>): ECDSA.PublicKey {
@@ -141,8 +141,8 @@ private class EcdsaRawSignatureGenerator(
     private val orderSizeBytes: Int,
     private val derSignatureGenerator: EcdsaDerSignatureGenerator,
 ) : SignatureGenerator {
-    override fun generateSignatureBlocking(dataInput: ByteArray): ByteArray {
-        val derSignature = derSignatureGenerator.generateSignatureBlocking(dataInput)
+    override fun generateSignatureBlocking(data: ByteArray): ByteArray {
+        val derSignature = derSignatureGenerator.generateSignatureBlocking(data)
 
         return memScoped {
             val pdataVar = alloc<CPointerVar<UByteVar>> { value = allocArrayOf(derSignature).reinterpret() }
@@ -172,19 +172,19 @@ private class EcdsaRawSignatureVerifier(
     private val orderSizeBytes: Int,
     private val derSignatureVerifier: EcdsaDerSignatureVerifier,
 ) : SignatureVerifier {
-    override fun verifySignatureBlocking(dataInput: ByteArray, signatureInput: ByteArray): Boolean {
-        if (signatureInput.size != orderSizeBytes * 2) return false
+    override fun verifySignatureBlocking(data: ByteArray, signature: ByteArray): Boolean {
+        if (signature.size != orderSizeBytes * 2) return false
 
         return memScoped {
-            val r = BN_bin2bn(signatureInput.refToU(0), orderSizeBytes, null)
-            val s = BN_bin2bn(signatureInput.refToU(orderSizeBytes), orderSizeBytes, null)
+            val r = BN_bin2bn(signature.refToU(0), orderSizeBytes, null)
+            val s = BN_bin2bn(signature.refToU(orderSizeBytes), orderSizeBytes, null)
             val sig = ECDSA_SIG_new()
             try {
                 checkError(ECDSA_SIG_set0(sig, r, s))
                 val outVar = alloc<CPointerVar<UByteVar>>()
                 val signatureLength = checkError(i2d_ECDSA_SIG(sig, outVar.ptr))
                 val derSignature = outVar.value!!.readBytes(signatureLength)
-                derSignatureVerifier.verifySignatureBlocking(dataInput, derSignature)
+                derSignatureVerifier.verifySignatureBlocking(data, derSignature)
             } finally {
                 ECDSA_SIG_free(sig)
             }

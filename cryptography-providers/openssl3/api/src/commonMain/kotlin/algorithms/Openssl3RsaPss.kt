@@ -41,8 +41,8 @@ internal object Openssl3RsaPss : Openssl3Rsa<RSA.PSS.PublicKey, RSA.PSS.PrivateK
             return signatureVerifier(digestSize.bytes)
         }
 
-        override fun signatureVerifier(saltLength: BinarySize): SignatureVerifier =
-            RsaPssSignatureVerifier(key, hashAlgorithm, saltLength.inBytes)
+        override fun signatureVerifier(saltSize: BinarySize): SignatureVerifier =
+            RsaPssSignatureVerifier(key, hashAlgorithm, saltSize.inBytes)
     }
 
     private class RsaPssPrivateKey(
@@ -56,8 +56,8 @@ internal object Openssl3RsaPss : Openssl3Rsa<RSA.PSS.PublicKey, RSA.PSS.PrivateK
             return signatureGenerator(digestSize.bytes)
         }
 
-        override fun signatureGenerator(saltLength: BinarySize): SignatureGenerator =
-            RsaPssSignatureGenerator(key, hashAlgorithm, saltLength.inBytes)
+        override fun signatureGenerator(saltSize: BinarySize): SignatureGenerator =
+            RsaPssSignatureGenerator(key, hashAlgorithm, saltSize.inBytes)
     }
 }
 

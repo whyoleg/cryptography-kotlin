@@ -49,25 +49,25 @@ private class AesCbcCipher(
         }
     )
 
-    override fun encryptBlocking(plaintextInput: ByteArray): ByteArray {
+    override fun encryptBlocking(plaintext: ByteArray): ByteArray {
         val iv = ByteArray(ivSizeBytes).also(state.secureRandom::nextBytes)
-        return iv + encryptBlocking(iv, plaintextInput)
+        return iv + encryptBlocking(iv, plaintext)
     }
 
     @DelicateCryptographyApi
-    override fun encryptBlocking(iv: ByteArray, plaintextInput: ByteArray): ByteArray = cipher.use { cipher ->
+    override fun encryptBlocking(iv: ByteArray, plaintext: ByteArray): ByteArray = cipher.use { cipher ->
         cipher.init(JCipher.ENCRYPT_MODE, key, IvParameterSpec(iv), state.secureRandom)
-        cipher.doFinal(plaintextInput)
+        cipher.doFinal(plaintext)
     }
 
-    override fun decryptBlocking(ciphertextInput: ByteArray): ByteArray = cipher.use { cipher ->
-        cipher.init(JCipher.DECRYPT_MODE, key, IvParameterSpec(ciphertextInput, 0, ivSizeBytes), state.secureRandom)
-        cipher.doFinal(ciphertextInput, ivSizeBytes, ciphertextInput.size - ivSizeBytes)
+    override fun decryptBlocking(ciphertext: ByteArray): ByteArray = cipher.use { cipher ->
+        cipher.init(JCipher.DECRYPT_MODE, key, IvParameterSpec(ciphertext, 0, ivSizeBytes), state.secureRandom)
+        cipher.doFinal(ciphertext, ivSizeBytes, ciphertext.size - ivSizeBytes)
     }
 
     @DelicateCryptographyApi
-    override fun decryptBlocking(iv: ByteArray, ciphertextInput: ByteArray): ByteArray = cipher.use { cipher ->
+    override fun decryptBlocking(iv: ByteArray, ciphertext: ByteArray): ByteArray = cipher.use { cipher ->
         cipher.init(JCipher.DECRYPT_MODE, key, IvParameterSpec(iv), state.secureRandom)
-        cipher.doFinal(ciphertextInput)
+        cipher.doFinal(ciphertext)
     }
 }

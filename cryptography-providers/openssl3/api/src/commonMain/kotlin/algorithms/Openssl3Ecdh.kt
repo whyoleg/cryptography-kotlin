@@ -51,9 +51,9 @@ internal object Openssl3Ecdh : ECDH {
             EC.PublicKey.Format.JWK -> error("JWK format is not supported")
         }
 
-        override fun decodeFromBlocking(format: EC.PublicKey.Format, input: ByteArray): ECDH.PublicKey = when (format) {
-            EC.PublicKey.Format.RAW -> wrapKey(decodePublicRawKey(curve, input))
-            else                    -> super.decodeFromBlocking(format, input)
+        override fun decodeFromBlocking(format: EC.PublicKey.Format, data: ByteArray): ECDH.PublicKey = when (format) {
+            EC.PublicKey.Format.RAW -> wrapKey(decodePublicRawKey(curve, data))
+            else                    -> super.decodeFromBlocking(format, data)
         }
 
         override fun wrapKey(key: CPointer<EVP_PKEY>): ECDH.PublicKey {

@@ -92,9 +92,9 @@ private class RsaRawEncryptor(
 ) : Encryptor {
     private val cipher = state.cipher("RSA/ECB/NoPadding")
 
-    override fun encryptBlocking(plaintextInput: ByteArray): ByteArray = cipher.use { cipher ->
+    override fun encryptBlocking(plaintext: ByteArray): ByteArray = cipher.use { cipher ->
         cipher.init(JCipher.ENCRYPT_MODE, key, state.secureRandom)
-        cipher.doFinal(plaintextInput)
+        cipher.doFinal(plaintext)
     }
 }
 
@@ -105,10 +105,10 @@ private class RsaRawDecryptor(
     private val cipher = state.cipher("RSA/ECB/NoPadding")
     private val outputSize = (key as RSAKey).modulus.bitLength().bits.inBytes
 
-    override fun decryptBlocking(ciphertextInput: ByteArray): ByteArray = cipher.use { cipher ->
+    override fun decryptBlocking(ciphertext: ByteArray): ByteArray = cipher.use { cipher ->
         cipher.init(JCipher.DECRYPT_MODE, key, state.secureRandom)
         // for some reason BC provider output size is truncated, so we need to `pad`
-        cipher.doFinal(ciphertextInput).pad(outputSize)
+        cipher.doFinal(ciphertext).pad(outputSize)
     }
 }
 

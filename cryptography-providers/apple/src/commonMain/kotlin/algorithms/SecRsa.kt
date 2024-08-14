@@ -33,13 +33,13 @@ internal abstract class SecRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKe
 
     private inner class RsaPublicKeyDecoder(private val algorithm: SecKeyAlgorithm?) : KeyDecoder<RSA.PublicKey.Format, PublicK> {
 
-        override fun decodeFromBlocking(format: RSA.PublicKey.Format, input: ByteArray): PublicK {
+        override fun decodeFromBlocking(format: RSA.PublicKey.Format, data: ByteArray): PublicK {
             val pkcs1DerKey = when (format) {
                 RSA.PublicKey.Format.JWK -> error("$format is not supported")
-                RSA.PublicKey.Format.DER.PKCS1 -> input
-                RSA.PublicKey.Format.PEM.PKCS1 -> unwrapPem(PemLabel.RsaPublicKey, input)
-                RSA.PublicKey.Format.DER       -> unwrapPublicKey(ObjectIdentifier.RSA, input)
-                RSA.PublicKey.Format.PEM       -> unwrapPublicKey(ObjectIdentifier.RSA, unwrapPem(PemLabel.PublicKey, input))
+                RSA.PublicKey.Format.DER.PKCS1 -> data
+                RSA.PublicKey.Format.PEM.PKCS1 -> unwrapPem(PemLabel.RsaPublicKey, data)
+                RSA.PublicKey.Format.DER       -> unwrapPublicKey(ObjectIdentifier.RSA, data)
+                RSA.PublicKey.Format.PEM       -> unwrapPublicKey(ObjectIdentifier.RSA, unwrapPem(PemLabel.PublicKey, data))
             }
 
             val secKey = CFMutableDictionary(2) {
@@ -58,13 +58,13 @@ internal abstract class SecRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKe
 
     private inner class RsaPrivateKeyDecoder(private val algorithm: SecKeyAlgorithm?) : KeyDecoder<RSA.PrivateKey.Format, PrivateK> {
 
-        override fun decodeFromBlocking(format: RSA.PrivateKey.Format, input: ByteArray): PrivateK {
+        override fun decodeFromBlocking(format: RSA.PrivateKey.Format, data: ByteArray): PrivateK {
             val pkcs1DerKey = when (format) {
                 RSA.PrivateKey.Format.JWK -> error("$format is not supported")
-                RSA.PrivateKey.Format.DER.PKCS1 -> input
-                RSA.PrivateKey.Format.PEM.PKCS1 -> unwrapPem(PemLabel.RsaPrivateKey, input)
-                RSA.PrivateKey.Format.DER       -> unwrapPrivateKey(ObjectIdentifier.RSA, input)
-                RSA.PrivateKey.Format.PEM       -> unwrapPrivateKey(ObjectIdentifier.RSA, unwrapPem(PemLabel.PrivateKey, input))
+                RSA.PrivateKey.Format.DER.PKCS1 -> data
+                RSA.PrivateKey.Format.PEM.PKCS1 -> unwrapPem(PemLabel.RsaPrivateKey, data)
+                RSA.PrivateKey.Format.DER       -> unwrapPrivateKey(ObjectIdentifier.RSA, data)
+                RSA.PrivateKey.Format.PEM       -> unwrapPrivateKey(ObjectIdentifier.RSA, unwrapPem(PemLabel.PrivateKey, data))
             }
 
             val secKey = CFMutableDictionary(2) {

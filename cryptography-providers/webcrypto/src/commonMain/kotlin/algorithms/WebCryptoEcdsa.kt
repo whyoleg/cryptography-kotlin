@@ -53,8 +53,8 @@ internal object WebCryptoEcdsa : WebCryptoEc<ECDSA.PublicKey, ECDSA.PrivateKey, 
 private class EcdsaDerSignatureGenerator(
     private val rawGenerator: SignatureGenerator,
 ) : SignatureGenerator {
-    override suspend fun generateSignature(dataInput: ByteArray): ByteArray {
-        val rawSignature = rawGenerator.generateSignature(dataInput)
+    override suspend fun generateSignature(data: ByteArray): ByteArray {
+        val rawSignature = rawGenerator.generateSignature(data)
 
         val r = rawSignature.copyOfRange(0, rawSignature.size / 2).makePositive()
         val s = rawSignature.copyOfRange(rawSignature.size / 2, rawSignature.size).makePositive()
@@ -67,28 +67,28 @@ private class EcdsaDerSignatureGenerator(
         return DER.encodeToByteArray(EcdsaSignatureValue.serializer(), signature)
     }
 
-    override fun generateSignatureBlocking(dataInput: ByteArray): ByteArray = nonBlocking()
+    override fun generateSignatureBlocking(data: ByteArray): ByteArray = nonBlocking()
 }
 
 private class EcdsaDerSignatureVerifier(
     private val rawVerifier: SignatureVerifier,
     private val curveOrderSize: Int,
 ) : SignatureVerifier {
-    override suspend fun verifySignature(dataInput: ByteArray, signatureInput: ByteArray): Boolean {
-        val signature = DER.decodeFromByteArray(EcdsaSignatureValue.serializer(), signatureInput)
+    override suspend fun verifySignature(data: ByteArray, signature: ByteArray): Boolean {
+        val signatureValue = DER.decodeFromByteArray(EcdsaSignatureValue.serializer(), signature)
 
-        val r = signature.r.encodeToByteArray().trimLeadingZeros()
-        val s = signature.s.encodeToByteArray().trimLeadingZeros()
+        val r = signatureValue.r.encodeToByteArray().trimLeadingZeros()
+        val s = signatureValue.s.encodeToByteArray().trimLeadingZeros()
 
         val rawSignature = ByteArray(curveOrderSize * 2)
 
         r.copyInto(rawSignature, curveOrderSize - r.size)
         s.copyInto(rawSignature, curveOrderSize * 2 - s.size)
 
-        return rawVerifier.verifySignature(dataInput, rawSignature)
+        return rawVerifier.verifySignature(data, rawSignature)
     }
 
-    override fun verifySignatureBlocking(dataInput: ByteArray, signatureInput: ByteArray): Boolean = nonBlocking()
+    override fun verifySignatureBlocking(data: ByteArray, signature: ByteArray): Boolean = nonBlocking()
 }
 
 private fun ByteArray.makePositive(): ByteArray = if (this[0] < 0) byteArrayOf(0, *this) else this

@@ -88,18 +88,18 @@ public interface AES<K : AES.Key> : CryptographyAlgorithm {
     @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface IvEncryptor : Encryptor {
         @DelicateCryptographyApi
-        public suspend fun encrypt(iv: ByteArray, plaintextInput: ByteArray): ByteArray = encryptBlocking(iv, plaintextInput)
+        public suspend fun encrypt(iv: ByteArray, plaintext: ByteArray): ByteArray = encryptBlocking(iv, plaintext)
 
         @DelicateCryptographyApi
-        public fun encryptBlocking(iv: ByteArray, plaintextInput: ByteArray): ByteArray
+        public fun encryptBlocking(iv: ByteArray, plaintext: ByteArray): ByteArray
     }
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface IvDecryptor : Decryptor {
         @DelicateCryptographyApi
-        public suspend fun decrypt(iv: ByteArray, ciphertextInput: ByteArray): ByteArray = decryptBlocking(iv, ciphertextInput)
+        public suspend fun decrypt(iv: ByteArray, ciphertext: ByteArray): ByteArray = decryptBlocking(iv, ciphertext)
 
         @DelicateCryptographyApi
-        public fun decryptBlocking(iv: ByteArray, ciphertextInput: ByteArray): ByteArray
+        public fun decryptBlocking(iv: ByteArray, ciphertext: ByteArray): ByteArray
     }
 }

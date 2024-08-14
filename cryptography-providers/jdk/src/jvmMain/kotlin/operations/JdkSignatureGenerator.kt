@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.jdk.operations
 
 
-import dev.whyoleg.cryptography.providers.jdk.*
 import dev.whyoleg.cryptography.operations.signature.*
+import dev.whyoleg.cryptography.providers.jdk.*
 import java.security.spec.*
 
 internal class JdkSignatureGenerator(
@@ -17,10 +17,10 @@ internal class JdkSignatureGenerator(
 ) : SignatureGenerator {
     private val signature = state.signature(algorithm)
 
-    override fun generateSignatureBlocking(dataInput: ByteArray): ByteArray = signature.use { signature ->
-        signature.initSign(key, state.secureRandom)
-        parameters?.let(signature::setParameter)
-        signature.update(dataInput)
-        signature.sign()
+    override fun generateSignatureBlocking(data: ByteArray): ByteArray = signature.use { jSignature ->
+        jSignature.initSign(key, state.secureRandom)
+        parameters?.let(jSignature::setParameter)
+        jSignature.update(data)
+        jSignature.sign()
     }
 }

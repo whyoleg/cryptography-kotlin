@@ -25,11 +25,11 @@ internal abstract class Openssl3Aes<K : AES.Key> : AES<K> {
     }
 
     private inner class AesKeyDecoder : KeyDecoder<AES.Key.Format, K> {
-        override fun decodeFromBlocking(format: AES.Key.Format, input: ByteArray): K = when (format) {
+        override fun decodeFromBlocking(format: AES.Key.Format, data: ByteArray): K = when (format) {
             AES.Key.Format.RAW -> {
-                val keySize = input.size.bytes
+                val keySize = data.size.bytes
                 requireAesKeySize(keySize)
-                wrapKey(keySize, input.copyOf())
+                wrapKey(keySize, data.copyOf())
             }
             AES.Key.Format.JWK -> error("JWK is not supported")
         }

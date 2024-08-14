@@ -15,12 +15,12 @@ internal class JdkMacSignature(
 ) : SignatureGenerator, SignatureVerifier {
     private val mac = state.mac(algorithm)
 
-    override fun generateSignatureBlocking(dataInput: ByteArray): ByteArray = mac.use { mac ->
+    override fun generateSignatureBlocking(data: ByteArray): ByteArray = mac.use { mac ->
         mac.init(key)
-        mac.doFinal(dataInput)
+        mac.doFinal(data)
     }
 
-    override fun verifySignatureBlocking(dataInput: ByteArray, signatureInput: ByteArray): Boolean {
-        return generateSignatureBlocking(dataInput).contentEquals(signatureInput)
+    override fun verifySignatureBlocking(data: ByteArray, signature: ByteArray): Boolean {
+        return generateSignatureBlocking(data).contentEquals(signature)
     }
 }

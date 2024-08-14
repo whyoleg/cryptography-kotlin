@@ -31,26 +31,26 @@ internal object WebCryptoRsaOaep : WebCryptoRsa<RSA.OAEP.PublicKey, RSA.OAEP.Pri
 
 private class RsaOaepEncryptor(private val key: CryptoKey) : AuthenticatedEncryptor {
 
-    override suspend fun encrypt(plaintextInput: ByteArray, associatedData: ByteArray?): ByteArray {
+    override suspend fun encrypt(plaintext: ByteArray, associatedData: ByteArray?): ByteArray {
         return WebCrypto.encrypt(
             algorithm = RsaOaepCipherAlgorithm(associatedData),
             key = key,
-            data = plaintextInput
+            data = plaintext
         )
     }
 
-    override fun encryptBlocking(plaintextInput: ByteArray, associatedData: ByteArray?): ByteArray = nonBlocking()
+    override fun encryptBlocking(plaintext: ByteArray, associatedData: ByteArray?): ByteArray = nonBlocking()
 }
 
 private class RsaOaepDecryptor(private val key: CryptoKey) : AuthenticatedDecryptor {
 
-    override suspend fun decrypt(ciphertextInput: ByteArray, associatedData: ByteArray?): ByteArray {
+    override suspend fun decrypt(ciphertext: ByteArray, associatedData: ByteArray?): ByteArray {
         return WebCrypto.decrypt(
             algorithm = RsaOaepCipherAlgorithm(associatedData),
             key = key,
-            data = ciphertextInput
+            data = ciphertext
         )
     }
 
-    override fun decryptBlocking(ciphertextInput: ByteArray, associatedData: ByteArray?): ByteArray = nonBlocking()
+    override fun decryptBlocking(ciphertext: ByteArray, associatedData: ByteArray?): ByteArray = nonBlocking()
 }

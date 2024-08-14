@@ -18,8 +18,8 @@ internal class JdkDigest(
 
     private val messageDigest = state.messageDigest(algorithm)
 
-    override fun hashBlocking(dataInput: ByteArray): ByteArray = messageDigest.use { messageDigest ->
+    override fun hashBlocking(data: ByteArray): ByteArray = messageDigest.use { messageDigest ->
         messageDigest.reset()
-        messageDigest.digest(dataInput)
+        messageDigest.digest(data)
     }
 }

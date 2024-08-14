@@ -42,13 +42,13 @@ private class AesCbcCipher(
     @OptIn(ExperimentalNativeApi::class)
     private val cleaner = createCleaner(cipher, ::EVP_CIPHER_free)
 
-    override fun encryptBlocking(plaintextInput: ByteArray): ByteArray {
+    override fun encryptBlocking(plaintext: ByteArray): ByteArray {
         val iv = CryptographyRandom.nextBytes(ivSizeBytes)
-        return iv + encryptBlocking(iv, plaintextInput)
+        return iv + encryptBlocking(iv, plaintext)
     }
 
     @DelicateCryptographyApi
-    override fun encryptBlocking(iv: ByteArray, plaintextInput: ByteArray): ByteArray = memScoped {
+    override fun encryptBlocking(iv: ByteArray, plaintext: ByteArray): ByteArray = memScoped {
         require(iv.size == ivSizeBytes) { "IV size is wrong" }
 
         val context = EVP_CIPHER_CTX_new()
@@ -65,7 +65,7 @@ private class AesCbcCipher(
             checkError(EVP_CIPHER_CTX_set_padding(context, if (padding) 1 else 0))
 
             val blockSize = checkError(EVP_CIPHER_CTX_get_block_size(context))
-            val ciphertextOutput = ByteArray(blockSize + plaintextInput.size)
+            val ciphertextOutput = ByteArray(blockSize + plaintext.size)
 
             val outl = alloc<IntVar>()
 
@@ -74,8 +74,8 @@ private class AesCbcCipher(
                     ctx = context,
                     out = ciphertextOutput.refToU(0),
                     outl = outl.ptr,
-                    `in` = plaintextInput.safeRefToU(0),
-                    inl = plaintextInput.size
+                    `in` = plaintext.safeRefToU(0),
+                    inl = plaintext.size
                 )
             )
 
@@ -96,23 +96,23 @@ private class AesCbcCipher(
         }
     }
 
-    override fun decryptBlocking(ciphertextInput: ByteArray): ByteArray {
-        require(ciphertextInput.size >= ivSizeBytes) { "Ciphertext is too short" }
+    override fun decryptBlocking(ciphertext: ByteArray): ByteArray {
+        require(ciphertext.size >= ivSizeBytes) { "Ciphertext is too short" }
 
         return decrypt(
-            iv = ciphertextInput,
-            ciphertext = ciphertextInput,
+            iv = ciphertext,
+            ciphertext = ciphertext,
             ciphertextStartIndex = ivSizeBytes,
         )
     }
 
     @DelicateCryptographyApi
-    override fun decryptBlocking(iv: ByteArray, ciphertextInput: ByteArray): ByteArray {
+    override fun decryptBlocking(iv: ByteArray, ciphertext: ByteArray): ByteArray {
         require(iv.size == ivSizeBytes) { "IV size is wrong" }
 
         return decrypt(
             iv = iv,
-            ciphertext = ciphertextInput,
+            ciphertext = ciphertext,
             ciphertextStartIndex = 0,
         )
     }

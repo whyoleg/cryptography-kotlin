@@ -11,9 +11,9 @@ internal class WebCryptoSignatureVerifier(
     private val algorithm: Algorithm,
     private val key: CryptoKey,
 ) : SignatureVerifier {
-    override suspend fun verifySignature(dataInput: ByteArray, signatureInput: ByteArray): Boolean {
-        return WebCrypto.verify(algorithm, key, signatureInput, dataInput)
+    override suspend fun verifySignature(data: ByteArray, signature: ByteArray): Boolean {
+        return WebCrypto.verify(algorithm, key, signature, data)
     }
 
-    override fun verifySignatureBlocking(dataInput: ByteArray, signatureInput: ByteArray): Boolean = nonBlocking()
+    override fun verifySignatureBlocking(data: ByteArray, signature: ByteArray): Boolean = nonBlocking()
 }

@@ -37,13 +37,13 @@ internal object SecRsaRaw : SecRsa<RSA.RAW.PublicKey, RSA.RAW.PrivateKey, RSA.RA
 }
 
 private class RsaRawEncryptor(private val publicKey: SecKeyRef) : Encryptor {
-    override fun encryptBlocking(plaintextInput: ByteArray): ByteArray {
-        return secEncrypt(publicKey, kSecKeyAlgorithmRSAEncryptionRaw, plaintextInput)
+    override fun encryptBlocking(plaintext: ByteArray): ByteArray {
+        return secEncrypt(publicKey, kSecKeyAlgorithmRSAEncryptionRaw, plaintext)
     }
 }
 
 private class RsaRawDecryptor(private val privateKey: SecKeyRef) : Decryptor {
-    override fun decryptBlocking(ciphertextInput: ByteArray): ByteArray {
-        return secDecrypt(privateKey, kSecKeyAlgorithmRSAEncryptionRaw, ciphertextInput)
+    override fun decryptBlocking(ciphertext: ByteArray): ByteArray {
+        return secDecrypt(privateKey, kSecKeyAlgorithmRSAEncryptionRaw, ciphertext)
     }
 }

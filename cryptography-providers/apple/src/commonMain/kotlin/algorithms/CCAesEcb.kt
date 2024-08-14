@@ -31,16 +31,16 @@ private class AesEcbCipher(key: ByteArray, padding: Boolean) : Cipher {
         key = key
     )
 
-    override fun encryptBlocking(plaintextInput: ByteArray): ByteArray {
-        return cipher.encrypt(null, plaintextInput)
+    override fun encryptBlocking(plaintext: ByteArray): ByteArray {
+        return cipher.encrypt(null, plaintext)
     }
 
-    override fun decryptBlocking(ciphertextInput: ByteArray): ByteArray {
-        require(ciphertextInput.size % blockSizeBytes == 0) { "Ciphertext is not padded" }
+    override fun decryptBlocking(ciphertext: ByteArray): ByteArray {
+        require(ciphertext.size % blockSizeBytes == 0) { "Ciphertext is not padded" }
 
         return cipher.decrypt(
             iv = null,
-            ciphertext = ciphertextInput,
+            ciphertext = ciphertext,
             ciphertextStartIndex = 0
         )
     }

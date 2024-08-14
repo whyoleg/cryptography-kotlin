@@ -12,15 +12,15 @@ internal class WebCryptoKeyDecoder<KF : KeyFormat, K : Key>(
     private val keyProcessor: WebCryptoKeyProcessor<KF>,
     private val keyWrapper: WebCryptoKeyWrapper<K>,
 ) : KeyDecoder<KF, K> {
-    override suspend fun decodeFrom(format: KF, input: ByteArray): K = keyWrapper.wrap(
+    override suspend fun decodeFrom(format: KF, data: ByteArray): K = keyWrapper.wrap(
         WebCrypto.importKey(
             format = keyProcessor.stringFormat(format),
-            keyData = keyProcessor.beforeDecoding(format, input),
+            keyData = keyProcessor.beforeDecoding(format, data),
             algorithm = algorithm,
             extractable = true,
             keyUsages = keyWrapper.usages
         )
     )
 
-    override fun decodeFromBlocking(format: KF, input: ByteArray): K = nonBlocking()
+    override fun decodeFromBlocking(format: KF, data: ByteArray): K = nonBlocking()
 }

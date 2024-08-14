@@ -27,7 +27,7 @@ private class AesGcmCipher(
     private val tagSizeBits: Int,
 ) : AuthenticatedCipher {
 
-    override suspend fun encrypt(plaintextInput: ByteArray, associatedData: ByteArray?): ByteArray {
+    override suspend fun encrypt(plaintext: ByteArray, associatedData: ByteArray?): ByteArray {
         val iv = CryptographyRandom.nextBytes(ivSizeBytes)
 
         val ciphertext = WebCrypto.encrypt(
@@ -37,24 +37,24 @@ private class AesGcmCipher(
                 tagLength = tagSizeBits
             ),
             key = key,
-            data = plaintextInput
+            data = plaintext
         )
 
         return iv + ciphertext
     }
 
-    override suspend fun decrypt(ciphertextInput: ByteArray, associatedData: ByteArray?): ByteArray {
+    override suspend fun decrypt(ciphertext: ByteArray, associatedData: ByteArray?): ByteArray {
         return WebCrypto.decrypt(
             algorithm = AesGcmCipherAlgorithm(
                 additionalData = associatedData,
-                iv = ciphertextInput.copyOfRange(0, ivSizeBytes),
+                iv = ciphertext.copyOfRange(0, ivSizeBytes),
                 tagLength = tagSizeBits
             ),
             key = key,
-            data = ciphertextInput.copyOfRange(ivSizeBytes, ciphertextInput.size)
+            data = ciphertext.copyOfRange(ivSizeBytes, ciphertext.size)
         )
     }
 
-    override fun decryptBlocking(ciphertextInput: ByteArray, associatedData: ByteArray?): ByteArray = nonBlocking()
-    override fun encryptBlocking(plaintextInput: ByteArray, associatedData: ByteArray?): ByteArray = nonBlocking()
+    override fun decryptBlocking(ciphertext: ByteArray, associatedData: ByteArray?): ByteArray = nonBlocking()
+    override fun encryptBlocking(plaintext: ByteArray, associatedData: ByteArray?): ByteArray = nonBlocking()
 }

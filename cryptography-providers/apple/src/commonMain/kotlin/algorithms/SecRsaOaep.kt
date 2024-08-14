@@ -43,17 +43,17 @@ internal object SecRsaOaep : SecRsa<RSA.OAEP.PublicKey, RSA.OAEP.PrivateKey, RSA
 }
 
 private class RsaOaepEncryptor(private val publicKey: SecKeyRef, private val algorithm: SecKeyAlgorithm?) : AuthenticatedEncryptor {
-    override fun encryptBlocking(plaintextInput: ByteArray, associatedData: ByteArray?): ByteArray {
+    override fun encryptBlocking(plaintext: ByteArray, associatedData: ByteArray?): ByteArray {
         require(associatedData == null) { "Associated data inclusion is not supported" }
 
-        return secEncrypt(publicKey, algorithm, plaintextInput)
+        return secEncrypt(publicKey, algorithm, plaintext)
     }
 }
 
 private class RsaOaepDecryptor(private val privateKey: SecKeyRef, private val algorithm: SecKeyAlgorithm?) : AuthenticatedDecryptor {
-    override fun decryptBlocking(ciphertextInput: ByteArray, associatedData: ByteArray?): ByteArray {
+    override fun decryptBlocking(ciphertext: ByteArray, associatedData: ByteArray?): ByteArray {
         require(associatedData == null) { "Associated data inclusion is not supported" }
 
-        return secDecrypt(privateKey, algorithm, ciphertextInput)
+        return secDecrypt(privateKey, algorithm, ciphertext)
     }
 }

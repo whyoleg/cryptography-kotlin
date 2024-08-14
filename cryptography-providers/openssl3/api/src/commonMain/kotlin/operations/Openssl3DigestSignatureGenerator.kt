@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.operations
@@ -21,7 +21,7 @@ internal abstract class Openssl3DigestSignatureGenerator(
     protected abstract fun MemScope.createParams(): CValuesRef<OSSL_PARAM>?
 
     @OptIn(UnsafeNumber::class)
-    override fun generateSignatureBlocking(dataInput: ByteArray): ByteArray = memScoped {
+    override fun generateSignatureBlocking(data: ByteArray): ByteArray = memScoped {
         val context = checkError(EVP_MD_CTX_new())
         try {
             checkError(
@@ -36,7 +36,7 @@ internal abstract class Openssl3DigestSignatureGenerator(
                 )
             )
 
-            checkError(EVP_DigestSignUpdate(context, dataInput.safeRefTo(0), dataInput.size.convert()))
+            checkError(EVP_DigestSignUpdate(context, data.safeRefTo(0), data.size.convert()))
 
             val siglen = alloc<size_tVar>()
             checkError(EVP_DigestSignFinal(context, null, siglen.ptr))

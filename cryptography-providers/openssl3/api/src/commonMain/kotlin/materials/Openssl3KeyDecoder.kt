@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.materials
@@ -33,7 +33,7 @@ internal abstract class Openssl3KeyDecoder<KF : KeyFormat, K : Key>(
     protected abstract fun inputType(format: KF): String
     protected abstract fun inputStruct(format: KF): String
 
-    override fun decodeFromBlocking(format: KF, input: ByteArray): K = memScoped {
+    override fun decodeFromBlocking(format: KF, data: ByteArray): K = memScoped {
         val pkeyVar = alloc<CPointerVar<EVP_PKEY>>()
         val context = checkError(
             OSSL_DECODER_CTX_new_for_pkey(
@@ -48,8 +48,8 @@ internal abstract class Openssl3KeyDecoder<KF : KeyFormat, K : Key>(
         )
         @OptIn(UnsafeNumber::class)
         try {
-            val pdataLenVar = alloc(input.size.convert<size_t>())
-            val pdataVar = alloc<CPointerVar<UByteVar>> { value = allocArrayOf(input).reinterpret() }
+            val pdataLenVar = alloc(data.size.convert<size_t>())
+            val pdataVar = alloc<CPointerVar<UByteVar>> { value = allocArrayOf(data).reinterpret() }
             checkError(OSSL_DECODER_from_data(context, pdataVar.ptr, pdataLenVar.ptr))
             val pkey = checkError(pkeyVar.value)
             wrapKey(pkey)
