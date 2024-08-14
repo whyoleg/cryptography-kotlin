@@ -29,60 +29,60 @@ class ContextSpecificEncodingTest {
 
     @Test
     fun testImplicitPointWithXOnly() {
-        val bytes = DER.encodeToByteArray(ImplicitPoint(7, null))
+        val bytes = Der.encodeToByteArray(ImplicitPoint(7, null))
         assertEquals("3003800107", bytes.toHexString())
 
-        val point = DER.decodeFromByteArray<ImplicitPoint>(bytes)
+        val point = Der.decodeFromByteArray<ImplicitPoint>(bytes)
         assertEquals(7, point.x)
         assertNull(point.y)
     }
 
     @Test
     fun testImplicitPointWithYOnly() {
-        val bytes = DER.encodeToByteArray(ImplicitPoint(null, 8))
+        val bytes = Der.encodeToByteArray(ImplicitPoint(null, 8))
         assertEquals("3003810108", bytes.toHexString())
 
-        val point = DER.decodeFromByteArray<ImplicitPoint>(bytes)
+        val point = Der.decodeFromByteArray<ImplicitPoint>(bytes)
         assertNull(point.x)
         assertEquals(8, point.y)
     }
 
     @Test
     fun testImplicitPointWithXAndY() {
-        val bytes = DER.encodeToByteArray(ImplicitPoint(7, 8))
+        val bytes = Der.encodeToByteArray(ImplicitPoint(7, 8))
         assertEquals("3006800107810108", bytes.toHexString())
 
-        val point = DER.decodeFromByteArray<ImplicitPoint>(bytes)
+        val point = Der.decodeFromByteArray<ImplicitPoint>(bytes)
         assertEquals(7, point.x)
         assertEquals(8, point.y)
     }
 
     @Test
     fun testExplicitPointWithXOnly() {
-        val bytes = DER.encodeToByteArray(ExplicitPoint(7, null))
+        val bytes = Der.encodeToByteArray(ExplicitPoint(7, null))
         assertEquals("3005a003020107", bytes.toHexString())
 
-        val point = DER.decodeFromByteArray<ExplicitPoint>(bytes)
+        val point = Der.decodeFromByteArray<ExplicitPoint>(bytes)
         assertEquals(7, point.x)
         assertNull(point.y)
     }
 
     @Test
     fun testExplicitPointWithYOnly() {
-        val bytes = DER.encodeToByteArray(ExplicitPoint(null, 8))
+        val bytes = Der.encodeToByteArray(ExplicitPoint(null, 8))
         assertEquals("3005a103020108", bytes.toHexString())
 
-        val point = DER.decodeFromByteArray<ExplicitPoint>(bytes)
+        val point = Der.decodeFromByteArray<ExplicitPoint>(bytes)
         assertNull(point.x)
         assertEquals(8, point.y)
     }
 
     @Test
     fun testExplicitPointWithXAndY() {
-        val bytes = DER.encodeToByteArray(ExplicitPoint(7, 8))
+        val bytes = Der.encodeToByteArray(ExplicitPoint(7, 8))
         assertEquals("300aa003020107a103020108", bytes.toHexString())
 
-        val point = DER.decodeFromByteArray<ExplicitPoint>(bytes)
+        val point = Der.decodeFromByteArray<ExplicitPoint>(bytes)
         assertEquals(7, point.x)
         assertEquals(8, point.y)
     }

@@ -1,5 +1,5 @@
-public final class dev/whyoleg/cryptography/serialization/pem/PEM {
-	public static final field INSTANCE Ldev/whyoleg/cryptography/serialization/pem/PEM;
+public final class dev/whyoleg/cryptography/serialization/pem/Pem {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/serialization/pem/Pem;
 	public final fun decode (Ljava/lang/String;)Ldev/whyoleg/cryptography/serialization/pem/PemContent;
 	public final fun decode ([B)Ldev/whyoleg/cryptography/serialization/pem/PemContent;
 	public final fun encode (Ldev/whyoleg/cryptography/serialization/pem/PemContent;)Ljava/lang/String;

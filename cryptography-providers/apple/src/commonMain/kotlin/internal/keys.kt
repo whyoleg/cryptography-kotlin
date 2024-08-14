@@ -13,26 +13,26 @@ import platform.Foundation.*
 import platform.Security.*
 
 internal fun unwrapPem(label: PemLabel, key: ByteArray): ByteArray =
-    PEM.decode(key).ensurePemLabel(label).bytes
+    Pem.decode(key).ensurePemLabel(label).bytes
 
-internal fun wrapPem(label: PemLabel, key: ByteArray): ByteArray = PEM.encodeToByteArray(PemContent(label, key))
+internal fun wrapPem(label: PemLabel, key: ByteArray): ByteArray = Pem.encodeToByteArray(PemContent(label, key))
 
 internal fun unwrapPublicKey(algorithm: ObjectIdentifier, key: ByteArray): ByteArray =
-    DER.decodeFromByteArray(SubjectPublicKeyInfo.serializer(), key).also {
+    Der.decodeFromByteArray(SubjectPublicKeyInfo.serializer(), key).also {
         check(it.algorithm.algorithm == algorithm) { "Expected algorithm '${algorithm.value}', received: '${it.algorithm.algorithm}'" }
     }.subjectPublicKey.byteArray
 
-internal fun wrapPublicKey(identifier: KeyAlgorithmIdentifier, key: ByteArray): ByteArray = DER.encodeToByteArray(
+internal fun wrapPublicKey(identifier: KeyAlgorithmIdentifier, key: ByteArray): ByteArray = Der.encodeToByteArray(
     SubjectPublicKeyInfo.serializer(),
     SubjectPublicKeyInfo(identifier, BitArray(0, key))
 )
 
 internal fun unwrapPrivateKey(algorithm: ObjectIdentifier, key: ByteArray): ByteArray =
-    DER.decodeFromByteArray(PrivateKeyInfo.serializer(), key).also {
+    Der.decodeFromByteArray(PrivateKeyInfo.serializer(), key).also {
         check(it.privateKeyAlgorithm.algorithm == algorithm)
     }.privateKey
 
-internal fun wrapPrivateKey(version: Int, identifier: KeyAlgorithmIdentifier, key: ByteArray): ByteArray = DER.encodeToByteArray(
+internal fun wrapPrivateKey(version: Int, identifier: KeyAlgorithmIdentifier, key: ByteArray): ByteArray = Der.encodeToByteArray(
     PrivateKeyInfo.serializer(),
     PrivateKeyInfo(version, identifier, key)
 )

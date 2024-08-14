@@ -103,7 +103,7 @@ private object EcPrivateKeyProcessor : WebCryptoKeyProcessor<EC.PrivateKey.Forma
     }
 
     private fun convertPkcs8ToSec1(input: ByteArray): ByteArray {
-        val privateKeyInfo = DER.decodeFromByteArray(PrivateKeyInfo.serializer(), input)
+        val privateKeyInfo = Der.decodeFromByteArray(PrivateKeyInfo.serializer(), input)
 
         val privateKeyAlgorithm = privateKeyInfo.privateKeyAlgorithm
         check(privateKeyAlgorithm is EcKeyAlgorithmIdentifier) {
@@ -111,7 +111,7 @@ private object EcPrivateKeyProcessor : WebCryptoKeyProcessor<EC.PrivateKey.Forma
         }
         // the produced key could not contain parameters in underlying EcPrivateKey,
         // but they are available in `privateKeyAlgorithm`
-        val ecPrivateKey = DER.decodeFromByteArray(EcPrivateKey.serializer(), privateKeyInfo.privateKey)
+        val ecPrivateKey = Der.decodeFromByteArray(EcPrivateKey.serializer(), privateKeyInfo.privateKey)
         if (ecPrivateKey.parameters != null) return privateKeyInfo.privateKey
 
         val enhancedEcPrivateKey = EcPrivateKey(
@@ -120,11 +120,11 @@ private object EcPrivateKeyProcessor : WebCryptoKeyProcessor<EC.PrivateKey.Forma
             parameters = privateKeyAlgorithm.parameters,
             publicKey = ecPrivateKey.publicKey
         )
-        return DER.encodeToByteArray(EcPrivateKey.serializer(), enhancedEcPrivateKey)
+        return Der.encodeToByteArray(EcPrivateKey.serializer(), enhancedEcPrivateKey)
     }
 
     private fun convertSec1ToPkcs8(input: ByteArray): ByteArray {
-        val ecPrivateKey = DER.decodeFromByteArray(EcPrivateKey.serializer(), input)
+        val ecPrivateKey = Der.decodeFromByteArray(EcPrivateKey.serializer(), input)
 
         checkNotNull(ecPrivateKey.parameters) { "EC Parameters are not present in the key" }
 
@@ -133,6 +133,6 @@ private object EcPrivateKeyProcessor : WebCryptoKeyProcessor<EC.PrivateKey.Forma
             privateKeyAlgorithm = EcKeyAlgorithmIdentifier(ecPrivateKey.parameters),
             privateKey = input
         )
-        return DER.encodeToByteArray(PrivateKeyInfo.serializer(), privateKeyInfo)
+        return Der.encodeToByteArray(PrivateKeyInfo.serializer(), privateKeyInfo)
     }
 }

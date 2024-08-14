@@ -8,11 +8,14 @@ import dev.whyoleg.cryptography.serialization.asn1.internal.*
 import kotlinx.serialization.*
 import kotlinx.serialization.modules.*
 
-public sealed class DER(
+@Deprecated("Renamed to Der", ReplaceWith("Der"), DeprecationLevel.ERROR)
+public typealias DER = Der
+
+public sealed class Der(
     override val serializersModule: SerializersModule,
 ) : BinaryFormat {
 
-    public companion object Default : DER(
+    public companion object Default : Der(
         serializersModule = EmptySerializersModule()
     )
 
@@ -27,15 +30,15 @@ public sealed class DER(
         return DerDecoder(this, input).decodeSerializableValue(deserializer)
     }
 
-    public class Builder internal constructor(der: DER) {
+    public class Builder internal constructor(der: Der) {
         public var serializersModule: SerializersModule = der.serializersModule
     }
 }
 
-public fun DER(from: DER = DER.Default, builderAction: DER.Builder.() -> Unit): DER {
-    return DerImpl(DER.Builder(from).apply(builderAction))
+public fun DER(from: Der = Der.Default, builderAction: Der.Builder.() -> Unit): Der {
+    return DerImpl(Der.Builder(from).apply(builderAction))
 }
 
-private class DerImpl(builder: Builder) : DER(
+private class DerImpl(builder: Builder) : Der(
     serializersModule = builder.serializersModule
 )

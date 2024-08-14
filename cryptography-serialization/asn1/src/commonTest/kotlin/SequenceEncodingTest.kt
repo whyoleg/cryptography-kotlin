@@ -19,10 +19,10 @@ class SequenceEncodingTest {
     @Test
     fun testAlgorithmIdentifier() {
         val algorithm = SimpleAlgorithmIdentifier(ObjectIdentifier("1.2.840.113549.1.1.11"), null)
-        val bytes = DER.encodeToByteArray(algorithm)
+        val bytes = Der.encodeToByteArray(algorithm)
         assertEquals("300d06092a864886f70d01010b0500", bytes.toHexString())
 
-        val decoded = DER.decodeFromByteArray<SimpleAlgorithmIdentifier>(bytes)
+        val decoded = Der.decodeFromByteArray<SimpleAlgorithmIdentifier>(bytes)
 
         assertEquals(algorithm.algorithm, decoded.algorithm)
         assertNull(decoded.parameters)

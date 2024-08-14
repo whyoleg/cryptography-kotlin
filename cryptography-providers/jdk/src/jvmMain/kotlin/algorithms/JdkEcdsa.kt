@@ -60,7 +60,7 @@ private class EcdsaRawSignatureGenerator(
     override fun generateSignatureBlocking(data: ByteArray): ByteArray {
         val derSignature = derGenerator.generateSignatureBlocking(data)
 
-        val signature = DER.decodeFromByteArray(EcdsaSignatureValue.serializer(), derSignature)
+        val signature = Der.decodeFromByteArray(EcdsaSignatureValue.serializer(), derSignature)
 
         val r = signature.r.encodeToByteArray().trimLeadingZeros()
         val s = signature.s.encodeToByteArray().trimLeadingZeros()
@@ -91,7 +91,7 @@ private class EcdsaRawSignatureVerifier(
             s = s.decodeToBigInt()
         )
 
-        val derSignature = DER.encodeToByteArray(EcdsaSignatureValue.serializer(), signatureValue)
+        val derSignature = Der.encodeToByteArray(EcdsaSignatureValue.serializer(), signatureValue)
 
         return derVerifier.verifySignatureBlocking(data, derSignature)
     }

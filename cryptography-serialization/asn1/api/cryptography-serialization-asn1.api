@@ -39,25 +39,25 @@ public final class dev/whyoleg/cryptography/serialization/asn1/ContextSpecificTa
 	public static fun values ()[Ldev/whyoleg/cryptography/serialization/asn1/ContextSpecificTag$TagType;
 }
 
-public abstract class dev/whyoleg/cryptography/serialization/asn1/DER : kotlinx/serialization/BinaryFormat {
-	public static final field Default Ldev/whyoleg/cryptography/serialization/asn1/DER$Default;
+public abstract class dev/whyoleg/cryptography/serialization/asn1/Der : kotlinx/serialization/BinaryFormat {
+	public static final field Default Ldev/whyoleg/cryptography/serialization/asn1/Der$Default;
 	public synthetic fun <init> (Lkotlinx/serialization/modules/SerializersModule;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun decodeFromByteArray (Lkotlinx/serialization/DeserializationStrategy;[B)Ljava/lang/Object;
 	public fun encodeToByteArray (Lkotlinx/serialization/SerializationStrategy;Ljava/lang/Object;)[B
 	public fun getSerializersModule ()Lkotlinx/serialization/modules/SerializersModule;
 }
 
-public final class dev/whyoleg/cryptography/serialization/asn1/DER$Builder {
+public final class dev/whyoleg/cryptography/serialization/asn1/Der$Builder {
 	public final fun getSerializersModule ()Lkotlinx/serialization/modules/SerializersModule;
 	public final fun setSerializersModule (Lkotlinx/serialization/modules/SerializersModule;)V
 }
 
-public final class dev/whyoleg/cryptography/serialization/asn1/DER$Default : dev/whyoleg/cryptography/serialization/asn1/DER {
+public final class dev/whyoleg/cryptography/serialization/asn1/Der$Default : dev/whyoleg/cryptography/serialization/asn1/Der {
 }
 
-public final class dev/whyoleg/cryptography/serialization/asn1/DERKt {
-	public static final fun DER (Ldev/whyoleg/cryptography/serialization/asn1/DER;Lkotlin/jvm/functions/Function1;)Ldev/whyoleg/cryptography/serialization/asn1/DER;
-	public static synthetic fun DER$default (Ldev/whyoleg/cryptography/serialization/asn1/DER;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ldev/whyoleg/cryptography/serialization/asn1/DER;
+public final class dev/whyoleg/cryptography/serialization/asn1/DerKt {
+	public static final fun DER (Ldev/whyoleg/cryptography/serialization/asn1/Der;Lkotlin/jvm/functions/Function1;)Ldev/whyoleg/cryptography/serialization/asn1/Der;
+	public static synthetic fun DER$default (Ldev/whyoleg/cryptography/serialization/asn1/Der;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ldev/whyoleg/cryptography/serialization/asn1/Der;
 }
 
 public final class dev/whyoleg/cryptography/serialization/asn1/ObjectIdentifier {

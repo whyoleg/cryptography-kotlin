@@ -102,8 +102,8 @@ abstract class EcCompatibilityTest<PublicK : EC.PublicKey, PrivateK : EC.Private
                             assertEcPrivateKeyEquals(bytes, key.encodeTo(format))
                         }
                         EC.PrivateKey.Format.PEM.SEC1 -> {
-                            val expected = PEM.decode(bytes)
-                            val actual = PEM.decode(key.encodeTo(format))
+                            val expected = Pem.decode(bytes)
+                            val actual = Pem.decode(key.encodeTo(format))
 
                             assertEquals(expected.label, actual.label)
 
@@ -113,8 +113,8 @@ abstract class EcCompatibilityTest<PublicK : EC.PublicKey, PrivateK : EC.Private
                             assertPkcs8EcPrivateKeyEquals(bytes, key.encodeTo(format))
                         }
                         EC.PrivateKey.Format.PEM -> {
-                            val expected = PEM.decode(bytes)
-                            val actual = PEM.decode(key.encodeTo(format))
+                            val expected = Pem.decode(bytes)
+                            val actual = Pem.decode(key.encodeTo(format))
 
                             assertEquals(expected.label, actual.label)
 
@@ -133,8 +133,8 @@ private fun assertEcPrivateKeyEquals(
     actualBytes: ByteArray,
     requireParametersCheck: Boolean = true,
 ) {
-    val expected = DER.decodeFromByteArray(EcPrivateKey.serializer(), expectedBytes)
-    val actual = DER.decodeFromByteArray(EcPrivateKey.serializer(), actualBytes)
+    val expected = Der.decodeFromByteArray(EcPrivateKey.serializer(), expectedBytes)
+    val actual = Der.decodeFromByteArray(EcPrivateKey.serializer(), actualBytes)
 
     assertEquals(expected.version, actual.version, "EcPrivateKey.version")
     assertContentEquals(expected.privateKey, actual.privateKey, "EcPrivateKey.privateKey")
@@ -150,8 +150,8 @@ private fun assertEcPrivateKeyEquals(
 }
 
 private fun assertPkcs8EcPrivateKeyEquals(expectedBytes: ByteArray, actualBytes: ByteArray) {
-    val expected = DER.decodeFromByteArray(PrivateKeyInfo.serializer(), expectedBytes)
-    val actual = DER.decodeFromByteArray(PrivateKeyInfo.serializer(), actualBytes)
+    val expected = Der.decodeFromByteArray(PrivateKeyInfo.serializer(), expectedBytes)
+    val actual = Der.decodeFromByteArray(PrivateKeyInfo.serializer(), actualBytes)
 
     assertEquals(expected.version, actual.version, "PrivateKeyInfo.version")
     val expectedAlgorithm = assertIs<EcKeyAlgorithmIdentifier>(expected.privateKeyAlgorithm)

@@ -6,8 +6,11 @@ package dev.whyoleg.cryptography.serialization.pem
 
 import kotlin.io.encoding.*
 
+@Deprecated("Renamed to Pem", ReplaceWith("Pem"), DeprecationLevel.ERROR)
+public typealias PEM = Pem
+
 @OptIn(ExperimentalEncodingApi::class)
-public object PEM {
+public object Pem {
     private const val BEGIN_PREFIX = "-----BEGIN "
     private const val END_PREFIX = "-----END "
     private const val SUFFIX = "-----"

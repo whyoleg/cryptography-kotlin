@@ -45,7 +45,7 @@ class ObjectIdentifierEncodingTest {
         assertEquals(hex, bytes.toHexString())
         assertEquals(value, DerInput(ByteArrayInput(bytes)).readObjectIdentifier(null))
 
-        assertContentEquals(bytes, DER.encodeToByteArray(value))
-        assertEquals(value, DER.decodeFromByteArray(bytes))
+        assertContentEquals(bytes, Der.encodeToByteArray(value))
+        assertEquals(value, Der.decodeFromByteArray(bytes))
     }
 }

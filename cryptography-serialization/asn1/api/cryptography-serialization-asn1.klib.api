@@ -72,22 +72,22 @@ final value class dev.whyoleg.cryptography.serialization.asn1/ObjectIdentifier {
     }
 }
 
-sealed class dev.whyoleg.cryptography.serialization.asn1/DER : kotlinx.serialization/BinaryFormat { // dev.whyoleg.cryptography.serialization.asn1/DER|null[0]
-    constructor <init>(kotlinx.serialization.modules/SerializersModule) // dev.whyoleg.cryptography.serialization.asn1/DER.<init>|<init>(kotlinx.serialization.modules.SerializersModule){}[0]
+sealed class dev.whyoleg.cryptography.serialization.asn1/Der : kotlinx.serialization/BinaryFormat { // dev.whyoleg.cryptography.serialization.asn1/Der|null[0]
+    constructor <init>(kotlinx.serialization.modules/SerializersModule) // dev.whyoleg.cryptography.serialization.asn1/Der.<init>|<init>(kotlinx.serialization.modules.SerializersModule){}[0]
 
-    open val serializersModule // dev.whyoleg.cryptography.serialization.asn1/DER.serializersModule|{}serializersModule[0]
-        open fun <get-serializersModule>(): kotlinx.serialization.modules/SerializersModule // dev.whyoleg.cryptography.serialization.asn1/DER.serializersModule.<get-serializersModule>|<get-serializersModule>(){}[0]
+    open val serializersModule // dev.whyoleg.cryptography.serialization.asn1/Der.serializersModule|{}serializersModule[0]
+        open fun <get-serializersModule>(): kotlinx.serialization.modules/SerializersModule // dev.whyoleg.cryptography.serialization.asn1/Der.serializersModule.<get-serializersModule>|<get-serializersModule>(){}[0]
 
-    open fun <#A1: kotlin/Any?> decodeFromByteArray(kotlinx.serialization/DeserializationStrategy<#A1>, kotlin/ByteArray): #A1 // dev.whyoleg.cryptography.serialization.asn1/DER.decodeFromByteArray|decodeFromByteArray(kotlinx.serialization.DeserializationStrategy<0:0>;kotlin.ByteArray){0§<kotlin.Any?>}[0]
-    open fun <#A1: kotlin/Any?> encodeToByteArray(kotlinx.serialization/SerializationStrategy<#A1>, #A1): kotlin/ByteArray // dev.whyoleg.cryptography.serialization.asn1/DER.encodeToByteArray|encodeToByteArray(kotlinx.serialization.SerializationStrategy<0:0>;0:0){0§<kotlin.Any?>}[0]
+    open fun <#A1: kotlin/Any?> decodeFromByteArray(kotlinx.serialization/DeserializationStrategy<#A1>, kotlin/ByteArray): #A1 // dev.whyoleg.cryptography.serialization.asn1/Der.decodeFromByteArray|decodeFromByteArray(kotlinx.serialization.DeserializationStrategy<0:0>;kotlin.ByteArray){0§<kotlin.Any?>}[0]
+    open fun <#A1: kotlin/Any?> encodeToByteArray(kotlinx.serialization/SerializationStrategy<#A1>, #A1): kotlin/ByteArray // dev.whyoleg.cryptography.serialization.asn1/Der.encodeToByteArray|encodeToByteArray(kotlinx.serialization.SerializationStrategy<0:0>;0:0){0§<kotlin.Any?>}[0]
 
-    final class Builder { // dev.whyoleg.cryptography.serialization.asn1/DER.Builder|null[0]
-        final var serializersModule // dev.whyoleg.cryptography.serialization.asn1/DER.Builder.serializersModule|{}serializersModule[0]
-            final fun <get-serializersModule>(): kotlinx.serialization.modules/SerializersModule // dev.whyoleg.cryptography.serialization.asn1/DER.Builder.serializersModule.<get-serializersModule>|<get-serializersModule>(){}[0]
-            final fun <set-serializersModule>(kotlinx.serialization.modules/SerializersModule) // dev.whyoleg.cryptography.serialization.asn1/DER.Builder.serializersModule.<set-serializersModule>|<set-serializersModule>(kotlinx.serialization.modules.SerializersModule){}[0]
+    final class Builder { // dev.whyoleg.cryptography.serialization.asn1/Der.Builder|null[0]
+        final var serializersModule // dev.whyoleg.cryptography.serialization.asn1/Der.Builder.serializersModule|{}serializersModule[0]
+            final fun <get-serializersModule>(): kotlinx.serialization.modules/SerializersModule // dev.whyoleg.cryptography.serialization.asn1/Der.Builder.serializersModule.<get-serializersModule>|<get-serializersModule>(){}[0]
+            final fun <set-serializersModule>(kotlinx.serialization.modules/SerializersModule) // dev.whyoleg.cryptography.serialization.asn1/Der.Builder.serializersModule.<set-serializersModule>|<set-serializersModule>(kotlinx.serialization.modules.SerializersModule){}[0]
     }
 
-    final object Default : dev.whyoleg.cryptography.serialization.asn1/DER // dev.whyoleg.cryptography.serialization.asn1/DER.Default|null[0]
+    final object Default : dev.whyoleg.cryptography.serialization.asn1/Der // dev.whyoleg.cryptography.serialization.asn1/Der.Default|null[0]
 }
 
-final fun dev.whyoleg.cryptography.serialization.asn1/DER(dev.whyoleg.cryptography.serialization.asn1/DER = ..., kotlin/Function1<dev.whyoleg.cryptography.serialization.asn1/DER.Builder, kotlin/Unit>): dev.whyoleg.cryptography.serialization.asn1/DER // dev.whyoleg.cryptography.serialization.asn1/DER|DER(dev.whyoleg.cryptography.serialization.asn1.DER;kotlin.Function1<dev.whyoleg.cryptography.serialization.asn1.DER.Builder,kotlin.Unit>){}[0]
+final fun dev.whyoleg.cryptography.serialization.asn1/DER(dev.whyoleg.cryptography.serialization.asn1/Der = ..., kotlin/Function1<dev.whyoleg.cryptography.serialization.asn1/Der.Builder, kotlin/Unit>): dev.whyoleg.cryptography.serialization.asn1/Der // dev.whyoleg.cryptography.serialization.asn1/DER|DER(dev.whyoleg.cryptography.serialization.asn1.Der;kotlin.Function1<dev.whyoleg.cryptography.serialization.asn1.Der.Builder,kotlin.Unit>){}[0]

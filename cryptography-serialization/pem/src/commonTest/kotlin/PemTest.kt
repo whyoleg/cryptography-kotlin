@@ -17,7 +17,7 @@ class PemTest {
             -----END UNKNOWN-----
             
             """.trimIndent(),
-            PEM.encode(
+            Pem.encode(
                 PemContent(
                     PemLabel("UNKNOWN"),
                     "Hello World".encodeToByteArray()
@@ -28,7 +28,7 @@ class PemTest {
 
     @Test
     fun testDecoding() {
-        val content = PEM.decode(
+        val content = Pem.decode(
             """
             -----BEGIN UNKNOWN-----
             SGVsbG8gV29ybGQ=
@@ -52,7 +52,7 @@ class PemTest {
             -----END UNKNOWN CHUNKED-----
             
             """.trimIndent(),
-            PEM.encode(
+            Pem.encode(
                 PemContent(
                     PemLabel("UNKNOWN CHUNKED"),
                     "Hello World".repeat(10).encodeToByteArray()
@@ -63,7 +63,7 @@ class PemTest {
 
     @Test
     fun testChunkedDecoding() {
-        val content = PEM.decode(
+        val content = Pem.decode(
             """
             -----BEGIN UNKNOWN CHUNKED-----
             SGVsbG8gV29ybGRIZWxsbyBXb3JsZEhlbGxvIFdvcmxkSGVsbG8gV29ybGRIZWxs
@@ -80,7 +80,7 @@ class PemTest {
 
     @Test
     fun testDecodingWithComment() {
-        val content = PEM.decode(
+        val content = Pem.decode(
             """
             Here is some description for pem
             it should not affect anything
@@ -97,21 +97,21 @@ class PemTest {
     @Test
     fun testDecodingWithNoBeginLabel() {
         assertFails {
-            PEM.decode("SGVsbG8gV29ybGQ=\n-----END UNKNOWN-----")
+            Pem.decode("SGVsbG8gV29ybGQ=\n-----END UNKNOWN-----")
         }
     }
 
     @Test
     fun testDecodingWithNoEndLabel() {
         assertFails {
-            PEM.decode("-----BEGIN UNKNOWN-----\nSGVsbG8gV29ybGQ=")
+            Pem.decode("-----BEGIN UNKNOWN-----\nSGVsbG8gV29ybGQ=")
         }
     }
 
     @Test
     fun testDecodingWithDifferentLabels() {
         assertFails {
-            PEM.decode(
+            Pem.decode(
                 """
                 -----BEGIN UNKNOWN1-----
                 SGVsbG8gV29ybGQ=

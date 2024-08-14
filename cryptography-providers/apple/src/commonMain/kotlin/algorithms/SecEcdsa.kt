@@ -77,7 +77,7 @@ private class EcdsaPublicKeyDecoder(
     }
 
     private fun decodeDer(input: ByteArray): ByteArray {
-        val spki = DER.decodeFromByteArray(SubjectPublicKeyInfo.serializer(), input)
+        val spki = Der.decodeFromByteArray(SubjectPublicKeyInfo.serializer(), input)
         ensureCurve(spki.algorithm, curve)
         return spki.subjectPublicKey.toByteArray()
     }
@@ -108,14 +108,14 @@ private class EcdsaPrivateKeyDecoder(
     }
 
     private fun decodeDerPkcs8(input: ByteArray): ByteArray {
-        val pki = DER.decodeFromByteArray(PrivateKeyInfo.serializer(), input)
+        val pki = Der.decodeFromByteArray(PrivateKeyInfo.serializer(), input)
         ensureCurve(pki.privateKeyAlgorithm, curve)
-        val ecPrivateKey = DER.decodeFromByteArray(EcPrivateKey.serializer(), pki.privateKey)
+        val ecPrivateKey = Der.decodeFromByteArray(EcPrivateKey.serializer(), pki.privateKey)
         return ecPrivateKey.convertToRawKey()
     }
 
     private fun decodeDerSec1(input: ByteArray): ByteArray {
-        val ecPrivateKey = DER.decodeFromByteArray(EcPrivateKey.serializer(), input)
+        val ecPrivateKey = Der.decodeFromByteArray(EcPrivateKey.serializer(), input)
         ensureCurve(ecPrivateKey.parameters, curve)
         return ecPrivateKey.convertToRawKey()
     }
@@ -188,7 +188,7 @@ private class EcdsaPublicKey(
             subjectPublicKey = rawKey.toBitArray(),
         )
 
-        return DER.encodeToByteArray(SubjectPublicKeyInfo.serializer(), spki)
+        return Der.encodeToByteArray(SubjectPublicKeyInfo.serializer(), spki)
     }
 }
 
@@ -224,7 +224,7 @@ private class EcdsaPrivateKey(
             privateKeyAlgorithm = EcKeyAlgorithmIdentifier(EcParameters(curve.curve)),
             privateKey = encodeDerEcPrivateKey(rawKey)
         )
-        return DER.encodeToByteArray(PrivateKeyInfo.serializer(), pki)
+        return Der.encodeToByteArray(PrivateKeyInfo.serializer(), pki)
     }
 
     private fun encodeDerEcPrivateKey(rawKey: ByteArray): ByteArray {
@@ -235,7 +235,7 @@ private class EcdsaPrivateKey(
             publicKey = rawKey.copyOfRange(0, curve.orderSize * 2 + 1).toBitArray()
         )
 
-        return DER.encodeToByteArray(EcPrivateKey.serializer(), ecPrivateKey)
+        return Der.encodeToByteArray(EcPrivateKey.serializer(), ecPrivateKey)
     }
 }
 
@@ -246,7 +246,7 @@ private class EcdsaRawSignatureGenerator(
     override fun generateSignatureBlocking(data: ByteArray): ByteArray {
         val derSignature = derGenerator.generateSignatureBlocking(data)
 
-        val signatureValue = DER.decodeFromByteArray(EcdsaSignatureValue.serializer(), derSignature)
+        val signatureValue = Der.decodeFromByteArray(EcdsaSignatureValue.serializer(), derSignature)
 
         val r = signatureValue.r.encodeToByteArray().trimLeadingZeros()
         val s = signatureValue.s.encodeToByteArray().trimLeadingZeros()
@@ -277,7 +277,7 @@ private class EcdsaRawSignatureVerifier(
             s = s.decodeToBigInt()
         )
 
-        val derSignature = DER.encodeToByteArray(EcdsaSignatureValue.serializer(), signatureValue)
+        val derSignature = Der.encodeToByteArray(EcdsaSignatureValue.serializer(), signatureValue)
 
         return derVerifier.verifySignatureBlocking(data, derSignature)
     }

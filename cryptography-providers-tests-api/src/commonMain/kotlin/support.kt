@@ -90,16 +90,16 @@ fun AlgorithmTestScope<out EC<*, *, *>>.supportsDecoding(
     otherContext: TestContext,
 ): Boolean = supports {
     fun supportedByAppleProvider(): Boolean {
-        fun validateEcPrivateKey(bytes: ByteArray) = DER.decodeFromByteArray(EcPrivateKey.serializer(), bytes).publicKey != null
-        fun decodePki(bytes: ByteArray): ByteArray = DER.decodeFromByteArray(PrivateKeyInfo.serializer(), bytes).privateKey
+        fun validateEcPrivateKey(bytes: ByteArray) = Der.decodeFromByteArray(EcPrivateKey.serializer(), bytes).publicKey != null
+        fun decodePki(bytes: ByteArray): ByteArray = Der.decodeFromByteArray(PrivateKeyInfo.serializer(), bytes).privateKey
 
         return validateEcPrivateKey(
             when (format) {
                 EC.PrivateKey.Format.JWK      -> return true
                 EC.PrivateKey.Format.DER      -> decodePki(key)
                 EC.PrivateKey.Format.DER.SEC1 -> key
-                EC.PrivateKey.Format.PEM      -> decodePki(PEM.decode(key).bytes)
-                EC.PrivateKey.Format.PEM.SEC1 -> PEM.decode(key).bytes
+                EC.PrivateKey.Format.PEM      -> decodePki(Pem.decode(key).bytes)
+                EC.PrivateKey.Format.PEM.SEC1 -> Pem.decode(key).bytes
             }
         )
     }

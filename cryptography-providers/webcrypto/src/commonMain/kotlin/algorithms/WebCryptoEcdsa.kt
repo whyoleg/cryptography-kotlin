@@ -64,7 +64,7 @@ private class EcdsaDerSignatureGenerator(
             s = s.decodeToBigInt()
         )
 
-        return DER.encodeToByteArray(EcdsaSignatureValue.serializer(), signature)
+        return Der.encodeToByteArray(EcdsaSignatureValue.serializer(), signature)
     }
 
     override fun generateSignatureBlocking(data: ByteArray): ByteArray = nonBlocking()
@@ -75,7 +75,7 @@ private class EcdsaDerSignatureVerifier(
     private val curveOrderSize: Int,
 ) : SignatureVerifier {
     override suspend fun verifySignature(data: ByteArray, signature: ByteArray): Boolean {
-        val signatureValue = DER.decodeFromByteArray(EcdsaSignatureValue.serializer(), signature)
+        val signatureValue = Der.decodeFromByteArray(EcdsaSignatureValue.serializer(), signature)
 
         val r = signatureValue.r.encodeToByteArray().trimLeadingZeros()
         val s = signatureValue.s.encodeToByteArray().trimLeadingZeros()

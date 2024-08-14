@@ -14,7 +14,7 @@ import kotlinx.serialization.modules.*
 
 @OptIn(ExperimentalSerializationApi::class)
 internal class DerEncoder(
-    private val der: DER,
+    private val der: Der,
     byteArrayOutput: ByteArrayOutput,
     private val parentOutput: DerOutput? = null,
 ) : AbstractEncoder() {
