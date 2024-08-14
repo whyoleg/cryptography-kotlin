@@ -4,14 +4,15 @@
 
 package dev.whyoleg.cryptography.providers.jdk.operations
 
+import dev.whyoleg.cryptography.binary.*
 import dev.whyoleg.cryptography.providers.jdk.*
 
 internal fun Pooled<JKeyAgreement>.doAgreement(
     state: JdkCryptographyState,
     privateKey: JPrivateKey,
     publicKey: JPublicKey,
-): ByteArray = use {
+): BinaryData = use {
     it.init(privateKey, state.secureRandom)
     it.doPhase(publicKey, true)
-    it.generateSecret()
+    BinaryData.fromByteArray(it.generateSecret())
 }

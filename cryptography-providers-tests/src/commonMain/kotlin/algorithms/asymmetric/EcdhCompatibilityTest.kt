@@ -40,7 +40,7 @@ abstract class EcdhCompatibilityTest(
 
                     repeat(secrets.size) { i ->
                         repeat(secrets.size) { j ->
-                            if (j > i) assertContentEquals(secrets[i], secrets[j], "Initial $i + $j")
+                            if (j > i) assertContentEquals(secrets[i].toByteArray(), secrets[j].toByteArray(), "Initial $i + $j")
                         }
                     }
 
@@ -49,7 +49,7 @@ abstract class EcdhCompatibilityTest(
                         data = SharedSecretData(
                             keyReference = keyReference,
                             otherKeyReference = otherKeyReference,
-                            sharedSecret = secrets.first()
+                            sharedSecret = secrets.first().toByteArray()
                         )
                     )
                 }
@@ -69,12 +69,12 @@ abstract class EcdhCompatibilityTest(
                     otherPrivateKeys.forEach { otherPrivateKey ->
                         assertContentEquals(
                             sharedSecret,
-                            publicKey.sharedSecretGenerator().generateSharedSecret(otherPrivateKey),
+                            publicKey.sharedSecretGenerator().generateSharedSecret(otherPrivateKey).toByteArray(),
                             "Public + Other Private"
                         )
                         assertContentEquals(
                             sharedSecret,
-                            otherPrivateKey.sharedSecretGenerator().generateSharedSecret(publicKey),
+                            otherPrivateKey.sharedSecretGenerator().generateSharedSecret(publicKey).toByteArray(),
                             "Other Private + Public"
                         )
                     }
@@ -83,12 +83,12 @@ abstract class EcdhCompatibilityTest(
                     otherPublicKeys.forEach { otherPublicKey ->
                         assertContentEquals(
                             sharedSecret,
-                            otherPublicKey.sharedSecretGenerator().generateSharedSecret(privateKey),
+                            otherPublicKey.sharedSecretGenerator().generateSharedSecret(privateKey).toByteArray(),
                             "Other Public + Private"
                         )
                         assertContentEquals(
                             sharedSecret,
-                            privateKey.sharedSecretGenerator().generateSharedSecret(otherPublicKey),
+                            privateKey.sharedSecretGenerator().generateSharedSecret(otherPublicKey).toByteArray(),
                             "Private + Other Public"
                         )
                     }

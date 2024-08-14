@@ -585,8 +585,8 @@ public abstract interface class dev/whyoleg/cryptography/materials/key/KeyGenera
 }
 
 public abstract interface class dev/whyoleg/cryptography/operations/SharedSecretGenerator {
-	public abstract fun generateSharedSecret (Ldev/whyoleg/cryptography/materials/key/Key;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun generateSharedSecretBlocking (Ldev/whyoleg/cryptography/materials/key/Key;)[B
+	public abstract fun generateSharedSecret-QjUYYGE (Ldev/whyoleg/cryptography/materials/key/Key;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun generateSharedSecretBlocking-FbFv9R8 (Ldev/whyoleg/cryptography/materials/key/Key;)[B
 }
 
 public abstract interface class dev/whyoleg/cryptography/operations/cipher/AuthenticatedCipher : dev/whyoleg/cryptography/operations/cipher/AuthenticatedDecryptor, dev/whyoleg/cryptography/operations/cipher/AuthenticatedEncryptor, dev/whyoleg/cryptography/operations/cipher/Cipher {
