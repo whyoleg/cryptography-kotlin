@@ -42,6 +42,6 @@ private object HmacKeyProcessor : WebCryptoKeyProcessor<HMAC.Key.Format>() {
         HMAC.Key.Format.JWK -> "jwk"
     }
 
-    override fun beforeDecoding(format: HMAC.Key.Format, key: ByteArray): ByteArray = key
+    override fun beforeDecoding(algorithm: Algorithm, format: HMAC.Key.Format, key: ByteArray): ByteArray = key
     override fun afterEncoding(format: HMAC.Key.Format, key: ByteArray): ByteArray = key
 }

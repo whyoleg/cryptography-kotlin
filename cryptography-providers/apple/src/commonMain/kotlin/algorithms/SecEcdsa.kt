@@ -89,6 +89,7 @@ private class EcdsaPrivateKeyDecoder(
     override fun decodeFromBlocking(format: EC.PrivateKey.Format, data: ByteArray): ECDSA.PrivateKey {
         val rawKey = when (format) {
             EC.PrivateKey.Format.JWK      -> error("$format is not supported")
+            EC.PrivateKey.Format.RAW -> error("$format is not supported")
             EC.PrivateKey.Format.DER      -> decodeDerPkcs8(data)
             EC.PrivateKey.Format.PEM      -> decodeDerPkcs8(unwrapPem(PemLabel.PrivateKey, data))
             EC.PrivateKey.Format.DER.SEC1 -> decodeDerSec1(data)
@@ -211,6 +212,7 @@ private class EcdsaPrivateKey(
         val rawKey = exportSecKey(privateKey)
         return when (format) {
             EC.PrivateKey.Format.JWK      -> error("$format is not supported")
+            EC.PrivateKey.Format.RAW -> rawKey.copyOfRange(curve.orderSize * 2 + 1, curve.orderSize * 3 + 1)
             EC.PrivateKey.Format.DER      -> encodeDerPkcs8(rawKey)
             EC.PrivateKey.Format.PEM      -> wrapPem(PemLabel.PrivateKey, encodeDerPkcs8(rawKey))
             EC.PrivateKey.Format.DER.SEC1 -> encodeDerEcPrivateKey(rawKey)

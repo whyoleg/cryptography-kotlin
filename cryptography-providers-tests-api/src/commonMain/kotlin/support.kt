@@ -84,18 +84,19 @@ fun AlgorithmTestScope<out EC<*, *, *>>.supportsCurve(curve: EC.Curve): Boolean 
     }
 }
 
-fun AlgorithmTestScope<out EC<*, *, *>>.supportsDecoding(
+fun AlgorithmTestScope<out EC<*, *, *>>.supportsPrivateKeyDecoding(
     format: EC.PrivateKey.Format,
     key: ByteArray,
     otherContext: TestContext,
 ): Boolean = supports {
-    fun supportedByAppleProvider(): Boolean {
+    fun hasPublicKey(): Boolean {
         fun validateEcPrivateKey(bytes: ByteArray) = Der.decodeFromByteArray(EcPrivateKey.serializer(), bytes).publicKey != null
         fun decodePki(bytes: ByteArray): ByteArray = Der.decodeFromByteArray(PrivateKeyInfo.serializer(), bytes).privateKey
 
         return validateEcPrivateKey(
             when (format) {
                 EC.PrivateKey.Format.JWK      -> return true
+                EC.PrivateKey.Format.RAW -> return false
                 EC.PrivateKey.Format.DER      -> decodePki(key)
                 EC.PrivateKey.Format.DER.SEC1 -> key
                 EC.PrivateKey.Format.PEM      -> decodePki(Pem.decode(key).bytes)
@@ -105,8 +106,11 @@ fun AlgorithmTestScope<out EC<*, *, *>>.supportsDecoding(
     }
 
     when {
-        provider.isApple && !supportedByAppleProvider() -> "private key '$format' format without 'publicKey' from ${otherContext.provider}"
-        else                                            -> null
+        provider.isApple
+                && format == EC.PrivateKey.Format.RAW -> "private key '$format' format"
+        provider.isApple
+                && !hasPublicKey()                    -> "private key '$format' format without 'publicKey' from ${otherContext.provider}"
+        else                                          -> null
     }
 }
 

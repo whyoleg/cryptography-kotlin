@@ -65,6 +65,11 @@ public interface EC<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP : EC.Ke
                 override val name: String get() = "JWK"
             }
 
+            // just `secret` value
+            public data object RAW : Format() {
+                override val name: String get() = "RAW"
+            }
+
             public sealed class DER : Format() {
                 // via PrivateKeyInfo from PKCS8
                 public companion object Generic : DER() {

@@ -15,7 +15,7 @@ internal class WebCryptoKeyDecoder<KF : KeyFormat, K : Key>(
     override suspend fun decodeFrom(format: KF, data: ByteArray): K = keyWrapper.wrap(
         WebCrypto.importKey(
             format = keyProcessor.stringFormat(format),
-            keyData = keyProcessor.beforeDecoding(format, data),
+            keyData = keyProcessor.beforeDecoding(algorithm, format, data),
             algorithm = algorithm,
             extractable = true,
             keyUsages = keyWrapper.usages

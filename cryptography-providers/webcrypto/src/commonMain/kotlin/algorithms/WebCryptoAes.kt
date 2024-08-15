@@ -37,6 +37,6 @@ private object AesKeyProcessor : WebCryptoKeyProcessor<AES.Key.Format>() {
         AES.Key.Format.JWK -> "jwk"
     }
 
-    override fun beforeDecoding(format: AES.Key.Format, key: ByteArray): ByteArray = key
+    override fun beforeDecoding(algorithm: Algorithm, format: AES.Key.Format, key: ByteArray): ByteArray = key
     override fun afterEncoding(format: AES.Key.Format, key: ByteArray): ByteArray = key
 }

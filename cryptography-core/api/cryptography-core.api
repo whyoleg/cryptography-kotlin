@@ -122,6 +122,13 @@ public final class dev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey$
 	public fun hashCode ()I
 }
 
+public final class dev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey$Format$RAW : dev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey$Format {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/asymmetric/EC$PrivateKey$Format$RAW;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+}
+
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/EC$PublicKey : dev/whyoleg/cryptography/materials/key/EncodableKey {
 }
 

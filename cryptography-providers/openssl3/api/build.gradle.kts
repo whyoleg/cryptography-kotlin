@@ -30,6 +30,9 @@ kotlin {
 
     sourceSets.commonMain.dependencies {
         api(projects.cryptographyCore)
+
+        implementation(projects.cryptographySerializationAsn1)
+        implementation(projects.cryptographySerializationAsn1Modules)
     }
 
     targets.withType<KotlinNativeTarget>().configureEach {

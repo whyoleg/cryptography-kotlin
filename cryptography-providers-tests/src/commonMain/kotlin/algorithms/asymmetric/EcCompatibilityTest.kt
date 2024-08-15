@@ -23,6 +23,7 @@ private val publicKeyFormats = listOf(
 
 private val privateKeyFormats = listOf(
     EC.PrivateKey.Format.JWK,
+    EC.PrivateKey.Format.RAW,
     EC.PrivateKey.Format.DER,
     EC.PrivateKey.Format.PEM,
     EC.PrivateKey.Format.DER.SEC1,
@@ -94,10 +95,13 @@ abstract class EcCompatibilityTest<PublicK : EC.PublicKey, PrivateK : EC.Private
                     formats = private.formats,
                     formatOf = privateKeyFormats::getValue,
                     supports = ::supportsKeyFormat,
-                    supportsDecoding = { f, b -> supportsDecoding(f, b, otherContext) }
+                    supportsDecoding = { f, b -> supportsPrivateKeyDecoding(f, b, otherContext) }
                 ) { key, format, bytes ->
                     when (format) {
                         EC.PrivateKey.Format.JWK -> {}
+                        EC.PrivateKey.Format.RAW -> {
+                            assertContentEquals(bytes, key.encodeTo(format))
+                        }
                         EC.PrivateKey.Format.DER.SEC1 -> {
                             assertEcPrivateKeyEquals(bytes, key.encodeTo(format))
                         }

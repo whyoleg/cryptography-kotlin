@@ -61,7 +61,7 @@ private object EcPublicKeyProcessor : WebCryptoKeyProcessor<EC.PublicKey.Format>
                                 -> "spki"
     }
 
-    override fun beforeDecoding(format: EC.PublicKey.Format, key: ByteArray): ByteArray = when (format) {
+    override fun beforeDecoding(algorithm: Algorithm, format: EC.PublicKey.Format, key: ByteArray): ByteArray = when (format) {
         EC.PublicKey.Format.JWK -> key
         EC.PublicKey.Format.RAW -> key
         EC.PublicKey.Format.DER -> key
@@ -79,6 +79,7 @@ private object EcPublicKeyProcessor : WebCryptoKeyProcessor<EC.PublicKey.Format>
 private object EcPrivateKeyProcessor : WebCryptoKeyProcessor<EC.PrivateKey.Format>() {
     override fun stringFormat(format: EC.PrivateKey.Format): String = when (format) {
         EC.PrivateKey.Format.JWK -> "jwk"
+        EC.PrivateKey.Format.RAW,
         EC.PrivateKey.Format.DER,
         EC.PrivateKey.Format.PEM,
         EC.PrivateKey.Format.DER.SEC1,
@@ -86,8 +87,21 @@ private object EcPrivateKeyProcessor : WebCryptoKeyProcessor<EC.PrivateKey.Forma
                                  -> "pkcs8"
     }
 
-    override fun beforeDecoding(format: EC.PrivateKey.Format, key: ByteArray): ByteArray = when (format) {
+    override fun beforeDecoding(algorithm: Algorithm, format: EC.PrivateKey.Format, key: ByteArray): ByteArray = when (format) {
         EC.PrivateKey.Format.JWK      -> key
+        EC.PrivateKey.Format.RAW -> {
+            val curveId = when (val namedCurve = algorithm.ecKeyAlgorithmNamedCurve) {
+                EC.Curve.P256.name -> ObjectIdentifier.secp256r1
+                EC.Curve.P384.name -> ObjectIdentifier.secp384r1
+                EC.Curve.P521.name -> ObjectIdentifier.secp521r1
+                else               -> error("Unknown curve: $namedCurve")
+            }
+            wrapPrivateKey(
+                version = 0,
+                identifier = EcKeyAlgorithmIdentifier(EcParameters(curveId)),
+                key = Der.encodeToByteArray(EcPrivateKey.serializer(), EcPrivateKey(version = 1, key))
+            )
+        }
         EC.PrivateKey.Format.DER      -> key
         EC.PrivateKey.Format.PEM      -> unwrapPem(PemLabel.PrivateKey, key)
         EC.PrivateKey.Format.DER.SEC1 -> convertSec1ToPkcs8(key)
@@ -96,6 +110,12 @@ private object EcPrivateKeyProcessor : WebCryptoKeyProcessor<EC.PrivateKey.Forma
 
     override fun afterEncoding(format: EC.PrivateKey.Format, key: ByteArray): ByteArray = when (format) {
         EC.PrivateKey.Format.JWK      -> key
+        EC.PrivateKey.Format.RAW -> {
+            Der.decodeFromByteArray(
+                EcPrivateKey.serializer(),
+                unwrapPrivateKey(ObjectIdentifier.EC, key)
+            ).privateKey
+        }
         EC.PrivateKey.Format.DER      -> key
         EC.PrivateKey.Format.PEM      -> wrapPem(PemLabel.PrivateKey, key)
         EC.PrivateKey.Format.DER.SEC1 -> convertPkcs8ToSec1(key)

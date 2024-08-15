@@ -104,6 +104,11 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP
 
         override fun decodeFromBlocking(format: EC.PrivateKey.Format, data: ByteArray): PrivateK = when (format) {
             EC.PrivateKey.Format.JWK -> error("$format is not supported")
+            EC.PrivateKey.Format.RAW -> {
+                val parameters = algorithmParameters(ECGenParameterSpec(curveName)).getParameterSpec(ECParameterSpec::class.java)
+                // decode as positive value
+                decode(ECPrivateKeySpec(BigInteger(1, data), parameters))
+            }
             EC.PrivateKey.Format.DER      -> decodeFromDer(data)
             EC.PrivateKey.Format.PEM      -> decodeFromDer(unwrapPem(PemLabel.PrivateKey, data))
             EC.PrivateKey.Format.DER.SEC1 -> decodeFromDer(convertSec1ToPkcs8(data))
@@ -149,11 +154,17 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP
     }
 
     protected abstract class BaseEcPrivateKey(
-        key: JPrivateKey,
+        private val key: JPrivateKey,
     ) : EC.PrivateKey, JdkEncodableKey<EC.PrivateKey.Format>(key) {
         final override fun encodeToBlocking(format: EC.PrivateKey.Format): ByteArray = when (format) {
             EC.PrivateKey.Format.JWK      -> error("$format is not supported")
             EC.PrivateKey.Format.DER      -> encodeToDer()
+            EC.PrivateKey.Format.RAW -> {
+                key as ECPrivateKey
+                val fieldSize = key.params.curveOrderSize()
+                val secret = key.s.toByteArray().trimLeadingZeros()
+                secret.copyInto(ByteArray(fieldSize), fieldSize - secret.size)
+            }
             EC.PrivateKey.Format.PEM      -> wrapPem(PemLabel.PrivateKey, encodeToDer())
             EC.PrivateKey.Format.DER.SEC1 -> convertPkcs8ToSec1(encodeToDer())
             EC.PrivateKey.Format.PEM.SEC1 -> wrapPem(PemLabel.EcPrivateKey, convertPkcs8ToSec1(encodeToDer()))

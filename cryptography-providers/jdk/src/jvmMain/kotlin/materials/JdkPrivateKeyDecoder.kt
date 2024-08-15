@@ -12,9 +12,11 @@ internal abstract class JdkPrivateKeyDecoder<KF : KeyFormat, K : Key>(
     protected val state: JdkCryptographyState,
     algorithm: String,
 ) : KeyDecoder<KF, K> {
-    private val keyFactory = state.keyFactory(algorithm)
+    protected val keyFactory = state.keyFactory(algorithm)
 
-    protected fun decodeFromDer(input: ByteArray): K = keyFactory.use { it.generatePrivate(PKCS8EncodedKeySpec(input)) }.convert()
+    protected fun decode(spec: KeySpec): K = keyFactory.use { it.generatePrivate(spec) }.convert()
+
+    protected fun decodeFromDer(input: ByteArray): K = decode(PKCS8EncodedKeySpec(input))
 
     protected abstract fun JPrivateKey.convert(): K
 }

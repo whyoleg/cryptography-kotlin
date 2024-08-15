@@ -79,7 +79,7 @@ private object RsaPublicKeyProcessor : WebCryptoKeyProcessor<RSA.PublicKey.Forma
                                  -> "spki"
     }
 
-    override fun beforeDecoding(format: RSA.PublicKey.Format, key: ByteArray): ByteArray = when (format) {
+    override fun beforeDecoding(algorithm: Algorithm, format: RSA.PublicKey.Format, key: ByteArray): ByteArray = when (format) {
         RSA.PublicKey.Format.JWK       -> key
         RSA.PublicKey.Format.DER       -> key
         RSA.PublicKey.Format.PEM       -> unwrapPem(PemLabel.PublicKey, key)
@@ -106,7 +106,7 @@ private object RsaPrivateKeyProcessor : WebCryptoKeyProcessor<RSA.PrivateKey.For
                                   -> "pkcs8"
     }
 
-    override fun beforeDecoding(format: RSA.PrivateKey.Format, key: ByteArray): ByteArray = when (format) {
+    override fun beforeDecoding(algorithm: Algorithm, format: RSA.PrivateKey.Format, key: ByteArray): ByteArray = when (format) {
         RSA.PrivateKey.Format.JWK       -> key
         RSA.PrivateKey.Format.DER       -> key
         RSA.PrivateKey.Format.PEM       -> unwrapPem(PemLabel.PrivateKey, key)

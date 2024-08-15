@@ -73,6 +73,14 @@ abstract interface <#A: dev.whyoleg.cryptography.algorithms.asymmetric/EC.Public
                 final fun equals(kotlin/Any?): kotlin/Boolean // dev.whyoleg.cryptography.algorithms.asymmetric/EC.PrivateKey.Format.JWK.equals|equals(kotlin.Any?){}[0]
                 final fun hashCode(): kotlin/Int // dev.whyoleg.cryptography.algorithms.asymmetric/EC.PrivateKey.Format.JWK.hashCode|hashCode(){}[0]
             }
+
+            final object RAW : dev.whyoleg.cryptography.algorithms.asymmetric/EC.PrivateKey.Format { // dev.whyoleg.cryptography.algorithms.asymmetric/EC.PrivateKey.Format.RAW|null[0]
+                final val name // dev.whyoleg.cryptography.algorithms.asymmetric/EC.PrivateKey.Format.RAW.name|{}name[0]
+                    final fun <get-name>(): kotlin/String // dev.whyoleg.cryptography.algorithms.asymmetric/EC.PrivateKey.Format.RAW.name.<get-name>|<get-name>(){}[0]
+
+                final fun equals(kotlin/Any?): kotlin/Boolean // dev.whyoleg.cryptography.algorithms.asymmetric/EC.PrivateKey.Format.RAW.equals|equals(kotlin.Any?){}[0]
+                final fun hashCode(): kotlin/Int // dev.whyoleg.cryptography.algorithms.asymmetric/EC.PrivateKey.Format.RAW.hashCode|hashCode(){}[0]
+            }
         }
     }
 
