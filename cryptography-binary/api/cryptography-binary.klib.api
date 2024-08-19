@@ -16,13 +16,13 @@ final value class dev.whyoleg.cryptography.binary/BinaryData { // dev.whyoleg.cr
     final fun toByteArray(): kotlin/ByteArray // dev.whyoleg.cryptography.binary/BinaryData.toByteArray|toByteArray(){}[0]
     final fun toHexString(kotlin.text/HexFormat = ...): kotlin/String // dev.whyoleg.cryptography.binary/BinaryData.toHexString|toHexString(kotlin.text.HexFormat){}[0]
     final fun toString(): kotlin/String // dev.whyoleg.cryptography.binary/BinaryData.toString|toString(){}[0]
-    final fun toUtf8String(): kotlin/String // dev.whyoleg.cryptography.binary/BinaryData.toUtf8String|toUtf8String(){}[0]
+    final fun toUtf8String(kotlin/Boolean = ...): kotlin/String // dev.whyoleg.cryptography.binary/BinaryData.toUtf8String|toUtf8String(kotlin.Boolean){}[0]
 
     final object Companion { // dev.whyoleg.cryptography.binary/BinaryData.Companion|null[0]
-        final fun fromBase64String(kotlin/String, kotlin.io.encoding/Base64): dev.whyoleg.cryptography.binary/BinaryData // dev.whyoleg.cryptography.binary/BinaryData.Companion.fromBase64String|fromBase64String(kotlin.String;kotlin.io.encoding.Base64){}[0]
+        final fun fromBase64String(kotlin/String, kotlin.io.encoding/Base64 = ...): dev.whyoleg.cryptography.binary/BinaryData // dev.whyoleg.cryptography.binary/BinaryData.Companion.fromBase64String|fromBase64String(kotlin.String;kotlin.io.encoding.Base64){}[0]
         final fun fromByteArray(kotlin/ByteArray): dev.whyoleg.cryptography.binary/BinaryData // dev.whyoleg.cryptography.binary/BinaryData.Companion.fromByteArray|fromByteArray(kotlin.ByteArray){}[0]
         final fun fromHexString(kotlin/String, kotlin.text/HexFormat = ...): dev.whyoleg.cryptography.binary/BinaryData // dev.whyoleg.cryptography.binary/BinaryData.Companion.fromHexString|fromHexString(kotlin.String;kotlin.text.HexFormat){}[0]
-        final fun fromUtf8String(kotlin/String): dev.whyoleg.cryptography.binary/BinaryData // dev.whyoleg.cryptography.binary/BinaryData.Companion.fromUtf8String|fromUtf8String(kotlin.String){}[0]
+        final fun fromUtf8String(kotlin/String, kotlin/Boolean = ...): dev.whyoleg.cryptography.binary/BinaryData // dev.whyoleg.cryptography.binary/BinaryData.Companion.fromUtf8String|fromUtf8String(kotlin.String;kotlin.Boolean){}[0]
     }
 }
 

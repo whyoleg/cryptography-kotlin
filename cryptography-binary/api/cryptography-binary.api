@@ -14,16 +14,19 @@ public final class dev/whyoleg/cryptography/binary/BinaryData {
 	public static synthetic fun toHexString-impl$default ([BLkotlin/text/HexFormat;ILjava/lang/Object;)Ljava/lang/String;
 	public fun toString ()Ljava/lang/String;
 	public static fun toString-impl ([B)Ljava/lang/String;
-	public static final fun toUtf8String-impl ([B)Ljava/lang/String;
+	public static final fun toUtf8String-impl ([BZ)Ljava/lang/String;
+	public static synthetic fun toUtf8String-impl$default ([BZILjava/lang/Object;)Ljava/lang/String;
 	public final synthetic fun unbox-impl ()[B
 }
 
 public final class dev/whyoleg/cryptography/binary/BinaryData$Companion {
 	public final fun fromBase64String-QjUYYGE (Ljava/lang/String;Lkotlin/io/encoding/Base64;)[B
+	public static synthetic fun fromBase64String-QjUYYGE$default (Ldev/whyoleg/cryptography/binary/BinaryData$Companion;Ljava/lang/String;Lkotlin/io/encoding/Base64;ILjava/lang/Object;)[B
 	public final fun fromByteArray-FbFv9R8 ([B)[B
 	public final fun fromHexString-QjUYYGE (Ljava/lang/String;Lkotlin/text/HexFormat;)[B
 	public static synthetic fun fromHexString-QjUYYGE$default (Ldev/whyoleg/cryptography/binary/BinaryData$Companion;Ljava/lang/String;Lkotlin/text/HexFormat;ILjava/lang/Object;)[B
-	public final fun fromUtf8String-FbFv9R8 (Ljava/lang/String;)[B
+	public final fun fromUtf8String-QjUYYGE (Ljava/lang/String;Z)[B
+	public static synthetic fun fromUtf8String-QjUYYGE$default (Ldev/whyoleg/cryptography/binary/BinaryData$Companion;Ljava/lang/String;ZILjava/lang/Object;)[B
 }
 
 public final class dev/whyoleg/cryptography/binary/BinarySize : java/lang/Comparable {

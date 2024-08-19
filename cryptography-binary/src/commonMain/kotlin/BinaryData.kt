@@ -14,23 +14,38 @@ public value class BinaryData private constructor(private val bytes: ByteArray) 
 
     public fun toByteArray(): ByteArray = bytes.copyOf()
 
-    public fun toUtf8String(): String = bytes.decodeToString()
+    public fun toUtf8String(
+        throwOnInvalidSequence: Boolean = false,
+    ): String = bytes.decodeToString(throwOnInvalidSequence = throwOnInvalidSequence)
 
     @ExperimentalEncodingApi
-    public fun toBase64String(base64: Base64 = Base64): String = base64.encode(bytes)
+    public fun toBase64String(
+        base64: Base64 = Base64.Default,
+    ): String = base64.encode(bytes)
 
     @ExperimentalStdlibApi
-    public fun toHexString(format: HexFormat = HexFormat.Default): String = bytes.toHexString(format)
+    public fun toHexString(
+        format: HexFormat = HexFormat.Default,
+    ): String = bytes.toHexString(format)
 
     public companion object {
-        public fun fromByteArray(bytes: ByteArray): BinaryData = BinaryData(bytes)
+        public fun fromByteArray(bytes: ByteArray): BinaryData = BinaryData(bytes.copyOf())
 
-        public fun fromUtf8String(text: String): BinaryData = BinaryData(text.encodeToByteArray())
+        public fun fromUtf8String(
+            text: String,
+            throwOnInvalidSequence: Boolean = false,
+        ): BinaryData = BinaryData(text.encodeToByteArray(throwOnInvalidSequence = throwOnInvalidSequence))
 
         @ExperimentalStdlibApi
-        public fun fromHexString(text: String, format: HexFormat = HexFormat.Default): BinaryData = BinaryData(text.hexToByteArray(format))
+        public fun fromHexString(
+            text: String,
+            format: HexFormat = HexFormat.Default,
+        ): BinaryData = BinaryData(text.hexToByteArray(format))
 
         @ExperimentalEncodingApi
-        public fun fromBase64String(text: String, base64: Base64): BinaryData = BinaryData(base64.decode(text))
+        public fun fromBase64String(
+            text: String,
+            base64: Base64 = Base64.Default,
+        ): BinaryData = BinaryData(base64.decode(text))
     }
 }
