@@ -52,6 +52,7 @@ internal fun Route.routes(
         storage("signatures")
         storage("ciphers")
         storage("sharedSecrets")
+        storage("derivedSecrets")
     }
 }
 

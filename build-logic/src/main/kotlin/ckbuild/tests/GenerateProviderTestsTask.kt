@@ -66,6 +66,7 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
         private val defaultImports = listOf(
             "dev.whyoleg.cryptography.*",
             "dev.whyoleg.cryptography.providers.tests.*",
+            "dev.whyoleg.cryptography.providers.tests.algorithms.*",
             "dev.whyoleg.cryptography.providers.tests.algorithms.asymmetric.*",
             "dev.whyoleg.cryptography.providers.tests.algorithms.digest.*",
             "dev.whyoleg.cryptography.providers.tests.algorithms.symmetric.*",
@@ -73,6 +74,8 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
 
         private val testClasses = listOf(
             "dev.whyoleg.cryptography.providers.tests.algorithms.SupportedAlgorithmsTest",
+
+            "dev.whyoleg.cryptography.providers.tests.algorithms.Pbkdf2CompatibilityTest",
 
             "dev.whyoleg.cryptography.providers.tests.algorithms.digest.DigestTest",
             "dev.whyoleg.cryptography.providers.tests.algorithms.digest.Md5CompatibilityTest",

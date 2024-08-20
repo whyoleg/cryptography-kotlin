@@ -48,8 +48,6 @@ data class KeyData(val formats: Map<String, Base64ByteArray>) : TestData {
     override fun toString(): String = "KeyData(formats=${formats.mapValues { it.value.size }})"
 }
 
-inline fun KeyData(block: MutableMap<String, ByteArray>.() -> Unit): KeyData = KeyData(buildMap(block))
-
 @Serializable
 data class KeyPairData(val public: KeyData, val private: KeyData) : TestData
 
@@ -95,5 +93,15 @@ data class SharedSecretData(
 ) : TestData {
     override fun toString(): String {
         return "SharedSecretData(keyReference=$keyReference, otherKeyReference=$otherKeyReference, sharedSecret.size=${sharedSecret.size})"
+    }
+}
+
+@Serializable
+data class DerivedSecretData(
+    val input: Base64ByteArray,
+    val secret: Base64ByteArray,
+) : TestData {
+    override fun toString(): String {
+        return "DerivedSecretData(input.size=${input.size}, secret.size=${secret.size})"
     }
 }

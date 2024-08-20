@@ -27,6 +27,7 @@ class InMemoryApi(
     override val signatures: CompatibilityStorageApi = api("signatures")
     override val ciphers: CompatibilityStorageApi = api("ciphers")
     override val sharedSecrets: CompatibilityStorageApi = api("sharedSecrets")
+    override val derivedSecrets: CompatibilityStorageApi = api("derivedSecrets")
 }
 
 class InMemoryStorage {
