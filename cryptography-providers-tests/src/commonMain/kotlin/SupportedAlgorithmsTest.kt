@@ -5,6 +5,7 @@
 package dev.whyoleg.cryptography.providers.tests
 
 import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
@@ -53,5 +54,7 @@ abstract class SupportedAlgorithmsTest(provider: CryptographyProvider) : Provide
         assertSupports(RSA.OAEP)
         assertSupports(RSA.PKCS1)
         assertSupports(RSA.RAW, !context.provider.isWebCrypto)
+
+        assertSupports(PBKDF2, context.provider.isWebCrypto)
     }
 }

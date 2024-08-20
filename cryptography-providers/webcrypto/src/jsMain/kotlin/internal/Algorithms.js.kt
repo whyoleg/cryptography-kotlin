@@ -47,6 +47,9 @@ internal actual fun EcdsaSignatureAlgorithm(hash: String): Algorithm =
 internal actual fun EcdhKeyDeriveAlgorithm(publicKey: CryptoKey): Algorithm =
     js("{ name: 'ECDH', public: publicKey }").unsafeCast<Algorithm>()
 
+internal actual fun Pbkdf2DeriveAlgorithm(hash: String, iterations: Int, salt: ByteArray): Algorithm =
+    js("{ name: 'PBKDF2', hash: hash, iterations: iterations, salt: salt }").unsafeCast<Algorithm>()
+
 internal actual fun RsaKeyGenerationAlgorithm(name: String, modulusLength: Int, publicExponent: ByteArray, hash: String): Algorithm {
     val publicExponent2 = publicExponent.toInt8Array().let { Uint8Array(it.buffer, it.byteOffset, it.length) }
     return js("{ name: name, modulusLength: modulusLength, publicExponent: publicExponent2, hash: hash }").unsafeCast<Algorithm>()
@@ -55,12 +58,10 @@ internal actual fun RsaKeyGenerationAlgorithm(name: String, modulusLength: Int, 
 internal actual fun RsaKeyImportAlgorithm(name: String, hash: String): Algorithm =
     js("{ name: name, hash: hash }").unsafeCast<Algorithm>()
 
-internal actual fun RsaOaepCipherAlgorithm(label: ByteArray?): Algorithm {
-    return when (label) {
-        null -> js("{ name: 'RSA-OAEP' }")
-        else -> js("{ name: 'RSA-OAEP', label: label }")
-    }.unsafeCast<Algorithm>()
-}
+internal actual fun RsaOaepCipherAlgorithm(label: ByteArray?): Algorithm = when (label) {
+    null -> js("{ name: 'RSA-OAEP' }")
+    else -> js("{ name: 'RSA-OAEP', label: label }")
+}.unsafeCast<Algorithm>()
 
 internal actual fun RsaPssSignatureAlgorithm(saltLength: Int): Algorithm =
     js("{ name: 'RSA-PSS', saltLength: saltLength }").unsafeCast<Algorithm>()

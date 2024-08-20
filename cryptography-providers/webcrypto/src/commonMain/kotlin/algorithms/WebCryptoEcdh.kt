@@ -32,7 +32,7 @@ internal object WebCryptoEcdh : WebCryptoEc<ECDH.PublicKey, ECDH.PrivateKey, ECD
                 WebCrypto.deriveBits(
                     algorithm = EcdhKeyDeriveAlgorithm(publicKey),
                     baseKey = other.privateKey,
-                    length = curveOrderSize(publicKey.algorithm.ecKeyAlgorithmNamedCurve) * 8
+                    length = curveOrderSize(publicKey.algorithm.ecKeyAlgorithmNamedCurve).inBits
                 )
             )
         }
@@ -50,7 +50,7 @@ internal object WebCryptoEcdh : WebCryptoEc<ECDH.PublicKey, ECDH.PrivateKey, ECD
                 WebCrypto.deriveBits(
                     algorithm = EcdhKeyDeriveAlgorithm(other.publicKey),
                     baseKey = privateKey,
-                    length = curveOrderSize(privateKey.algorithm.ecKeyAlgorithmNamedCurve) * 8
+                    length = curveOrderSize(privateKey.algorithm.ecKeyAlgorithmNamedCurve).inBits
                 )
             )
         }

@@ -32,6 +32,12 @@ internal expect fun EcdsaSignatureAlgorithm(hash: String): Algorithm
 
 internal expect fun EcdhKeyDeriveAlgorithm(publicKey: CryptoKey): Algorithm
 
+internal expect fun Pbkdf2DeriveAlgorithm(
+    hash: String,
+    iterations: Int,
+    salt: ByteArray,
+): Algorithm
+
 internal expect fun RsaKeyGenerationAlgorithm(
     name: String, //RSA-PSS | RSA-OAEP
     modulusLength: Int,

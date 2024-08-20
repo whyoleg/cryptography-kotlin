@@ -58,6 +58,12 @@ internal actual fun EcdsaSignatureAlgorithm(hash: String): Algorithm =
 internal actual fun EcdhKeyDeriveAlgorithm(publicKey: CryptoKey): Algorithm =
     js("({ name: 'ECDH', public: publicKey })")
 
+internal actual fun Pbkdf2DeriveAlgorithm(hash: String, iterations: Int, salt: ByteArray): Algorithm =
+    jsPbkdf2DeriveAlgorithm(hash, iterations, salt.toInt8Array())
+
+private fun jsPbkdf2DeriveAlgorithm(hash: String, iterations: Int, salt: Int8Array): Algorithm =
+    js("({ name: 'PBKDF2', hash: hash, iterations: iterations, salt: salt })")
+
 internal actual fun RsaKeyGenerationAlgorithm(name: String, modulusLength: Int, publicExponent: ByteArray, hash: String): Algorithm {
     val publicExponent2 = publicExponent.toInt8Array().let { Uint8Array(it.buffer, it.byteOffset, it.length) }
     return jsRsaKeyGenerationAlgorithm(name, modulusLength, publicExponent2, hash)

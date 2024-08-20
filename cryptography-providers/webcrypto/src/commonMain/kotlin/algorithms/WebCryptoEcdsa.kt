@@ -8,6 +8,8 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.bigint.*
+import dev.whyoleg.cryptography.binary.BinarySize
+import dev.whyoleg.cryptography.binary.BinarySize.Companion.bytes
 import dev.whyoleg.cryptography.operations.signature.*
 import dev.whyoleg.cryptography.providers.webcrypto.internal.*
 import dev.whyoleg.cryptography.providers.webcrypto.materials.*
@@ -32,8 +34,8 @@ internal object WebCryptoEcdsa : WebCryptoEc<ECDSA.PublicKey, ECDSA.PrivateKey, 
             return when (format) {
                 ECDSA.SignatureFormat.RAW -> verifier
                 ECDSA.SignatureFormat.DER -> EcdsaDerSignatureVerifier(
-                    verifier,
-                    curveOrderSize(publicKey.algorithm.ecKeyAlgorithmNamedCurve)
+                    rawVerifier = verifier,
+                    curveOrderSizeBytes = curveOrderSize(publicKey.algorithm.ecKeyAlgorithmNamedCurve).inBytes
                 )
             }
         }
@@ -72,7 +74,7 @@ private class EcdsaDerSignatureGenerator(
 
 private class EcdsaDerSignatureVerifier(
     private val rawVerifier: SignatureVerifier,
-    private val curveOrderSize: Int,
+    private val curveOrderSizeBytes: Int,
 ) : SignatureVerifier {
     override suspend fun verifySignature(data: ByteArray, signature: ByteArray): Boolean {
         val signatureValue = Der.decodeFromByteArray(EcdsaSignatureValue.serializer(), signature)
@@ -80,10 +82,10 @@ private class EcdsaDerSignatureVerifier(
         val r = signatureValue.r.encodeToByteArray().trimLeadingZeros()
         val s = signatureValue.s.encodeToByteArray().trimLeadingZeros()
 
-        val rawSignature = ByteArray(curveOrderSize * 2)
+        val rawSignature = ByteArray(curveOrderSizeBytes * 2)
 
-        r.copyInto(rawSignature, curveOrderSize - r.size)
-        s.copyInto(rawSignature, curveOrderSize * 2 - s.size)
+        r.copyInto(rawSignature, curveOrderSizeBytes - r.size)
+        s.copyInto(rawSignature, curveOrderSizeBytes * 2 - s.size)
 
         return rawVerifier.verifySignature(data, rawSignature)
     }
@@ -98,9 +100,9 @@ private fun ByteArray.trimLeadingZeros(): ByteArray {
     return copyOfRange(firstNonZeroIndex, size)
 }
 
-internal fun curveOrderSize(namedCurve: String): Int = when (namedCurve) {
+internal fun curveOrderSize(namedCurve: String): BinarySize = when (namedCurve) {
     EC.Curve.P256.name -> 32
     EC.Curve.P384.name -> 48
     EC.Curve.P521.name -> 66
     else               -> error("Unknown curve: $namedCurve")
-}
+}.bytes

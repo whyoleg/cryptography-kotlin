@@ -5,6 +5,7 @@
 package dev.whyoleg.cryptography.providers.webcrypto
 
 import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
@@ -32,6 +33,7 @@ internal object WebCryptoCryptographyProvider : CryptographyProvider() {
         RSA.PKCS1 -> WebCryptoRsaPkcs1
         ECDSA     -> WebCryptoEcdsa
         ECDH    -> WebCryptoEcdh
+        PBKDF2  -> WebCryptoPbkdf2
         else      -> null
     } as A?
 }
