@@ -4,15 +4,15 @@ kotlin = "2.0.0"
 
 # kotlin/kotlinx
 kotlin-dokka = "1.9.20"
-kotlinx-bcv = "0.15.1"
-kotlinx-kover = "0.8.2"
+kotlinx-bcv = "0.16.3"
+kotlinx-kover = "0.8.3"
 kotlinx-serialization = "1.7.1"
 kotlinx-coroutines = "1.8.1"
 ktor = "2.3.12"
 
 # android
 android = "8.5.0"
-androidx-test = "1.6.1"
+androidx-test = "1.6.2"
 
 # gradle/build
 apache-commons-compress = "1.26.2"
