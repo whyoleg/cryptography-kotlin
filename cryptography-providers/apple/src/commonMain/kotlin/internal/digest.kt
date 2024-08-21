@@ -6,6 +6,7 @@ package dev.whyoleg.cryptography.providers.apple.internal
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.digest.*
+import platform.CoreCrypto.*
 import platform.Security.*
 
 internal fun CryptographyAlgorithmId<Digest>.rsaPssSecKeyAlgorithm(): SecKeyAlgorithm? = when (this) {
@@ -41,5 +42,14 @@ internal fun CryptographyAlgorithmId<Digest>.ecdsaSecKeyAlgorithm(): SecKeyAlgor
     SHA256 -> kSecKeyAlgorithmECDSASignatureMessageX962SHA256
     SHA384 -> kSecKeyAlgorithmECDSASignatureMessageX962SHA384
     SHA512 -> kSecKeyAlgorithmECDSASignatureMessageX962SHA512
+    else   -> throw CryptographyException("Unsupported hash algorithm: $this")
+}
+
+internal fun CryptographyAlgorithmId<Digest>.pbkdh2Algorithm(): CCPseudoRandomAlgorithm = when (this) {
+    SHA1   -> kCCPRFHmacAlgSHA1
+    SHA224 -> kCCPRFHmacAlgSHA224
+    SHA256 -> kCCPRFHmacAlgSHA256
+    SHA384 -> kCCPRFHmacAlgSHA384
+    SHA512 -> kCCPRFHmacAlgSHA512
     else   -> throw CryptographyException("Unsupported hash algorithm: $this")
 }

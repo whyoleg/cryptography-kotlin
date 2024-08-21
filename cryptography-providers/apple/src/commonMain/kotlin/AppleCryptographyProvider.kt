@@ -5,6 +5,7 @@
 package dev.whyoleg.cryptography.providers.apple
 
 import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
@@ -33,7 +34,8 @@ internal object AppleCryptographyProvider : CryptographyProvider() {
         RSA.PKCS1 -> SecRsaPkcs1
         RSA.OAEP  -> SecRsaOaep
         RSA.RAW -> SecRsaRaw
-        ECDSA -> SecEcdsa
+        ECDSA   -> SecEcdsa
+        PBKDF2  -> CCPbkdf2
         else      -> null
     } as A?
 }
