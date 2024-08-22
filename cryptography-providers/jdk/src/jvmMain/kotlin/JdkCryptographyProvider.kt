@@ -5,6 +5,7 @@
 package dev.whyoleg.cryptography.providers.jdk
 
 import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
@@ -90,6 +91,7 @@ internal class JdkCryptographyProvider(
             RSA.RAW -> JdkRsaRaw(state)
             ECDSA     -> JdkEcdsa(state)
             ECDH    -> JdkEcdh(state)
+            PBKDF2  -> JdkPbkdf2(state)
             else      -> null
         }
     } as A?

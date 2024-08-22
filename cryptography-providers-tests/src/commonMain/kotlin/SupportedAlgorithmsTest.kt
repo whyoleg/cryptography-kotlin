@@ -55,6 +55,6 @@ abstract class SupportedAlgorithmsTest(provider: CryptographyProvider) : Provide
         assertSupports(RSA.PKCS1)
         assertSupports(RSA.RAW, !context.provider.isWebCrypto)
 
-        assertSupports(PBKDF2, context.provider.isWebCrypto || context.provider.isApple)
+        assertSupports(PBKDF2, context.provider.isWebCrypto || context.provider.isApple || context.provider.isJdk)
     }
 }

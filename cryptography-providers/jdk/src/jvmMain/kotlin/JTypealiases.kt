@@ -14,6 +14,7 @@ internal typealias JKeyPair = KeyPair
 internal typealias JPrivateKey = PrivateKey
 internal typealias JPublicKey = PublicKey
 internal typealias JSecretKey = SecretKey
+internal typealias JSecretKeyFactory = SecretKeyFactory
 internal typealias JKey = Key
 internal typealias JMessageDigest = MessageDigest
 internal typealias JMac = Mac
