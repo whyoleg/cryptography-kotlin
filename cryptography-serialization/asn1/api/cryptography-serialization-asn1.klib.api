@@ -73,8 +73,6 @@ final value class dev.whyoleg.cryptography.serialization.asn1/ObjectIdentifier {
 }
 
 sealed class dev.whyoleg.cryptography.serialization.asn1/Der : kotlinx.serialization/BinaryFormat { // dev.whyoleg.cryptography.serialization.asn1/Der|null[0]
-    constructor <init>(kotlinx.serialization.modules/SerializersModule) // dev.whyoleg.cryptography.serialization.asn1/Der.<init>|<init>(kotlinx.serialization.modules.SerializersModule){}[0]
-
     open val serializersModule // dev.whyoleg.cryptography.serialization.asn1/Der.serializersModule|{}serializersModule[0]
         open fun <get-serializersModule>(): kotlinx.serialization.modules/SerializersModule // dev.whyoleg.cryptography.serialization.asn1/Der.serializersModule.<get-serializersModule>|<get-serializersModule>(){}[0]
 

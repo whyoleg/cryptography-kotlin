@@ -5,7 +5,6 @@
 import org.jetbrains.kotlin.gradle.*
 import org.jetbrains.kotlin.gradle.plugin.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.*
-import org.jetbrains.kotlin.gradle.targets.js.dsl.*
 import org.jetbrains.kotlin.konan.target.*
 
 plugins {

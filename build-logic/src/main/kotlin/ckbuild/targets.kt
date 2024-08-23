@@ -6,8 +6,8 @@ package ckbuild
 
 import org.gradle.jvm.toolchain.*
 import org.gradle.kotlin.dsl.*
+import org.jetbrains.kotlin.gradle.*
 import org.jetbrains.kotlin.gradle.dsl.*
-import org.jetbrains.kotlin.gradle.targets.js.dsl.*
 
 fun KotlinMultiplatformExtension.appleTargets() {
     macosX64()

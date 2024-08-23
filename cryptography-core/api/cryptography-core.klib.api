@@ -28,13 +28,9 @@ abstract interface <#A: dev.whyoleg.cryptography.algorithms.asymmetric/EC.Public
 
     abstract interface PrivateKey : dev.whyoleg.cryptography.materials.key/EncodableKey<dev.whyoleg.cryptography.algorithms.asymmetric/EC.PrivateKey.Format> { // dev.whyoleg.cryptography.algorithms.asymmetric/EC.PrivateKey|null[0]
         sealed class Format : dev.whyoleg.cryptography.materials.key/KeyFormat { // dev.whyoleg.cryptography.algorithms.asymmetric/EC.PrivateKey.Format|null[0]
-            constructor <init>() // dev.whyoleg.cryptography.algorithms.asymmetric/EC.PrivateKey.Format.<init>|<init>(){}[0]
-
             final fun toString(): kotlin/String // dev.whyoleg.cryptography.algorithms.asymmetric/EC.PrivateKey.Format.toString|toString(){}[0]
 
             sealed class DER : dev.whyoleg.cryptography.algorithms.asymmetric/EC.PrivateKey.Format { // dev.whyoleg.cryptography.algorithms.asymmetric/EC.PrivateKey.Format.DER|null[0]
-                constructor <init>() // dev.whyoleg.cryptography.algorithms.asymmetric/EC.PrivateKey.Format.DER.<init>|<init>(){}[0]
-
                 final object Generic : dev.whyoleg.cryptography.algorithms.asymmetric/EC.PrivateKey.Format.DER { // dev.whyoleg.cryptography.algorithms.asymmetric/EC.PrivateKey.Format.DER.Generic|null[0]
                     final val name // dev.whyoleg.cryptography.algorithms.asymmetric/EC.PrivateKey.Format.DER.Generic.name|{}name[0]
                         final fun <get-name>(): kotlin/String // dev.whyoleg.cryptography.algorithms.asymmetric/EC.PrivateKey.Format.DER.Generic.name.<get-name>|<get-name>(){}[0]
@@ -50,8 +46,6 @@ abstract interface <#A: dev.whyoleg.cryptography.algorithms.asymmetric/EC.Public
             }
 
             sealed class PEM : dev.whyoleg.cryptography.algorithms.asymmetric/EC.PrivateKey.Format { // dev.whyoleg.cryptography.algorithms.asymmetric/EC.PrivateKey.Format.PEM|null[0]
-                constructor <init>() // dev.whyoleg.cryptography.algorithms.asymmetric/EC.PrivateKey.Format.PEM.<init>|<init>(){}[0]
-
                 final object Generic : dev.whyoleg.cryptography.algorithms.asymmetric/EC.PrivateKey.Format.PEM { // dev.whyoleg.cryptography.algorithms.asymmetric/EC.PrivateKey.Format.PEM.Generic|null[0]
                     final val name // dev.whyoleg.cryptography.algorithms.asymmetric/EC.PrivateKey.Format.PEM.Generic.name|{}name[0]
                         final fun <get-name>(): kotlin/String // dev.whyoleg.cryptography.algorithms.asymmetric/EC.PrivateKey.Format.PEM.Generic.name.<get-name>|<get-name>(){}[0]
@@ -86,8 +80,6 @@ abstract interface <#A: dev.whyoleg.cryptography.algorithms.asymmetric/EC.Public
 
     abstract interface PublicKey : dev.whyoleg.cryptography.materials.key/EncodableKey<dev.whyoleg.cryptography.algorithms.asymmetric/EC.PublicKey.Format> { // dev.whyoleg.cryptography.algorithms.asymmetric/EC.PublicKey|null[0]
         sealed class Format : dev.whyoleg.cryptography.materials.key/KeyFormat { // dev.whyoleg.cryptography.algorithms.asymmetric/EC.PublicKey.Format|null[0]
-            constructor <init>() // dev.whyoleg.cryptography.algorithms.asymmetric/EC.PublicKey.Format.<init>|<init>(){}[0]
-
             final fun toString(): kotlin/String // dev.whyoleg.cryptography.algorithms.asymmetric/EC.PublicKey.Format.toString|toString(){}[0]
 
             final object DER : dev.whyoleg.cryptography.algorithms.asymmetric/EC.PublicKey.Format { // dev.whyoleg.cryptography.algorithms.asymmetric/EC.PublicKey.Format.DER|null[0]
@@ -214,13 +206,9 @@ abstract interface <#A: dev.whyoleg.cryptography.algorithms.asymmetric/RSA.Publi
 
     abstract interface PrivateKey : dev.whyoleg.cryptography.materials.key/EncodableKey<dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PrivateKey.Format> { // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PrivateKey|null[0]
         sealed class Format : dev.whyoleg.cryptography.materials.key/KeyFormat { // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PrivateKey.Format|null[0]
-            constructor <init>() // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PrivateKey.Format.<init>|<init>(){}[0]
-
             final fun toString(): kotlin/String // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PrivateKey.Format.toString|toString(){}[0]
 
             sealed class DER : dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PrivateKey.Format { // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PrivateKey.Format.DER|null[0]
-                constructor <init>() // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PrivateKey.Format.DER.<init>|<init>(){}[0]
-
                 final object Generic : dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PrivateKey.Format.DER { // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PrivateKey.Format.DER.Generic|null[0]
                     final val name // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PrivateKey.Format.DER.Generic.name|{}name[0]
                         final fun <get-name>(): kotlin/String // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PrivateKey.Format.DER.Generic.name.<get-name>|<get-name>(){}[0]
@@ -236,8 +224,6 @@ abstract interface <#A: dev.whyoleg.cryptography.algorithms.asymmetric/RSA.Publi
             }
 
             sealed class PEM : dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PrivateKey.Format { // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PrivateKey.Format.PEM|null[0]
-                constructor <init>() // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PrivateKey.Format.PEM.<init>|<init>(){}[0]
-
                 final object Generic : dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PrivateKey.Format.PEM { // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PrivateKey.Format.PEM.Generic|null[0]
                     final val name // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PrivateKey.Format.PEM.Generic.name|{}name[0]
                         final fun <get-name>(): kotlin/String // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PrivateKey.Format.PEM.Generic.name.<get-name>|<get-name>(){}[0]
@@ -264,13 +250,9 @@ abstract interface <#A: dev.whyoleg.cryptography.algorithms.asymmetric/RSA.Publi
 
     abstract interface PublicKey : dev.whyoleg.cryptography.materials.key/EncodableKey<dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PublicKey.Format> { // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PublicKey|null[0]
         sealed class Format : dev.whyoleg.cryptography.materials.key/KeyFormat { // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PublicKey.Format|null[0]
-            constructor <init>() // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PublicKey.Format.<init>|<init>(){}[0]
-
             final fun toString(): kotlin/String // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PublicKey.Format.toString|toString(){}[0]
 
             sealed class DER : dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PublicKey.Format { // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PublicKey.Format.DER|null[0]
-                constructor <init>() // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PublicKey.Format.DER.<init>|<init>(){}[0]
-
                 final object Generic : dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PublicKey.Format.DER { // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PublicKey.Format.DER.Generic|null[0]
                     final val name // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PublicKey.Format.DER.Generic.name|{}name[0]
                         final fun <get-name>(): kotlin/String // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PublicKey.Format.DER.Generic.name.<get-name>|<get-name>(){}[0]
@@ -286,8 +268,6 @@ abstract interface <#A: dev.whyoleg.cryptography.algorithms.asymmetric/RSA.Publi
             }
 
             sealed class PEM : dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PublicKey.Format { // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PublicKey.Format.PEM|null[0]
-                constructor <init>() // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PublicKey.Format.PEM.<init>|<init>(){}[0]
-
                 final object Generic : dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PublicKey.Format.PEM { // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PublicKey.Format.PEM.Generic|null[0]
                     final val name // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PublicKey.Format.PEM.Generic.name|{}name[0]
                         final fun <get-name>(): kotlin/String // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PublicKey.Format.PEM.Generic.name.<get-name>|<get-name>(){}[0]
