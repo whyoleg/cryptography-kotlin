@@ -5,6 +5,7 @@
 package dev.whyoleg.cryptography.providers.openssl3
 
 import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.RSA
 import dev.whyoleg.cryptography.algorithms.digest.*
@@ -43,6 +44,7 @@ internal object Openssl3CryptographyProvider : CryptographyProvider() {
         RSA.PKCS1 -> Openssl3RsaPkcs1
         RSA.OAEP  -> Openssl3RsaOaep
         RSA.RAW -> Openssl3RsaRaw
+        PBKDF2  -> Openssl3Pbkdf2
         else      -> null
     } as A?
 }
