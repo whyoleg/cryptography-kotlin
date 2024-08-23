@@ -49,6 +49,17 @@ registerTestAggregationTask(
     targetFilter = { it.platformType == KotlinPlatformType.jvm }
 )
 
+// test only on min and max JDK versions
+registerTestAggregationTask(
+    name = "jvmProviderTest",
+    taskDependencies = {
+        tasks.withType<KotlinJvmTest>().matching {
+            it.javaLauncher.get().metadata.languageVersion.asInt() in setOf(8, 21)
+        }
+    },
+    targetFilter = { it.platformType == KotlinPlatformType.jvm }
+)
+
 registerTestAggregationTask(
     name = "nativeProviderTest",
     taskDependencies = { tasks.withType<KotlinNativeTest>().matching { it.enabled } },
