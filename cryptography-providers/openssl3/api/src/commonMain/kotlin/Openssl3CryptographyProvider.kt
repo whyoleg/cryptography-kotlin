@@ -11,11 +11,13 @@ import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.providers.openssl3.algorithms.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
+import dev.whyoleg.sweetspi.*
 import kotlinx.cinterop.*
 
-private val defaultProvider = lazy { Openssl3CryptographyProvider }
+@ServiceProvider
+internal val defaultProvider by lazy { Openssl3CryptographyProvider }
 
-public val CryptographyProvider.Companion.Openssl3: CryptographyProvider by defaultProvider
+public val CryptographyProvider.Companion.Openssl3: CryptographyProvider get() = defaultProvider
 
 internal object Openssl3CryptographyProvider : CryptographyProvider() {
     override val name: String = "OpenSSL3 (${OpenSSL_version(OPENSSL_VERSION_STRING)?.toKString() ?: "unknown"})"
@@ -46,8 +48,3 @@ internal object Openssl3CryptographyProvider : CryptographyProvider() {
         else      -> null
     } as A?
 }
-
-@Suppress("DEPRECATION")
-@OptIn(ExperimentalStdlibApi::class)
-@EagerInitialization
-private val initHook = CryptographyProvider.Registry.registerProvider(defaultProvider)

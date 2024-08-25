@@ -13,6 +13,8 @@ dependencies {
     implementation(libs.kotlinx.kover.gradle.plugin)
     implementation(libs.android.gradle.plugin)
     implementation(libs.maven.publish.gradle.plugin)
+    implementation(libs.ksp.gradle.plugin)
+    implementation(libs.sweetspi.gradle.plugin)
     implementation(libs.apache.commons.compress)
     implementation("testtool:plugin")
 }

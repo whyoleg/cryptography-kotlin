@@ -10,5 +10,5 @@ final val dev.whyoleg.cryptography.providers.webcrypto/WebCrypto // dev.whyoleg.
     final fun (dev.whyoleg.cryptography/CryptographyProvider.Companion).<get-WebCrypto>(): dev.whyoleg.cryptography/CryptographyProvider // dev.whyoleg.cryptography.providers.webcrypto/WebCrypto.<get-WebCrypto>|<get-WebCrypto>@dev.whyoleg.cryptography.CryptographyProvider.Companion(){}[0]
 
 // Targets: [js]
-final val dev.whyoleg.cryptography.providers.webcrypto/initHook // dev.whyoleg.cryptography.providers.webcrypto/initHook|{}initHook[0]
-    final fun <get-initHook>(): dynamic // dev.whyoleg.cryptography.providers.webcrypto/initHook.<get-initHook>|<get-initHook>(){}[0]
+final val dev.whyoleg.cryptography.providers.webcrypto/init_dev_whyoleg_cryptography_providers_webcrypto // dev.whyoleg.cryptography.providers.webcrypto/init_dev_whyoleg_cryptography_providers_webcrypto|{}init_dev_whyoleg_cryptography_providers_webcrypto[0]
+    final fun <get-init_dev_whyoleg_cryptography_providers_webcrypto>(): dynamic // dev.whyoleg.cryptography.providers.webcrypto/init_dev_whyoleg_cryptography_providers_webcrypto.<get-init_dev_whyoleg_cryptography_providers_webcrypto>|<get-init_dev_whyoleg_cryptography_providers_webcrypto>(){}[0]

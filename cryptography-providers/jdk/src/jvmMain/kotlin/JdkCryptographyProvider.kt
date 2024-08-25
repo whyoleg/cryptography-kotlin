@@ -10,12 +10,14 @@ import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.providers.jdk.algorithms.*
 import dev.whyoleg.cryptography.random.*
+import dev.whyoleg.sweetspi.*
 import java.security.*
 import java.util.concurrent.*
 
-private val defaultProvider = lazy { CryptographyProvider.Companion.JDK() }
+@ServiceProvider
+internal val defaultProvider by lazy { CryptographyProvider.Companion.JDK() }
 
-public val CryptographyProvider.Companion.JDK: CryptographyProvider by defaultProvider
+public val CryptographyProvider.Companion.JDK: CryptographyProvider get() = defaultProvider
 
 @Suppress("FunctionName")
 public fun CryptographyProvider.Companion.JDK(
@@ -93,8 +95,4 @@ internal class JdkCryptographyProvider(
             else      -> null
         }
     } as A?
-}
-
-internal class JdkCryptographyProviderContainer : CryptographyProviderContainer {
-    override val provider: Lazy<CryptographyProvider> get() = defaultProvider
 }

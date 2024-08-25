@@ -9,10 +9,12 @@ import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.providers.webcrypto.algorithms.*
+import dev.whyoleg.sweetspi.*
 
-internal val defaultProvider = lazy { WebCryptoCryptographyProvider }
+@ServiceProvider
+internal val defaultProvider by lazy { WebCryptoCryptographyProvider }
 
-public val CryptographyProvider.Companion.WebCrypto: CryptographyProvider by defaultProvider
+public val CryptographyProvider.Companion.WebCrypto: CryptographyProvider get() = defaultProvider
 
 internal object WebCryptoCryptographyProvider : CryptographyProvider() {
     override val name: String get() = "WebCrypto"
