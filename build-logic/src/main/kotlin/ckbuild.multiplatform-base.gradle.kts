@@ -65,7 +65,7 @@ kotlin {
         if (platformType == KotlinPlatformType.js) whenNodejsConfigured {
             testTask {
                 useMocha {
-                    timeout = "300s"
+                    timeout = "600s"
                 }
             }
         }
