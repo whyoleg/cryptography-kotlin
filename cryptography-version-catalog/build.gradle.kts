@@ -11,10 +11,10 @@ description = "cryptography-kotlin Gradle Version Catalog"
 
 catalog {
     versionCatalog {
-        //just a hint on version used by the library
+        //just a hint on a version used by the library
         version("kotlin", libs.versions.kotlin.asProvider().get())
         val cryptographyVersion = version("cryptography", version.toString())
-        (ckbuild.bom.artifacts + "cryptography-bom").forEach { name ->
+        (ckbuild.artifacts + "cryptography-bom").forEach { name ->
             library(
                 /* alias =    */ name.substringAfter("cryptography-"),
                 /* group =    */ "dev.whyoleg.cryptography",

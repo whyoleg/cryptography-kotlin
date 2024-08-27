@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 plugins {
@@ -11,7 +11,7 @@ description = "cryptography-kotlin BOM"
 
 dependencies {
     constraints {
-        ckbuild.bom.artifacts.forEach {
+        ckbuild.artifacts.forEach {
             api(project(":$it"))
         }
     }

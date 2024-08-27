@@ -2,8 +2,9 @@
  * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
-package ckbuild.bom
+package ckbuild
 
+// all artifacts that are published and documentable
 val artifacts
     get() = listOf(
         "cryptography-bigint",
