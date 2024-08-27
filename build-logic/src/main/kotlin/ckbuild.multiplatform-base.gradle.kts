@@ -56,7 +56,7 @@ kotlin {
         whenBrowserConfigured {
             testTask {
                 useKarma {
-                    useConfigDirectory(rootDir.resolve("gradle/js/karma"))
+                    useConfigDirectory(rootDir.resolve("karma.config.d"))
                     useChromeHeadless()
                 }
             }
