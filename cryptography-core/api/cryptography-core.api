@@ -46,6 +46,15 @@ public abstract interface class dev/whyoleg/cryptography/CryptographyProviderCon
 public abstract interface annotation class dev/whyoleg/cryptography/DelicateCryptographyApi : java/lang/annotation/Annotation {
 }
 
+public abstract interface class dev/whyoleg/cryptography/algorithms/PBKDF2 : dev/whyoleg/cryptography/CryptographyAlgorithm {
+	public static final field Companion Ldev/whyoleg/cryptography/algorithms/PBKDF2$Companion;
+	public fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
+	public abstract fun secretDerivation-xdmuAUM (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;[BII)Ldev/whyoleg/cryptography/operations/SecretDerivation;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/PBKDF2$Companion : dev/whyoleg/cryptography/CryptographyAlgorithmId {
+}
+
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/EC : dev/whyoleg/cryptography/CryptographyAlgorithm {
 	public abstract fun keyPairGenerator-EsXthJ8 (Ljava/lang/String;)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
 	public abstract fun privateKeyDecoder-EsXthJ8 (Ljava/lang/String;)Ldev/whyoleg/cryptography/materials/key/KeyDecoder;
@@ -598,6 +607,11 @@ public abstract interface class dev/whyoleg/cryptography/materials/key/KeyGenera
 	public fun generateKey (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun generateKey$suspendImpl (Ldev/whyoleg/cryptography/materials/key/KeyGenerator;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun generateKeyBlocking ()Ldev/whyoleg/cryptography/materials/key/Key;
+}
+
+public abstract interface class dev/whyoleg/cryptography/operations/SecretDerivation {
+	public abstract fun deriveSecret-kO-gwrw ([BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun deriveSecretBlocking-1T_H5PE ([B)[B
 }
 
 public abstract interface class dev/whyoleg/cryptography/operations/SharedSecretGenerator {
