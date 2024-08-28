@@ -24,6 +24,10 @@ runs:
           11
           17
           21
+    - name: "Redirect konan caches to fast D: drive for Windows runners"
+      if: runner.os == 'Windows'
+      shell: cmd
+      run: echo KONAN_DATA_DIR=D:\.konan>>%GITHUB_ENV%
     - uses: gradle/actions/setup-gradle@v4
       with:
         build-scan-publish: true
