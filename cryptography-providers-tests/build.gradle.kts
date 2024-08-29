@@ -24,6 +24,7 @@ kotlin {
             OptIns.DelicateCryptographyApi,
             OptIns.CryptographyProviderApi,
 
+            OptIns.ExperimentalStdlibApi,
             OptIns.ExperimentalEncodingApi,
         )
     }

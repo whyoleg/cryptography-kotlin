@@ -36,6 +36,7 @@ kotlin {
             OptIns.DelicateCryptographyApi,
             OptIns.CryptographyProviderApi,
 
+            OptIns.ExperimentalStdlibApi,
             OptIns.ExperimentalEncodingApi,
         )
         freeCompilerArgs.add("-Xexpect-actual-classes")
