@@ -39,10 +39,22 @@ Additionally, it's possible to use [BOM][BOM] or [Gradle version catalog][Gradle
 repositories {
     mavenCentral()
 }
-dependencies {
-    implementation("dev.whyoleg.cryptography:cryptography-core:0.3.1")
-    // some provider
-    implementation("dev.whyoleg.cryptography:cryptography-provider-jdk:0.3.1")
+
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            implementation(project.dependencies.platform("dev.whyoleg.cryptography:cryptography-bom:0.3.1"))
+            implementation("dev.whyoleg.cryptography:cryptography-core")
+        }
+        androidMain.dependencies {
+            implementation("dev.whyoleg.cryptography:cryptography-provider-jdk")
+        }
+        iosMain.dependencies {
+            implementation("dev.whyoleg.cryptography:cryptography-provider-openssl3-prebuilt")
+            // or `apple` provider
+            // implementation("dev.whyoleg.cryptography:cryptography-provider-apple")
+        }
+    }
 }
 ```
 
