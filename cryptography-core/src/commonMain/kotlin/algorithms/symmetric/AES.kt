@@ -8,6 +8,7 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.BinarySize.Companion.bits
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.cipher.*
+import kotlinx.io.bytestring.*
 
 @SubclassOptInRequired(CryptographyProviderApi::class)
 public interface AES<K : AES.Key> : CryptographyAlgorithm {
@@ -91,6 +92,14 @@ public interface AES<K : AES.Key> : CryptographyAlgorithm {
 
         @DelicateCryptographyApi
         public fun encryptBlocking(iv: ByteArray, plaintext: ByteArray): ByteArray
+
+        @DelicateCryptographyApi
+        public suspend fun encrypt(iv: ByteString, plaintext: ByteString): ByteString =
+            encrypt(iv.asByteArray(), plaintext.asByteArray()).asByteString()
+
+        @DelicateCryptographyApi
+        public fun encryptBlocking(iv: ByteString, plaintext: ByteString): ByteString =
+            encryptBlocking(iv.asByteArray(), plaintext.asByteArray()).asByteString()
     }
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
@@ -100,5 +109,13 @@ public interface AES<K : AES.Key> : CryptographyAlgorithm {
 
         @DelicateCryptographyApi
         public fun decryptBlocking(iv: ByteArray, ciphertext: ByteArray): ByteArray
+
+        @DelicateCryptographyApi
+        public suspend fun decrypt(iv: ByteString, ciphertext: ByteString): ByteString =
+            decrypt(iv.asByteArray(), ciphertext.asByteArray()).asByteString()
+
+        @DelicateCryptographyApi
+        public fun decryptBlocking(iv: ByteString, ciphertext: ByteString): ByteString =
+            decryptBlocking(iv.asByteArray(), ciphertext.asByteArray()).asByteString()
     }
 }

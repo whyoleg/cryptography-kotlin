@@ -10,7 +10,7 @@ import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.providers.tests.api.*
 import dev.whyoleg.cryptography.providers.tests.api.compatibility.*
 import dev.whyoleg.cryptography.random.*
-import kotlin.test.*
+import kotlinx.io.bytestring.*
 
 private const val maxAssociatedDataSize = 10000
 
@@ -38,11 +38,11 @@ abstract class RsaOaepCompatibilityTest(provider: CryptographyProvider) :
                 if (!supportsAssociatedData(associatedDataSize)) return@repeat
 
                 logger.log { "associatedData.size   = $associatedDataSize" }
-                val associatedData = associatedDataSize?.let(CryptographyRandom::nextBytes)
+                val associatedData = associatedDataSize?.let(CryptographyRandom::nextBytes)?.let(::ByteString)
                 repeat(cipherIterations) {
                     val plaintextSize = CryptographyRandom.nextInt(maxPlaintextSize)
                     logger.log { "plaintext.size        = $plaintextSize" }
-                    val plaintext = CryptographyRandom.nextBytes(plaintextSize)
+                    val plaintext = ByteString(CryptographyRandom.nextBytes(plaintextSize))
                     val ciphertext = encryptor.encrypt(plaintext, associatedData)
                     logger.log { "ciphertext.size       = ${ciphertext.size}" }
 

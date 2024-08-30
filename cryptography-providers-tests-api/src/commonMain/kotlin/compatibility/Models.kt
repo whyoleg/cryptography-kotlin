@@ -2,8 +2,6 @@
  * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
-@file:Suppress("ArrayInDataClass")
-
 package dev.whyoleg.cryptography.providers.tests.api.compatibility
 
 import kotlinx.serialization.*
@@ -58,25 +56,17 @@ data class KeyPairData(
 @Serializable
 data class CipherData(
     val keyReference: TestReference,
-    val plaintext: Base64ByteArray,
-    val ciphertext: Base64ByteArray,
-) : TestData {
-    override fun toString(): String {
-        return "CipherData(keyReference=$keyReference, plaintext.size=${plaintext.size}, ciphertext.size=${ciphertext.size})"
-    }
-}
+    val plaintext: ByteStringAsString,
+    val ciphertext: ByteStringAsString,
+) : TestData
 
 @Serializable
 data class AuthenticatedCipherData(
     val keyReference: TestReference,
-    val associatedData: Base64ByteArray?,
-    val plaintext: Base64ByteArray,
-    val ciphertext: Base64ByteArray,
-) : TestData {
-    override fun toString(): String {
-        return "AuthenticatedCipherData(keyReference=$keyReference, associatedData.size=${associatedData?.size}, plaintext.size=${plaintext.size}, ciphertext.size=${ciphertext.size})"
-    }
-}
+    val associatedData: ByteStringAsString?,
+    val plaintext: ByteStringAsString,
+    val ciphertext: ByteStringAsString,
+) : TestData
 
 @Serializable
 data class SignatureData(

@@ -8,10 +8,11 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.BinarySize.Companion.bits
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.algorithms.digest.*
+import dev.whyoleg.cryptography.providers.tests.api.*
 import dev.whyoleg.cryptography.providers.tests.api.compatibility.*
 import dev.whyoleg.cryptography.random.*
+import kotlinx.io.bytestring.*
 import kotlin.io.encoding.*
-import kotlin.test.*
 
 private fun ByteArray.pad(size: Int): ByteArray = ByteArray(size).also {
     copyInto(it, size - this.size)
@@ -39,7 +40,7 @@ abstract class RsaRawCompatibilityTest(provider: CryptographyProvider) :
                 logger.log { "plaintext.size        = $plaintextSize" }
                 // RSA RAW input should be equal to the key size;
                 // some providers pad the value with zeroes, but it's not really correct
-                val plaintext = CryptographyRandom.nextBytes(plaintextSize).pad(maxPlaintextSize)
+                val plaintext = ByteString(CryptographyRandom.nextBytes(plaintextSize).pad(maxPlaintextSize))
                 logger.log { "plaintext             = ${Base64.encode(plaintext)}" }
                 val ciphertext = encryptor.encrypt(plaintext)
                 logger.log { "ciphertext.size       = ${ciphertext.size}" }

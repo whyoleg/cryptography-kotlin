@@ -11,7 +11,7 @@ import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.providers.tests.api.*
 import dev.whyoleg.cryptography.providers.tests.api.compatibility.*
 import dev.whyoleg.cryptography.random.*
-import kotlin.test.*
+import kotlinx.io.bytestring.*
 
 abstract class RsaPkcs1EsCompatibilityTest(provider: CryptographyProvider) :
     RsaBasedCompatibilityTest<RSA.PKCS1.PublicKey, RSA.PKCS1.PrivateKey, RSA.PKCS1.KeyPair, RSA.PKCS1>(RSA.PKCS1, provider) {
@@ -35,7 +35,7 @@ abstract class RsaPkcs1EsCompatibilityTest(provider: CryptographyProvider) :
                 // zero plaintexts are not supported for Apple provider
                 val plaintextSize = CryptographyRandom.nextInt(1, maxPlaintextSize)
                 logger.log { "plaintext.size        = $plaintextSize" }
-                val plaintext = CryptographyRandom.nextBytes(plaintextSize)
+                val plaintext = ByteString(CryptographyRandom.nextBytes(plaintextSize))
                 val ciphertext = encryptor.encrypt(plaintext)
                 logger.log { "ciphertext.size       = ${ciphertext.size}" }
 

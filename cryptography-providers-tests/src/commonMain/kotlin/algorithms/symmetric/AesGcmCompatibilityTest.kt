@@ -7,10 +7,11 @@ package dev.whyoleg.cryptography.providers.tests.algorithms.symmetric
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.BinarySize.Companion.bits
 import dev.whyoleg.cryptography.algorithms.symmetric.*
+import dev.whyoleg.cryptography.providers.tests.api.*
 import dev.whyoleg.cryptography.providers.tests.api.compatibility.*
 import dev.whyoleg.cryptography.random.*
+import kotlinx.io.bytestring.*
 import kotlinx.serialization.*
-import kotlin.test.*
 
 private const val maxPlaintextSize = 10000
 private const val maxAssociatedDataSize = 10000
@@ -44,11 +45,11 @@ abstract class AesGcmCompatibilityTest(provider: CryptographyProvider) :
                 repeat(associatedDataIterations) { adIndex ->
                     val associatedDataSize = if (adIndex == 0) null else CryptographyRandom.nextInt(maxAssociatedDataSize)
                     logger.log { "associatedData.size = $associatedDataSize" }
-                    val associatedData = associatedDataSize?.let(CryptographyRandom::nextBytes)
+                    val associatedData = associatedDataSize?.let(CryptographyRandom::nextBytes)?.let(::ByteString)
                     repeat(cipherIterations) {
                         val plaintextSize = CryptographyRandom.nextInt(maxPlaintextSize)
                         logger.log { "plaintext.size      = $plaintextSize" }
-                        val plaintext = CryptographyRandom.nextBytes(plaintextSize)
+                        val plaintext = ByteString(CryptographyRandom.nextBytes(plaintextSize))
                         val ciphertext = cipher.encrypt(plaintext, associatedData)
                         logger.log { "ciphertext.size     = ${ciphertext.size}" }
 

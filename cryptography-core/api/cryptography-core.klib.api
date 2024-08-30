@@ -363,12 +363,16 @@ abstract interface <#A: dev.whyoleg.cryptography.algorithms.symmetric/AES.Key> d
 
     abstract interface IvDecryptor : dev.whyoleg.cryptography.operations.cipher/Decryptor { // dev.whyoleg.cryptography.algorithms.symmetric/AES.IvDecryptor|null[0]
         abstract fun decryptBlocking(kotlin/ByteArray, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.algorithms.symmetric/AES.IvDecryptor.decryptBlocking|decryptBlocking(kotlin.ByteArray;kotlin.ByteArray){}[0]
+        open fun decryptBlocking(kotlinx.io.bytestring/ByteString, kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.algorithms.symmetric/AES.IvDecryptor.decryptBlocking|decryptBlocking(kotlinx.io.bytestring.ByteString;kotlinx.io.bytestring.ByteString){}[0]
         open suspend fun decrypt(kotlin/ByteArray, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.algorithms.symmetric/AES.IvDecryptor.decrypt|decrypt(kotlin.ByteArray;kotlin.ByteArray){}[0]
+        open suspend fun decrypt(kotlinx.io.bytestring/ByteString, kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.algorithms.symmetric/AES.IvDecryptor.decrypt|decrypt(kotlinx.io.bytestring.ByteString;kotlinx.io.bytestring.ByteString){}[0]
     }
 
     abstract interface IvEncryptor : dev.whyoleg.cryptography.operations.cipher/Encryptor { // dev.whyoleg.cryptography.algorithms.symmetric/AES.IvEncryptor|null[0]
         abstract fun encryptBlocking(kotlin/ByteArray, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.algorithms.symmetric/AES.IvEncryptor.encryptBlocking|encryptBlocking(kotlin.ByteArray;kotlin.ByteArray){}[0]
+        open fun encryptBlocking(kotlinx.io.bytestring/ByteString, kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.algorithms.symmetric/AES.IvEncryptor.encryptBlocking|encryptBlocking(kotlinx.io.bytestring.ByteString;kotlinx.io.bytestring.ByteString){}[0]
         open suspend fun encrypt(kotlin/ByteArray, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.algorithms.symmetric/AES.IvEncryptor.encrypt|encrypt(kotlin.ByteArray;kotlin.ByteArray){}[0]
+        open suspend fun encrypt(kotlinx.io.bytestring/ByteString, kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.algorithms.symmetric/AES.IvEncryptor.encrypt|encrypt(kotlinx.io.bytestring.ByteString;kotlinx.io.bytestring.ByteString){}[0]
     }
 
     abstract interface Key : dev.whyoleg.cryptography.materials.key/EncodableKey<dev.whyoleg.cryptography.algorithms.symmetric/AES.Key.Format> { // dev.whyoleg.cryptography.algorithms.symmetric/AES.Key|null[0]
@@ -524,27 +528,39 @@ abstract interface dev.whyoleg.cryptography.operations.cipher/AuthenticatedCiphe
 abstract interface dev.whyoleg.cryptography.operations.cipher/AuthenticatedDecryptor : dev.whyoleg.cryptography.operations.cipher/Decryptor { // dev.whyoleg.cryptography.operations.cipher/AuthenticatedDecryptor|null[0]
     abstract fun decryptBlocking(kotlin/ByteArray, kotlin/ByteArray?): kotlin/ByteArray // dev.whyoleg.cryptography.operations.cipher/AuthenticatedDecryptor.decryptBlocking|decryptBlocking(kotlin.ByteArray;kotlin.ByteArray?){}[0]
     open fun decryptBlocking(kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.operations.cipher/AuthenticatedDecryptor.decryptBlocking|decryptBlocking(kotlin.ByteArray){}[0]
+    open fun decryptBlocking(kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations.cipher/AuthenticatedDecryptor.decryptBlocking|decryptBlocking(kotlinx.io.bytestring.ByteString){}[0]
+    open fun decryptBlocking(kotlinx.io.bytestring/ByteString, kotlinx.io.bytestring/ByteString?): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations.cipher/AuthenticatedDecryptor.decryptBlocking|decryptBlocking(kotlinx.io.bytestring.ByteString;kotlinx.io.bytestring.ByteString?){}[0]
     open suspend fun decrypt(kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.operations.cipher/AuthenticatedDecryptor.decrypt|decrypt(kotlin.ByteArray){}[0]
     open suspend fun decrypt(kotlin/ByteArray, kotlin/ByteArray?): kotlin/ByteArray // dev.whyoleg.cryptography.operations.cipher/AuthenticatedDecryptor.decrypt|decrypt(kotlin.ByteArray;kotlin.ByteArray?){}[0]
+    open suspend fun decrypt(kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations.cipher/AuthenticatedDecryptor.decrypt|decrypt(kotlinx.io.bytestring.ByteString){}[0]
+    open suspend fun decrypt(kotlinx.io.bytestring/ByteString, kotlinx.io.bytestring/ByteString?): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations.cipher/AuthenticatedDecryptor.decrypt|decrypt(kotlinx.io.bytestring.ByteString;kotlinx.io.bytestring.ByteString?){}[0]
 }
 
 abstract interface dev.whyoleg.cryptography.operations.cipher/AuthenticatedEncryptor : dev.whyoleg.cryptography.operations.cipher/Encryptor { // dev.whyoleg.cryptography.operations.cipher/AuthenticatedEncryptor|null[0]
     abstract fun encryptBlocking(kotlin/ByteArray, kotlin/ByteArray?): kotlin/ByteArray // dev.whyoleg.cryptography.operations.cipher/AuthenticatedEncryptor.encryptBlocking|encryptBlocking(kotlin.ByteArray;kotlin.ByteArray?){}[0]
     open fun encryptBlocking(kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.operations.cipher/AuthenticatedEncryptor.encryptBlocking|encryptBlocking(kotlin.ByteArray){}[0]
+    open fun encryptBlocking(kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations.cipher/AuthenticatedEncryptor.encryptBlocking|encryptBlocking(kotlinx.io.bytestring.ByteString){}[0]
+    open fun encryptBlocking(kotlinx.io.bytestring/ByteString, kotlinx.io.bytestring/ByteString?): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations.cipher/AuthenticatedEncryptor.encryptBlocking|encryptBlocking(kotlinx.io.bytestring.ByteString;kotlinx.io.bytestring.ByteString?){}[0]
     open suspend fun encrypt(kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.operations.cipher/AuthenticatedEncryptor.encrypt|encrypt(kotlin.ByteArray){}[0]
     open suspend fun encrypt(kotlin/ByteArray, kotlin/ByteArray?): kotlin/ByteArray // dev.whyoleg.cryptography.operations.cipher/AuthenticatedEncryptor.encrypt|encrypt(kotlin.ByteArray;kotlin.ByteArray?){}[0]
+    open suspend fun encrypt(kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations.cipher/AuthenticatedEncryptor.encrypt|encrypt(kotlinx.io.bytestring.ByteString){}[0]
+    open suspend fun encrypt(kotlinx.io.bytestring/ByteString, kotlinx.io.bytestring/ByteString?): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations.cipher/AuthenticatedEncryptor.encrypt|encrypt(kotlinx.io.bytestring.ByteString;kotlinx.io.bytestring.ByteString?){}[0]
 }
 
 abstract interface dev.whyoleg.cryptography.operations.cipher/Cipher : dev.whyoleg.cryptography.operations.cipher/Decryptor, dev.whyoleg.cryptography.operations.cipher/Encryptor // dev.whyoleg.cryptography.operations.cipher/Cipher|null[0]
 
 abstract interface dev.whyoleg.cryptography.operations.cipher/Decryptor { // dev.whyoleg.cryptography.operations.cipher/Decryptor|null[0]
     abstract fun decryptBlocking(kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.operations.cipher/Decryptor.decryptBlocking|decryptBlocking(kotlin.ByteArray){}[0]
+    open fun decryptBlocking(kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations.cipher/Decryptor.decryptBlocking|decryptBlocking(kotlinx.io.bytestring.ByteString){}[0]
     open suspend fun decrypt(kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.operations.cipher/Decryptor.decrypt|decrypt(kotlin.ByteArray){}[0]
+    open suspend fun decrypt(kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations.cipher/Decryptor.decrypt|decrypt(kotlinx.io.bytestring.ByteString){}[0]
 }
 
 abstract interface dev.whyoleg.cryptography.operations.cipher/Encryptor { // dev.whyoleg.cryptography.operations.cipher/Encryptor|null[0]
     abstract fun encryptBlocking(kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.operations.cipher/Encryptor.encryptBlocking|encryptBlocking(kotlin.ByteArray){}[0]
+    open fun encryptBlocking(kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations.cipher/Encryptor.encryptBlocking|encryptBlocking(kotlinx.io.bytestring.ByteString){}[0]
     open suspend fun encrypt(kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.operations.cipher/Encryptor.encrypt|encrypt(kotlin.ByteArray){}[0]
+    open suspend fun encrypt(kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations.cipher/Encryptor.encrypt|encrypt(kotlinx.io.bytestring.ByteString){}[0]
 }
 
 abstract interface dev.whyoleg.cryptography.operations.hash/Hasher { // dev.whyoleg.cryptography.operations.hash/Hasher|null[0]

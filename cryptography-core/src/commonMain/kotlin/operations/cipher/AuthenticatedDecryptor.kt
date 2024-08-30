@@ -4,15 +4,23 @@
 
 package dev.whyoleg.cryptography.operations.cipher
 
-
 import dev.whyoleg.cryptography.*
+import kotlinx.io.bytestring.*
 
 @SubclassOptInRequired(CryptographyProviderApi::class)
 public interface AuthenticatedDecryptor : Decryptor {
-    public suspend fun decrypt(ciphertext: ByteArray, associatedData: ByteArray?): ByteArray =
-        decryptBlocking(ciphertext, associatedData)
-
-    override suspend fun decrypt(ciphertext: ByteArray): ByteArray = decrypt(ciphertext, null)
+    public suspend fun decrypt(ciphertext: ByteArray, associatedData: ByteArray?): ByteArray = decryptBlocking(ciphertext, associatedData)
     public fun decryptBlocking(ciphertext: ByteArray, associatedData: ByteArray?): ByteArray
-    override fun decryptBlocking(ciphertext: ByteArray): ByteArray = decryptBlocking(ciphertext, null)
+
+    public override suspend fun decrypt(ciphertext: ByteArray): ByteArray = decrypt(ciphertext, null)
+    public override fun decryptBlocking(ciphertext: ByteArray): ByteArray = decryptBlocking(ciphertext, null)
+
+    public suspend fun decrypt(ciphertext: ByteString, associatedData: ByteString?): ByteString =
+        decrypt(ciphertext.asByteArray(), associatedData?.asByteArray()).asByteString()
+
+    public fun decryptBlocking(ciphertext: ByteString, associatedData: ByteString?): ByteString =
+        decryptBlocking(ciphertext.asByteArray(), associatedData?.asByteArray()).asByteString()
+
+    public override suspend fun decrypt(ciphertext: ByteString): ByteString = decrypt(ciphertext, null)
+    public override fun decryptBlocking(ciphertext: ByteString): ByteString = decryptBlocking(ciphertext, null)
 }

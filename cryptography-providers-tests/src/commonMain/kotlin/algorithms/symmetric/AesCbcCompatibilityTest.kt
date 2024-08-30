@@ -2,8 +2,6 @@
  * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
-@file:Suppress("ArrayInDataClass")
-
 package dev.whyoleg.cryptography.providers.tests.algorithms.symmetric
 
 import dev.whyoleg.cryptography.*
@@ -11,8 +9,8 @@ import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.providers.tests.api.*
 import dev.whyoleg.cryptography.providers.tests.api.compatibility.*
 import dev.whyoleg.cryptography.random.*
+import kotlinx.io.bytestring.*
 import kotlinx.serialization.*
-import kotlin.test.*
 
 private const val maxPlaintextSize = 10000
 private const val blockSize = 16 //for no padding
@@ -25,7 +23,7 @@ abstract class AesCbcCompatibilityTest(provider: CryptographyProvider) :
     @Serializable
     private data class CipherParameters(
         val padding: Boolean,
-        val iv: Base64ByteArray?,
+        val iv: ByteStringAsString?,
     ) : TestParameters {
         override fun toString(): String = "CipherParameters(padding=${padding}, iv.size=${iv?.size})"
     }
@@ -42,7 +40,7 @@ abstract class AesCbcCompatibilityTest(provider: CryptographyProvider) :
 
         val parametersList = buildList {
             // size of IV = 16
-            (List(ivIterations) { CryptographyRandom.nextBytes(16) } + listOf(null)).forEach { iv ->
+            (List(ivIterations) { ByteString(CryptographyRandom.nextBytes(16)) } + listOf(null)).forEach { iv ->
                 generateBoolean { padding ->
                     if (!supportsPadding(padding)) return@generateBoolean
 
@@ -60,7 +58,7 @@ abstract class AesCbcCompatibilityTest(provider: CryptographyProvider) :
                 repeat(cipherIterations) {
                     val plaintextSize = CryptographyRandom.nextInt(maxPlaintextSize).withPadding(parameters.padding)
                     logger.log { "plaintext.size  = $plaintextSize" }
-                    val plaintext = CryptographyRandom.nextBytes(plaintextSize)
+                    val plaintext = ByteString(CryptographyRandom.nextBytes(plaintextSize))
 
                     val ciphertext = when (val iv = parameters.iv) {
                         null -> {
