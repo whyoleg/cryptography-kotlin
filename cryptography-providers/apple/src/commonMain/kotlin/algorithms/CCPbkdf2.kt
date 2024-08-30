@@ -7,7 +7,6 @@ package dev.whyoleg.cryptography.providers.apple.algorithms
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.digest.*
-import dev.whyoleg.cryptography.binary.*
 import dev.whyoleg.cryptography.binary.BinarySize
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.apple.internal.*
@@ -17,10 +16,10 @@ import platform.CoreCrypto.*
 internal object CCPbkdf2 : PBKDF2 {
     override fun secretDerivation(
         digest: CryptographyAlgorithmId<Digest>,
-        salt: BinaryData,
+        salt: ByteArray,
         iterations: Int,
         outputSize: BinarySize,
-    ): SecretDerivation = Pbkdf2SecretDerivation(digest.pbkdh2Algorithm(), salt.toByteArray(), iterations, outputSize)
+    ): SecretDerivation = Pbkdf2SecretDerivation(digest.pbkdh2Algorithm(), salt, iterations, outputSize)
 }
 
 // TODO: handle zeros
@@ -31,12 +30,12 @@ private class Pbkdf2SecretDerivation(
     private val outputSize: BinarySize,
 ) : SecretDerivation {
     @OptIn(UnsafeNumber::class)
-    override fun deriveSecretBlocking(input: BinaryData): BinaryData {
+    override fun deriveSecretBlocking(input: ByteArray): ByteArray {
         val output = ByteArray(outputSize.inBytes)
         val result = CCKeyDerivationPBKDF(
             algorithm = kCCPBKDF2,
-            password = input.toUtf8String(throwOnInvalidSequence = true),
-            passwordLen = input.size.inBytes.convert(),
+            password = input.decodeToString(throwOnInvalidSequence = true),
+            passwordLen = input.size.convert(),
             salt = salt.asUByteArray().refTo(0),
             saltLen = salt.size.convert(),
             prf = algorithm,
@@ -45,11 +44,9 @@ private class Pbkdf2SecretDerivation(
             derivedKeyLen = output.size.convert()
         )
         when (result) {
-            kCCSuccess    -> return BinaryData.fromByteArray(output)
+            kCCSuccess -> return output
             kCCParamError -> error("Illegal parameter value.")
             else          -> error("CCKeyDerivationPBKDF failed with code $result")
         }
     }
-
-    override suspend fun deriveSecret(input: BinaryData): BinaryData = deriveSecretBlocking(input)
 }

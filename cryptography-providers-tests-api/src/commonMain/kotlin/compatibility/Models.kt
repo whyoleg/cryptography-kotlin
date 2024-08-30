@@ -89,19 +89,11 @@ data class SignatureData(
 data class SharedSecretData(
     val keyReference: TestReference,
     val otherKeyReference: TestReference,
-    val sharedSecret: Base64ByteArray,
-) : TestData {
-    override fun toString(): String {
-        return "SharedSecretData(keyReference=$keyReference, otherKeyReference=$otherKeyReference, sharedSecret.size=${sharedSecret.size})"
-    }
-}
+    val sharedSecret: ByteStringAsString,
+) : TestData
 
 @Serializable
 data class DerivedSecretData(
-    val input: Base64ByteArray,
-    val secret: Base64ByteArray,
-) : TestData {
-    override fun toString(): String {
-        return "DerivedSecretData(input.size=${input.size}, secret.size=${secret.size})"
-    }
-}
+    val input: ByteStringAsString,
+    val secret: ByteStringAsString,
+) : TestData

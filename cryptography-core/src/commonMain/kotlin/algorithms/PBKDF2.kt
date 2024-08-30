@@ -6,9 +6,9 @@ package dev.whyoleg.cryptography.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.digest.*
-import dev.whyoleg.cryptography.binary.*
 import dev.whyoleg.cryptography.binary.BinarySize
 import dev.whyoleg.cryptography.operations.*
+import kotlinx.io.bytestring.*
 
 @SubclassOptInRequired(CryptographyProviderApi::class)
 public interface PBKDF2 : CryptographyAlgorithm {
@@ -18,8 +18,15 @@ public interface PBKDF2 : CryptographyAlgorithm {
 
     public fun secretDerivation(
         digest: CryptographyAlgorithmId<Digest>,
-        salt: BinaryData,
+        salt: ByteArray,
         iterations: Int,
         outputSize: BinarySize,
     ): SecretDerivation
+
+    public fun secretDerivation(
+        digest: CryptographyAlgorithmId<Digest>,
+        salt: ByteString,
+        iterations: Int,
+        outputSize: BinarySize,
+    ): SecretDerivation = secretDerivation(digest, salt.asByteArray(), iterations, outputSize)
 }

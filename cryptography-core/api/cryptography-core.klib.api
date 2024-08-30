@@ -400,8 +400,8 @@ abstract interface <#A: dev.whyoleg.cryptography.materials.key/Key> dev.whyoleg.
 }
 
 abstract interface <#A: dev.whyoleg.cryptography.materials.key/Key> dev.whyoleg.cryptography.operations/SharedSecretGenerator { // dev.whyoleg.cryptography.operations/SharedSecretGenerator|null[0]
-    abstract fun generateSharedSecretBlocking(#A): dev.whyoleg.cryptography.binary/BinaryData // dev.whyoleg.cryptography.operations/SharedSecretGenerator.generateSharedSecretBlocking|generateSharedSecretBlocking(1:0){}[0]
-    abstract suspend fun generateSharedSecret(#A): dev.whyoleg.cryptography.binary/BinaryData // dev.whyoleg.cryptography.operations/SharedSecretGenerator.generateSharedSecret|generateSharedSecret(1:0){}[0]
+    abstract fun generateSharedSecretBlocking(#A): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations/SharedSecretGenerator.generateSharedSecretBlocking|generateSharedSecretBlocking(1:0){}[0]
+    open suspend fun generateSharedSecret(#A): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations/SharedSecretGenerator.generateSharedSecret|generateSharedSecret(1:0){}[0]
 }
 
 abstract interface <#A: dev.whyoleg.cryptography.materials.key/KeyFormat, #B: dev.whyoleg.cryptography.materials.key/Key> dev.whyoleg.cryptography.materials.key/KeyDecoder { // dev.whyoleg.cryptography.materials.key/KeyDecoder|null[0]
@@ -496,7 +496,8 @@ abstract interface dev.whyoleg.cryptography.algorithms/PBKDF2 : dev.whyoleg.cryp
     open val id // dev.whyoleg.cryptography.algorithms/PBKDF2.id|{}id[0]
         open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/PBKDF2> // dev.whyoleg.cryptography.algorithms/PBKDF2.id.<get-id>|<get-id>(){}[0]
 
-    abstract fun secretDerivation(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest/Digest>, dev.whyoleg.cryptography.binary/BinaryData, kotlin/Int, dev.whyoleg.cryptography.binary/BinarySize): dev.whyoleg.cryptography.operations/SecretDerivation // dev.whyoleg.cryptography.algorithms/PBKDF2.secretDerivation|secretDerivation(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest.Digest>;dev.whyoleg.cryptography.binary.BinaryData;kotlin.Int;dev.whyoleg.cryptography.binary.BinarySize){}[0]
+    abstract fun secretDerivation(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest/Digest>, kotlin/ByteArray, kotlin/Int, dev.whyoleg.cryptography.binary/BinarySize): dev.whyoleg.cryptography.operations/SecretDerivation // dev.whyoleg.cryptography.algorithms/PBKDF2.secretDerivation|secretDerivation(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest.Digest>;kotlin.ByteArray;kotlin.Int;dev.whyoleg.cryptography.binary.BinarySize){}[0]
+    open fun secretDerivation(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest/Digest>, kotlinx.io.bytestring/ByteString, kotlin/Int, dev.whyoleg.cryptography.binary/BinarySize): dev.whyoleg.cryptography.operations/SecretDerivation // dev.whyoleg.cryptography.algorithms/PBKDF2.secretDerivation|secretDerivation(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest.Digest>;kotlinx.io.bytestring.ByteString;kotlin.Int;dev.whyoleg.cryptography.binary.BinarySize){}[0]
 
     final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/PBKDF2> // dev.whyoleg.cryptography.algorithms/PBKDF2.Companion|null[0]
 }
@@ -554,8 +555,10 @@ abstract interface dev.whyoleg.cryptography.operations.signature/SignatureVerifi
 }
 
 abstract interface dev.whyoleg.cryptography.operations/SecretDerivation { // dev.whyoleg.cryptography.operations/SecretDerivation|null[0]
-    abstract fun deriveSecretBlocking(dev.whyoleg.cryptography.binary/BinaryData): dev.whyoleg.cryptography.binary/BinaryData // dev.whyoleg.cryptography.operations/SecretDerivation.deriveSecretBlocking|deriveSecretBlocking(dev.whyoleg.cryptography.binary.BinaryData){}[0]
-    abstract suspend fun deriveSecret(dev.whyoleg.cryptography.binary/BinaryData): dev.whyoleg.cryptography.binary/BinaryData // dev.whyoleg.cryptography.operations/SecretDerivation.deriveSecret|deriveSecret(dev.whyoleg.cryptography.binary.BinaryData){}[0]
+    abstract fun deriveSecretBlocking(kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.operations/SecretDerivation.deriveSecretBlocking|deriveSecretBlocking(kotlin.ByteArray){}[0]
+    open fun deriveSecretBlocking(kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations/SecretDerivation.deriveSecretBlocking|deriveSecretBlocking(kotlinx.io.bytestring.ByteString){}[0]
+    open suspend fun deriveSecret(kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.operations/SecretDerivation.deriveSecret|deriveSecret(kotlin.ByteArray){}[0]
+    open suspend fun deriveSecret(kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations/SecretDerivation.deriveSecret|deriveSecret(kotlinx.io.bytestring.ByteString){}[0]
 }
 
 abstract interface dev.whyoleg.cryptography/CryptographyAlgorithm { // dev.whyoleg.cryptography/CryptographyAlgorithm|null[0]

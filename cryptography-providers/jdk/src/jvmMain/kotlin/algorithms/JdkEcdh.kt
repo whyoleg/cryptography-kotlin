@@ -5,10 +5,10 @@
 package dev.whyoleg.cryptography.providers.jdk.algorithms
 
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
-import dev.whyoleg.cryptography.binary.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.jdk.*
 import dev.whyoleg.cryptography.providers.jdk.operations.*
+import kotlinx.io.bytestring.*
 
 internal class JdkEcdh(state: JdkCryptographyState) : JdkEc<ECDH.PublicKey, ECDH.PrivateKey, ECDH.KeyPair>(state), ECDH {
     override fun JPublicKey.convert(): ECDH.PublicKey = EcdhPublicKey(state, this)
@@ -26,9 +26,7 @@ internal class JdkEcdh(state: JdkCryptographyState) : JdkEc<ECDH.PublicKey, ECDH
     ) : ECDH.PublicKey, BaseEcPublicKey(key), SharedSecretGenerator<ECDH.PrivateKey> {
         private val keyAgreement = state.keyAgreement("ECDH")
         override fun sharedSecretGenerator(): SharedSecretGenerator<ECDH.PrivateKey> = this
-        override suspend fun generateSharedSecret(other: ECDH.PrivateKey): BinaryData = generateSharedSecretBlocking(other)
-
-        override fun generateSharedSecretBlocking(other: ECDH.PrivateKey): BinaryData {
+        override fun generateSharedSecretBlocking(other: ECDH.PrivateKey): ByteString {
             check(other is EcdhPrivateKey) { "Only key produced by JDK provider is supported" }
 
             return keyAgreement.doAgreement(state, other.key, key)
@@ -41,9 +39,7 @@ internal class JdkEcdh(state: JdkCryptographyState) : JdkEc<ECDH.PublicKey, ECDH
     ) : ECDH.PrivateKey, BaseEcPrivateKey(key), SharedSecretGenerator<ECDH.PublicKey> {
         private val keyAgreement = state.keyAgreement("ECDH")
         override fun sharedSecretGenerator(): SharedSecretGenerator<ECDH.PublicKey> = this
-        override suspend fun generateSharedSecret(other: ECDH.PublicKey): BinaryData = generateSharedSecretBlocking(other)
-
-        override fun generateSharedSecretBlocking(other: ECDH.PublicKey): BinaryData {
+        override fun generateSharedSecretBlocking(other: ECDH.PublicKey): ByteString {
             check(other is EcdhPublicKey) { "Only key produced by JDK provider is supported" }
 
             return keyAgreement.doAgreement(state, key, other.key)

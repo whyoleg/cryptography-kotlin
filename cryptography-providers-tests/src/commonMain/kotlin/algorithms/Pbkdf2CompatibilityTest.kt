@@ -2,20 +2,17 @@
  * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
-@file:Suppress("ArrayInDataClass")
-
 package dev.whyoleg.cryptography.providers.tests.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.digest.*
-import dev.whyoleg.cryptography.binary.*
 import dev.whyoleg.cryptography.binary.BinarySize.Companion.bytes
 import dev.whyoleg.cryptography.providers.tests.api.*
 import dev.whyoleg.cryptography.providers.tests.api.compatibility.*
 import dev.whyoleg.cryptography.random.*
+import kotlinx.io.bytestring.*
 import kotlinx.serialization.*
-import kotlin.test.*
 
 // TODO: handle zero length
 // TODO: define input/output sizes
@@ -30,7 +27,7 @@ abstract class Pbkdf2CompatibilityTest(provider: CryptographyProvider) : Compati
     @Serializable
     private data class Parameters(
         val digestName: String,
-        val salt: Base64ByteArray,
+        val salt: ByteStringAsString,
         val iterations: Int,
         val outputSizeBytes: Int,
     ) : TestParameters {
@@ -60,7 +57,7 @@ abstract class Pbkdf2CompatibilityTest(provider: CryptographyProvider) : Compati
 
             repeat(saltIterations) { _ ->
                 val saltSize = CryptographyRandom.nextInt(1, maxSaltSize)
-                val salt = CryptographyRandom.nextBytes(saltSize)
+                val salt = ByteString(CryptographyRandom.nextBytes(saltSize))
                 repeat(iterationIterations) { _ ->
                     val iterations = CryptographyRandom.nextInt(minIterations, maxIterations)
                     repeat(outputSizeIterations) { _ ->
@@ -75,7 +72,7 @@ abstract class Pbkdf2CompatibilityTest(provider: CryptographyProvider) : Compati
 
                         val derivation = algorithm.secretDerivation(
                             digest = digest,
-                            salt = BinaryData.fromByteArray(salt),
+                            salt = salt,
                             iterations = iterations,
                             outputSize = outputSize.bytes
                         )
@@ -84,11 +81,13 @@ abstract class Pbkdf2CompatibilityTest(provider: CryptographyProvider) : Compati
                             println("${digest.name}/${saltSize}/$iterations/$outputSize/$it")
                             val inputSize = CryptographyRandom.nextInt(1, maxInputSize)
                             logger.log { "input.size   = $inputSize" }
-                            val input: BinaryData = BinaryData.fromUtf8String(generateRandomString(inputSize))
+                            val input = generateRandomString(inputSize).encodeToByteString()
                             val secret = derivation.deriveSecret(input)
                             logger.log { "secret.size = ${secret.size}" }
 
-                            api.derivedSecrets.saveData(parametersId, DerivedSecretData(input.toByteArray(), secret.toByteArray()))
+                            assertContentEquals(secret, derivation.deriveSecret(input))
+
+                            api.derivedSecrets.saveData(parametersId, DerivedSecretData(input, secret))
                         }
                     }
                 }
@@ -102,13 +101,12 @@ abstract class Pbkdf2CompatibilityTest(provider: CryptographyProvider) : Compati
 
             val derivation = algorithm.secretDerivation(
                 digest = parameters.digest,
-                salt = BinaryData.fromByteArray(parameters.salt),
+                salt = parameters.salt,
                 iterations = parameters.iterations,
                 outputSize = parameters.outputSizeBytes.bytes
             )
-            api.derivedSecrets.getData<DerivedSecretData>(parametersId) { (input, secret), reference, _ ->
-                println("validate: $reference")
-                assertContentEquals(secret, derivation.deriveSecret(BinaryData.fromByteArray(input)).toByteArray())
+            api.derivedSecrets.getData<DerivedSecretData>(parametersId) { (input, secret), _, _ ->
+                assertContentEquals(secret, derivation.deriveSecret(input))
             }
         }
     }

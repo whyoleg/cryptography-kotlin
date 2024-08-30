@@ -8,7 +8,14 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.digest.*
 
 import dev.whyoleg.cryptography.materials.key.*
+import kotlinx.io.bytestring.*
+import kotlin.io.encoding.*
 import kotlin.test.*
+
+// base64 is used to have better messages
+fun assertContentEquals(expected: ByteString?, actual: ByteString?, message: String? = null) {
+    assertEquals(expected?.let(Base64::encode), actual?.let(Base64::encode), message)
+}
 
 suspend fun <KF : KeyFormat> EncodableKey<KF>.encodeTo(
     formats: Collection<KF>,

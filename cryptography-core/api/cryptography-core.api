@@ -49,7 +49,8 @@ public abstract interface annotation class dev/whyoleg/cryptography/DelicateCryp
 public abstract interface class dev/whyoleg/cryptography/algorithms/PBKDF2 : dev/whyoleg/cryptography/CryptographyAlgorithm {
 	public static final field Companion Ldev/whyoleg/cryptography/algorithms/PBKDF2$Companion;
 	public fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
-	public abstract fun secretDerivation-xdmuAUM (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;[BII)Ldev/whyoleg/cryptography/operations/SecretDerivation;
+	public fun secretDerivation-SWYt71w (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;Lkotlinx/io/bytestring/ByteString;II)Ldev/whyoleg/cryptography/operations/SecretDerivation;
+	public abstract fun secretDerivation-SWYt71w (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;[BII)Ldev/whyoleg/cryptography/operations/SecretDerivation;
 }
 
 public final class dev/whyoleg/cryptography/algorithms/PBKDF2$Companion : dev/whyoleg/cryptography/CryptographyAlgorithmId {
@@ -610,13 +611,18 @@ public abstract interface class dev/whyoleg/cryptography/materials/key/KeyGenera
 }
 
 public abstract interface class dev/whyoleg/cryptography/operations/SecretDerivation {
-	public abstract fun deriveSecret-kO-gwrw ([BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun deriveSecretBlocking-1T_H5PE ([B)[B
+	public fun deriveSecret (Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun deriveSecret ([BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun deriveSecret$suspendImpl (Ldev/whyoleg/cryptography/operations/SecretDerivation;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun deriveSecret$suspendImpl (Ldev/whyoleg/cryptography/operations/SecretDerivation;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun deriveSecretBlocking (Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
+	public abstract fun deriveSecretBlocking ([B)[B
 }
 
 public abstract interface class dev/whyoleg/cryptography/operations/SharedSecretGenerator {
-	public abstract fun generateSharedSecret-QjUYYGE (Ldev/whyoleg/cryptography/materials/key/Key;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun generateSharedSecretBlocking-FbFv9R8 (Ldev/whyoleg/cryptography/materials/key/Key;)[B
+	public fun generateSharedSecret (Ldev/whyoleg/cryptography/materials/key/Key;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun generateSharedSecret$suspendImpl (Ldev/whyoleg/cryptography/operations/SharedSecretGenerator;Ldev/whyoleg/cryptography/materials/key/Key;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun generateSharedSecretBlocking (Ldev/whyoleg/cryptography/materials/key/Key;)Lkotlinx/io/bytestring/ByteString;
 }
 
 public abstract interface class dev/whyoleg/cryptography/operations/cipher/AuthenticatedCipher : dev/whyoleg/cryptography/operations/cipher/AuthenticatedDecryptor, dev/whyoleg/cryptography/operations/cipher/AuthenticatedEncryptor, dev/whyoleg/cryptography/operations/cipher/Cipher {

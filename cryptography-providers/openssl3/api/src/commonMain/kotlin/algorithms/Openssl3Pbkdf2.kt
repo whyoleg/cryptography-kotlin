@@ -7,7 +7,6 @@ package dev.whyoleg.cryptography.providers.openssl3.algorithms
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.digest.*
-import dev.whyoleg.cryptography.binary.*
 import dev.whyoleg.cryptography.binary.BinarySize
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
@@ -19,12 +18,12 @@ import kotlin.native.ref.*
 internal object Openssl3Pbkdf2 : PBKDF2 {
     override fun secretDerivation(
         digest: CryptographyAlgorithmId<Digest>,
-        salt: BinaryData,
+        salt: ByteArray,
         iterations: Int,
         outputSize: BinarySize,
     ): SecretDerivation = Openssl3Pbkdf2SecretDerivation(
         hashAlgorithm = hashAlgorithm(digest),
-        salt = salt.toByteArray(),
+        salt = salt,
         iterations = iterations,
         outputSize = outputSize,
     )
@@ -42,7 +41,7 @@ internal class Openssl3Pbkdf2SecretDerivation(
     private val cleaner = createCleaner(kdf, ::EVP_KDF_free)
 
     @OptIn(UnsafeNumber::class)
-    override fun deriveSecretBlocking(input: BinaryData): BinaryData = memScoped {
+    override fun deriveSecretBlocking(input: ByteArray): ByteArray = memScoped {
         val context = checkError(EVP_KDF_CTX_new(kdf))
         try {
             val output = ByteArray(outputSize.inBytes)
@@ -57,17 +56,15 @@ internal class Openssl3Pbkdf2SecretDerivation(
                         OSSL_PARAM_construct_uint32("iter".cstr.ptr, alloc(iterations.toUInt()).ptr),
                         OSSL_PARAM_construct_octet_string(
                             "pass".cstr.ptr,
-                            input.toByteArray().safeRefTo(0),
-                            input.size.inBytes.convert()
+                            input.safeRefTo(0),
+                            input.size.convert()
                         )
                     )
                 )
             )
-            BinaryData.fromByteArray(output)
+            output
         } finally {
             EVP_KDF_CTX_free(context)
         }
     }
-
-    override suspend fun deriveSecret(input: BinaryData): BinaryData = deriveSecretBlocking(input)
 }

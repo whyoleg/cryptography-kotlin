@@ -5,13 +5,14 @@
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
 
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
-import dev.whyoleg.cryptography.binary.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.providers.openssl3.materials.*
 import kotlinx.cinterop.*
+import kotlinx.io.bytestring.*
+import kotlinx.io.bytestring.unsafe.*
 import platform.posix.*
 
 internal object Openssl3Ecdh : ECDH {
@@ -110,13 +111,11 @@ internal object Openssl3Ecdh : ECDH {
 
         override fun sharedSecretGenerator(): SharedSecretGenerator<ECDH.PublicKey> = this
 
-        override fun generateSharedSecretBlocking(other: ECDH.PublicKey): BinaryData {
+        override fun generateSharedSecretBlocking(other: ECDH.PublicKey): ByteString {
             check(other is EcPublicKey)
 
             return deriveSharedSecret(publicKey = other.key, privateKey = key)
         }
-
-        override suspend fun generateSharedSecret(other: ECDH.PublicKey): BinaryData = generateSharedSecretBlocking(other)
     }
 
     private class EcPublicKey(
@@ -136,21 +135,19 @@ internal object Openssl3Ecdh : ECDH {
 
         override fun sharedSecretGenerator(): SharedSecretGenerator<ECDH.PrivateKey> = this
 
-        override fun generateSharedSecretBlocking(other: ECDH.PrivateKey): BinaryData {
+        override fun generateSharedSecretBlocking(other: ECDH.PrivateKey): ByteString {
             check(other is EcPrivateKey)
 
             return deriveSharedSecret(publicKey = key, privateKey = other.key)
         }
-
-        override suspend fun generateSharedSecret(other: ECDH.PrivateKey): BinaryData = generateSharedSecretBlocking(other)
     }
 }
 
-@OptIn(UnsafeNumber::class)
+@OptIn(UnsafeNumber::class, UnsafeByteStringApi::class)
 private fun deriveSharedSecret(
     publicKey: CPointer<EVP_PKEY>,
     privateKey: CPointer<EVP_PKEY>,
-): BinaryData = memScoped {
+): ByteString = memScoped {
     val context = checkError(EVP_PKEY_CTX_new_from_pkey(null, privateKey, null))
     try {
         checkError(EVP_PKEY_derive_init(context))
@@ -159,7 +156,7 @@ private fun deriveSharedSecret(
         checkError(EVP_PKEY_derive(context, null, secretSize.ptr))
         val secret = ByteArray(secretSize.value.toInt())
         checkError(EVP_PKEY_derive(context, secret.refToU(0), secretSize.ptr))
-        BinaryData.fromByteArray(secret)
+        UnsafeByteStringOperations.wrapUnsafe(secret)
     } finally {
         EVP_PKEY_CTX_free(context)
     }

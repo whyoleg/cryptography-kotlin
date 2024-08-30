@@ -7,7 +7,6 @@ package dev.whyoleg.cryptography.providers.webcrypto.algorithms
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.digest.*
-import dev.whyoleg.cryptography.binary.*
 import dev.whyoleg.cryptography.binary.BinarySize
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.webcrypto.internal.*
@@ -15,11 +14,11 @@ import dev.whyoleg.cryptography.providers.webcrypto.internal.*
 internal object WebCryptoPbkdf2 : PBKDF2 {
     override fun secretDerivation(
         digest: CryptographyAlgorithmId<Digest>,
-        salt: BinaryData,
+        salt: ByteArray,
         iterations: Int,
         outputSize: BinarySize,
     ): SecretDerivation = Pbkdf2SecretDerivation(
-        Pbkdf2DeriveAlgorithm(digest.hashAlgorithmName(), iterations, salt.toByteArray()),
+        Pbkdf2DeriveAlgorithm(digest.hashAlgorithmName(), iterations, salt),
         outputSize
     )
 
@@ -27,23 +26,21 @@ internal object WebCryptoPbkdf2 : PBKDF2 {
         private val algorithm: Algorithm,
         private val outputSize: BinarySize,
     ) : SecretDerivation {
-        override suspend fun deriveSecret(input: BinaryData): BinaryData {
+        override suspend fun deriveSecret(input: ByteArray): ByteArray {
             val inputKey = WebCrypto.importKey(
                 format = "raw",
-                keyData = input.toByteArray(),
+                keyData = input,
                 algorithm = Algorithm("PBKDF2"),
                 extractable = false,
                 keyUsages = arrayOf("deriveBits")
             )
-            return BinaryData.fromByteArray(
-                WebCrypto.deriveBits(
-                    algorithm = algorithm,
-                    baseKey = inputKey,
-                    length = outputSize.inBits
-                )
+            return WebCrypto.deriveBits(
+                algorithm = algorithm,
+                baseKey = inputKey,
+                length = outputSize.inBits
             )
         }
 
-        override fun deriveSecretBlocking(input: BinaryData): BinaryData = nonBlocking()
+        override fun deriveSecretBlocking(input: ByteArray): ByteArray = nonBlocking()
     }
 }

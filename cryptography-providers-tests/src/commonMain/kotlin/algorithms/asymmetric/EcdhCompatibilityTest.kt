@@ -8,7 +8,6 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.providers.tests.api.*
 import dev.whyoleg.cryptography.providers.tests.api.compatibility.*
-import kotlin.test.*
 
 abstract class EcdhCompatibilityTest(
     provider: CryptographyProvider,
@@ -40,7 +39,7 @@ abstract class EcdhCompatibilityTest(
 
                     repeat(secrets.size) { i ->
                         repeat(secrets.size) { j ->
-                            if (j > i) assertContentEquals(secrets[i].toByteArray(), secrets[j].toByteArray(), "Initial $i + $j")
+                            if (j > i) assertContentEquals(secrets[i], secrets[j], "Initial $i + $j")
                         }
                     }
 
@@ -49,7 +48,7 @@ abstract class EcdhCompatibilityTest(
                         data = SharedSecretData(
                             keyReference = keyReference,
                             otherKeyReference = otherKeyReference,
-                            sharedSecret = secrets.first().toByteArray()
+                            sharedSecret = secrets.first()
                         )
                     )
                 }
@@ -69,12 +68,12 @@ abstract class EcdhCompatibilityTest(
                     otherPrivateKeys.forEach { otherPrivateKey ->
                         assertContentEquals(
                             sharedSecret,
-                            publicKey.sharedSecretGenerator().generateSharedSecret(otherPrivateKey).toByteArray(),
+                            publicKey.sharedSecretGenerator().generateSharedSecret(otherPrivateKey),
                             "Public + Other Private"
                         )
                         assertContentEquals(
                             sharedSecret,
-                            otherPrivateKey.sharedSecretGenerator().generateSharedSecret(publicKey).toByteArray(),
+                            otherPrivateKey.sharedSecretGenerator().generateSharedSecret(publicKey),
                             "Other Private + Public"
                         )
                     }
@@ -83,12 +82,12 @@ abstract class EcdhCompatibilityTest(
                     otherPublicKeys.forEach { otherPublicKey ->
                         assertContentEquals(
                             sharedSecret,
-                            otherPublicKey.sharedSecretGenerator().generateSharedSecret(privateKey).toByteArray(),
+                            otherPublicKey.sharedSecretGenerator().generateSharedSecret(privateKey),
                             "Other Public + Private"
                         )
                         assertContentEquals(
                             sharedSecret,
-                            privateKey.sharedSecretGenerator().generateSharedSecret(otherPublicKey).toByteArray(),
+                            privateKey.sharedSecretGenerator().generateSharedSecret(otherPublicKey),
                             "Private + Other Public"
                         )
                     }

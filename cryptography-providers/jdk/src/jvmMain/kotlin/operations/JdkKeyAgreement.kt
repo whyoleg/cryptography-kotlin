@@ -4,15 +4,17 @@
 
 package dev.whyoleg.cryptography.providers.jdk.operations
 
-import dev.whyoleg.cryptography.binary.*
 import dev.whyoleg.cryptography.providers.jdk.*
+import kotlinx.io.bytestring.*
+import kotlinx.io.bytestring.unsafe.*
 
+@OptIn(UnsafeByteStringApi::class)
 internal fun Pooled<JKeyAgreement>.doAgreement(
     state: JdkCryptographyState,
     privateKey: JPrivateKey,
     publicKey: JPublicKey,
-): BinaryData = use {
+): ByteString = use {
     it.init(privateKey, state.secureRandom)
     it.doPhase(publicKey, true)
-    BinaryData.fromByteArray(it.generateSecret())
+    UnsafeByteStringOperations.wrapUnsafe(it.generateSecret())
 }

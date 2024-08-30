@@ -6,6 +6,7 @@ kotlin = "2.0.20"
 kotlin-dokka = "1.9.20"
 kotlinx-bcv = "0.16.3"
 kotlinx-kover = "0.8.3"
+kotlinx-io = "0.5.3"
 kotlinx-serialization = "1.7.1"
 kotlinx-coroutines = "1.8.1"
 ktor = "2.3.12"
@@ -32,6 +33,7 @@ maven-publish-gradle-plugin = { module = "com.vanniktech:gradle-maven-publish-pl
 
 apache-commons-compress = { module = "org.apache.commons:commons-compress", version.ref = "apache-commons-compress" }
 
+kotlinx-io-core = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version.ref = "kotlinx-io" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-serialization" }
