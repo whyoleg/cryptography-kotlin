@@ -12,6 +12,7 @@ import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.serialization.asn1.*
 import dev.whyoleg.cryptography.serialization.asn1.modules.*
 import dev.whyoleg.cryptography.serialization.pem.*
+import kotlinx.io.bytestring.*
 
 fun AlgorithmTestScope<*>.supportsDigest(digest: CryptographyAlgorithmId<Digest>): Boolean = supports {
     val sha3Algorithms = setOf(SHA3_224, SHA3_256, SHA3_384, SHA3_512)
@@ -86,21 +87,24 @@ fun AlgorithmTestScope<out EC<*, *, *>>.supportsCurve(curve: EC.Curve): Boolean 
 
 fun AlgorithmTestScope<out EC<*, *, *>>.supportsPrivateKeyDecoding(
     format: EC.PrivateKey.Format,
-    key: ByteArray,
+    key: ByteString,
     otherContext: TestContext,
 ): Boolean = supports {
     fun hasPublicKey(): Boolean {
-        fun validateEcPrivateKey(bytes: ByteArray) = Der.decodeFromByteArray(EcPrivateKey.serializer(), bytes).publicKey != null
-        fun decodePki(bytes: ByteArray): ByteArray = Der.decodeFromByteArray(PrivateKeyInfo.serializer(), bytes).privateKey
+        fun validateEcPrivateKey(bytes: ByteString) =
+            Der.decodeFromByteArray(EcPrivateKey.serializer(), bytes.toByteArray()).publicKey != null
+
+        fun decodePki(bytes: ByteString): ByteString =
+            ByteString(Der.decodeFromByteArray(PrivateKeyInfo.serializer(), bytes.toByteArray()).privateKey)
 
         return validateEcPrivateKey(
             when (format) {
                 EC.PrivateKey.Format.JWK      -> return true
-                EC.PrivateKey.Format.RAW -> return false
+                EC.PrivateKey.Format.RAW      -> return false
                 EC.PrivateKey.Format.DER      -> decodePki(key)
                 EC.PrivateKey.Format.DER.SEC1 -> key
-                EC.PrivateKey.Format.PEM      -> decodePki(Pem.decode(key).bytes)
-                EC.PrivateKey.Format.PEM.SEC1 -> Pem.decode(key).bytes
+                EC.PrivateKey.Format.PEM      -> decodePki(Pem.decode(key).byteString)
+                EC.PrivateKey.Format.PEM.SEC1 -> Pem.decode(key).byteString
             }
         )
     }

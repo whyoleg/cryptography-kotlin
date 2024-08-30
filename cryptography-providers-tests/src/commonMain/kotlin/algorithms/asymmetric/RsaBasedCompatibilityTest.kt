@@ -10,7 +10,6 @@ import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.providers.tests.api.*
 import dev.whyoleg.cryptography.providers.tests.api.compatibility.*
 import kotlinx.serialization.*
-import kotlin.test.*
 
 private val publicKeyFormats = listOf(
     RSA.PublicKey.Format.JWK,
@@ -96,7 +95,7 @@ abstract class RsaBasedCompatibilityTest<PublicK : RSA.PublicKey, PrivateK : RSA
                         RSA.PublicKey.Format.DER.PKCS1,
                         RSA.PublicKey.Format.PEM.PKCS1,
                                                  ->
-                            assertContentEquals(bytes, key.encodeTo(format), "Public Key $format encoding")
+                            assertContentEquals(bytes, key.encodeToByteString(format), "Public Key $format encoding")
                         RSA.PublicKey.Format.JWK -> {}
 
                     }
@@ -112,7 +111,7 @@ abstract class RsaBasedCompatibilityTest<PublicK : RSA.PublicKey, PrivateK : RSA
                         RSA.PrivateKey.Format.DER.PKCS1,
                         RSA.PrivateKey.Format.PEM.PKCS1,
                                                   ->
-                            assertContentEquals(bytes, key.encodeTo(format), "Private Key $format encoding")
+                            assertContentEquals(bytes, key.encodeToByteString(format), "Private Key $format encoding")
                         RSA.PrivateKey.Format.JWK -> {}
                     }
                 }

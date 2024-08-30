@@ -35,7 +35,7 @@ internal abstract class Openssl3KeyEncodable<KF : KeyFormat>(
     protected abstract fun outputType(format: KF): String
     protected abstract fun outputStruct(format: KF): String
 
-    override fun encodeToBlocking(format: KF): ByteArray = memScoped {
+    override fun encodeToByteArrayBlocking(format: KF): ByteArray = memScoped {
         val context = checkError(
             OSSL_ENCODER_CTX_new_for_pkey(
                 pkey = key,

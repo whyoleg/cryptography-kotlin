@@ -44,9 +44,7 @@ data class DigestData(val data: Base64ByteArray, val digest: Base64ByteArray) : 
 }
 
 @Serializable
-data class KeyData(val formats: Map<String, Base64ByteArray>) : TestData {
-    override fun toString(): String = "KeyData(formats=${formats.mapValues { it.value.size }})"
-}
+data class KeyData(val formats: Map<String, ByteStringAsString>) : TestData
 
 @Serializable
 data class KeyPairData(val public: KeyData, val private: KeyData) : TestData

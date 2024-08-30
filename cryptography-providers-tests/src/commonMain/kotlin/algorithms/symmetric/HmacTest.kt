@@ -46,7 +46,7 @@ abstract class HmacTest(provider: CryptographyProvider) : ProviderTest(provider)
     @Test
     fun testSizes() = runTestForEachDigest {
         val key = algorithm.keyGenerator(digest).generateKey()
-        assertEquals(digestBlockSize, key.encodeTo(HMAC.Key.Format.RAW).size)
+        assertEquals(digestBlockSize, key.encodeToByteString(HMAC.Key.Format.RAW).size)
         val signatureGenerator = key.signatureGenerator()
 
         assertEquals(digestSize, signatureGenerator.generateSignature(ByteArray(0)).size)

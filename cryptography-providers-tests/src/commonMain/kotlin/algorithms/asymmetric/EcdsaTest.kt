@@ -40,8 +40,8 @@ abstract class EcdsaTest(provider: CryptographyProvider) : ProviderTest(provider
 
             val keyPair = algorithm.keyPairGenerator(curve).generateKey()
 
-            assertEquals(publicKeySize, keyPair.publicKey.encodeTo(EC.PublicKey.Format.DER).size)
-            assertContains(privateKeySizes, keyPair.privateKey.encodeTo(EC.PrivateKey.Format.DER).size)
+            assertEquals(publicKeySize, keyPair.publicKey.encodeToByteString(EC.PublicKey.Format.DER).size)
+            assertContains(privateKeySizes, keyPair.privateKey.encodeToByteString(EC.PrivateKey.Format.DER).size)
 
             generateDigests { digest, _ ->
                 if (!supportsDigest(digest)) return@generateDigests

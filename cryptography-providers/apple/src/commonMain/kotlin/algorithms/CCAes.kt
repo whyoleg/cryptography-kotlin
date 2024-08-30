@@ -18,12 +18,12 @@ internal abstract class CCAes<K : AES.Key> : AES<K> {
         AesCtrKeyGenerator(keySize.inBytes)
 
     private inner class AesKeyDecoder : KeyDecoder<AES.Key.Format, K> {
-        override fun decodeFromBlocking(format: AES.Key.Format, data: ByteArray): K = when (format) {
+        override fun decodeFromByteArrayBlocking(format: AES.Key.Format, bytes: ByteArray): K = when (format) {
             AES.Key.Format.RAW -> {
-                require(data.size == 16 || data.size == 24 || data.size == 32) {
+                require(bytes.size == 16 || bytes.size == 24 || bytes.size == 32) {
                     "AES key size must be 128, 192 or 256 bits"
                 }
-                wrapKey(data.copyOf())
+                wrapKey(bytes.copyOf())
             }
             AES.Key.Format.JWK -> error("JWK is not supported")
         }

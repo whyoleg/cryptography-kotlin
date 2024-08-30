@@ -38,9 +38,9 @@ internal object Openssl3Ecdsa : ECDSA {
             else                                                         -> super.inputStruct(format)
         }
 
-        override fun decodeFromBlocking(format: EC.PrivateKey.Format, data: ByteArray): ECDSA.PrivateKey = when (format) {
-            EC.PrivateKey.Format.RAW -> super.decodeFromBlocking(format, convertPrivateRawKeyToSec1(curve, data))
-            else                     -> super.decodeFromBlocking(format, data)
+        override fun decodeFromByteArrayBlocking(format: EC.PrivateKey.Format, bytes: ByteArray): ECDSA.PrivateKey = when (format) {
+            EC.PrivateKey.Format.RAW -> super.decodeFromByteArrayBlocking(format, convertPrivateRawKeyToSec1(curve, bytes))
+            else                     -> super.decodeFromByteArrayBlocking(format, bytes)
         }
 
         override fun wrapKey(key: CPointer<EVP_PKEY>): ECDSA.PrivateKey {
@@ -59,9 +59,9 @@ internal object Openssl3Ecdsa : ECDSA {
             EC.PublicKey.Format.JWK -> error("JWK format is not supported")
         }
 
-        override fun decodeFromBlocking(format: EC.PublicKey.Format, data: ByteArray): ECDSA.PublicKey = when (format) {
-            EC.PublicKey.Format.RAW -> wrapKey(decodePublicRawKey(curve, data))
-            else                    -> super.decodeFromBlocking(format, data)
+        override fun decodeFromByteArrayBlocking(format: EC.PublicKey.Format, bytes: ByteArray): ECDSA.PublicKey = when (format) {
+            EC.PublicKey.Format.RAW -> wrapKey(decodePublicRawKey(curve, bytes))
+            else                    -> super.decodeFromByteArrayBlocking(format, bytes)
         }
 
         override fun wrapKey(key: CPointer<EVP_PKEY>): ECDSA.PublicKey {
@@ -104,9 +104,9 @@ internal object Openssl3Ecdsa : ECDSA {
             else                                                         -> super.outputStruct(format)
         }
 
-        override fun encodeToBlocking(format: EC.PrivateKey.Format): ByteArray = when (format) {
+        override fun encodeToByteArrayBlocking(format: EC.PrivateKey.Format): ByteArray = when (format) {
             EC.PrivateKey.Format.RAW -> encodePrivateRawKey(key)
-            else                     -> super.encodeToBlocking(format)
+            else -> super.encodeToByteArrayBlocking(format)
         }
 
         override fun signatureGenerator(digest: CryptographyAlgorithmId<Digest>, format: ECDSA.SignatureFormat): SignatureGenerator {
@@ -128,9 +128,9 @@ internal object Openssl3Ecdsa : ECDSA {
             EC.PublicKey.Format.JWK -> error("JWK format is not supported")
         }
 
-        override fun encodeToBlocking(format: EC.PublicKey.Format): ByteArray = when (format) {
+        override fun encodeToByteArrayBlocking(format: EC.PublicKey.Format): ByteArray = when (format) {
             EC.PublicKey.Format.RAW -> encodePublicRawKey(key)
-            else                    -> super.encodeToBlocking(format)
+            else -> super.encodeToByteArrayBlocking(format)
         }
 
         override fun signatureVerifier(digest: CryptographyAlgorithmId<Digest>, format: ECDSA.SignatureFormat): SignatureVerifier {

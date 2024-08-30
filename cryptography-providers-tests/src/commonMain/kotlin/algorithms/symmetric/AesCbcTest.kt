@@ -17,7 +17,7 @@ abstract class AesCbcTest(provider: CryptographyProvider) : AesBasedTest<AES.CBC
     @Test
     fun testSizes() = runTestForEachKeySize {
         val key = algorithm.keyGenerator(keySize).generateKey()
-        assertEquals(keySize.inBytes, key.encodeTo(AES.Key.Format.RAW).size)
+        assertEquals(keySize.inBytes, key.encodeToByteString(AES.Key.Format.RAW).size)
 
         key.cipher(padding = true).run {
             assertEquals(ivSize + blockSize * 1, encrypt(ByteArray(0)).size)

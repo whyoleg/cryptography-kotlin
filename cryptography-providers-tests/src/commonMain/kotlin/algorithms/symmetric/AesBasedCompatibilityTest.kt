@@ -9,7 +9,6 @@ import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.providers.tests.api.*
 import dev.whyoleg.cryptography.providers.tests.api.compatibility.*
 import kotlinx.serialization.*
-import kotlin.test.*
 
 abstract class AesBasedCompatibilityTest<K : AES.Key, A : AES<K>>(
     algorithmId: CryptographyAlgorithmId<A>,
@@ -55,7 +54,7 @@ abstract class AesBasedCompatibilityTest<K : AES.Key, A : AES<K>>(
                         supports = ::supportsKeyFormat
                     ) { key, format, bytes ->
                         when (format) {
-                            AES.Key.Format.RAW -> assertContentEquals(bytes, key.encodeTo(format), "Key $format encoding")
+                            AES.Key.Format.RAW -> assertContentEquals(bytes, key.encodeToByteString(format), "Key $format encoding")
                             AES.Key.Format.JWK -> {} //no check for JWK yet
                         }
                     }

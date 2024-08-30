@@ -13,8 +13,8 @@ internal class JdkSecretKeyDecoder<KF : KeyFormat, K : Key>(
     private val algorithm: String,
     private val keyWrapper: (JSecretKey) -> K,
 ) : KeyDecoder<KF, K> {
-    override fun decodeFromBlocking(format: KF, data: ByteArray): K = when (format.name) {
-        "RAW" -> keyWrapper(SecretKeySpec(data, algorithm))
+    override fun decodeFromByteArrayBlocking(format: KF, bytes: ByteArray): K = when (format.name) {
+        "RAW" -> keyWrapper(SecretKeySpec(bytes, algorithm))
         else  -> error("$format is not supported")
     }
 }

@@ -20,25 +20,25 @@ fun assertContentEquals(expected: ByteString?, actual: ByteString?, message: Str
 suspend fun <KF : KeyFormat> EncodableKey<KF>.encodeTo(
     formats: Collection<KF>,
     supports: (KF) -> Boolean,
-): Map<String, ByteArray> = formats.filter(supports).associate {
-    it.name to encodeTo(it)
+): Map<String, ByteString> = formats.filter(supports).associate {
+    it.name to encodeToByteString(it)
 }.also {
     assertTrue(it.isNotEmpty(), "No supported formats")
 }
 
 suspend inline fun <KF : KeyFormat, K : EncodableKey<KF>> KeyDecoder<KF, K>.decodeFrom(
-    formats: Map<String, ByteArray>,
+    formats: Map<String, ByteString>,
     formatOf: (String) -> KF,
     supports: (KF) -> Boolean,
-    supportsDecoding: (KF, ByteArray) -> Boolean = { _, _ -> true },
-    validate: (key: K, format: KF, bytes: ByteArray) -> Unit,
+    supportsDecoding: (KF, ByteString) -> Boolean = { _, _ -> true },
+    validate: (key: K, format: KF, bytes: ByteString) -> Unit,
 ): List<K> {
     val supportedFormats = formats
         .mapKeys { (formatName, _) -> formatOf(formatName) }
         .filterKeys(supports)
 
     val keys = supportedFormats.mapNotNull {
-        if (supportsDecoding(it.key, it.value)) decodeFrom(it.key, it.value) else null
+        if (supportsDecoding(it.key, it.value)) decodeFromByteString(it.key, it.value) else null
     }
 
     keys.forEach { key ->

@@ -615,7 +615,13 @@ public final class dev/whyoleg/cryptography/algorithms/symmetric/SymmetricKeySiz
 public abstract interface class dev/whyoleg/cryptography/materials/key/EncodableKey : dev/whyoleg/cryptography/materials/key/Key {
 	public fun encodeTo (Ldev/whyoleg/cryptography/materials/key/KeyFormat;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun encodeTo$suspendImpl (Ldev/whyoleg/cryptography/materials/key/EncodableKey;Ldev/whyoleg/cryptography/materials/key/KeyFormat;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun encodeToBlocking (Ldev/whyoleg/cryptography/materials/key/KeyFormat;)[B
+	public fun encodeToBlocking (Ldev/whyoleg/cryptography/materials/key/KeyFormat;)[B
+	public fun encodeToByteArray (Ldev/whyoleg/cryptography/materials/key/KeyFormat;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun encodeToByteArray$suspendImpl (Ldev/whyoleg/cryptography/materials/key/EncodableKey;Ldev/whyoleg/cryptography/materials/key/KeyFormat;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun encodeToByteArrayBlocking (Ldev/whyoleg/cryptography/materials/key/KeyFormat;)[B
+	public fun encodeToByteString (Ldev/whyoleg/cryptography/materials/key/KeyFormat;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun encodeToByteString$suspendImpl (Ldev/whyoleg/cryptography/materials/key/EncodableKey;Ldev/whyoleg/cryptography/materials/key/KeyFormat;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun encodeToByteStringBlocking (Ldev/whyoleg/cryptography/materials/key/KeyFormat;)Lkotlinx/io/bytestring/ByteString;
 }
 
 public abstract interface class dev/whyoleg/cryptography/materials/key/Key {
@@ -624,7 +630,13 @@ public abstract interface class dev/whyoleg/cryptography/materials/key/Key {
 public abstract interface class dev/whyoleg/cryptography/materials/key/KeyDecoder {
 	public fun decodeFrom (Ldev/whyoleg/cryptography/materials/key/KeyFormat;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun decodeFrom$suspendImpl (Ldev/whyoleg/cryptography/materials/key/KeyDecoder;Ldev/whyoleg/cryptography/materials/key/KeyFormat;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun decodeFromBlocking (Ldev/whyoleg/cryptography/materials/key/KeyFormat;[B)Ldev/whyoleg/cryptography/materials/key/Key;
+	public fun decodeFromBlocking (Ldev/whyoleg/cryptography/materials/key/KeyFormat;[B)Ldev/whyoleg/cryptography/materials/key/Key;
+	public fun decodeFromByteArray (Ldev/whyoleg/cryptography/materials/key/KeyFormat;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun decodeFromByteArray$suspendImpl (Ldev/whyoleg/cryptography/materials/key/KeyDecoder;Ldev/whyoleg/cryptography/materials/key/KeyFormat;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun decodeFromByteArrayBlocking (Ldev/whyoleg/cryptography/materials/key/KeyFormat;[B)Ldev/whyoleg/cryptography/materials/key/Key;
+	public fun decodeFromByteString (Ldev/whyoleg/cryptography/materials/key/KeyFormat;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun decodeFromByteString$suspendImpl (Ldev/whyoleg/cryptography/materials/key/KeyDecoder;Ldev/whyoleg/cryptography/materials/key/KeyFormat;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun decodeFromByteStringBlocking (Ldev/whyoleg/cryptography/materials/key/KeyFormat;Lkotlinx/io/bytestring/ByteString;)Ldev/whyoleg/cryptography/materials/key/Key;
 }
 
 public abstract interface class dev/whyoleg/cryptography/materials/key/KeyFormat {

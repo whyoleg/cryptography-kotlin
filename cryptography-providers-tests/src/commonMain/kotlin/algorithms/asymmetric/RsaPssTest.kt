@@ -22,7 +22,7 @@ abstract class RsaPssTest(provider: CryptographyProvider) : ProviderTest(provide
                 val keyPair = algorithm.keyPairGenerator(keySize, digest).generateKey()
 
                 if (supportsKeyFormat(RSA.PublicKey.Format.DER)) {
-                    assertEquals(keySize.inBytes + 38, keyPair.publicKey.encodeTo(RSA.PublicKey.Format.DER).size)
+                    assertEquals(keySize.inBytes + 38, keyPair.publicKey.encodeToByteString(RSA.PublicKey.Format.DER).size)
                 }
 
                 val maxSaltSize = (ceil((keySize.inBits - 1) / 8.0) - digestSize - 2).toInt()

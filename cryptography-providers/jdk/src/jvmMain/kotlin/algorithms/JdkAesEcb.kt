@@ -18,7 +18,7 @@ internal class JdkAesEcb(
     private val keyWrapper: (JSecretKey) -> AES.ECB.Key = { key ->
         object : AES.ECB.Key, JdkEncodableKey<AES.Key.Format>(key) {
             override fun cipher(padding: Boolean): Cipher = AesEcbCipher(state, key, padding)
-            override fun encodeToBlocking(format: AES.Key.Format): ByteArray = when (format) {
+            override fun encodeToByteArrayBlocking(format: AES.Key.Format): ByteArray = when (format) {
                 AES.Key.Format.JWK -> error("$format is not supported")
                 AES.Key.Format.RAW -> encodeToRaw()
             }

@@ -16,7 +16,7 @@ abstract class AesGcmTest(provider: CryptographyProvider) : AesBasedTest<AES.GCM
     @Test
     fun testSizes() = runTestForEachKeySize {
         val key = algorithm.keyGenerator(keySize).generateKey()
-        assertEquals(keySize.inBytes, key.encodeTo(AES.Key.Format.RAW).size)
+        assertEquals(keySize.inBytes, key.encodeToByteString(AES.Key.Format.RAW).size)
 
         listOf(96, 104, 112, 120, 128).forEach { tagSizeBits ->
             val tagSize = tagSizeBits.bits.inBytes

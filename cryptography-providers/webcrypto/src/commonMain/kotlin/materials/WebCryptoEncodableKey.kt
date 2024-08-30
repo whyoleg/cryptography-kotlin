@@ -11,10 +11,10 @@ internal abstract class WebCryptoEncodableKey<KF : KeyFormat>(
     private val key: CryptoKey,
     private val keyProcessor: WebCryptoKeyProcessor<KF>,
 ) : EncodableKey<KF> {
-    override suspend fun encodeTo(format: KF): ByteArray = keyProcessor.afterEncoding(
+    override suspend fun encodeToByteArray(format: KF): ByteArray = keyProcessor.afterEncoding(
         format = format,
         key = WebCrypto.exportKey(keyProcessor.stringFormat(format), key)
     )
 
-    override fun encodeToBlocking(format: KF): ByteArray = nonBlocking()
+    override fun encodeToByteArrayBlocking(format: KF): ByteArray = nonBlocking()
 }

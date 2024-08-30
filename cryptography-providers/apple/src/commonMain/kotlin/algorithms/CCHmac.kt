@@ -44,10 +44,10 @@ private class HmacKeyDecoder(
     private val keySizeBytes: Int,
     private val digestSize: Int,
 ) : KeyDecoder<HMAC.Key.Format, HMAC.Key> {
-    override fun decodeFromBlocking(format: HMAC.Key.Format, data: ByteArray): HMAC.Key = when (format) {
+    override fun decodeFromByteArrayBlocking(format: HMAC.Key.Format, bytes: ByteArray): HMAC.Key = when (format) {
         HMAC.Key.Format.RAW -> {
-            require(data.size == keySizeBytes) { "Invalid key size: ${data.size}, expected: $keySizeBytes" }
-            wrapKey(hmacAlgorithm, data.copyOf(), digestSize)
+            require(bytes.size == keySizeBytes) { "Invalid key size: ${bytes.size}, expected: $keySizeBytes" }
+            wrapKey(hmacAlgorithm, bytes.copyOf(), digestSize)
         }
         HMAC.Key.Format.JWK -> error("JWK is not supported")
     }
@@ -73,7 +73,7 @@ private fun wrapKey(
     override fun signatureGenerator(): SignatureGenerator = signature
     override fun signatureVerifier(): SignatureVerifier = signature
 
-    override fun encodeToBlocking(format: HMAC.Key.Format): ByteArray = when (format) {
+    override fun encodeToByteArrayBlocking(format: HMAC.Key.Format): ByteArray = when (format) {
         HMAC.Key.Format.RAW -> key.copyOf()
         HMAC.Key.Format.JWK -> error("JWK is not supported")
     }

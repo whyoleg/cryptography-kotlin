@@ -22,7 +22,7 @@ internal class JdkHmac(
             override fun signatureGenerator(): SignatureGenerator = signature
             override fun signatureVerifier(): SignatureVerifier = signature
 
-            override fun encodeToBlocking(format: HMAC.Key.Format): ByteArray = when (format) {
+            override fun encodeToByteArrayBlocking(format: HMAC.Key.Format): ByteArray = when (format) {
                 HMAC.Key.Format.JWK -> error("$format is not supported")
                 HMAC.Key.Format.RAW -> encodeToRaw()
             }

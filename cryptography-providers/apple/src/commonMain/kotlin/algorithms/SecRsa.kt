@@ -32,13 +32,13 @@ internal abstract class SecRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKe
 
     private inner class RsaPublicKeyDecoder(private val algorithm: SecKeyAlgorithm?) : KeyDecoder<RSA.PublicKey.Format, PublicK> {
 
-        override fun decodeFromBlocking(format: RSA.PublicKey.Format, data: ByteArray): PublicK {
+        override fun decodeFromByteArrayBlocking(format: RSA.PublicKey.Format, bytes: ByteArray): PublicK {
             val pkcs1DerKey = when (format) {
                 RSA.PublicKey.Format.JWK -> error("$format is not supported")
-                RSA.PublicKey.Format.DER.PKCS1 -> data
-                RSA.PublicKey.Format.PEM.PKCS1 -> unwrapPem(PemLabel.RsaPublicKey, data)
-                RSA.PublicKey.Format.DER       -> unwrapPublicKey(ObjectIdentifier.RSA, data)
-                RSA.PublicKey.Format.PEM       -> unwrapPublicKey(ObjectIdentifier.RSA, unwrapPem(PemLabel.PublicKey, data))
+                RSA.PublicKey.Format.DER.PKCS1 -> bytes
+                RSA.PublicKey.Format.PEM.PKCS1 -> unwrapPem(PemLabel.RsaPublicKey, bytes)
+                RSA.PublicKey.Format.DER       -> unwrapPublicKey(ObjectIdentifier.RSA, bytes)
+                RSA.PublicKey.Format.PEM       -> unwrapPublicKey(ObjectIdentifier.RSA, unwrapPem(PemLabel.PublicKey, bytes))
             }
 
             val secKey = CFMutableDictionary(2) {
@@ -57,13 +57,13 @@ internal abstract class SecRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKe
 
     private inner class RsaPrivateKeyDecoder(private val algorithm: SecKeyAlgorithm?) : KeyDecoder<RSA.PrivateKey.Format, PrivateK> {
 
-        override fun decodeFromBlocking(format: RSA.PrivateKey.Format, data: ByteArray): PrivateK {
+        override fun decodeFromByteArrayBlocking(format: RSA.PrivateKey.Format, bytes: ByteArray): PrivateK {
             val pkcs1DerKey = when (format) {
                 RSA.PrivateKey.Format.JWK -> error("$format is not supported")
-                RSA.PrivateKey.Format.DER.PKCS1 -> data
-                RSA.PrivateKey.Format.PEM.PKCS1 -> unwrapPem(PemLabel.RsaPrivateKey, data)
-                RSA.PrivateKey.Format.DER       -> unwrapPrivateKey(ObjectIdentifier.RSA, data)
-                RSA.PrivateKey.Format.PEM       -> unwrapPrivateKey(ObjectIdentifier.RSA, unwrapPem(PemLabel.PrivateKey, data))
+                RSA.PrivateKey.Format.DER.PKCS1 -> bytes
+                RSA.PrivateKey.Format.PEM.PKCS1 -> unwrapPem(PemLabel.RsaPrivateKey, bytes)
+                RSA.PrivateKey.Format.DER       -> unwrapPrivateKey(ObjectIdentifier.RSA, bytes)
+                RSA.PrivateKey.Format.PEM       -> unwrapPrivateKey(ObjectIdentifier.RSA, unwrapPem(PemLabel.PrivateKey, bytes))
             }
 
             val secKey = CFMutableDictionary(2) {
@@ -111,7 +111,7 @@ internal abstract class SecRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKe
         @OptIn(ExperimentalNativeApi::class)
         private val cleanup = createCleaner(publicKey, SecKeyRef::release)
 
-        final override fun encodeToBlocking(format: RSA.PublicKey.Format): ByteArray {
+        final override fun encodeToByteArrayBlocking(format: RSA.PublicKey.Format): ByteArray {
             val pkcs1Key = exportSecKey(publicKey)
 
             return when (format) {
@@ -130,7 +130,7 @@ internal abstract class SecRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKe
         @OptIn(ExperimentalNativeApi::class)
         private val cleanup = createCleaner(privateKey, SecKeyRef::release)
 
-        final override fun encodeToBlocking(format: RSA.PrivateKey.Format): ByteArray {
+        final override fun encodeToByteArrayBlocking(format: RSA.PrivateKey.Format): ByteArray {
             val pkcs1Key = exportSecKey(privateKey)
 
             return when (format) {

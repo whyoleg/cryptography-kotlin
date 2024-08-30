@@ -16,7 +16,7 @@ internal object CCAesCtr : CCAes<AES.CTR.Key>(), AES.CTR {
 
     private class AesCtrKey(private val key: ByteArray) : AES.CTR.Key {
         override fun cipher(): AES.IvCipher = AesCtrCipher(key)
-        override fun encodeToBlocking(format: AES.Key.Format): ByteArray = when (format) {
+        override fun encodeToByteArrayBlocking(format: AES.Key.Format): ByteArray = when (format) {
             AES.Key.Format.RAW -> key.copyOf()
             AES.Key.Format.JWK -> error("JWK is not supported")
         }

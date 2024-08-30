@@ -87,7 +87,7 @@ abstract class EcCompatibilityTest<PublicK : EC.PublicKey, PrivateK : EC.Private
                         EC.PublicKey.Format.DER,
                         EC.PublicKey.Format.PEM,
                                                 -> {
-                            assertContentEquals(bytes, key.encodeTo(format), "Public Key $format encoding")
+                            assertContentEquals(bytes, key.encodeToByteString(format), "Public Key $format encoding")
                         }
                     }
                 }
@@ -96,29 +96,29 @@ abstract class EcCompatibilityTest<PublicK : EC.PublicKey, PrivateK : EC.Private
                     formatOf = privateKeyFormats::getValue,
                     supports = ::supportsKeyFormat,
                     supportsDecoding = { f, b -> supportsPrivateKeyDecoding(f, b, otherContext) }
-                ) { key, format, bytes ->
+                ) { key, format, byteString ->
                     when (format) {
                         EC.PrivateKey.Format.JWK -> {}
                         EC.PrivateKey.Format.RAW -> {
-                            assertContentEquals(bytes, key.encodeTo(format))
+                            assertContentEquals(byteString, key.encodeToByteString(format))
                         }
                         EC.PrivateKey.Format.DER.SEC1 -> {
-                            assertEcPrivateKeyEquals(bytes, key.encodeTo(format))
+                            assertEcPrivateKeyEquals(byteString.toByteArray(), key.encodeToByteArray(format))
                         }
                         EC.PrivateKey.Format.PEM.SEC1 -> {
-                            val expected = Pem.decode(bytes)
-                            val actual = Pem.decode(key.encodeTo(format))
+                            val expected = Pem.decode(byteString)
+                            val actual = Pem.decode(key.encodeToByteString(format))
 
                             assertEquals(expected.label, actual.label)
 
                             assertEcPrivateKeyEquals(expected.bytes, actual.bytes)
                         }
                         EC.PrivateKey.Format.DER -> {
-                            assertPkcs8EcPrivateKeyEquals(bytes, key.encodeTo(format))
+                            assertPkcs8EcPrivateKeyEquals(byteString.toByteArray(), key.encodeToByteArray(format))
                         }
                         EC.PrivateKey.Format.PEM -> {
-                            val expected = Pem.decode(bytes)
-                            val actual = Pem.decode(key.encodeTo(format))
+                            val expected = Pem.decode(byteString)
+                            val actual = Pem.decode(key.encodeToByteString(format))
 
                             assertEquals(expected.label, actual.label)
 

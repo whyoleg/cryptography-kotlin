@@ -73,7 +73,7 @@ abstract class HmacCompatibilityTest(provider: CryptographyProvider) : Compatibi
                         supports = ::supportsKeyFormat
                     ) { key, format, bytes ->
                         when (format) {
-                            HMAC.Key.Format.RAW -> assertContentEquals(bytes, key.encodeTo(format), "Key $format encoding")
+                            HMAC.Key.Format.RAW -> assertContentEquals(bytes, key.encodeToByteString(format), "Key $format encoding")
                             HMAC.Key.Format.JWK -> {} //no check for JWK yet
                         }
                     }

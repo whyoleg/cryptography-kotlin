@@ -30,13 +30,13 @@ internal fun CryptographyAlgorithmId<Digest>.rsaHashAlgorithmName(): String = wh
 internal abstract class RsaPublicKeyDecoder<K : RSA.PublicKey>(
     state: JdkCryptographyState,
 ) : JdkPublicKeyDecoder<RSA.PublicKey.Format, K>(state, "RSA") {
-    override fun decodeFromBlocking(format: RSA.PublicKey.Format, data: ByteArray): K = decodeFromDer(
+    override fun decodeFromByteArrayBlocking(format: RSA.PublicKey.Format, bytes: ByteArray): K = decodeFromDer(
         when (format) {
             RSA.PublicKey.Format.JWK       -> error("$format is not supported")
-            RSA.PublicKey.Format.DER       -> data
-            RSA.PublicKey.Format.PEM       -> unwrapPem(PemLabel.PublicKey, data)
-            RSA.PublicKey.Format.DER.PKCS1 -> wrapPublicKey(RsaKeyAlgorithmIdentifier, data)
-            RSA.PublicKey.Format.PEM.PKCS1 -> wrapPublicKey(RsaKeyAlgorithmIdentifier, unwrapPem(PemLabel.RsaPublicKey, data))
+            RSA.PublicKey.Format.DER       -> bytes
+            RSA.PublicKey.Format.PEM       -> unwrapPem(PemLabel.PublicKey, bytes)
+            RSA.PublicKey.Format.DER.PKCS1 -> wrapPublicKey(RsaKeyAlgorithmIdentifier, bytes)
+            RSA.PublicKey.Format.PEM.PKCS1 -> wrapPublicKey(RsaKeyAlgorithmIdentifier, unwrapPem(PemLabel.RsaPublicKey, bytes))
         }
     )
 }
@@ -44,13 +44,13 @@ internal abstract class RsaPublicKeyDecoder<K : RSA.PublicKey>(
 internal abstract class RsaPrivateKeyDecoder<K : RSA.PrivateKey>(
     state: JdkCryptographyState,
 ) : JdkPrivateKeyDecoder<RSA.PrivateKey.Format, K>(state, "RSA") {
-    override fun decodeFromBlocking(format: RSA.PrivateKey.Format, data: ByteArray): K = decodeFromDer(
+    override fun decodeFromByteArrayBlocking(format: RSA.PrivateKey.Format, bytes: ByteArray): K = decodeFromDer(
         when (format) {
             RSA.PrivateKey.Format.JWK       -> error("$format is not supported")
-            RSA.PrivateKey.Format.DER       -> data
-            RSA.PrivateKey.Format.PEM       -> unwrapPem(PemLabel.PrivateKey, data)
-            RSA.PrivateKey.Format.DER.PKCS1 -> wrapPrivateKey(0, RsaKeyAlgorithmIdentifier, data)
-            RSA.PrivateKey.Format.PEM.PKCS1 -> wrapPrivateKey(0, RsaKeyAlgorithmIdentifier, unwrapPem(PemLabel.RsaPrivateKey, data))
+            RSA.PrivateKey.Format.DER       -> bytes
+            RSA.PrivateKey.Format.PEM       -> unwrapPem(PemLabel.PrivateKey, bytes)
+            RSA.PrivateKey.Format.DER.PKCS1 -> wrapPrivateKey(0, RsaKeyAlgorithmIdentifier, bytes)
+            RSA.PrivateKey.Format.PEM.PKCS1 -> wrapPrivateKey(0, RsaKeyAlgorithmIdentifier, unwrapPem(PemLabel.RsaPrivateKey, bytes))
         }
     )
 }
@@ -58,7 +58,7 @@ internal abstract class RsaPrivateKeyDecoder<K : RSA.PrivateKey>(
 internal abstract class RsaPublicEncodableKey(
     key: JPublicKey,
 ) : JdkEncodableKey<RSA.PublicKey.Format>(key) {
-    override fun encodeToBlocking(format: RSA.PublicKey.Format): ByteArray = when (format) {
+    override fun encodeToByteArrayBlocking(format: RSA.PublicKey.Format): ByteArray = when (format) {
         RSA.PublicKey.Format.JWK       -> error("$format is not supported")
         RSA.PublicKey.Format.DER       -> encodeToDer()
         RSA.PublicKey.Format.PEM       -> wrapPem(PemLabel.PublicKey, encodeToDer())
@@ -73,7 +73,7 @@ internal abstract class RsaPublicEncodableKey(
 internal abstract class RsaPrivateEncodableKey(
     key: JPrivateKey,
 ) : JdkEncodableKey<RSA.PrivateKey.Format>(key) {
-    override fun encodeToBlocking(format: RSA.PrivateKey.Format): ByteArray = when (format) {
+    override fun encodeToByteArrayBlocking(format: RSA.PrivateKey.Format): ByteArray = when (format) {
         RSA.PrivateKey.Format.JWK       -> error("$format is not supported")
         RSA.PrivateKey.Format.DER       -> encodeToDer()
         RSA.PrivateKey.Format.PEM       -> wrapPem(PemLabel.PrivateKey, encodeToDer())

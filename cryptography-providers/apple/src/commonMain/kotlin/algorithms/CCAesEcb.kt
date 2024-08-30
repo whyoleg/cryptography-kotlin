@@ -14,7 +14,7 @@ internal object CCAesEcb : CCAes<AES.ECB.Key>(), AES.ECB {
 
     private class AesEcbKey(private val key: ByteArray) : AES.ECB.Key {
         override fun cipher(padding: Boolean): Cipher = AesEcbCipher(key, padding)
-        override fun encodeToBlocking(format: AES.Key.Format): ByteArray = when (format) {
+        override fun encodeToByteArrayBlocking(format: AES.Key.Format): ByteArray = when (format) {
             AES.Key.Format.RAW -> key.copyOf()
             AES.Key.Format.JWK -> error("JWK is not supported")
         }
