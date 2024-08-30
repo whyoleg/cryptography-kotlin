@@ -9,6 +9,7 @@ import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.providers.tests.api.*
 import dev.whyoleg.cryptography.providers.tests.api.compatibility.*
 import dev.whyoleg.cryptography.random.*
+import kotlinx.io.bytestring.*
 import kotlinx.serialization.*
 import kotlin.test.*
 
@@ -47,7 +48,7 @@ abstract class HmacCompatibilityTest(provider: CryptographyProvider) : Compatibi
                 repeat(dataIterations) {
                     val dataSize = CryptographyRandom.nextInt(maxDataSize)
                     logger.log { "data.size      = $dataSize" }
-                    val data = CryptographyRandom.nextBytes(dataSize)
+                    val data = ByteString(CryptographyRandom.nextBytes(dataSize))
                     val signature = signatureGenerator.generateSignature(data)
                     logger.log { "signature.size = ${signature.size}" }
 

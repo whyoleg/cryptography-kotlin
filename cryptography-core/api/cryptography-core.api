@@ -708,14 +708,20 @@ public abstract interface class dev/whyoleg/cryptography/operations/hash/Hasher 
 }
 
 public abstract interface class dev/whyoleg/cryptography/operations/signature/SignatureGenerator {
+	public fun generateSignature (Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun generateSignature ([BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun generateSignature$suspendImpl (Ldev/whyoleg/cryptography/operations/signature/SignatureGenerator;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun generateSignature$suspendImpl (Ldev/whyoleg/cryptography/operations/signature/SignatureGenerator;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun generateSignatureBlocking (Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
 	public abstract fun generateSignatureBlocking ([B)[B
 }
 
 public abstract interface class dev/whyoleg/cryptography/operations/signature/SignatureVerifier {
+	public fun verifySignature (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun verifySignature ([B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun verifySignature$suspendImpl (Ldev/whyoleg/cryptography/operations/signature/SignatureVerifier;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun verifySignature$suspendImpl (Ldev/whyoleg/cryptography/operations/signature/SignatureVerifier;[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun verifySignatureBlocking (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;)Z
 	public abstract fun verifySignatureBlocking ([B[B)Z
 }
 

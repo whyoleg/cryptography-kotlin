@@ -554,12 +554,16 @@ abstract interface dev.whyoleg.cryptography.operations.hash/Hasher { // dev.whyo
 
 abstract interface dev.whyoleg.cryptography.operations.signature/SignatureGenerator { // dev.whyoleg.cryptography.operations.signature/SignatureGenerator|null[0]
     abstract fun generateSignatureBlocking(kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.operations.signature/SignatureGenerator.generateSignatureBlocking|generateSignatureBlocking(kotlin.ByteArray){}[0]
+    open fun generateSignatureBlocking(kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations.signature/SignatureGenerator.generateSignatureBlocking|generateSignatureBlocking(kotlinx.io.bytestring.ByteString){}[0]
     open suspend fun generateSignature(kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.operations.signature/SignatureGenerator.generateSignature|generateSignature(kotlin.ByteArray){}[0]
+    open suspend fun generateSignature(kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations.signature/SignatureGenerator.generateSignature|generateSignature(kotlinx.io.bytestring.ByteString){}[0]
 }
 
 abstract interface dev.whyoleg.cryptography.operations.signature/SignatureVerifier { // dev.whyoleg.cryptography.operations.signature/SignatureVerifier|null[0]
     abstract fun verifySignatureBlocking(kotlin/ByteArray, kotlin/ByteArray): kotlin/Boolean // dev.whyoleg.cryptography.operations.signature/SignatureVerifier.verifySignatureBlocking|verifySignatureBlocking(kotlin.ByteArray;kotlin.ByteArray){}[0]
+    open fun verifySignatureBlocking(kotlinx.io.bytestring/ByteString, kotlinx.io.bytestring/ByteString): kotlin/Boolean // dev.whyoleg.cryptography.operations.signature/SignatureVerifier.verifySignatureBlocking|verifySignatureBlocking(kotlinx.io.bytestring.ByteString;kotlinx.io.bytestring.ByteString){}[0]
     open suspend fun verifySignature(kotlin/ByteArray, kotlin/ByteArray): kotlin/Boolean // dev.whyoleg.cryptography.operations.signature/SignatureVerifier.verifySignature|verifySignature(kotlin.ByteArray;kotlin.ByteArray){}[0]
+    open suspend fun verifySignature(kotlinx.io.bytestring/ByteString, kotlinx.io.bytestring/ByteString): kotlin/Boolean // dev.whyoleg.cryptography.operations.signature/SignatureVerifier.verifySignature|verifySignature(kotlinx.io.bytestring.ByteString;kotlinx.io.bytestring.ByteString){}[0]
 }
 
 abstract interface dev.whyoleg.cryptography.operations/SecretDerivation { // dev.whyoleg.cryptography.operations/SecretDerivation|null[0]

@@ -8,6 +8,7 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.providers.tests.api.compatibility.*
 import dev.whyoleg.cryptography.random.*
+import kotlinx.io.bytestring.*
 import kotlin.test.*
 
 private const val maxDataSize = 10000
@@ -28,7 +29,7 @@ abstract class RsaPkcs1CompatibilityTest(provider: CryptographyProvider) :
             repeat(signatureIterations) {
                 val dataSize = CryptographyRandom.nextInt(maxDataSize)
                 logger.log { "data.size      = $dataSize" }
-                val data = CryptographyRandom.nextBytes(dataSize)
+                val data = ByteString(CryptographyRandom.nextBytes(dataSize))
                 val signature = signer.generateSignature(data)
                 logger.log { "signature.size = ${signature.size}" }
 

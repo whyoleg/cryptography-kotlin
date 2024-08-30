@@ -75,13 +75,9 @@ data class AuthenticatedCipherData(
 @Serializable
 data class SignatureData(
     val keyReference: TestReference,
-    val data: Base64ByteArray,
-    val signature: Base64ByteArray,
-) : TestData {
-    override fun toString(): String {
-        return "SignatureData(keyReference=$keyReference, data.size=${data.size}, signature.size=${signature.size})"
-    }
-}
+    val data: ByteStringAsString,
+    val signature: ByteStringAsString,
+) : TestData
 
 @Serializable
 data class SharedSecretData(
