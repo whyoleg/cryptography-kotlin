@@ -702,8 +702,11 @@ public abstract interface class dev/whyoleg/cryptography/operations/cipher/Encry
 }
 
 public abstract interface class dev/whyoleg/cryptography/operations/hash/Hasher {
+	public fun hash (Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun hash ([BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun hash$suspendImpl (Ldev/whyoleg/cryptography/operations/hash/Hasher;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun hash$suspendImpl (Ldev/whyoleg/cryptography/operations/hash/Hasher;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun hashBlocking (Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
 	public abstract fun hashBlocking ([B)[B
 }
 

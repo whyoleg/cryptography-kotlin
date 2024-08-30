@@ -39,15 +39,21 @@ data class TestReference(
 }
 
 @Serializable
-data class DigestData(val data: Base64ByteArray, val digest: Base64ByteArray) : TestData {
-    override fun toString(): String = "DigestData(data.size=${data.size}, digest.size=${digest.size})"
-}
+data class DigestData(
+    val data: ByteStringAsString,
+    val digest: ByteStringAsString,
+) : TestData
 
 @Serializable
-data class KeyData(val formats: Map<String, ByteStringAsString>) : TestData
+data class KeyData(
+    val formats: Map<String, ByteStringAsString>,
+) : TestData
 
 @Serializable
-data class KeyPairData(val public: KeyData, val private: KeyData) : TestData
+data class KeyPairData(
+    val public: KeyData,
+    val private: KeyData,
+) : TestData
 
 @Serializable
 data class CipherData(

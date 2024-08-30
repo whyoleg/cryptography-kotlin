@@ -9,7 +9,7 @@ import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.providers.tests.api.*
 import dev.whyoleg.cryptography.providers.tests.api.compatibility.*
 import dev.whyoleg.cryptography.random.*
-import kotlin.test.*
+import kotlinx.io.bytestring.*
 
 private const val maxDataSize = 10000
 
@@ -41,7 +41,7 @@ abstract class DigestCompatibilityTest(algorithmId: CryptographyAlgorithmId<Dige
         repeat(iterations) {
             val dataSize = CryptographyRandom.nextInt(maxDataSize)
             logger.log { "data.size   = $dataSize" }
-            val data = CryptographyRandom.nextBytes(dataSize)
+            val data = ByteString(CryptographyRandom.nextBytes(dataSize))
             val digest = hasher.hash(data)
             logger.log { "digest.size = ${digest.size}" }
 

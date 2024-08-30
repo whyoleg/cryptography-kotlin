@@ -549,7 +549,9 @@ abstract interface dev.whyoleg.cryptography.operations.cipher/Encryptor { // dev
 
 abstract interface dev.whyoleg.cryptography.operations.hash/Hasher { // dev.whyoleg.cryptography.operations.hash/Hasher|null[0]
     abstract fun hashBlocking(kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.operations.hash/Hasher.hashBlocking|hashBlocking(kotlin.ByteArray){}[0]
+    open fun hashBlocking(kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations.hash/Hasher.hashBlocking|hashBlocking(kotlinx.io.bytestring.ByteString){}[0]
     open suspend fun hash(kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.operations.hash/Hasher.hash|hash(kotlin.ByteArray){}[0]
+    open suspend fun hash(kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations.hash/Hasher.hash|hash(kotlinx.io.bytestring.ByteString){}[0]
 }
 
 abstract interface dev.whyoleg.cryptography.operations.signature/SignatureGenerator { // dev.whyoleg.cryptography.operations.signature/SignatureGenerator|null[0]
