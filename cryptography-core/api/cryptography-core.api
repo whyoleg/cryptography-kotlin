@@ -1,3 +1,31 @@
+public final class dev/whyoleg/cryptography/BinarySize : java/lang/Comparable {
+	public static final field Companion Ldev/whyoleg/cryptography/BinarySize$Companion;
+	public static final synthetic fun box-impl (I)Ldev/whyoleg/cryptography/BinarySize;
+	public synthetic fun compareTo (Ljava/lang/Object;)I
+	public fun compareTo-6q1zMKY (I)I
+	public static fun compareTo-6q1zMKY (II)I
+	public static final fun div-M1VWhS4 (II)I
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (ILjava/lang/Object;)Z
+	public static final fun equals-impl0 (II)Z
+	public static final fun getInBits-impl (I)I
+	public static final fun getInBytes-impl (I)I
+	public fun hashCode ()I
+	public static fun hashCode-impl (I)I
+	public static final fun minus-XsDGKLw (II)I
+	public static final fun plus-XsDGKLw (II)I
+	public static final fun rem-M1VWhS4 (II)I
+	public static final fun times-M1VWhS4 (II)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (I)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()I
+}
+
+public final class dev/whyoleg/cryptography/BinarySize$Companion {
+	public final fun getBits-M1VWhS4 (I)I
+	public final fun getBytes-M1VWhS4 (I)I
+}
+
 public abstract interface class dev/whyoleg/cryptography/CryptographyAlgorithm {
 	public abstract fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
 }
@@ -49,8 +77,8 @@ public abstract interface annotation class dev/whyoleg/cryptography/DelicateCryp
 public abstract interface class dev/whyoleg/cryptography/algorithms/PBKDF2 : dev/whyoleg/cryptography/CryptographyAlgorithm {
 	public static final field Companion Ldev/whyoleg/cryptography/algorithms/PBKDF2$Companion;
 	public fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
-	public fun secretDerivation-SWYt71w (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;Lkotlinx/io/bytestring/ByteString;II)Ldev/whyoleg/cryptography/operations/SecretDerivation;
-	public abstract fun secretDerivation-SWYt71w (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;[BII)Ldev/whyoleg/cryptography/operations/SecretDerivation;
+	public fun secretDerivation-gruRWys (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;Lkotlinx/io/bytestring/ByteString;II)Ldev/whyoleg/cryptography/operations/SecretDerivation;
+	public abstract fun secretDerivation-gruRWys (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;[BII)Ldev/whyoleg/cryptography/operations/SecretDerivation;
 }
 
 public final class dev/whyoleg/cryptography/algorithms/PBKDF2$Companion : dev/whyoleg/cryptography/CryptographyAlgorithmId {
@@ -221,8 +249,8 @@ public final class dev/whyoleg/cryptography/algorithms/asymmetric/ECDSA$Signatur
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/RSA : dev/whyoleg/cryptography/CryptographyAlgorithm {
-	public abstract fun keyPairGenerator-BxJwnTU (ILdev/whyoleg/cryptography/CryptographyAlgorithmId;Ldev/whyoleg/cryptography/bigint/BigInt;)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
-	public static synthetic fun keyPairGenerator-BxJwnTU$default (Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA;ILdev/whyoleg/cryptography/CryptographyAlgorithmId;Ldev/whyoleg/cryptography/bigint/BigInt;ILjava/lang/Object;)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
+	public abstract fun keyPairGenerator-imL9hLU (ILdev/whyoleg/cryptography/CryptographyAlgorithmId;Ldev/whyoleg/cryptography/bigint/BigInt;)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
+	public static synthetic fun keyPairGenerator-imL9hLU$default (Ldev/whyoleg/cryptography/algorithms/asymmetric/RSA;ILdev/whyoleg/cryptography/CryptographyAlgorithmId;Ldev/whyoleg/cryptography/bigint/BigInt;ILjava/lang/Object;)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
 	public abstract fun privateKeyDecoder (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;)Ldev/whyoleg/cryptography/materials/key/KeyDecoder;
 	public abstract fun publicKeyDecoder (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;)Ldev/whyoleg/cryptography/materials/key/KeyDecoder;
 }
@@ -285,12 +313,12 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/R
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PSS$PrivateKey : dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PrivateKey {
 	public abstract fun signatureGenerator ()Ldev/whyoleg/cryptography/operations/signature/SignatureGenerator;
-	public abstract fun signatureGenerator-iDh_w9I (I)Ldev/whyoleg/cryptography/operations/signature/SignatureGenerator;
+	public abstract fun signatureGenerator-6q1zMKY (I)Ldev/whyoleg/cryptography/operations/signature/SignatureGenerator;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PSS$PublicKey : dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicKey {
 	public abstract fun signatureVerifier ()Ldev/whyoleg/cryptography/operations/signature/SignatureVerifier;
-	public abstract fun signatureVerifier-iDh_w9I (I)Ldev/whyoleg/cryptography/operations/signature/SignatureVerifier;
+	public abstract fun signatureVerifier-6q1zMKY (I)Ldev/whyoleg/cryptography/operations/signature/SignatureVerifier;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PrivateKey : dev/whyoleg/cryptography/materials/key/EncodableKey {
@@ -447,10 +475,10 @@ public final class dev/whyoleg/cryptography/algorithms/digest/SHA512 : dev/whyol
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES : dev/whyoleg/cryptography/CryptographyAlgorithm {
 	public abstract fun keyDecoder ()Ldev/whyoleg/cryptography/materials/key/KeyDecoder;
+	public abstract fun keyGenerator-6q1zMKY (I)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
+	public static synthetic fun keyGenerator-6q1zMKY$default (Ldev/whyoleg/cryptography/algorithms/symmetric/AES;IILjava/lang/Object;)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
 	public fun keyGenerator-__FLmac (I)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
 	public static synthetic fun keyGenerator-__FLmac$default (Ldev/whyoleg/cryptography/algorithms/symmetric/AES;IILjava/lang/Object;)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
-	public abstract fun keyGenerator-iDh_w9I (I)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
-	public static synthetic fun keyGenerator-iDh_w9I$default (Ldev/whyoleg/cryptography/algorithms/symmetric/AES;IILjava/lang/Object;)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES$CBC : dev/whyoleg/cryptography/algorithms/symmetric/AES {
@@ -500,8 +528,8 @@ public final class dev/whyoleg/cryptography/algorithms/symmetric/AES$GCM$Compani
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES$GCM$Key : dev/whyoleg/cryptography/algorithms/symmetric/AES$Key {
-	public abstract fun cipher-iDh_w9I (I)Ldev/whyoleg/cryptography/operations/cipher/AuthenticatedCipher;
-	public static synthetic fun cipher-iDh_w9I$default (Ldev/whyoleg/cryptography/algorithms/symmetric/AES$GCM$Key;IILjava/lang/Object;)Ldev/whyoleg/cryptography/operations/cipher/AuthenticatedCipher;
+	public abstract fun cipher-6q1zMKY (I)Ldev/whyoleg/cryptography/operations/cipher/AuthenticatedCipher;
+	public static synthetic fun cipher-6q1zMKY$default (Ldev/whyoleg/cryptography/algorithms/symmetric/AES$GCM$Key;IILjava/lang/Object;)Ldev/whyoleg/cryptography/operations/cipher/AuthenticatedCipher;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES$IvCipher : dev/whyoleg/cryptography/algorithms/symmetric/AES$IvDecryptor, dev/whyoleg/cryptography/algorithms/symmetric/AES$IvEncryptor {
@@ -533,9 +561,9 @@ public final class dev/whyoleg/cryptography/algorithms/symmetric/AES$Key$Format 
 
 public final class dev/whyoleg/cryptography/algorithms/symmetric/AES$Key$Size {
 	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/symmetric/AES$Key$Size;
-	public final fun getB128-gFjLbCQ ()I
-	public final fun getB192-gFjLbCQ ()I
-	public final fun getB256-gFjLbCQ ()I
+	public final fun getB128-XsYwlU8 ()I
+	public final fun getB192-XsYwlU8 ()I
+	public final fun getB256-XsYwlU8 ()I
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/HMAC : dev/whyoleg/cryptography/CryptographyAlgorithm {
@@ -570,7 +598,7 @@ public final class dev/whyoleg/cryptography/algorithms/symmetric/SymmetricKeySiz
 	public fun equals (Ljava/lang/Object;)Z
 	public static fun equals-impl (ILjava/lang/Object;)Z
 	public static final fun equals-impl0 (II)Z
-	public final fun getValue-gFjLbCQ ()I
+	public final fun getValue-XsYwlU8 ()I
 	public fun hashCode ()I
 	public static fun hashCode-impl (I)I
 	public fun toString ()Ljava/lang/String;

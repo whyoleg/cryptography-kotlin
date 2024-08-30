@@ -8,7 +8,6 @@ package ckbuild
 val artifacts
     get() = listOf(
         "cryptography-bigint",
-        "cryptography-binary",
         "cryptography-random",
         "cryptography-serialization-pem",
         "cryptography-serialization-asn1",
