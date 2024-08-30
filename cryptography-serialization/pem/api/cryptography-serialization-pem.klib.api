@@ -8,7 +8,10 @@
 // Library unique name: <dev.whyoleg.cryptography:cryptography-serialization-pem>
 final class dev.whyoleg.cryptography.serialization.pem/PemContent { // dev.whyoleg.cryptography.serialization.pem/PemContent|null[0]
     constructor <init>(dev.whyoleg.cryptography.serialization.pem/PemLabel, kotlin/ByteArray) // dev.whyoleg.cryptography.serialization.pem/PemContent.<init>|<init>(dev.whyoleg.cryptography.serialization.pem.PemLabel;kotlin.ByteArray){}[0]
+    constructor <init>(dev.whyoleg.cryptography.serialization.pem/PemLabel, kotlinx.io.bytestring/ByteString) // dev.whyoleg.cryptography.serialization.pem/PemContent.<init>|<init>(dev.whyoleg.cryptography.serialization.pem.PemLabel;kotlinx.io.bytestring.ByteString){}[0]
 
+    final val byteString // dev.whyoleg.cryptography.serialization.pem/PemContent.byteString|{}byteString[0]
+        final fun <get-byteString>(): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.serialization.pem/PemContent.byteString.<get-byteString>|<get-byteString>(){}[0]
     final val bytes // dev.whyoleg.cryptography.serialization.pem/PemContent.bytes|{}bytes[0]
         final fun <get-bytes>(): kotlin/ByteArray // dev.whyoleg.cryptography.serialization.pem/PemContent.bytes.<get-bytes>|<get-bytes>(){}[0]
     final val label // dev.whyoleg.cryptography.serialization.pem/PemContent.label|{}label[0]
@@ -42,8 +45,10 @@ final value class dev.whyoleg.cryptography.serialization.pem/PemLabel { // dev.w
 final object dev.whyoleg.cryptography.serialization.pem/Pem { // dev.whyoleg.cryptography.serialization.pem/Pem|null[0]
     final fun decode(kotlin/ByteArray): dev.whyoleg.cryptography.serialization.pem/PemContent // dev.whyoleg.cryptography.serialization.pem/Pem.decode|decode(kotlin.ByteArray){}[0]
     final fun decode(kotlin/String): dev.whyoleg.cryptography.serialization.pem/PemContent // dev.whyoleg.cryptography.serialization.pem/Pem.decode|decode(kotlin.String){}[0]
+    final fun decode(kotlinx.io.bytestring/ByteString): dev.whyoleg.cryptography.serialization.pem/PemContent // dev.whyoleg.cryptography.serialization.pem/Pem.decode|decode(kotlinx.io.bytestring.ByteString){}[0]
     final fun encode(dev.whyoleg.cryptography.serialization.pem/PemContent): kotlin/String // dev.whyoleg.cryptography.serialization.pem/Pem.encode|encode(dev.whyoleg.cryptography.serialization.pem.PemContent){}[0]
     final fun encodeToByteArray(dev.whyoleg.cryptography.serialization.pem/PemContent): kotlin/ByteArray // dev.whyoleg.cryptography.serialization.pem/Pem.encodeToByteArray|encodeToByteArray(dev.whyoleg.cryptography.serialization.pem.PemContent){}[0]
+    final fun encodeToByteString(dev.whyoleg.cryptography.serialization.pem/PemContent): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.serialization.pem/Pem.encodeToByteString|encodeToByteString(dev.whyoleg.cryptography.serialization.pem.PemContent){}[0]
 }
 
 final fun (dev.whyoleg.cryptography.serialization.pem/PemContent).dev.whyoleg.cryptography.serialization.pem/ensurePemLabel(dev.whyoleg.cryptography.serialization.pem/PemLabel): dev.whyoleg.cryptography.serialization.pem/PemContent // dev.whyoleg.cryptography.serialization.pem/ensurePemLabel|ensurePemLabel@dev.whyoleg.cryptography.serialization.pem.PemContent(dev.whyoleg.cryptography.serialization.pem.PemLabel){}[0]

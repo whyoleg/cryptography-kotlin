@@ -15,4 +15,10 @@ kotlin {
     jsTarget()
     nativeTargets()
     wasmTargets()
+
+    sourceSets {
+        commonMain.dependencies {
+            api(libs.kotlinx.io.core)
+        }
+    }
 }

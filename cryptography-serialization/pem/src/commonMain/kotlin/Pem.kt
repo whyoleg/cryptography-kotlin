@@ -4,6 +4,7 @@
 
 package dev.whyoleg.cryptography.serialization.pem
 
+import kotlinx.io.bytestring.*
 import kotlin.io.encoding.*
 
 @Deprecated("Renamed to Pem", ReplaceWith("Pem"), DeprecationLevel.ERROR)
@@ -15,6 +16,7 @@ public object Pem {
     private const val END_PREFIX = "-----END "
     private const val SUFFIX = "-----"
 
+    public fun encodeToByteString(content: PemContent): ByteString = encode(content).encodeToByteString()
     public fun encodeToByteArray(content: PemContent): ByteArray = encode(content).encodeToByteArray()
     public fun encode(content: PemContent): String = buildString {
         append(BEGIN_PREFIX).append(content.label.representation).appendLine(SUFFIX)
@@ -22,6 +24,7 @@ public object Pem {
         append(END_PREFIX).append(content.label.representation).appendLine(SUFFIX)
     }
 
+    public fun decode(byteString: ByteString): PemContent = decode(byteString.decodeToString())
     public fun decode(bytes: ByteArray): PemContent = decode(bytes.decodeToString())
     public fun decode(string: String): PemContent {
         val lines = string.split("\n")

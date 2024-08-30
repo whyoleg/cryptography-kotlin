@@ -1,13 +1,17 @@
 public final class dev/whyoleg/cryptography/serialization/pem/Pem {
 	public static final field INSTANCE Ldev/whyoleg/cryptography/serialization/pem/Pem;
 	public final fun decode (Ljava/lang/String;)Ldev/whyoleg/cryptography/serialization/pem/PemContent;
+	public final fun decode (Lkotlinx/io/bytestring/ByteString;)Ldev/whyoleg/cryptography/serialization/pem/PemContent;
 	public final fun decode ([B)Ldev/whyoleg/cryptography/serialization/pem/PemContent;
 	public final fun encode (Ldev/whyoleg/cryptography/serialization/pem/PemContent;)Ljava/lang/String;
 	public final fun encodeToByteArray (Ldev/whyoleg/cryptography/serialization/pem/PemContent;)[B
+	public final fun encodeToByteString (Ldev/whyoleg/cryptography/serialization/pem/PemContent;)Lkotlinx/io/bytestring/ByteString;
 }
 
 public final class dev/whyoleg/cryptography/serialization/pem/PemContent {
+	public synthetic fun <init> (Ljava/lang/String;Lkotlinx/io/bytestring/ByteString;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (Ljava/lang/String;[BLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getByteString ()Lkotlinx/io/bytestring/ByteString;
 	public final fun getBytes ()[B
 	public final fun getLabel-2EFq_Wg ()Ljava/lang/String;
 }
