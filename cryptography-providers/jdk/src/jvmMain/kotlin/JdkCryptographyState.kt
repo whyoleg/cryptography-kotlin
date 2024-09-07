@@ -5,7 +5,7 @@
 package dev.whyoleg.cryptography.providers.jdk
 
 import dev.whyoleg.cryptography.*
-import dev.whyoleg.cryptography.algorithms.digest.*
+import dev.whyoleg.cryptography.algorithms.*
 import java.util.concurrent.*
 
 //candidate for context receivers

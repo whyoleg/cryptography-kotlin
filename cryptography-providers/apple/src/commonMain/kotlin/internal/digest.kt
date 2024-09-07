@@ -5,7 +5,7 @@
 package dev.whyoleg.cryptography.providers.apple.internal
 
 import dev.whyoleg.cryptography.*
-import dev.whyoleg.cryptography.algorithms.digest.*
+import dev.whyoleg.cryptography.algorithms.*
 import platform.CoreCrypto.*
 import platform.Security.*
 

@@ -138,9 +138,9 @@ abstract interface <#A: dev.whyoleg.cryptography.algorithms.asymmetric/EC.Public
 }
 
 abstract interface <#A: dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PublicKey, #B: dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PrivateKey, #C: dev.whyoleg.cryptography.algorithms.asymmetric/RSA.KeyPair<#A, #B>> dev.whyoleg.cryptography.algorithms.asymmetric/RSA : dev.whyoleg.cryptography/CryptographyAlgorithm { // dev.whyoleg.cryptography.algorithms.asymmetric/RSA|null[0]
-    abstract fun keyPairGenerator(dev.whyoleg.cryptography/BinarySize = ..., dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest/Digest> = ..., dev.whyoleg.cryptography.bigint/BigInt = ...): dev.whyoleg.cryptography.materials.key/KeyGenerator<#C> // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.keyPairGenerator|keyPairGenerator(dev.whyoleg.cryptography.BinarySize;dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest.Digest>;dev.whyoleg.cryptography.bigint.BigInt){}[0]
-    abstract fun privateKeyDecoder(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest/Digest>): dev.whyoleg.cryptography.materials.key/KeyDecoder<dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PrivateKey.Format, #B> // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.privateKeyDecoder|privateKeyDecoder(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest.Digest>){}[0]
-    abstract fun publicKeyDecoder(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest/Digest>): dev.whyoleg.cryptography.materials.key/KeyDecoder<dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PublicKey.Format, #A> // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.publicKeyDecoder|publicKeyDecoder(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest.Digest>){}[0]
+    abstract fun keyPairGenerator(dev.whyoleg.cryptography/BinarySize = ..., dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest> = ..., dev.whyoleg.cryptography.bigint/BigInt = ...): dev.whyoleg.cryptography.materials.key/KeyGenerator<#C> // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.keyPairGenerator|keyPairGenerator(dev.whyoleg.cryptography.BinarySize;dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>;dev.whyoleg.cryptography.bigint.BigInt){}[0]
+    abstract fun privateKeyDecoder(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest>): dev.whyoleg.cryptography.materials.key/KeyDecoder<dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PrivateKey.Format, #B> // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.privateKeyDecoder|privateKeyDecoder(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>){}[0]
+    abstract fun publicKeyDecoder(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest>): dev.whyoleg.cryptography.materials.key/KeyDecoder<dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PublicKey.Format, #A> // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.publicKeyDecoder|publicKeyDecoder(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>){}[0]
 
     abstract interface <#A1: dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PublicKey, #B1: dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PrivateKey> KeyPair : dev.whyoleg.cryptography.materials.key/Key { // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.KeyPair|null[0]
         abstract val privateKey // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.KeyPair.privateKey|{}privateKey[0]
@@ -461,29 +461,22 @@ abstract interface dev.whyoleg.cryptography.algorithms.asymmetric/ECDSA : dev.wh
     abstract interface KeyPair : dev.whyoleg.cryptography.algorithms.asymmetric/EC.KeyPair<dev.whyoleg.cryptography.algorithms.asymmetric/ECDSA.PublicKey, dev.whyoleg.cryptography.algorithms.asymmetric/ECDSA.PrivateKey> // dev.whyoleg.cryptography.algorithms.asymmetric/ECDSA.KeyPair|null[0]
 
     abstract interface PrivateKey : dev.whyoleg.cryptography.algorithms.asymmetric/EC.PrivateKey { // dev.whyoleg.cryptography.algorithms.asymmetric/ECDSA.PrivateKey|null[0]
-        abstract fun signatureGenerator(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest/Digest>, dev.whyoleg.cryptography.algorithms.asymmetric/ECDSA.SignatureFormat): dev.whyoleg.cryptography.operations/SignatureGenerator // dev.whyoleg.cryptography.algorithms.asymmetric/ECDSA.PrivateKey.signatureGenerator|signatureGenerator(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest.Digest>;dev.whyoleg.cryptography.algorithms.asymmetric.ECDSA.SignatureFormat){}[0]
+        abstract fun signatureGenerator(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest>, dev.whyoleg.cryptography.algorithms.asymmetric/ECDSA.SignatureFormat): dev.whyoleg.cryptography.operations/SignatureGenerator // dev.whyoleg.cryptography.algorithms.asymmetric/ECDSA.PrivateKey.signatureGenerator|signatureGenerator(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>;dev.whyoleg.cryptography.algorithms.asymmetric.ECDSA.SignatureFormat){}[0]
     }
 
     abstract interface PublicKey : dev.whyoleg.cryptography.algorithms.asymmetric/EC.PublicKey { // dev.whyoleg.cryptography.algorithms.asymmetric/ECDSA.PublicKey|null[0]
-        abstract fun signatureVerifier(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest/Digest>, dev.whyoleg.cryptography.algorithms.asymmetric/ECDSA.SignatureFormat): dev.whyoleg.cryptography.operations/SignatureVerifier // dev.whyoleg.cryptography.algorithms.asymmetric/ECDSA.PublicKey.signatureVerifier|signatureVerifier(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest.Digest>;dev.whyoleg.cryptography.algorithms.asymmetric.ECDSA.SignatureFormat){}[0]
+        abstract fun signatureVerifier(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest>, dev.whyoleg.cryptography.algorithms.asymmetric/ECDSA.SignatureFormat): dev.whyoleg.cryptography.operations/SignatureVerifier // dev.whyoleg.cryptography.algorithms.asymmetric/ECDSA.PublicKey.signatureVerifier|signatureVerifier(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>;dev.whyoleg.cryptography.algorithms.asymmetric.ECDSA.SignatureFormat){}[0]
     }
 
     final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.asymmetric/ECDSA> // dev.whyoleg.cryptography.algorithms.asymmetric/ECDSA.Companion|null[0]
-}
-
-abstract interface dev.whyoleg.cryptography.algorithms.digest/Digest : dev.whyoleg.cryptography/CryptographyAlgorithm { // dev.whyoleg.cryptography.algorithms.digest/Digest|null[0]
-    abstract val id // dev.whyoleg.cryptography.algorithms.digest/Digest.id|{}id[0]
-        abstract fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest/Digest> // dev.whyoleg.cryptography.algorithms.digest/Digest.id.<get-id>|<get-id>(){}[0]
-
-    abstract fun hasher(): dev.whyoleg.cryptography.operations/Hasher // dev.whyoleg.cryptography.algorithms.digest/Digest.hasher|hasher(){}[0]
 }
 
 abstract interface dev.whyoleg.cryptography.algorithms.symmetric/HMAC : dev.whyoleg.cryptography/CryptographyAlgorithm { // dev.whyoleg.cryptography.algorithms.symmetric/HMAC|null[0]
     open val id // dev.whyoleg.cryptography.algorithms.symmetric/HMAC.id|{}id[0]
         open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.symmetric/HMAC> // dev.whyoleg.cryptography.algorithms.symmetric/HMAC.id.<get-id>|<get-id>(){}[0]
 
-    abstract fun keyDecoder(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest/Digest>): dev.whyoleg.cryptography.materials.key/KeyDecoder<dev.whyoleg.cryptography.algorithms.symmetric/HMAC.Key.Format, dev.whyoleg.cryptography.algorithms.symmetric/HMAC.Key> // dev.whyoleg.cryptography.algorithms.symmetric/HMAC.keyDecoder|keyDecoder(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest.Digest>){}[0]
-    abstract fun keyGenerator(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest/Digest> = ...): dev.whyoleg.cryptography.materials.key/KeyGenerator<dev.whyoleg.cryptography.algorithms.symmetric/HMAC.Key> // dev.whyoleg.cryptography.algorithms.symmetric/HMAC.keyGenerator|keyGenerator(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest.Digest>){}[0]
+    abstract fun keyDecoder(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest>): dev.whyoleg.cryptography.materials.key/KeyDecoder<dev.whyoleg.cryptography.algorithms.symmetric/HMAC.Key.Format, dev.whyoleg.cryptography.algorithms.symmetric/HMAC.Key> // dev.whyoleg.cryptography.algorithms.symmetric/HMAC.keyDecoder|keyDecoder(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>){}[0]
+    abstract fun keyGenerator(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest> = ...): dev.whyoleg.cryptography.materials.key/KeyGenerator<dev.whyoleg.cryptography.algorithms.symmetric/HMAC.Key> // dev.whyoleg.cryptography.algorithms.symmetric/HMAC.keyGenerator|keyGenerator(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>){}[0]
 
     abstract interface Key : dev.whyoleg.cryptography.materials.key/EncodableKey<dev.whyoleg.cryptography.algorithms.symmetric/HMAC.Key.Format> { // dev.whyoleg.cryptography.algorithms.symmetric/HMAC.Key|null[0]
         abstract fun signatureGenerator(): dev.whyoleg.cryptography.operations/SignatureGenerator // dev.whyoleg.cryptography.algorithms.symmetric/HMAC.Key.signatureGenerator|signatureGenerator(){}[0]
@@ -504,12 +497,19 @@ abstract interface dev.whyoleg.cryptography.algorithms.symmetric/HMAC : dev.whyo
     final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.symmetric/HMAC> // dev.whyoleg.cryptography.algorithms.symmetric/HMAC.Companion|null[0]
 }
 
+abstract interface dev.whyoleg.cryptography.algorithms/Digest : dev.whyoleg.cryptography/CryptographyAlgorithm { // dev.whyoleg.cryptography.algorithms/Digest|null[0]
+    abstract val id // dev.whyoleg.cryptography.algorithms/Digest.id|{}id[0]
+        abstract fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest> // dev.whyoleg.cryptography.algorithms/Digest.id.<get-id>|<get-id>(){}[0]
+
+    abstract fun hasher(): dev.whyoleg.cryptography.operations/Hasher // dev.whyoleg.cryptography.algorithms/Digest.hasher|hasher(){}[0]
+}
+
 abstract interface dev.whyoleg.cryptography.algorithms/PBKDF2 : dev.whyoleg.cryptography/CryptographyAlgorithm { // dev.whyoleg.cryptography.algorithms/PBKDF2|null[0]
     open val id // dev.whyoleg.cryptography.algorithms/PBKDF2.id|{}id[0]
         open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/PBKDF2> // dev.whyoleg.cryptography.algorithms/PBKDF2.id.<get-id>|<get-id>(){}[0]
 
-    abstract fun secretDerivation(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest/Digest>, kotlin/ByteArray, kotlin/Int, dev.whyoleg.cryptography/BinarySize): dev.whyoleg.cryptography.operations/SecretDerivation // dev.whyoleg.cryptography.algorithms/PBKDF2.secretDerivation|secretDerivation(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest.Digest>;kotlin.ByteArray;kotlin.Int;dev.whyoleg.cryptography.BinarySize){}[0]
-    open fun secretDerivation(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest/Digest>, kotlinx.io.bytestring/ByteString, kotlin/Int, dev.whyoleg.cryptography/BinarySize): dev.whyoleg.cryptography.operations/SecretDerivation // dev.whyoleg.cryptography.algorithms/PBKDF2.secretDerivation|secretDerivation(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest.Digest>;kotlinx.io.bytestring.ByteString;kotlin.Int;dev.whyoleg.cryptography.BinarySize){}[0]
+    abstract fun secretDerivation(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest>, kotlin/ByteArray, kotlin/Int, dev.whyoleg.cryptography/BinarySize): dev.whyoleg.cryptography.operations/SecretDerivation // dev.whyoleg.cryptography.algorithms/PBKDF2.secretDerivation|secretDerivation(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>;kotlin.ByteArray;kotlin.Int;dev.whyoleg.cryptography.BinarySize){}[0]
+    open fun secretDerivation(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest>, kotlinx.io.bytestring/ByteString, kotlin/Int, dev.whyoleg.cryptography/BinarySize): dev.whyoleg.cryptography.operations/SecretDerivation // dev.whyoleg.cryptography.algorithms/PBKDF2.secretDerivation|secretDerivation(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>;kotlinx.io.bytestring.ByteString;kotlin.Int;dev.whyoleg.cryptography.BinarySize){}[0]
 
     final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/PBKDF2> // dev.whyoleg.cryptography.algorithms/PBKDF2.Companion|null[0]
 }
@@ -680,22 +680,22 @@ open class dev.whyoleg.cryptography/CryptographyException : kotlin/RuntimeExcept
     constructor <init>(kotlin/Throwable?) // dev.whyoleg.cryptography/CryptographyException.<init>|<init>(kotlin.Throwable?){}[0]
 }
 
-final object dev.whyoleg.cryptography.algorithms.digest/MD5 : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest/Digest> // dev.whyoleg.cryptography.algorithms.digest/MD5|null[0]
+final object dev.whyoleg.cryptography.algorithms/MD5 : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest> // dev.whyoleg.cryptography.algorithms/MD5|null[0]
 
-final object dev.whyoleg.cryptography.algorithms.digest/SHA1 : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest/Digest> // dev.whyoleg.cryptography.algorithms.digest/SHA1|null[0]
+final object dev.whyoleg.cryptography.algorithms/SHA1 : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest> // dev.whyoleg.cryptography.algorithms/SHA1|null[0]
 
-final object dev.whyoleg.cryptography.algorithms.digest/SHA224 : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest/Digest> // dev.whyoleg.cryptography.algorithms.digest/SHA224|null[0]
+final object dev.whyoleg.cryptography.algorithms/SHA224 : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest> // dev.whyoleg.cryptography.algorithms/SHA224|null[0]
 
-final object dev.whyoleg.cryptography.algorithms.digest/SHA256 : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest/Digest> // dev.whyoleg.cryptography.algorithms.digest/SHA256|null[0]
+final object dev.whyoleg.cryptography.algorithms/SHA256 : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest> // dev.whyoleg.cryptography.algorithms/SHA256|null[0]
 
-final object dev.whyoleg.cryptography.algorithms.digest/SHA384 : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest/Digest> // dev.whyoleg.cryptography.algorithms.digest/SHA384|null[0]
+final object dev.whyoleg.cryptography.algorithms/SHA384 : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest> // dev.whyoleg.cryptography.algorithms/SHA384|null[0]
 
-final object dev.whyoleg.cryptography.algorithms.digest/SHA3_224 : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest/Digest> // dev.whyoleg.cryptography.algorithms.digest/SHA3_224|null[0]
+final object dev.whyoleg.cryptography.algorithms/SHA3_224 : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest> // dev.whyoleg.cryptography.algorithms/SHA3_224|null[0]
 
-final object dev.whyoleg.cryptography.algorithms.digest/SHA3_256 : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest/Digest> // dev.whyoleg.cryptography.algorithms.digest/SHA3_256|null[0]
+final object dev.whyoleg.cryptography.algorithms/SHA3_256 : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest> // dev.whyoleg.cryptography.algorithms/SHA3_256|null[0]
 
-final object dev.whyoleg.cryptography.algorithms.digest/SHA3_384 : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest/Digest> // dev.whyoleg.cryptography.algorithms.digest/SHA3_384|null[0]
+final object dev.whyoleg.cryptography.algorithms/SHA3_384 : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest> // dev.whyoleg.cryptography.algorithms/SHA3_384|null[0]
 
-final object dev.whyoleg.cryptography.algorithms.digest/SHA3_512 : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest/Digest> // dev.whyoleg.cryptography.algorithms.digest/SHA3_512|null[0]
+final object dev.whyoleg.cryptography.algorithms/SHA3_512 : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest> // dev.whyoleg.cryptography.algorithms/SHA3_512|null[0]
 
-final object dev.whyoleg.cryptography.algorithms.digest/SHA512 : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest/Digest> // dev.whyoleg.cryptography.algorithms.digest/SHA512|null[0]
+final object dev.whyoleg.cryptography.algorithms/SHA512 : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest> // dev.whyoleg.cryptography.algorithms/SHA512|null[0]

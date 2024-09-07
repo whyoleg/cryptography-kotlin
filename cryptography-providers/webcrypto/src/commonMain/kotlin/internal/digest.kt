@@ -5,7 +5,7 @@
 package dev.whyoleg.cryptography.providers.webcrypto.internal
 
 import dev.whyoleg.cryptography.*
-import dev.whyoleg.cryptography.algorithms.digest.*
+import dev.whyoleg.cryptography.algorithms.*
 
 internal fun CryptographyAlgorithmId<Digest>.blockSize(): Int = when (this) {
     SHA1   -> 64

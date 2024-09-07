@@ -5,7 +5,7 @@
 package dev.whyoleg.cryptography.providers.tests.algorithms.digest
 
 import dev.whyoleg.cryptography.*
-import dev.whyoleg.cryptography.algorithms.digest.*
+import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.providers.tests.api.*
 import dev.whyoleg.cryptography.random.*
 import kotlin.math.*

@@ -5,7 +5,7 @@
 package dev.whyoleg.cryptography.providers.apple.algorithms
 
 import dev.whyoleg.cryptography.*
-import dev.whyoleg.cryptography.algorithms.digest.*
+import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.apple.internal.*
 import kotlinx.cinterop.*

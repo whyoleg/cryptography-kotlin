@@ -6,8 +6,8 @@ package dev.whyoleg.cryptography.providers.webcrypto.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.BinarySize.Companion.bytes
+import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
-import dev.whyoleg.cryptography.algorithms.digest.*
 import dev.whyoleg.cryptography.bigint.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.webcrypto.internal.*

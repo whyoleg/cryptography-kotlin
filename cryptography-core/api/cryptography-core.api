@@ -74,6 +74,15 @@ public abstract interface class dev/whyoleg/cryptography/CryptographyProviderCon
 public abstract interface annotation class dev/whyoleg/cryptography/DelicateCryptographyApi : java/lang/annotation/Annotation {
 }
 
+public abstract interface class dev/whyoleg/cryptography/algorithms/Digest : dev/whyoleg/cryptography/CryptographyAlgorithm {
+	public abstract fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
+	public abstract fun hasher ()Ldev/whyoleg/cryptography/operations/Hasher;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/MD5 : dev/whyoleg/cryptography/CryptographyAlgorithmId {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/MD5;
+}
+
 public abstract interface class dev/whyoleg/cryptography/algorithms/PBKDF2 : dev/whyoleg/cryptography/CryptographyAlgorithm {
 	public static final field Companion Ldev/whyoleg/cryptography/algorithms/PBKDF2$Companion;
 	public fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
@@ -82,6 +91,42 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/PBKDF2 : dev
 }
 
 public final class dev/whyoleg/cryptography/algorithms/PBKDF2$Companion : dev/whyoleg/cryptography/CryptographyAlgorithmId {
+}
+
+public final class dev/whyoleg/cryptography/algorithms/SHA1 : dev/whyoleg/cryptography/CryptographyAlgorithmId {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/SHA1;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/SHA224 : dev/whyoleg/cryptography/CryptographyAlgorithmId {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/SHA224;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/SHA256 : dev/whyoleg/cryptography/CryptographyAlgorithmId {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/SHA256;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/SHA384 : dev/whyoleg/cryptography/CryptographyAlgorithmId {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/SHA384;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/SHA3_224 : dev/whyoleg/cryptography/CryptographyAlgorithmId {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/SHA3_224;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/SHA3_256 : dev/whyoleg/cryptography/CryptographyAlgorithmId {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/SHA3_256;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/SHA3_384 : dev/whyoleg/cryptography/CryptographyAlgorithmId {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/SHA3_384;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/SHA3_512 : dev/whyoleg/cryptography/CryptographyAlgorithmId {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/SHA3_512;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/SHA512 : dev/whyoleg/cryptography/CryptographyAlgorithmId {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/SHA512;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/EC : dev/whyoleg/cryptography/CryptographyAlgorithm {
@@ -426,51 +471,6 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/R
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$RAW$PublicKey : dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicKey {
 	public abstract fun encryptor ()Ldev/whyoleg/cryptography/operations/Encryptor;
-}
-
-public abstract interface class dev/whyoleg/cryptography/algorithms/digest/Digest : dev/whyoleg/cryptography/CryptographyAlgorithm {
-	public abstract fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
-	public abstract fun hasher ()Ldev/whyoleg/cryptography/operations/Hasher;
-}
-
-public final class dev/whyoleg/cryptography/algorithms/digest/MD5 : dev/whyoleg/cryptography/CryptographyAlgorithmId {
-	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/digest/MD5;
-}
-
-public final class dev/whyoleg/cryptography/algorithms/digest/SHA1 : dev/whyoleg/cryptography/CryptographyAlgorithmId {
-	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/digest/SHA1;
-}
-
-public final class dev/whyoleg/cryptography/algorithms/digest/SHA224 : dev/whyoleg/cryptography/CryptographyAlgorithmId {
-	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/digest/SHA224;
-}
-
-public final class dev/whyoleg/cryptography/algorithms/digest/SHA256 : dev/whyoleg/cryptography/CryptographyAlgorithmId {
-	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/digest/SHA256;
-}
-
-public final class dev/whyoleg/cryptography/algorithms/digest/SHA384 : dev/whyoleg/cryptography/CryptographyAlgorithmId {
-	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/digest/SHA384;
-}
-
-public final class dev/whyoleg/cryptography/algorithms/digest/SHA3_224 : dev/whyoleg/cryptography/CryptographyAlgorithmId {
-	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/digest/SHA3_224;
-}
-
-public final class dev/whyoleg/cryptography/algorithms/digest/SHA3_256 : dev/whyoleg/cryptography/CryptographyAlgorithmId {
-	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/digest/SHA3_256;
-}
-
-public final class dev/whyoleg/cryptography/algorithms/digest/SHA3_384 : dev/whyoleg/cryptography/CryptographyAlgorithmId {
-	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/digest/SHA3_384;
-}
-
-public final class dev/whyoleg/cryptography/algorithms/digest/SHA3_512 : dev/whyoleg/cryptography/CryptographyAlgorithmId {
-	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/digest/SHA3_512;
-}
-
-public final class dev/whyoleg/cryptography/algorithms/digest/SHA512 : dev/whyoleg/cryptography/CryptographyAlgorithmId {
-	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/digest/SHA512;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES : dev/whyoleg/cryptography/CryptographyAlgorithm {

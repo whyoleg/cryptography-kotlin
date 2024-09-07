@@ -4,7 +4,7 @@
 
 @file:OptIn(CryptographyProviderApi::class)
 
-package dev.whyoleg.cryptography.algorithms.digest
+package dev.whyoleg.cryptography.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.operations.*
