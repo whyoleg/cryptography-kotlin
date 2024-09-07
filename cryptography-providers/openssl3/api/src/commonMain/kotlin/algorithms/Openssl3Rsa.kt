@@ -6,7 +6,7 @@ package dev.whyoleg.cryptography.providers.openssl3.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.algorithms.asymmetric.RSA
+import dev.whyoleg.cryptography.algorithms.RSA
 import dev.whyoleg.cryptography.bigint.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
@@ -30,12 +30,12 @@ internal abstract class Openssl3Rsa<PublicK : RSA.PublicKey, PrivateK : RSA.Priv
         override fun inputType(format: RSA.PublicKey.Format): String = when (format) {
             RSA.PublicKey.Format.DER, RSA.PublicKey.Format.DER.PKCS1 -> "DER"
             RSA.PublicKey.Format.PEM, RSA.PublicKey.Format.PEM.PKCS1 -> "PEM"
-            RSA.PublicKey.Format.JWK                               -> error("JWK format is not supported")
+            RSA.PublicKey.Format.JWK -> error("JWK format is not supported")
         }
 
         override fun inputStruct(format: RSA.PublicKey.Format): String = when (format) {
             RSA.PublicKey.Format.DER.PKCS1, RSA.PublicKey.Format.PEM.PKCS1 -> "pkcs1"
-            else                                                       -> super.inputStruct(format)
+            else -> super.inputStruct(format)
         }
 
         override fun wrapKey(key: CPointer<EVP_PKEY>): PublicK = wrapPublicKey(hashAlgorithm, key)
@@ -50,12 +50,12 @@ internal abstract class Openssl3Rsa<PublicK : RSA.PublicKey, PrivateK : RSA.Priv
         override fun inputType(format: RSA.PrivateKey.Format): String = when (format) {
             RSA.PrivateKey.Format.DER, RSA.PrivateKey.Format.DER.PKCS1 -> "DER"
             RSA.PrivateKey.Format.PEM, RSA.PrivateKey.Format.PEM.PKCS1 -> "PEM"
-            RSA.PrivateKey.Format.JWK                                -> error("JWK format is not supported")
+            RSA.PrivateKey.Format.JWK -> error("JWK format is not supported")
         }
 
         override fun inputStruct(format: RSA.PrivateKey.Format): String = when (format) {
             RSA.PrivateKey.Format.DER.PKCS1, RSA.PrivateKey.Format.PEM.PKCS1 -> "pkcs1"
-            else                                                         -> super.inputStruct(format)
+            else -> super.inputStruct(format)
         }
 
         override fun wrapKey(key: CPointer<EVP_PKEY>): PrivateK = wrapPrivateKey(hashAlgorithm, key)
@@ -90,12 +90,12 @@ internal abstract class Openssl3Rsa<PublicK : RSA.PublicKey, PrivateK : RSA.Priv
         override fun outputType(format: RSA.PublicKey.Format): String = when (format) {
             RSA.PublicKey.Format.DER, RSA.PublicKey.Format.DER.PKCS1 -> "DER"
             RSA.PublicKey.Format.PEM, RSA.PublicKey.Format.PEM.PKCS1 -> "PEM"
-            RSA.PublicKey.Format.JWK                               -> error("JWK format is not supported")
+            RSA.PublicKey.Format.JWK -> error("JWK format is not supported")
         }
 
         override fun outputStruct(format: RSA.PublicKey.Format): String = when (format) {
             RSA.PublicKey.Format.DER.PKCS1, RSA.PublicKey.Format.PEM.PKCS1 -> "pkcs1"
-            else                                                       -> super.outputStruct(format)
+            else -> super.outputStruct(format)
         }
     }
 
@@ -105,12 +105,12 @@ internal abstract class Openssl3Rsa<PublicK : RSA.PublicKey, PrivateK : RSA.Priv
         override fun outputType(format: RSA.PrivateKey.Format): String = when (format) {
             RSA.PrivateKey.Format.DER, RSA.PrivateKey.Format.DER.PKCS1 -> "DER"
             RSA.PrivateKey.Format.PEM, RSA.PrivateKey.Format.PEM.PKCS1 -> "PEM"
-            RSA.PrivateKey.Format.JWK                                -> error("JWK format is not supported")
+            RSA.PrivateKey.Format.JWK -> error("JWK format is not supported")
         }
 
         override fun outputStruct(format: RSA.PrivateKey.Format): String = when (format) {
             RSA.PrivateKey.Format.DER.PKCS1, RSA.PrivateKey.Format.PEM.PKCS1 -> "pkcs1"
-            else                                                         -> super.outputStruct(format)
+            else -> super.outputStruct(format)
         }
     }
 }

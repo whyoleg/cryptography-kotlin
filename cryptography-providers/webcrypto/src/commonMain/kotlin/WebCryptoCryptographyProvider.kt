@@ -6,7 +6,6 @@ package dev.whyoleg.cryptography.providers.webcrypto
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.providers.webcrypto.algorithms.*
 
 internal val defaultProvider = lazy { WebCryptoCryptographyProvider }

@@ -5,7 +5,7 @@
 package dev.whyoleg.cryptography.providers.tests.algorithms.asymmetric
 
 import dev.whyoleg.cryptography.*
-import dev.whyoleg.cryptography.algorithms.asymmetric.*
+import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.providers.tests.api.compatibility.*
 import dev.whyoleg.cryptography.random.*
 import kotlinx.io.bytestring.*
