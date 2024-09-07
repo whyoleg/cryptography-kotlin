@@ -475,7 +475,7 @@ abstract interface dev.whyoleg.cryptography.algorithms.digest/Digest : dev.whyol
     abstract val id // dev.whyoleg.cryptography.algorithms.digest/Digest.id|{}id[0]
         abstract fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest/Digest> // dev.whyoleg.cryptography.algorithms.digest/Digest.id.<get-id>|<get-id>(){}[0]
 
-    abstract fun hasher(): dev.whyoleg.cryptography.operations.hash/Hasher // dev.whyoleg.cryptography.algorithms.digest/Digest.hasher|hasher(){}[0]
+    abstract fun hasher(): dev.whyoleg.cryptography.operations/Hasher // dev.whyoleg.cryptography.algorithms.digest/Digest.hasher|hasher(){}[0]
 }
 
 abstract interface dev.whyoleg.cryptography.algorithms.symmetric/HMAC : dev.whyoleg.cryptography/CryptographyAlgorithm { // dev.whyoleg.cryptography.algorithms.symmetric/HMAC|null[0]
@@ -563,13 +563,6 @@ abstract interface dev.whyoleg.cryptography.operations.cipher/Encryptor { // dev
     open suspend fun encrypt(kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations.cipher/Encryptor.encrypt|encrypt(kotlinx.io.bytestring.ByteString){}[0]
 }
 
-abstract interface dev.whyoleg.cryptography.operations.hash/Hasher { // dev.whyoleg.cryptography.operations.hash/Hasher|null[0]
-    abstract fun hashBlocking(kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.operations.hash/Hasher.hashBlocking|hashBlocking(kotlin.ByteArray){}[0]
-    open fun hashBlocking(kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations.hash/Hasher.hashBlocking|hashBlocking(kotlinx.io.bytestring.ByteString){}[0]
-    open suspend fun hash(kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.operations.hash/Hasher.hash|hash(kotlin.ByteArray){}[0]
-    open suspend fun hash(kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations.hash/Hasher.hash|hash(kotlinx.io.bytestring.ByteString){}[0]
-}
-
 abstract interface dev.whyoleg.cryptography.operations.signature/SignatureGenerator { // dev.whyoleg.cryptography.operations.signature/SignatureGenerator|null[0]
     abstract fun generateSignatureBlocking(kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.operations.signature/SignatureGenerator.generateSignatureBlocking|generateSignatureBlocking(kotlin.ByteArray){}[0]
     open fun generateSignatureBlocking(kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations.signature/SignatureGenerator.generateSignatureBlocking|generateSignatureBlocking(kotlinx.io.bytestring.ByteString){}[0]
@@ -582,6 +575,13 @@ abstract interface dev.whyoleg.cryptography.operations.signature/SignatureVerifi
     open fun verifySignatureBlocking(kotlinx.io.bytestring/ByteString, kotlinx.io.bytestring/ByteString): kotlin/Boolean // dev.whyoleg.cryptography.operations.signature/SignatureVerifier.verifySignatureBlocking|verifySignatureBlocking(kotlinx.io.bytestring.ByteString;kotlinx.io.bytestring.ByteString){}[0]
     open suspend fun verifySignature(kotlin/ByteArray, kotlin/ByteArray): kotlin/Boolean // dev.whyoleg.cryptography.operations.signature/SignatureVerifier.verifySignature|verifySignature(kotlin.ByteArray;kotlin.ByteArray){}[0]
     open suspend fun verifySignature(kotlinx.io.bytestring/ByteString, kotlinx.io.bytestring/ByteString): kotlin/Boolean // dev.whyoleg.cryptography.operations.signature/SignatureVerifier.verifySignature|verifySignature(kotlinx.io.bytestring.ByteString;kotlinx.io.bytestring.ByteString){}[0]
+}
+
+abstract interface dev.whyoleg.cryptography.operations/Hasher { // dev.whyoleg.cryptography.operations/Hasher|null[0]
+    abstract fun hashBlocking(kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.operations/Hasher.hashBlocking|hashBlocking(kotlin.ByteArray){}[0]
+    open fun hashBlocking(kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations/Hasher.hashBlocking|hashBlocking(kotlinx.io.bytestring.ByteString){}[0]
+    open suspend fun hash(kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.operations/Hasher.hash|hash(kotlin.ByteArray){}[0]
+    open suspend fun hash(kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations/Hasher.hash|hash(kotlinx.io.bytestring.ByteString){}[0]
 }
 
 abstract interface dev.whyoleg.cryptography.operations/SecretDerivation { // dev.whyoleg.cryptography.operations/SecretDerivation|null[0]

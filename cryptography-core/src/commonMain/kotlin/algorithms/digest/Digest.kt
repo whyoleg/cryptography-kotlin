@@ -7,7 +7,7 @@
 package dev.whyoleg.cryptography.algorithms.digest
 
 import dev.whyoleg.cryptography.*
-import dev.whyoleg.cryptography.operations.hash.*
+import dev.whyoleg.cryptography.operations.*
 
 //simple hash algorithms, that can be used in HMAC/ECDSA contexts
 @SubclassOptInRequired(CryptographyProviderApi::class)
