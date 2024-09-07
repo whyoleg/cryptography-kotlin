@@ -272,11 +272,11 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/R
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$OAEP$PrivateKey : dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PrivateKey {
-	public abstract fun decryptor ()Ldev/whyoleg/cryptography/operations/cipher/AuthenticatedDecryptor;
+	public abstract fun decryptor ()Ldev/whyoleg/cryptography/operations/AuthenticatedDecryptor;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$OAEP$PublicKey : dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicKey {
-	public abstract fun encryptor ()Ldev/whyoleg/cryptography/operations/cipher/AuthenticatedEncryptor;
+	public abstract fun encryptor ()Ldev/whyoleg/cryptography/operations/AuthenticatedEncryptor;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PKCS1 : dev/whyoleg/cryptography/algorithms/asymmetric/RSA {
@@ -291,12 +291,12 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/R
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PKCS1$PrivateKey : dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PrivateKey {
-	public abstract fun decryptor ()Ldev/whyoleg/cryptography/operations/cipher/Decryptor;
+	public abstract fun decryptor ()Ldev/whyoleg/cryptography/operations/Decryptor;
 	public abstract fun signatureGenerator ()Ldev/whyoleg/cryptography/operations/SignatureGenerator;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PKCS1$PublicKey : dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicKey {
-	public abstract fun encryptor ()Ldev/whyoleg/cryptography/operations/cipher/Encryptor;
+	public abstract fun encryptor ()Ldev/whyoleg/cryptography/operations/Encryptor;
 	public abstract fun signatureVerifier ()Ldev/whyoleg/cryptography/operations/SignatureVerifier;
 }
 
@@ -421,11 +421,11 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/R
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$RAW$PrivateKey : dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PrivateKey {
-	public abstract fun decryptor ()Ldev/whyoleg/cryptography/operations/cipher/Decryptor;
+	public abstract fun decryptor ()Ldev/whyoleg/cryptography/operations/Decryptor;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/asymmetric/RSA$RAW$PublicKey : dev/whyoleg/cryptography/algorithms/asymmetric/RSA$PublicKey {
-	public abstract fun encryptor ()Ldev/whyoleg/cryptography/operations/cipher/Encryptor;
+	public abstract fun encryptor ()Ldev/whyoleg/cryptography/operations/Encryptor;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/digest/Digest : dev/whyoleg/cryptography/CryptographyAlgorithm {
@@ -515,8 +515,8 @@ public final class dev/whyoleg/cryptography/algorithms/symmetric/AES$ECB$Compani
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES$ECB$Key : dev/whyoleg/cryptography/algorithms/symmetric/AES$Key {
-	public abstract fun cipher (Z)Ldev/whyoleg/cryptography/operations/cipher/Cipher;
-	public static synthetic fun cipher$default (Ldev/whyoleg/cryptography/algorithms/symmetric/AES$ECB$Key;ZILjava/lang/Object;)Ldev/whyoleg/cryptography/operations/cipher/Cipher;
+	public abstract fun cipher (Z)Ldev/whyoleg/cryptography/operations/Cipher;
+	public static synthetic fun cipher$default (Ldev/whyoleg/cryptography/algorithms/symmetric/AES$ECB$Key;ZILjava/lang/Object;)Ldev/whyoleg/cryptography/operations/Cipher;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES$GCM : dev/whyoleg/cryptography/algorithms/symmetric/AES {
@@ -528,14 +528,14 @@ public final class dev/whyoleg/cryptography/algorithms/symmetric/AES$GCM$Compani
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES$GCM$Key : dev/whyoleg/cryptography/algorithms/symmetric/AES$Key {
-	public abstract fun cipher-6q1zMKY (I)Ldev/whyoleg/cryptography/operations/cipher/AuthenticatedCipher;
-	public static synthetic fun cipher-6q1zMKY$default (Ldev/whyoleg/cryptography/algorithms/symmetric/AES$GCM$Key;IILjava/lang/Object;)Ldev/whyoleg/cryptography/operations/cipher/AuthenticatedCipher;
+	public abstract fun cipher-6q1zMKY (I)Ldev/whyoleg/cryptography/operations/AuthenticatedCipher;
+	public static synthetic fun cipher-6q1zMKY$default (Ldev/whyoleg/cryptography/algorithms/symmetric/AES$GCM$Key;IILjava/lang/Object;)Ldev/whyoleg/cryptography/operations/AuthenticatedCipher;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES$IvCipher : dev/whyoleg/cryptography/algorithms/symmetric/AES$IvDecryptor, dev/whyoleg/cryptography/algorithms/symmetric/AES$IvEncryptor {
 }
 
-public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES$IvDecryptor : dev/whyoleg/cryptography/operations/cipher/Decryptor {
+public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES$IvDecryptor : dev/whyoleg/cryptography/operations/Decryptor {
 	public fun decrypt (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun decrypt ([B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun decrypt$suspendImpl (Ldev/whyoleg/cryptography/algorithms/symmetric/AES$IvDecryptor;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -544,7 +544,7 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AE
 	public abstract fun decryptBlocking ([B[B)[B
 }
 
-public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES$IvEncryptor : dev/whyoleg/cryptography/operations/cipher/Encryptor {
+public abstract interface class dev/whyoleg/cryptography/algorithms/symmetric/AES$IvEncryptor : dev/whyoleg/cryptography/operations/Encryptor {
 	public fun encrypt (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun encrypt ([B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun encrypt$suspendImpl (Ldev/whyoleg/cryptography/algorithms/symmetric/AES$IvEncryptor;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -656,6 +656,60 @@ public abstract interface class dev/whyoleg/cryptography/materials/key/KeyGenera
 	public abstract fun generateKeyBlocking ()Ldev/whyoleg/cryptography/materials/key/Key;
 }
 
+public abstract interface class dev/whyoleg/cryptography/operations/AuthenticatedCipher : dev/whyoleg/cryptography/operations/AuthenticatedDecryptor, dev/whyoleg/cryptography/operations/AuthenticatedEncryptor, dev/whyoleg/cryptography/operations/Cipher {
+}
+
+public abstract interface class dev/whyoleg/cryptography/operations/AuthenticatedDecryptor : dev/whyoleg/cryptography/operations/Decryptor {
+	public fun decrypt (Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun decrypt (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun decrypt ([BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun decrypt ([B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun decrypt$suspendImpl (Ldev/whyoleg/cryptography/operations/AuthenticatedDecryptor;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun decrypt$suspendImpl (Ldev/whyoleg/cryptography/operations/AuthenticatedDecryptor;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun decrypt$suspendImpl (Ldev/whyoleg/cryptography/operations/AuthenticatedDecryptor;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun decrypt$suspendImpl (Ldev/whyoleg/cryptography/operations/AuthenticatedDecryptor;[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun decryptBlocking (Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
+	public fun decryptBlocking (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
+	public fun decryptBlocking ([B)[B
+	public abstract fun decryptBlocking ([B[B)[B
+}
+
+public abstract interface class dev/whyoleg/cryptography/operations/AuthenticatedEncryptor : dev/whyoleg/cryptography/operations/Encryptor {
+	public fun encrypt (Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun encrypt (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun encrypt ([BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun encrypt ([B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun encrypt$suspendImpl (Ldev/whyoleg/cryptography/operations/AuthenticatedEncryptor;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun encrypt$suspendImpl (Ldev/whyoleg/cryptography/operations/AuthenticatedEncryptor;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun encrypt$suspendImpl (Ldev/whyoleg/cryptography/operations/AuthenticatedEncryptor;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun encrypt$suspendImpl (Ldev/whyoleg/cryptography/operations/AuthenticatedEncryptor;[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun encryptBlocking (Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
+	public fun encryptBlocking (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
+	public fun encryptBlocking ([B)[B
+	public abstract fun encryptBlocking ([B[B)[B
+}
+
+public abstract interface class dev/whyoleg/cryptography/operations/Cipher : dev/whyoleg/cryptography/operations/Decryptor, dev/whyoleg/cryptography/operations/Encryptor {
+}
+
+public abstract interface class dev/whyoleg/cryptography/operations/Decryptor {
+	public fun decrypt (Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun decrypt ([BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun decrypt$suspendImpl (Ldev/whyoleg/cryptography/operations/Decryptor;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun decrypt$suspendImpl (Ldev/whyoleg/cryptography/operations/Decryptor;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun decryptBlocking (Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
+	public abstract fun decryptBlocking ([B)[B
+}
+
+public abstract interface class dev/whyoleg/cryptography/operations/Encryptor {
+	public fun encrypt (Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun encrypt ([BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun encrypt$suspendImpl (Ldev/whyoleg/cryptography/operations/Encryptor;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun encrypt$suspendImpl (Ldev/whyoleg/cryptography/operations/Encryptor;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun encryptBlocking (Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
+	public abstract fun encryptBlocking ([B)[B
+}
+
 public abstract interface class dev/whyoleg/cryptography/operations/Hasher {
 	public fun hash (Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun hash ([BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -696,59 +750,5 @@ public abstract interface class dev/whyoleg/cryptography/operations/SignatureVer
 	public static synthetic fun verifySignature$suspendImpl (Ldev/whyoleg/cryptography/operations/SignatureVerifier;[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun verifySignatureBlocking (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;)Z
 	public abstract fun verifySignatureBlocking ([B[B)Z
-}
-
-public abstract interface class dev/whyoleg/cryptography/operations/cipher/AuthenticatedCipher : dev/whyoleg/cryptography/operations/cipher/AuthenticatedDecryptor, dev/whyoleg/cryptography/operations/cipher/AuthenticatedEncryptor, dev/whyoleg/cryptography/operations/cipher/Cipher {
-}
-
-public abstract interface class dev/whyoleg/cryptography/operations/cipher/AuthenticatedDecryptor : dev/whyoleg/cryptography/operations/cipher/Decryptor {
-	public fun decrypt (Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun decrypt (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun decrypt ([BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun decrypt ([B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun decrypt$suspendImpl (Ldev/whyoleg/cryptography/operations/cipher/AuthenticatedDecryptor;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun decrypt$suspendImpl (Ldev/whyoleg/cryptography/operations/cipher/AuthenticatedDecryptor;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun decrypt$suspendImpl (Ldev/whyoleg/cryptography/operations/cipher/AuthenticatedDecryptor;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun decrypt$suspendImpl (Ldev/whyoleg/cryptography/operations/cipher/AuthenticatedDecryptor;[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun decryptBlocking (Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
-	public fun decryptBlocking (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
-	public fun decryptBlocking ([B)[B
-	public abstract fun decryptBlocking ([B[B)[B
-}
-
-public abstract interface class dev/whyoleg/cryptography/operations/cipher/AuthenticatedEncryptor : dev/whyoleg/cryptography/operations/cipher/Encryptor {
-	public fun encrypt (Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun encrypt (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun encrypt ([BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun encrypt ([B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun encrypt$suspendImpl (Ldev/whyoleg/cryptography/operations/cipher/AuthenticatedEncryptor;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun encrypt$suspendImpl (Ldev/whyoleg/cryptography/operations/cipher/AuthenticatedEncryptor;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun encrypt$suspendImpl (Ldev/whyoleg/cryptography/operations/cipher/AuthenticatedEncryptor;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun encrypt$suspendImpl (Ldev/whyoleg/cryptography/operations/cipher/AuthenticatedEncryptor;[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun encryptBlocking (Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
-	public fun encryptBlocking (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
-	public fun encryptBlocking ([B)[B
-	public abstract fun encryptBlocking ([B[B)[B
-}
-
-public abstract interface class dev/whyoleg/cryptography/operations/cipher/Cipher : dev/whyoleg/cryptography/operations/cipher/Decryptor, dev/whyoleg/cryptography/operations/cipher/Encryptor {
-}
-
-public abstract interface class dev/whyoleg/cryptography/operations/cipher/Decryptor {
-	public fun decrypt (Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun decrypt ([BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun decrypt$suspendImpl (Ldev/whyoleg/cryptography/operations/cipher/Decryptor;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun decrypt$suspendImpl (Ldev/whyoleg/cryptography/operations/cipher/Decryptor;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun decryptBlocking (Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
-	public abstract fun decryptBlocking ([B)[B
-}
-
-public abstract interface class dev/whyoleg/cryptography/operations/cipher/Encryptor {
-	public fun encrypt (Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun encrypt ([BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun encrypt$suspendImpl (Ldev/whyoleg/cryptography/operations/cipher/Encryptor;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun encrypt$suspendImpl (Ldev/whyoleg/cryptography/operations/cipher/Encryptor;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun encryptBlocking (Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
-	public abstract fun encryptBlocking ([B)[B
 }
 

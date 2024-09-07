@@ -7,7 +7,7 @@ package dev.whyoleg.cryptography.algorithms.symmetric
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.BinarySize.Companion.bits
 import dev.whyoleg.cryptography.materials.key.*
-import dev.whyoleg.cryptography.operations.cipher.*
+import dev.whyoleg.cryptography.operations.*
 import kotlinx.io.bytestring.*
 
 @SubclassOptInRequired(CryptographyProviderApi::class)
