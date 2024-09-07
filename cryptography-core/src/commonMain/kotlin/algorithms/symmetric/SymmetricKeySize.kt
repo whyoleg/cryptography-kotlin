@@ -24,7 +24,7 @@ public value class SymmetricKeySize
 constructor(public val value: BinarySize) {
     @Deprecated(
         "Replaced by AES.Key.Size as it's not really needed outside of AES",
-        ReplaceWith("AES.Key.Size", "dev.whyoleg.cryptography.algorithms.symmetric.AES"),
+        ReplaceWith("AES.Key.Size", "dev.whyoleg.cryptography.algorithms.AES"),
         DeprecationLevel.ERROR
     )
     public companion object {

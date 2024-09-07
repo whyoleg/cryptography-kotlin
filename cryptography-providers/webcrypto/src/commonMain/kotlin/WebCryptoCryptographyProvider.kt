@@ -7,7 +7,6 @@ package dev.whyoleg.cryptography.providers.webcrypto
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
-import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.providers.webcrypto.algorithms.*
 
 internal val defaultProvider = lazy { WebCryptoCryptographyProvider }
@@ -23,11 +22,11 @@ internal object WebCryptoCryptographyProvider : CryptographyProvider() {
         SHA256    -> WebCryptoDigest.sha256
         SHA384    -> WebCryptoDigest.sha384
         SHA512    -> WebCryptoDigest.sha512
-        HMAC      -> WebCryptoHmac
-        AES.CBC   -> WebCryptoAesCbc
-        AES.CTR -> WebCryptoAesCtr
-        AES.GCM   -> WebCryptoAesGcm
-        RSA.OAEP  -> WebCryptoRsaOaep
+        HMAC     -> WebCryptoHmac
+        AES.CBC  -> WebCryptoAesCbc
+        AES.CTR  -> WebCryptoAesCtr
+        AES.GCM  -> WebCryptoAesGcm
+        RSA.OAEP -> WebCryptoRsaOaep
         RSA.PSS   -> WebCryptoRsaPss
         RSA.PKCS1 -> WebCryptoRsaPkcs1
         ECDSA     -> WebCryptoEcdsa

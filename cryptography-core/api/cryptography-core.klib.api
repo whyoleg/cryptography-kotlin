@@ -310,90 +310,90 @@ abstract interface <#A: dev.whyoleg.cryptography.algorithms.asymmetric/RSA.Publi
     }
 }
 
-abstract interface <#A: dev.whyoleg.cryptography.algorithms.symmetric/AES.Key> dev.whyoleg.cryptography.algorithms.symmetric/AES : dev.whyoleg.cryptography/CryptographyAlgorithm { // dev.whyoleg.cryptography.algorithms.symmetric/AES|null[0]
-    abstract fun keyDecoder(): dev.whyoleg.cryptography.materials.key/KeyDecoder<dev.whyoleg.cryptography.algorithms.symmetric/AES.Key.Format, #A> // dev.whyoleg.cryptography.algorithms.symmetric/AES.keyDecoder|keyDecoder(){}[0]
-    abstract fun keyGenerator(dev.whyoleg.cryptography/BinarySize = ...): dev.whyoleg.cryptography.materials.key/KeyGenerator<#A> // dev.whyoleg.cryptography.algorithms.symmetric/AES.keyGenerator|keyGenerator(dev.whyoleg.cryptography.BinarySize){}[0]
-    open fun keyGenerator(dev.whyoleg.cryptography.algorithms.symmetric/SymmetricKeySize = ...): dev.whyoleg.cryptography.materials.key/KeyGenerator<#A> // dev.whyoleg.cryptography.algorithms.symmetric/AES.keyGenerator|keyGenerator(dev.whyoleg.cryptography.algorithms.symmetric.SymmetricKeySize){}[0]
+abstract interface <#A: dev.whyoleg.cryptography.algorithms/AES.Key> dev.whyoleg.cryptography.algorithms/AES : dev.whyoleg.cryptography/CryptographyAlgorithm { // dev.whyoleg.cryptography.algorithms/AES|null[0]
+    abstract fun keyDecoder(): dev.whyoleg.cryptography.materials.key/KeyDecoder<dev.whyoleg.cryptography.algorithms/AES.Key.Format, #A> // dev.whyoleg.cryptography.algorithms/AES.keyDecoder|keyDecoder(){}[0]
+    abstract fun keyGenerator(dev.whyoleg.cryptography/BinarySize = ...): dev.whyoleg.cryptography.materials.key/KeyGenerator<#A> // dev.whyoleg.cryptography.algorithms/AES.keyGenerator|keyGenerator(dev.whyoleg.cryptography.BinarySize){}[0]
+    open fun keyGenerator(dev.whyoleg.cryptography.algorithms.symmetric/SymmetricKeySize = ...): dev.whyoleg.cryptography.materials.key/KeyGenerator<#A> // dev.whyoleg.cryptography.algorithms/AES.keyGenerator|keyGenerator(dev.whyoleg.cryptography.algorithms.symmetric.SymmetricKeySize){}[0]
 
-    abstract interface CBC : dev.whyoleg.cryptography.algorithms.symmetric/AES<dev.whyoleg.cryptography.algorithms.symmetric/AES.CBC.Key> { // dev.whyoleg.cryptography.algorithms.symmetric/AES.CBC|null[0]
-        open val id // dev.whyoleg.cryptography.algorithms.symmetric/AES.CBC.id|{}id[0]
-            open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.symmetric/AES.CBC> // dev.whyoleg.cryptography.algorithms.symmetric/AES.CBC.id.<get-id>|<get-id>(){}[0]
+    abstract interface CBC : dev.whyoleg.cryptography.algorithms/AES<dev.whyoleg.cryptography.algorithms/AES.CBC.Key> { // dev.whyoleg.cryptography.algorithms/AES.CBC|null[0]
+        open val id // dev.whyoleg.cryptography.algorithms/AES.CBC.id|{}id[0]
+            open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/AES.CBC> // dev.whyoleg.cryptography.algorithms/AES.CBC.id.<get-id>|<get-id>(){}[0]
 
-        abstract interface Key : dev.whyoleg.cryptography.algorithms.symmetric/AES.Key { // dev.whyoleg.cryptography.algorithms.symmetric/AES.CBC.Key|null[0]
-            abstract fun cipher(kotlin/Boolean = ...): dev.whyoleg.cryptography.algorithms.symmetric/AES.IvCipher // dev.whyoleg.cryptography.algorithms.symmetric/AES.CBC.Key.cipher|cipher(kotlin.Boolean){}[0]
+        abstract interface Key : dev.whyoleg.cryptography.algorithms/AES.Key { // dev.whyoleg.cryptography.algorithms/AES.CBC.Key|null[0]
+            abstract fun cipher(kotlin/Boolean = ...): dev.whyoleg.cryptography.algorithms/AES.IvCipher // dev.whyoleg.cryptography.algorithms/AES.CBC.Key.cipher|cipher(kotlin.Boolean){}[0]
         }
 
-        final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.symmetric/AES.CBC> // dev.whyoleg.cryptography.algorithms.symmetric/AES.CBC.Companion|null[0]
+        final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/AES.CBC> // dev.whyoleg.cryptography.algorithms/AES.CBC.Companion|null[0]
     }
 
-    abstract interface CTR : dev.whyoleg.cryptography.algorithms.symmetric/AES<dev.whyoleg.cryptography.algorithms.symmetric/AES.CTR.Key> { // dev.whyoleg.cryptography.algorithms.symmetric/AES.CTR|null[0]
-        open val id // dev.whyoleg.cryptography.algorithms.symmetric/AES.CTR.id|{}id[0]
-            open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.symmetric/AES.CTR> // dev.whyoleg.cryptography.algorithms.symmetric/AES.CTR.id.<get-id>|<get-id>(){}[0]
+    abstract interface CTR : dev.whyoleg.cryptography.algorithms/AES<dev.whyoleg.cryptography.algorithms/AES.CTR.Key> { // dev.whyoleg.cryptography.algorithms/AES.CTR|null[0]
+        open val id // dev.whyoleg.cryptography.algorithms/AES.CTR.id|{}id[0]
+            open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/AES.CTR> // dev.whyoleg.cryptography.algorithms/AES.CTR.id.<get-id>|<get-id>(){}[0]
 
-        abstract interface Key : dev.whyoleg.cryptography.algorithms.symmetric/AES.Key { // dev.whyoleg.cryptography.algorithms.symmetric/AES.CTR.Key|null[0]
-            abstract fun cipher(): dev.whyoleg.cryptography.algorithms.symmetric/AES.IvCipher // dev.whyoleg.cryptography.algorithms.symmetric/AES.CTR.Key.cipher|cipher(){}[0]
+        abstract interface Key : dev.whyoleg.cryptography.algorithms/AES.Key { // dev.whyoleg.cryptography.algorithms/AES.CTR.Key|null[0]
+            abstract fun cipher(): dev.whyoleg.cryptography.algorithms/AES.IvCipher // dev.whyoleg.cryptography.algorithms/AES.CTR.Key.cipher|cipher(){}[0]
         }
 
-        final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.symmetric/AES.CTR> // dev.whyoleg.cryptography.algorithms.symmetric/AES.CTR.Companion|null[0]
+        final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/AES.CTR> // dev.whyoleg.cryptography.algorithms/AES.CTR.Companion|null[0]
     }
 
-    abstract interface ECB : dev.whyoleg.cryptography.algorithms.symmetric/AES<dev.whyoleg.cryptography.algorithms.symmetric/AES.ECB.Key> { // dev.whyoleg.cryptography.algorithms.symmetric/AES.ECB|null[0]
-        open val id // dev.whyoleg.cryptography.algorithms.symmetric/AES.ECB.id|{}id[0]
-            open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.symmetric/AES.ECB> // dev.whyoleg.cryptography.algorithms.symmetric/AES.ECB.id.<get-id>|<get-id>(){}[0]
+    abstract interface ECB : dev.whyoleg.cryptography.algorithms/AES<dev.whyoleg.cryptography.algorithms/AES.ECB.Key> { // dev.whyoleg.cryptography.algorithms/AES.ECB|null[0]
+        open val id // dev.whyoleg.cryptography.algorithms/AES.ECB.id|{}id[0]
+            open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/AES.ECB> // dev.whyoleg.cryptography.algorithms/AES.ECB.id.<get-id>|<get-id>(){}[0]
 
-        abstract interface Key : dev.whyoleg.cryptography.algorithms.symmetric/AES.Key { // dev.whyoleg.cryptography.algorithms.symmetric/AES.ECB.Key|null[0]
-            abstract fun cipher(kotlin/Boolean = ...): dev.whyoleg.cryptography.operations/Cipher // dev.whyoleg.cryptography.algorithms.symmetric/AES.ECB.Key.cipher|cipher(kotlin.Boolean){}[0]
+        abstract interface Key : dev.whyoleg.cryptography.algorithms/AES.Key { // dev.whyoleg.cryptography.algorithms/AES.ECB.Key|null[0]
+            abstract fun cipher(kotlin/Boolean = ...): dev.whyoleg.cryptography.operations/Cipher // dev.whyoleg.cryptography.algorithms/AES.ECB.Key.cipher|cipher(kotlin.Boolean){}[0]
         }
 
-        final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.symmetric/AES.ECB> // dev.whyoleg.cryptography.algorithms.symmetric/AES.ECB.Companion|null[0]
+        final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/AES.ECB> // dev.whyoleg.cryptography.algorithms/AES.ECB.Companion|null[0]
     }
 
-    abstract interface GCM : dev.whyoleg.cryptography.algorithms.symmetric/AES<dev.whyoleg.cryptography.algorithms.symmetric/AES.GCM.Key> { // dev.whyoleg.cryptography.algorithms.symmetric/AES.GCM|null[0]
-        open val id // dev.whyoleg.cryptography.algorithms.symmetric/AES.GCM.id|{}id[0]
-            open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.symmetric/AES.GCM> // dev.whyoleg.cryptography.algorithms.symmetric/AES.GCM.id.<get-id>|<get-id>(){}[0]
+    abstract interface GCM : dev.whyoleg.cryptography.algorithms/AES<dev.whyoleg.cryptography.algorithms/AES.GCM.Key> { // dev.whyoleg.cryptography.algorithms/AES.GCM|null[0]
+        open val id // dev.whyoleg.cryptography.algorithms/AES.GCM.id|{}id[0]
+            open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/AES.GCM> // dev.whyoleg.cryptography.algorithms/AES.GCM.id.<get-id>|<get-id>(){}[0]
 
-        abstract interface Key : dev.whyoleg.cryptography.algorithms.symmetric/AES.Key { // dev.whyoleg.cryptography.algorithms.symmetric/AES.GCM.Key|null[0]
-            abstract fun cipher(dev.whyoleg.cryptography/BinarySize = ...): dev.whyoleg.cryptography.operations/AuthenticatedCipher // dev.whyoleg.cryptography.algorithms.symmetric/AES.GCM.Key.cipher|cipher(dev.whyoleg.cryptography.BinarySize){}[0]
+        abstract interface Key : dev.whyoleg.cryptography.algorithms/AES.Key { // dev.whyoleg.cryptography.algorithms/AES.GCM.Key|null[0]
+            abstract fun cipher(dev.whyoleg.cryptography/BinarySize = ...): dev.whyoleg.cryptography.operations/AuthenticatedCipher // dev.whyoleg.cryptography.algorithms/AES.GCM.Key.cipher|cipher(dev.whyoleg.cryptography.BinarySize){}[0]
         }
 
-        final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.symmetric/AES.GCM> // dev.whyoleg.cryptography.algorithms.symmetric/AES.GCM.Companion|null[0]
+        final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/AES.GCM> // dev.whyoleg.cryptography.algorithms/AES.GCM.Companion|null[0]
     }
 
-    abstract interface IvCipher : dev.whyoleg.cryptography.algorithms.symmetric/AES.IvDecryptor, dev.whyoleg.cryptography.algorithms.symmetric/AES.IvEncryptor // dev.whyoleg.cryptography.algorithms.symmetric/AES.IvCipher|null[0]
+    abstract interface IvCipher : dev.whyoleg.cryptography.algorithms/AES.IvDecryptor, dev.whyoleg.cryptography.algorithms/AES.IvEncryptor // dev.whyoleg.cryptography.algorithms/AES.IvCipher|null[0]
 
-    abstract interface IvDecryptor : dev.whyoleg.cryptography.operations/Decryptor { // dev.whyoleg.cryptography.algorithms.symmetric/AES.IvDecryptor|null[0]
-        abstract fun decryptBlocking(kotlin/ByteArray, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.algorithms.symmetric/AES.IvDecryptor.decryptBlocking|decryptBlocking(kotlin.ByteArray;kotlin.ByteArray){}[0]
-        open fun decryptBlocking(kotlinx.io.bytestring/ByteString, kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.algorithms.symmetric/AES.IvDecryptor.decryptBlocking|decryptBlocking(kotlinx.io.bytestring.ByteString;kotlinx.io.bytestring.ByteString){}[0]
-        open suspend fun decrypt(kotlin/ByteArray, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.algorithms.symmetric/AES.IvDecryptor.decrypt|decrypt(kotlin.ByteArray;kotlin.ByteArray){}[0]
-        open suspend fun decrypt(kotlinx.io.bytestring/ByteString, kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.algorithms.symmetric/AES.IvDecryptor.decrypt|decrypt(kotlinx.io.bytestring.ByteString;kotlinx.io.bytestring.ByteString){}[0]
+    abstract interface IvDecryptor : dev.whyoleg.cryptography.operations/Decryptor { // dev.whyoleg.cryptography.algorithms/AES.IvDecryptor|null[0]
+        abstract fun decryptBlocking(kotlin/ByteArray, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.algorithms/AES.IvDecryptor.decryptBlocking|decryptBlocking(kotlin.ByteArray;kotlin.ByteArray){}[0]
+        open fun decryptBlocking(kotlinx.io.bytestring/ByteString, kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.algorithms/AES.IvDecryptor.decryptBlocking|decryptBlocking(kotlinx.io.bytestring.ByteString;kotlinx.io.bytestring.ByteString){}[0]
+        open suspend fun decrypt(kotlin/ByteArray, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.algorithms/AES.IvDecryptor.decrypt|decrypt(kotlin.ByteArray;kotlin.ByteArray){}[0]
+        open suspend fun decrypt(kotlinx.io.bytestring/ByteString, kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.algorithms/AES.IvDecryptor.decrypt|decrypt(kotlinx.io.bytestring.ByteString;kotlinx.io.bytestring.ByteString){}[0]
     }
 
-    abstract interface IvEncryptor : dev.whyoleg.cryptography.operations/Encryptor { // dev.whyoleg.cryptography.algorithms.symmetric/AES.IvEncryptor|null[0]
-        abstract fun encryptBlocking(kotlin/ByteArray, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.algorithms.symmetric/AES.IvEncryptor.encryptBlocking|encryptBlocking(kotlin.ByteArray;kotlin.ByteArray){}[0]
-        open fun encryptBlocking(kotlinx.io.bytestring/ByteString, kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.algorithms.symmetric/AES.IvEncryptor.encryptBlocking|encryptBlocking(kotlinx.io.bytestring.ByteString;kotlinx.io.bytestring.ByteString){}[0]
-        open suspend fun encrypt(kotlin/ByteArray, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.algorithms.symmetric/AES.IvEncryptor.encrypt|encrypt(kotlin.ByteArray;kotlin.ByteArray){}[0]
-        open suspend fun encrypt(kotlinx.io.bytestring/ByteString, kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.algorithms.symmetric/AES.IvEncryptor.encrypt|encrypt(kotlinx.io.bytestring.ByteString;kotlinx.io.bytestring.ByteString){}[0]
+    abstract interface IvEncryptor : dev.whyoleg.cryptography.operations/Encryptor { // dev.whyoleg.cryptography.algorithms/AES.IvEncryptor|null[0]
+        abstract fun encryptBlocking(kotlin/ByteArray, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.algorithms/AES.IvEncryptor.encryptBlocking|encryptBlocking(kotlin.ByteArray;kotlin.ByteArray){}[0]
+        open fun encryptBlocking(kotlinx.io.bytestring/ByteString, kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.algorithms/AES.IvEncryptor.encryptBlocking|encryptBlocking(kotlinx.io.bytestring.ByteString;kotlinx.io.bytestring.ByteString){}[0]
+        open suspend fun encrypt(kotlin/ByteArray, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.algorithms/AES.IvEncryptor.encrypt|encrypt(kotlin.ByteArray;kotlin.ByteArray){}[0]
+        open suspend fun encrypt(kotlinx.io.bytestring/ByteString, kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.algorithms/AES.IvEncryptor.encrypt|encrypt(kotlinx.io.bytestring.ByteString;kotlinx.io.bytestring.ByteString){}[0]
     }
 
-    abstract interface Key : dev.whyoleg.cryptography.materials.key/EncodableKey<dev.whyoleg.cryptography.algorithms.symmetric/AES.Key.Format> { // dev.whyoleg.cryptography.algorithms.symmetric/AES.Key|null[0]
-        final enum class Format : dev.whyoleg.cryptography.materials.key/KeyFormat, kotlin/Enum<dev.whyoleg.cryptography.algorithms.symmetric/AES.Key.Format> { // dev.whyoleg.cryptography.algorithms.symmetric/AES.Key.Format|null[0]
-            enum entry JWK // dev.whyoleg.cryptography.algorithms.symmetric/AES.Key.Format.JWK|null[0]
-            enum entry RAW // dev.whyoleg.cryptography.algorithms.symmetric/AES.Key.Format.RAW|null[0]
+    abstract interface Key : dev.whyoleg.cryptography.materials.key/EncodableKey<dev.whyoleg.cryptography.algorithms/AES.Key.Format> { // dev.whyoleg.cryptography.algorithms/AES.Key|null[0]
+        final enum class Format : dev.whyoleg.cryptography.materials.key/KeyFormat, kotlin/Enum<dev.whyoleg.cryptography.algorithms/AES.Key.Format> { // dev.whyoleg.cryptography.algorithms/AES.Key.Format|null[0]
+            enum entry JWK // dev.whyoleg.cryptography.algorithms/AES.Key.Format.JWK|null[0]
+            enum entry RAW // dev.whyoleg.cryptography.algorithms/AES.Key.Format.RAW|null[0]
 
-            final val entries // dev.whyoleg.cryptography.algorithms.symmetric/AES.Key.Format.entries|#static{}entries[0]
-                final fun <get-entries>(): kotlin.enums/EnumEntries<dev.whyoleg.cryptography.algorithms.symmetric/AES.Key.Format> // dev.whyoleg.cryptography.algorithms.symmetric/AES.Key.Format.entries.<get-entries>|<get-entries>#static(){}[0]
+            final val entries // dev.whyoleg.cryptography.algorithms/AES.Key.Format.entries|#static{}entries[0]
+                final fun <get-entries>(): kotlin.enums/EnumEntries<dev.whyoleg.cryptography.algorithms/AES.Key.Format> // dev.whyoleg.cryptography.algorithms/AES.Key.Format.entries.<get-entries>|<get-entries>#static(){}[0]
 
-            final fun valueOf(kotlin/String): dev.whyoleg.cryptography.algorithms.symmetric/AES.Key.Format // dev.whyoleg.cryptography.algorithms.symmetric/AES.Key.Format.valueOf|valueOf#static(kotlin.String){}[0]
-            final fun values(): kotlin/Array<dev.whyoleg.cryptography.algorithms.symmetric/AES.Key.Format> // dev.whyoleg.cryptography.algorithms.symmetric/AES.Key.Format.values|values#static(){}[0]
+            final fun valueOf(kotlin/String): dev.whyoleg.cryptography.algorithms/AES.Key.Format // dev.whyoleg.cryptography.algorithms/AES.Key.Format.valueOf|valueOf#static(kotlin.String){}[0]
+            final fun values(): kotlin/Array<dev.whyoleg.cryptography.algorithms/AES.Key.Format> // dev.whyoleg.cryptography.algorithms/AES.Key.Format.values|values#static(){}[0]
         }
 
-        final object Size { // dev.whyoleg.cryptography.algorithms.symmetric/AES.Key.Size|null[0]
-            final val B128 // dev.whyoleg.cryptography.algorithms.symmetric/AES.Key.Size.B128|{}B128[0]
-                final fun <get-B128>(): dev.whyoleg.cryptography/BinarySize // dev.whyoleg.cryptography.algorithms.symmetric/AES.Key.Size.B128.<get-B128>|<get-B128>(){}[0]
-            final val B192 // dev.whyoleg.cryptography.algorithms.symmetric/AES.Key.Size.B192|{}B192[0]
-                final fun <get-B192>(): dev.whyoleg.cryptography/BinarySize // dev.whyoleg.cryptography.algorithms.symmetric/AES.Key.Size.B192.<get-B192>|<get-B192>(){}[0]
-            final val B256 // dev.whyoleg.cryptography.algorithms.symmetric/AES.Key.Size.B256|{}B256[0]
-                final fun <get-B256>(): dev.whyoleg.cryptography/BinarySize // dev.whyoleg.cryptography.algorithms.symmetric/AES.Key.Size.B256.<get-B256>|<get-B256>(){}[0]
+        final object Size { // dev.whyoleg.cryptography.algorithms/AES.Key.Size|null[0]
+            final val B128 // dev.whyoleg.cryptography.algorithms/AES.Key.Size.B128|{}B128[0]
+                final fun <get-B128>(): dev.whyoleg.cryptography/BinarySize // dev.whyoleg.cryptography.algorithms/AES.Key.Size.B128.<get-B128>|<get-B128>(){}[0]
+            final val B192 // dev.whyoleg.cryptography.algorithms/AES.Key.Size.B192|{}B192[0]
+                final fun <get-B192>(): dev.whyoleg.cryptography/BinarySize // dev.whyoleg.cryptography.algorithms/AES.Key.Size.B192.<get-B192>|<get-B192>(){}[0]
+            final val B256 // dev.whyoleg.cryptography.algorithms/AES.Key.Size.B256|{}B256[0]
+                final fun <get-B256>(): dev.whyoleg.cryptography/BinarySize // dev.whyoleg.cryptography.algorithms/AES.Key.Size.B256.<get-B256>|<get-B256>(){}[0]
         }
     }
 }
@@ -471,37 +471,37 @@ abstract interface dev.whyoleg.cryptography.algorithms.asymmetric/ECDSA : dev.wh
     final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.asymmetric/ECDSA> // dev.whyoleg.cryptography.algorithms.asymmetric/ECDSA.Companion|null[0]
 }
 
-abstract interface dev.whyoleg.cryptography.algorithms.symmetric/HMAC : dev.whyoleg.cryptography/CryptographyAlgorithm { // dev.whyoleg.cryptography.algorithms.symmetric/HMAC|null[0]
-    open val id // dev.whyoleg.cryptography.algorithms.symmetric/HMAC.id|{}id[0]
-        open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.symmetric/HMAC> // dev.whyoleg.cryptography.algorithms.symmetric/HMAC.id.<get-id>|<get-id>(){}[0]
-
-    abstract fun keyDecoder(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest>): dev.whyoleg.cryptography.materials.key/KeyDecoder<dev.whyoleg.cryptography.algorithms.symmetric/HMAC.Key.Format, dev.whyoleg.cryptography.algorithms.symmetric/HMAC.Key> // dev.whyoleg.cryptography.algorithms.symmetric/HMAC.keyDecoder|keyDecoder(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>){}[0]
-    abstract fun keyGenerator(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest> = ...): dev.whyoleg.cryptography.materials.key/KeyGenerator<dev.whyoleg.cryptography.algorithms.symmetric/HMAC.Key> // dev.whyoleg.cryptography.algorithms.symmetric/HMAC.keyGenerator|keyGenerator(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>){}[0]
-
-    abstract interface Key : dev.whyoleg.cryptography.materials.key/EncodableKey<dev.whyoleg.cryptography.algorithms.symmetric/HMAC.Key.Format> { // dev.whyoleg.cryptography.algorithms.symmetric/HMAC.Key|null[0]
-        abstract fun signatureGenerator(): dev.whyoleg.cryptography.operations/SignatureGenerator // dev.whyoleg.cryptography.algorithms.symmetric/HMAC.Key.signatureGenerator|signatureGenerator(){}[0]
-        abstract fun signatureVerifier(): dev.whyoleg.cryptography.operations/SignatureVerifier // dev.whyoleg.cryptography.algorithms.symmetric/HMAC.Key.signatureVerifier|signatureVerifier(){}[0]
-
-        final enum class Format : dev.whyoleg.cryptography.materials.key/KeyFormat, kotlin/Enum<dev.whyoleg.cryptography.algorithms.symmetric/HMAC.Key.Format> { // dev.whyoleg.cryptography.algorithms.symmetric/HMAC.Key.Format|null[0]
-            enum entry JWK // dev.whyoleg.cryptography.algorithms.symmetric/HMAC.Key.Format.JWK|null[0]
-            enum entry RAW // dev.whyoleg.cryptography.algorithms.symmetric/HMAC.Key.Format.RAW|null[0]
-
-            final val entries // dev.whyoleg.cryptography.algorithms.symmetric/HMAC.Key.Format.entries|#static{}entries[0]
-                final fun <get-entries>(): kotlin.enums/EnumEntries<dev.whyoleg.cryptography.algorithms.symmetric/HMAC.Key.Format> // dev.whyoleg.cryptography.algorithms.symmetric/HMAC.Key.Format.entries.<get-entries>|<get-entries>#static(){}[0]
-
-            final fun valueOf(kotlin/String): dev.whyoleg.cryptography.algorithms.symmetric/HMAC.Key.Format // dev.whyoleg.cryptography.algorithms.symmetric/HMAC.Key.Format.valueOf|valueOf#static(kotlin.String){}[0]
-            final fun values(): kotlin/Array<dev.whyoleg.cryptography.algorithms.symmetric/HMAC.Key.Format> // dev.whyoleg.cryptography.algorithms.symmetric/HMAC.Key.Format.values|values#static(){}[0]
-        }
-    }
-
-    final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.symmetric/HMAC> // dev.whyoleg.cryptography.algorithms.symmetric/HMAC.Companion|null[0]
-}
-
 abstract interface dev.whyoleg.cryptography.algorithms/Digest : dev.whyoleg.cryptography/CryptographyAlgorithm { // dev.whyoleg.cryptography.algorithms/Digest|null[0]
     abstract val id // dev.whyoleg.cryptography.algorithms/Digest.id|{}id[0]
         abstract fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest> // dev.whyoleg.cryptography.algorithms/Digest.id.<get-id>|<get-id>(){}[0]
 
     abstract fun hasher(): dev.whyoleg.cryptography.operations/Hasher // dev.whyoleg.cryptography.algorithms/Digest.hasher|hasher(){}[0]
+}
+
+abstract interface dev.whyoleg.cryptography.algorithms/HMAC : dev.whyoleg.cryptography/CryptographyAlgorithm { // dev.whyoleg.cryptography.algorithms/HMAC|null[0]
+    open val id // dev.whyoleg.cryptography.algorithms/HMAC.id|{}id[0]
+        open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/HMAC> // dev.whyoleg.cryptography.algorithms/HMAC.id.<get-id>|<get-id>(){}[0]
+
+    abstract fun keyDecoder(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest>): dev.whyoleg.cryptography.materials.key/KeyDecoder<dev.whyoleg.cryptography.algorithms/HMAC.Key.Format, dev.whyoleg.cryptography.algorithms/HMAC.Key> // dev.whyoleg.cryptography.algorithms/HMAC.keyDecoder|keyDecoder(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>){}[0]
+    abstract fun keyGenerator(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest> = ...): dev.whyoleg.cryptography.materials.key/KeyGenerator<dev.whyoleg.cryptography.algorithms/HMAC.Key> // dev.whyoleg.cryptography.algorithms/HMAC.keyGenerator|keyGenerator(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>){}[0]
+
+    abstract interface Key : dev.whyoleg.cryptography.materials.key/EncodableKey<dev.whyoleg.cryptography.algorithms/HMAC.Key.Format> { // dev.whyoleg.cryptography.algorithms/HMAC.Key|null[0]
+        abstract fun signatureGenerator(): dev.whyoleg.cryptography.operations/SignatureGenerator // dev.whyoleg.cryptography.algorithms/HMAC.Key.signatureGenerator|signatureGenerator(){}[0]
+        abstract fun signatureVerifier(): dev.whyoleg.cryptography.operations/SignatureVerifier // dev.whyoleg.cryptography.algorithms/HMAC.Key.signatureVerifier|signatureVerifier(){}[0]
+
+        final enum class Format : dev.whyoleg.cryptography.materials.key/KeyFormat, kotlin/Enum<dev.whyoleg.cryptography.algorithms/HMAC.Key.Format> { // dev.whyoleg.cryptography.algorithms/HMAC.Key.Format|null[0]
+            enum entry JWK // dev.whyoleg.cryptography.algorithms/HMAC.Key.Format.JWK|null[0]
+            enum entry RAW // dev.whyoleg.cryptography.algorithms/HMAC.Key.Format.RAW|null[0]
+
+            final val entries // dev.whyoleg.cryptography.algorithms/HMAC.Key.Format.entries|#static{}entries[0]
+                final fun <get-entries>(): kotlin.enums/EnumEntries<dev.whyoleg.cryptography.algorithms/HMAC.Key.Format> // dev.whyoleg.cryptography.algorithms/HMAC.Key.Format.entries.<get-entries>|<get-entries>#static(){}[0]
+
+            final fun valueOf(kotlin/String): dev.whyoleg.cryptography.algorithms/HMAC.Key.Format // dev.whyoleg.cryptography.algorithms/HMAC.Key.Format.valueOf|valueOf#static(kotlin.String){}[0]
+            final fun values(): kotlin/Array<dev.whyoleg.cryptography.algorithms/HMAC.Key.Format> // dev.whyoleg.cryptography.algorithms/HMAC.Key.Format.values|values#static(){}[0]
+        }
+    }
+
+    final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/HMAC> // dev.whyoleg.cryptography.algorithms/HMAC.Companion|null[0]
 }
 
 abstract interface dev.whyoleg.cryptography.algorithms/PBKDF2 : dev.whyoleg.cryptography/CryptographyAlgorithm { // dev.whyoleg.cryptography.algorithms/PBKDF2|null[0]

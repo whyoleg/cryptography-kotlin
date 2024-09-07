@@ -8,7 +8,6 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.RSA
-import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.providers.openssl3.algorithms.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import kotlinx.cinterop.*
@@ -32,12 +31,12 @@ internal object Openssl3CryptographyProvider : CryptographyProvider() {
         SHA3_256  -> Openssl3Digest("SHA3-256", SHA3_256)
         SHA3_384  -> Openssl3Digest("SHA3-384", SHA3_384)
         SHA3_512  -> Openssl3Digest("SHA3-512", SHA3_512)
-        HMAC      -> Openssl3Hmac
-        AES.CBC   -> Openssl3AesCbc
+        HMAC    -> Openssl3Hmac
+        AES.CBC -> Openssl3AesCbc
         AES.CTR -> Openssl3AesCtr
         AES.ECB -> Openssl3AesEcb
-        AES.GCM   -> Openssl3AesGcm
-        ECDSA     -> Openssl3Ecdsa
+        AES.GCM -> Openssl3AesGcm
+        ECDSA   -> Openssl3Ecdsa
         ECDH    -> Openssl3Ecdh
         RSA.PSS   -> Openssl3RsaPss
         RSA.PKCS1 -> Openssl3RsaPkcs1

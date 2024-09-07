@@ -7,7 +7,6 @@ package dev.whyoleg.cryptography.providers.jdk
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
-import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.providers.jdk.algorithms.*
 import dev.whyoleg.cryptography.random.*
 import java.security.*
@@ -79,12 +78,12 @@ internal class JdkCryptographyProvider(
             SHA3_256  -> JdkDigest(state, "SHA3-256", SHA3_256)
             SHA3_384  -> JdkDigest(state, "SHA3-384", SHA3_384)
             SHA3_512  -> JdkDigest(state, "SHA3-512", SHA3_512)
-            HMAC      -> JdkHmac(state)
-            AES.CBC   -> JdkAesCbc(state)
-            AES.CTR -> JdkAesCtr(state)
-            AES.ECB -> JdkAesEcb(state)
-            AES.GCM   -> JdkAesGcm(state)
-            RSA.OAEP  -> JdkRsaOaep(state)
+            HMAC     -> JdkHmac(state)
+            AES.CBC  -> JdkAesCbc(state)
+            AES.CTR  -> JdkAesCtr(state)
+            AES.ECB  -> JdkAesEcb(state)
+            AES.GCM  -> JdkAesGcm(state)
+            RSA.OAEP -> JdkRsaOaep(state)
             RSA.PSS   -> JdkRsaPss(state)
             RSA.PKCS1 -> JdkRsaPkcs1(state)
             RSA.RAW -> JdkRsaRaw(state)

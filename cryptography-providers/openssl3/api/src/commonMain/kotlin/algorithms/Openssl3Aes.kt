@@ -6,7 +6,7 @@ package dev.whyoleg.cryptography.providers.openssl3.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.BinarySize.Companion.bytes
-import dev.whyoleg.cryptography.algorithms.symmetric.*
+import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.random.*
 

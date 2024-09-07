@@ -7,7 +7,6 @@ package dev.whyoleg.cryptography.providers.apple
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.algorithms.asymmetric.*
-import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.providers.apple.algorithms.*
 
 private val defaultProvider = lazy { AppleCryptographyProvider }
@@ -25,11 +24,11 @@ internal object AppleCryptographyProvider : CryptographyProvider() {
         SHA256    -> CCDigest(CCHashAlgorithm.SHA256, SHA256)
         SHA384    -> CCDigest(CCHashAlgorithm.SHA384, SHA384)
         SHA512    -> CCDigest(CCHashAlgorithm.SHA512, SHA512)
-        HMAC      -> CCHmac
-        AES.CBC   -> CCAesCbc
+        HMAC    -> CCHmac
+        AES.CBC -> CCAesCbc
         AES.CTR -> CCAesCtr
         AES.ECB -> CCAesEcb
-        RSA.PSS   -> SecRsaPss
+        RSA.PSS -> SecRsaPss
         RSA.PKCS1 -> SecRsaPkcs1
         RSA.OAEP  -> SecRsaOaep
         RSA.RAW -> SecRsaRaw

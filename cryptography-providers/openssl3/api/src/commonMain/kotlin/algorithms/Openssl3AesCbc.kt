@@ -5,7 +5,7 @@
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
 
 import dev.whyoleg.cryptography.*
-import dev.whyoleg.cryptography.algorithms.symmetric.*
+import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.random.*
@@ -21,7 +21,7 @@ internal object Openssl3AesCbc : AES.CBC, Openssl3Aes<AES.CBC.Key>() {
             AES.Key.Size.B128 -> "AES-128-CBC"
             AES.Key.Size.B192 -> "AES-192-CBC"
             AES.Key.Size.B256 -> "AES-256-CBC"
-            else                  -> error("Unsupported key size")
+            else -> error("Unsupported key size")
         }
 
         override fun cipher(padding: Boolean): AES.IvCipher = AesCbcCipher(algorithm, key, padding)

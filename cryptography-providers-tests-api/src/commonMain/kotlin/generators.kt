@@ -7,7 +7,6 @@ package dev.whyoleg.cryptography.providers.tests.api
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.BinarySize.Companion.bits
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.materials.key.*
 
 inline fun generateSymmetricKeySize(block: (keySize: BinarySize) -> Unit) {
