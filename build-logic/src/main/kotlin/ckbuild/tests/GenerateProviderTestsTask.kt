@@ -55,8 +55,7 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
 
         appendLine("private val CRYPTOGRAPHY_PROVIDER = $providerInitialization").appendLine()
 
-        testClasses.forEach {
-            val testClassName = it.substringAfterLast(".")
+        testClasses.forEach { testClassName ->
             appendLine("class ${providerClassifier}_$testClassName : $testClassName(CRYPTOGRAPHY_PROVIDER)")
         }
         appendLine()
@@ -66,49 +65,48 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
         private val defaultImports = listOf(
             "dev.whyoleg.cryptography.*",
             "dev.whyoleg.cryptography.providers.tests.*",
-            "dev.whyoleg.cryptography.providers.tests.algorithms.*",
-            "dev.whyoleg.cryptography.providers.tests.algorithms.asymmetric.*",
-            "dev.whyoleg.cryptography.providers.tests.algorithms.digest.*",
-            "dev.whyoleg.cryptography.providers.tests.algorithms.symmetric.*",
+            "dev.whyoleg.cryptography.providers.tests.compatibility.*",
+            "dev.whyoleg.cryptography.providers.tests.default.*",
         )
 
         private val testClasses = listOf(
-            "dev.whyoleg.cryptography.providers.tests.algorithms.SupportedAlgorithmsTest",
+            "SupportedAlgorithmsTest",
+            "Pbkdf2CompatibilityTest",
 
-            "dev.whyoleg.cryptography.providers.tests.algorithms.Pbkdf2CompatibilityTest",
+            "DigestTest",
+            "Md5CompatibilityTest",
+            "Sha1CompatibilityTest",
+            "Sha224CompatibilityTest",
+            "Sha256CompatibilityTest",
+            "Sha384CompatibilityTest",
+            "Sha512CompatibilityTest",
+            "Sha3B224CompatibilityTest",
+            "Sha3B256CompatibilityTest",
+            "Sha3B384CompatibilityTest",
+            "Sha3B512CompatibilityTest",
 
-            "dev.whyoleg.cryptography.providers.tests.algorithms.digest.DigestTest",
-            "dev.whyoleg.cryptography.providers.tests.algorithms.digest.Md5CompatibilityTest",
-            "dev.whyoleg.cryptography.providers.tests.algorithms.digest.Sha1CompatibilityTest",
-            "dev.whyoleg.cryptography.providers.tests.algorithms.digest.Sha224CompatibilityTest",
-            "dev.whyoleg.cryptography.providers.tests.algorithms.digest.Sha256CompatibilityTest",
-            "dev.whyoleg.cryptography.providers.tests.algorithms.digest.Sha384CompatibilityTest",
-            "dev.whyoleg.cryptography.providers.tests.algorithms.digest.Sha512CompatibilityTest",
-            "dev.whyoleg.cryptography.providers.tests.algorithms.digest.Sha3B224CompatibilityTest",
-            "dev.whyoleg.cryptography.providers.tests.algorithms.digest.Sha3B256CompatibilityTest",
-            "dev.whyoleg.cryptography.providers.tests.algorithms.digest.Sha3B384CompatibilityTest",
-            "dev.whyoleg.cryptography.providers.tests.algorithms.digest.Sha3B512CompatibilityTest",
+            "AesCbcTest",
+            "AesCbcCompatibilityTest",
+            "AesCtrCompatibilityTest",
+            "AesEcbCompatibilityTest",
+            "AesGcmTest",
+            "AesGcmCompatibilityTest",
 
-            "dev.whyoleg.cryptography.providers.tests.algorithms.symmetric.AesCbcTest",
-            "dev.whyoleg.cryptography.providers.tests.algorithms.symmetric.AesCbcCompatibilityTest",
-            "dev.whyoleg.cryptography.providers.tests.algorithms.symmetric.AesCtrCompatibilityTest",
-            "dev.whyoleg.cryptography.providers.tests.algorithms.symmetric.AesEcbCompatibilityTest",
-            "dev.whyoleg.cryptography.providers.tests.algorithms.symmetric.AesGcmTest",
-            "dev.whyoleg.cryptography.providers.tests.algorithms.symmetric.AesGcmCompatibilityTest",
-            "dev.whyoleg.cryptography.providers.tests.algorithms.symmetric.HmacTest",
-            "dev.whyoleg.cryptography.providers.tests.algorithms.symmetric.HmacCompatibilityTest",
+            "HmacTest",
+            "HmacCompatibilityTest",
 
-            "dev.whyoleg.cryptography.providers.tests.algorithms.asymmetric.EcdsaTest",
-            "dev.whyoleg.cryptography.providers.tests.algorithms.asymmetric.EcdsaCompatibilityTest",
-            "dev.whyoleg.cryptography.providers.tests.algorithms.asymmetric.EcdhCompatibilityTest",
-            "dev.whyoleg.cryptography.providers.tests.algorithms.asymmetric.RsaOaepTest",
-            "dev.whyoleg.cryptography.providers.tests.algorithms.asymmetric.RsaOaepCompatibilityTest",
-            "dev.whyoleg.cryptography.providers.tests.algorithms.asymmetric.RsaPkcs1Test",
-            "dev.whyoleg.cryptography.providers.tests.algorithms.asymmetric.RsaPkcs1CompatibilityTest",
-            "dev.whyoleg.cryptography.providers.tests.algorithms.asymmetric.RsaPkcs1EsCompatibilityTest",
-            "dev.whyoleg.cryptography.providers.tests.algorithms.asymmetric.RsaPssTest",
-            "dev.whyoleg.cryptography.providers.tests.algorithms.asymmetric.RsaPssCompatibilityTest",
-            "dev.whyoleg.cryptography.providers.tests.algorithms.asymmetric.RsaRawCompatibilityTest",
+            "EcdsaTest",
+            "EcdsaCompatibilityTest",
+            "EcdhCompatibilityTest",
+
+            "RsaOaepTest",
+            "RsaOaepCompatibilityTest",
+            "RsaPkcs1Test",
+            "RsaPkcs1CompatibilityTest",
+            "RsaPkcs1EsCompatibilityTest",
+            "RsaPssTest",
+            "RsaPssCompatibilityTest",
+            "RsaRawCompatibilityTest",
         )
     }
 }

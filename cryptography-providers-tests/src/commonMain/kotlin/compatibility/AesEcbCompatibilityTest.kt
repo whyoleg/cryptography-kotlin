@@ -2,7 +2,7 @@
  * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
-package dev.whyoleg.cryptography.providers.tests.algorithms.symmetric
+package dev.whyoleg.cryptography.providers.tests.compatibility
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
