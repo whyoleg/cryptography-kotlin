@@ -174,12 +174,12 @@ abstract interface <#A: dev.whyoleg.cryptography.algorithms.asymmetric/RSA.Publi
 
         abstract interface PrivateKey : dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PrivateKey { // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PKCS1.PrivateKey|null[0]
             abstract fun decryptor(): dev.whyoleg.cryptography.operations.cipher/Decryptor // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PKCS1.PrivateKey.decryptor|decryptor(){}[0]
-            abstract fun signatureGenerator(): dev.whyoleg.cryptography.operations.signature/SignatureGenerator // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PKCS1.PrivateKey.signatureGenerator|signatureGenerator(){}[0]
+            abstract fun signatureGenerator(): dev.whyoleg.cryptography.operations/SignatureGenerator // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PKCS1.PrivateKey.signatureGenerator|signatureGenerator(){}[0]
         }
 
         abstract interface PublicKey : dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PublicKey { // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PKCS1.PublicKey|null[0]
             abstract fun encryptor(): dev.whyoleg.cryptography.operations.cipher/Encryptor // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PKCS1.PublicKey.encryptor|encryptor(){}[0]
-            abstract fun signatureVerifier(): dev.whyoleg.cryptography.operations.signature/SignatureVerifier // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PKCS1.PublicKey.signatureVerifier|signatureVerifier(){}[0]
+            abstract fun signatureVerifier(): dev.whyoleg.cryptography.operations/SignatureVerifier // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PKCS1.PublicKey.signatureVerifier|signatureVerifier(){}[0]
         }
 
         final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PKCS1> // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PKCS1.Companion|null[0]
@@ -192,13 +192,13 @@ abstract interface <#A: dev.whyoleg.cryptography.algorithms.asymmetric/RSA.Publi
         abstract interface KeyPair : dev.whyoleg.cryptography.algorithms.asymmetric/RSA.KeyPair<dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PSS.PublicKey, dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PSS.PrivateKey> // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PSS.KeyPair|null[0]
 
         abstract interface PrivateKey : dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PrivateKey { // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PSS.PrivateKey|null[0]
-            abstract fun signatureGenerator(): dev.whyoleg.cryptography.operations.signature/SignatureGenerator // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PSS.PrivateKey.signatureGenerator|signatureGenerator(){}[0]
-            abstract fun signatureGenerator(dev.whyoleg.cryptography/BinarySize): dev.whyoleg.cryptography.operations.signature/SignatureGenerator // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PSS.PrivateKey.signatureGenerator|signatureGenerator(dev.whyoleg.cryptography.BinarySize){}[0]
+            abstract fun signatureGenerator(): dev.whyoleg.cryptography.operations/SignatureGenerator // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PSS.PrivateKey.signatureGenerator|signatureGenerator(){}[0]
+            abstract fun signatureGenerator(dev.whyoleg.cryptography/BinarySize): dev.whyoleg.cryptography.operations/SignatureGenerator // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PSS.PrivateKey.signatureGenerator|signatureGenerator(dev.whyoleg.cryptography.BinarySize){}[0]
         }
 
         abstract interface PublicKey : dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PublicKey { // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PSS.PublicKey|null[0]
-            abstract fun signatureVerifier(): dev.whyoleg.cryptography.operations.signature/SignatureVerifier // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PSS.PublicKey.signatureVerifier|signatureVerifier(){}[0]
-            abstract fun signatureVerifier(dev.whyoleg.cryptography/BinarySize): dev.whyoleg.cryptography.operations.signature/SignatureVerifier // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PSS.PublicKey.signatureVerifier|signatureVerifier(dev.whyoleg.cryptography.BinarySize){}[0]
+            abstract fun signatureVerifier(): dev.whyoleg.cryptography.operations/SignatureVerifier // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PSS.PublicKey.signatureVerifier|signatureVerifier(){}[0]
+            abstract fun signatureVerifier(dev.whyoleg.cryptography/BinarySize): dev.whyoleg.cryptography.operations/SignatureVerifier // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PSS.PublicKey.signatureVerifier|signatureVerifier(dev.whyoleg.cryptography.BinarySize){}[0]
         }
 
         final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PSS> // dev.whyoleg.cryptography.algorithms.asymmetric/RSA.PSS.Companion|null[0]
@@ -461,11 +461,11 @@ abstract interface dev.whyoleg.cryptography.algorithms.asymmetric/ECDSA : dev.wh
     abstract interface KeyPair : dev.whyoleg.cryptography.algorithms.asymmetric/EC.KeyPair<dev.whyoleg.cryptography.algorithms.asymmetric/ECDSA.PublicKey, dev.whyoleg.cryptography.algorithms.asymmetric/ECDSA.PrivateKey> // dev.whyoleg.cryptography.algorithms.asymmetric/ECDSA.KeyPair|null[0]
 
     abstract interface PrivateKey : dev.whyoleg.cryptography.algorithms.asymmetric/EC.PrivateKey { // dev.whyoleg.cryptography.algorithms.asymmetric/ECDSA.PrivateKey|null[0]
-        abstract fun signatureGenerator(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest/Digest>, dev.whyoleg.cryptography.algorithms.asymmetric/ECDSA.SignatureFormat): dev.whyoleg.cryptography.operations.signature/SignatureGenerator // dev.whyoleg.cryptography.algorithms.asymmetric/ECDSA.PrivateKey.signatureGenerator|signatureGenerator(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest.Digest>;dev.whyoleg.cryptography.algorithms.asymmetric.ECDSA.SignatureFormat){}[0]
+        abstract fun signatureGenerator(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest/Digest>, dev.whyoleg.cryptography.algorithms.asymmetric/ECDSA.SignatureFormat): dev.whyoleg.cryptography.operations/SignatureGenerator // dev.whyoleg.cryptography.algorithms.asymmetric/ECDSA.PrivateKey.signatureGenerator|signatureGenerator(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest.Digest>;dev.whyoleg.cryptography.algorithms.asymmetric.ECDSA.SignatureFormat){}[0]
     }
 
     abstract interface PublicKey : dev.whyoleg.cryptography.algorithms.asymmetric/EC.PublicKey { // dev.whyoleg.cryptography.algorithms.asymmetric/ECDSA.PublicKey|null[0]
-        abstract fun signatureVerifier(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest/Digest>, dev.whyoleg.cryptography.algorithms.asymmetric/ECDSA.SignatureFormat): dev.whyoleg.cryptography.operations.signature/SignatureVerifier // dev.whyoleg.cryptography.algorithms.asymmetric/ECDSA.PublicKey.signatureVerifier|signatureVerifier(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest.Digest>;dev.whyoleg.cryptography.algorithms.asymmetric.ECDSA.SignatureFormat){}[0]
+        abstract fun signatureVerifier(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest/Digest>, dev.whyoleg.cryptography.algorithms.asymmetric/ECDSA.SignatureFormat): dev.whyoleg.cryptography.operations/SignatureVerifier // dev.whyoleg.cryptography.algorithms.asymmetric/ECDSA.PublicKey.signatureVerifier|signatureVerifier(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest.Digest>;dev.whyoleg.cryptography.algorithms.asymmetric.ECDSA.SignatureFormat){}[0]
     }
 
     final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.asymmetric/ECDSA> // dev.whyoleg.cryptography.algorithms.asymmetric/ECDSA.Companion|null[0]
@@ -486,8 +486,8 @@ abstract interface dev.whyoleg.cryptography.algorithms.symmetric/HMAC : dev.whyo
     abstract fun keyGenerator(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest/Digest> = ...): dev.whyoleg.cryptography.materials.key/KeyGenerator<dev.whyoleg.cryptography.algorithms.symmetric/HMAC.Key> // dev.whyoleg.cryptography.algorithms.symmetric/HMAC.keyGenerator|keyGenerator(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.digest.Digest>){}[0]
 
     abstract interface Key : dev.whyoleg.cryptography.materials.key/EncodableKey<dev.whyoleg.cryptography.algorithms.symmetric/HMAC.Key.Format> { // dev.whyoleg.cryptography.algorithms.symmetric/HMAC.Key|null[0]
-        abstract fun signatureGenerator(): dev.whyoleg.cryptography.operations.signature/SignatureGenerator // dev.whyoleg.cryptography.algorithms.symmetric/HMAC.Key.signatureGenerator|signatureGenerator(){}[0]
-        abstract fun signatureVerifier(): dev.whyoleg.cryptography.operations.signature/SignatureVerifier // dev.whyoleg.cryptography.algorithms.symmetric/HMAC.Key.signatureVerifier|signatureVerifier(){}[0]
+        abstract fun signatureGenerator(): dev.whyoleg.cryptography.operations/SignatureGenerator // dev.whyoleg.cryptography.algorithms.symmetric/HMAC.Key.signatureGenerator|signatureGenerator(){}[0]
+        abstract fun signatureVerifier(): dev.whyoleg.cryptography.operations/SignatureVerifier // dev.whyoleg.cryptography.algorithms.symmetric/HMAC.Key.signatureVerifier|signatureVerifier(){}[0]
 
         final enum class Format : dev.whyoleg.cryptography.materials.key/KeyFormat, kotlin/Enum<dev.whyoleg.cryptography.algorithms.symmetric/HMAC.Key.Format> { // dev.whyoleg.cryptography.algorithms.symmetric/HMAC.Key.Format|null[0]
             enum entry JWK // dev.whyoleg.cryptography.algorithms.symmetric/HMAC.Key.Format.JWK|null[0]
@@ -563,20 +563,6 @@ abstract interface dev.whyoleg.cryptography.operations.cipher/Encryptor { // dev
     open suspend fun encrypt(kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations.cipher/Encryptor.encrypt|encrypt(kotlinx.io.bytestring.ByteString){}[0]
 }
 
-abstract interface dev.whyoleg.cryptography.operations.signature/SignatureGenerator { // dev.whyoleg.cryptography.operations.signature/SignatureGenerator|null[0]
-    abstract fun generateSignatureBlocking(kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.operations.signature/SignatureGenerator.generateSignatureBlocking|generateSignatureBlocking(kotlin.ByteArray){}[0]
-    open fun generateSignatureBlocking(kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations.signature/SignatureGenerator.generateSignatureBlocking|generateSignatureBlocking(kotlinx.io.bytestring.ByteString){}[0]
-    open suspend fun generateSignature(kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.operations.signature/SignatureGenerator.generateSignature|generateSignature(kotlin.ByteArray){}[0]
-    open suspend fun generateSignature(kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations.signature/SignatureGenerator.generateSignature|generateSignature(kotlinx.io.bytestring.ByteString){}[0]
-}
-
-abstract interface dev.whyoleg.cryptography.operations.signature/SignatureVerifier { // dev.whyoleg.cryptography.operations.signature/SignatureVerifier|null[0]
-    abstract fun verifySignatureBlocking(kotlin/ByteArray, kotlin/ByteArray): kotlin/Boolean // dev.whyoleg.cryptography.operations.signature/SignatureVerifier.verifySignatureBlocking|verifySignatureBlocking(kotlin.ByteArray;kotlin.ByteArray){}[0]
-    open fun verifySignatureBlocking(kotlinx.io.bytestring/ByteString, kotlinx.io.bytestring/ByteString): kotlin/Boolean // dev.whyoleg.cryptography.operations.signature/SignatureVerifier.verifySignatureBlocking|verifySignatureBlocking(kotlinx.io.bytestring.ByteString;kotlinx.io.bytestring.ByteString){}[0]
-    open suspend fun verifySignature(kotlin/ByteArray, kotlin/ByteArray): kotlin/Boolean // dev.whyoleg.cryptography.operations.signature/SignatureVerifier.verifySignature|verifySignature(kotlin.ByteArray;kotlin.ByteArray){}[0]
-    open suspend fun verifySignature(kotlinx.io.bytestring/ByteString, kotlinx.io.bytestring/ByteString): kotlin/Boolean // dev.whyoleg.cryptography.operations.signature/SignatureVerifier.verifySignature|verifySignature(kotlinx.io.bytestring.ByteString;kotlinx.io.bytestring.ByteString){}[0]
-}
-
 abstract interface dev.whyoleg.cryptography.operations/Hasher { // dev.whyoleg.cryptography.operations/Hasher|null[0]
     abstract fun hashBlocking(kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.operations/Hasher.hashBlocking|hashBlocking(kotlin.ByteArray){}[0]
     open fun hashBlocking(kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations/Hasher.hashBlocking|hashBlocking(kotlinx.io.bytestring.ByteString){}[0]
@@ -589,6 +575,20 @@ abstract interface dev.whyoleg.cryptography.operations/SecretDerivation { // dev
     open fun deriveSecretBlocking(kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations/SecretDerivation.deriveSecretBlocking|deriveSecretBlocking(kotlinx.io.bytestring.ByteString){}[0]
     open suspend fun deriveSecret(kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.operations/SecretDerivation.deriveSecret|deriveSecret(kotlin.ByteArray){}[0]
     open suspend fun deriveSecret(kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations/SecretDerivation.deriveSecret|deriveSecret(kotlinx.io.bytestring.ByteString){}[0]
+}
+
+abstract interface dev.whyoleg.cryptography.operations/SignatureGenerator { // dev.whyoleg.cryptography.operations/SignatureGenerator|null[0]
+    abstract fun generateSignatureBlocking(kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.operations/SignatureGenerator.generateSignatureBlocking|generateSignatureBlocking(kotlin.ByteArray){}[0]
+    open fun generateSignatureBlocking(kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations/SignatureGenerator.generateSignatureBlocking|generateSignatureBlocking(kotlinx.io.bytestring.ByteString){}[0]
+    open suspend fun generateSignature(kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.operations/SignatureGenerator.generateSignature|generateSignature(kotlin.ByteArray){}[0]
+    open suspend fun generateSignature(kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations/SignatureGenerator.generateSignature|generateSignature(kotlinx.io.bytestring.ByteString){}[0]
+}
+
+abstract interface dev.whyoleg.cryptography.operations/SignatureVerifier { // dev.whyoleg.cryptography.operations/SignatureVerifier|null[0]
+    abstract fun verifySignatureBlocking(kotlin/ByteArray, kotlin/ByteArray): kotlin/Boolean // dev.whyoleg.cryptography.operations/SignatureVerifier.verifySignatureBlocking|verifySignatureBlocking(kotlin.ByteArray;kotlin.ByteArray){}[0]
+    open fun verifySignatureBlocking(kotlinx.io.bytestring/ByteString, kotlinx.io.bytestring/ByteString): kotlin/Boolean // dev.whyoleg.cryptography.operations/SignatureVerifier.verifySignatureBlocking|verifySignatureBlocking(kotlinx.io.bytestring.ByteString;kotlinx.io.bytestring.ByteString){}[0]
+    open suspend fun verifySignature(kotlin/ByteArray, kotlin/ByteArray): kotlin/Boolean // dev.whyoleg.cryptography.operations/SignatureVerifier.verifySignature|verifySignature(kotlin.ByteArray;kotlin.ByteArray){}[0]
+    open suspend fun verifySignature(kotlinx.io.bytestring/ByteString, kotlinx.io.bytestring/ByteString): kotlin/Boolean // dev.whyoleg.cryptography.operations/SignatureVerifier.verifySignature|verifySignature(kotlinx.io.bytestring.ByteString;kotlinx.io.bytestring.ByteString){}[0]
 }
 
 abstract interface dev.whyoleg.cryptography/CryptographyAlgorithm { // dev.whyoleg.cryptography/CryptographyAlgorithm|null[0]

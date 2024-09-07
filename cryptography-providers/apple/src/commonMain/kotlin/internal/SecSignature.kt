@@ -4,7 +4,7 @@
 
 package dev.whyoleg.cryptography.providers.apple.internal
 
-import dev.whyoleg.cryptography.operations.signature.*
+import dev.whyoleg.cryptography.operations.*
 import kotlinx.cinterop.*
 import platform.CoreFoundation.*
 import platform.Foundation.*
