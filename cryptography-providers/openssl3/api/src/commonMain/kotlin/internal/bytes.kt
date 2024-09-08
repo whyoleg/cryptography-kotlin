@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.internal
@@ -7,6 +7,11 @@ package dev.whyoleg.cryptography.providers.openssl3.internal
 import kotlinx.cinterop.*
 
 private val almostEmptyArray = ByteArray(1).pin()
+
+internal fun Pinned<ByteArray>.safeAddressOf(index: Int): CPointer<ByteVar> {
+    if (index == get().size) return almostEmptyArray.addressOf(0)
+    return addressOf(index)
+}
 
 //this hack should be dropped (or not?) with introducing of new IO or functions APIs
 internal fun ByteArray.safeRefTo(index: Int): CValuesRef<ByteVar> {
@@ -24,4 +29,15 @@ internal fun ByteArray.refToU(index: Int): CValuesRef<UByteVar> = refTo(index) a
 internal fun ByteArray.ensureSizeExactly(expectedSize: Int): ByteArray = when (size) {
     expectedSize -> this
     else         -> copyOf(expectedSize)
+}
+
+internal fun checkBounds(size: Int, startIndex: Int, endIndex: Int) {
+    if (startIndex < 0 || endIndex > size) {
+        throw IndexOutOfBoundsException(
+            "startIndex ($startIndex) and endIndex ($endIndex) are not within the range [0..size($size))"
+        )
+    }
+    if (startIndex > endIndex) {
+        throw IllegalArgumentException("startIndex ($startIndex) > endIndex ($endIndex)")
+    }
 }

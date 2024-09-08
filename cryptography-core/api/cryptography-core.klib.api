@@ -532,6 +532,20 @@ abstract interface dev.whyoleg.cryptography.algorithms/PBKDF2 : dev.whyoleg.cryp
     final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/PBKDF2> // dev.whyoleg.cryptography.algorithms/PBKDF2.Companion|null[0]
 }
 
+abstract interface dev.whyoleg.cryptography.functions/HashFunction : dev.whyoleg.cryptography.functions/UpdateFunction { // dev.whyoleg.cryptography.functions/HashFunction|null[0]
+    abstract fun hashIntoByteArray(kotlin/ByteArray, kotlin/Int = ...): kotlin/Int // dev.whyoleg.cryptography.functions/HashFunction.hashIntoByteArray|hashIntoByteArray(kotlin.ByteArray;kotlin.Int){}[0]
+    abstract fun hashToByteArray(): kotlin/ByteArray // dev.whyoleg.cryptography.functions/HashFunction.hashToByteArray|hashToByteArray(){}[0]
+    abstract fun reset() // dev.whyoleg.cryptography.functions/HashFunction.reset|reset(){}[0]
+    open fun hash(): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.functions/HashFunction.hash|hash(){}[0]
+}
+
+abstract interface dev.whyoleg.cryptography.functions/UpdateFunction : kotlin/AutoCloseable { // dev.whyoleg.cryptography.functions/UpdateFunction|null[0]
+    abstract fun update(kotlin/ByteArray, kotlin/Int = ..., kotlin/Int = ...) // dev.whyoleg.cryptography.functions/UpdateFunction.update|update(kotlin.ByteArray;kotlin.Int;kotlin.Int){}[0]
+    open fun update(kotlinx.io.bytestring/ByteString, kotlin/Int = ..., kotlin/Int = ...) // dev.whyoleg.cryptography.functions/UpdateFunction.update|update(kotlinx.io.bytestring.ByteString;kotlin.Int;kotlin.Int){}[0]
+    open fun updatingSink(kotlinx.io/RawSink): kotlinx.io/RawSink // dev.whyoleg.cryptography.functions/UpdateFunction.updatingSink|updatingSink(kotlinx.io.RawSink){}[0]
+    open fun updatingSource(kotlinx.io/RawSource): kotlinx.io/RawSource // dev.whyoleg.cryptography.functions/UpdateFunction.updatingSource|updatingSource(kotlinx.io.RawSource){}[0]
+}
+
 abstract interface dev.whyoleg.cryptography.materials.key/Key // dev.whyoleg.cryptography.materials.key/Key|null[0]
 
 abstract interface dev.whyoleg.cryptography.materials.key/KeyFormat { // dev.whyoleg.cryptography.materials.key/KeyFormat|null[0]
@@ -582,10 +596,13 @@ abstract interface dev.whyoleg.cryptography.operations/Encryptor { // dev.whyole
 }
 
 abstract interface dev.whyoleg.cryptography.operations/Hasher { // dev.whyoleg.cryptography.operations/Hasher|null[0]
-    abstract fun hashBlocking(kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.operations/Hasher.hashBlocking|hashBlocking(kotlin.ByteArray){}[0]
+    abstract fun createHashFunction(): dev.whyoleg.cryptography.functions/HashFunction // dev.whyoleg.cryptography.operations/Hasher.createHashFunction|createHashFunction(){}[0]
+    open fun hashBlocking(kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.operations/Hasher.hashBlocking|hashBlocking(kotlin.ByteArray){}[0]
     open fun hashBlocking(kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations/Hasher.hashBlocking|hashBlocking(kotlinx.io.bytestring.ByteString){}[0]
+    open fun hashBlocking(kotlinx.io/RawSource): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations/Hasher.hashBlocking|hashBlocking(kotlinx.io.RawSource){}[0]
     open suspend fun hash(kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.operations/Hasher.hash|hash(kotlin.ByteArray){}[0]
     open suspend fun hash(kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations/Hasher.hash|hash(kotlinx.io.bytestring.ByteString){}[0]
+    open suspend fun hash(kotlinx.io/RawSource): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations/Hasher.hash|hash(kotlinx.io.RawSource){}[0]
 }
 
 abstract interface dev.whyoleg.cryptography.operations/SecretDerivation { // dev.whyoleg.cryptography.operations/SecretDerivation|null[0]

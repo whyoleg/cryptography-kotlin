@@ -6,8 +6,12 @@ package dev.whyoleg.cryptography.providers.webcrypto.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
+import dev.whyoleg.cryptography.functions.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.webcrypto.internal.*
+import kotlinx.io.*
+import kotlinx.io.bytestring.*
+import kotlinx.io.bytestring.unsafe.*
 
 internal class WebCryptoDigest private constructor(
     private val algorithm: String,
@@ -26,5 +30,14 @@ internal class WebCryptoDigest private constructor(
         return WebCrypto.digest(algorithm, data)
     }
 
+    @OptIn(UnsafeByteStringApi::class)
+    override suspend fun hash(data: RawSource): ByteString {
+        return UnsafeByteStringOperations.wrapUnsafe(
+            WebCrypto.digest(algorithm, data.buffered().readByteArray())
+        )
+    }
+
+    override fun createHashFunction(): HashFunction = nonBlocking()
     override fun hashBlocking(data: ByteArray): ByteArray = nonBlocking()
+    override fun hashBlocking(data: RawSource): ByteString = nonBlocking()
 }

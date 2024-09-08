@@ -12,6 +12,13 @@ import dev.whyoleg.cryptography.serialization.asn1.modules.*
 import dev.whyoleg.cryptography.serialization.pem.*
 import kotlinx.io.bytestring.*
 
+fun AlgorithmTestScope<*>.supportsFunctions() = supports {
+    when {
+        provider.isWebCrypto -> "Incremental functions"
+        else                 -> null
+    }
+}
+
 fun AlgorithmTestScope<*>.supportsDigest(digest: CryptographyAlgorithmId<Digest>): Boolean = supports {
     val sha3Algorithms = setOf(SHA3_224, SHA3_256, SHA3_384, SHA3_512)
     when {

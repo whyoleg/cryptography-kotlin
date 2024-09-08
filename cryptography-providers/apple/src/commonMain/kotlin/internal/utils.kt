@@ -13,6 +13,13 @@ private val EmptyByteArray = ByteArray(0)
 
 private val almostEmptyArray = ByteArray(1)
 
+private val almostEmptyArrayPinned = ByteArray(1).pin()
+
+internal fun Pinned<ByteArray>.safeAddressOf(index: Int): CPointer<ByteVar> {
+    if (index == get().size) return almostEmptyArrayPinned.addressOf(0)
+    return addressOf(index)
+}
+
 //this hack will be dropped with introducing of new IO or functions APIs
 internal fun ByteArray.fixEmpty(): ByteArray = if (isNotEmpty()) this else almostEmptyArray
 
@@ -76,5 +83,16 @@ internal fun <R> ByteArray.useNSData(block: (NSData) -> R): R {
                 freeWhenDone = true
             )
         )
+    }
+}
+
+internal fun checkBounds(size: Int, startIndex: Int, endIndex: Int) {
+    if (startIndex < 0 || endIndex > size) {
+        throw IndexOutOfBoundsException(
+            "startIndex ($startIndex) and endIndex ($endIndex) are not within the range [0..size($size))"
+        )
+    }
+    if (startIndex > endIndex) {
+        throw IllegalArgumentException("startIndex ($startIndex) > endIndex ($endIndex)")
     }
 }

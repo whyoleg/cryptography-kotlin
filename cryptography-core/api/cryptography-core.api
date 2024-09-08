@@ -647,6 +647,23 @@ public final class dev/whyoleg/cryptography/algorithms/symmetric/SymmetricKeySiz
 	public final fun getB256-5xWg6fk ()I
 }
 
+public abstract interface class dev/whyoleg/cryptography/functions/HashFunction : dev/whyoleg/cryptography/functions/UpdateFunction {
+	public fun hash ()Lkotlinx/io/bytestring/ByteString;
+	public abstract fun hashIntoByteArray ([BI)I
+	public static synthetic fun hashIntoByteArray$default (Ldev/whyoleg/cryptography/functions/HashFunction;[BIILjava/lang/Object;)I
+	public abstract fun hashToByteArray ()[B
+	public abstract fun reset ()V
+}
+
+public abstract interface class dev/whyoleg/cryptography/functions/UpdateFunction : java/lang/AutoCloseable {
+	public fun update (Lkotlinx/io/bytestring/ByteString;II)V
+	public abstract fun update ([BII)V
+	public static synthetic fun update$default (Ldev/whyoleg/cryptography/functions/UpdateFunction;Lkotlinx/io/bytestring/ByteString;IIILjava/lang/Object;)V
+	public static synthetic fun update$default (Ldev/whyoleg/cryptography/functions/UpdateFunction;[BIIILjava/lang/Object;)V
+	public fun updatingSink (Lkotlinx/io/RawSink;)Lkotlinx/io/RawSink;
+	public fun updatingSource (Lkotlinx/io/RawSource;)Lkotlinx/io/RawSource;
+}
+
 public abstract interface class dev/whyoleg/cryptography/materials/key/EncodableKey : dev/whyoleg/cryptography/materials/key/Key {
 	public fun encodeTo (Ldev/whyoleg/cryptography/materials/key/KeyFormat;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun encodeTo$suspendImpl (Ldev/whyoleg/cryptography/materials/key/EncodableKey;Ldev/whyoleg/cryptography/materials/key/KeyFormat;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -740,12 +757,16 @@ public abstract interface class dev/whyoleg/cryptography/operations/Encryptor {
 }
 
 public abstract interface class dev/whyoleg/cryptography/operations/Hasher {
+	public abstract fun createHashFunction ()Ldev/whyoleg/cryptography/functions/HashFunction;
+	public fun hash (Lkotlinx/io/RawSource;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun hash (Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun hash ([BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun hash$suspendImpl (Ldev/whyoleg/cryptography/operations/Hasher;Lkotlinx/io/RawSource;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun hash$suspendImpl (Ldev/whyoleg/cryptography/operations/Hasher;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun hash$suspendImpl (Ldev/whyoleg/cryptography/operations/Hasher;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun hashBlocking (Lkotlinx/io/RawSource;)Lkotlinx/io/bytestring/ByteString;
 	public fun hashBlocking (Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
-	public abstract fun hashBlocking ([B)[B
+	public fun hashBlocking ([B)[B
 }
 
 public abstract interface class dev/whyoleg/cryptography/operations/SecretDerivation {
