@@ -8,8 +8,6 @@ import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.webcrypto.internal.*
 import dev.whyoleg.cryptography.providers.webcrypto.materials.*
-import kotlinx.io.bytestring.*
-import kotlinx.io.bytestring.unsafe.*
 
 internal object WebCryptoEcdh : WebCryptoEc<ECDH.PublicKey, ECDH.PrivateKey, ECDH.KeyPair>(
     algorithmName = "ECDH",
@@ -27,19 +25,16 @@ internal object WebCryptoEcdh : WebCryptoEc<ECDH.PublicKey, ECDH.PrivateKey, ECD
     ) : EcPublicKey(publicKey), ECDH.PublicKey, SharedSecretGenerator<ECDH.PrivateKey> {
         override fun sharedSecretGenerator(): SharedSecretGenerator<ECDH.PrivateKey> = this
 
-        @OptIn(UnsafeByteStringApi::class)
-        override suspend fun generateSharedSecret(other: ECDH.PrivateKey): ByteString {
+        override suspend fun generateSharedSecretToByteArray(other: ECDH.PrivateKey): ByteArray {
             check(other is EcdhPrivateKey)
-            return UnsafeByteStringOperations.wrapUnsafe(
-                WebCrypto.deriveBits(
-                    algorithm = EcdhKeyDeriveAlgorithm(publicKey),
-                    baseKey = other.privateKey,
-                    length = curveOrderSize(publicKey.algorithm.ecKeyAlgorithmNamedCurve).inBits
-                )
+            return WebCrypto.deriveBits(
+                algorithm = EcdhKeyDeriveAlgorithm(publicKey),
+                baseKey = other.privateKey,
+                length = curveOrderSize(publicKey.algorithm.ecKeyAlgorithmNamedCurve).inBits
             )
         }
 
-        override fun generateSharedSecretBlocking(other: ECDH.PrivateKey): ByteString = nonBlocking()
+        override fun generateSharedSecretToByteArrayBlocking(other: ECDH.PrivateKey): ByteArray = nonBlocking()
     }
 
     private class EcdhPrivateKey(
@@ -47,18 +42,15 @@ internal object WebCryptoEcdh : WebCryptoEc<ECDH.PublicKey, ECDH.PrivateKey, ECD
     ) : EcPrivateKey(privateKey), ECDH.PrivateKey, SharedSecretGenerator<ECDH.PublicKey> {
         override fun sharedSecretGenerator(): SharedSecretGenerator<ECDH.PublicKey> = this
 
-        @OptIn(UnsafeByteStringApi::class)
-        override suspend fun generateSharedSecret(other: ECDH.PublicKey): ByteString {
+        override suspend fun generateSharedSecretToByteArray(other: ECDH.PublicKey): ByteArray {
             check(other is EcdhPublicKey)
-            return UnsafeByteStringOperations.wrapUnsafe(
-                WebCrypto.deriveBits(
-                    algorithm = EcdhKeyDeriveAlgorithm(other.publicKey),
-                    baseKey = privateKey,
-                    length = curveOrderSize(privateKey.algorithm.ecKeyAlgorithmNamedCurve).inBits
-                )
+            return WebCrypto.deriveBits(
+                algorithm = EcdhKeyDeriveAlgorithm(other.publicKey),
+                baseKey = privateKey,
+                length = curveOrderSize(privateKey.algorithm.ecKeyAlgorithmNamedCurve).inBits
             )
         }
 
-        override fun generateSharedSecretBlocking(other: ECDH.PublicKey): ByteString = nonBlocking()
+        override fun generateSharedSecretToByteArrayBlocking(other: ECDH.PublicKey): ByteArray = nonBlocking()
     }
 }

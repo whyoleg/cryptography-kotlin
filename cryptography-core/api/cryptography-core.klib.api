@@ -420,8 +420,10 @@ abstract interface <#A: dev.whyoleg.cryptography.materials.key/Key> dev.whyoleg.
 }
 
 abstract interface <#A: dev.whyoleg.cryptography.materials.key/Key> dev.whyoleg.cryptography.operations/SharedSecretGenerator { // dev.whyoleg.cryptography.operations/SharedSecretGenerator|null[0]
-    abstract fun generateSharedSecretBlocking(#A): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations/SharedSecretGenerator.generateSharedSecretBlocking|generateSharedSecretBlocking(1:0){}[0]
+    abstract fun generateSharedSecretToByteArrayBlocking(#A): kotlin/ByteArray // dev.whyoleg.cryptography.operations/SharedSecretGenerator.generateSharedSecretToByteArrayBlocking|generateSharedSecretToByteArrayBlocking(1:0){}[0]
+    open fun generateSharedSecretBlocking(#A): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations/SharedSecretGenerator.generateSharedSecretBlocking|generateSharedSecretBlocking(1:0){}[0]
     open suspend fun generateSharedSecret(#A): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations/SharedSecretGenerator.generateSharedSecret|generateSharedSecret(1:0){}[0]
+    open suspend fun generateSharedSecretToByteArray(#A): kotlin/ByteArray // dev.whyoleg.cryptography.operations/SharedSecretGenerator.generateSharedSecretToByteArray|generateSharedSecretToByteArray(1:0){}[0]
 }
 
 abstract interface <#A: dev.whyoleg.cryptography.materials.key/KeyFormat, #B: dev.whyoleg.cryptography.materials.key/Key> dev.whyoleg.cryptography.materials.key/KeyDecoder { // dev.whyoleg.cryptography.materials.key/KeyDecoder|null[0]

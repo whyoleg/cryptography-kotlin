@@ -10,6 +10,17 @@ import kotlinx.io.bytestring.*
 
 @SubclassOptInRequired(CryptographyProviderApi::class)
 public interface SharedSecretGenerator<K : Key> {
-    public suspend fun generateSharedSecret(other: K): ByteString = generateSharedSecretBlocking(other)
-    public fun generateSharedSecretBlocking(other: K): ByteString
+    public suspend fun generateSharedSecretToByteArray(other: K): ByteArray {
+        return generateSharedSecretToByteArrayBlocking(other)
+    }
+
+    public fun generateSharedSecretToByteArrayBlocking(other: K): ByteArray
+
+    public suspend fun generateSharedSecret(other: K): ByteString {
+        return generateSharedSecretToByteArray(other).asByteString()
+    }
+
+    public fun generateSharedSecretBlocking(other: K): ByteString {
+        return generateSharedSecretToByteArrayBlocking(other).asByteString()
+    }
 }

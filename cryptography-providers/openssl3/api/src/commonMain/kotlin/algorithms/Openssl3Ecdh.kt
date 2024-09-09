@@ -11,8 +11,6 @@ import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.providers.openssl3.materials.*
 import kotlinx.cinterop.*
-import kotlinx.io.bytestring.*
-import kotlinx.io.bytestring.unsafe.*
 import platform.posix.*
 
 internal object Openssl3Ecdh : ECDH {
@@ -111,7 +109,7 @@ internal object Openssl3Ecdh : ECDH {
 
         override fun sharedSecretGenerator(): SharedSecretGenerator<ECDH.PublicKey> = this
 
-        override fun generateSharedSecretBlocking(other: ECDH.PublicKey): ByteString {
+        override fun generateSharedSecretToByteArrayBlocking(other: ECDH.PublicKey): ByteArray {
             check(other is EcPublicKey)
 
             return deriveSharedSecret(publicKey = other.key, privateKey = key)
@@ -135,7 +133,7 @@ internal object Openssl3Ecdh : ECDH {
 
         override fun sharedSecretGenerator(): SharedSecretGenerator<ECDH.PrivateKey> = this
 
-        override fun generateSharedSecretBlocking(other: ECDH.PrivateKey): ByteString {
+        override fun generateSharedSecretToByteArrayBlocking(other: ECDH.PrivateKey): ByteArray {
             check(other is EcPrivateKey)
 
             return deriveSharedSecret(publicKey = key, privateKey = other.key)
@@ -143,11 +141,11 @@ internal object Openssl3Ecdh : ECDH {
     }
 }
 
-@OptIn(UnsafeNumber::class, UnsafeByteStringApi::class)
+@OptIn(UnsafeNumber::class)
 private fun deriveSharedSecret(
     publicKey: CPointer<EVP_PKEY>,
     privateKey: CPointer<EVP_PKEY>,
-): ByteString = memScoped {
+): ByteArray = memScoped {
     val context = checkError(EVP_PKEY_CTX_new_from_pkey(null, privateKey, null))
     try {
         checkError(EVP_PKEY_derive_init(context))
@@ -156,7 +154,7 @@ private fun deriveSharedSecret(
         checkError(EVP_PKEY_derive(context, null, secretSize.ptr))
         val secret = ByteArray(secretSize.value.toInt())
         checkError(EVP_PKEY_derive(context, secret.refToU(0), secretSize.ptr))
-        UnsafeByteStringOperations.wrapUnsafe(secret)
+        secret
     } finally {
         EVP_PKEY_CTX_free(context)
     }

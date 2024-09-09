@@ -760,7 +760,10 @@ public abstract interface class dev/whyoleg/cryptography/operations/SecretDeriva
 public abstract interface class dev/whyoleg/cryptography/operations/SharedSecretGenerator {
 	public fun generateSharedSecret (Ldev/whyoleg/cryptography/materials/key/Key;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun generateSharedSecret$suspendImpl (Ldev/whyoleg/cryptography/operations/SharedSecretGenerator;Ldev/whyoleg/cryptography/materials/key/Key;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun generateSharedSecretBlocking (Ldev/whyoleg/cryptography/materials/key/Key;)Lkotlinx/io/bytestring/ByteString;
+	public fun generateSharedSecretBlocking (Ldev/whyoleg/cryptography/materials/key/Key;)Lkotlinx/io/bytestring/ByteString;
+	public fun generateSharedSecretToByteArray (Ldev/whyoleg/cryptography/materials/key/Key;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun generateSharedSecretToByteArray$suspendImpl (Ldev/whyoleg/cryptography/operations/SharedSecretGenerator;Ldev/whyoleg/cryptography/materials/key/Key;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun generateSharedSecretToByteArrayBlocking (Ldev/whyoleg/cryptography/materials/key/Key;)[B
 }
 
 public abstract interface class dev/whyoleg/cryptography/operations/SignatureGenerator {
