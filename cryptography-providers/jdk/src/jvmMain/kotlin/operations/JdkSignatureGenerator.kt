@@ -5,8 +5,10 @@
 package dev.whyoleg.cryptography.providers.jdk.operations
 
 
+import dev.whyoleg.cryptography.functions.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.jdk.*
+import dev.whyoleg.cryptography.providers.jdk.internal.*
 import java.security.spec.*
 
 internal class JdkSignatureGenerator(
@@ -16,11 +18,44 @@ internal class JdkSignatureGenerator(
     private val parameters: AlgorithmParameterSpec?,
 ) : SignatureGenerator {
     private val signature = state.signature(algorithm)
+    override fun createSignFunction(): SignFunction = JdkSignFunction(state, key, parameters, signature.borrowResource())
+}
 
-    override fun generateSignatureBlocking(data: ByteArray): ByteArray = signature.use { jSignature ->
-        jSignature.initSign(key, state.secureRandom)
-        parameters?.let(jSignature::setParameter)
-        jSignature.update(data)
-        jSignature.sign()
+private class JdkSignFunction(
+    private val state: JdkCryptographyState,
+    private val key: JPrivateKey,
+    private val parameters: AlgorithmParameterSpec?,
+    private val jsignature: Pooled.Resource<JSignature>,
+) : SignFunction {
+    init {
+        reset()
+    }
+
+    override fun update(source: ByteArray, startIndex: Int, endIndex: Int) {
+        checkBounds(source.size, startIndex, endIndex)
+        val jsignature = jsignature.access()
+        jsignature.update(source, startIndex, endIndex - startIndex)
+    }
+
+    override fun signIntoByteArray(destination: ByteArray, destinationOffset: Int): Int {
+        val signature = signToByteArray()
+        checkBounds(destination.size, destinationOffset, destinationOffset + signature.size)
+        signature.copyInto(destination, destinationOffset, destinationOffset)
+        return signature.size
+    }
+
+    override fun signToByteArray(): ByteArray {
+        val jsignature = jsignature.access()
+        return jsignature.sign()
+    }
+
+    override fun reset() {
+        val jsignature = jsignature.access()
+        jsignature.initSign(key, state.secureRandom)
+        parameters?.let(jsignature::setParameter)
+    }
+
+    override fun close() {
+        jsignature.close()
     }
 }

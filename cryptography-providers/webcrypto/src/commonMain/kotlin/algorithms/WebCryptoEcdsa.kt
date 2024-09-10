@@ -8,12 +8,16 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.BinarySize.Companion.bytes
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.bigint.*
+import dev.whyoleg.cryptography.functions.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.webcrypto.internal.*
 import dev.whyoleg.cryptography.providers.webcrypto.materials.*
 import dev.whyoleg.cryptography.providers.webcrypto.operations.*
 import dev.whyoleg.cryptography.serialization.asn1.*
 import dev.whyoleg.cryptography.serialization.asn1.modules.*
+import kotlinx.io.*
+import kotlinx.io.bytestring.*
+import kotlinx.io.bytestring.unsafe.*
 
 internal object WebCryptoEcdsa : WebCryptoEc<ECDSA.PublicKey, ECDSA.PrivateKey, ECDSA.KeyPair>(
     algorithmName = "ECDSA",
@@ -67,6 +71,13 @@ private class EcdsaDerSignatureGenerator(
         return Der.encodeToByteArray(EcdsaSignatureValue.serializer(), signature)
     }
 
+    @OptIn(UnsafeByteStringApi::class)
+    override suspend fun generateSignature(data: RawSource): ByteString {
+        return UnsafeByteStringOperations.wrapUnsafe(generateSignature(data.buffered().readByteArray()))
+    }
+
+    override fun createSignFunction(): SignFunction = nonBlocking()
+    override fun generateSignatureBlocking(data: RawSource): ByteString = nonBlocking()
     override fun generateSignatureBlocking(data: ByteArray): ByteArray = nonBlocking()
 }
 
@@ -88,6 +99,15 @@ private class EcdsaDerSignatureVerifier(
         return rawVerifier.verifySignature(data, rawSignature)
     }
 
+    @OptIn(UnsafeByteStringApi::class)
+    override suspend fun verifySignature(data: RawSource, signature: ByteString): Boolean {
+        UnsafeByteStringOperations.withByteArrayUnsafe(signature) {
+            return verifySignature(data.buffered().readByteArray(), it)
+        }
+    }
+
+    override fun createVerifyFunction(): VerifyFunction = nonBlocking()
+    override fun verifySignatureBlocking(data: RawSource, signature: ByteString): Boolean = nonBlocking()
     override fun verifySignatureBlocking(data: ByteArray, signature: ByteArray): Boolean = nonBlocking()
 }
 

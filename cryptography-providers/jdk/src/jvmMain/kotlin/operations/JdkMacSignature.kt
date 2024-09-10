@@ -5,8 +5,10 @@
 package dev.whyoleg.cryptography.providers.jdk.operations
 
 
+import dev.whyoleg.cryptography.functions.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.jdk.*
+import dev.whyoleg.cryptography.providers.jdk.internal.*
 
 internal class JdkMacSignature(
     state: JdkCryptographyState,
@@ -15,12 +17,47 @@ internal class JdkMacSignature(
 ) : SignatureGenerator, SignatureVerifier {
     private val mac = state.mac(algorithm)
 
-    override fun generateSignatureBlocking(data: ByteArray): ByteArray = mac.use { mac ->
-        mac.init(key)
-        mac.doFinal(data)
+    private fun createFunction() = JdkMacFunction(mac.borrowResource().also {
+        it.access().init(key)
+    })
+
+    override fun createSignFunction(): SignFunction = createFunction()
+    override fun createVerifyFunction(): VerifyFunction = createFunction()
+}
+
+private class JdkMacFunction(
+    private val mac: Pooled.Resource<JMac>,
+) : SignFunction, VerifyFunction {
+    override fun update(source: ByteArray, startIndex: Int, endIndex: Int) {
+        checkBounds(source.size, startIndex, endIndex)
+        val mac = mac.access()
+        mac.update(source, startIndex, endIndex - startIndex)
     }
 
-    override fun verifySignatureBlocking(data: ByteArray, signature: ByteArray): Boolean {
-        return generateSignatureBlocking(data).contentEquals(signature)
+    override fun signIntoByteArray(destination: ByteArray, destinationOffset: Int): Int {
+        val mac = mac.access()
+
+        checkBounds(destination.size, destinationOffset, destinationOffset + mac.macLength)
+
+        mac.doFinal(destination, destinationOffset)
+        return mac.macLength
+    }
+
+    override fun signToByteArray(): ByteArray {
+        val mac = mac.access()
+        return mac.doFinal()
+    }
+
+    override fun verify(signature: ByteArray, startIndex: Int, endIndex: Int): Boolean {
+        checkBounds(signature.size, startIndex, endIndex)
+        return signToByteArray().contentEquals(signature.copyOfRange(startIndex, endIndex))
+    }
+
+    override fun reset() {
+        mac.access().reset()
+    }
+
+    override fun close() {
+        mac.close()
     }
 }

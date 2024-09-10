@@ -15,6 +15,10 @@ public interface UpdateFunction : AutoCloseable {
         update(source.asByteArray(), startIndex, endIndex)
     }
 
+    public fun update(source: RawSource) {
+        updatingSource(source).buffered().transferTo(discardingSink())
+    }
+
     public fun updatingSource(source: RawSource): RawSource = UpdatingSource(this, source)
     public fun updatingSink(sink: RawSink): RawSink = UpdatingSink(this, sink)
 }

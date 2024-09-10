@@ -27,7 +27,7 @@ public interface Hasher {
     public fun hashBlocking(data: ByteString): ByteString = hashBlocking(data.asByteArray()).asByteString()
 
     public fun hashBlocking(data: RawSource): ByteString = createHashFunction().use {
-        it.updatingSource(data).buffered().transferTo(discardingSink())
+        it.update(data)
         it.hash()
     }
 }

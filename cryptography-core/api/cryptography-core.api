@@ -655,13 +655,30 @@ public abstract interface class dev/whyoleg/cryptography/functions/HashFunction 
 	public abstract fun reset ()V
 }
 
+public abstract interface class dev/whyoleg/cryptography/functions/SignFunction : dev/whyoleg/cryptography/functions/UpdateFunction {
+	public abstract fun reset ()V
+	public fun sign ()Lkotlinx/io/bytestring/ByteString;
+	public abstract fun signIntoByteArray ([BI)I
+	public static synthetic fun signIntoByteArray$default (Ldev/whyoleg/cryptography/functions/SignFunction;[BIILjava/lang/Object;)I
+	public abstract fun signToByteArray ()[B
+}
+
 public abstract interface class dev/whyoleg/cryptography/functions/UpdateFunction : java/lang/AutoCloseable {
+	public fun update (Lkotlinx/io/RawSource;)V
 	public fun update (Lkotlinx/io/bytestring/ByteString;II)V
 	public abstract fun update ([BII)V
 	public static synthetic fun update$default (Ldev/whyoleg/cryptography/functions/UpdateFunction;Lkotlinx/io/bytestring/ByteString;IIILjava/lang/Object;)V
 	public static synthetic fun update$default (Ldev/whyoleg/cryptography/functions/UpdateFunction;[BIIILjava/lang/Object;)V
 	public fun updatingSink (Lkotlinx/io/RawSink;)Lkotlinx/io/RawSink;
 	public fun updatingSource (Lkotlinx/io/RawSource;)Lkotlinx/io/RawSource;
+}
+
+public abstract interface class dev/whyoleg/cryptography/functions/VerifyFunction : dev/whyoleg/cryptography/functions/UpdateFunction {
+	public abstract fun reset ()V
+	public fun verify (Lkotlinx/io/bytestring/ByteString;II)Z
+	public abstract fun verify ([BII)Z
+	public static synthetic fun verify$default (Ldev/whyoleg/cryptography/functions/VerifyFunction;Lkotlinx/io/bytestring/ByteString;IIILjava/lang/Object;)Z
+	public static synthetic fun verify$default (Ldev/whyoleg/cryptography/functions/VerifyFunction;[BIIILjava/lang/Object;)Z
 }
 
 public abstract interface class dev/whyoleg/cryptography/materials/key/EncodableKey : dev/whyoleg/cryptography/materials/key/Key {
@@ -788,20 +805,28 @@ public abstract interface class dev/whyoleg/cryptography/operations/SharedSecret
 }
 
 public abstract interface class dev/whyoleg/cryptography/operations/SignatureGenerator {
+	public abstract fun createSignFunction ()Ldev/whyoleg/cryptography/functions/SignFunction;
+	public fun generateSignature (Lkotlinx/io/RawSource;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun generateSignature (Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun generateSignature ([BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun generateSignature$suspendImpl (Ldev/whyoleg/cryptography/operations/SignatureGenerator;Lkotlinx/io/RawSource;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun generateSignature$suspendImpl (Ldev/whyoleg/cryptography/operations/SignatureGenerator;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun generateSignature$suspendImpl (Ldev/whyoleg/cryptography/operations/SignatureGenerator;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun generateSignatureBlocking (Lkotlinx/io/RawSource;)Lkotlinx/io/bytestring/ByteString;
 	public fun generateSignatureBlocking (Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
-	public abstract fun generateSignatureBlocking ([B)[B
+	public fun generateSignatureBlocking ([B)[B
 }
 
 public abstract interface class dev/whyoleg/cryptography/operations/SignatureVerifier {
+	public abstract fun createVerifyFunction ()Ldev/whyoleg/cryptography/functions/VerifyFunction;
+	public fun verifySignature (Lkotlinx/io/RawSource;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun verifySignature (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun verifySignature ([B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun verifySignature$suspendImpl (Ldev/whyoleg/cryptography/operations/SignatureVerifier;Lkotlinx/io/RawSource;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun verifySignature$suspendImpl (Ldev/whyoleg/cryptography/operations/SignatureVerifier;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun verifySignature$suspendImpl (Ldev/whyoleg/cryptography/operations/SignatureVerifier;[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun verifySignatureBlocking (Lkotlinx/io/RawSource;Lkotlinx/io/bytestring/ByteString;)Z
 	public fun verifySignatureBlocking (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;)Z
-	public abstract fun verifySignatureBlocking ([B[B)Z
+	public fun verifySignatureBlocking ([B[B)Z
 }
 

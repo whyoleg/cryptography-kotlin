@@ -7,6 +7,7 @@ package dev.whyoleg.cryptography.providers.apple.algorithms
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.bigint.*
+import dev.whyoleg.cryptography.functions.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.apple.internal.*
@@ -244,20 +245,46 @@ private class EcdsaRawSignatureGenerator(
     private val derGenerator: SignatureGenerator,
     private val curveOrderSize: Int,
 ) : SignatureGenerator {
-    override fun generateSignatureBlocking(data: ByteArray): ByteArray {
-        val derSignature = derGenerator.generateSignatureBlocking(data)
+    override fun createSignFunction(): SignFunction = RawSignFunction(derGenerator.createSignFunction(), curveOrderSize)
 
-        val signatureValue = Der.decodeFromByteArray(EcdsaSignatureValue.serializer(), derSignature)
+    private class RawSignFunction(
+        private val derSignFunction: SignFunction,
+        private val curveOrderSize: Int,
+    ) : SignFunction {
+        override fun update(source: ByteArray, startIndex: Int, endIndex: Int) {
+            derSignFunction.update(source, startIndex, endIndex)
+        }
 
-        val r = signatureValue.r.encodeToByteArray().trimLeadingZeros()
-        val s = signatureValue.s.encodeToByteArray().trimLeadingZeros()
+        override fun signIntoByteArray(destination: ByteArray, destinationOffset: Int): Int {
+            val signature = signToByteArray()
+            checkBounds(destination.size, destinationOffset, destinationOffset + signature.size)
+            signature.copyInto(destination, destinationOffset, destinationOffset)
+            return signature.size
+        }
 
-        val rawSignature = ByteArray(curveOrderSize * 2)
+        override fun signToByteArray(): ByteArray {
+            val derSignature = derSignFunction.signToByteArray()
 
-        r.copyInto(rawSignature, curveOrderSize - r.size)
-        s.copyInto(rawSignature, curveOrderSize * 2 - s.size)
+            val signatureValue = Der.decodeFromByteArray(EcdsaSignatureValue.serializer(), derSignature)
 
-        return rawSignature
+            val r = signatureValue.r.encodeToByteArray().trimLeadingZeros()
+            val s = signatureValue.s.encodeToByteArray().trimLeadingZeros()
+
+            val rawSignature = ByteArray(curveOrderSize * 2)
+
+            r.copyInto(rawSignature, curveOrderSize - r.size)
+            s.copyInto(rawSignature, curveOrderSize * 2 - s.size)
+
+            return rawSignature
+        }
+
+        override fun reset() {
+            derSignFunction.reset()
+        }
+
+        override fun close() {
+            derSignFunction.close()
+        }
     }
 }
 
@@ -265,22 +292,43 @@ private class EcdsaRawSignatureVerifier(
     private val derVerifier: SignatureVerifier,
     private val curveOrderSize: Int,
 ) : SignatureVerifier {
-    override fun verifySignatureBlocking(data: ByteArray, signature: ByteArray): Boolean {
-        check(signature.size == curveOrderSize * 2) {
-            "Expected signature size ${curveOrderSize * 2}, received: ${signature.size}"
+    override fun createVerifyFunction(): VerifyFunction = RawVerifyFunction(derVerifier.createVerifyFunction(), curveOrderSize)
+
+    private class RawVerifyFunction(
+        private val derVerifyFunction: VerifyFunction,
+        private val curveOrderSize: Int,
+    ) : VerifyFunction {
+        override fun update(source: ByteArray, startIndex: Int, endIndex: Int) {
+            derVerifyFunction.update(source, startIndex, endIndex)
         }
 
-        val r = signature.copyOfRange(0, curveOrderSize).makePositive()
-        val s = signature.copyOfRange(curveOrderSize, signature.size).makePositive()
+        override fun verify(signature: ByteArray, startIndex: Int, endIndex: Int): Boolean {
+            checkBounds(signature.size, startIndex, endIndex)
 
-        val signatureValue = EcdsaSignatureValue(
-            r = r.decodeToBigInt(),
-            s = s.decodeToBigInt()
-        )
+            check((endIndex - startIndex) == curveOrderSize * 2) {
+                "Expected signature size ${curveOrderSize * 2}, received: ${endIndex - startIndex}"
+            }
 
-        val derSignature = Der.encodeToByteArray(EcdsaSignatureValue.serializer(), signatureValue)
+            val r = signature.copyOfRange(startIndex, startIndex + curveOrderSize).makePositive()
+            val s = signature.copyOfRange(startIndex + curveOrderSize, endIndex).makePositive()
 
-        return derVerifier.verifySignatureBlocking(data, derSignature)
+            val signatureValue = EcdsaSignatureValue(
+                r = r.decodeToBigInt(),
+                s = s.decodeToBigInt()
+            )
+
+            val derSignature = Der.encodeToByteArray(EcdsaSignatureValue.serializer(), signatureValue)
+
+            return derVerifyFunction.verify(derSignature)
+        }
+
+        override fun reset() {
+            derVerifyFunction.reset()
+        }
+
+        override fun close() {
+            derVerifyFunction.close()
+        }
     }
 }
 

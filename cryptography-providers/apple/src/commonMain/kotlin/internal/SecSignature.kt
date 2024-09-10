@@ -4,6 +4,7 @@
 
 package dev.whyoleg.cryptography.providers.apple.internal
 
+import dev.whyoleg.cryptography.functions.*
 import dev.whyoleg.cryptography.operations.*
 import kotlinx.cinterop.*
 import platform.CoreFoundation.*
@@ -14,9 +15,39 @@ internal class SecSignatureVerifier(
     private val publicKey: SecKeyRef,
     private val algorithm: SecKeyAlgorithm?,
 ) : SignatureVerifier {
-    override fun verifySignatureBlocking(data: ByteArray, signature: ByteArray): Boolean = memScoped {
+    override fun createVerifyFunction(): VerifyFunction = SecVerifyFunction(publicKey, algorithm)
+}
+
+internal class SecSignatureGenerator(
+    private val privateKey: SecKeyRef,
+    private val algorithm: SecKeyAlgorithm?,
+) : SignatureGenerator {
+    override fun createSignFunction(): SignFunction = SecSignFunction(privateKey, algorithm)
+}
+
+private class SecVerifyFunction(
+    private val publicKey: SecKeyRef,
+    private val algorithm: SecKeyAlgorithm?,
+) : VerifyFunction {
+    private var isClosed = false
+    private var accumulator = EmptyByteArray
+
+    private fun ensureNotClosed() {
+        check(!isClosed) { "Already closed" }
+    }
+
+    override fun update(source: ByteArray, startIndex: Int, endIndex: Int) {
+        ensureNotClosed()
+        checkBounds(source.size, startIndex, endIndex)
+
+        accumulator += source.copyOfRange(startIndex, endIndex)
+    }
+
+    override fun verify(signature: ByteArray, startIndex: Int, endIndex: Int): Boolean = memScoped {
+        ensureNotClosed()
+        checkBounds(signature.size, startIndex, endIndex)
         val error = alloc<CFErrorRefVar>()
-        data.useNSData { data ->
+        accumulator.useNSData { data ->
             signature.useNSData { signature ->
                 val result = SecKeyVerifySignature(
                     key = publicKey,
@@ -33,15 +64,46 @@ internal class SecSignatureVerifier(
             }
         }
     }
+
+    override fun reset() {
+        ensureNotClosed()
+        accumulator = EmptyByteArray
+    }
+
+    override fun close() {
+        isClosed = true
+    }
 }
 
-internal class SecSignatureGenerator(
+private class SecSignFunction(
     private val privateKey: SecKeyRef,
     private val algorithm: SecKeyAlgorithm?,
-) : SignatureGenerator {
-    override fun generateSignatureBlocking(data: ByteArray): ByteArray = memScoped {
+) : SignFunction {
+    private var isClosed = false
+    private var accumulator = EmptyByteArray
+
+    private fun ensureNotClosed() {
+        check(!isClosed) { "Already closed" }
+    }
+
+    override fun update(source: ByteArray, startIndex: Int, endIndex: Int) {
+        ensureNotClosed()
+        checkBounds(source.size, startIndex, endIndex)
+
+        accumulator += source.copyOfRange(startIndex, endIndex)
+    }
+
+    override fun signIntoByteArray(destination: ByteArray, destinationOffset: Int): Int {
+        val signature = signToByteArray()
+        checkBounds(destination.size, destinationOffset, destinationOffset + signature.size)
+        signature.copyInto(destination, destinationOffset, destinationOffset)
+        return signature.size
+    }
+
+    override fun signToByteArray(): ByteArray = memScoped {
+        ensureNotClosed()
         val error = alloc<CFErrorRefVar>()
-        data.useNSData { data ->
+        accumulator.useNSData { data ->
             val signature = SecKeyCreateSignature(
                 key = privateKey,
                 algorithm = algorithm,
@@ -56,5 +118,14 @@ internal class SecSignatureGenerator(
 
             signature.toByteArray()
         }
+    }
+
+    override fun reset() {
+        ensureNotClosed()
+        accumulator = EmptyByteArray
+    }
+
+    override fun close() {
+        isClosed = true
     }
 }

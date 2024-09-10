@@ -4,8 +4,12 @@
 
 package dev.whyoleg.cryptography.providers.webcrypto.operations
 
+import dev.whyoleg.cryptography.functions.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.webcrypto.internal.*
+import kotlinx.io.*
+import kotlinx.io.bytestring.*
+import kotlinx.io.bytestring.unsafe.*
 
 internal class WebCryptoSignatureGenerator(
     private val algorithm: Algorithm,
@@ -15,5 +19,12 @@ internal class WebCryptoSignatureGenerator(
         return WebCrypto.sign(algorithm, key, data)
     }
 
+    @OptIn(UnsafeByteStringApi::class)
+    override suspend fun generateSignature(data: RawSource): ByteString {
+        return UnsafeByteStringOperations.wrapUnsafe(generateSignature(data.buffered().readByteArray()))
+    }
+
+    override fun createSignFunction(): SignFunction = nonBlocking()
     override fun generateSignatureBlocking(data: ByteArray): ByteArray = nonBlocking()
+    override fun generateSignatureBlocking(data: RawSource): ByteString = nonBlocking()
 }

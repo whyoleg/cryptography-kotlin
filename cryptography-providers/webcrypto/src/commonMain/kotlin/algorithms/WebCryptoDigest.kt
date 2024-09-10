@@ -32,9 +32,7 @@ internal class WebCryptoDigest private constructor(
 
     @OptIn(UnsafeByteStringApi::class)
     override suspend fun hash(data: RawSource): ByteString {
-        return UnsafeByteStringOperations.wrapUnsafe(
-            WebCrypto.digest(algorithm, data.buffered().readByteArray())
-        )
+        return UnsafeByteStringOperations.wrapUnsafe(hash(data.buffered().readByteArray()))
     }
 
     override fun createHashFunction(): HashFunction = nonBlocking()

@@ -9,7 +9,7 @@ import platform.CoreFoundation.*
 import platform.Foundation.*
 
 private val EmptyNSData = NSData()
-private val EmptyByteArray = ByteArray(0)
+internal val EmptyByteArray = ByteArray(0)
 
 private val almostEmptyArray = ByteArray(1)
 

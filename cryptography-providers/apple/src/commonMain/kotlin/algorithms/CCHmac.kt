@@ -6,7 +6,7 @@ package dev.whyoleg.cryptography.providers.apple.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
-
+import dev.whyoleg.cryptography.functions.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.apple.internal.*
@@ -83,21 +83,64 @@ private class HmacSignature(
     private val key: ByteArray,
     private val digestSize: Int,
 ) : SignatureGenerator, SignatureVerifier {
-    override fun generateSignatureBlocking(data: ByteArray): ByteArray {
-        val macOutput = ByteArray(digestSize)
-        @OptIn(UnsafeNumber::class)
-        CCHmac(
-            algorithm = hmacAlgorithm,
-            key = key.refTo(0),
-            keyLength = key.size.convert(),
-            data = data.fixEmpty().refTo(0),
-            dataLength = data.size.convert(),
-            macOut = macOutput.refTo(0)
-        )
-        return macOutput
+    private fun createFunction() = HmacFunction(
+        hmacAlgorithm = hmacAlgorithm,
+        key = key,
+        digestSize = digestSize,
+        context = Resource(nativeHeap.alloc<CCHmacContext>().ptr, nativeHeap::free)
+    )
+
+    override fun createSignFunction(): SignFunction = createFunction()
+    override fun createVerifyFunction(): VerifyFunction = createFunction()
+}
+
+private class HmacFunction(
+    private val hmacAlgorithm: CCHmacAlgorithm,
+    private val key: ByteArray,
+    private val digestSize: Int,
+    private val context: Resource<CPointer<CCHmacContext>>,
+) : SignFunction, VerifyFunction, SafeCloseable(SafeCloseAction(context, AutoCloseable::close)) {
+    init {
+        reset()
     }
 
-    override fun verifySignatureBlocking(data: ByteArray, signature: ByteArray): Boolean {
-        return generateSignatureBlocking(data).contentEquals(signature)
+    @OptIn(UnsafeNumber::class)
+    override fun update(source: ByteArray, startIndex: Int, endIndex: Int) {
+        checkBounds(source.size, startIndex, endIndex)
+
+        val context = context.access()
+        source.usePinned {
+            CCHmacUpdate(context, it.safeAddressOf(startIndex), (endIndex - startIndex).convert())
+        }
+    }
+
+    override fun signIntoByteArray(destination: ByteArray, destinationOffset: Int): Int {
+        checkBounds(destination.size, destinationOffset, destinationOffset + digestSize)
+
+        val context = context.access()
+        destination.usePinned {
+            CCHmacFinal(context, it.safeAddressOf(destinationOffset))
+        }
+        reset()
+        return digestSize
+    }
+
+    override fun signToByteArray(): ByteArray {
+        val output = ByteArray(digestSize)
+        signIntoByteArray(output)
+        return output
+    }
+
+    override fun verify(signature: ByteArray, startIndex: Int, endIndex: Int): Boolean {
+        checkBounds(signature.size, startIndex, endIndex)
+        return signToByteArray().contentEquals(signature.copyOfRange(startIndex, endIndex))
+    }
+
+    @OptIn(UnsafeNumber::class)
+    override fun reset() {
+        val context = context.access()
+        key.usePinned {
+            CCHmacInit(context, hmacAlgorithm, it.safeAddressOf(0), key.size.convert())
+        }
     }
 }

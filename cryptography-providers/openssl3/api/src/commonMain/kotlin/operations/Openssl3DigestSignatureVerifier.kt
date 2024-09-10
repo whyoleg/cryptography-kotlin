@@ -4,6 +4,7 @@
 
 package dev.whyoleg.cryptography.providers.openssl3.operations
 
+import dev.whyoleg.cryptography.functions.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
@@ -19,10 +20,45 @@ internal abstract class Openssl3DigestSignatureVerifier(
 
     protected abstract fun MemScope.createParams(): CValuesRef<OSSL_PARAM>?
 
-    @OptIn(UnsafeNumber::class)
-    override fun verifySignatureBlocking(data: ByteArray, signature: ByteArray): Boolean = memScoped {
-        val context = checkError(EVP_MD_CTX_new())
-        try {
+    override fun createVerifyFunction(): VerifyFunction {
+        return Openssl3DigestVerifyFunction(Resource(checkError(EVP_MD_CTX_new()), ::EVP_MD_CTX_free))
+    }
+
+    // inner class to have a reference to class with cleaner
+    private inner class Openssl3DigestVerifyFunction(
+        private val context: Resource<CPointer<EVP_MD_CTX>>,
+    ) : VerifyFunction, SafeCloseable(SafeCloseAction(context, AutoCloseable::close)) {
+        init {
+            reset()
+        }
+
+        @OptIn(UnsafeNumber::class)
+        override fun update(source: ByteArray, startIndex: Int, endIndex: Int) {
+            checkBounds(source.size, startIndex, endIndex)
+
+            val context = context.access()
+            source.usePinned {
+                checkError(EVP_DigestVerifyUpdate(context, it.safeAddressOf(startIndex), (endIndex - startIndex).convert()))
+            }
+        }
+
+        @OptIn(UnsafeNumber::class)
+        override fun verify(signature: ByteArray, startIndex: Int, endIndex: Int): Boolean {
+            checkBounds(signature.size, startIndex, endIndex)
+
+            val context = context.access()
+            val result = signature.usePinned {
+                EVP_DigestVerifyFinal(context, it.safeAddressOf(startIndex).reinterpret(), (endIndex - startIndex).convert())
+            }
+            // 0     - means verification failed
+            // 1     - means verification succeeded
+            // other - means error
+            if (result != 0) checkError(result)
+            return result == 1
+        }
+
+        override fun reset(): Unit = memScoped {
+            val context = context.access()
             checkError(
                 EVP_DigestVerifyInit_ex(
                     ctx = context,
@@ -34,17 +70,6 @@ internal abstract class Openssl3DigestSignatureVerifier(
                     params = createParams()
                 )
             )
-
-            checkError(EVP_DigestVerifyUpdate(context, data.safeRefTo(0), data.size.convert()))
-
-            val result = EVP_DigestVerifyFinal(context, signature.safeRefToU(0), signature.size.convert())
-            // 0     - means verification failed
-            // 1     - means verification succeeded
-            // other - means error
-            if (result != 0) checkError(result)
-            result == 1
-        } finally {
-            EVP_MD_CTX_free(context)
         }
     }
 }
