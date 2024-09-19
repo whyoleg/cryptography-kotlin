@@ -10,6 +10,7 @@ import dev.whyoleg.cryptography.algorithms.symmetric.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.*
 import kotlinx.io.bytestring.*
+import kotlin.jvm.*
 
 @SubclassOptInRequired(CryptographyProviderApi::class)
 public interface AES<K : AES.Key> : CryptographyAlgorithm {
@@ -84,20 +85,28 @@ public interface AES<K : AES.Key> : CryptographyAlgorithm {
     }
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
-    public interface IvCipher : IvEncryptor, IvDecryptor
+    public interface IvCipher : Cipher, IvEncryptor, IvDecryptor
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface IvEncryptor : Encryptor {
+        @Suppress("INAPPLICABLE_JVM_NAME")
+        @JvmName("encryptWithIv")
         @DelicateCryptographyApi
         public suspend fun encrypt(iv: ByteArray, plaintext: ByteArray): ByteArray = encryptBlocking(iv, plaintext)
 
+        @Suppress("INAPPLICABLE_JVM_NAME")
+        @JvmName("encryptWithIvBlocking")
         @DelicateCryptographyApi
         public fun encryptBlocking(iv: ByteArray, plaintext: ByteArray): ByteArray
 
+        @Suppress("INAPPLICABLE_JVM_NAME")
+        @JvmName("encryptWithIv")
         @DelicateCryptographyApi
         public suspend fun encrypt(iv: ByteString, plaintext: ByteString): ByteString =
             encrypt(iv.asByteArray(), plaintext.asByteArray()).asByteString()
 
+        @Suppress("INAPPLICABLE_JVM_NAME")
+        @JvmName("encryptWithIvBlocking")
         @DelicateCryptographyApi
         public fun encryptBlocking(iv: ByteString, plaintext: ByteString): ByteString =
             encryptBlocking(iv.asByteArray(), plaintext.asByteArray()).asByteString()
@@ -105,28 +114,37 @@ public interface AES<K : AES.Key> : CryptographyAlgorithm {
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface IvDecryptor : Decryptor {
+        @Suppress("INAPPLICABLE_JVM_NAME")
+        @JvmName("decryptWithIv")
         @DelicateCryptographyApi
         public suspend fun decrypt(iv: ByteArray, ciphertext: ByteArray): ByteArray = decryptBlocking(iv, ciphertext)
 
+        @Suppress("INAPPLICABLE_JVM_NAME")
+        @JvmName("decryptWithIvBlocking")
         @DelicateCryptographyApi
         public fun decryptBlocking(iv: ByteArray, ciphertext: ByteArray): ByteArray
 
+        @Suppress("INAPPLICABLE_JVM_NAME")
+        @JvmName("decryptWithIv")
         @DelicateCryptographyApi
         public suspend fun decrypt(iv: ByteString, ciphertext: ByteString): ByteString =
             decrypt(iv.asByteArray(), ciphertext.asByteArray()).asByteString()
 
+        @Suppress("INAPPLICABLE_JVM_NAME")
+        @JvmName("decryptWithIvBlocking")
         @DelicateCryptographyApi
         public fun decryptBlocking(iv: ByteString, ciphertext: ByteString): ByteString =
             decryptBlocking(iv.asByteArray(), ciphertext.asByteArray()).asByteString()
     }
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
-    public interface IvAuthenticatedCipher : IvAuthenticatedEncryptor, IvAuthenticatedDecryptor
+    public interface IvAuthenticatedCipher : AuthenticatedCipher, IvCipher, IvAuthenticatedEncryptor, IvAuthenticatedDecryptor
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
-    public interface IvAuthenticatedEncryptor : AuthenticatedEncryptor {
+    public interface IvAuthenticatedEncryptor : AuthenticatedEncryptor, IvEncryptor {
         @DelicateCryptographyApi
-        public suspend fun encrypt(iv: ByteArray, plaintext: ByteArray, associatedData: ByteArray? = null): ByteArray = encryptBlocking(iv, plaintext, associatedData)
+        public suspend fun encrypt(iv: ByteArray, plaintext: ByteArray, associatedData: ByteArray? = null): ByteArray =
+            encryptBlocking(iv, plaintext, associatedData)
 
         @DelicateCryptographyApi
         public fun encryptBlocking(iv: ByteArray, plaintext: ByteArray, associatedData: ByteArray? = null): ByteArray
@@ -141,9 +159,10 @@ public interface AES<K : AES.Key> : CryptographyAlgorithm {
     }
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
-    public interface IvAuthenticatedDecryptor : AuthenticatedDecryptor {
+    public interface IvAuthenticatedDecryptor : AuthenticatedDecryptor, IvDecryptor {
         @DelicateCryptographyApi
-        public suspend fun decrypt(iv: ByteArray, ciphertext: ByteArray, associatedData: ByteArray? = null): ByteArray = decryptBlocking(iv, ciphertext, associatedData)
+        public suspend fun decrypt(iv: ByteArray, ciphertext: ByteArray, associatedData: ByteArray? = null): ByteArray =
+            decryptBlocking(iv, ciphertext, associatedData)
 
         @DelicateCryptographyApi
         public fun decryptBlocking(iv: ByteArray, ciphertext: ByteArray, associatedData: ByteArray? = null): ByteArray

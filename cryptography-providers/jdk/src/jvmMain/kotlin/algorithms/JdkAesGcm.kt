@@ -7,9 +7,7 @@ package dev.whyoleg.cryptography.providers.jdk.algorithms
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.materials.key.*
-import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.jdk.*
-import dev.whyoleg.cryptography.providers.jdk.algorithms.*
 import dev.whyoleg.cryptography.providers.jdk.materials.*
 import javax.crypto.spec.*
 
@@ -57,6 +55,13 @@ private class AesGcmCipher(
         cipher.doFinal(plaintext)
     }
 
+    @Suppress("INAPPLICABLE_JVM_NAME")
+    @JvmName("encryptWithIvBlocking")
+    @DelicateCryptographyApi
+    override fun encryptBlocking(iv: ByteArray, plaintext: ByteArray): ByteArray {
+        return encryptBlocking(iv, plaintext, null)
+    }
+
     override fun decryptBlocking(ciphertext: ByteArray, associatedData: ByteArray?): ByteArray = cipher.use { cipher ->
         cipher.init(JCipher.DECRYPT_MODE, key, GCMParameterSpec(tagSize.inBits, ciphertext, 0, ivSizeBytes), state.secureRandom)
         associatedData?.let(cipher::updateAAD)
@@ -68,5 +73,12 @@ private class AesGcmCipher(
         cipher.init(JCipher.DECRYPT_MODE, key, GCMParameterSpec(tagSize.inBits, iv), state.secureRandom)
         associatedData?.let(cipher::updateAAD)
         cipher.doFinal(ciphertext)
+    }
+
+    @Suppress("INAPPLICABLE_JVM_NAME")
+    @JvmName("decryptWithIvBlocking")
+    @DelicateCryptographyApi
+    override fun decryptBlocking(iv: ByteArray, ciphertext: ByteArray): ByteArray {
+        return decryptBlocking(iv, ciphertext, null)
     }
 }
