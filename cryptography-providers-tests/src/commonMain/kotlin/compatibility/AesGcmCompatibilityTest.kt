@@ -23,9 +23,7 @@ abstract class AesGcmCompatibilityTest(provider: CryptographyProvider) :
     private data class CipherParameters(
         val tagSizeBits: Int,
         val iv: ByteStringAsString?,
-    ) : TestParameters {
-        override fun toString(): String = "CipherParameters(tagSizeBits=${tagSizeBits}, iv.size=${iv?.size})"
-    }
+    ) : TestParameters
 
     override suspend fun CompatibilityTestScope<AES.GCM>.generate(isStressTest: Boolean) {
         val associatedDataIterations = when {
@@ -75,7 +73,7 @@ abstract class AesGcmCompatibilityTest(provider: CryptographyProvider) :
                                 ciphertext
                             }
                             else -> {
-                                val ciphertext = cipher.encrypt(iv, plaintext, associatedData)
+                                val ciphertext = cipher.resetIv(context).encrypt(iv, plaintext, associatedData)
                                 logger.log { "ciphertext.size = ${ciphertext.size}" }
                                 assertContentEquals(plaintext, cipher.decrypt(iv, ciphertext, associatedData), "Initial Decrypt")
                                 ciphertext
@@ -113,7 +111,7 @@ abstract class AesGcmCompatibilityTest(provider: CryptographyProvider) :
                             assertContentEquals(plaintext, cipher.decrypt(iv, ciphertext, associatedData), "Decrypt")
                             assertContentEquals(
                                 plaintext,
-                                cipher.decrypt(iv, cipher.encrypt(iv, plaintext, associatedData), associatedData),
+                                cipher.decrypt(iv, cipher.resetIv(context).encrypt(iv, plaintext, associatedData), associatedData),
                                 "Encrypt-Decrypt"
                             )
                         }
@@ -122,4 +120,11 @@ abstract class AesGcmCompatibilityTest(provider: CryptographyProvider) :
             }
         }
     }
+}
+
+// GCM mode on JDK has a check which tries to prevent reuse of the same IV with the same key.
+// we need to set random IV first to be able to reuse IV for different plaintext for the same key
+private suspend fun AES.IvAuthenticatedCipher.resetIv(context: TestContext): AES.IvAuthenticatedCipher {
+    if (context.provider.isJdk) encrypt(ByteString())
+    return this
 }
