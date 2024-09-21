@@ -652,11 +652,9 @@ public abstract interface class dev/whyoleg/cryptography/functions/HashFunction 
 	public abstract fun hashIntoByteArray ([BI)I
 	public static synthetic fun hashIntoByteArray$default (Ldev/whyoleg/cryptography/functions/HashFunction;[BIILjava/lang/Object;)I
 	public abstract fun hashToByteArray ()[B
-	public abstract fun reset ()V
 }
 
 public abstract interface class dev/whyoleg/cryptography/functions/SignFunction : dev/whyoleg/cryptography/functions/UpdateFunction {
-	public abstract fun reset ()V
 	public fun sign ()Lkotlinx/io/bytestring/ByteString;
 	public abstract fun signIntoByteArray ([BI)I
 	public static synthetic fun signIntoByteArray$default (Ldev/whyoleg/cryptography/functions/SignFunction;[BIILjava/lang/Object;)I
@@ -674,7 +672,6 @@ public abstract interface class dev/whyoleg/cryptography/functions/UpdateFunctio
 }
 
 public abstract interface class dev/whyoleg/cryptography/functions/VerifyFunction : dev/whyoleg/cryptography/functions/UpdateFunction {
-	public abstract fun reset ()V
 	public fun verify (Lkotlinx/io/bytestring/ByteString;II)Z
 	public abstract fun verify ([BII)Z
 	public static synthetic fun verify$default (Ldev/whyoleg/cryptography/functions/VerifyFunction;Lkotlinx/io/bytestring/ByteString;IIILjava/lang/Object;)Z

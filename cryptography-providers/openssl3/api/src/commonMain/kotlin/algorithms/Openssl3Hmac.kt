@@ -78,26 +78,34 @@ private class HmacSignature(
     private val hashAlgorithm: String,
     private val key: ByteArray,
 ) : SignatureGenerator, SignatureVerifier {
-    private fun createFunction() = HmacFunction(
-        hashAlgorithm = hashAlgorithm,
-        key = key,
-        context = Resource(checkError(EVP_MAC_CTX_new(Openssl3Hmac.mac)), ::EVP_MAC_CTX_free)
-    )
+    @OptIn(UnsafeNumber::class)
+    private fun createFunction(): HmacFunction {
+        val context = checkError(EVP_MAC_CTX_new(Openssl3Hmac.mac))
+        memScoped {
+            key.usePinned {
+                checkError(
+                    EVP_MAC_init(
+                        ctx = context,
+                        key = it.safeAddressOf(0).reinterpret(),
+                        keylen = key.size.convert(),
+                        params = OSSL_PARAM_array(
+                            OSSL_PARAM_construct_utf8_string("digest".cstr.ptr, hashAlgorithm.cstr.ptr, 0.convert())
+                        )
+                    )
+                )
+            }
+        }
+        return HmacFunction(Resource(context, ::EVP_MAC_CTX_free))
+    }
 
     override fun createSignFunction(): SignFunction = createFunction()
     override fun createVerifyFunction(): VerifyFunction = createFunction()
 
     private class HmacFunction(
-        private val hashAlgorithm: String,
-        private val key: ByteArray,
         private val context: Resource<CPointer<EVP_MAC_CTX>>,
     ) : SignFunction, VerifyFunction, SafeCloseable(SafeCloseAction(context, AutoCloseable::close)) {
         @OptIn(UnsafeNumber::class)
-        private val macSize get() = EVP_MAC_CTX_get_mac_size(context.access()).convert<Int>()
-
-        init {
-            reset()
-        }
+        private val macSize = EVP_MAC_CTX_get_mac_size(context.access()).convert<Int>()
 
         @OptIn(UnsafeNumber::class)
         override fun update(source: ByteArray, startIndex: Int, endIndex: Int) {
@@ -117,6 +125,7 @@ private class HmacSignature(
             destination.usePinned {
                 checkError(EVP_MAC_final(context, it.safeAddressOf(destinationOffset).reinterpret(), null, macSize.convert()))
             }
+            close()
             return macSize
         }
 
@@ -129,27 +138,6 @@ private class HmacSignature(
         override fun verify(signature: ByteArray, startIndex: Int, endIndex: Int): Boolean {
             checkBounds(signature.size, startIndex, endIndex)
             return signToByteArray().contentEquals(signature.copyOfRange(startIndex, endIndex))
-        }
-
-        @OptIn(UnsafeNumber::class)
-        override fun reset(): Unit = memScoped {
-            val context = context.access()
-            key.usePinned {
-                checkError(
-                    EVP_MAC_init(
-                        ctx = context,
-                        key = it.safeAddressOf(0).reinterpret(),
-                        keylen = key.size.convert(),
-                        params = OSSL_PARAM_array(
-                            OSSL_PARAM_construct_utf8_string("digest".cstr.ptr, hashAlgorithm.cstr.ptr, 0.convert())
-                        )
-                    )
-                )
-            }
-        }
-
-        override fun close() {
-            context.close()
         }
     }
 }

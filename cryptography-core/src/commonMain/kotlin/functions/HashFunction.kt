@@ -11,5 +11,4 @@ public interface HashFunction : UpdateFunction {
     public fun hashIntoByteArray(destination: ByteArray, destinationOffset: Int = 0): Int
     public fun hashToByteArray(): ByteArray
     public fun hash(): ByteString = hashToByteArray().asByteString()
-    public fun reset()
 }

@@ -18,7 +18,9 @@ internal class JdkDigest(
 ) : Hasher, Digest {
     private val messageDigest = state.messageDigest(algorithm)
     override fun hasher(): Hasher = this
-    override fun createHashFunction(): HashFunction = JdkHashFunction(messageDigest.borrowResource())
+    override fun createHashFunction(): HashFunction = JdkHashFunction(messageDigest.borrowResource().also {
+        it.access().reset()
+    })
 }
 
 private class JdkHashFunction(private val messageDigest: Pooled.Resource<JMessageDigest>) : HashFunction {
@@ -34,17 +36,12 @@ private class JdkHashFunction(private val messageDigest: Pooled.Resource<JMessag
 
         checkBounds(destination.size, destinationOffset, destinationOffset + messageDigest.digestLength)
 
-        return messageDigest.digest(destination, destinationOffset, messageDigest.digestLength)
+        return messageDigest.digest(destination, destinationOffset, messageDigest.digestLength).also { close() }
     }
 
     override fun hashToByteArray(): ByteArray {
         val messageDigest = messageDigest.access()
-        return messageDigest.digest()
-    }
-
-    override fun reset() {
-        val messageDigest = messageDigest.access()
-        messageDigest.reset()
+        return messageDigest.digest().also { close() }
     }
 
     override fun close() {

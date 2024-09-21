@@ -14,7 +14,7 @@ import kotlin.native.ref.*
 internal abstract class SafeCloseable(closeAction: SafeCloseAction) : AutoCloseable {
     private val handler = CloseHandler(closeAction)
     private val cleaner = createCleaner(handler, CloseHandler::onClose)
-    override fun close(): Unit = handler.onClose()
+    final override fun close(): Unit = handler.onClose()
 }
 
 internal interface SafeCloseAction {

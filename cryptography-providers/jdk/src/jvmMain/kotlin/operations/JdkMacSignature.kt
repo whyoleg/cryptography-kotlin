@@ -25,9 +25,7 @@ internal class JdkMacSignature(
     override fun createVerifyFunction(): VerifyFunction = createFunction()
 }
 
-private class JdkMacFunction(
-    private val mac: Pooled.Resource<JMac>,
-) : SignFunction, VerifyFunction {
+private class JdkMacFunction(private val mac: Pooled.Resource<JMac>) : SignFunction, VerifyFunction {
     override fun update(source: ByteArray, startIndex: Int, endIndex: Int) {
         checkBounds(source.size, startIndex, endIndex)
         val mac = mac.access()
@@ -39,22 +37,18 @@ private class JdkMacFunction(
 
         checkBounds(destination.size, destinationOffset, destinationOffset + mac.macLength)
 
-        mac.doFinal(destination, destinationOffset)
+        mac.doFinal(destination, destinationOffset).also { close() }
         return mac.macLength
     }
 
     override fun signToByteArray(): ByteArray {
         val mac = mac.access()
-        return mac.doFinal()
+        return mac.doFinal().also { close() }
     }
 
     override fun verify(signature: ByteArray, startIndex: Int, endIndex: Int): Boolean {
         checkBounds(signature.size, startIndex, endIndex)
         return signToByteArray().contentEquals(signature.copyOfRange(startIndex, endIndex))
-    }
-
-    override fun reset() {
-        mac.access().reset()
     }
 
     override fun close() {

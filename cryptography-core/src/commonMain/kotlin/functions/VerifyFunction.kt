@@ -9,8 +9,7 @@ import kotlinx.io.bytestring.*
 
 public interface VerifyFunction : UpdateFunction {
     public fun verify(signature: ByteArray, startIndex: Int = 0, endIndex: Int = signature.size): Boolean
-    public fun verify(signature: ByteString, startIndex: Int = 0, endIndex: Int = signature.size): Boolean =
-        verify(signature.asByteArray(), startIndex, endIndex)
-
-    public fun reset()
+    public fun verify(signature: ByteString, startIndex: Int = 0, endIndex: Int = signature.size): Boolean {
+        return verify(signature.asByteArray(), startIndex, endIndex)
+    }
 }

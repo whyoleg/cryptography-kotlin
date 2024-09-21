@@ -190,10 +190,6 @@ private class EcdsaRawSignatureGenerator(
             }
         }
 
-        override fun reset() {
-            derSignFunction.reset()
-        }
-
         override fun close() {
             derSignFunction.close()
         }
@@ -243,10 +239,6 @@ private class EcdsaRawSignatureVerifier(
             }
 
             return derVerifyFunction.verify(derSignature)
-        }
-
-        override fun reset() {
-            derVerifyFunction.reset()
         }
 
         override fun close() {

@@ -11,5 +11,4 @@ public interface SignFunction : UpdateFunction {
     public fun signIntoByteArray(destination: ByteArray, destinationOffset: Int = 0): Int
     public fun signToByteArray(): ByteArray
     public fun sign(): ByteString = signToByteArray().asByteString()
-    public fun reset()
 }

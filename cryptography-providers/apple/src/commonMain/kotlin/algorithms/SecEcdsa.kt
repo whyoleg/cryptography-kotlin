@@ -278,10 +278,6 @@ private class EcdsaRawSignatureGenerator(
             return rawSignature
         }
 
-        override fun reset() {
-            derSignFunction.reset()
-        }
-
         override fun close() {
             derSignFunction.close()
         }
@@ -320,10 +316,6 @@ private class EcdsaRawSignatureVerifier(
             val derSignature = Der.encodeToByteArray(EcdsaSignatureValue.serializer(), signatureValue)
 
             return derVerifyFunction.verify(derSignature)
-        }
-
-        override fun reset() {
-            derVerifyFunction.reset()
         }
 
         override fun close() {

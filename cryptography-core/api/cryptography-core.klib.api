@@ -535,12 +535,10 @@ abstract interface dev.whyoleg.cryptography.algorithms/PBKDF2 : dev.whyoleg.cryp
 abstract interface dev.whyoleg.cryptography.functions/HashFunction : dev.whyoleg.cryptography.functions/UpdateFunction { // dev.whyoleg.cryptography.functions/HashFunction|null[0]
     abstract fun hashIntoByteArray(kotlin/ByteArray, kotlin/Int = ...): kotlin/Int // dev.whyoleg.cryptography.functions/HashFunction.hashIntoByteArray|hashIntoByteArray(kotlin.ByteArray;kotlin.Int){}[0]
     abstract fun hashToByteArray(): kotlin/ByteArray // dev.whyoleg.cryptography.functions/HashFunction.hashToByteArray|hashToByteArray(){}[0]
-    abstract fun reset() // dev.whyoleg.cryptography.functions/HashFunction.reset|reset(){}[0]
     open fun hash(): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.functions/HashFunction.hash|hash(){}[0]
 }
 
 abstract interface dev.whyoleg.cryptography.functions/SignFunction : dev.whyoleg.cryptography.functions/UpdateFunction { // dev.whyoleg.cryptography.functions/SignFunction|null[0]
-    abstract fun reset() // dev.whyoleg.cryptography.functions/SignFunction.reset|reset(){}[0]
     abstract fun signIntoByteArray(kotlin/ByteArray, kotlin/Int = ...): kotlin/Int // dev.whyoleg.cryptography.functions/SignFunction.signIntoByteArray|signIntoByteArray(kotlin.ByteArray;kotlin.Int){}[0]
     abstract fun signToByteArray(): kotlin/ByteArray // dev.whyoleg.cryptography.functions/SignFunction.signToByteArray|signToByteArray(){}[0]
     open fun sign(): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.functions/SignFunction.sign|sign(){}[0]
@@ -555,7 +553,6 @@ abstract interface dev.whyoleg.cryptography.functions/UpdateFunction : kotlin/Au
 }
 
 abstract interface dev.whyoleg.cryptography.functions/VerifyFunction : dev.whyoleg.cryptography.functions/UpdateFunction { // dev.whyoleg.cryptography.functions/VerifyFunction|null[0]
-    abstract fun reset() // dev.whyoleg.cryptography.functions/VerifyFunction.reset|reset(){}[0]
     abstract fun verify(kotlin/ByteArray, kotlin/Int = ..., kotlin/Int = ...): kotlin/Boolean // dev.whyoleg.cryptography.functions/VerifyFunction.verify|verify(kotlin.ByteArray;kotlin.Int;kotlin.Int){}[0]
     open fun verify(kotlinx.io.bytestring/ByteString, kotlin/Int = ..., kotlin/Int = ...): kotlin/Boolean // dev.whyoleg.cryptography.functions/VerifyFunction.verify|verify(kotlinx.io.bytestring.ByteString;kotlin.Int;kotlin.Int){}[0]
 }

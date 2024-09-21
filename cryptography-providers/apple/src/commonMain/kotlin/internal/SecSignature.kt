@@ -63,15 +63,13 @@ private class SecVerifyFunction(
                 result
             }
         }
-    }
-
-    override fun reset() {
-        ensureNotClosed()
-        accumulator = EmptyByteArray
+    }.also {
+        close()
     }
 
     override fun close() {
         isClosed = true
+        accumulator = EmptyByteArray
     }
 }
 
@@ -118,14 +116,12 @@ private class SecSignFunction(
 
             signature.toByteArray()
         }
-    }
-
-    override fun reset() {
-        ensureNotClosed()
-        accumulator = EmptyByteArray
+    }.also {
+        close()
     }
 
     override fun close() {
         isClosed = true
+        accumulator = EmptyByteArray
     }
 }
