@@ -5,7 +5,6 @@
 package dev.whyoleg.cryptography.operations
 
 import dev.whyoleg.cryptography.*
-import dev.whyoleg.cryptography.functions.*
 import kotlinx.io.*
 import kotlinx.io.bytestring.*
 
@@ -38,4 +37,10 @@ public interface Hasher {
         it.update(data)
         it.hash()
     }
+}
+
+public interface HashFunction : UpdateFunction {
+    public fun hashIntoByteArray(destination: ByteArray, destinationOffset: Int = 0): Int
+    public fun hashToByteArray(): ByteArray
+    public fun hash(): ByteString = hashToByteArray().asByteString()
 }

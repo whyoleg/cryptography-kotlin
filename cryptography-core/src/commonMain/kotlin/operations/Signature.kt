@@ -5,7 +5,6 @@
 package dev.whyoleg.cryptography.operations
 
 import dev.whyoleg.cryptography.*
-import dev.whyoleg.cryptography.functions.*
 import kotlinx.io.*
 import kotlinx.io.bytestring.*
 
@@ -38,6 +37,12 @@ public interface SignatureGenerator {
         it.update(data)
         it.sign()
     }
+}
+
+public interface SignFunction : UpdateFunction {
+    public fun signIntoByteArray(destination: ByteArray, destinationOffset: Int = 0): Int
+    public fun signToByteArray(): ByteArray
+    public fun sign(): ByteString = signToByteArray().asByteString()
 }
 
 @SubclassOptInRequired(CryptographyProviderApi::class)
@@ -94,5 +99,17 @@ public interface SignatureVerifier {
     public fun verifySignatureBlocking(data: RawSource, signature: ByteString): Unit = createVerifyFunction().use {
         it.update(data)
         it.verify(signature)
+    }
+}
+
+public interface VerifyFunction : UpdateFunction {
+    public fun tryVerify(signature: ByteArray, startIndex: Int = 0, endIndex: Int = signature.size): Boolean
+    public fun tryVerify(signature: ByteString, startIndex: Int = 0, endIndex: Int = signature.size): Boolean {
+        return tryVerify(signature.asByteArray(), startIndex, endIndex)
+    }
+
+    public fun verify(signature: ByteArray, startIndex: Int = 0, endIndex: Int = signature.size)
+    public fun verify(signature: ByteString, startIndex: Int = 0, endIndex: Int = signature.size) {
+        return verify(signature.asByteArray(), startIndex, endIndex)
     }
 }

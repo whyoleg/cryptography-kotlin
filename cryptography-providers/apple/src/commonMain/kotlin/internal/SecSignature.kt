@@ -4,7 +4,6 @@
 
 package dev.whyoleg.cryptography.providers.apple.internal
 
-import dev.whyoleg.cryptography.functions.*
 import dev.whyoleg.cryptography.operations.*
 import kotlinx.cinterop.*
 import platform.CoreFoundation.*
