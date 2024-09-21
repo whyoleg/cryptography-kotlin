@@ -6,7 +6,6 @@ package dev.whyoleg.cryptography.providers.openssl3.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.random.*
@@ -25,28 +24,28 @@ internal object Openssl3AesGcm : AES.GCM, Openssl3Aes<AES.GCM.Key>() {
             else              -> error("Unsupported key size")
         }
 
-        override fun cipher(tagSize: BinarySize): AuthenticatedCipher = AesGcmCipher(algorithm, key, tagSize)
+        override fun cipher(tagSize: BinarySize): AES.IvAuthenticatedCipher = AesGcmCipher(algorithm, key, tagSize)
     }
 }
 
-private const val ivSizeBytes = 12 //bytes for CBC
+private const val ivSizeBytes = 12 //bytes for GCM
 
 private class AesGcmCipher(
     algorithm: String,
     private val key: ByteArray,
     private val tagSize: BinarySize,
-) : AuthenticatedCipher {
+) : AES.IvAuthenticatedCipher {
 
     private val cipher = EVP_CIPHER_fetch(null, algorithm, null)
 
     @OptIn(ExperimentalNativeApi::class)
     private val cleaner = createCleaner(cipher, ::EVP_CIPHER_free)
 
-    override fun encryptBlocking(plaintext: ByteArray, associatedData: ByteArray?): ByteArray = memScoped {
+    @DelicateCryptographyApi
+    override fun encryptBlocking(iv: ByteArray, plaintext: ByteArray, associatedData: ByteArray?): ByteArray = memScoped {
+        require(iv.size == ivSizeBytes) { "IV size is wrong" }
         val context = EVP_CIPHER_CTX_new()
         try {
-            val iv = ByteArray(ivSizeBytes).also { CryptographyRandom.nextBytes(it) }
-
             checkError(
                 EVP_EncryptInit_ex2(
                     ctx = context,
@@ -101,14 +100,42 @@ private class AesGcmCipher(
                 )
             )
             val produced = producedWithFinal + tagSize.inBytes
-            iv + ciphertextOutput.ensureSizeExactly(produced)
+            ciphertextOutput.ensureSizeExactly(produced)
         } finally {
             EVP_CIPHER_CTX_free(context)
         }
     }
 
-    override fun decryptBlocking(ciphertext: ByteArray, associatedData: ByteArray?): ByteArray = memScoped {
+    override fun encryptBlocking(plaintext: ByteArray, associatedData: ByteArray?): ByteArray {
+        val iv = ByteArray(ivSizeBytes).also { CryptographyRandom.nextBytes(it) }
+        return iv + encryptBlocking(iv, plaintext, associatedData)
+    }
+
+    override fun decryptBlocking(ciphertext: ByteArray, associatedData: ByteArray?): ByteArray {
         require(ciphertext.size >= ivSizeBytes + tagSize.inBytes) { "Ciphertext is too short" }
+
+        return decrypt(
+            iv = ciphertext,
+            ciphertext = ciphertext,
+            ciphertextStartIndex = ivSizeBytes,
+            associatedData = associatedData,
+        )
+    }
+
+    @DelicateCryptographyApi
+    override fun decryptBlocking(iv: ByteArray, ciphertext: ByteArray, associatedData: ByteArray?): ByteArray {
+        require(iv.size == ivSizeBytes) { "IV size is wrong" }
+        require(ciphertext.size >= tagSize.inBytes) { "Ciphertext is too short" }
+
+        return decrypt(
+            iv = iv,
+            ciphertext = ciphertext,
+            ciphertextStartIndex = 0,
+            associatedData = associatedData,
+        )
+    }
+
+    private fun decrypt(iv: ByteArray, ciphertext: ByteArray, ciphertextStartIndex: Int, associatedData: ByteArray?): ByteArray = memScoped {
         val context = EVP_CIPHER_CTX_new()
         try {
             checkError(
@@ -116,7 +143,7 @@ private class AesGcmCipher(
                     ctx = context,
                     cipher = cipher,
                     key = key.refToU(0),
-                    iv = ciphertext.refToU(0),
+                    iv = iv.refToU(0),
                     params = null
                 )
             )
@@ -135,14 +162,14 @@ private class AesGcmCipher(
                 check(outl.value == ad.size) { "Unexpected output length: got ${outl.value} expected ${ad.size}" }
             }
 
-            val plaintextOutput = ByteArray(ciphertext.size - ivSizeBytes - tagSize.inBytes)
+            val plaintextOutput = ByteArray(ciphertext.size - ciphertextStartIndex - tagSize.inBytes)
             checkError(
                 EVP_DecryptUpdate(
                     ctx = context,
                     out = plaintextOutput.safeRefToU(0),
                     outl = outl.ptr,
-                    `in` = ciphertext.refToU(ivSizeBytes),
-                    inl = ciphertext.size - ivSizeBytes - tagSize.inBytes
+                    `in` = ciphertext.refToU(ciphertextStartIndex),
+                    inl = ciphertext.size - ciphertextStartIndex - tagSize.inBytes
                 )
             )
             if (plaintextOutput.isEmpty()) check(outl.value == 0) { "Unexpected output length: got ${outl.value} expected 0" }

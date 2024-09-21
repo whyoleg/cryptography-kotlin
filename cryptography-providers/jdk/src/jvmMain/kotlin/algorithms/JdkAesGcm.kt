@@ -18,7 +18,7 @@ internal class JdkAesGcm(
 ) : AES.GCM {
     private val keyWrapper: (JSecretKey) -> AES.GCM.Key = { key ->
         object : AES.GCM.Key, JdkEncodableKey<AES.Key.Format>(key) {
-            override fun cipher(tagSize: BinarySize): AuthenticatedCipher = AesGcmCipher(state, key, tagSize)
+            override fun cipher(tagSize: BinarySize): AES.IvAuthenticatedCipher = AesGcmCipher(state, key, tagSize)
 
             override fun encodeToByteArrayBlocking(format: AES.Key.Format): ByteArray = when (format) {
                 AES.Key.Format.JWK -> error("$format is not supported")
@@ -26,33 +26,47 @@ internal class JdkAesGcm(
             }
         }
     }
+
     private val keyDecoder = JdkSecretKeyDecoder<AES.Key.Format, _>("AES", keyWrapper)
 
     override fun keyDecoder(): KeyDecoder<AES.Key.Format, AES.GCM.Key> = keyDecoder
+
     override fun keyGenerator(keySize: BinarySize): KeyGenerator<AES.GCM.Key> = JdkSecretKeyGenerator(state, "AES", keyWrapper) {
         init(keySize.inBits, state.secureRandom)
     }
 }
 
-private const val ivSizeBytes = 12 //bytes for GCM
+private const val ivSizeBytes = 12 // bytes for GCM
 
 private class AesGcmCipher(
     private val state: JdkCryptographyState,
     private val key: JSecretKey,
     private val tagSize: BinarySize,
-) : AuthenticatedCipher {
+) : AES.IvAuthenticatedCipher {
     private val cipher = state.cipher("AES/GCM/NoPadding")
 
-    override fun encryptBlocking(plaintext: ByteArray, associatedData: ByteArray?): ByteArray = cipher.use { cipher ->
+    override fun encryptBlocking(plaintext: ByteArray, associatedData: ByteArray?): ByteArray {
         val iv = ByteArray(ivSizeBytes).also(state.secureRandom::nextBytes)
+        return iv + encryptBlocking(iv, plaintext, associatedData)
+    }
+
+    @DelicateCryptographyApi
+    override fun encryptBlocking(iv: ByteArray, plaintext: ByteArray, associatedData: ByteArray?): ByteArray = cipher.use { cipher ->
         cipher.init(JCipher.ENCRYPT_MODE, key, GCMParameterSpec(tagSize.inBits, iv), state.secureRandom)
         associatedData?.let(cipher::updateAAD)
-        iv + cipher.doFinal(plaintext)
+        cipher.doFinal(plaintext)
     }
 
     override fun decryptBlocking(ciphertext: ByteArray, associatedData: ByteArray?): ByteArray = cipher.use { cipher ->
         cipher.init(JCipher.DECRYPT_MODE, key, GCMParameterSpec(tagSize.inBits, ciphertext, 0, ivSizeBytes), state.secureRandom)
         associatedData?.let(cipher::updateAAD)
         cipher.doFinal(ciphertext, ivSizeBytes, ciphertext.size - ivSizeBytes)
+    }
+
+    @DelicateCryptographyApi
+    override fun decryptBlocking(iv: ByteArray, ciphertext: ByteArray, associatedData: ByteArray?): ByteArray = cipher.use { cipher ->
+        cipher.init(JCipher.DECRYPT_MODE, key, GCMParameterSpec(tagSize.inBits, iv), state.secureRandom)
+        associatedData?.let(cipher::updateAAD)
+        cipher.doFinal(ciphertext)
     }
 }

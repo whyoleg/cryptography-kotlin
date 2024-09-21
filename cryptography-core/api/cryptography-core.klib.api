@@ -57,10 +57,26 @@ abstract interface <#A: dev.whyoleg.cryptography.algorithms/AES.Key> dev.whyoleg
             open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/AES.GCM> // dev.whyoleg.cryptography.algorithms/AES.GCM.id.<get-id>|<get-id>(){}[0]
 
         abstract interface Key : dev.whyoleg.cryptography.algorithms/AES.Key { // dev.whyoleg.cryptography.algorithms/AES.GCM.Key|null[0]
-            abstract fun cipher(dev.whyoleg.cryptography/BinarySize = ...): dev.whyoleg.cryptography.operations/AuthenticatedCipher // dev.whyoleg.cryptography.algorithms/AES.GCM.Key.cipher|cipher(dev.whyoleg.cryptography.BinarySize){}[0]
+            abstract fun cipher(dev.whyoleg.cryptography/BinarySize = ...): dev.whyoleg.cryptography.algorithms/AES.IvAuthenticatedCipher // dev.whyoleg.cryptography.algorithms/AES.GCM.Key.cipher|cipher(dev.whyoleg.cryptography.BinarySize){}[0]
         }
 
         final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/AES.GCM> // dev.whyoleg.cryptography.algorithms/AES.GCM.Companion|null[0]
+    }
+
+    abstract interface IvAuthenticatedCipher : dev.whyoleg.cryptography.algorithms/AES.IvAuthenticatedDecryptor, dev.whyoleg.cryptography.algorithms/AES.IvAuthenticatedEncryptor // dev.whyoleg.cryptography.algorithms/AES.IvAuthenticatedCipher|null[0]
+
+    abstract interface IvAuthenticatedDecryptor : dev.whyoleg.cryptography.operations/AuthenticatedDecryptor { // dev.whyoleg.cryptography.algorithms/AES.IvAuthenticatedDecryptor|null[0]
+        abstract fun decryptBlocking(kotlin/ByteArray, kotlin/ByteArray, kotlin/ByteArray? = ...): kotlin/ByteArray // dev.whyoleg.cryptography.algorithms/AES.IvAuthenticatedDecryptor.decryptBlocking|decryptBlocking(kotlin.ByteArray;kotlin.ByteArray;kotlin.ByteArray?){}[0]
+        open fun decryptBlocking(kotlinx.io.bytestring/ByteString, kotlinx.io.bytestring/ByteString, kotlinx.io.bytestring/ByteString? = ...): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.algorithms/AES.IvAuthenticatedDecryptor.decryptBlocking|decryptBlocking(kotlinx.io.bytestring.ByteString;kotlinx.io.bytestring.ByteString;kotlinx.io.bytestring.ByteString?){}[0]
+        open suspend fun decrypt(kotlin/ByteArray, kotlin/ByteArray, kotlin/ByteArray? = ...): kotlin/ByteArray // dev.whyoleg.cryptography.algorithms/AES.IvAuthenticatedDecryptor.decrypt|decrypt(kotlin.ByteArray;kotlin.ByteArray;kotlin.ByteArray?){}[0]
+        open suspend fun decrypt(kotlinx.io.bytestring/ByteString, kotlinx.io.bytestring/ByteString, kotlinx.io.bytestring/ByteString? = ...): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.algorithms/AES.IvAuthenticatedDecryptor.decrypt|decrypt(kotlinx.io.bytestring.ByteString;kotlinx.io.bytestring.ByteString;kotlinx.io.bytestring.ByteString?){}[0]
+    }
+
+    abstract interface IvAuthenticatedEncryptor : dev.whyoleg.cryptography.operations/AuthenticatedEncryptor { // dev.whyoleg.cryptography.algorithms/AES.IvAuthenticatedEncryptor|null[0]
+        abstract fun encryptBlocking(kotlin/ByteArray, kotlin/ByteArray, kotlin/ByteArray? = ...): kotlin/ByteArray // dev.whyoleg.cryptography.algorithms/AES.IvAuthenticatedEncryptor.encryptBlocking|encryptBlocking(kotlin.ByteArray;kotlin.ByteArray;kotlin.ByteArray?){}[0]
+        open fun encryptBlocking(kotlinx.io.bytestring/ByteString, kotlinx.io.bytestring/ByteString, kotlinx.io.bytestring/ByteString? = ...): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.algorithms/AES.IvAuthenticatedEncryptor.encryptBlocking|encryptBlocking(kotlinx.io.bytestring.ByteString;kotlinx.io.bytestring.ByteString;kotlinx.io.bytestring.ByteString?){}[0]
+        open suspend fun encrypt(kotlin/ByteArray, kotlin/ByteArray, kotlin/ByteArray? = ...): kotlin/ByteArray // dev.whyoleg.cryptography.algorithms/AES.IvAuthenticatedEncryptor.encrypt|encrypt(kotlin.ByteArray;kotlin.ByteArray;kotlin.ByteArray?){}[0]
+        open suspend fun encrypt(kotlinx.io.bytestring/ByteString, kotlinx.io.bytestring/ByteString, kotlinx.io.bytestring/ByteString? = ...): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.algorithms/AES.IvAuthenticatedEncryptor.encrypt|encrypt(kotlinx.io.bytestring.ByteString;kotlinx.io.bytestring.ByteString;kotlinx.io.bytestring.ByteString?){}[0]
     }
 
     abstract interface IvCipher : dev.whyoleg.cryptography.algorithms/AES.IvDecryptor, dev.whyoleg.cryptography.algorithms/AES.IvEncryptor // dev.whyoleg.cryptography.algorithms/AES.IvCipher|null[0]

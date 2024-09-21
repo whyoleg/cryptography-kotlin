@@ -24,9 +24,7 @@ abstract class AesCbcCompatibilityTest(provider: CryptographyProvider) :
     private data class CipherParameters(
         val padding: Boolean,
         val iv: ByteStringAsString?,
-    ) : TestParameters {
-        override fun toString(): String = "CipherParameters(padding=${padding}, iv.size=${iv?.size})"
-    }
+    ) : TestParameters
 
     override suspend fun CompatibilityTestScope<AES.CBC>.generate(isStressTest: Boolean) {
         val cipherIterations = when {

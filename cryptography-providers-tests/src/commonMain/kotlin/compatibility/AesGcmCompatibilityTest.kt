@@ -20,7 +20,10 @@ abstract class AesGcmCompatibilityTest(provider: CryptographyProvider) :
     AesBasedCompatibilityTest<AES.GCM.Key, AES.GCM>(AES.GCM, provider) {
 
     @Serializable
-    private data class CipherParameters(val tagSizeBits: Int) : TestParameters
+    private data class CipherParameters(
+        val tagSizeBits: Int,
+        val iv: ByteStringAsString?,
+    ) : TestParameters
 
     override suspend fun CompatibilityTestScope<AES.GCM>.generate(isStressTest: Boolean) {
         val associatedDataIterations = when {
@@ -31,17 +34,28 @@ abstract class AesGcmCompatibilityTest(provider: CryptographyProvider) :
             isStressTest -> 10
             else         -> 5
         }
+        val ivIterations = when {
+            isStressTest -> 10
+            else         -> 5
+        }
 
+        val tagSizes = listOf(96, 128)
 
-        val tagSizes = listOf(96, 128).map { tagSizeBits ->
-            val id = api.ciphers.saveParameters(CipherParameters(tagSizeBits))
-            id to tagSizeBits.bits
+        val parametersList = buildList {
+            tagSizes.forEach { tagSize ->
+                // size of IV = 12
+                (List(ivIterations) { ByteString(CryptographyRandom.nextBytes(12)) } + listOf(null)).forEach { iv ->
+                    val parameters = CipherParameters(tagSize, iv)
+                    val id = api.ciphers.saveParameters(parameters)
+                    add(id to parameters)
+                }
+            }
         }
 
         generateKeys(isStressTest) { key, keyReference, _ ->
-            tagSizes.forEach { (cipherParametersId, tagSize) ->
-                logger.log { "tagSize = $tagSize" }
-                val cipher = key.cipher(tagSize)
+            parametersList.forEach { (cipherParametersId, parameters) ->
+                logger.log { "parameters = $parameters" }
+                val cipher = key.cipher(parameters.tagSizeBits.bits)
                 repeat(associatedDataIterations) { adIndex ->
                     val associatedDataSize = if (adIndex == 0) null else CryptographyRandom.nextInt(maxAssociatedDataSize)
                     logger.log { "associatedData.size = $associatedDataSize" }
@@ -50,10 +64,21 @@ abstract class AesGcmCompatibilityTest(provider: CryptographyProvider) :
                         val plaintextSize = CryptographyRandom.nextInt(maxPlaintextSize)
                         logger.log { "plaintext.size      = $plaintextSize" }
                         val plaintext = ByteString(CryptographyRandom.nextBytes(plaintextSize))
-                        val ciphertext = cipher.encrypt(plaintext, associatedData)
-                        logger.log { "ciphertext.size     = ${ciphertext.size}" }
 
-                        assertContentEquals(plaintext, cipher.decrypt(ciphertext, associatedData), "Initial Decrypt")
+                        val ciphertext = when (val iv = parameters.iv) {
+                            null -> {
+                                val ciphertext = cipher.encrypt(plaintext, associatedData)
+                                logger.log { "ciphertext.size = ${ciphertext.size}" }
+                                assertContentEquals(plaintext, cipher.decrypt(ciphertext, associatedData), "Initial Decrypt")
+                                ciphertext
+                            }
+                            else -> {
+                                val ciphertext = cipher.resetIv(context).encrypt(iv, plaintext, associatedData)
+                                logger.log { "ciphertext.size = ${ciphertext.size}" }
+                                assertContentEquals(plaintext, cipher.decrypt(iv, ciphertext, associatedData), "Initial Decrypt")
+                                ciphertext
+                            }
+                        }
 
                         api.ciphers.saveData(
                             cipherParametersId,
@@ -68,18 +93,38 @@ abstract class AesGcmCompatibilityTest(provider: CryptographyProvider) :
     override suspend fun CompatibilityTestScope<AES.GCM>.validate() {
         val keys = validateKeys()
 
-        api.ciphers.getParameters<CipherParameters> { (tagSize), parametersId, _ ->
+        api.ciphers.getParameters<CipherParameters> { (tagSize, iv), parametersId, _ ->
             api.ciphers.getData<AuthenticatedCipherData>(parametersId) { (keyReference, associatedData, plaintext, ciphertext), _, _ ->
                 keys[keyReference]?.forEach { key ->
                     val cipher = key.cipher(tagSize.bits)
-                    assertContentEquals(plaintext, cipher.decrypt(ciphertext, associatedData), "Decrypt")
-                    assertContentEquals(
-                        plaintext,
-                        cipher.decrypt(cipher.encrypt(plaintext, associatedData), associatedData),
-                        "Encrypt-Decrypt"
-                    )
+
+                    when (iv) {
+                        null -> {
+                            assertContentEquals(plaintext, cipher.decrypt(ciphertext, associatedData), "Decrypt")
+                            assertContentEquals(
+                                plaintext,
+                                cipher.decrypt(cipher.encrypt(plaintext, associatedData), associatedData),
+                                "Encrypt-Decrypt"
+                            )
+                        }
+                        else -> {
+                            assertContentEquals(plaintext, cipher.decrypt(iv, ciphertext, associatedData), "Decrypt")
+                            assertContentEquals(
+                                plaintext,
+                                cipher.decrypt(iv, cipher.resetIv(context).encrypt(iv, plaintext, associatedData), associatedData),
+                                "Encrypt-Decrypt"
+                            )
+                        }
+                    }
                 }
             }
         }
     }
+}
+
+// GCM mode on JDK has a check which tries to prevent reuse of the same IV with the same key.
+// we need to set random IV first to be able to reuse IV for different plaintext for the same key
+private suspend fun AES.IvAuthenticatedCipher.resetIv(context: TestContext): AES.IvAuthenticatedCipher {
+    if (context.provider.isJdk) encrypt(ByteString())
+    return this
 }
