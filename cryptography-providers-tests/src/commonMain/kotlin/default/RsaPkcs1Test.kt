@@ -49,7 +49,6 @@ abstract class RsaPkcs1Test(provider: CryptographyProvider) : ProviderTest(provi
                 repeat(4) { n ->
                     val size = 10.0.pow(n).toInt()
                     if (size < maxSize) {
-                        println(size)
                         val data = CryptographyRandom.nextBytes(size)
                         encryptAndDecrypt(keyPair, keySize.inBytes, data)
                     }

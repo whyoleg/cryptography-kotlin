@@ -77,7 +77,6 @@ abstract class Pbkdf2CompatibilityTest(provider: CryptographyProvider) : Compati
                         )
 
                         repeat(deriveIterations) {
-                            println("${digest.name}/${saltSize}/$iterations/$outputSize/$it")
                             val inputSize = CryptographyRandom.nextInt(1, maxInputSize)
                             logger.log { "input.size   = $inputSize" }
                             val input = generateRandomString(inputSize).encodeToByteString()
