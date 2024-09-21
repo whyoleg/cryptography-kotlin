@@ -13,18 +13,26 @@ import kotlinx.io.bytestring.*
 public interface Hasher {
     public fun createHashFunction(): HashFunction
 
-    public suspend fun hash(data: ByteArray): ByteArray = hashBlocking(data)
+    public suspend fun hash(data: ByteArray): ByteArray {
+        return hashBlocking(data)
+    }
 
-    public suspend fun hash(data: ByteString): ByteString = hash(data.asByteArray()).asByteString()
+    public suspend fun hash(data: ByteString): ByteString {
+        return hash(data.asByteArray()).asByteString()
+    }
 
-    public suspend fun hash(data: RawSource): ByteString = hashBlocking(data)
+    public suspend fun hash(data: RawSource): ByteString {
+        return hashBlocking(data)
+    }
 
     public fun hashBlocking(data: ByteArray): ByteArray = createHashFunction().use {
         it.update(data)
         it.hashToByteArray()
     }
 
-    public fun hashBlocking(data: ByteString): ByteString = hashBlocking(data.asByteArray()).asByteString()
+    public fun hashBlocking(data: ByteString): ByteString {
+        return hashBlocking(data.asByteArray()).asByteString()
+    }
 
     public fun hashBlocking(data: RawSource): ByteString = createHashFunction().use {
         it.update(data)

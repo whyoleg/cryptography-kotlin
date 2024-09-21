@@ -66,7 +66,7 @@ abstract class EcdsaCompatibilityTest(
                         val signature = signer.generateSignature(data)
                         logger.log { "signature.size = ${signature.size}" }
 
-                        assertTrue(verifier.verifySignature(data, signature), "Initial Verify")
+                        assertTrue(verifier.tryVerifySignature(data, signature), "Initial Verify")
 
                         api.signatures.saveData(signatureParametersId, SignatureData(keyReference, data, signature))
                     }
@@ -87,10 +87,10 @@ abstract class EcdsaCompatibilityTest(
                 val generators = privateKeys.map { it.signatureGenerator(signatureParameters.digest, signatureParameters.signatureFormat) }
 
                 verifiers.forEach { verifier ->
-                    assertTrue(verifier.verifySignature(data, signature), "Verify")
+                    assertTrue(verifier.tryVerifySignature(data, signature), "Verify")
 
                     generators.forEach { generator ->
-                        assertTrue(verifier.verifySignature(data, generator.generateSignature(data)), "Sign-Verify")
+                        assertTrue(verifier.tryVerifySignature(data, generator.generateSignature(data)), "Sign-Verify")
                     }
                 }
             }

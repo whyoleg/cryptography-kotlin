@@ -53,7 +53,7 @@ internal abstract class Openssl3DigestSignatureVerifier(
         }
 
         @OptIn(UnsafeNumber::class)
-        override fun verify(signature: ByteArray, startIndex: Int, endIndex: Int): Boolean {
+        override fun tryVerify(signature: ByteArray, startIndex: Int, endIndex: Int): Boolean {
             checkBounds(signature.size, startIndex, endIndex)
 
             val context = context.access()
@@ -66,6 +66,10 @@ internal abstract class Openssl3DigestSignatureVerifier(
             // other - means error
             if (result != 0) checkError(result)
             return result == 1
+        }
+
+        override fun verify(signature: ByteArray, startIndex: Int, endIndex: Int) {
+            check(tryVerify(signature, startIndex, endIndex)) { "Invalid signature" }
         }
     }
 }

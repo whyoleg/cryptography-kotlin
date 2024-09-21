@@ -56,7 +56,7 @@ abstract class EcdsaTest(provider: CryptographyProvider) : ProviderTest(provider
                             val data = CryptographyRandom.nextBytes(size)
                             val signature = generateSignature(data)
                             assertEquals(rawSignatureSize, signature.size)
-                            assertTrue(verifier.verifySignature(data, signature))
+                            assertTrue(verifier.tryVerifySignature(data, signature))
                         }
                     }
                 }
@@ -76,7 +76,7 @@ abstract class EcdsaTest(provider: CryptographyProvider) : ProviderTest(provider
                             val data = CryptographyRandom.nextBytes(size)
                             val signature = generateSignature(data)
                             assertSignatureSize(signature)
-                            assertTrue(verifier.verifySignature(data, signature))
+                            assertTrue(verifier.tryVerifySignature(data, signature))
                         }
                     }
                 }

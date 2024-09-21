@@ -85,7 +85,7 @@ private class EcdsaDerSignatureVerifier(
     private val rawVerifier: SignatureVerifier,
     private val curveOrderSizeBytes: Int,
 ) : SignatureVerifier {
-    override suspend fun verifySignature(data: ByteArray, signature: ByteArray): Boolean {
+    override suspend fun tryVerifySignature(data: ByteArray, signature: ByteArray): Boolean {
         val signatureValue = Der.decodeFromByteArray(EcdsaSignatureValue.serializer(), signature)
 
         val r = signatureValue.r.encodeToByteArray().trimLeadingZeros()
@@ -96,19 +96,19 @@ private class EcdsaDerSignatureVerifier(
         r.copyInto(rawSignature, curveOrderSizeBytes - r.size)
         s.copyInto(rawSignature, curveOrderSizeBytes * 2 - s.size)
 
-        return rawVerifier.verifySignature(data, rawSignature)
+        return rawVerifier.tryVerifySignature(data, rawSignature)
     }
 
     @OptIn(UnsafeByteStringApi::class)
-    override suspend fun verifySignature(data: RawSource, signature: ByteString): Boolean {
+    override suspend fun tryVerifySignature(data: RawSource, signature: ByteString): Boolean {
         UnsafeByteStringOperations.withByteArrayUnsafe(signature) {
-            return verifySignature(data.buffered().readByteArray(), it)
+            return tryVerifySignature(data.buffered().readByteArray(), it)
         }
     }
 
     override fun createVerifyFunction(): VerifyFunction = nonBlocking()
-    override fun verifySignatureBlocking(data: RawSource, signature: ByteString): Boolean = nonBlocking()
-    override fun verifySignatureBlocking(data: ByteArray, signature: ByteArray): Boolean = nonBlocking()
+    override fun tryVerifySignatureBlocking(data: RawSource, signature: ByteString): Boolean = nonBlocking()
+    override fun tryVerifySignatureBlocking(data: ByteArray, signature: ByteArray): Boolean = nonBlocking()
 }
 
 private fun ByteArray.makePositive(): ByteArray = if (this[0] < 0) byteArrayOf(0, *this) else this

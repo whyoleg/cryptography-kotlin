@@ -32,11 +32,15 @@ private class JdkVerifyFunction(private val jsignature: Pooled.Resource<JSignatu
         jsignature.update(source, startIndex, endIndex - startIndex)
     }
 
-    override fun verify(signature: ByteArray, startIndex: Int, endIndex: Int): Boolean {
+    override fun tryVerify(signature: ByteArray, startIndex: Int, endIndex: Int): Boolean {
         checkBounds(signature.size, startIndex, endIndex)
         val jsignature = jsignature.access()
 
         return jsignature.verify(signature, startIndex, endIndex - startIndex).also { close() }
+    }
+
+    override fun verify(signature: ByteArray, startIndex: Int, endIndex: Int) {
+        check(tryVerify(signature, startIndex, endIndex)) { "Invalid signature" }
     }
 
     override fun close() {

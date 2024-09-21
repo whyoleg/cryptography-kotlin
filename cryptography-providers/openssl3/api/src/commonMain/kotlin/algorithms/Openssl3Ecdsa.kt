@@ -217,7 +217,7 @@ private class EcdsaRawSignatureVerifier(
             derVerifyFunction.update(source, startIndex, endIndex)
         }
 
-        override fun verify(signature: ByteArray, startIndex: Int, endIndex: Int): Boolean {
+        override fun tryVerify(signature: ByteArray, startIndex: Int, endIndex: Int): Boolean {
             checkBounds(signature.size, startIndex, endIndex)
 
             check((endIndex - startIndex) == curveOrderSize * 2) {
@@ -238,7 +238,11 @@ private class EcdsaRawSignatureVerifier(
                 }
             }
 
-            return derVerifyFunction.verify(derSignature)
+            return derVerifyFunction.tryVerify(derSignature)
+        }
+
+        override fun verify(signature: ByteArray, startIndex: Int, endIndex: Int) {
+            check(tryVerify(signature, startIndex, endIndex)) { "Invalid signature" }
         }
 
         override fun close() {

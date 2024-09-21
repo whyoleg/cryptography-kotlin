@@ -59,9 +59,9 @@ abstract class HmacTest(provider: CryptographyProvider) : ProviderTest(provider)
     @Test
     fun verifyNoFail() = runTestForEachDigest {
         val key = algorithm.keyGenerator(digest).generateKey()
-        assertFalse(key.signatureVerifier().verifySignature(ByteArray(0), ByteArray(0)))
-        assertFalse(key.signatureVerifier().verifySignature(ByteArray(10), ByteArray(0)))
-        assertFalse(key.signatureVerifier().verifySignature(ByteArray(10), ByteArray(10)))
+        assertFalse(key.signatureVerifier().tryVerifySignature(ByteArray(0), ByteArray(0)))
+        assertFalse(key.signatureVerifier().tryVerifySignature(ByteArray(10), ByteArray(0)))
+        assertFalse(key.signatureVerifier().tryVerifySignature(ByteArray(10), ByteArray(10)))
     }
 
     @Test
@@ -69,7 +69,7 @@ abstract class HmacTest(provider: CryptographyProvider) : ProviderTest(provider)
         val key = algorithm.keyGenerator(digest).generateKey()
         val data = CryptographyRandom.nextBytes(100)
         val signature = key.signatureGenerator().generateSignature(data)
-        assertTrue(key.signatureVerifier().verifySignature(data, signature))
+        assertTrue(key.signatureVerifier().tryVerifySignature(data, signature))
     }
 
     @Test
@@ -79,6 +79,6 @@ abstract class HmacTest(provider: CryptographyProvider) : ProviderTest(provider)
         val wrongKey = keyGenerator.generateKey()
         val data = CryptographyRandom.nextBytes(100)
         val signature = key.signatureGenerator().generateSignature(data)
-        assertFalse(wrongKey.signatureVerifier().verifySignature(data, signature))
+        assertFalse(wrongKey.signatureVerifier().tryVerifySignature(data, signature))
     }
 }

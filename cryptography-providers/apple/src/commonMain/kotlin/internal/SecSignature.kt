@@ -43,7 +43,16 @@ private class SecVerifyFunction(
         accumulator += source.copyOfRange(startIndex, endIndex)
     }
 
-    override fun verify(signature: ByteArray, startIndex: Int, endIndex: Int): Boolean = memScoped {
+    override fun tryVerify(signature: ByteArray, startIndex: Int, endIndex: Int): Boolean {
+        return verifyError(signature, startIndex, endIndex) == null
+    }
+
+    override fun verify(signature: ByteArray, startIndex: Int, endIndex: Int) {
+        val error = verifyError(signature, startIndex, endIndex) ?: return
+        error("Invalid signature: $error")
+    }
+
+    private fun verifyError(signature: ByteArray, startIndex: Int, endIndex: Int): String? = memScoped {
         ensureNotClosed()
         checkBounds(signature.size, startIndex, endIndex)
         val error = alloc<CFErrorRefVar>()
@@ -56,11 +65,10 @@ private class SecVerifyFunction(
                     error = error.ptr,
                     signature = signature.retainBridgeAs<CFDataRef>()
                 )
-                if (!result) {
-                    val nsError = error.value.releaseBridgeAs<NSError>()
-                    error("Failed to verify signature: ${nsError?.description}")
+                when {
+                    result -> null
+                    else   -> error.value.releaseBridgeAs<NSError>()?.description ?: ""
                 }
-                result
             }
         }
     }.also {

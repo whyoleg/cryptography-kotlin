@@ -135,9 +135,14 @@ private class HmacSignature(
             return signature
         }
 
-        override fun verify(signature: ByteArray, startIndex: Int, endIndex: Int): Boolean {
+        override fun tryVerify(signature: ByteArray, startIndex: Int, endIndex: Int): Boolean {
             checkBounds(signature.size, startIndex, endIndex)
             return signToByteArray().contentEquals(signature.copyOfRange(startIndex, endIndex))
         }
+
+        override fun verify(signature: ByteArray, startIndex: Int, endIndex: Int) {
+            check(tryVerify(signature, startIndex, endIndex)) { "Invalid signature" }
+        }
+
     }
 }

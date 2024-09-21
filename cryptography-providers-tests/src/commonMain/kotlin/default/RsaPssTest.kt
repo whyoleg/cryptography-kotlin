@@ -47,7 +47,7 @@ abstract class RsaPssTest(provider: CryptographyProvider) : ProviderTest(provide
                         val data = CryptographyRandom.nextBytes(size)
                         val signature = signatureGenerator.generateSignature(data)
                         assertEquals(keySize.inBytes, signature.size)
-                        assertTrue(signatureVerifier.verifySignature(data, signature))
+                        assertTrue(signatureVerifier.tryVerifySignature(data, signature))
                     }
                 }
             }

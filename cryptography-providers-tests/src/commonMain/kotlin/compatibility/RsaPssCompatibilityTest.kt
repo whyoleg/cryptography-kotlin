@@ -54,7 +54,7 @@ abstract class RsaPssCompatibilityTest(provider: CryptographyProvider) :
                     val signature = signatureGenerator.generateSignature(data)
                     logger.log { "signature.size = ${signature.size}" }
 
-                    assertTrue(signatureVerifier.verifySignature(data, signature), "Initial Verify")
+                    assertTrue(signatureVerifier.tryVerifySignature(data, signature), "Initial Verify")
 
                     api.signatures.saveData(signatureParametersId, SignatureData(keyReference, data, signature))
                 }
@@ -84,10 +84,10 @@ abstract class RsaPssCompatibilityTest(provider: CryptographyProvider) :
                 }
 
                 verifiers.forEach { verifier ->
-                    assertTrue(verifier.verifySignature(data, signature), "Verify")
+                    assertTrue(verifier.tryVerifySignature(data, signature), "Verify")
 
                     generators.forEach { generator ->
-                        assertTrue(verifier.verifySignature(data, generator.generateSignature(data)), "Sign-Verify")
+                        assertTrue(verifier.tryVerifySignature(data, generator.generateSignature(data)), "Sign-Verify")
                     }
                 }
             }
