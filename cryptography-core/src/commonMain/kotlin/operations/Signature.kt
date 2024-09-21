@@ -24,25 +24,32 @@ public interface SignatureGenerator {
         return generateSignatureBlocking(data)
     }
 
-    public fun generateSignatureBlocking(data: ByteArray): ByteArray = createSignFunction().use {
-        it.update(data)
-        it.signToByteArray()
+    public fun generateSignatureBlocking(data: ByteArray): ByteArray {
+        return createSignFunction().use {
+            it.update(data)
+            it.signToByteArray()
+        }
     }
 
     public fun generateSignatureBlocking(data: ByteString): ByteString {
         return generateSignatureBlocking(data.asByteArray()).asByteString()
     }
 
-    public fun generateSignatureBlocking(data: RawSource): ByteString = createSignFunction().use {
-        it.update(data)
-        it.sign()
+    public fun generateSignatureBlocking(data: RawSource): ByteString {
+        return createSignFunction().use {
+            it.update(data)
+            it.sign()
+        }
     }
 }
 
+@SubclassOptInRequired(CryptographyProviderApi::class)
 public interface SignFunction : UpdateFunction {
     public fun signIntoByteArray(destination: ByteArray, destinationOffset: Int = 0): Int
     public fun signToByteArray(): ByteArray
-    public fun sign(): ByteString = signToByteArray().asByteString()
+    public fun sign(): ByteString {
+        return signToByteArray().asByteString()
+    }
 }
 
 @SubclassOptInRequired(CryptographyProviderApi::class)
@@ -61,18 +68,22 @@ public interface SignatureVerifier {
         return tryVerifySignatureBlocking(data, signature)
     }
 
-    public fun tryVerifySignatureBlocking(data: ByteArray, signature: ByteArray): Boolean = createVerifyFunction().use {
-        it.update(data)
-        it.tryVerify(signature)
+    public fun tryVerifySignatureBlocking(data: ByteArray, signature: ByteArray): Boolean {
+        return createVerifyFunction().use {
+            it.update(data)
+            it.tryVerify(signature)
+        }
     }
 
     public fun tryVerifySignatureBlocking(data: ByteString, signature: ByteString): Boolean {
         return tryVerifySignatureBlocking(data.asByteArray(), signature.asByteArray())
     }
 
-    public fun tryVerifySignatureBlocking(data: RawSource, signature: ByteString): Boolean = createVerifyFunction().use {
-        it.update(data)
-        it.tryVerify(signature)
+    public fun tryVerifySignatureBlocking(data: RawSource, signature: ByteString): Boolean {
+        return createVerifyFunction().use {
+            it.update(data)
+            it.tryVerify(signature)
+        }
     }
 
     public suspend fun verifySignature(data: ByteArray, signature: ByteArray) {
@@ -87,21 +98,26 @@ public interface SignatureVerifier {
         return verifySignatureBlocking(data, signature)
     }
 
-    public fun verifySignatureBlocking(data: ByteArray, signature: ByteArray): Unit = createVerifyFunction().use {
-        it.update(data)
-        it.verify(signature)
+    public fun verifySignatureBlocking(data: ByteArray, signature: ByteArray): Unit {
+        createVerifyFunction().use {
+            it.update(data)
+            it.verify(signature)
+        }
     }
 
     public fun verifySignatureBlocking(data: ByteString, signature: ByteString) {
         return verifySignatureBlocking(data.asByteArray(), signature.asByteArray())
     }
 
-    public fun verifySignatureBlocking(data: RawSource, signature: ByteString): Unit = createVerifyFunction().use {
-        it.update(data)
-        it.verify(signature)
+    public fun verifySignatureBlocking(data: RawSource, signature: ByteString): Unit {
+        createVerifyFunction().use {
+            it.update(data)
+            it.verify(signature)
+        }
     }
 }
 
+@SubclassOptInRequired(CryptographyProviderApi::class)
 public interface VerifyFunction : UpdateFunction {
     public fun tryVerify(signature: ByteArray, startIndex: Int = 0, endIndex: Int = signature.size): Boolean
     public fun tryVerify(signature: ByteString, startIndex: Int = 0, endIndex: Int = signature.size): Boolean {

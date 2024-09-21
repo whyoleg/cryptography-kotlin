@@ -24,23 +24,30 @@ public interface Hasher {
         return hashBlocking(data)
     }
 
-    public fun hashBlocking(data: ByteArray): ByteArray = createHashFunction().use {
-        it.update(data)
-        it.hashToByteArray()
+    public fun hashBlocking(data: ByteArray): ByteArray {
+        return createHashFunction().use {
+            it.update(data)
+            it.hashToByteArray()
+        }
     }
 
     public fun hashBlocking(data: ByteString): ByteString {
         return hashBlocking(data.asByteArray()).asByteString()
     }
 
-    public fun hashBlocking(data: RawSource): ByteString = createHashFunction().use {
-        it.update(data)
-        it.hash()
+    public fun hashBlocking(data: RawSource): ByteString {
+        return createHashFunction().use {
+            it.update(data)
+            it.hash()
+        }
     }
 }
 
+@SubclassOptInRequired(CryptographyProviderApi::class)
 public interface HashFunction : UpdateFunction {
     public fun hashIntoByteArray(destination: ByteArray, destinationOffset: Int = 0): Int
     public fun hashToByteArray(): ByteArray
-    public fun hash(): ByteString = hashToByteArray().asByteString()
+    public fun hash(): ByteString {
+        return hashToByteArray().asByteString()
+    }
 }

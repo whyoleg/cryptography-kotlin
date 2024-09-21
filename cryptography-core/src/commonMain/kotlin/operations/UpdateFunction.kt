@@ -9,6 +9,7 @@ import kotlinx.io.*
 import kotlinx.io.bytestring.*
 import kotlinx.io.unsafe.*
 
+@SubclassOptInRequired(CryptographyProviderApi::class)
 public interface UpdateFunction : AutoCloseable {
     public fun update(source: ByteArray, startIndex: Int = 0, endIndex: Int = source.size)
     public fun update(source: ByteString, startIndex: Int = 0, endIndex: Int = source.size) {
@@ -19,13 +20,18 @@ public interface UpdateFunction : AutoCloseable {
         updatingSource(source).buffered().transferTo(discardingSink())
     }
 
-    public fun updatingSource(source: RawSource): RawSource = UpdatingSource(this, source)
-    public fun updatingSink(sink: RawSink): RawSink = UpdatingSink(this, sink)
+    public fun updatingSource(source: RawSource): RawSource {
+        return UpdatingSource(source, this)
+    }
+
+    public fun updatingSink(sink: RawSink): RawSink {
+        return UpdatingSink(sink, this)
+    }
 }
 
 private class UpdatingSource(
-    private val function: UpdateFunction,
     private val source: RawSource,
+    private val function: UpdateFunction,
 ) : RawSource {
     override fun readAtMostTo(sink: Buffer, byteCount: Long): Long {
         val result = source.readAtMostTo(sink, byteCount)
@@ -46,8 +52,8 @@ private class UpdatingSource(
 }
 
 private class UpdatingSink(
-    private val function: UpdateFunction,
     private val sink: RawSink,
+    private val function: UpdateFunction,
 ) : RawSink {
     override fun write(source: Buffer, byteCount: Long) {
         source.require(byteCount)
