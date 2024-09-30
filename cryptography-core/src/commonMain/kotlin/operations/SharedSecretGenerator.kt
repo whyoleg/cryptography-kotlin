@@ -14,11 +14,11 @@ public interface SharedSecretGenerator<K : Key> {
         return generateSharedSecretToByteArrayBlocking(other)
     }
 
-    public fun generateSharedSecretToByteArrayBlocking(other: K): ByteArray
-
     public suspend fun generateSharedSecret(other: K): ByteString {
         return generateSharedSecretToByteArray(other).asByteString()
     }
+
+    public fun generateSharedSecretToByteArrayBlocking(other: K): ByteArray
 
     public fun generateSharedSecretBlocking(other: K): ByteString {
         return generateSharedSecretToByteArrayBlocking(other).asByteString()

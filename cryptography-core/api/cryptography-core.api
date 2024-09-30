@@ -793,7 +793,13 @@ public abstract interface class dev/whyoleg/cryptography/operations/SecretDeriva
 	public static synthetic fun deriveSecret$suspendImpl (Ldev/whyoleg/cryptography/operations/SecretDerivation;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun deriveSecret$suspendImpl (Ldev/whyoleg/cryptography/operations/SecretDerivation;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun deriveSecretBlocking (Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
-	public abstract fun deriveSecretBlocking ([B)[B
+	public fun deriveSecretBlocking ([B)Lkotlinx/io/bytestring/ByteString;
+	public fun deriveSecretToByteArray (Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun deriveSecretToByteArray ([BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun deriveSecretToByteArray$suspendImpl (Ldev/whyoleg/cryptography/operations/SecretDerivation;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun deriveSecretToByteArray$suspendImpl (Ldev/whyoleg/cryptography/operations/SecretDerivation;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun deriveSecretToByteArrayBlocking (Lkotlinx/io/bytestring/ByteString;)[B
+	public abstract fun deriveSecretToByteArrayBlocking ([B)[B
 }
 
 public abstract interface class dev/whyoleg/cryptography/operations/SharedSecretGenerator {

@@ -36,7 +36,7 @@ private class JdkPbkdf2SecretDerivation(
 ) : SecretDerivation {
     private val factory = state.secretKeyFactory(algorithm)
 
-    override fun deriveSecretBlocking(input: ByteArray): ByteArray {
+    override fun deriveSecretToByteArrayBlocking(input: ByteArray): ByteArray {
         val spec = PBEKeySpec(
             /* password = */ input.decodeToString(throwOnInvalidSequence = true).toCharArray(),
             /* salt = */ salt,

@@ -39,7 +39,7 @@ internal class Openssl3Pbkdf2SecretDerivation(
     private val cleaner = createCleaner(kdf, ::EVP_KDF_free)
 
     @OptIn(UnsafeNumber::class)
-    override fun deriveSecretBlocking(input: ByteArray): ByteArray = memScoped {
+    override fun deriveSecretToByteArrayBlocking(input: ByteArray): ByteArray = memScoped {
         val context = checkError(EVP_KDF_CTX_new(kdf))
         try {
             val output = ByteArray(outputSize.inBytes)

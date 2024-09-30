@@ -619,10 +619,14 @@ abstract interface dev.whyoleg.cryptography.operations/Hasher { // dev.whyoleg.c
 }
 
 abstract interface dev.whyoleg.cryptography.operations/SecretDerivation { // dev.whyoleg.cryptography.operations/SecretDerivation|null[0]
-    abstract fun deriveSecretBlocking(kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.operations/SecretDerivation.deriveSecretBlocking|deriveSecretBlocking(kotlin.ByteArray){}[0]
+    abstract fun deriveSecretToByteArrayBlocking(kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.operations/SecretDerivation.deriveSecretToByteArrayBlocking|deriveSecretToByteArrayBlocking(kotlin.ByteArray){}[0]
+    open fun deriveSecretBlocking(kotlin/ByteArray): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations/SecretDerivation.deriveSecretBlocking|deriveSecretBlocking(kotlin.ByteArray){}[0]
     open fun deriveSecretBlocking(kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations/SecretDerivation.deriveSecretBlocking|deriveSecretBlocking(kotlinx.io.bytestring.ByteString){}[0]
-    open suspend fun deriveSecret(kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.operations/SecretDerivation.deriveSecret|deriveSecret(kotlin.ByteArray){}[0]
+    open fun deriveSecretToByteArrayBlocking(kotlinx.io.bytestring/ByteString): kotlin/ByteArray // dev.whyoleg.cryptography.operations/SecretDerivation.deriveSecretToByteArrayBlocking|deriveSecretToByteArrayBlocking(kotlinx.io.bytestring.ByteString){}[0]
+    open suspend fun deriveSecret(kotlin/ByteArray): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations/SecretDerivation.deriveSecret|deriveSecret(kotlin.ByteArray){}[0]
     open suspend fun deriveSecret(kotlinx.io.bytestring/ByteString): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.operations/SecretDerivation.deriveSecret|deriveSecret(kotlinx.io.bytestring.ByteString){}[0]
+    open suspend fun deriveSecretToByteArray(kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.operations/SecretDerivation.deriveSecretToByteArray|deriveSecretToByteArray(kotlin.ByteArray){}[0]
+    open suspend fun deriveSecretToByteArray(kotlinx.io.bytestring/ByteString): kotlin/ByteArray // dev.whyoleg.cryptography.operations/SecretDerivation.deriveSecretToByteArray|deriveSecretToByteArray(kotlinx.io.bytestring.ByteString){}[0]
 }
 
 abstract interface dev.whyoleg.cryptography.operations/SignatureGenerator { // dev.whyoleg.cryptography.operations/SignatureGenerator|null[0]

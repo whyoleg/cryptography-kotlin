@@ -28,7 +28,7 @@ private class Pbkdf2SecretDerivation(
     private val outputSize: BinarySize,
 ) : SecretDerivation {
     @OptIn(UnsafeNumber::class)
-    override fun deriveSecretBlocking(input: ByteArray): ByteArray {
+    override fun deriveSecretToByteArrayBlocking(input: ByteArray): ByteArray {
         val output = ByteArray(outputSize.inBytes)
         val result = CCKeyDerivationPBKDF(
             algorithm = kCCPBKDF2,

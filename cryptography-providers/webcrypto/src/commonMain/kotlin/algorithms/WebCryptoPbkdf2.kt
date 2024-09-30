@@ -24,7 +24,7 @@ internal object WebCryptoPbkdf2 : PBKDF2 {
         private val algorithm: Algorithm,
         private val outputSize: BinarySize,
     ) : SecretDerivation {
-        override suspend fun deriveSecret(input: ByteArray): ByteArray {
+        override suspend fun deriveSecretToByteArray(input: ByteArray): ByteArray {
             val inputKey = WebCrypto.importKey(
                 format = "raw",
                 keyData = input,
@@ -39,6 +39,6 @@ internal object WebCryptoPbkdf2 : PBKDF2 {
             )
         }
 
-        override fun deriveSecretBlocking(input: ByteArray): ByteArray = nonBlocking()
+        override fun deriveSecretToByteArrayBlocking(input: ByteArray): ByteArray = nonBlocking()
     }
 }
