@@ -13,6 +13,7 @@ val artifacts
         "cryptography-serialization-asn1",
         "cryptography-serialization-asn1-modules",
         "cryptography-core",
+        "cryptography-provider-base",
         "cryptography-provider-jdk",
         "cryptography-provider-apple",
         "cryptography-provider-webcrypto",

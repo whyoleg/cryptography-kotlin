@@ -46,6 +46,7 @@ projects("cryptography-kotlin") {
 
     // providers
     folder("cryptography-providers", prefix = "cryptography-provider") {
+        module("base")
         module("jdk") {
             module("android-tests")
         }

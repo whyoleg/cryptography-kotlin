@@ -26,9 +26,7 @@ kotlin {
     sourceSets {
         jvmMain.dependencies {
             api(projects.cryptographyCore)
-            implementation(projects.cryptographySerializationPem)
-            implementation(projects.cryptographySerializationAsn1)
-            implementation(projects.cryptographySerializationAsn1Modules)
+            implementation(projects.cryptographyProviderBase)
         }
         jvmTest.dependencies {
             implementation(libs.bouncycastle)
