@@ -12,9 +12,9 @@ import dev.whyoleg.cryptography.providers.webcrypto.internal.*
 internal object WebCryptoPbkdf2 : PBKDF2 {
     override fun secretDerivation(
         digest: CryptographyAlgorithmId<Digest>,
-        salt: ByteArray,
         iterations: Int,
         outputSize: BinarySize,
+        salt: ByteArray,
     ): SecretDerivation = Pbkdf2SecretDerivation(
         Pbkdf2DeriveAlgorithm(digest.hashAlgorithmName(), iterations, salt),
         outputSize

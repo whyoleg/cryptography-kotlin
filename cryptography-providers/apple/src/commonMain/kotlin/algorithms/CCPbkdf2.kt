@@ -14,9 +14,9 @@ import platform.CoreCrypto.*
 internal object CCPbkdf2 : PBKDF2 {
     override fun secretDerivation(
         digest: CryptographyAlgorithmId<Digest>,
-        salt: ByteArray,
         iterations: Int,
         outputSize: BinarySize,
+        salt: ByteArray,
     ): SecretDerivation = Pbkdf2SecretDerivation(digest.pbkdh2Algorithm(), salt, iterations, outputSize)
 }
 

@@ -16,9 +16,9 @@ import kotlin.native.ref.*
 internal object Openssl3Pbkdf2 : PBKDF2 {
     override fun secretDerivation(
         digest: CryptographyAlgorithmId<Digest>,
-        salt: ByteArray,
         iterations: Int,
         outputSize: BinarySize,
+        salt: ByteArray,
     ): SecretDerivation = Openssl3Pbkdf2SecretDerivation(
         hashAlgorithm = hashAlgorithm(digest),
         salt = salt,

@@ -403,8 +403,8 @@ public final class dev/whyoleg/cryptography/algorithms/MD5 : dev/whyoleg/cryptog
 public abstract interface class dev/whyoleg/cryptography/algorithms/PBKDF2 : dev/whyoleg/cryptography/CryptographyAlgorithm {
 	public static final field Companion Ldev/whyoleg/cryptography/algorithms/PBKDF2$Companion;
 	public fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
-	public fun secretDerivation-gruRWys (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;Lkotlinx/io/bytestring/ByteString;II)Ldev/whyoleg/cryptography/operations/SecretDerivation;
-	public abstract fun secretDerivation-gruRWys (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;[BII)Ldev/whyoleg/cryptography/operations/SecretDerivation;
+	public fun secretDerivation-EcvvZ38 (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;IILkotlinx/io/bytestring/ByteString;)Ldev/whyoleg/cryptography/operations/SecretDerivation;
+	public abstract fun secretDerivation-EcvvZ38 (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;II[B)Ldev/whyoleg/cryptography/operations/SecretDerivation;
 }
 
 public final class dev/whyoleg/cryptography/algorithms/PBKDF2$Companion : dev/whyoleg/cryptography/CryptographyAlgorithmId {

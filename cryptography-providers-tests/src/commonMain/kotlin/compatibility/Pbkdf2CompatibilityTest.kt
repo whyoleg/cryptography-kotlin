@@ -71,9 +71,9 @@ abstract class Pbkdf2CompatibilityTest(provider: CryptographyProvider) : Compati
 
                         val derivation = algorithm.secretDerivation(
                             digest = digest,
-                            salt = salt,
                             iterations = iterations,
-                            outputSize = outputSize.bytes
+                            outputSize = outputSize.bytes,
+                            salt = salt
                         )
 
                         repeat(deriveIterations) {
@@ -99,9 +99,9 @@ abstract class Pbkdf2CompatibilityTest(provider: CryptographyProvider) : Compati
 
             val derivation = algorithm.secretDerivation(
                 digest = parameters.digest,
-                salt = parameters.salt,
                 iterations = parameters.iterations,
-                outputSize = parameters.outputSizeBytes.bytes
+                outputSize = parameters.outputSizeBytes.bytes,
+                salt = parameters.salt
             )
             api.derivedSecrets.getData<DerivedSecretData>(parametersId) { (input, secret), _, _ ->
                 assertContentEquals(secret, derivation.deriveSecret(input))

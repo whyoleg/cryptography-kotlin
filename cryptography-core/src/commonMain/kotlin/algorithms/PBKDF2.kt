@@ -16,15 +16,15 @@ public interface PBKDF2 : CryptographyAlgorithm {
 
     public fun secretDerivation(
         digest: CryptographyAlgorithmId<Digest>,
-        salt: ByteArray,
         iterations: Int,
         outputSize: BinarySize,
+        salt: ByteArray,
     ): SecretDerivation
 
     public fun secretDerivation(
         digest: CryptographyAlgorithmId<Digest>,
-        salt: ByteString,
         iterations: Int,
         outputSize: BinarySize,
-    ): SecretDerivation = secretDerivation(digest, salt.asByteArray(), iterations, outputSize)
+        salt: ByteString,
+    ): SecretDerivation = secretDerivation(digest, iterations, outputSize, salt.asByteArray())
 }

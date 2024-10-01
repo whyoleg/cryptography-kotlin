@@ -15,9 +15,9 @@ internal class JdkPbkdf2(
 ) : PBKDF2 {
     override fun secretDerivation(
         digest: CryptographyAlgorithmId<Digest>,
-        salt: ByteArray,
         iterations: Int,
         outputSize: BinarySize,
+        salt: ByteArray,
     ): SecretDerivation = JdkPbkdf2SecretDerivation(
         state = state,
         algorithm = "PBKDF2WithHmac${digest.hashAlgorithmName()}",
