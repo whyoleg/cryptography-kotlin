@@ -60,9 +60,9 @@ abstract class AesCtrCompatibilityTest(provider: CryptographyProvider) :
                             ciphertext
                         }
                         else -> {
-                            val ciphertext = cipher.encrypt(iv, plaintext)
+                            val ciphertext = cipher.encryptWithIv(iv, plaintext)
                             logger.log { "ciphertext.size = ${ciphertext.size}" }
-                            assertContentEquals(plaintext, cipher.decrypt(iv, ciphertext), "Initial Decrypt")
+                            assertContentEquals(plaintext, cipher.decryptWithIv(iv, ciphertext), "Initial Decrypt")
                             ciphertext
                         }
                     }
@@ -89,9 +89,9 @@ abstract class AesCtrCompatibilityTest(provider: CryptographyProvider) :
                             )
                         }
                         else -> {
-                            assertContentEquals(plaintext, cipher.decrypt(iv, ciphertext), "Decrypt from $context")
+                            assertContentEquals(plaintext, cipher.decryptWithIv(iv, ciphertext), "Decrypt from $context")
                             assertContentEquals(
-                                plaintext, cipher.decrypt(iv, cipher.encrypt(iv, plaintext)),
+                                plaintext, cipher.decryptWithIv(iv, cipher.encryptWithIv(iv, plaintext)),
                                 "Encrypt-Decrypt from $context"
                             )
                         }

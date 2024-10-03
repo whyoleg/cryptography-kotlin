@@ -133,54 +133,58 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/AES$GCM$Key 
 	public static synthetic fun cipher-6q1zMKY$default (Ldev/whyoleg/cryptography/algorithms/AES$GCM$Key;IILjava/lang/Object;)Ldev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedCipher;
 }
 
-public abstract interface class dev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedCipher : dev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedDecryptor, dev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedEncryptor {
+public abstract interface class dev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedCipher : dev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedDecryptor, dev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedEncryptor, dev/whyoleg/cryptography/algorithms/AES$IvCipher, dev/whyoleg/cryptography/operations/AuthenticatedCipher {
 }
 
-public abstract interface class dev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedDecryptor : dev/whyoleg/cryptography/operations/AuthenticatedDecryptor {
-	public fun decrypt (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun decrypt ([B[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun decrypt$default (Ldev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedDecryptor;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
-	public static synthetic fun decrypt$default (Ldev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedDecryptor;[B[B[BLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
-	public static synthetic fun decrypt$suspendImpl (Ldev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedDecryptor;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun decrypt$suspendImpl (Ldev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedDecryptor;[B[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun decryptBlocking (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
-	public abstract fun decryptBlocking ([B[B[B)[B
-	public static synthetic fun decryptBlocking$default (Ldev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedDecryptor;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;ILjava/lang/Object;)Lkotlinx/io/bytestring/ByteString;
-	public static synthetic fun decryptBlocking$default (Ldev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedDecryptor;[B[B[BILjava/lang/Object;)[B
+public abstract interface class dev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedDecryptor : dev/whyoleg/cryptography/algorithms/AES$IvDecryptor, dev/whyoleg/cryptography/operations/AuthenticatedDecryptor {
+	public fun decryptWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun decryptWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun decryptWithIv ([B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun decryptWithIv ([B[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun decryptWithIv$suspendImpl (Ldev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedDecryptor;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun decryptWithIv$suspendImpl (Ldev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedDecryptor;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun decryptWithIv$suspendImpl (Ldev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedDecryptor;[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun decryptWithIv$suspendImpl (Ldev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedDecryptor;[B[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun decryptWithIvBlocking (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
+	public fun decryptWithIvBlocking (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
+	public fun decryptWithIvBlocking ([B[B)[B
+	public abstract fun decryptWithIvBlocking ([B[B[B)[B
 }
 
-public abstract interface class dev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedEncryptor : dev/whyoleg/cryptography/operations/AuthenticatedEncryptor {
-	public fun encrypt (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun encrypt ([B[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun encrypt$default (Ldev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedEncryptor;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
-	public static synthetic fun encrypt$default (Ldev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedEncryptor;[B[B[BLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
-	public static synthetic fun encrypt$suspendImpl (Ldev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedEncryptor;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun encrypt$suspendImpl (Ldev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedEncryptor;[B[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun encryptBlocking (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
-	public abstract fun encryptBlocking ([B[B[B)[B
-	public static synthetic fun encryptBlocking$default (Ldev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedEncryptor;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;ILjava/lang/Object;)Lkotlinx/io/bytestring/ByteString;
-	public static synthetic fun encryptBlocking$default (Ldev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedEncryptor;[B[B[BILjava/lang/Object;)[B
+public abstract interface class dev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedEncryptor : dev/whyoleg/cryptography/algorithms/AES$IvEncryptor, dev/whyoleg/cryptography/operations/AuthenticatedEncryptor {
+	public fun encryptWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun encryptWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun encryptWithIv ([B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun encryptWithIv ([B[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun encryptWithIv$suspendImpl (Ldev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedEncryptor;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun encryptWithIv$suspendImpl (Ldev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedEncryptor;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun encryptWithIv$suspendImpl (Ldev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedEncryptor;[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun encryptWithIv$suspendImpl (Ldev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedEncryptor;[B[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun encryptWithIvBlocking (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
+	public fun encryptWithIvBlocking (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
+	public fun encryptWithIvBlocking ([B[B)[B
+	public abstract fun encryptWithIvBlocking ([B[B[B)[B
 }
 
-public abstract interface class dev/whyoleg/cryptography/algorithms/AES$IvCipher : dev/whyoleg/cryptography/algorithms/AES$IvDecryptor, dev/whyoleg/cryptography/algorithms/AES$IvEncryptor {
+public abstract interface class dev/whyoleg/cryptography/algorithms/AES$IvCipher : dev/whyoleg/cryptography/algorithms/AES$IvDecryptor, dev/whyoleg/cryptography/algorithms/AES$IvEncryptor, dev/whyoleg/cryptography/operations/Cipher {
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/AES$IvDecryptor : dev/whyoleg/cryptography/operations/Decryptor {
-	public fun decrypt (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun decrypt ([B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun decrypt$suspendImpl (Ldev/whyoleg/cryptography/algorithms/AES$IvDecryptor;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun decrypt$suspendImpl (Ldev/whyoleg/cryptography/algorithms/AES$IvDecryptor;[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun decryptBlocking (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
-	public abstract fun decryptBlocking ([B[B)[B
+	public fun decryptWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun decryptWithIv ([B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun decryptWithIv$suspendImpl (Ldev/whyoleg/cryptography/algorithms/AES$IvDecryptor;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun decryptWithIv$suspendImpl (Ldev/whyoleg/cryptography/algorithms/AES$IvDecryptor;[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun decryptWithIvBlocking (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
+	public abstract fun decryptWithIvBlocking ([B[B)[B
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/AES$IvEncryptor : dev/whyoleg/cryptography/operations/Encryptor {
-	public fun encrypt (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun encrypt ([B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun encrypt$suspendImpl (Ldev/whyoleg/cryptography/algorithms/AES$IvEncryptor;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun encrypt$suspendImpl (Ldev/whyoleg/cryptography/algorithms/AES$IvEncryptor;[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun encryptBlocking (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
-	public abstract fun encryptBlocking ([B[B)[B
+	public fun encryptWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun encryptWithIv ([B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun encryptWithIv$suspendImpl (Ldev/whyoleg/cryptography/algorithms/AES$IvEncryptor;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun encryptWithIv$suspendImpl (Ldev/whyoleg/cryptography/algorithms/AES$IvEncryptor;[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun encryptWithIvBlocking (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
+	public abstract fun encryptWithIvBlocking ([B[B)[B
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/AES$Key : dev/whyoleg/cryptography/materials/key/EncodableKey {

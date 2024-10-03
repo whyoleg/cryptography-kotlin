@@ -28,11 +28,10 @@ private class AesGcmCipher(
 
     override suspend fun encrypt(plaintext: ByteArray, associatedData: ByteArray?): ByteArray {
         val iv = CryptographyRandom.nextBytes(ivSizeBytes)
-        return iv + encrypt(iv, plaintext, associatedData)
+        return iv + encryptWithIv(iv, plaintext, associatedData)
     }
 
-    @DelicateCryptographyApi
-    override suspend fun encrypt(iv: ByteArray, plaintext: ByteArray, associatedData: ByteArray?): ByteArray {
+    override suspend fun encryptWithIv(iv: ByteArray, plaintext: ByteArray, associatedData: ByteArray?): ByteArray {
         return WebCrypto.encrypt(
             algorithm = AesGcmCipherAlgorithm(
                 additionalData = associatedData,
@@ -45,15 +44,14 @@ private class AesGcmCipher(
     }
 
     override suspend fun decrypt(ciphertext: ByteArray, associatedData: ByteArray?): ByteArray {
-        return decrypt(
+        return decryptWithIv(
             ciphertext.copyOfRange(0, ivSizeBytes),
             ciphertext.copyOfRange(ivSizeBytes, ciphertext.size),
             associatedData
         )
     }
 
-    @DelicateCryptographyApi
-    override suspend fun decrypt(iv: ByteArray, ciphertext: ByteArray, associatedData: ByteArray?): ByteArray {
+    override suspend fun decryptWithIv(iv: ByteArray, ciphertext: ByteArray, associatedData: ByteArray?): ByteArray {
         return WebCrypto.decrypt(
             algorithm = AesGcmCipherAlgorithm(
                 additionalData = associatedData,
@@ -65,11 +63,9 @@ private class AesGcmCipher(
         )
     }
 
-    @DelicateCryptographyApi
-    override fun decryptBlocking(iv: ByteArray, ciphertext: ByteArray, associatedData: ByteArray?): ByteArray = nonBlocking()
+    override fun decryptWithIvBlocking(iv: ByteArray, ciphertext: ByteArray, associatedData: ByteArray?): ByteArray = nonBlocking()
 
-    @DelicateCryptographyApi
-    override fun encryptBlocking(iv: ByteArray, plaintext: ByteArray, associatedData: ByteArray?): ByteArray = nonBlocking()
+    override fun encryptWithIvBlocking(iv: ByteArray, plaintext: ByteArray, associatedData: ByteArray?): ByteArray = nonBlocking()
 
     override fun decryptBlocking(ciphertext: ByteArray, associatedData: ByteArray?): ByteArray = nonBlocking()
     override fun encryptBlocking(plaintext: ByteArray, associatedData: ByteArray?): ByteArray = nonBlocking()

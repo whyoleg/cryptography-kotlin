@@ -73,9 +73,9 @@ abstract class AesGcmCompatibilityTest(provider: CryptographyProvider) :
                                 ciphertext
                             }
                             else -> {
-                                val ciphertext = cipher.resetIv(context).encrypt(iv, plaintext, associatedData)
+                                val ciphertext = cipher.resetIv(context).encryptWithIv(iv, plaintext, associatedData)
                                 logger.log { "ciphertext.size = ${ciphertext.size}" }
-                                assertContentEquals(plaintext, cipher.decrypt(iv, ciphertext, associatedData), "Initial Decrypt")
+                                assertContentEquals(plaintext, cipher.decryptWithIv(iv, ciphertext, associatedData), "Initial Decrypt")
                                 ciphertext
                             }
                         }
@@ -108,10 +108,14 @@ abstract class AesGcmCompatibilityTest(provider: CryptographyProvider) :
                             )
                         }
                         else -> {
-                            assertContentEquals(plaintext, cipher.decrypt(iv, ciphertext, associatedData), "Decrypt")
+                            assertContentEquals(plaintext, cipher.decryptWithIv(iv, ciphertext, associatedData), "Decrypt")
                             assertContentEquals(
                                 plaintext,
-                                cipher.decrypt(iv, cipher.resetIv(context).encrypt(iv, plaintext, associatedData), associatedData),
+                                cipher.decryptWithIv(
+                                    iv,
+                                    cipher.resetIv(context).encryptWithIv(iv, plaintext, associatedData),
+                                    associatedData
+                                ),
                                 "Encrypt-Decrypt"
                             )
                         }

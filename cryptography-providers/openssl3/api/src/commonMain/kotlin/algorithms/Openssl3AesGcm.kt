@@ -41,8 +41,7 @@ private class AesGcmCipher(
     @OptIn(ExperimentalNativeApi::class)
     private val cleaner = createCleaner(cipher, ::EVP_CIPHER_free)
 
-    @DelicateCryptographyApi
-    override fun encryptBlocking(iv: ByteArray, plaintext: ByteArray, associatedData: ByteArray?): ByteArray = memScoped {
+    override fun encryptWithIvBlocking(iv: ByteArray, plaintext: ByteArray, associatedData: ByteArray?): ByteArray = memScoped {
         require(iv.size == ivSizeBytes) { "IV size is wrong" }
         val context = EVP_CIPHER_CTX_new()
         try {
@@ -108,7 +107,7 @@ private class AesGcmCipher(
 
     override fun encryptBlocking(plaintext: ByteArray, associatedData: ByteArray?): ByteArray {
         val iv = ByteArray(ivSizeBytes).also { CryptographyRandom.nextBytes(it) }
-        return iv + encryptBlocking(iv, plaintext, associatedData)
+        return iv + encryptWithIvBlocking(iv, plaintext, associatedData)
     }
 
     override fun decryptBlocking(ciphertext: ByteArray, associatedData: ByteArray?): ByteArray {
@@ -122,8 +121,7 @@ private class AesGcmCipher(
         )
     }
 
-    @DelicateCryptographyApi
-    override fun decryptBlocking(iv: ByteArray, ciphertext: ByteArray, associatedData: ByteArray?): ByteArray {
+    override fun decryptWithIvBlocking(iv: ByteArray, ciphertext: ByteArray, associatedData: ByteArray?): ByteArray {
         require(iv.size == ivSizeBytes) { "IV size is wrong" }
         require(ciphertext.size >= tagSize.inBytes) { "Ciphertext is too short" }
 

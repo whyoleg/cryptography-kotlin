@@ -49,11 +49,10 @@ private class AesCbcCipher(
 
     override fun encryptBlocking(plaintext: ByteArray): ByteArray {
         val iv = ByteArray(ivSizeBytes).also(state.secureRandom::nextBytes)
-        return iv + encryptBlocking(iv, plaintext)
+        return iv + encryptWithIvBlocking(iv, plaintext)
     }
 
-    @DelicateCryptographyApi
-    override fun encryptBlocking(iv: ByteArray, plaintext: ByteArray): ByteArray = cipher.use { cipher ->
+    override fun encryptWithIvBlocking(iv: ByteArray, plaintext: ByteArray): ByteArray = cipher.use { cipher ->
         cipher.init(JCipher.ENCRYPT_MODE, key, IvParameterSpec(iv), state.secureRandom)
         cipher.doFinal(plaintext)
     }
@@ -63,8 +62,7 @@ private class AesCbcCipher(
         cipher.doFinal(ciphertext, ivSizeBytes, ciphertext.size - ivSizeBytes)
     }
 
-    @DelicateCryptographyApi
-    override fun decryptBlocking(iv: ByteArray, ciphertext: ByteArray): ByteArray = cipher.use { cipher ->
+    override fun decryptWithIvBlocking(iv: ByteArray, ciphertext: ByteArray): ByteArray = cipher.use { cipher ->
         cipher.init(JCipher.DECRYPT_MODE, key, IvParameterSpec(iv), state.secureRandom)
         cipher.doFinal(ciphertext)
     }

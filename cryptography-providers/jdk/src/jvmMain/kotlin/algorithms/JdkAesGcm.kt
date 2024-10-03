@@ -47,11 +47,10 @@ private class AesGcmCipher(
 
     override fun encryptBlocking(plaintext: ByteArray, associatedData: ByteArray?): ByteArray {
         val iv = ByteArray(ivSizeBytes).also(state.secureRandom::nextBytes)
-        return iv + encryptBlocking(iv, plaintext, associatedData)
+        return iv + encryptWithIvBlocking(iv, plaintext, associatedData)
     }
 
-    @DelicateCryptographyApi
-    override fun encryptBlocking(iv: ByteArray, plaintext: ByteArray, associatedData: ByteArray?): ByteArray = cipher.use { cipher ->
+    override fun encryptWithIvBlocking(iv: ByteArray, plaintext: ByteArray, associatedData: ByteArray?): ByteArray = cipher.use { cipher ->
         cipher.init(JCipher.ENCRYPT_MODE, key, GCMParameterSpec(tagSize.inBits, iv), state.secureRandom)
         associatedData?.let(cipher::updateAAD)
         cipher.doFinal(plaintext)
@@ -63,8 +62,7 @@ private class AesGcmCipher(
         cipher.doFinal(ciphertext, ivSizeBytes, ciphertext.size - ivSizeBytes)
     }
 
-    @DelicateCryptographyApi
-    override fun decryptBlocking(iv: ByteArray, ciphertext: ByteArray, associatedData: ByteArray?): ByteArray = cipher.use { cipher ->
+    override fun decryptWithIvBlocking(iv: ByteArray, ciphertext: ByteArray, associatedData: ByteArray?): ByteArray = cipher.use { cipher ->
         cipher.init(JCipher.DECRYPT_MODE, key, GCMParameterSpec(tagSize.inBits, iv), state.secureRandom)
         associatedData?.let(cipher::updateAAD)
         cipher.doFinal(ciphertext)

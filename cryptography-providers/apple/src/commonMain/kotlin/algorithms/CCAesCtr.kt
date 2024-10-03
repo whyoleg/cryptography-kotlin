@@ -4,7 +4,6 @@
 
 package dev.whyoleg.cryptography.providers.apple.algorithms
 
-import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.providers.apple.internal.*
 import dev.whyoleg.cryptography.random.*
@@ -35,11 +34,10 @@ private class AesCtrCipher(key: ByteArray) : AES.IvCipher {
 
     override fun encryptBlocking(plaintext: ByteArray): ByteArray {
         val iv = CryptographyRandom.nextBytes(ivSizeBytes)
-        return iv + encryptBlocking(iv, plaintext)
+        return iv + encryptWithIvBlocking(iv, plaintext)
     }
 
-    @DelicateCryptographyApi
-    override fun encryptBlocking(iv: ByteArray, plaintext: ByteArray): ByteArray {
+    override fun encryptWithIvBlocking(iv: ByteArray, plaintext: ByteArray): ByteArray {
         require(iv.size == ivSizeBytes) { "IV size is wrong" }
 
         return cipher.encrypt(iv, plaintext)
@@ -55,8 +53,7 @@ private class AesCtrCipher(key: ByteArray) : AES.IvCipher {
         )
     }
 
-    @DelicateCryptographyApi
-    override fun decryptBlocking(iv: ByteArray, ciphertext: ByteArray): ByteArray {
+    override fun decryptWithIvBlocking(iv: ByteArray, ciphertext: ByteArray): ByteArray {
         require(iv.size == ivSizeBytes) { "IV size is wrong" }
 
         return cipher.decrypt(

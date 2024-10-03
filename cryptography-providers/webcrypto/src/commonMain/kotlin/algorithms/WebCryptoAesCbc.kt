@@ -4,7 +4,6 @@
 
 package dev.whyoleg.cryptography.providers.webcrypto.algorithms
 
-import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.providers.webcrypto.internal.*
 import dev.whyoleg.cryptography.providers.webcrypto.materials.*
@@ -28,11 +27,10 @@ private class AesCbcCipher(private val key: CryptoKey) : AES.IvCipher {
 
     override suspend fun encrypt(plaintext: ByteArray): ByteArray {
         val iv = CryptographyRandom.nextBytes(ivSizeBytes)
-        return iv + encrypt(iv, plaintext)
+        return iv + encryptWithIv(iv, plaintext)
     }
 
-    @DelicateCryptographyApi
-    override suspend fun encrypt(iv: ByteArray, plaintext: ByteArray): ByteArray {
+    override suspend fun encryptWithIv(iv: ByteArray, plaintext: ByteArray): ByteArray {
         return WebCrypto.encrypt(
             algorithm = AesCbcCipherAlgorithm(iv),
             key = key,
@@ -50,8 +48,7 @@ private class AesCbcCipher(private val key: CryptoKey) : AES.IvCipher {
         )
     }
 
-    @DelicateCryptographyApi
-    override suspend fun decrypt(iv: ByteArray, ciphertext: ByteArray): ByteArray {
+    override suspend fun decryptWithIv(iv: ByteArray, ciphertext: ByteArray): ByteArray {
         require(iv.size == ivSizeBytes) { "IV size is wrong" }
 
         return WebCrypto.decrypt(
@@ -63,6 +60,6 @@ private class AesCbcCipher(private val key: CryptoKey) : AES.IvCipher {
 
     override fun decryptBlocking(ciphertext: ByteArray): ByteArray = nonBlocking()
     override fun encryptBlocking(plaintext: ByteArray): ByteArray = nonBlocking()
-    override fun decryptBlocking(iv: ByteArray, ciphertext: ByteArray): ByteArray = nonBlocking()
-    override fun encryptBlocking(iv: ByteArray, plaintext: ByteArray): ByteArray = nonBlocking()
+    override fun decryptWithIvBlocking(iv: ByteArray, ciphertext: ByteArray): ByteArray = nonBlocking()
+    override fun encryptWithIvBlocking(iv: ByteArray, plaintext: ByteArray): ByteArray = nonBlocking()
 }

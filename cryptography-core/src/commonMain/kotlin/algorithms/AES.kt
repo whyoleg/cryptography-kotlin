@@ -84,76 +84,133 @@ public interface AES<K : AES.Key> : CryptographyAlgorithm {
     }
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
-    public interface IvCipher : IvEncryptor, IvDecryptor
+    public interface IvCipher : Cipher, IvEncryptor, IvDecryptor
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface IvEncryptor : Encryptor {
         @DelicateCryptographyApi
-        public suspend fun encrypt(iv: ByteArray, plaintext: ByteArray): ByteArray = encryptBlocking(iv, plaintext)
+        public suspend fun encryptWithIv(iv: ByteArray, plaintext: ByteArray): ByteArray {
+            return encryptWithIvBlocking(iv, plaintext)
+        }
 
         @DelicateCryptographyApi
-        public fun encryptBlocking(iv: ByteArray, plaintext: ByteArray): ByteArray
+        public suspend fun encryptWithIv(iv: ByteString, plaintext: ByteString): ByteString {
+            return encryptWithIv(iv.asByteArray(), plaintext.asByteArray()).asByteString()
+        }
 
         @DelicateCryptographyApi
-        public suspend fun encrypt(iv: ByteString, plaintext: ByteString): ByteString =
-            encrypt(iv.asByteArray(), plaintext.asByteArray()).asByteString()
+        public fun encryptWithIvBlocking(iv: ByteArray, plaintext: ByteArray): ByteArray
 
         @DelicateCryptographyApi
-        public fun encryptBlocking(iv: ByteString, plaintext: ByteString): ByteString =
-            encryptBlocking(iv.asByteArray(), plaintext.asByteArray()).asByteString()
+        public fun encryptWithIvBlocking(iv: ByteString, plaintext: ByteString): ByteString {
+            return encryptWithIvBlocking(iv.asByteArray(), plaintext.asByteArray()).asByteString()
+        }
     }
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface IvDecryptor : Decryptor {
         @DelicateCryptographyApi
-        public suspend fun decrypt(iv: ByteArray, ciphertext: ByteArray): ByteArray = decryptBlocking(iv, ciphertext)
+        public suspend fun decryptWithIv(iv: ByteArray, ciphertext: ByteArray): ByteArray {
+            return decryptWithIvBlocking(iv, ciphertext)
+        }
 
         @DelicateCryptographyApi
-        public fun decryptBlocking(iv: ByteArray, ciphertext: ByteArray): ByteArray
+        public suspend fun decryptWithIv(iv: ByteString, ciphertext: ByteString): ByteString {
+            return decryptWithIv(iv.asByteArray(), ciphertext.asByteArray()).asByteString()
+        }
 
         @DelicateCryptographyApi
-        public suspend fun decrypt(iv: ByteString, ciphertext: ByteString): ByteString =
-            decrypt(iv.asByteArray(), ciphertext.asByteArray()).asByteString()
+        public fun decryptWithIvBlocking(iv: ByteArray, ciphertext: ByteArray): ByteArray
 
         @DelicateCryptographyApi
-        public fun decryptBlocking(iv: ByteString, ciphertext: ByteString): ByteString =
-            decryptBlocking(iv.asByteArray(), ciphertext.asByteArray()).asByteString()
+        public fun decryptWithIvBlocking(iv: ByteString, ciphertext: ByteString): ByteString {
+            return decryptWithIvBlocking(iv.asByteArray(), ciphertext.asByteArray()).asByteString()
+        }
     }
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
-    public interface IvAuthenticatedCipher : IvAuthenticatedEncryptor, IvAuthenticatedDecryptor
+    public interface IvAuthenticatedCipher : IvCipher, AuthenticatedCipher, IvAuthenticatedEncryptor, IvAuthenticatedDecryptor
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
-    public interface IvAuthenticatedEncryptor : AuthenticatedEncryptor {
+    public interface IvAuthenticatedEncryptor : IvEncryptor, AuthenticatedEncryptor {
         @DelicateCryptographyApi
-        public suspend fun encrypt(iv: ByteArray, plaintext: ByteArray, associatedData: ByteArray? = null): ByteArray = encryptBlocking(iv, plaintext, associatedData)
+        override suspend fun encryptWithIv(iv: ByteArray, plaintext: ByteArray): ByteArray {
+            return encryptWithIv(iv, plaintext, null)
+        }
 
         @DelicateCryptographyApi
-        public fun encryptBlocking(iv: ByteArray, plaintext: ByteArray, associatedData: ByteArray? = null): ByteArray
+        override suspend fun encryptWithIv(iv: ByteString, plaintext: ByteString): ByteString {
+            return encryptWithIv(iv, plaintext, null)
+        }
 
         @DelicateCryptographyApi
-        public suspend fun encrypt(iv: ByteString, plaintext: ByteString, associatedData: ByteString? = null): ByteString =
-            encrypt(iv.asByteArray(), plaintext.asByteArray(), associatedData?.toByteArray()).asByteString()
+        public suspend fun encryptWithIv(iv: ByteArray, plaintext: ByteArray, associatedData: ByteArray?): ByteArray {
+            return encryptWithIvBlocking(iv, plaintext, associatedData)
+        }
 
         @DelicateCryptographyApi
-        public fun encryptBlocking(iv: ByteString, plaintext: ByteString, associatedData: ByteString? = null): ByteString =
-            encryptBlocking(iv.asByteArray(), plaintext.asByteArray(), associatedData?.toByteArray()).asByteString()
+        public suspend fun encryptWithIv(iv: ByteString, plaintext: ByteString, associatedData: ByteString?): ByteString {
+            return encryptWithIv(iv.asByteArray(), plaintext.asByteArray(), associatedData?.toByteArray()).asByteString()
+        }
+
+        @DelicateCryptographyApi
+        override fun encryptWithIvBlocking(iv: ByteArray, plaintext: ByteArray): ByteArray {
+            return encryptWithIvBlocking(iv, plaintext, null)
+        }
+
+        @DelicateCryptographyApi
+        override fun encryptWithIvBlocking(iv: ByteString, plaintext: ByteString): ByteString {
+            return encryptWithIvBlocking(iv, plaintext, null)
+        }
+
+        @DelicateCryptographyApi
+        public fun encryptWithIvBlocking(iv: ByteArray, plaintext: ByteArray, associatedData: ByteArray?): ByteArray
+
+        @DelicateCryptographyApi
+        public fun encryptWithIvBlocking(iv: ByteString, plaintext: ByteString, associatedData: ByteString?): ByteString {
+            return encryptWithIvBlocking(iv.asByteArray(), plaintext.asByteArray(), associatedData?.toByteArray()).asByteString()
+        }
     }
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
-    public interface IvAuthenticatedDecryptor : AuthenticatedDecryptor {
-        @DelicateCryptographyApi
-        public suspend fun decrypt(iv: ByteArray, ciphertext: ByteArray, associatedData: ByteArray? = null): ByteArray = decryptBlocking(iv, ciphertext, associatedData)
+    public interface IvAuthenticatedDecryptor : IvDecryptor, AuthenticatedDecryptor {
 
         @DelicateCryptographyApi
-        public fun decryptBlocking(iv: ByteArray, ciphertext: ByteArray, associatedData: ByteArray? = null): ByteArray
+        override suspend fun decryptWithIv(iv: ByteArray, ciphertext: ByteArray): ByteArray {
+            return decryptWithIv(iv, ciphertext, null)
+        }
 
         @DelicateCryptographyApi
-        public suspend fun decrypt(iv: ByteString, ciphertext: ByteString, associatedData: ByteString? = null): ByteString =
-            decrypt(iv.asByteArray(), ciphertext.asByteArray(), associatedData?.toByteArray()).asByteString()
+        override suspend fun decryptWithIv(iv: ByteString, ciphertext: ByteString): ByteString {
+            return decryptWithIv(iv, ciphertext, null)
+        }
 
         @DelicateCryptographyApi
-        public fun decryptBlocking(iv: ByteString, ciphertext: ByteString, associatedData: ByteString? = null): ByteString =
-            decryptBlocking(iv.asByteArray(), ciphertext.asByteArray(), associatedData?.toByteArray()).asByteString()
+        public suspend fun decryptWithIv(iv: ByteArray, ciphertext: ByteArray, associatedData: ByteArray?): ByteArray {
+            return decryptWithIvBlocking(iv, ciphertext, associatedData)
+        }
+
+        @DelicateCryptographyApi
+        public suspend fun decryptWithIv(iv: ByteString, ciphertext: ByteString, associatedData: ByteString?): ByteString {
+            return decryptWithIv(iv.asByteArray(), ciphertext.asByteArray(), associatedData?.toByteArray()).asByteString()
+        }
+
+        @DelicateCryptographyApi
+        override fun decryptWithIvBlocking(iv: ByteArray, ciphertext: ByteArray): ByteArray {
+            return decryptWithIvBlocking(iv, ciphertext, null)
+        }
+
+        @DelicateCryptographyApi
+        override fun decryptWithIvBlocking(iv: ByteString, ciphertext: ByteString): ByteString {
+            return decryptWithIvBlocking(iv, ciphertext, null)
+        }
+
+        @DelicateCryptographyApi
+        public fun decryptWithIvBlocking(iv: ByteArray, ciphertext: ByteArray, associatedData: ByteArray?): ByteArray
+
+        @DelicateCryptographyApi
+        public fun decryptWithIvBlocking(iv: ByteString, ciphertext: ByteString, associatedData: ByteString?): ByteString {
+            return decryptWithIvBlocking(iv.asByteArray(), ciphertext.asByteArray(), associatedData?.toByteArray()).asByteString()
+        }
     }
 }
