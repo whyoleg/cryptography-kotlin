@@ -149,6 +149,12 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/AES$IvAuthen
 	public fun decryptWithIvBlocking (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
 	public fun decryptWithIvBlocking ([B[B)[B
 	public abstract fun decryptWithIvBlocking ([B[B[B)[B
+	public fun decryptingSinkWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/RawSink;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/RawSink;
+	public fun decryptingSinkWithIv ([BLkotlinx/io/RawSink;)Lkotlinx/io/RawSink;
+	public abstract fun decryptingSinkWithIv ([BLkotlinx/io/RawSink;[B)Lkotlinx/io/RawSink;
+	public fun decryptingSourceWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/RawSource;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/RawSource;
+	public fun decryptingSourceWithIv ([BLkotlinx/io/RawSource;)Lkotlinx/io/RawSource;
+	public abstract fun decryptingSourceWithIv ([BLkotlinx/io/RawSource;[B)Lkotlinx/io/RawSource;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedEncryptor : dev/whyoleg/cryptography/algorithms/AES$IvEncryptor, dev/whyoleg/cryptography/operations/AuthenticatedEncryptor {
@@ -164,6 +170,12 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/AES$IvAuthen
 	public fun encryptWithIvBlocking (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
 	public fun encryptWithIvBlocking ([B[B)[B
 	public abstract fun encryptWithIvBlocking ([B[B[B)[B
+	public fun encryptingSinkWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/RawSink;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/RawSink;
+	public fun encryptingSinkWithIv ([BLkotlinx/io/RawSink;)Lkotlinx/io/RawSink;
+	public abstract fun encryptingSinkWithIv ([BLkotlinx/io/RawSink;[B)Lkotlinx/io/RawSink;
+	public fun encryptingSourceWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/RawSource;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/RawSource;
+	public fun encryptingSourceWithIv ([BLkotlinx/io/RawSource;)Lkotlinx/io/RawSource;
+	public abstract fun encryptingSourceWithIv ([BLkotlinx/io/RawSource;[B)Lkotlinx/io/RawSource;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/AES$IvCipher : dev/whyoleg/cryptography/algorithms/AES$IvDecryptor, dev/whyoleg/cryptography/algorithms/AES$IvEncryptor, dev/whyoleg/cryptography/operations/Cipher {
@@ -176,6 +188,10 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/AES$IvDecryp
 	public static synthetic fun decryptWithIv$suspendImpl (Ldev/whyoleg/cryptography/algorithms/AES$IvDecryptor;[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun decryptWithIvBlocking (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
 	public abstract fun decryptWithIvBlocking ([B[B)[B
+	public fun decryptingSinkWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/RawSink;)Lkotlinx/io/RawSink;
+	public abstract fun decryptingSinkWithIv ([BLkotlinx/io/RawSink;)Lkotlinx/io/RawSink;
+	public fun decryptingSourceWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/RawSource;)Lkotlinx/io/RawSource;
+	public abstract fun decryptingSourceWithIv ([BLkotlinx/io/RawSource;)Lkotlinx/io/RawSource;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/AES$IvEncryptor : dev/whyoleg/cryptography/operations/Encryptor {
@@ -185,6 +201,10 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/AES$IvEncryp
 	public static synthetic fun encryptWithIv$suspendImpl (Ldev/whyoleg/cryptography/algorithms/AES$IvEncryptor;[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun encryptWithIvBlocking (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
 	public abstract fun encryptWithIvBlocking ([B[B)[B
+	public fun encryptingSinkWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/RawSink;)Lkotlinx/io/RawSink;
+	public abstract fun encryptingSinkWithIv ([BLkotlinx/io/RawSink;)Lkotlinx/io/RawSink;
+	public fun encryptingSourceWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/RawSource;)Lkotlinx/io/RawSource;
+	public abstract fun encryptingSourceWithIv ([BLkotlinx/io/RawSource;)Lkotlinx/io/RawSource;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/AES$Key : dev/whyoleg/cryptography/materials/key/EncodableKey {
@@ -705,6 +725,12 @@ public abstract interface class dev/whyoleg/cryptography/operations/Authenticate
 	public fun decryptBlocking (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
 	public fun decryptBlocking ([B)[B
 	public abstract fun decryptBlocking ([B[B)[B
+	public fun decryptingSink (Lkotlinx/io/RawSink;)Lkotlinx/io/RawSink;
+	public fun decryptingSink (Lkotlinx/io/RawSink;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/RawSink;
+	public abstract fun decryptingSink (Lkotlinx/io/RawSink;[B)Lkotlinx/io/RawSink;
+	public fun decryptingSource (Lkotlinx/io/RawSource;)Lkotlinx/io/RawSource;
+	public fun decryptingSource (Lkotlinx/io/RawSource;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/RawSource;
+	public abstract fun decryptingSource (Lkotlinx/io/RawSource;[B)Lkotlinx/io/RawSource;
 }
 
 public abstract interface class dev/whyoleg/cryptography/operations/AuthenticatedEncryptor : dev/whyoleg/cryptography/operations/Encryptor {
@@ -720,6 +746,12 @@ public abstract interface class dev/whyoleg/cryptography/operations/Authenticate
 	public fun encryptBlocking (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
 	public fun encryptBlocking ([B)[B
 	public abstract fun encryptBlocking ([B[B)[B
+	public fun encryptingSink (Lkotlinx/io/RawSink;)Lkotlinx/io/RawSink;
+	public fun encryptingSink (Lkotlinx/io/RawSink;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/RawSink;
+	public abstract fun encryptingSink (Lkotlinx/io/RawSink;[B)Lkotlinx/io/RawSink;
+	public fun encryptingSource (Lkotlinx/io/RawSource;)Lkotlinx/io/RawSource;
+	public fun encryptingSource (Lkotlinx/io/RawSource;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/RawSource;
+	public abstract fun encryptingSource (Lkotlinx/io/RawSource;[B)Lkotlinx/io/RawSource;
 }
 
 public abstract interface class dev/whyoleg/cryptography/operations/Cipher : dev/whyoleg/cryptography/operations/Decryptor, dev/whyoleg/cryptography/operations/Encryptor {
@@ -732,6 +764,8 @@ public abstract interface class dev/whyoleg/cryptography/operations/Decryptor {
 	public static synthetic fun decrypt$suspendImpl (Ldev/whyoleg/cryptography/operations/Decryptor;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun decryptBlocking (Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
 	public abstract fun decryptBlocking ([B)[B
+	public abstract fun decryptingSink (Lkotlinx/io/RawSink;)Lkotlinx/io/RawSink;
+	public abstract fun decryptingSource (Lkotlinx/io/RawSource;)Lkotlinx/io/RawSource;
 }
 
 public abstract interface class dev/whyoleg/cryptography/operations/Encryptor {
@@ -741,6 +775,8 @@ public abstract interface class dev/whyoleg/cryptography/operations/Encryptor {
 	public static synthetic fun encrypt$suspendImpl (Ldev/whyoleg/cryptography/operations/Encryptor;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun encryptBlocking (Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
 	public abstract fun encryptBlocking ([B)[B
+	public abstract fun encryptingSink (Lkotlinx/io/RawSink;)Lkotlinx/io/RawSink;
+	public abstract fun encryptingSource (Lkotlinx/io/RawSource;)Lkotlinx/io/RawSource;
 }
 
 public abstract interface class dev/whyoleg/cryptography/operations/HashFunction : dev/whyoleg/cryptography/operations/UpdateFunction {
