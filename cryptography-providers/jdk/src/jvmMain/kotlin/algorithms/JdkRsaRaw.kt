@@ -10,8 +10,10 @@ import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.bigint.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.providers.base.operations.*
 import dev.whyoleg.cryptography.providers.jdk.*
 import dev.whyoleg.cryptography.providers.jdk.materials.*
+import dev.whyoleg.cryptography.providers.jdk.operations.*
 import java.security.interfaces.*
 import java.security.spec.*
 
@@ -87,33 +89,69 @@ private class RsaRawPrivateKey(
 private class RsaRawEncryptor(
     private val state: JdkCryptographyState,
     private val key: JPublicKey,
-) : Encryptor {
+) : BaseEncryptor {
     private val cipher = state.cipher("RSA/ECB/NoPadding")
 
-    override fun encryptBlocking(plaintext: ByteArray): ByteArray = cipher.use { cipher ->
-        cipher.init(JCipher.ENCRYPT_MODE, key, state.secureRandom)
-        cipher.doFinal(plaintext)
+    override fun createEncryptFunction(): CipherFunction {
+        return JdkCipherFunction(cipher.borrowResource {
+            init(JCipher.ENCRYPT_MODE, key, state.secureRandom)
+        })
     }
 }
 
 private class RsaRawDecryptor(
     private val state: JdkCryptographyState,
     private val key: JPrivateKey,
-) : Decryptor {
+) : BaseDecryptor {
     private val cipher = state.cipher("RSA/ECB/NoPadding")
     private val outputSize = (key as RSAKey).modulus.bitLength().bits.inBytes
 
-    override fun decryptBlocking(ciphertext: ByteArray): ByteArray = cipher.use { cipher ->
-        cipher.init(JCipher.DECRYPT_MODE, key, state.secureRandom)
-        // for some reason BC provider output size is truncated, so we need to `pad`
-        cipher.doFinal(ciphertext).pad(outputSize)
+    override fun createDecryptFunction(): CipherFunction {
+        return RsaRawDecryptFunction(outputSize, cipher.borrowResource {
+            init(JCipher.DECRYPT_MODE, key, state.secureRandom)
+        })
     }
-}
 
-private fun ByteArray.pad(size: Int): ByteArray {
-    if (this.size == size) return this
+    // TODO: add some tests for this
+    // for some reason, BC provider output size is truncated, so we need to ensure it's padded
+    private class RsaRawDecryptFunction(
+        private val outputSize: Int,
+        cipher: Pooled.Resource<JCipher>,
+    ) : JdkCipherFunction(cipher) {
+        override fun maxOutputSize(inputSize: Int): Int {
+            return outputSize
+        }
 
-    return ByteArray(size).also {
-        copyInto(it, size - this.size)
+        override fun finalizeToByteArray(): ByteArray {
+            return super.finalizeToByteArray().pad(outputSize)
+        }
+
+        override fun finalizeIntoByteArray(destination: ByteArray, destinationOffset: Int): Int {
+            super.finalizeIntoByteArray(destination, destinationOffset)
+            return outputSize
+        }
+
+        override fun transformAndFinalizeToByteArray(source: ByteArray, startIndex: Int, endIndex: Int): ByteArray {
+            return super.transformAndFinalizeToByteArray(source, startIndex, endIndex).pad(outputSize)
+        }
+
+        override fun transformAndFinalizeIntoByteArray(
+            source: ByteArray,
+            destination: ByteArray,
+            destinationOffset: Int,
+            startIndex: Int,
+            endIndex: Int,
+        ): Int {
+            super.transformAndFinalizeIntoByteArray(source, destination, destinationOffset, startIndex, endIndex)
+            return outputSize
+        }
+
+        private fun ByteArray.pad(size: Int): ByteArray {
+            if (this.size == size) return this
+
+            return ByteArray(size).also {
+                copyInto(it, size - this.size)
+            }
+        }
     }
 }

@@ -9,6 +9,7 @@ import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.bigint.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.providers.base.operations.*
 import dev.whyoleg.cryptography.providers.jdk.*
 import dev.whyoleg.cryptography.providers.jdk.materials.*
 import dev.whyoleg.cryptography.providers.jdk.operations.*
@@ -101,23 +102,25 @@ private class RsaPkcs1PrivateKey(
 private class RsaPkcs1Encryptor(
     private val state: JdkCryptographyState,
     private val key: JPublicKey,
-) : Encryptor {
+) : BaseEncryptor {
     private val cipher = state.cipher("RSA/ECB/PKCS1Padding")
 
-    override fun encryptBlocking(plaintext: ByteArray): ByteArray = cipher.use { cipher ->
-        cipher.init(JCipher.ENCRYPT_MODE, key, state.secureRandom)
-        cipher.doFinal(plaintext)
+    override fun createEncryptFunction(): CipherFunction {
+        return JdkCipherFunction(cipher.borrowResource {
+            init(JCipher.ENCRYPT_MODE, key, state.secureRandom)
+        })
     }
 }
 
 private class RsaPkcs1Decryptor(
     private val state: JdkCryptographyState,
     private val key: JPrivateKey,
-) : Decryptor {
+) : BaseDecryptor {
     private val cipher = state.cipher("RSA/ECB/PKCS1Padding")
 
-    override fun decryptBlocking(ciphertext: ByteArray): ByteArray = cipher.use { cipher ->
-        cipher.init(JCipher.DECRYPT_MODE, key, state.secureRandom)
-        cipher.doFinal(ciphertext)
+    override fun createDecryptFunction(): CipherFunction {
+        return JdkCipherFunction(cipher.borrowResource {
+            init(JCipher.DECRYPT_MODE, key, state.secureRandom)
+        })
     }
 }

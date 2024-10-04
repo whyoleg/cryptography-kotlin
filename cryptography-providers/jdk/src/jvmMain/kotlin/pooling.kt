@@ -35,6 +35,7 @@ internal sealed class Pooled<T>(protected val instantiate: () -> T) {
     protected abstract fun recycle(value: T)
 
     fun borrowResource(): Resource<T> = Resource(this)
+    inline fun borrowResource(initialize: T.() -> Unit): Resource<T> = borrowResource().apply { access().initialize() }
 
     inline fun <R> use(block: (T) -> R): R {
         val instance = borrow()

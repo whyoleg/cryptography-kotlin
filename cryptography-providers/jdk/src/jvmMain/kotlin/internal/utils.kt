@@ -9,15 +9,3 @@ internal fun ByteArray.trimLeadingZeros(): ByteArray {
     if (firstNonZeroIndex == -1) return this
     return copyOfRange(firstNonZeroIndex, size)
 }
-
-// BouncyCastle doesn't always checks for `endIndex`
-internal fun checkBounds(size: Int, startIndex: Int, endIndex: Int) {
-    if (startIndex < 0 || endIndex > size) {
-        throw IndexOutOfBoundsException(
-            "startIndex ($startIndex) and endIndex ($endIndex) are not within the range [0..size($size))"
-        )
-    }
-    if (startIndex > endIndex) {
-        throw IllegalArgumentException("startIndex ($startIndex) > endIndex ($endIndex)")
-    }
-}

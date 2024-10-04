@@ -4,10 +4,9 @@
 
 package dev.whyoleg.cryptography.providers.jdk.operations
 
-
 import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.jdk.*
-import dev.whyoleg.cryptography.providers.jdk.internal.*
 import java.security.spec.*
 
 internal class JdkSignatureGenerator(

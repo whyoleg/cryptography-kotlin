@@ -9,8 +9,10 @@ import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.bigint.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.providers.base.operations.*
 import dev.whyoleg.cryptography.providers.jdk.*
 import dev.whyoleg.cryptography.providers.jdk.materials.*
+import dev.whyoleg.cryptography.providers.jdk.operations.*
 import java.security.spec.*
 import javax.crypto.spec.*
 
@@ -97,18 +99,19 @@ private class RsaOaepEncryptor(
     private val state: JdkCryptographyState,
     private val key: JPublicKey,
     private val hashAlgorithmName: String,
-) : AuthenticatedEncryptor {
+) : BaseAuthenticatedEncryptor {
     private val cipher = state.cipher("RSA/ECB/OAEPPadding")
 
-    override fun encryptBlocking(plaintext: ByteArray, associatedData: ByteArray?): ByteArray = cipher.use { cipher ->
-        val parameters = OAEPParameterSpec(
-            hashAlgorithmName,
-            "MGF1",
-            MGF1ParameterSpec(hashAlgorithmName),
-            associatedData?.let(PSource::PSpecified) ?: PSource.PSpecified.DEFAULT
-        )
-        cipher.init(JCipher.ENCRYPT_MODE, key, parameters, state.secureRandom)
-        cipher.doFinal(plaintext)
+    override fun createEncryptFunction(associatedData: ByteArray?): CipherFunction {
+        return JdkCipherFunction(cipher.borrowResource {
+            val parameters = OAEPParameterSpec(
+                hashAlgorithmName,
+                "MGF1",
+                MGF1ParameterSpec(hashAlgorithmName),
+                associatedData?.let(PSource::PSpecified) ?: PSource.PSpecified.DEFAULT
+            )
+            init(JCipher.ENCRYPT_MODE, key, parameters, state.secureRandom)
+        })
     }
 }
 
@@ -116,17 +119,18 @@ private class RsaOaepDecryptor(
     private val state: JdkCryptographyState,
     private val key: JPrivateKey,
     private val hashAlgorithmName: String,
-) : AuthenticatedDecryptor {
+) : BaseAuthenticatedDecryptor {
     private val cipher = state.cipher("RSA/ECB/OAEPPadding")
 
-    override fun decryptBlocking(ciphertext: ByteArray, associatedData: ByteArray?): ByteArray = cipher.use { cipher ->
-        val parameters = OAEPParameterSpec(
-            hashAlgorithmName,
-            "MGF1",
-            MGF1ParameterSpec(hashAlgorithmName),
-            associatedData?.let(PSource::PSpecified) ?: PSource.PSpecified.DEFAULT
-        )
-        cipher.init(JCipher.DECRYPT_MODE, key, parameters, state.secureRandom)
-        cipher.doFinal(ciphertext)
+    override fun createDecryptFunction(associatedData: ByteArray?): CipherFunction {
+        return JdkCipherFunction(cipher.borrowResource {
+            val parameters = OAEPParameterSpec(
+                hashAlgorithmName,
+                "MGF1",
+                MGF1ParameterSpec(hashAlgorithmName),
+                associatedData?.let(PSource::PSpecified) ?: PSource.PSpecified.DEFAULT
+            )
+            init(JCipher.DECRYPT_MODE, key, parameters, state.secureRandom)
+        })
     }
 }

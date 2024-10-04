@@ -8,25 +8,18 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.providers.base.algorithms.*
+import dev.whyoleg.cryptography.providers.base.operations.*
 import dev.whyoleg.cryptography.providers.jdk.*
 import dev.whyoleg.cryptography.providers.jdk.algorithms.*
 import dev.whyoleg.cryptography.providers.jdk.materials.*
+import dev.whyoleg.cryptography.providers.jdk.operations.*
 import javax.crypto.spec.*
 
 internal class JdkAesGcm(
     private val state: JdkCryptographyState,
 ) : AES.GCM {
-    private val keyWrapper: (JSecretKey) -> AES.GCM.Key = { key ->
-        object : AES.GCM.Key, JdkEncodableKey<AES.Key.Format>(key) {
-            override fun cipher(tagSize: BinarySize): AES.IvAuthenticatedCipher = AesGcmCipher(state, key, tagSize)
-
-            override fun encodeToByteArrayBlocking(format: AES.Key.Format): ByteArray = when (format) {
-                AES.Key.Format.JWK -> error("$format is not supported")
-                AES.Key.Format.RAW -> encodeToRaw()
-            }
-        }
-    }
-
+    private val keyWrapper: (JSecretKey) -> AES.GCM.Key = { key -> JdkAesGcmKey(state, key) }
     private val keyDecoder = JdkSecretKeyDecoder<AES.Key.Format, _>("AES", keyWrapper)
 
     override fun keyDecoder(): KeyDecoder<AES.Key.Format, AES.GCM.Key> = keyDecoder
@@ -36,35 +29,52 @@ internal class JdkAesGcm(
     }
 }
 
-private const val ivSizeBytes = 12 // bytes for GCM
-
-private class AesGcmCipher(
+private class JdkAesGcmKey(
     private val state: JdkCryptographyState,
     private val key: JSecretKey,
-    private val tagSize: BinarySize,
-) : AES.IvAuthenticatedCipher {
+) : AES.GCM.Key, JdkEncodableKey<AES.Key.Format>(key) {
+    override fun cipher(tagSize: BinarySize): AES.IvAuthenticatedCipher = JdkAesGcmCipher(state, key, tagSize.inBits)
+
+    override fun encodeToByteArrayBlocking(format: AES.Key.Format): ByteArray = when (format) {
+        AES.Key.Format.JWK -> error("$format is not supported")
+        AES.Key.Format.RAW -> encodeToRaw()
+    }
+}
+
+private class JdkAesGcmCipher(
+    private val state: JdkCryptographyState,
+    private val key: JSecretKey,
+    private val tagSizeBits: Int,
+) : BaseAesIvAuthenticatedCipher {
+    private val ivSize: Int get() = 12
     private val cipher = state.cipher("AES/GCM/NoPadding")
 
-    override fun encryptBlocking(plaintext: ByteArray, associatedData: ByteArray?): ByteArray {
-        val iv = ByteArray(ivSizeBytes).also(state.secureRandom::nextBytes)
-        return iv + encryptWithIvBlocking(iv, plaintext, associatedData)
+    override fun createEncryptFunction(associatedData: ByteArray?): CipherFunction {
+        val iv = ByteArray(ivSize).also(state.secureRandom::nextBytes)
+        return BaseAesImplicitIvEncryptFunction(iv, createEncryptFunctionWithIv(iv, associatedData))
     }
 
-    override fun encryptWithIvBlocking(iv: ByteArray, plaintext: ByteArray, associatedData: ByteArray?): ByteArray = cipher.use { cipher ->
-        cipher.init(JCipher.ENCRYPT_MODE, key, GCMParameterSpec(tagSize.inBits, iv), state.secureRandom)
-        associatedData?.let(cipher::updateAAD)
-        cipher.doFinal(plaintext)
+    override fun createDecryptFunction(associatedData: ByteArray?): CipherFunction {
+        return BaseAesImplicitIvDecryptFunction(ivSize) { iv, startIndex ->
+            createDecryptFunctionWithIv(iv, startIndex, associatedData)
+        }
     }
 
-    override fun decryptBlocking(ciphertext: ByteArray, associatedData: ByteArray?): ByteArray = cipher.use { cipher ->
-        cipher.init(JCipher.DECRYPT_MODE, key, GCMParameterSpec(tagSize.inBits, ciphertext, 0, ivSizeBytes), state.secureRandom)
-        associatedData?.let(cipher::updateAAD)
-        cipher.doFinal(ciphertext, ivSizeBytes, ciphertext.size - ivSizeBytes)
+    override fun createEncryptFunctionWithIv(iv: ByteArray, associatedData: ByteArray?): CipherFunction {
+        return JdkCipherFunction(cipher.borrowResource {
+            init(JCipher.ENCRYPT_MODE, key, GCMParameterSpec(tagSizeBits, iv), state.secureRandom)
+            associatedData?.let(this::updateAAD)
+        })
     }
 
-    override fun decryptWithIvBlocking(iv: ByteArray, ciphertext: ByteArray, associatedData: ByteArray?): ByteArray = cipher.use { cipher ->
-        cipher.init(JCipher.DECRYPT_MODE, key, GCMParameterSpec(tagSize.inBits, iv), state.secureRandom)
-        associatedData?.let(cipher::updateAAD)
-        cipher.doFinal(ciphertext)
+    private fun createDecryptFunctionWithIv(iv: ByteArray, startIndex: Int, associatedData: ByteArray?): CipherFunction {
+        return JdkCipherFunction(cipher.borrowResource {
+            init(JCipher.DECRYPT_MODE, key, GCMParameterSpec(tagSizeBits, iv, startIndex, ivSize), state.secureRandom)
+            associatedData?.let(this::updateAAD)
+        })
+    }
+
+    override fun createDecryptFunctionWithIv(iv: ByteArray, associatedData: ByteArray?): CipherFunction {
+        return createDecryptFunctionWithIv(iv, 0, associatedData)
     }
 }
