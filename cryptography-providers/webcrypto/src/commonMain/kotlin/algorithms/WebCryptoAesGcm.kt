@@ -9,6 +9,7 @@ import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.providers.webcrypto.internal.*
 import dev.whyoleg.cryptography.providers.webcrypto.materials.*
 import dev.whyoleg.cryptography.random.*
+import kotlinx.io.*
 
 internal object WebCryptoAesGcm : WebCryptoAes<AES.GCM.Key>(
     algorithmName = "AES-GCM",
@@ -69,4 +70,14 @@ private class AesGcmCipher(
 
     override fun decryptBlocking(ciphertext: ByteArray, associatedData: ByteArray?): ByteArray = nonBlocking()
     override fun encryptBlocking(plaintext: ByteArray, associatedData: ByteArray?): ByteArray = nonBlocking()
+
+    override fun decryptingSource(ciphertext: RawSource, associatedData: ByteArray?): RawSource = nonBlocking()
+    override fun decryptingSink(plaintext: RawSink, associatedData: ByteArray?): RawSink = nonBlocking()
+    override fun encryptingSource(plaintext: RawSource, associatedData: ByteArray?): RawSource = nonBlocking()
+    override fun encryptingSink(ciphertext: RawSink, associatedData: ByteArray?): RawSink = nonBlocking()
+
+    override fun encryptingSourceWithIv(iv: ByteArray, plaintext: RawSource, associatedData: ByteArray?): RawSource = nonBlocking()
+    override fun encryptingSinkWithIv(iv: ByteArray, ciphertext: RawSink, associatedData: ByteArray?): RawSink = nonBlocking()
+    override fun decryptingSourceWithIv(iv: ByteArray, plaintext: RawSource, associatedData: ByteArray?): RawSource = nonBlocking()
+    override fun decryptingSinkWithIv(iv: ByteArray, ciphertext: RawSink, associatedData: ByteArray?): RawSink = nonBlocking()
 }

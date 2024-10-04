@@ -8,6 +8,7 @@ import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.webcrypto.internal.*
 import dev.whyoleg.cryptography.providers.webcrypto.materials.*
+import kotlinx.io.*
 
 internal object WebCryptoRsaOaep : WebCryptoRsa<RSA.OAEP.PublicKey, RSA.OAEP.PrivateKey, RSA.OAEP.KeyPair>(
     algorithmName = "RSA-OAEP",
@@ -40,6 +41,9 @@ private class RsaOaepEncryptor(private val key: CryptoKey) : AuthenticatedEncryp
     }
 
     override fun encryptBlocking(plaintext: ByteArray, associatedData: ByteArray?): ByteArray = nonBlocking()
+
+    override fun encryptingSource(plaintext: RawSource, associatedData: ByteArray?): RawSource = nonBlocking()
+    override fun encryptingSink(ciphertext: RawSink, associatedData: ByteArray?): RawSink = nonBlocking()
 }
 
 private class RsaOaepDecryptor(private val key: CryptoKey) : AuthenticatedDecryptor {
@@ -53,4 +57,7 @@ private class RsaOaepDecryptor(private val key: CryptoKey) : AuthenticatedDecryp
     }
 
     override fun decryptBlocking(ciphertext: ByteArray, associatedData: ByteArray?): ByteArray = nonBlocking()
+
+    override fun decryptingSource(ciphertext: RawSource, associatedData: ByteArray?): RawSource = nonBlocking()
+    override fun decryptingSink(plaintext: RawSink, associatedData: ByteArray?): RawSink = nonBlocking()
 }

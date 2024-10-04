@@ -8,6 +8,7 @@ import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.providers.webcrypto.internal.*
 import dev.whyoleg.cryptography.providers.webcrypto.materials.*
 import dev.whyoleg.cryptography.random.*
+import kotlinx.io.*
 
 internal object WebCryptoAesCbc : WebCryptoAes<AES.CBC.Key>(
     algorithmName = "AES-CBC",
@@ -62,4 +63,14 @@ private class AesCbcCipher(private val key: CryptoKey) : AES.IvCipher {
     override fun encryptBlocking(plaintext: ByteArray): ByteArray = nonBlocking()
     override fun decryptWithIvBlocking(iv: ByteArray, ciphertext: ByteArray): ByteArray = nonBlocking()
     override fun encryptWithIvBlocking(iv: ByteArray, plaintext: ByteArray): ByteArray = nonBlocking()
+
+    override fun decryptingSource(ciphertext: RawSource): RawSource = nonBlocking()
+    override fun decryptingSink(plaintext: RawSink): RawSink = nonBlocking()
+    override fun encryptingSource(plaintext: RawSource): RawSource = nonBlocking()
+    override fun encryptingSink(ciphertext: RawSink): RawSink = nonBlocking()
+
+    override fun encryptingSourceWithIv(iv: ByteArray, plaintext: RawSource): RawSource = nonBlocking()
+    override fun encryptingSinkWithIv(iv: ByteArray, ciphertext: RawSink): RawSink = nonBlocking()
+    override fun decryptingSourceWithIv(iv: ByteArray, ciphertext: RawSource): RawSource = nonBlocking()
+    override fun decryptingSinkWithIv(iv: ByteArray, plaintext: RawSink): RawSink = nonBlocking()
 }
