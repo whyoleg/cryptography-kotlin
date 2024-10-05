@@ -8,6 +8,7 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.apple.internal.*
+import dev.whyoleg.cryptography.providers.base.operations.*
 import platform.Security.*
 
 internal object SecRsaRaw : SecRsa<RSA.RAW.PublicKey, RSA.RAW.PrivateKey, RSA.RAW.KeyPair>(), RSA.RAW {
@@ -35,14 +36,14 @@ internal object SecRsaRaw : SecRsa<RSA.RAW.PublicKey, RSA.RAW.PrivateKey, RSA.RA
     }
 }
 
-private class RsaRawEncryptor(private val publicKey: SecKeyRef) : Encryptor {
-    override fun encryptBlocking(plaintext: ByteArray): ByteArray {
-        return secEncrypt(publicKey, kSecKeyAlgorithmRSAEncryptionRaw, plaintext)
+private class RsaRawEncryptor(private val publicKey: SecKeyRef) : BaseEncryptor {
+    override fun createEncryptFunction(): CipherFunction {
+        return SecCipherFunction(publicKey, kSecKeyAlgorithmRSAEncryptionRaw, ::SecKeyCreateEncryptedData)
     }
 }
 
-private class RsaRawDecryptor(private val privateKey: SecKeyRef) : Decryptor {
-    override fun decryptBlocking(ciphertext: ByteArray): ByteArray {
-        return secDecrypt(privateKey, kSecKeyAlgorithmRSAEncryptionRaw, ciphertext)
+private class RsaRawDecryptor(private val privateKey: SecKeyRef) : BaseDecryptor {
+    override fun createDecryptFunction(): CipherFunction {
+        return SecCipherFunction(privateKey, kSecKeyAlgorithmRSAEncryptionRaw, ::SecKeyCreateDecryptedData)
     }
 }

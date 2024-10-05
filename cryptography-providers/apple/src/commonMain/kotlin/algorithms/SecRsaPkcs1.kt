@@ -8,6 +8,7 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.apple.internal.*
+import dev.whyoleg.cryptography.providers.base.operations.*
 import platform.Security.*
 
 internal object SecRsaPkcs1 : SecRsa<RSA.PKCS1.PublicKey, RSA.PKCS1.PrivateKey, RSA.PKCS1.KeyPair>(), RSA.PKCS1 {
@@ -43,14 +44,14 @@ internal object SecRsaPkcs1 : SecRsa<RSA.PKCS1.PublicKey, RSA.PKCS1.PrivateKey, 
     }
 }
 
-private class RsaPkcs1Encryptor(private val publicKey: SecKeyRef) : Encryptor {
-    override fun encryptBlocking(plaintext: ByteArray): ByteArray {
-        return secEncrypt(publicKey, kSecKeyAlgorithmRSAEncryptionPKCS1, plaintext)
+private class RsaPkcs1Encryptor(private val publicKey: SecKeyRef) : BaseEncryptor {
+    override fun createEncryptFunction(): CipherFunction {
+        return SecCipherFunction(publicKey, kSecKeyAlgorithmRSAEncryptionPKCS1, ::SecKeyCreateEncryptedData)
     }
 }
 
-private class RsaPkcs1Decryptor(private val privateKey: SecKeyRef) : Decryptor {
-    override fun decryptBlocking(ciphertext: ByteArray): ByteArray {
-        return secDecrypt(privateKey, kSecKeyAlgorithmRSAEncryptionPKCS1, ciphertext)
+private class RsaPkcs1Decryptor(private val privateKey: SecKeyRef) : BaseDecryptor {
+    override fun createDecryptFunction(): CipherFunction {
+        return SecCipherFunction(privateKey, kSecKeyAlgorithmRSAEncryptionPKCS1, ::SecKeyCreateDecryptedData)
     }
 }

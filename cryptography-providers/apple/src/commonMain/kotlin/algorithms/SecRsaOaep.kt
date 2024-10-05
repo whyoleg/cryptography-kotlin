@@ -8,6 +8,7 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.apple.internal.*
+import dev.whyoleg.cryptography.providers.base.operations.*
 import platform.Security.*
 
 internal object SecRsaOaep : SecRsa<RSA.OAEP.PublicKey, RSA.OAEP.PrivateKey, RSA.OAEP.KeyPair>(), RSA.OAEP {
@@ -41,18 +42,18 @@ internal object SecRsaOaep : SecRsa<RSA.OAEP.PublicKey, RSA.OAEP.PrivateKey, RSA
     }
 }
 
-private class RsaOaepEncryptor(private val publicKey: SecKeyRef, private val algorithm: SecKeyAlgorithm?) : AuthenticatedEncryptor {
-    override fun encryptBlocking(plaintext: ByteArray, associatedData: ByteArray?): ByteArray {
+private class RsaOaepEncryptor(private val publicKey: SecKeyRef, private val algorithm: SecKeyAlgorithm?) : BaseAuthenticatedEncryptor {
+    override fun createEncryptFunction(associatedData: ByteArray?): CipherFunction {
         require(associatedData == null) { "Associated data inclusion is not supported" }
 
-        return secEncrypt(publicKey, algorithm, plaintext)
+        return SecCipherFunction(publicKey, algorithm, ::SecKeyCreateEncryptedData)
     }
 }
 
-private class RsaOaepDecryptor(private val privateKey: SecKeyRef, private val algorithm: SecKeyAlgorithm?) : AuthenticatedDecryptor {
-    override fun decryptBlocking(ciphertext: ByteArray, associatedData: ByteArray?): ByteArray {
+private class RsaOaepDecryptor(private val privateKey: SecKeyRef, private val algorithm: SecKeyAlgorithm?) : BaseAuthenticatedDecryptor {
+    override fun createDecryptFunction(associatedData: ByteArray?): CipherFunction {
         require(associatedData == null) { "Associated data inclusion is not supported" }
 
-        return secDecrypt(privateKey, algorithm, ciphertext)
+        return SecCipherFunction(privateKey, algorithm, ::SecKeyCreateDecryptedData)
     }
 }
