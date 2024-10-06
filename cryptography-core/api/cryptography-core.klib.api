@@ -685,6 +685,7 @@ abstract interface dev.whyoleg.cryptography.operations/SignatureVerifier { // de
 }
 
 abstract interface dev.whyoleg.cryptography.operations/UpdateFunction : kotlin/AutoCloseable { // dev.whyoleg.cryptography.operations/UpdateFunction|null[0]
+    abstract fun reset() // dev.whyoleg.cryptography.operations/UpdateFunction.reset|reset(){}[0]
     abstract fun update(kotlin/ByteArray, kotlin/Int = ..., kotlin/Int = ...) // dev.whyoleg.cryptography.operations/UpdateFunction.update|update(kotlin.ByteArray;kotlin.Int;kotlin.Int){}[0]
     open fun update(kotlinx.io.bytestring/ByteString, kotlin/Int = ..., kotlin/Int = ...) // dev.whyoleg.cryptography.operations/UpdateFunction.update|update(kotlinx.io.bytestring.ByteString;kotlin.Int;kotlin.Int){}[0]
     open fun update(kotlinx.io/RawSource) // dev.whyoleg.cryptography.operations/UpdateFunction.update|update(kotlinx.io.RawSource){}[0]

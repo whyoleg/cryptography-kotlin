@@ -70,9 +70,14 @@ private class SecVerifyFunction(
                     else   -> error.value.releaseBridgeAs<NSError>()?.description ?: ""
                 }
             }
+        }.also {
+            reset()
         }
-    }.also {
-        close()
+    }
+
+    override fun reset() {
+        ensureNotClosed()
+        accumulator = EmptyByteArray
     }
 
     override fun close() {
@@ -123,9 +128,14 @@ private class SecSignFunction(
             }
 
             signature.toByteArray()
+        }.also {
+            reset()
         }
-    }.also {
-        close()
+    }
+
+    override fun reset() {
+        ensureNotClosed()
+        accumulator = EmptyByteArray
     }
 
     override fun close() {

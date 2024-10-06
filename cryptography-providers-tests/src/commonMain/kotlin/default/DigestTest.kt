@@ -92,6 +92,33 @@ abstract class DigestTest(provider: CryptographyProvider) : ProviderTest(provide
     }
 
     @Test
+    fun testFunctionReuse() = testAlgorithm(SHA256) {
+        if (!supportsFunctions()) return@testAlgorithm
+
+        val hasher = algorithm.hasher()
+        val bytes1 = ByteString(CryptographyRandom.nextBytes(10000))
+        val bytes2 = ByteString(CryptographyRandom.nextBytes(10000))
+
+        val digest1 = hasher.hash(bytes1)
+        val digest2 = hasher.hash(bytes2)
+        hasher.createHashFunction().use { function ->
+            function.update(bytes1)
+            assertContentEquals(digest1, function.hash())
+
+            function.update(bytes2)
+            assertContentEquals(digest2, function.hash())
+
+            // update and then discard
+            function.update(bytes1)
+            function.update(bytes1)
+            function.reset()
+            // update after reset
+            function.update(bytes1)
+            assertContentEquals(digest1, function.hash())
+        }
+    }
+
+    @Test
     fun testFunctionSource() = testAlgorithm(SHA256) {
         val hasher = algorithm.hasher()
 

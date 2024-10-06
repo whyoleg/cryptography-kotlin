@@ -16,7 +16,7 @@ internal class Openssl3Digest(
     private val md: CPointer<EVP_MD>,
     override val id: CryptographyAlgorithmId<Digest>,
 ) : Hasher, Digest, SafeCloseable(SafeCloseAction(md, ::EVP_MD_free)) {
-    private val digestSize = EVP_MD_get_size(md)
+    private val digestSize get() = EVP_MD_get_size(md)
 
     constructor(
         algorithm: String,
@@ -25,16 +25,17 @@ internal class Openssl3Digest(
 
     override fun hasher(): Hasher = this
     override fun createHashFunction(): HashFunction {
-        val context = checkError(EVP_MD_CTX_new())
-        // TODO: error handle
-        checkError(EVP_DigestInit(context, md))
-        return Openssl3HashFunction(Resource(context, ::EVP_MD_CTX_free))
+        return Openssl3HashFunction(Resource(checkError(EVP_MD_CTX_new()), ::EVP_MD_CTX_free))
     }
 
     // inner class to have a reference to class and so `md` cleaner - so that `md` can be freed at the right time
     private inner class Openssl3HashFunction(
         private val context: Resource<CPointer<EVP_MD_CTX>>,
     ) : HashFunction, SafeCloseable(SafeCloseAction(context, AutoCloseable::close)) {
+        init {
+            reset()
+        }
+
         @OptIn(UnsafeNumber::class)
         override fun update(source: ByteArray, startIndex: Int, endIndex: Int) {
             checkBounds(source.size, startIndex, endIndex)
@@ -52,7 +53,7 @@ internal class Openssl3Digest(
             destination.usePinned {
                 checkError(EVP_DigestFinal(context, it.safeAddressOf(destinationOffset).reinterpret(), null))
             }
-            close()
+            reset()
             return digestSize
         }
 
@@ -60,6 +61,10 @@ internal class Openssl3Digest(
             val output = ByteArray(digestSize)
             hashIntoByteArray(output)
             return output
+        }
+
+        override fun reset() {
+            checkError(EVP_DigestInit(context.access(), md))
         }
     }
 }

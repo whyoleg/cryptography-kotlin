@@ -83,25 +83,26 @@ private class HmacSignature(
     private val key: ByteArray,
     private val digestSize: Int,
 ) : SignatureGenerator, SignatureVerifier {
-
-    @OptIn(UnsafeNumber::class)
-    private fun createFunction(): HmacFunction {
-        val context = nativeHeap.alloc<CCHmacContext>().ptr
-        // TODO: error handle?
-        key.usePinned {
-            CCHmacInit(context, hmacAlgorithm, it.safeAddressOf(0), key.size.convert())
-        }
-        return HmacFunction(digestSize, Resource(context, nativeHeap::free))
-    }
+    private fun createFunction() = HmacFunction(
+        hmacAlgorithm = hmacAlgorithm,
+        key = key,
+        digestSize = digestSize,
+        context = Resource(nativeHeap.alloc<CCHmacContext>().ptr, nativeHeap::free)
+    )
 
     override fun createSignFunction(): SignFunction = createFunction()
     override fun createVerifyFunction(): VerifyFunction = createFunction()
 }
 
 private class HmacFunction(
+    private val hmacAlgorithm: CCHmacAlgorithm,
+    private val key: ByteArray,
     private val digestSize: Int,
     private val context: Resource<CPointer<CCHmacContext>>,
 ) : SignFunction, VerifyFunction, SafeCloseable(SafeCloseAction(context, AutoCloseable::close)) {
+    init {
+        reset()
+    }
 
     @OptIn(UnsafeNumber::class)
     override fun update(source: ByteArray, startIndex: Int, endIndex: Int) {
@@ -120,7 +121,7 @@ private class HmacFunction(
         destination.usePinned {
             CCHmacFinal(context, it.safeAddressOf(destinationOffset))
         }
-        close()
+        reset()
         return digestSize
     }
 
@@ -137,5 +138,13 @@ private class HmacFunction(
 
     override fun verify(signature: ByteArray, startIndex: Int, endIndex: Int) {
         check(tryVerify(signature, startIndex, endIndex)) { "Invalid signature" }
+    }
+
+    @OptIn(UnsafeNumber::class)
+    override fun reset() {
+        val context = context.access()
+        key.usePinned {
+            CCHmacInit(context, hmacAlgorithm, it.safeAddressOf(0), key.size.convert())
+        }
     }
 }

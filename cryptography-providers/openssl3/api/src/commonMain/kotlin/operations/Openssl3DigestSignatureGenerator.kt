@@ -22,27 +22,17 @@ internal abstract class Openssl3DigestSignatureGenerator(
     protected abstract fun MemScope.createParams(): CValuesRef<OSSL_PARAM>?
 
     override fun createSignFunction(): SignFunction {
-        val context = checkError(EVP_MD_CTX_new())
-        memScoped {
-            checkError(
-                EVP_DigestSignInit_ex(
-                    ctx = context,
-                    pctx = null,
-                    mdname = hashAlgorithm,
-                    libctx = null,
-                    props = null,
-                    pkey = privateKey,
-                    params = createParams()
-                )
-            )
-        }
-        return Openssl3DigestSignFunction(Resource(context, ::EVP_MD_CTX_free))
+        return Openssl3DigestSignFunction(Resource(checkError(EVP_MD_CTX_new()), ::EVP_MD_CTX_free))
     }
 
     // inner class to have a reference to class with cleaner
     private inner class Openssl3DigestSignFunction(
         private val context: Resource<CPointer<EVP_MD_CTX>>,
     ) : SignFunction, SafeCloseable(SafeCloseAction(context, AutoCloseable::close)) {
+        init {
+            reset()
+        }
+
         @OptIn(UnsafeNumber::class)
         override fun update(source: ByteArray, startIndex: Int, endIndex: Int) {
             checkBounds(source.size, startIndex, endIndex)
@@ -68,6 +58,21 @@ internal abstract class Openssl3DigestSignatureGenerator(
             val signature = ByteArray(siglen.value.convert())
             checkError(EVP_DigestSignFinal(context, signature.refToU(0), siglen.ptr))
             signature.ensureSizeExactly(siglen.value.convert())
-        }.also { close() }
+        }
+
+        override fun reset(): Unit = memScoped {
+            val context = context.access()
+            checkError(
+                EVP_DigestSignInit_ex(
+                    ctx = context,
+                    pctx = null,
+                    mdname = hashAlgorithm,
+                    libctx = null,
+                    props = null,
+                    pkey = privateKey,
+                    params = createParams()
+                )
+            )
+        }
     }
 }

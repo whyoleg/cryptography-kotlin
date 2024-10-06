@@ -866,6 +866,7 @@ public abstract interface class dev/whyoleg/cryptography/operations/SignatureVer
 }
 
 public abstract interface class dev/whyoleg/cryptography/operations/UpdateFunction : java/lang/AutoCloseable {
+	public abstract fun reset ()V
 	public fun update (Lkotlinx/io/RawSource;)V
 	public fun update (Lkotlinx/io/bytestring/ByteString;II)V
 	public abstract fun update ([BII)V

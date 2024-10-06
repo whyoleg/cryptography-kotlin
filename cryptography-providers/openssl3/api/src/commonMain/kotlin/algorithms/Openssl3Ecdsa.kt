@@ -190,6 +190,10 @@ private class EcdsaRawSignatureGenerator(
             }
         }
 
+        override fun reset() {
+            derSignFunction.reset()
+        }
+
         override fun close() {
             derSignFunction.close()
         }
@@ -243,6 +247,10 @@ private class EcdsaRawSignatureVerifier(
 
         override fun verify(signature: ByteArray, startIndex: Int, endIndex: Int) {
             check(tryVerify(signature, startIndex, endIndex)) { "Invalid signature" }
+        }
+
+        override fun reset() {
+            derVerifyFunction.reset()
         }
 
         override fun close() {

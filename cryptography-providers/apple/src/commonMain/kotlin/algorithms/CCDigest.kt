@@ -16,21 +16,20 @@ internal class CCDigest<CTX : CPointed>(
     override val id: CryptographyAlgorithmId<Digest>,
 ) : Hasher, Digest {
     override fun hasher(): Hasher = this
-    override fun createHashFunction(): HashFunction {
-        val context = hashAlgorithm.alloc()
-        // TODO: error handle
-        hashAlgorithm.ccInit(context)
-        return CCHashFunction(
-            algorithm = hashAlgorithm,
-            context = Resource(context, nativeHeap::free)
-        )
-    }
+    override fun createHashFunction(): HashFunction = CCHashFunction(
+        algorithm = hashAlgorithm,
+        context = Resource(hashAlgorithm.alloc(), nativeHeap::free)
+    )
 }
 
 private class CCHashFunction<CTX : CPointed>(
     private val algorithm: CCHashAlgorithm<CTX>,
     private val context: Resource<CPointer<CTX>>,
 ) : HashFunction, SafeCloseable(SafeCloseAction(context, AutoCloseable::close)) {
+    init {
+        reset()
+    }
+
     override fun update(source: ByteArray, startIndex: Int, endIndex: Int) {
         checkBounds(source.size, startIndex, endIndex)
 
@@ -47,7 +46,7 @@ private class CCHashFunction<CTX : CPointed>(
         destination.usePinned {
             check(algorithm.ccFinal(context, it.safeAddressOf(destinationOffset).reinterpret()) > 0)
         }
-        close()
+        reset()
         return algorithm.digestSize
     }
 
@@ -55,5 +54,10 @@ private class CCHashFunction<CTX : CPointed>(
         val output = ByteArray(algorithm.digestSize)
         hashIntoByteArray(output)
         return output
+    }
+
+    override fun reset() {
+        val context = context.access()
+        check(algorithm.ccInit(context) > 0)
     }
 }

@@ -11,6 +11,8 @@ import kotlinx.io.unsafe.*
 
 @SubclassOptInRequired(CryptographyProviderApi::class)
 public interface UpdateFunction : AutoCloseable {
+    public fun reset()
+
     public fun update(source: ByteArray, startIndex: Int = 0, endIndex: Int = source.size)
     public fun update(source: ByteString, startIndex: Int = 0, endIndex: Int = source.size) {
         update(source.asByteArray(), startIndex, endIndex)

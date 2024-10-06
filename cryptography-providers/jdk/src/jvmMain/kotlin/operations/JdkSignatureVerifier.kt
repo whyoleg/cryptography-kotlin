@@ -16,14 +16,18 @@ internal class JdkSignatureVerifier(
     private val parameters: AlgorithmParameterSpec?,
 ) : SignatureVerifier {
     private val signature = state.signature(algorithm)
-    override fun createVerifyFunction(): VerifyFunction = JdkVerifyFunction(signature.borrowResource().also {
-        val jsignature = it.access()
-        jsignature.initVerify(key)
-        parameters?.let(jsignature::setParameter)
-    })
+    override fun createVerifyFunction(): VerifyFunction = JdkVerifyFunction(key, parameters, signature.borrowResource())
 }
 
-private class JdkVerifyFunction(private val jsignature: Pooled.Resource<JSignature>) : VerifyFunction {
+private class JdkVerifyFunction(
+    private val key: JPublicKey,
+    private val parameters: AlgorithmParameterSpec?,
+    private val jsignature: Pooled.Resource<JSignature>,
+) : VerifyFunction {
+    init {
+        reset()
+    }
+
     override fun update(source: ByteArray, startIndex: Int, endIndex: Int) {
         checkBounds(source.size, startIndex, endIndex)
         val jsignature = jsignature.access()
@@ -34,7 +38,13 @@ private class JdkVerifyFunction(private val jsignature: Pooled.Resource<JSignatu
         checkBounds(signature.size, startIndex, endIndex)
         val jsignature = jsignature.access()
 
-        return jsignature.verify(signature, startIndex, endIndex - startIndex).also { close() }
+        return jsignature.verify(signature, startIndex, endIndex - startIndex)
+    }
+
+    override fun reset() {
+        val jsignature = jsignature.access()
+        jsignature.initVerify(key)
+        parameters?.let(jsignature::setParameter)
     }
 
     override fun verify(signature: ByteArray, startIndex: Int, endIndex: Int) {

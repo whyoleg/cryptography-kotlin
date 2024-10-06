@@ -15,15 +15,15 @@ internal class JdkMacSignature(
 ) : SignatureGenerator, SignatureVerifier {
     private val mac = state.mac(algorithm)
 
-    private fun createFunction() = JdkMacFunction(mac.borrowResource().also {
-        it.access().init(key)
-    })
+    private fun createFunction() = JdkMacFunction(mac.borrowResource { init(key) })
 
     override fun createSignFunction(): SignFunction = createFunction()
     override fun createVerifyFunction(): VerifyFunction = createFunction()
 }
 
-private class JdkMacFunction(private val mac: Pooled.Resource<JMac>) : SignFunction, VerifyFunction {
+private class JdkMacFunction(
+    private val mac: Pooled.Resource<JMac>,
+) : SignFunction, VerifyFunction {
     override fun update(source: ByteArray, startIndex: Int, endIndex: Int) {
         checkBounds(source.size, startIndex, endIndex)
         val mac = mac.access()
@@ -35,13 +35,13 @@ private class JdkMacFunction(private val mac: Pooled.Resource<JMac>) : SignFunct
 
         checkBounds(destination.size, destinationOffset, destinationOffset + mac.macLength)
 
-        mac.doFinal(destination, destinationOffset).also { close() }
+        mac.doFinal(destination, destinationOffset)
         return mac.macLength
     }
 
     override fun signToByteArray(): ByteArray {
         val mac = mac.access()
-        return mac.doFinal().also { close() }
+        return mac.doFinal()
     }
 
     override fun tryVerify(signature: ByteArray, startIndex: Int, endIndex: Int): Boolean {
@@ -51,6 +51,10 @@ private class JdkMacFunction(private val mac: Pooled.Resource<JMac>) : SignFunct
 
     override fun verify(signature: ByteArray, startIndex: Int, endIndex: Int) {
         check(tryVerify(signature, startIndex, endIndex)) { "Invalid signature" }
+    }
+
+    override fun reset() {
+        mac.access().reset()
     }
 
     override fun close() {

@@ -16,14 +16,19 @@ internal class JdkSignatureGenerator(
     private val parameters: AlgorithmParameterSpec?,
 ) : SignatureGenerator {
     private val signature = state.signature(algorithm)
-    override fun createSignFunction(): SignFunction = JdkSignFunction(signature.borrowResource().also {
-        val jsignature = it.access()
-        jsignature.initSign(key, state.secureRandom)
-        parameters?.let(jsignature::setParameter)
-    })
+    override fun createSignFunction(): SignFunction = JdkSignFunction(state, key, parameters, signature.borrowResource())
 }
 
-private class JdkSignFunction(private val jsignature: Pooled.Resource<JSignature>) : SignFunction {
+private class JdkSignFunction(
+    private val state: JdkCryptographyState,
+    private val key: JPrivateKey,
+    private val parameters: AlgorithmParameterSpec?,
+    private val jsignature: Pooled.Resource<JSignature>,
+) : SignFunction {
+    init {
+        reset()
+    }
+
     override fun update(source: ByteArray, startIndex: Int, endIndex: Int) {
         checkBounds(source.size, startIndex, endIndex)
         val jsignature = jsignature.access()
@@ -39,7 +44,13 @@ private class JdkSignFunction(private val jsignature: Pooled.Resource<JSignature
 
     override fun signToByteArray(): ByteArray {
         val jsignature = jsignature.access()
-        return jsignature.sign().also { close() }
+        return jsignature.sign()
+    }
+
+    override fun reset() {
+        val jsignature = jsignature.access()
+        jsignature.initSign(key, state.secureRandom)
+        parameters?.let(jsignature::setParameter)
     }
 
     override fun close() {
