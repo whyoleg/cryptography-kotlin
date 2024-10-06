@@ -6,10 +6,11 @@ package dev.whyoleg.cryptography.providers.openssl3.algorithms
 
 import dev.whyoleg.cryptography.algorithms.RSA
 import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.providers.base.operations.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
+import dev.whyoleg.cryptography.providers.openssl3.operations.*
 import kotlinx.cinterop.*
-import platform.posix.*
 import kotlin.experimental.*
 
 internal object Openssl3RsaOaep : Openssl3Rsa<RSA.OAEP.PublicKey, RSA.OAEP.PrivateKey, RSA.OAEP.KeyPair>(), RSA.OAEP {
@@ -49,48 +50,18 @@ internal object Openssl3RsaOaep : Openssl3Rsa<RSA.OAEP.PublicKey, RSA.OAEP.Priva
 private class RsaOaepEncryptor(
     private val publicKey: CPointer<EVP_PKEY>,
     private val hashAlgorithm: String,
-) : AuthenticatedEncryptor {
+) : BaseAuthenticatedEncryptor {
     @OptIn(ExperimentalNativeApi::class)
     private val cleaner = publicKey.upRef().cleaner()
 
     @OptIn(UnsafeNumber::class)
-    override fun encryptBlocking(plaintext: ByteArray, associatedData: ByteArray?): ByteArray = memScoped {
-        val context = checkError(EVP_PKEY_CTX_new_from_pkey(null, publicKey, null))
-        try {
-            checkError(
-                EVP_PKEY_encrypt_init_ex(
-                    ctx = context,
-                    params = OSSL_PARAM_arrayNotNull(
-                        OSSL_PARAM_construct_utf8_string("pad-mode".cstr.ptr, "oaep".cstr.ptr, 0.convert()),
-                        OSSL_PARAM_construct_utf8_string("digest".cstr.ptr, hashAlgorithm.cstr.ptr, 0.convert()),
-                        associatedData?.let { OSSL_PARAM_construct_octet_string("oaep-label".cstr.ptr, it.safeRefTo(0), it.size.convert()) }
-                    )
-                )
+    override fun createEncryptFunction(associatedData: ByteArray?): CipherFunction {
+        return EvpPKeyCipherFunction(publicKey, encrypt = true) {
+            OSSL_PARAM_arrayNotNull(
+                OSSL_PARAM_construct_utf8_string("pad-mode".cstr.ptr, "oaep".cstr.ptr, 0.convert()),
+                OSSL_PARAM_construct_utf8_string("digest".cstr.ptr, hashAlgorithm.cstr.ptr, 0.convert()),
+                associatedData?.let { OSSL_PARAM_construct_octet_string("oaep-label".cstr.ptr, it.safeRefTo(0), it.size.convert()) }
             )
-
-            val outlen = alloc<size_tVar>()
-            checkError(
-                EVP_PKEY_encrypt(
-                    ctx = context,
-                    out = null,
-                    outlen = outlen.ptr,
-                    `in` = plaintext.safeRefToU(0),
-                    inlen = plaintext.size.convert()
-                )
-            )
-            val ciphertext = ByteArray(outlen.value.convert())
-            checkError(
-                EVP_PKEY_encrypt(
-                    ctx = context,
-                    out = ciphertext.refToU(0),
-                    outlen = outlen.ptr,
-                    `in` = plaintext.safeRefToU(0),
-                    inlen = plaintext.size.convert()
-                )
-            )
-            ciphertext.ensureSizeExactly(outlen.value.convert())
-        } finally {
-            EVP_PKEY_CTX_free(context)
         }
     }
 }
@@ -98,48 +69,18 @@ private class RsaOaepEncryptor(
 private class RsaOaepDecryptor(
     private val privateKey: CPointer<EVP_PKEY>,
     private val hashAlgorithm: String,
-) : AuthenticatedDecryptor {
+) : BaseAuthenticatedDecryptor {
     @OptIn(ExperimentalNativeApi::class)
     private val cleaner = privateKey.upRef().cleaner()
 
     @OptIn(UnsafeNumber::class)
-    override fun decryptBlocking(ciphertext: ByteArray, associatedData: ByteArray?): ByteArray = memScoped {
-        val context = checkError(EVP_PKEY_CTX_new_from_pkey(null, privateKey, null))
-        try {
-            checkError(
-                EVP_PKEY_decrypt_init_ex(
-                    ctx = context,
-                    params = OSSL_PARAM_arrayNotNull(
-                        OSSL_PARAM_construct_utf8_string("pad-mode".cstr.ptr, "oaep".cstr.ptr, 0.convert()),
-                        OSSL_PARAM_construct_utf8_string("digest".cstr.ptr, hashAlgorithm.cstr.ptr, 0.convert()),
-                        associatedData?.let { OSSL_PARAM_construct_octet_string("oaep-label".cstr.ptr, it.safeRefTo(0), it.size.convert()) }
-                    )
-                )
+    override fun createDecryptFunction(associatedData: ByteArray?): CipherFunction {
+        return EvpPKeyCipherFunction(privateKey, encrypt = false) {
+            OSSL_PARAM_arrayNotNull(
+                OSSL_PARAM_construct_utf8_string("pad-mode".cstr.ptr, "oaep".cstr.ptr, 0.convert()),
+                OSSL_PARAM_construct_utf8_string("digest".cstr.ptr, hashAlgorithm.cstr.ptr, 0.convert()),
+                associatedData?.let { OSSL_PARAM_construct_octet_string("oaep-label".cstr.ptr, it.safeRefTo(0), it.size.convert()) }
             )
-
-            val outlen = alloc<size_tVar>()
-            checkError(
-                EVP_PKEY_decrypt(
-                    ctx = context,
-                    out = null,
-                    outlen = outlen.ptr,
-                    `in` = ciphertext.safeRefToU(0),
-                    inlen = ciphertext.size.convert()
-                )
-            )
-            val plaintext = ByteArray(outlen.value.convert())
-            checkError(
-                EVP_PKEY_decrypt(
-                    ctx = context,
-                    out = plaintext.refToU(0),
-                    outlen = outlen.ptr,
-                    `in` = ciphertext.safeRefToU(0),
-                    inlen = ciphertext.size.convert()
-                )
-            )
-            plaintext.ensureSizeExactly(outlen.value.convert())
-        } finally {
-            EVP_PKEY_CTX_free(context)
         }
     }
 }

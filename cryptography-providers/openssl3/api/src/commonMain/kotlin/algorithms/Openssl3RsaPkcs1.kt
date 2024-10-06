@@ -6,11 +6,11 @@ package dev.whyoleg.cryptography.providers.openssl3.algorithms
 
 import dev.whyoleg.cryptography.algorithms.RSA
 import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.providers.base.operations.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.providers.openssl3.operations.*
 import kotlinx.cinterop.*
-import platform.posix.*
 import kotlin.experimental.*
 
 internal object Openssl3RsaPkcs1 : Openssl3Rsa<RSA.PKCS1.PublicKey, RSA.PKCS1.PrivateKey, RSA.PKCS1.KeyPair>(), RSA.PKCS1 {
@@ -69,92 +69,32 @@ private class RsaPkcs1SignatureVerifier(
 
 private class RsaPkcs1Encryptor(
     private val publicKey: CPointer<EVP_PKEY>,
-) : Encryptor {
+) : BaseEncryptor {
     @OptIn(ExperimentalNativeApi::class)
     private val cleaner = publicKey.upRef().cleaner()
 
     @OptIn(UnsafeNumber::class)
-    override fun encryptBlocking(plaintext: ByteArray): ByteArray = memScoped {
-        val context = checkError(EVP_PKEY_CTX_new_from_pkey(null, publicKey, null))
-        try {
-            checkError(
-                EVP_PKEY_encrypt_init_ex(
-                    ctx = context,
-                    params = OSSL_PARAM_arrayNotNull(
-                        OSSL_PARAM_construct_utf8_string("pad-mode".cstr.ptr, "pkcs1".cstr.ptr, 0.convert()),
-                    )
-                )
+    override fun createEncryptFunction(): CipherFunction {
+        return EvpPKeyCipherFunction(publicKey, encrypt = true) {
+            OSSL_PARAM_arrayNotNull(
+                OSSL_PARAM_construct_utf8_string("pad-mode".cstr.ptr, "pkcs1".cstr.ptr, 0.convert()),
             )
-
-            val outlen = alloc<size_tVar>()
-            checkError(
-                EVP_PKEY_encrypt(
-                    ctx = context,
-                    out = null,
-                    outlen = outlen.ptr,
-                    `in` = plaintext.safeRefToU(0),
-                    inlen = plaintext.size.convert()
-                )
-            )
-            val ciphertext = ByteArray(outlen.value.convert())
-            checkError(
-                EVP_PKEY_encrypt(
-                    ctx = context,
-                    out = ciphertext.refToU(0),
-                    outlen = outlen.ptr,
-                    `in` = plaintext.safeRefToU(0),
-                    inlen = plaintext.size.convert()
-                )
-            )
-            ciphertext.ensureSizeExactly(outlen.value.convert())
-        } finally {
-            EVP_PKEY_CTX_free(context)
         }
     }
 }
 
 private class RsaPkcs1Decryptor(
     private val privateKey: CPointer<EVP_PKEY>,
-) : Decryptor {
+) : BaseDecryptor {
     @OptIn(ExperimentalNativeApi::class)
     private val cleaner = privateKey.upRef().cleaner()
 
     @OptIn(UnsafeNumber::class)
-    override fun decryptBlocking(ciphertext: ByteArray): ByteArray = memScoped {
-        val context = checkError(EVP_PKEY_CTX_new_from_pkey(null, privateKey, null))
-        try {
-            checkError(
-                EVP_PKEY_decrypt_init_ex(
-                    ctx = context,
-                    params = OSSL_PARAM_arrayNotNull(
-                        OSSL_PARAM_construct_utf8_string("pad-mode".cstr.ptr, "pkcs1".cstr.ptr, 0.convert()),
-                    )
-                )
+    override fun createDecryptFunction(): CipherFunction {
+        return EvpPKeyCipherFunction(privateKey, encrypt = false) {
+            OSSL_PARAM_arrayNotNull(
+                OSSL_PARAM_construct_utf8_string("pad-mode".cstr.ptr, "pkcs1".cstr.ptr, 0.convert()),
             )
-
-            val outlen = alloc<size_tVar>()
-            checkError(
-                EVP_PKEY_decrypt(
-                    ctx = context,
-                    out = null,
-                    outlen = outlen.ptr,
-                    `in` = ciphertext.safeRefToU(0),
-                    inlen = ciphertext.size.convert()
-                )
-            )
-            val plaintext = ByteArray(outlen.value.convert())
-            checkError(
-                EVP_PKEY_decrypt(
-                    ctx = context,
-                    out = plaintext.refToU(0),
-                    outlen = outlen.ptr,
-                    `in` = ciphertext.safeRefToU(0),
-                    inlen = ciphertext.size.convert()
-                )
-            )
-            plaintext.ensureSizeExactly(outlen.value.convert())
-        } finally {
-            EVP_PKEY_CTX_free(context)
         }
     }
 }

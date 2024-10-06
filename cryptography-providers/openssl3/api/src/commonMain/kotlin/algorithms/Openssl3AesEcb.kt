@@ -7,8 +7,10 @@ package dev.whyoleg.cryptography.providers.openssl3.algorithms
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.providers.base.operations.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
+import dev.whyoleg.cryptography.providers.openssl3.operations.*
 import kotlinx.cinterop.*
 import kotlin.experimental.*
 import kotlin.native.ref.*
@@ -24,109 +26,29 @@ internal object Openssl3AesEcb : AES.ECB, Openssl3Aes<AES.ECB.Key>() {
             else              -> error("Unsupported key size")
         }
 
-        override fun cipher(padding: Boolean): Cipher = AesEcbCipher(algorithm, key, padding)
+        private val cipher = EVP_CIPHER_fetch(null, algorithm, null)
+
+        @OptIn(ExperimentalNativeApi::class)
+        private val cleaner = createCleaner(cipher, ::EVP_CIPHER_free)
+
+        override fun cipher(padding: Boolean): Cipher {
+            return Openssl3AesEcbCipher(cipher, key) { context ->
+                checkError(EVP_CIPHER_CTX_set_padding(context, if (padding) 1 else 0))
+            }
+        }
     }
 }
 
-private class AesEcbCipher(
-    algorithm: String,
+private class Openssl3AesEcbCipher(
+    private val cipher: CPointer<EVP_CIPHER>?,
     private val key: ByteArray,
-    private val padding: Boolean,
-) : Cipher {
-
-    private val cipher = EVP_CIPHER_fetch(null, algorithm, null)
-
-    @OptIn(ExperimentalNativeApi::class)
-    private val cleaner = createCleaner(cipher, ::EVP_CIPHER_free)
-
-    override fun encryptBlocking(plaintext: ByteArray): ByteArray = memScoped {
-        val context = EVP_CIPHER_CTX_new()
-        try {
-            checkError(
-                EVP_EncryptInit_ex2(
-                    ctx = context,
-                    cipher = cipher,
-                    key = key.refToU(0),
-                    iv = null,
-                    params = null
-                )
-            )
-            checkError(EVP_CIPHER_CTX_set_padding(context, if (padding) 1 else 0))
-
-            val blockSize = checkError(EVP_CIPHER_CTX_get_block_size(context))
-            val ciphertextOutput = ByteArray(blockSize + plaintext.size)
-
-            val outl = alloc<IntVar>()
-
-            checkError(
-                EVP_EncryptUpdate(
-                    ctx = context,
-                    out = ciphertextOutput.refToU(0),
-                    outl = outl.ptr,
-                    `in` = plaintext.safeRefToU(0),
-                    inl = plaintext.size
-                )
-            )
-
-            val producedByUpdate = outl.value
-
-            checkError(
-                EVP_EncryptFinal_ex(
-                    ctx = context,
-                    out = ciphertextOutput.refToU(outl.value),
-                    outl = outl.ptr
-                )
-            )
-
-            val produced = producedByUpdate + outl.value
-            ciphertextOutput.ensureSizeExactly(produced)
-        } finally {
-            EVP_CIPHER_CTX_free(context)
-        }
+    private val init: (CPointer<EVP_CIPHER_CTX>?) -> Unit = {},
+) : BaseCipher {
+    override fun createEncryptFunction(): CipherFunction {
+        return EvpCipherFunction(cipher, key, null, 0, encrypt = true, init)
     }
 
-    override fun decryptBlocking(ciphertext: ByteArray): ByteArray = memScoped {
-        val context = EVP_CIPHER_CTX_new()
-        try {
-            checkError(
-                EVP_DecryptInit_ex2(
-                    ctx = context,
-                    cipher = cipher,
-                    key = key.refToU(0),
-                    iv = null,
-                    params = null
-                )
-            )
-            checkError(EVP_CIPHER_CTX_set_padding(context, if (padding) 1 else 0))
-
-            val blockSize = checkError(EVP_CIPHER_CTX_get_block_size(context))
-            val plaintextOutput = ByteArray(blockSize + ciphertext.size)
-
-            val outl = alloc<IntVar>()
-
-            checkError(
-                EVP_DecryptUpdate(
-                    ctx = context,
-                    out = plaintextOutput.refToU(0),
-                    outl = outl.ptr,
-                    `in` = ciphertext.safeRefToU(0),
-                    inl = ciphertext.size
-                )
-            )
-
-            val producedByUpdate = outl.value
-
-            checkError(
-                EVP_DecryptFinal_ex(
-                    ctx = context,
-                    outm = plaintextOutput.refToU(producedByUpdate),
-                    outl = outl.ptr
-                )
-            )
-            val produced = producedByUpdate + outl.value
-            plaintextOutput.ensureSizeExactly(produced)
-        } finally {
-            EVP_CIPHER_CTX_free(context)
-        }
+    override fun createDecryptFunction(): CipherFunction {
+        return EvpCipherFunction(cipher, key, null, 0, encrypt = false, init)
     }
 }

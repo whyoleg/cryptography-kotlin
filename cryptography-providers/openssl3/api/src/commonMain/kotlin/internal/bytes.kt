@@ -25,19 +25,3 @@ internal fun ByteArray.safeRefToU(index: Int): CValuesRef<UByteVar> = safeRefTo(
 
 @Suppress("UNCHECKED_CAST")
 internal fun ByteArray.refToU(index: Int): CValuesRef<UByteVar> = refTo(index) as CValuesRef<UByteVar>
-
-internal fun ByteArray.ensureSizeExactly(expectedSize: Int): ByteArray = when (size) {
-    expectedSize -> this
-    else         -> copyOf(expectedSize)
-}
-
-internal fun checkBounds(size: Int, startIndex: Int, endIndex: Int) {
-    if (startIndex < 0 || endIndex > size) {
-        throw IndexOutOfBoundsException(
-            "startIndex ($startIndex) and endIndex ($endIndex) are not within the range [0..size($size))"
-        )
-    }
-    if (startIndex > endIndex) {
-        throw IllegalArgumentException("startIndex ($startIndex) > endIndex ($endIndex)")
-    }
-}
