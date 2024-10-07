@@ -72,6 +72,7 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
         private val testClasses = listOf(
             "SupportedAlgorithmsTest",
             "Pbkdf2CompatibilityTest",
+            "HkdfCompatibilityTest",
 
             "DigestTest",
             "Md5CompatibilityTest",

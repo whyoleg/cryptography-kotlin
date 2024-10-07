@@ -524,6 +524,16 @@ abstract interface dev.whyoleg.cryptography.algorithms/ECDSA : dev.whyoleg.crypt
     final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/ECDSA> // dev.whyoleg.cryptography.algorithms/ECDSA.Companion|null[0]
 }
 
+abstract interface dev.whyoleg.cryptography.algorithms/HKDF : dev.whyoleg.cryptography/CryptographyAlgorithm { // dev.whyoleg.cryptography.algorithms/HKDF|null[0]
+    open val id // dev.whyoleg.cryptography.algorithms/HKDF.id|{}id[0]
+        open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/HKDF> // dev.whyoleg.cryptography.algorithms/HKDF.id.<get-id>|<get-id>(){}[0]
+
+    abstract fun secretDerivation(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest>, dev.whyoleg.cryptography/BinarySize, kotlin/ByteArray?, kotlin/ByteArray? = ...): dev.whyoleg.cryptography.operations/SecretDerivation // dev.whyoleg.cryptography.algorithms/HKDF.secretDerivation|secretDerivation(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>;dev.whyoleg.cryptography.BinarySize;kotlin.ByteArray?;kotlin.ByteArray?){}[0]
+    open fun secretDerivation(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest>, dev.whyoleg.cryptography/BinarySize, kotlinx.io.bytestring/ByteString?, kotlinx.io.bytestring/ByteString? = ...): dev.whyoleg.cryptography.operations/SecretDerivation // dev.whyoleg.cryptography.algorithms/HKDF.secretDerivation|secretDerivation(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>;dev.whyoleg.cryptography.BinarySize;kotlinx.io.bytestring.ByteString?;kotlinx.io.bytestring.ByteString?){}[0]
+
+    final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/HKDF> // dev.whyoleg.cryptography.algorithms/HKDF.Companion|null[0]
+}
+
 abstract interface dev.whyoleg.cryptography.algorithms/HMAC : dev.whyoleg.cryptography/CryptographyAlgorithm { // dev.whyoleg.cryptography.algorithms/HMAC|null[0]
     open val id // dev.whyoleg.cryptography.algorithms/HMAC.id|{}id[0]
         open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/HMAC> // dev.whyoleg.cryptography.algorithms/HMAC.id.<get-id>|<get-id>(){}[0]

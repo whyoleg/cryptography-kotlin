@@ -395,6 +395,18 @@ public final class dev/whyoleg/cryptography/algorithms/ECDSA$SignatureFormat : j
 	public static fun values ()[Ldev/whyoleg/cryptography/algorithms/ECDSA$SignatureFormat;
 }
 
+public abstract interface class dev/whyoleg/cryptography/algorithms/HKDF : dev/whyoleg/cryptography/CryptographyAlgorithm {
+	public static final field Companion Ldev/whyoleg/cryptography/algorithms/HKDF$Companion;
+	public fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
+	public fun secretDerivation-nkIq3jI (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;ILkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;)Ldev/whyoleg/cryptography/operations/SecretDerivation;
+	public abstract fun secretDerivation-nkIq3jI (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;I[B[B)Ldev/whyoleg/cryptography/operations/SecretDerivation;
+	public static synthetic fun secretDerivation-nkIq3jI$default (Ldev/whyoleg/cryptography/algorithms/HKDF;Ldev/whyoleg/cryptography/CryptographyAlgorithmId;ILkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;ILjava/lang/Object;)Ldev/whyoleg/cryptography/operations/SecretDerivation;
+	public static synthetic fun secretDerivation-nkIq3jI$default (Ldev/whyoleg/cryptography/algorithms/HKDF;Ldev/whyoleg/cryptography/CryptographyAlgorithmId;I[B[BILjava/lang/Object;)Ldev/whyoleg/cryptography/operations/SecretDerivation;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/HKDF$Companion : dev/whyoleg/cryptography/CryptographyAlgorithmId {
+}
+
 public abstract interface class dev/whyoleg/cryptography/algorithms/HMAC : dev/whyoleg/cryptography/CryptographyAlgorithm {
 	public static final field Companion Ldev/whyoleg/cryptography/algorithms/HMAC$Companion;
 	public fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;

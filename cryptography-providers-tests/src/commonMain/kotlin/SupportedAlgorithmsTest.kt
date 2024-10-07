@@ -53,5 +53,6 @@ abstract class SupportedAlgorithmsTest(provider: CryptographyProvider) : Provide
         assertSupports(RSA.RAW, !context.provider.isWebCrypto)
 
         assertSupports(PBKDF2)
+        assertSupports(HKDF)
     }
 }

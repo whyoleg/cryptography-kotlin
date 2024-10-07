@@ -70,6 +70,7 @@ For additional limitation please consult provider specific documentation.
 |                                             | RSA-PKS1-v1_5    |  ✅  |     ✅     |   ✅   |    ✅     |
 | **Key Agreement**                           | ECDH             |  ✅  |     ✅     |   ❌   |    ✅     |
 | **PRF/KDF**                                 | PBKDF2           |  ✅  |     ✅     |   ✅   |    ✅     |
+|                                             | HKDF             |  ✅  |     ✅     |   ✅   |    ✅     |
 
 > ⚠️ : use carefully
 >
