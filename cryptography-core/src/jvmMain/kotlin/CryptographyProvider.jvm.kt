@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography
@@ -12,7 +12,9 @@ public interface CryptographyProviderContainer {
 }
 
 @OptIn(CryptographyProviderApi::class)
-internal actual fun initProviders(): List<Lazy<CryptographyProvider>> {
-    val cls = CryptographyProviderContainer::class.java
-    return ServiceLoader.load(cls, cls.classLoader).map { it.provider }
-}
+internal actual fun initProviders(): List<Lazy<CryptographyProvider>> = Iterable {
+    ServiceLoader.load(
+        CryptographyProviderContainer::class.java,
+        CryptographyProviderContainer::class.java.classLoader
+    ).iterator()
+}.map { it.provider }
