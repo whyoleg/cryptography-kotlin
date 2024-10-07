@@ -50,5 +50,5 @@ private fun CryptographyAlgorithmId<Digest>.blockSize(): Int = when (this) {
     SHA3_256 -> 136
     SHA3_384 -> 104
     SHA3_512 -> 72
-    else     -> throw CryptographyException("Unsupported hash algorithm: $this")
+    else -> throw IllegalStateException("Unsupported hash algorithm: $this")
 } * 8

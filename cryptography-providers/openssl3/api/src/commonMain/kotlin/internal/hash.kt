@@ -17,5 +17,5 @@ internal fun hashAlgorithm(digest: CryptographyAlgorithmId<Digest>): String = wh
     SHA3_256 -> "SHA3-256"
     SHA3_384 -> "SHA3-384"
     SHA3_512 -> "SHA3-512"
-    else     -> throw CryptographyException("Unsupported hash algorithm: $digest")
+    else -> throw IllegalStateException("Unsupported hash algorithm: $digest")
 }

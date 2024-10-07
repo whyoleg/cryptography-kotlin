@@ -15,7 +15,7 @@ internal fun CryptographyAlgorithmId<Digest>.rsaPssSecKeyAlgorithm(): SecKeyAlgo
     SHA256 -> kSecKeyAlgorithmRSASignatureMessagePSSSHA256
     SHA384 -> kSecKeyAlgorithmRSASignatureMessagePSSSHA384
     SHA512 -> kSecKeyAlgorithmRSASignatureMessagePSSSHA512
-    else   -> throw CryptographyException("Unsupported hash algorithm: $this")
+    else -> throw IllegalStateException("Unsupported hash algorithm: $this")
 }
 
 internal fun CryptographyAlgorithmId<Digest>.rsaPkcs1SecKeyAlgorithm(): SecKeyAlgorithm? = when (this) {
@@ -24,7 +24,7 @@ internal fun CryptographyAlgorithmId<Digest>.rsaPkcs1SecKeyAlgorithm(): SecKeyAl
     SHA256 -> kSecKeyAlgorithmRSASignatureMessagePKCS1v15SHA256
     SHA384 -> kSecKeyAlgorithmRSASignatureMessagePKCS1v15SHA384
     SHA512 -> kSecKeyAlgorithmRSASignatureMessagePKCS1v15SHA512
-    else   -> throw CryptographyException("Unsupported hash algorithm: $this")
+    else -> throw IllegalStateException("Unsupported hash algorithm: $this")
 }
 
 internal fun CryptographyAlgorithmId<Digest>.rsaOaepSecKeyAlgorithm(): SecKeyAlgorithm? = when (this) {
@@ -33,7 +33,7 @@ internal fun CryptographyAlgorithmId<Digest>.rsaOaepSecKeyAlgorithm(): SecKeyAlg
     SHA256 -> kSecKeyAlgorithmRSAEncryptionOAEPSHA256
     SHA384 -> kSecKeyAlgorithmRSAEncryptionOAEPSHA384
     SHA512 -> kSecKeyAlgorithmRSAEncryptionOAEPSHA512
-    else   -> throw CryptographyException("Unsupported hash algorithm: $this")
+    else -> throw IllegalStateException("Unsupported hash algorithm: $this")
 }
 
 internal fun CryptographyAlgorithmId<Digest>.ecdsaSecKeyAlgorithm(): SecKeyAlgorithm? = when (this) {
@@ -42,7 +42,7 @@ internal fun CryptographyAlgorithmId<Digest>.ecdsaSecKeyAlgorithm(): SecKeyAlgor
     SHA256 -> kSecKeyAlgorithmECDSASignatureMessageX962SHA256
     SHA384 -> kSecKeyAlgorithmECDSASignatureMessageX962SHA384
     SHA512 -> kSecKeyAlgorithmECDSASignatureMessageX962SHA512
-    else   -> throw CryptographyException("Unsupported hash algorithm: $this")
+    else -> throw IllegalStateException("Unsupported hash algorithm: $this")
 }
 
 internal fun CryptographyAlgorithmId<Digest>.pbkdh2Algorithm(): CCPseudoRandomAlgorithm = when (this) {
@@ -51,5 +51,5 @@ internal fun CryptographyAlgorithmId<Digest>.pbkdh2Algorithm(): CCPseudoRandomAl
     SHA256 -> kCCPRFHmacAlgSHA256
     SHA384 -> kCCPRFHmacAlgSHA384
     SHA512 -> kCCPRFHmacAlgSHA512
-    else   -> throw CryptographyException("Unsupported hash algorithm: $this")
+    else -> throw IllegalStateException("Unsupported hash algorithm: $this")
 }

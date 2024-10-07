@@ -10,7 +10,7 @@ public abstract class CryptographyProvider {
 
     public abstract fun <A : CryptographyAlgorithm> getOrNull(identifier: CryptographyAlgorithmId<A>): A?
     public open fun <A : CryptographyAlgorithm> get(identifier: CryptographyAlgorithmId<A>): A =
-        getOrNull(identifier) ?: throw CryptographyAlgorithmNotFoundException(identifier)
+        getOrNull(identifier) ?: throw IllegalStateException("Algorithm not found: $identifier")
 
     @CryptographyProviderApi
     public object Registry {

@@ -4,6 +4,4 @@
 
 package dev.whyoleg.cryptography.providers.webcrypto.internal
 
-import dev.whyoleg.cryptography.*
-
-internal fun nonBlocking(): Nothing = throw CryptographyException("Only non-blocking(suspend) calls are supported in WebCrypto")
+internal fun nonBlocking(): Nothing = throw IllegalStateException("Only non-blocking(suspend) calls are supported in WebCrypto")

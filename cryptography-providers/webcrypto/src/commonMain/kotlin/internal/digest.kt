@@ -12,7 +12,7 @@ internal fun CryptographyAlgorithmId<Digest>.blockSize(): Int = when (this) {
     SHA256 -> 64
     SHA384 -> 128
     SHA512 -> 128
-    else   -> throw CryptographyException("Unsupported hash algorithm: $this")
+    else -> throw IllegalStateException("Unsupported hash algorithm: $this")
 } * 8
 
 internal fun CryptographyAlgorithmId<Digest>.hashAlgorithmName(): String = when (this) {
@@ -20,7 +20,7 @@ internal fun CryptographyAlgorithmId<Digest>.hashAlgorithmName(): String = when 
     SHA256 -> "SHA-256"
     SHA384 -> "SHA-384"
     SHA512 -> "SHA-512"
-    else   -> throw CryptographyException("Unsupported hash algorithm: ${this}")
+    else -> throw IllegalStateException("Unsupported hash algorithm: ${this}")
 }
 
 internal fun hashSize(hashAlgorithmName: String): Int = when (hashAlgorithmName) {
@@ -28,5 +28,5 @@ internal fun hashSize(hashAlgorithmName: String): Int = when (hashAlgorithmName)
     "SHA-256" -> 32
     "SHA-384" -> 48
     "SHA-512" -> 64
-    else      -> throw CryptographyException("Unsupported hash algorithm: $hashAlgorithmName")
+    else -> throw IllegalStateException("Unsupported hash algorithm: $hashAlgorithmName")
 }

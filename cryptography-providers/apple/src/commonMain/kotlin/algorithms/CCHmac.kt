@@ -22,7 +22,7 @@ internal object CCHmac : HMAC {
             SHA256 -> HmacKeyDecoder(kCCHmacAlgSHA256, CC_SHA256_BLOCK_BYTES, CC_SHA256_DIGEST_LENGTH)
             SHA384 -> HmacKeyDecoder(kCCHmacAlgSHA384, CC_SHA384_BLOCK_BYTES, CC_SHA384_DIGEST_LENGTH)
             SHA512 -> HmacKeyDecoder(kCCHmacAlgSHA512, CC_SHA512_BLOCK_BYTES, CC_SHA512_DIGEST_LENGTH)
-            else   -> throw CryptographyException("Unsupported hash algorithm: $digest")
+            else -> throw IllegalStateException("Unsupported hash algorithm: $digest")
         }
     }
 
@@ -33,7 +33,7 @@ internal object CCHmac : HMAC {
             SHA256 -> HmacKeyGenerator(kCCHmacAlgSHA256, CC_SHA256_BLOCK_BYTES, CC_SHA256_DIGEST_LENGTH)
             SHA384 -> HmacKeyGenerator(kCCHmacAlgSHA384, CC_SHA384_BLOCK_BYTES, CC_SHA384_DIGEST_LENGTH)
             SHA512 -> HmacKeyGenerator(kCCHmacAlgSHA512, CC_SHA512_BLOCK_BYTES, CC_SHA512_DIGEST_LENGTH)
-            else   -> throw CryptographyException("Unsupported hash algorithm: $digest")
+            else -> throw IllegalStateException("Unsupported hash algorithm: $digest")
         }
     }
 }

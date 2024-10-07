@@ -23,7 +23,7 @@ internal fun CryptographyAlgorithmId<Digest>.rsaHashAlgorithmName(): String = wh
     SHA3_256 -> "SHA3-256"
     SHA3_384 -> "SHA3-384"
     SHA3_512 -> "SHA3-512"
-    else     -> throw CryptographyException("Unsupported hash algorithm: $this")
+    else -> throw IllegalStateException("Unsupported hash algorithm: $this")
 }
 
 internal abstract class RsaPublicKeyDecoder<K : RSA.PublicKey>(

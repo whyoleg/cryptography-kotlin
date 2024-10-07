@@ -1,10 +1,9 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.internal
 
-import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import kotlinx.cinterop.*
 import platform.posix.*
@@ -39,5 +38,5 @@ private fun fail(result: Int): Nothing {
             if (code.toInt() != 0) append(", ")
         } while (code.toInt() != 0)
     }
-    throw CryptographyException("OPENSSL failure: $message (result: $result)")
+    throw IllegalStateException("OPENSSL failure: $message (result: $result)")
 }
