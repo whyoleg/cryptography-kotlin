@@ -8,10 +8,11 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.providers.tests.api.*
 import dev.whyoleg.cryptography.random.*
+import kotlinx.io.bytestring.*
 import kotlin.math.*
 import kotlin.test.*
 
-abstract class HmacTest(provider: CryptographyProvider) : ProviderTest(provider) {
+abstract class HmacTest(provider: CryptographyProvider) : ProviderTest(provider), SignatureTest {
 
     private class HmacTestScope(
         logger: TestLogger,
@@ -80,5 +81,20 @@ abstract class HmacTest(provider: CryptographyProvider) : ProviderTest(provider)
         val data = CryptographyRandom.nextBytes(100)
         val signature = key.signatureGenerator().generateSignature(data)
         assertFalse(wrongKey.signatureVerifier().tryVerifySignature(data, signature))
+    }
+
+    @Test
+    fun testFunctions() = runTestForEachDigest {
+        if (!supportsFunctions()) return@runTestForEachDigest
+
+        val key = algorithm.keyGenerator(digest).generateKey()
+        val signatureGenerator = key.signatureGenerator()
+        val signatureVerifier = key.signatureVerifier()
+
+        repeat(10) {
+            val size = CryptographyRandom.nextInt(20000)
+            val data = ByteString(CryptographyRandom.nextBytes(size))
+            assertSignaturesViaFunction(signatureGenerator, signatureVerifier, data)
+        }
     }
 }

@@ -8,11 +8,12 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.providers.tests.api.*
 import dev.whyoleg.cryptography.random.*
+import kotlinx.io.bytestring.*
 import kotlin.io.encoding.*
 import kotlin.math.*
 import kotlin.test.*
 
-abstract class EcdsaTest(provider: CryptographyProvider) : ProviderTest(provider) {
+abstract class EcdsaTest(provider: CryptographyProvider) : ProviderTest(provider), SignatureTest {
 
     //all sizes are in bytes
     // `privateKeySizes` contains three sizes.
@@ -78,6 +79,37 @@ abstract class EcdsaTest(provider: CryptographyProvider) : ProviderTest(provider
                             assertSignatureSize(signature)
                             assertTrue(verifier.tryVerifySignature(data, signature))
                         }
+                    }
+                }
+            }
+        }
+    }
+
+    @Test
+    fun testFunctions() = testAlgorithm(ECDSA) {
+        if (!supportsFunctions()) return@testAlgorithm
+
+        listOf(
+            EC.Curve.P256,
+            EC.Curve.P384,
+            EC.Curve.P521,
+            EC.Curve("secp256k1"),
+        ).forEach { curve ->
+            if (!supportsCurve(curve)) return@forEach
+
+            val keyPair = algorithm.keyPairGenerator(curve).generateKey()
+
+            generateDigests { digest, _ ->
+                if (!supportsDigest(digest)) return@generateDigests
+
+                ECDSA.SignatureFormat.entries.forEach { format ->
+                    val signatureGenerator = keyPair.privateKey.signatureGenerator(digest, format)
+                    val signatureVerifier = keyPair.publicKey.signatureVerifier(digest, format)
+
+                    repeat(10) {
+                        val size = CryptographyRandom.nextInt(20000)
+                        val data = ByteString(CryptographyRandom.nextBytes(size))
+                        assertSignaturesViaFunction(signatureGenerator, signatureVerifier, data)
                     }
                 }
             }

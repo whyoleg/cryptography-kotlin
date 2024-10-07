@@ -7,7 +7,9 @@ package dev.whyoleg.cryptography.providers.tests.default
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.BinarySize.Companion.bits
 import dev.whyoleg.cryptography.algorithms.*
+import dev.whyoleg.cryptography.providers.tests.api.*
 import dev.whyoleg.cryptography.random.*
+import kotlinx.io.bytestring.*
 import kotlin.test.*
 
 private const val ivSize = 12
@@ -50,5 +52,35 @@ abstract class AesGcmTest(provider: CryptographyProvider) : AesBasedTest<AES.GCM
         val ciphertext = key.cipher().encrypt(data)
 
         assertFails { wrongKey.cipher().decrypt(ciphertext) }
+    }
+
+    @Test
+    fun testFunctions() = runTestForEachKeySize {
+        if (!supportsFunctions()) return@runTestForEachKeySize
+
+        val key = algorithm.keyGenerator(keySize).generateKey()
+        listOf(96, 104, 112, 120, 128).forEach { tagSizeBits ->
+            val cipher = key.cipher(tagSizeBits.bits)
+            repeat(100) {
+                val size = CryptographyRandom.nextInt(20000)
+                val data = ByteString(CryptographyRandom.nextBytes(size))
+                assertCipherViaFunction(cipher, cipher, data)
+            }
+        }
+    }
+
+    @Test
+    fun testFunctionsWithIv() = runTestForEachKeySize {
+        if (!supportsFunctions()) return@runTestForEachKeySize
+
+        val key = algorithm.keyGenerator(keySize).generateKey()
+        listOf(96, 104, 112, 120, 128).forEach { tagSizeBits ->
+            val cipher = key.cipher(tagSizeBits.bits)
+            repeat(100) {
+                val size = CryptographyRandom.nextInt(20000)
+                val data = ByteString(CryptographyRandom.nextBytes(size))
+                assertCipherWithIvViaFunction(cipher, cipher, ivSize, data)
+            }
+        }
     }
 }

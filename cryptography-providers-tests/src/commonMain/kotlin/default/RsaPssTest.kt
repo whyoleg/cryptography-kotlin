@@ -9,10 +9,11 @@ import dev.whyoleg.cryptography.BinarySize.Companion.bytes
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.providers.tests.api.*
 import dev.whyoleg.cryptography.random.*
+import kotlinx.io.bytestring.*
 import kotlin.math.*
 import kotlin.test.*
 
-abstract class RsaPssTest(provider: CryptographyProvider) : ProviderTest(provider) {
+abstract class RsaPssTest(provider: CryptographyProvider) : ProviderTest(provider), SignatureTest {
 
     @Test
     fun testSizes() = testAlgorithm(RSA.PSS) {
@@ -49,6 +50,27 @@ abstract class RsaPssTest(provider: CryptographyProvider) : ProviderTest(provide
                         assertEquals(keySize.inBytes, signature.size)
                         assertTrue(signatureVerifier.tryVerifySignature(data, signature))
                     }
+                }
+            }
+        }
+    }
+
+    @Test
+    fun testFunctions() = testAlgorithm(RSA.PSS) {
+        if (!supportsFunctions()) return@testAlgorithm
+
+        generateRsaKeySizes { keySize ->
+            generateDigests { digest, _ ->
+                if (!supportsDigest(digest)) return@generateDigests
+
+                val keyPair = algorithm.keyPairGenerator(keySize, digest).generateKey()
+                val signatureGenerator = keyPair.privateKey.signatureGenerator()
+                val signatureVerifier = keyPair.publicKey.signatureVerifier()
+
+                repeat(5) {
+                    val size = CryptographyRandom.nextInt(20000)
+                    val data = ByteString(CryptographyRandom.nextBytes(size))
+                    assertSignaturesViaFunction(signatureGenerator, signatureVerifier, data)
                 }
             }
         }

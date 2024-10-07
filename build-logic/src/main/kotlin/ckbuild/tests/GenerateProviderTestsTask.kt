@@ -87,6 +87,7 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
 
             "AesCbcTest",
             "AesCbcCompatibilityTest",
+            "AesCtrTest",
             "AesCtrCompatibilityTest",
             "AesEcbCompatibilityTest",
             "AesGcmTest",

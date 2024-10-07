@@ -8,6 +8,7 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 
 import dev.whyoleg.cryptography.materials.key.*
+import kotlinx.io.*
 import kotlinx.io.bytestring.*
 import kotlin.io.encoding.*
 import kotlin.test.*
@@ -63,6 +64,11 @@ fun digest(name: String): CryptographyAlgorithmId<Digest> = when (name) {
     SHA3_512.name -> SHA3_512
     else          -> error("Unknown digest: $name")
 }
+
+fun Buffer(bytes: ByteString): Buffer = Buffer().apply { write(bytes) }
+
+fun Buffer.bufferedSource(): Source = (this as RawSource).buffered()
+fun Buffer.bufferedSink(): Sink = (this as RawSink).buffered()
 
 expect fun disableJsConsoleDebug()
 

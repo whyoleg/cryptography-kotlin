@@ -8,10 +8,11 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.providers.tests.api.*
 import dev.whyoleg.cryptography.random.*
+import kotlinx.io.bytestring.*
 import kotlin.math.*
 import kotlin.test.*
 
-abstract class RsaPkcs1Test(provider: CryptographyProvider) : ProviderTest(provider) {
+abstract class RsaPkcs1Test(provider: CryptographyProvider) : ProviderTest(provider), SignatureTest {
 
     @Test
     fun testSizes() = testAlgorithm(RSA.PKCS1) {
@@ -69,4 +70,24 @@ abstract class RsaPkcs1Test(provider: CryptographyProvider) : ProviderTest(provi
         assertContentEquals(plaintext, decryptor.decrypt(ciphertext))
     }
 
+    @Test
+    fun testSignatureFunctions() = testAlgorithm(RSA.PKCS1) {
+        if (!supportsFunctions()) return@testAlgorithm
+
+        generateRsaKeySizes { keySize ->
+            generateDigests { digest, _ ->
+                if (!supportsDigest(digest)) return@generateDigests
+
+                val keyPair = algorithm.keyPairGenerator(keySize, digest).generateKey()
+                val signatureGenerator = keyPair.privateKey.signatureGenerator()
+                val signatureVerifier = keyPair.publicKey.signatureVerifier()
+
+                repeat(5) {
+                    val size = CryptographyRandom.nextInt(20000)
+                    val data = ByteString(CryptographyRandom.nextBytes(size))
+                    assertSignaturesViaFunction(signatureGenerator, signatureVerifier, data)
+                }
+            }
+        }
+    }
 }

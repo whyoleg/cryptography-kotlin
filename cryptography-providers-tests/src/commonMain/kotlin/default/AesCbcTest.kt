@@ -8,6 +8,7 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.providers.tests.api.*
 import dev.whyoleg.cryptography.random.*
+import kotlinx.io.bytestring.*
 import kotlin.test.*
 
 private const val blockSize = 16
@@ -88,6 +89,32 @@ abstract class AesCbcTest(provider: CryptographyProvider) : AesBasedTest<AES.CBC
             // sometimes we can decrypto with the wrong key
             // TODO: looks like something is wrong with this test
             assertNotEquals(data, it)
+        }
+    }
+
+    @Test
+    fun testFunctions() = runTestForEachKeySize {
+        if (!supportsFunctions()) return@runTestForEachKeySize
+
+        val key = algorithm.keyGenerator(keySize).generateKey()
+        val cipher = key.cipher()
+        repeat(100) {
+            val size = CryptographyRandom.nextInt(20000)
+            val data = ByteString(CryptographyRandom.nextBytes(size))
+            assertCipherViaFunction(cipher, cipher, data)
+        }
+    }
+
+    @Test
+    fun testFunctionsWithIv() = runTestForEachKeySize {
+        if (!supportsFunctions()) return@runTestForEachKeySize
+
+        val key = algorithm.keyGenerator(keySize).generateKey()
+        val cipher = key.cipher()
+        repeat(100) {
+            val size = CryptographyRandom.nextInt(20000)
+            val data = ByteString(CryptographyRandom.nextBytes(size))
+            assertCipherWithIvViaFunction(cipher, cipher, ivSize, data)
         }
     }
 }

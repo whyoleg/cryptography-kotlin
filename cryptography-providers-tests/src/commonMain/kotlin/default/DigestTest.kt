@@ -6,6 +6,7 @@ package dev.whyoleg.cryptography.providers.tests.default
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
+import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.tests.api.*
 import dev.whyoleg.cryptography.random.*
 import kotlinx.io.*
@@ -22,11 +23,48 @@ abstract class DigestTest(provider: CryptographyProvider) : ProviderTest(provide
             val hasher = algorithm.hasher()
             assertEquals(digestSize, hasher.hash(ByteArray(0)).size)
             repeat(8) { n ->
-                val size = 10.0.pow(n).toInt()
-                val data = CryptographyRandom.nextBytes(size)
-                val result = hasher.hash(data)
-                assertEquals(digestSize, result.size)
-                assertContentEquals(result, hasher.hash(data))
+                val maxSize = 10.0.pow(n).toInt()
+                ((1..10).map { CryptographyRandom.nextInt(maxSize) } + maxSize).forEach { size ->
+                    val data = ByteString(CryptographyRandom.nextBytes(size))
+
+                    val digest = hasher.hash(data)
+                    assertEquals(digestSize, digest.size)
+                    assertContentEquals(digest, hasher.hash(data))
+                    if (supportsFunctions()) {
+                        val chunked: UpdateFunction. () -> Unit = {
+                            val steps = 10
+                            var step = data.size / steps
+                            if (step == 0) step = data.size
+                            var start = 0
+                            while (start < data.size) {
+                                update(data, start, minOf(data.size, start + step))
+                                start += step
+                            }
+                        }
+                        val viaSource: UpdateFunction. () -> Unit = {
+                            updatingSource(Buffer(data).bufferedSource()).buffered().use {
+                                assertContentEquals(data, it.readByteString())
+                            }
+                        }
+                        val viaSink: UpdateFunction. () -> Unit = {
+                            val output = Buffer()
+                            updatingSink(output.bufferedSink()).buffered().use { it.write(data) }
+                            assertContentEquals(data, output.readByteString())
+                        }
+
+                        hasher.createHashFunction().use { function ->
+                            // test 1
+                            chunked(function)
+                            assertContentEquals(digest, function.hash())
+                            // test 2
+                            viaSource(function)
+                            assertContentEquals(digest, function.hash())
+                            // test 3
+                            viaSink(function)
+                            assertContentEquals(digest, function.hash())
+                        }
+                    }
+                }
             }
         }
 
