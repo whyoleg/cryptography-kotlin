@@ -52,6 +52,12 @@ public abstract interface class dev/whyoleg/cryptography/providers/base/algorith
 	public fun encryptingSourceWithIv ([BLkotlinx/io/RawSource;)Lkotlinx/io/RawSource;
 }
 
+public abstract class dev/whyoleg/cryptography/providers/base/algorithms/BaseHkdf : dev/whyoleg/cryptography/algorithms/HKDF {
+	public fun <init> (Ldev/whyoleg/cryptography/CryptographyProvider;)V
+	protected abstract fun digestSize (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;)I
+	public fun secretDerivation-nkIq3jI (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;I[B[B)Ldev/whyoleg/cryptography/operations/SecretDerivation;
+}
+
 public final class dev/whyoleg/cryptography/providers/base/operations/AccumulatingCipherFunction : dev/whyoleg/cryptography/providers/base/operations/BaseCipherFunction {
 	public fun <init> (Lkotlin/jvm/functions/Function1;)V
 	public fun close ()V

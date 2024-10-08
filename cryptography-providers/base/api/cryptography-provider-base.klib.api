@@ -84,6 +84,13 @@ abstract interface dev.whyoleg.cryptography.providers.base.operations/CipherFunc
     abstract fun transformedSource(kotlinx.io/RawSource): kotlinx.io/RawSource // dev.whyoleg.cryptography.providers.base.operations/CipherFunction.transformedSource|transformedSource(kotlinx.io.RawSource){}[0]
 }
 
+abstract class dev.whyoleg.cryptography.providers.base.algorithms/BaseHkdf : dev.whyoleg.cryptography.algorithms/HKDF { // dev.whyoleg.cryptography.providers.base.algorithms/BaseHkdf|null[0]
+    constructor <init>(dev.whyoleg.cryptography/CryptographyProvider) // dev.whyoleg.cryptography.providers.base.algorithms/BaseHkdf.<init>|<init>(dev.whyoleg.cryptography.CryptographyProvider){}[0]
+
+    abstract fun digestSize(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest>): kotlin/Int // dev.whyoleg.cryptography.providers.base.algorithms/BaseHkdf.digestSize|digestSize(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>){}[0]
+    open fun secretDerivation(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest>, dev.whyoleg.cryptography/BinarySize, kotlin/ByteArray?, kotlin/ByteArray?): dev.whyoleg.cryptography.operations/SecretDerivation // dev.whyoleg.cryptography.providers.base.algorithms/BaseHkdf.secretDerivation|secretDerivation(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>;dev.whyoleg.cryptography.BinarySize;kotlin.ByteArray?;kotlin.ByteArray?){}[0]
+}
+
 abstract class dev.whyoleg.cryptography.providers.base.operations/BaseCipherFunction : dev.whyoleg.cryptography.providers.base.operations/CipherFunction, kotlin/AutoCloseable { // dev.whyoleg.cryptography.providers.base.operations/BaseCipherFunction|null[0]
     constructor <init>() // dev.whyoleg.cryptography.providers.base.operations/BaseCipherFunction.<init>|<init>(){}[0]
 
