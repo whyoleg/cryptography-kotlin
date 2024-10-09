@@ -54,6 +54,9 @@ internal actual fun EcdhKeyDeriveAlgorithm(publicKey: CryptoKey): Algorithm =
 internal actual fun Pbkdf2DeriveAlgorithm(hash: String, iterations: Int, salt: ByteArray): Algorithm =
     js("{ name: 'PBKDF2', hash: hash, iterations: iterations, salt: salt }").unsafeCast<Algorithm>()
 
+internal actual fun HkdfDeriveAlgorithm(hash: String, salt: ByteArray, info: ByteArray): Algorithm =
+    js("{ name: 'HKDF', hash: hash, salt: salt, info: info }").unsafeCast<Algorithm>()
+
 internal actual fun RsaKeyGenerationAlgorithm(name: String, modulusLength: Int, publicExponent: ByteArray, hash: String): Algorithm {
     val publicExponent2 = publicExponent.toInt8Array().let { Uint8Array(it.buffer, it.byteOffset, it.length) }
     return js("{ name: name, modulusLength: modulusLength, publicExponent: publicExponent2, hash: hash }").unsafeCast<Algorithm>()

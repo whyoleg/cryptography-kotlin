@@ -72,6 +72,12 @@ internal actual fun Pbkdf2DeriveAlgorithm(hash: String, iterations: Int, salt: B
 private fun jsPbkdf2DeriveAlgorithm(hash: String, iterations: Int, salt: Int8Array): Algorithm =
     js("({ name: 'PBKDF2', hash: hash, iterations: iterations, salt: salt })")
 
+internal actual fun HkdfDeriveAlgorithm(hash: String, salt: ByteArray, info: ByteArray): Algorithm =
+    jsHkdfDeriveAlgorithm(hash, salt.toInt8Array(), info.toInt8Array())
+
+private fun jsHkdfDeriveAlgorithm(hash: String, salt: Int8Array, info: Int8Array): Algorithm =
+    js("({ name: 'HKDF', hash: hash, salt: salt, info: info })")
+
 internal actual fun RsaKeyGenerationAlgorithm(name: String, modulusLength: Int, publicExponent: ByteArray, hash: String): Algorithm {
     val publicExponent2 = publicExponent.toInt8Array().let { Uint8Array(it.buffer, it.byteOffset, it.length) }
     return jsRsaKeyGenerationAlgorithm(name, modulusLength, publicExponent2, hash)

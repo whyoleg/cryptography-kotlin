@@ -29,8 +29,9 @@ internal object WebCryptoCryptographyProvider : CryptographyProvider() {
         RSA.PSS   -> WebCryptoRsaPss
         RSA.PKCS1 -> WebCryptoRsaPkcs1
         ECDSA     -> WebCryptoEcdsa
-        ECDH    -> WebCryptoEcdh
-        PBKDF2  -> WebCryptoPbkdf2
+        ECDH   -> WebCryptoEcdh
+        PBKDF2 -> WebCryptoPbkdf2
+        HKDF   -> WebCryptoHkdf
         else      -> null
     } as A?
 }
