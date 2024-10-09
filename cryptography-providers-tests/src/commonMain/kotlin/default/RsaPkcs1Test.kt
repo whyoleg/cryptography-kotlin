@@ -12,10 +12,10 @@ import kotlinx.io.bytestring.*
 import kotlin.math.*
 import kotlin.test.*
 
-abstract class RsaPkcs1Test(provider: CryptographyProvider) : ProviderTest(provider), SignatureTest {
+abstract class RsaPkcs1Test(provider: CryptographyProvider) : AlgorithmTest<RSA.PKCS1>(RSA.PKCS1, provider), SignatureTest {
 
     @Test
-    fun testSizes() = testAlgorithm(RSA.PKCS1) {
+    fun testSizes() = testWithAlgorithm {
         generateRsaKeySizes { keySize ->
             generateDigests { digest, _ ->
                 if (!supportsDigest(digest)) return@generateDigests
@@ -71,8 +71,8 @@ abstract class RsaPkcs1Test(provider: CryptographyProvider) : ProviderTest(provi
     }
 
     @Test
-    fun testSignatureFunctions() = testAlgorithm(RSA.PKCS1) {
-        if (!supportsFunctions()) return@testAlgorithm
+    fun testSignatureFunctions() = testWithAlgorithm {
+        if (!supportsFunctions()) return@testWithAlgorithm
 
         generateRsaKeySizes { keySize ->
             generateDigests { digest, _ ->

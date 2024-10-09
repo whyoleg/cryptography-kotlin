@@ -13,7 +13,7 @@ import kotlin.io.encoding.*
 import kotlin.math.*
 import kotlin.test.*
 
-abstract class EcdsaTest(provider: CryptographyProvider) : ProviderTest(provider), SignatureTest {
+abstract class EcdsaTest(provider: CryptographyProvider) : AlgorithmTest<ECDSA>(ECDSA, provider), SignatureTest {
 
     //all sizes are in bytes
     // `privateKeySizes` contains three sizes.
@@ -30,7 +30,7 @@ abstract class EcdsaTest(provider: CryptographyProvider) : ProviderTest(provider
     )
 
     @Test
-    fun testSizes() = testAlgorithm(ECDSA) {
+    fun testSizes() = testWithAlgorithm {
         listOf(
             EcdsaSize(EC.Curve.P256, 64, listOf(68, 69, 70, 71, 72), 91, listOf(67, 138, 150)),
             EcdsaSize(EC.Curve.P384, 96, listOf(100, 101, 102, 103, 104), 120, listOf(80, 185, 194)),
@@ -86,8 +86,8 @@ abstract class EcdsaTest(provider: CryptographyProvider) : ProviderTest(provider
     }
 
     @Test
-    fun testFunctions() = testAlgorithm(ECDSA) {
-        if (!supportsFunctions()) return@testAlgorithm
+    fun testFunctions() = testWithAlgorithm {
+        if (!supportsFunctions()) return@testWithAlgorithm
 
         listOf(
             EC.Curve.P256,

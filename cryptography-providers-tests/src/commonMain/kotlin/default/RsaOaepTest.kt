@@ -11,7 +11,7 @@ import dev.whyoleg.cryptography.random.*
 import kotlin.math.*
 import kotlin.test.*
 
-abstract class RsaOaepTest(provider: CryptographyProvider) : ProviderTest(provider) {
+abstract class RsaOaepTest(provider: CryptographyProvider) : AlgorithmTest<RSA.OAEP>(RSA.OAEP, provider) {
 
     private suspend fun AlgorithmTestScope<RSA.OAEP>.encryptAndDecrypt(
         keyPair: RSA.OAEP.KeyPair,
@@ -28,7 +28,7 @@ abstract class RsaOaepTest(provider: CryptographyProvider) : ProviderTest(provid
     }
 
     @Test
-    fun testSizes() = testAlgorithm(RSA.OAEP) {
+    fun testSizes() = testWithAlgorithm {
         generateRsaKeySizes { keySize ->
             generateDigests { digest, digestSize ->
                 if (!supportsDigest(digest)) return@generateDigests

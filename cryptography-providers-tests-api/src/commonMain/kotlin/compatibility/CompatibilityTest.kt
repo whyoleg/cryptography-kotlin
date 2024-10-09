@@ -9,35 +9,35 @@ import dev.whyoleg.cryptography.providers.tests.api.*
 import kotlin.test.*
 
 abstract class CompatibilityTest<A : CryptographyAlgorithm>(
-    protected val algorithmId: CryptographyAlgorithmId<A>,
+    algorithmId: CryptographyAlgorithmId<A>,
     provider: CryptographyProvider,
-) : ProviderTest(provider) {
+) : AlgorithmTest<A>(algorithmId, provider) {
     abstract suspend fun CompatibilityTestScope<A>.generate(isStressTest: Boolean)
     abstract suspend fun CompatibilityTestScope<A>.validate()
 
     @WasmIgnore
     @Test
-    fun generateStep() = testAlgorithm(algorithmId) {
+    fun generateStep() = testWithAlgorithm {
         val logger = logger.child("GENERATE")
         runCompatibilityTestStep(logger, ServerApi(algorithmId.name, context, logger)) { generate(isStressTest = false) }
     }
 
     @WasmIgnore
     @Test
-    fun generateStressStep() = testAlgorithm(algorithmId) {
+    fun generateStressStep() = testWithAlgorithm {
         val logger = logger.child("GENERATE")
         runCompatibilityTestStep(logger, ServerApi(algorithmId.name, context, logger)) { generate(isStressTest = true) }
     }
 
     @WasmIgnore
     @Test
-    fun validateStep() = testAlgorithm(algorithmId) {
+    fun validateStep() = testWithAlgorithm {
         val logger = logger.child("VALIDATE")
         runCompatibilityTestStep(logger, ServerApi(algorithmId.name, context, logger)) { validate() }
     }
 
     @Test
-    fun loopStep() = testAlgorithm(algorithmId) {
+    fun loopStep() = testWithAlgorithm {
         val memory = InMemory()
         var logger = this.logger.child("GENERATE")
         runCompatibilityTestStep(logger, InMemoryApi(memory, context, logger)) { generate(isStressTest = false) }

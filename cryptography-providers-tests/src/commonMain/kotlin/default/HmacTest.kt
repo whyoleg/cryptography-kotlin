@@ -12,7 +12,7 @@ import kotlinx.io.bytestring.*
 import kotlin.math.*
 import kotlin.test.*
 
-abstract class HmacTest(provider: CryptographyProvider) : ProviderTest(provider), SignatureTest {
+abstract class HmacTest(provider: CryptographyProvider) : AlgorithmTest<HMAC>(HMAC, provider), SignatureTest {
 
     private class HmacTestScope(
         logger: TestLogger,
@@ -24,7 +24,7 @@ abstract class HmacTest(provider: CryptographyProvider) : ProviderTest(provider)
         val digestBlockSize: Int,
     ) : AlgorithmTestScope<HMAC>(logger, context, provider, algorithm)
 
-    private fun runTestForEachDigest(block: suspend HmacTestScope.() -> Unit) = testAlgorithm(HMAC) {
+    private fun runTestForEachDigest(block: suspend HmacTestScope.() -> Unit) = testWithAlgorithm {
         //all values are in bytes
         listOf(
             Triple(SHA1, 20, 64),

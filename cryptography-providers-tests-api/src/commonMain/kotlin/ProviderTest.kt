@@ -30,21 +30,21 @@ abstract class ProviderTest(provider: CryptographyProvider) {
     )
     private val scope = ProviderTestScope(logger, context, provider)
 
-    fun test(block: suspend ProviderTestScope.() -> Unit): TestResult = runTest(timeout = timeout) {
+    fun testWithProvider(block: suspend ProviderTestScope.() -> Unit): TestResult = runTest(timeout = timeout) {
         disableJsConsoleDebug()
         scope.block()
     }
 
-    fun <A : CryptographyAlgorithm> testAlgorithm(
+    fun <A : CryptographyAlgorithm> testWithAlgorithm(
         algorithmId: CryptographyAlgorithmId<A>,
         block: suspend AlgorithmTestScope<A>.() -> Unit,
-    ): TestResult = test {
-        if (!supports(algorithmId)) return@test
+    ): TestResult = testWithProvider {
+        if (!supports(algorithmId)) return@testWithProvider
 
         val logger = logger.child(algorithmId.name)
         val algorithm = provider.getOrNull(algorithmId) ?: run {
             logger.print("not supported")
-            return@test
+            return@testWithProvider
         }
         logger.print("START")
         AlgorithmTestScope(logger, context, provider, algorithm).block()

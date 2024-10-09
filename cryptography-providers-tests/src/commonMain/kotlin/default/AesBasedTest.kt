@@ -12,9 +12,9 @@ import kotlinx.io.*
 import kotlinx.io.bytestring.*
 
 abstract class AesBasedTest<A : AES<*>>(
-    private val algorithmId: CryptographyAlgorithmId<A>,
+    algorithmId: CryptographyAlgorithmId<A>,
     provider: CryptographyProvider,
-) : ProviderTest(provider), CipherTest {
+) : AlgorithmTest<A>(algorithmId, provider), CipherTest {
 
     protected inner class AesTestScope(
         logger: TestLogger,
@@ -24,7 +24,7 @@ abstract class AesBasedTest<A : AES<*>>(
         val keySize: BinarySize,
     ) : AlgorithmTestScope<A>(logger, context, provider, algorithm)
 
-    protected fun runTestForEachKeySize(block: suspend AesTestScope.() -> Unit) = testAlgorithm(algorithmId) {
+    protected fun runTestForEachKeySize(block: suspend AesTestScope.() -> Unit) = testWithAlgorithm {
         generateSymmetricKeySize { keySize ->
             if (!supportsKeySize(keySize.inBits)) return@generateSymmetricKeySize
 

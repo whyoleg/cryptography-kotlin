@@ -23,7 +23,7 @@ abstract class SupportedAlgorithmsTest(provider: CryptographyProvider) : Provide
     }
 
     @Test
-    fun testSupported() = test {
+    fun testSupported() = testWithProvider {
         assertSupports(AES.ECB, !context.provider.isWebCrypto)
         assertSupports(AES.CBC)
         assertSupports(AES.CTR)

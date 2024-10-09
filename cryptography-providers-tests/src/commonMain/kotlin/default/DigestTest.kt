@@ -17,8 +17,8 @@ import kotlin.test.*
 abstract class DigestTest(provider: CryptographyProvider) : ProviderTest(provider) {
 
     private fun test(algorithmId: CryptographyAlgorithmId<Digest>, digestSize: Int) =
-        testAlgorithm(algorithmId) {
-            if (!supportsDigest(algorithmId)) return@testAlgorithm
+        testWithAlgorithm(algorithmId) {
+            if (!supportsDigest(algorithmId)) return@testWithAlgorithm
 
             val hasher = algorithm.hasher()
             assertEquals(digestSize, hasher.hash(ByteArray(0)).size)
@@ -99,8 +99,8 @@ abstract class DigestTest(provider: CryptographyProvider) : ProviderTest(provide
     fun testSHA3_512() = test(SHA3_512, 64)
 
     @Test
-    fun testFunctionIndexes() = testAlgorithm(SHA256) {
-        if (!supportsFunctions()) return@testAlgorithm
+    fun testFunctionIndexes() = testWithAlgorithm(SHA256) {
+        if (!supportsFunctions()) return@testWithAlgorithm
 
         val hashFunction = algorithm.hasher().createHashFunction()
         val array = ByteArray(10)
@@ -114,8 +114,8 @@ abstract class DigestTest(provider: CryptographyProvider) : ProviderTest(provide
     }
 
     @Test
-    fun testFunctionChunked() = testAlgorithm(SHA256) {
-        if (!supportsFunctions()) return@testAlgorithm
+    fun testFunctionChunked() = testWithAlgorithm(SHA256) {
+        if (!supportsFunctions()) return@testWithAlgorithm
 
         val hasher = algorithm.hasher()
         val bytes = ByteString(CryptographyRandom.nextBytes(10000))
@@ -130,8 +130,8 @@ abstract class DigestTest(provider: CryptographyProvider) : ProviderTest(provide
     }
 
     @Test
-    fun testFunctionReuse() = testAlgorithm(SHA256) {
-        if (!supportsFunctions()) return@testAlgorithm
+    fun testFunctionReuse() = testWithAlgorithm(SHA256) {
+        if (!supportsFunctions()) return@testWithAlgorithm
 
         val hasher = algorithm.hasher()
         val bytes1 = ByteString(CryptographyRandom.nextBytes(10000))
@@ -157,7 +157,7 @@ abstract class DigestTest(provider: CryptographyProvider) : ProviderTest(provide
     }
 
     @Test
-    fun testFunctionSource() = testAlgorithm(SHA256) {
+    fun testFunctionSource() = testWithAlgorithm(SHA256) {
         val hasher = algorithm.hasher()
 
         val bytes = ByteString(CryptographyRandom.nextBytes(10000))
@@ -167,7 +167,7 @@ abstract class DigestTest(provider: CryptographyProvider) : ProviderTest(provide
 
         assertContentEquals(digest, hasher.hash(source.copy()))
 
-        if (!supportsFunctions()) return@testAlgorithm
+        if (!supportsFunctions()) return@testWithAlgorithm
         hasher.createHashFunction().use { function ->
             assertContentEquals(bytes, function.updatingSource(source).buffered().readByteString())
             assertContentEquals(digest, function.hash())
