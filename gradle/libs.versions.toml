@@ -9,7 +9,7 @@ kotlinx-kover = "0.8.3"
 kotlinx-io = "0.5.4"
 kotlinx-serialization = "1.7.3"
 kotlinx-coroutines = "1.9.0"
-ktor = "2.3.12"
+ktor = "3.0.0"
 
 # android
 android = "8.5.0"
@@ -21,7 +21,7 @@ maven-publish = "0.29.0"
 
 # other
 bouncycastle = "1.78.1"
-logback = "1.2.11"
+logback = "1.5.9"
 
 [libraries]
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }

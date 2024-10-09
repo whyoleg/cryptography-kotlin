@@ -8,7 +8,7 @@ import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.utils.io.*
-import io.ktor.utils.io.core.*
+import kotlinx.io.*
 import java.nio.file.*
 import java.util.concurrent.atomic.*
 import kotlin.io.path.*
@@ -57,7 +57,7 @@ internal fun Route.routes(
 }
 
 private suspend fun ApplicationCall.saveFile(path: Path, name: String) {
-    val bytes = request.receiveChannel().readRemaining().readBytes()
+    val bytes = request.receiveChannel().readRemaining().readByteArray()
 
     path.createDirectories().resolve(name).writeBytes(bytes, StandardOpenOption.CREATE_NEW)
 }
