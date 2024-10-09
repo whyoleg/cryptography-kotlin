@@ -28,13 +28,13 @@ jobs:
             target: 'tvos'
           - os: 'windows-latest'
             target: 'native'
-          - os: 'ubuntu-latest'
+          - os: 'ubuntu-22.04'
             target: 'connectedAndroid'
             android-api-level: 21
-          - os: 'ubuntu-latest'
+          - os: 'ubuntu-22.04'
             target: 'connectedAndroid'
             android-api-level: 27
-          - os: 'ubuntu-latest'
+          - os: 'ubuntu-22.04'
             target: 'connectedAndroid'
             android-api-level: 33
     steps:
