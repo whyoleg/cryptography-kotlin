@@ -13,27 +13,30 @@ import kotlinx.cinterop.*
 import kotlin.experimental.*
 import kotlin.native.ref.*
 
-internal object Openssl3Pbkdf2 : PBKDF2 {
+internal object Openssl3Hkdf : HKDF {
     override fun secretDerivation(
         digest: CryptographyAlgorithmId<Digest>,
-        iterations: Int,
         outputSize: BinarySize,
-        salt: ByteArray,
-    ): SecretDerivation = Openssl3Pbkdf2SecretDerivation(
-        hashAlgorithm = hashAlgorithm(digest),
-        salt = salt,
-        iterations = iterations,
-        outputSize = outputSize,
-    )
+        salt: ByteArray?,
+        info: ByteArray?,
+    ): SecretDerivation {
+        val hashAlgorithm = hashAlgorithm(digest)
+        return Openssl3HkdfSecretDerivation(
+            hashAlgorithm = hashAlgorithm,
+            outputSize = outputSize,
+            salt = salt?.takeIf(ByteArray::isNotEmpty) ?: ByteArray(digestSize(hashAlgorithm)),
+            info = info?.takeIf(ByteArray::isNotEmpty),
+        )
+    }
 }
 
-private class Openssl3Pbkdf2SecretDerivation(
+private class Openssl3HkdfSecretDerivation(
     private val hashAlgorithm: String,
-    private val salt: ByteArray,
-    private val iterations: Int,
     private val outputSize: BinarySize,
+    private val salt: ByteArray,
+    private val info: ByteArray?,
 ) : SecretDerivation {
-    private val kdf = EVP_KDF_fetch(null, "PBKDF2", null)
+    private val kdf = EVP_KDF_fetch(null, "HKDF", null)
 
     @OptIn(ExperimentalNativeApi::class)
     private val cleaner = createCleaner(kdf, ::EVP_KDF_free)
@@ -48,11 +51,11 @@ private class Openssl3Pbkdf2SecretDerivation(
                     ctx = context,
                     key = output.refToU(0),
                     keylen = output.size.convert(),
-                    params = OSSL_PARAM_array(
+                    params = OSSL_PARAM_arrayNotNull(
                         OSSL_PARAM_construct_utf8_string("digest".cstr.ptr, hashAlgorithm.cstr.ptr, 0.convert()),
                         OSSL_PARAM_construct_octet_string("salt".cstr.ptr, salt.safeRefTo(0), salt.size.convert()),
-                        OSSL_PARAM_construct_uint32("iter".cstr.ptr, alloc(iterations.toUInt()).ptr),
-                        OSSL_PARAM_construct_octet_string("pass".cstr.ptr, input.safeRefTo(0), input.size.convert())
+                        info?.let { OSSL_PARAM_construct_octet_string("info".cstr.ptr, it.safeRefTo(0), it.size.convert()) },
+                        OSSL_PARAM_construct_octet_string("key".cstr.ptr, input.safeRefTo(0), input.size.convert())
                     )
                 )
             )
