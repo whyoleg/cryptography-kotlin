@@ -71,8 +71,3 @@ fun Buffer.bufferedSource(): Source = (this as RawSource).buffered()
 fun Buffer.bufferedSink(): Sink = (this as RawSink).buffered()
 
 expect fun disableJsConsoleDebug()
-
-// Wasm tests on browser cannot be filtered: https://youtrack.jetbrains.com/issue/KT-58291
-@OptIn(ExperimentalMultiplatform::class)
-@OptionalExpectation
-expect annotation class WasmIgnore()

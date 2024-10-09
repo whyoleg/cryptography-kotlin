@@ -4,10 +4,6 @@
 
 package dev.whyoleg.cryptography.providers.tests.api
 
-import kotlin.test.*
-
-actual typealias WasmIgnore = Ignore
-
 internal actual val currentTestPlatform: TestPlatform = jsPlatform().run {
     when {
         isNode -> TestPlatform.WasmJs.NodeJS(

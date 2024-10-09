@@ -15,21 +15,18 @@ abstract class CompatibilityTest<A : CryptographyAlgorithm>(
     abstract suspend fun CompatibilityTestScope<A>.generate(isStressTest: Boolean)
     abstract suspend fun CompatibilityTestScope<A>.validate()
 
-    @WasmIgnore
     @Test
     fun generateStep() = testWithAlgorithm {
         val logger = logger.child("GENERATE")
         runCompatibilityTestStep(logger, ServerApi(algorithmId.name, context, logger)) { generate(isStressTest = false) }
     }
 
-    @WasmIgnore
     @Test
     fun generateStressStep() = testWithAlgorithm {
         val logger = logger.child("GENERATE")
         runCompatibilityTestStep(logger, ServerApi(algorithmId.name, context, logger)) { generate(isStressTest = true) }
     }
 
-    @WasmIgnore
     @Test
     fun validateStep() = testWithAlgorithm {
         val logger = logger.child("VALIDATE")

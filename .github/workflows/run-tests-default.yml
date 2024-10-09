@@ -14,10 +14,8 @@ jobs:
       fail-fast: false
       matrix:
         os: [ 'ubuntu-latest' ]
-        target: [ 'jvmAll', 'js', 'native' ]
+        target: [ 'jvmAll', 'js', 'wasm', 'native' ]
         include:
-          - os: 'macos-latest'
-            target: 'wasm'
           - os: 'macos-latest'
             target: 'macos'
           - os: 'macos-latest'
