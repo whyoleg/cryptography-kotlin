@@ -67,6 +67,7 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
             "dev.whyoleg.cryptography.providers.tests.*",
             "dev.whyoleg.cryptography.providers.tests.compatibility.*",
             "dev.whyoleg.cryptography.providers.tests.default.*",
+            "dev.whyoleg.cryptography.providers.tests.testvectors.*",
         )
 
         private val testClasses = listOf(
@@ -96,6 +97,7 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
 
             "HmacTest",
             "HmacCompatibilityTest",
+            "HmacTestvectorsTest",
 
             "EcdsaTest",
             "EcdsaCompatibilityTest",
