@@ -25,40 +25,30 @@ internal object Openssl3Hmac : HMAC {
 
     override fun keyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<HMAC.Key.Format, HMAC.Key> {
         val hashAlgorithm = hashAlgorithm(digest)
-        val md = EVP_MD_fetch(null, hashAlgorithm, null)
-        val keySizeBytes = EVP_MD_get_block_size(md)
-        EVP_MD_free(md)
-        return HmacKeyDecoder(hashAlgorithm, keySizeBytes)
+        return HmacKeyDecoder(hashAlgorithm)
     }
 
     override fun keyGenerator(digest: CryptographyAlgorithmId<Digest>): KeyGenerator<HMAC.Key> {
         val hashAlgorithm = hashAlgorithm(digest)
-        val md = EVP_MD_fetch(null, hashAlgorithm, null)
-        val keySizeBytes = EVP_MD_get_block_size(md)
-        EVP_MD_free(md)
-        return HmacKeyGenerator(hashAlgorithm, keySizeBytes)
+        return HmacKeyGenerator(hashAlgorithm, blockSize(hashAlgorithm))
     }
 }
 
 private class HmacKeyDecoder(
     private val hashAlgorithm: String,
-    private val keySizeBytes: Int,
 ) : KeyDecoder<HMAC.Key.Format, HMAC.Key> {
     override fun decodeFromByteArrayBlocking(format: HMAC.Key.Format, bytes: ByteArray): HMAC.Key = when (format) {
-        HMAC.Key.Format.RAW -> {
-            require(bytes.size == keySizeBytes) { "Invalid key size: ${bytes.size}, expected: $keySizeBytes" }
-            HmacKey(hashAlgorithm, bytes.copyOf())
-        }
+        HMAC.Key.Format.RAW -> HmacKey(hashAlgorithm, bytes.copyOf())
         HMAC.Key.Format.JWK -> error("JWK is not supported")
     }
 }
 
 private class HmacKeyGenerator(
     private val hashAlgorithm: String,
-    private val keySizeBytes: Int,
+    private val blockSize: Int,
 ) : KeyGenerator<HMAC.Key> {
     override fun generateKeyBlocking(): HMAC.Key {
-        val key = CryptographyRandom.nextBytes(keySizeBytes)
+        val key = CryptographyRandom.nextBytes(blockSize)
         return HmacKey(hashAlgorithm, key)
     }
 }

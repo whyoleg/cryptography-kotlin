@@ -6,6 +6,7 @@ package dev.whyoleg.cryptography.providers.openssl3.internal
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
+import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 
 internal fun hashAlgorithm(digest: CryptographyAlgorithmId<Digest>): String = when (digest) {
     SHA1     -> "SHA1"
@@ -18,4 +19,22 @@ internal fun hashAlgorithm(digest: CryptographyAlgorithmId<Digest>): String = wh
     SHA3_384 -> "SHA3-384"
     SHA3_512 -> "SHA3-512"
     else -> throw IllegalStateException("Unsupported hash algorithm: $digest")
+}
+
+internal fun digestSize(hashAlgorithm: String): Int {
+    val md = checkError(EVP_MD_fetch(null, hashAlgorithm, null))
+    try {
+        return EVP_MD_get_size(md)
+    } finally {
+        EVP_MD_free(md)
+    }
+}
+
+internal fun blockSize(hashAlgorithm: String): Int {
+    val md = checkError(EVP_MD_fetch(null, hashAlgorithm, null))
+    try {
+        return EVP_MD_get_block_size(md)
+    } finally {
+        EVP_MD_free(md)
+    }
 }
