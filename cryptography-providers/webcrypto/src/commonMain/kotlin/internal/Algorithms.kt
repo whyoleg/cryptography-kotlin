@@ -19,7 +19,7 @@ internal expect fun AesCtrCipherAlgorithm(counter: ByteArray, length: Int): Algo
 
 internal expect fun AesGcmCipherAlgorithm(additionalData: ByteArray?, iv: ByteArray, tagLength: Int): Algorithm
 
-internal expect fun HmacKeyAlgorithm(hash: String, length: Int): Algorithm
+internal expect fun HmacKeyAlgorithm(hash: String, length: Int?): Algorithm
 
 internal expect fun EcKeyAlgorithm(
     name: String, //ECDSA | ECDH

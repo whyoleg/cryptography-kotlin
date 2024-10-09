@@ -41,7 +41,15 @@ private fun jsAesGcmCipherAlgorithm(iv: Int8Array, tagLength: Int): Algorithm =
 private fun jsAesGcmCipherAlgorithm(iv: Int8Array, tagLength: Int, additionalData: Int8Array): Algorithm =
     js("({ name: 'AES-GCM', iv: iv, tagLength: tagLength, additionalData: additionalData })")
 
-internal actual fun HmacKeyAlgorithm(hash: String, length: Int): Algorithm =
+internal actual fun HmacKeyAlgorithm(hash: String, length: Int?): Algorithm = when (length) {
+    null -> jsHmacKeyAlgorithm(hash)
+    else -> jsHmacKeyAlgorithm(hash, length)
+}
+
+private fun jsHmacKeyAlgorithm(hash: String): Algorithm =
+    js("({ name: 'HMAC', hash })")
+
+private fun jsHmacKeyAlgorithm(hash: String, length: Int): Algorithm =
     js("({ name: 'HMAC', hash: hash, length: length })")
 
 internal actual fun EcKeyAlgorithm(name: String, namedCurve: String): Algorithm =

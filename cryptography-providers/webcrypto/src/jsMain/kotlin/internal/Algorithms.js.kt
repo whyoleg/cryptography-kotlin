@@ -30,8 +30,12 @@ internal actual fun AesGcmCipherAlgorithm(additionalData: ByteArray?, iv: ByteAr
     }.unsafeCast<Algorithm>()
 }
 
-internal actual fun HmacKeyAlgorithm(hash: String, length: Int): Algorithm =
-    js("{ name: 'HMAC', hash: hash, length: length }").unsafeCast<Algorithm>()
+internal actual fun HmacKeyAlgorithm(hash: String, length: Int?): Algorithm {
+    return when (length) {
+        null -> js("{ name: 'HMAC', hash: hash }")
+        else -> js("{ name: 'HMAC', hash: hash, length: length }")
+    }.unsafeCast<Algorithm>()
+}
 
 internal actual fun EcKeyAlgorithm(name: String, namedCurve: String): Algorithm =
     js("{ name: name, namedCurve: namedCurve }").unsafeCast<Algorithm>()
