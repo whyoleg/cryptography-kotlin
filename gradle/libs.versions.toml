@@ -6,9 +6,9 @@ kotlin = "2.0.20"
 kotlin-dokka = "1.9.20"
 kotlinx-bcv = "0.16.3"
 kotlinx-kover = "0.8.3"
-kotlinx-io = "0.5.3"
-kotlinx-serialization = "1.7.1"
-kotlinx-coroutines = "1.8.1"
+kotlinx-io = "0.5.4"
+kotlinx-serialization = "1.7.3"
+kotlinx-coroutines = "1.9.0"
 ktor = "2.3.12"
 
 # android
