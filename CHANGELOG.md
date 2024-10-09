@@ -1,5 +1,64 @@
 # CHANGELOG
 
+## 0.4.0 – Secret derivation, more algorithms, kotlinx-io
+
+> Published 12 Oct 2024
+
+### Features
+
+* Ecliptic curves improvements:
+    * Implement ECDH via a new shared secret derivation API
+    * Support ECDSA in Apple provider
+    * Support both ECDSA signature formats for all providers
+    * Added RAW private key encoding (encoding secret value)
+    * Added SEC1/RFC5915 private key encoding
+* New algorithms:
+    * Support for PBKDF2 and HKDF via a new secret derivation API
+    * Legacy algorithms supported. Make sure you really need them before use:
+        * AES-ECB – JDK name AES/ECB/PKCS1Padding or AES/ECB/NoPadding
+        * RSA-PKCS1 (encryption) – JDK name RSA/ECB/PKCS1Padding
+        * RSA (encryption) – JDK name RSA/ECB/NoPadding
+* IO improvements and kotlinx-io integration:
+    * Support `ByteString` in places where `ByteArray` is used
+    * Incremental hashing and signature generation/verification via `HashFunction`, `SignFunction` and `VerifyFunction`
+    * Support hash/sign/verify over kotlinx-io `Sink` and `Source`
+    * Support for streaming encryption/decryption over kotlinx-io `Sink` and `Source`
+* Add the ability to use custom IV in AES-GCM ([#38](https://github.com/whyoleg/cryptography-kotlin/pull/38))
+* Allow arbitrary key sizes in HMAC
+
+### Breaking changes
+
+* Drop default signature format parameter for ECDSA
+* Rename some parameters in algorithms/operations to have better clarity and less noise
+* Rename `PEM` and `DER` to `Pem` and `Der` respectively
+* Move operations from subpackages to `operations` package
+    * `dev.whyoleg.cryptography.operations.hash.Hasher` was moved to `dev.whyoleg.cryptography.operations.Hasher`
+    * `dev.whyoleg.cryptography.operations.cipher.*` was moved to `dev.whyoleg.cryptography.operations.*`
+    * `dev.whyoleg.cryptography.operations.signature.*` was moved to `dev.whyoleg.cryptography.operations.*`
+    * Old declarations are deprecated for removal with `ReplaceWith`
+* Move algorithms from subpackages to `algorithms` package
+    * `dev.whyoleg.cryptography.algorithms.digest.*` was moved to `dev.whyoleg.cryptography.algorithms.*`
+    * `dev.whyoleg.cryptography.algorithms.symmetric.*` was moved to `dev.whyoleg.cryptography.algorithms.*`
+    * `dev.whyoleg.cryptography.algorithms.asymmetric.*` was moved to `dev.whyoleg.cryptography.algorithms.*`
+    * Old declarations are deprecated for removal with `ReplaceWith`
+* `SymmetricKeySize` was deprecated in favor of `AES.Key.Size` properties
+* `SignatureVerifier.verifySignature` now throws on invalid signature instead of returning `Boolean`
+    * `SignatureVerifier.tryVerifySignature` is introduced for rare cases when graceful handling is needed
+* Renamed AES methods with explicitly provided IV from `encrypt(iv)`/`decrypt(iv)` to `encryptWithIv(iv)`/`decryptWithIv(iv)` to be more
+  explicit and better distinguish implcit and explict cases
+* `CryptographyException` is no longer used: `IllegalStateException` is thrown instead
+
+### Other improvements
+
+* Kotlin 2.0.20
+* Update the prebuilt OpenSSL version to 3.3.2
+* Improve ASN.1/DER encoding feature coverage:
+    * support Context specific tags, both implicit and explicit
+    * fully support optional and default properties
+    * support Kotlin inline classes
+    * add more ASN.1 modules for RSA and EC
+* Make `ServiceLoader` usage to be optimized by Android R8
+
 ## 0.3.1
 
 > Published 21 May 2024
@@ -36,7 +95,6 @@
 * Replace InsecureAlgorithm annotation with DelicateCryptographyApi - API breaking change
 * `publicExponent` parameter in RSA `keyPairGenerator` is now of type `BigInt` - both API and ABI breaking change
 * RSA key formats are now implemented via `sealed class` instead of `enum` - ABI breaking change
-*
 
 ### General improvements
 
