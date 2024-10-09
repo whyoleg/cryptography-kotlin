@@ -17,12 +17,12 @@ import platform.CoreCrypto.*
 internal object CCHmac : HMAC {
     override fun keyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<HMAC.Key.Format, HMAC.Key> {
         return when (digest) {
-            SHA1   -> HmacKeyDecoder(kCCHmacAlgSHA1, CC_SHA1_BLOCK_BYTES, CC_SHA1_DIGEST_LENGTH)
-            SHA224 -> HmacKeyDecoder(kCCHmacAlgSHA224, CC_SHA224_BLOCK_BYTES, CC_SHA224_DIGEST_LENGTH)
-            SHA256 -> HmacKeyDecoder(kCCHmacAlgSHA256, CC_SHA256_BLOCK_BYTES, CC_SHA256_DIGEST_LENGTH)
-            SHA384 -> HmacKeyDecoder(kCCHmacAlgSHA384, CC_SHA384_BLOCK_BYTES, CC_SHA384_DIGEST_LENGTH)
-            SHA512 -> HmacKeyDecoder(kCCHmacAlgSHA512, CC_SHA512_BLOCK_BYTES, CC_SHA512_DIGEST_LENGTH)
-            else -> throw IllegalStateException("Unsupported hash algorithm: $digest")
+            SHA1   -> HmacKeyDecoder(kCCHmacAlgSHA1, CC_SHA1_DIGEST_LENGTH)
+            SHA224 -> HmacKeyDecoder(kCCHmacAlgSHA224, CC_SHA224_DIGEST_LENGTH)
+            SHA256 -> HmacKeyDecoder(kCCHmacAlgSHA256, CC_SHA256_DIGEST_LENGTH)
+            SHA384 -> HmacKeyDecoder(kCCHmacAlgSHA384, CC_SHA384_DIGEST_LENGTH)
+            SHA512 -> HmacKeyDecoder(kCCHmacAlgSHA512, CC_SHA512_DIGEST_LENGTH)
+            else   -> throw IllegalStateException("Unsupported hash algorithm: $digest")
         }
     }
 
@@ -40,25 +40,21 @@ internal object CCHmac : HMAC {
 
 private class HmacKeyDecoder(
     private val hmacAlgorithm: CCHmacAlgorithm,
-    private val keySizeBytes: Int,
     private val digestSize: Int,
 ) : KeyDecoder<HMAC.Key.Format, HMAC.Key> {
     override fun decodeFromByteArrayBlocking(format: HMAC.Key.Format, bytes: ByteArray): HMAC.Key = when (format) {
-        HMAC.Key.Format.RAW -> {
-            require(bytes.size == keySizeBytes) { "Invalid key size: ${bytes.size}, expected: $keySizeBytes" }
-            wrapKey(hmacAlgorithm, bytes.copyOf(), digestSize)
-        }
+        HMAC.Key.Format.RAW -> wrapKey(hmacAlgorithm, bytes.copyOf(), digestSize)
         HMAC.Key.Format.JWK -> error("JWK is not supported")
     }
 }
 
 private class HmacKeyGenerator(
     private val hmacAlgorithm: CCHmacAlgorithm,
-    private val keySizeBytes: Int,
+    private val blockSize: Int,
     private val digestSize: Int,
 ) : KeyGenerator<HMAC.Key> {
     override fun generateKeyBlocking(): HMAC.Key {
-        val key = CryptographyRandom.nextBytes(keySizeBytes)
+        val key = CryptographyRandom.nextBytes(blockSize)
         return wrapKey(hmacAlgorithm, key, digestSize)
     }
 }
