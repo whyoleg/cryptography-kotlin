@@ -84,6 +84,7 @@ kotlin {
         createTestRuns("3_0", openssl.v3_0)
         createTestRuns("3_1", openssl.v3_1)
         createTestRuns("3_2", openssl.v3_2)
+        createTestRuns("3_3", openssl.v3_3)
     }
 }
 

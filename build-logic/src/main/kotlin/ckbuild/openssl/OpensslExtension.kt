@@ -15,6 +15,7 @@ abstract class OpensslService : BuildService<BuildServiceParameters.None> {
     abstract val v3_0: DirectoryProperty
     abstract val v3_1: DirectoryProperty
     abstract val v3_2: DirectoryProperty
+    abstract val v3_3: DirectoryProperty
 }
 
 @Suppress("PropertyName")
@@ -22,6 +23,7 @@ class OpensslExtension(service: Provider<OpensslService>) {
     val v3_0: OpensslXExtension = OpensslXExtension(service.flatMap { it.v3_0 })
     val v3_1: OpensslXExtension = OpensslXExtension(service.flatMap { it.v3_1 })
     val v3_2: OpensslXExtension = OpensslXExtension(service.flatMap { it.v3_2 })
+    val v3_3: OpensslXExtension = OpensslXExtension(service.flatMap { it.v3_3 })
 }
 
 fun Task.uses(openssl: OpensslXExtension, block: OpensslXExtension.() -> Unit = {}) {
