@@ -34,11 +34,11 @@ provider.get(SHA512)
 
 ```kotlin
 dependencies {
-    implementation("dev.whyoleg.cryptography:cryptography-provider-openssl3-api:0.3.1")
+    implementation("dev.whyoleg.cryptography:cryptography-provider-openssl3-api:0.4.0")
     // or
-    implementation("dev.whyoleg.cryptography:cryptography-provider-openssl3-shared:0.3.1")
+    implementation("dev.whyoleg.cryptography:cryptography-provider-openssl3-shared:0.4.0")
     // or
-    implementation("dev.whyoleg.cryptography:cryptography-provider-openssl3-prebuilt:0.3.1")
+    implementation("dev.whyoleg.cryptography:cryptography-provider-openssl3-prebuilt:0.4.0")
 }
 ```
 

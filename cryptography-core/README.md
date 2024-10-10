@@ -24,7 +24,7 @@ CryptographyProvider.Default
 
 ```kotlin
 dependencies {
-    implementation("dev.whyoleg.cryptography:cryptography-core:0.3.1")
+    implementation("dev.whyoleg.cryptography:cryptography-core:0.4.0")
 }
 ```
 

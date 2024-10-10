@@ -47,7 +47,7 @@ provider.get(SHA512)
 
 ```kotlin
 dependencies {
-    implementation("dev.whyoleg.cryptography:cryptography-provider-jdk:0.3.1")
+    implementation("dev.whyoleg.cryptography:cryptography-provider-jdk:0.4.0")
 }
 ```
 

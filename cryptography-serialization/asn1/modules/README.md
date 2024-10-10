@@ -19,7 +19,7 @@ val spkiPublicKey: ByteArray = DER.encodeToByteArray(
 
 ```kotlin
 dependencies {
-    implementation("dev.whyoleg.cryptography:cryptography-serialization-asn1-modules:0.3.1")
+    implementation("dev.whyoleg.cryptography:cryptography-serialization-asn1-modules:0.4.0")
 }
 ```
 

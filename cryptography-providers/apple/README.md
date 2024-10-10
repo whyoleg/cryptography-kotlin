@@ -27,7 +27,7 @@ provider.get(SHA512)
 
 ```kotlin
 dependencies {
-    implementation("dev.whyoleg.cryptography:cryptography-provider-apple:0.3.1")
+    implementation("dev.whyoleg.cryptography:cryptography-provider-apple:0.4.0")
 }
 ```
 

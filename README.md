@@ -42,19 +42,19 @@ The library is published to Maven Central, so make sure, that it’s added to re
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("dev.whyoleg.cryptography:cryptography-core:0.3.1")
+            implementation("dev.whyoleg.cryptography:cryptography-core:0.4.0")
         }
         // or androidMain
         jvmMain.dependencies {
-            implementation("dev.whyoleg.cryptography:cryptography-provider-jdk:0.3.1")
+            implementation("dev.whyoleg.cryptography:cryptography-provider-jdk:0.4.0")
         }
         appleMain.dependencies {
-            implementation("dev.whyoleg.cryptography:cryptography-provider-apple:0.3.1")
+            implementation("dev.whyoleg.cryptography:cryptography-provider-apple:0.4.0")
             // or openssl3 provider with better algorithms coverage and other native targets support  
-            // implementation("dev.whyoleg.cryptography:cryptography-provider-openssl3-prebuilt:0.3.1")
+            // implementation("dev.whyoleg.cryptography:cryptography-provider-openssl3-prebuilt:0.4.0")
         }
         wasmJsMain.dependencies {
-            implementation("dev.whyoleg.cryptography:cryptography-provider-webcrypto:0.3.1")
+            implementation("dev.whyoleg.cryptography:cryptography-provider-webcrypto:0.4.0")
         }
     }
 }
@@ -69,7 +69,7 @@ repositories {
     maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
 }
 dependencies {
-    implementation("dev.whyoleg.cryptography:cryptography-core:0.4.0-SNAPSHOT")
+    implementation("dev.whyoleg.cryptography:cryptography-core:0.4.1-SNAPSHOT")
 }
 ```
 
