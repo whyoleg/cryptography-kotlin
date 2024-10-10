@@ -18,8 +18,10 @@ Detailed documentation can be found on
 cryptography-kotlin provides multiplatform API which consists of multiple components:
 
 * [Secure random][Secure random] with [kotlin.Random][kotlin.Random] like API which can be used independently of other modules
-* common API to use different cryptography operations, like [ciphers][ciphers], [digests][digests] and [signatures][signatures]
-* multiple algorithms definitions, like [AES][AES], [RSA][RSA], [ECDSA][ECDSA] and [SHA][SHA]
+* common API to use different cryptography operations,
+  like [ciphers][ciphers], [digests][digests], [signatures][signatures], [key derivation][key derivation], [Key agreement][Key agreement]
+* multiple algorithms definitions, like [AES][AES], [RSA][RSA], [ECDSA][ECDSA], [ECDH][ECDH], [SHA][SHA256], [HMAC][HMAC]
+  and [PBKDF2][PBKDF2]
 * multiple cryptography [providers][providers], like [OpenSSL][OpenSSL], [WebCrypto][WebCrypto] and [JDK][JDK]
 
 The library doesn't implement any cryptography algorithm on its own, but wraps well-known future-proof solutions
@@ -31,28 +33,28 @@ For supported algorithms, primitives and targets, please consult [Providers docu
 
 ## Using in your projects
 
-Make sure that you use Kotlin 1.9.10+.
+Make sure that you use Kotlin 2.0.20+.
 Using an earlier Kotlin version could still work, but not tested.  
-Additionally, it's possible to use [BOM][BOM] or [Gradle version catalog][Gradle version catalog] to add dependencies easier
+Additionally, it's possible to use [BOM][BOM] or [Gradle version catalog][Gradle version catalog] to add dependencies easier.
+The library is published to Maven Central, so make sure, that it’s added to repositories.
 
 ```kotlin
-repositories {
-    mavenCentral()
-}
-
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation(project.dependencies.platform("dev.whyoleg.cryptography:cryptography-bom:0.3.1"))
-            implementation("dev.whyoleg.cryptography:cryptography-core")
+            implementation("dev.whyoleg.cryptography:cryptography-core:0.3.1")
         }
-        androidMain.dependencies {
-            implementation("dev.whyoleg.cryptography:cryptography-provider-jdk")
+        // or androidMain
+        jvmMain.dependencies {
+            implementation("dev.whyoleg.cryptography:cryptography-provider-jdk:0.3.1")
         }
-        iosMain.dependencies {
-            implementation("dev.whyoleg.cryptography:cryptography-provider-openssl3-prebuilt")
-            // or `apple` provider
-            // implementation("dev.whyoleg.cryptography:cryptography-provider-apple")
+        appleMain.dependencies {
+            implementation("dev.whyoleg.cryptography:cryptography-provider-apple:0.3.1")
+            // or openssl3 provider with better algorithms coverage and other native targets support  
+            // implementation("dev.whyoleg.cryptography:cryptography-provider-openssl3-prebuilt:0.3.1")
+        }
+        wasmJsMain.dependencies {
+            implementation("dev.whyoleg.cryptography:cryptography-provider-webcrypto:0.3.1")
         }
     }
 }
@@ -68,8 +70,6 @@ repositories {
 }
 dependencies {
     implementation("dev.whyoleg.cryptography:cryptography-core:0.4.0-SNAPSHOT")
-    // some provider
-    implementation("dev.whyoleg.cryptography:cryptography-provider-jdk:0.4.0-SNAPSHOT")
 }
 ```
 
@@ -100,19 +100,31 @@ For bugs, questions and discussions, please use the [GitHub Issues](https://gith
 
 [kotlin.Random]: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.random/-random/
 
-[ciphers]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.operations.cipher/index.html
+[ciphers]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.operations/-cipher/index.html
 
-[digests]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.operations.hash/index.html
+[digests]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.operations/-hasher/index.html
 
-[signatures]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.operations.signature/index.html
+[signatures]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.operations/-signature-generator/index.html
 
-[AES]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms.symmetric/-a-e-s/index.html
+[key derivation]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.operations/-secret-derivation/index.html
 
-[RSA]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms.asymmetric/-r-s-a/index.html
+[Key agreement]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.operations/-shared-secret-derivation/index.html
 
-[ECDSA]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms.asymmetric/-e-c-d-s-a/index.html
+[SHA256]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-s-h-a256/index.html
 
-[SHA]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms.digest/index.html
+[AES]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-a-e-s/index.html
+
+[HMAC]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-h-m-a-c/index.html
+
+[RSA]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-r-s-a/index.html
+
+[ECDSA]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-e-c-d-s-a/index.html
+
+[ECDH]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-e-c-d-h/index.html
+
+[PBKDF2]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-p-b-k-d-f2/index.html
+
+[HKDF]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-h-k-d-f/index.html
 
 [providers]: https://whyoleg.github.io/cryptography-kotlin/providers/
 
