@@ -2,13 +2,10 @@
  * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
-import org.jetbrains.kotlin.gradle.targets.js.dsl.*
-import org.jetbrains.kotlin.gradle.targets.js.nodejs.*
-import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin.Companion.kotlinNodeJsExtension
-import org.jetbrains.kotlin.gradle.targets.js.npm.tasks.*
+import org.jetbrains.kotlin.gradle.*
 
 plugins {
-    kotlin("multiplatform") version "1.9.22"
+    kotlin("multiplatform") version "2.0.20"
 }
 
 kotlin {
@@ -57,12 +54,12 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(kotlin("test"))
-            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
         }
         jsMain.dependencies {
             implementation(cryptographyLibs.provider.webcrypto)
         }
-        named("wasmJsMain").dependencies {
+        wasmJsMain.dependencies {
             implementation(cryptographyLibs.provider.webcrypto)
         }
         jvmMain.dependencies {
@@ -71,16 +68,5 @@ kotlin {
         nativeMain.dependencies {
             implementation(cryptographyLibs.provider.openssl3.prebuilt)
         }
-    }
-}
-
-// node version with WASM support
-plugins.withType<NodeJsRootPlugin> {
-    kotlinNodeJsExtension.apply {
-        nodeVersion = "21.0.0-v8-canary202310177990572111"
-        nodeDownloadBaseUrl = "https://nodejs.org/download/v8-canary"
-    }
-    tasks.withType<KotlinNpmInstallTask>().configureEach {
-        args.add("--ignore-engines")
     }
 }
