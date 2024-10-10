@@ -29,7 +29,8 @@ if (project == rootProject) {
         property.set(setupOpenssl.map { it.outputDirectory.get() })
     }
 
-    configureOpenssl("v3_0", "3.0.12", "3.0.12_1", service.v3_0)
-    configureOpenssl("v3_1", "3.1.4", "3.1.4_1", service.v3_1)
-    configureOpenssl("v3_2", "3.2.0", "3.2.0_1", service.v3_2)
+    configureOpenssl("v3_0", "3.0.15", "3.0.15_1", service.v3_0)
+    configureOpenssl("v3_1", "3.1.7", "3.1.7_1", service.v3_1)
+    configureOpenssl("v3_2", "3.2.3", "3.2.3_1", service.v3_2)
+    configureOpenssl("v3_3", "3.3.2", "3.3.2_1", service.v3_3)
 }
