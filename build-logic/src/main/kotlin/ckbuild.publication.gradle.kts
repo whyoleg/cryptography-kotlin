@@ -53,5 +53,5 @@ signing.isRequired = false
 // and so we need to manually create task dependencies to make Gradle happy
 val javadocJar by tasks.registering(Jar::class) { archiveClassifier.set("javadoc") }
 tasks.withType<Sign>().configureEach { dependsOn(javadocJar) }
-tasks.withType<AbstractPublishToMaven>().configureEach { dependsOn(tasks.withType<Sign>()) }
+tasks.withType<AbstractPublishToMaven>().configureEach { mustRunAfter(tasks.withType<Sign>()) }
 publishing.publications.withType<MavenPublication>().configureEach { artifact(javadocJar) }
