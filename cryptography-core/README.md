@@ -34,9 +34,9 @@ dependencies {
 
 [CryptographyAlgorithm]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography/-cryptography-algorithm/index.html
 
-[AES]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms.symmetric/-a-e-s/index.html
+[AES]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-a-e-s/index.html
 
-[cipher]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.operations.cipher/-cipher/index.html
+[cipher]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.operations/-cipher/index.html
 
 # Package dev.whyoleg.cryptography
 
@@ -47,34 +47,44 @@ and [CryptographyProvider][CryptographyProvider]
 
 [CryptographyAlgorithm]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography/-cryptography-algorithm/index.html
 
-# Package dev.whyoleg.cryptography.algorithms.digest
+# Package dev.whyoleg.cryptography.algorithms
 
-Provides common digest algorithms, like [SHA256][SHA256] and [SHA512][SHA512]
+Provides common algorithms:
+
+* digests (e.g [SHA256][SHA256] and [SHA512][SHA512])
+* symmetric ciphers ([AES][AES])
+* asymmetric encryption and signature ([RSA][RSA] and [ECDSA][ECDSA])
+* MAC ([HMAC][HMAC])
+* Key derivation ([PBKDF2][PBKDF2] and [HKDF][HKDF])
+* Key agreement ([ECDH][ECDH])
 
 [SHA256]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms.digest/-s-h-a256/index.html
 
 [SHA512]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms.digest/-s-h-a512/index.html
 
-# Package dev.whyoleg.cryptography.algorithms.symmetric
-
-Provides common symmetric ciphers and MAC algorithms, like [AES][AES] and [HMAC][HMAC]
-
 [AES]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms.symmetric/-a-e-s/index.html
 
 [HMAC]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms.symmetric/-h-m-a-c/index.html
-
-# Package dev.whyoleg.cryptography.algorithms.asymmetric
-
-Provides common asymmetric encryption and signature algorithms, like [RSA][RSA] and [ECDSA][ECDSA]
 
 [RSA]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms.asymmetric/-r-s-a/index.html
 
 [ECDSA]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms.asymmetric/-e-c-d-s-a/index.html
 
-# Package dev.whyoleg.cryptography.operations.cipher
+[ECDH]: https
 
-Provides API for [encryption][Encryptor]/[decryption][Decryptor] and
-Authenticated [encryption][AuthenticatedEncryptor]/[decryption][AuthenticatedDecryptor]
+[PBKDF2]: https
+
+[HKDF]: https
+
+# Package dev.whyoleg.cryptography.operations
+
+Provides APIs to perform cryptography operations:
+
+* [hashing][Hasher]
+* [encryption][Encryptor]/[decryption][Decryptor] and
+  Authenticated [encryption][AuthenticatedEncryptor]/[decryption][AuthenticatedDecryptor]
+* signature [verification][SignatureVerifier] and [generation][SignatureGenerator]
+* secret derivation (KDF/PRF) and shared secret derivation (Key agreement) TODO: LINKS
 
 [Encryptor]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.operations.cipher/-encryptor/index.html
 
@@ -84,15 +94,7 @@ Authenticated [encryption][AuthenticatedEncryptor]/[decryption][AuthenticatedDec
 
 [AuthenticatedDecryptor]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.operations.cipher/-authenticated-decryptor/index.html
 
-# Package dev.whyoleg.cryptography.operations.hash
-
-Provides [hashing][Hasher] operation
-
 [Hasher]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.operations.hash/-hasher/index.html
-
-# Package dev.whyoleg.cryptography.operations.signature
-
-Provides signature [verification][SignatureVerifier] and [generation][SignatureGenerator] API
 
 [SignatureVerifier]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.operations.signature/-signature-verifier/index.html
 
