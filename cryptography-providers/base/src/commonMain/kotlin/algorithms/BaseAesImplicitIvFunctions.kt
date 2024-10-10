@@ -75,7 +75,24 @@ public class BaseAesImplicitIvEncryptFunction(
         }
 
         override fun close() {
-            originalSink.close()
+            var thrown = try {
+                // write IV
+                if (iv.size != 0L) {
+                    originalSink.write(iv, iv.size)
+                }
+                null
+            } catch (cause: Throwable) {
+                cause
+            }
+
+            try {
+                originalSink.close()
+            } catch (cause: Throwable) {
+                if (thrown == null) thrown = cause
+                else thrown.addSuppressed(cause)
+            }
+
+            if (thrown != null) throw thrown
         }
     }
 }
@@ -87,7 +104,7 @@ public class BaseAesImplicitIvDecryptFunction(
 ) : CipherFunction {
     override fun transform(source: ByteArray, startIndex: Int, endIndex: Int): ByteArray {
         checkBounds(source.size, startIndex, endIndex)
-        require(endIndex - startIndex >= ivSize) { "Not enough data to read iv" }
+        require(endIndex - startIndex >= ivSize) { "Not enough data to read iv (expected $ivSize, got ${endIndex - startIndex})" }
         return initialize(source, startIndex).transform(source, startIndex + ivSize, endIndex)
     }
 
