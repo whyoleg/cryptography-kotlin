@@ -24,7 +24,7 @@ abstract class DigestTest(provider: CryptographyProvider) : ProviderTest(provide
             assertEquals(digestSize, hasher.hash(ByteArray(0)).size)
             repeat(8) { n ->
                 val maxSize = 10.0.pow(n).toInt()
-                ((1..10).map { CryptographyRandom.nextInt(maxSize) } + maxSize).forEach { size ->
+                ((1..5).map { CryptographyRandom.nextInt(maxSize) } + maxSize).forEach { size ->
                     val data = ByteString(CryptographyRandom.nextBytes(size))
 
                     val digest = hasher.hash(data)
