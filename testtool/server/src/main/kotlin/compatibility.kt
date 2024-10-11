@@ -4,6 +4,7 @@
 
 package dev.whyoleg.cryptography.testtool.server
 
+import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -57,13 +58,19 @@ internal fun Route.routes(
 }
 
 private suspend fun ApplicationCall.saveFile(path: Path, name: String) {
-    val bytes = request.receiveChannel().readRemaining().readByteArray()
+    val buffer = request.receiveChannel().readBuffer()
 
-    path.createDirectories().resolve(name).writeBytes(bytes, StandardOpenOption.CREATE_NEW)
+    path.createDirectories().resolve(name)
+        .outputStream(StandardOpenOption.CREATE_NEW)
+        .use(buffer::readTo)
 }
 
-private suspend fun ApplicationCall.getFiles(path: Path, get: Path.() -> Pair<String, Path>) = respondBytesWriter {
-    if (!path.exists()) return@respondBytesWriter
+private suspend fun ApplicationCall.getFiles(path: Path, get: Path.() -> Pair<String, Path>) {
+    if (!path.exists()) {
+        respond(HttpStatusCode.OK)
+    }
+
+    val output = Buffer()
 
     path.forEachDirectoryEntry { entry ->
         val (id, contentPath) = get(entry)
@@ -72,10 +79,11 @@ private suspend fun ApplicationCall.getFiles(path: Path, get: Path.() -> Pair<St
             return@forEachDirectoryEntry
         }
         val idBytes = id.encodeToByteArray()
-        val contentBytes = contentPath.readBytes()
-        writeInt(idBytes.size)
-        writeFully(idBytes)
-        writeInt(contentBytes.size)
-        writeFully(contentBytes)
+        output.writeInt(idBytes.size)
+        output.write(idBytes)
+        output.writeInt(contentPath.fileSize().toInt())
+        contentPath.inputStream().use(output::transferFrom)
     }
+
+    respondSource(output)
 }
