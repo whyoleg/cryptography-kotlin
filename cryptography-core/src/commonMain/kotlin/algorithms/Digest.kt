@@ -37,3 +37,9 @@ public object SHA3_384 : CryptographyAlgorithmId<Digest>("SHA3-384")
 
 @Suppress("ClassName")
 public object SHA3_512 : CryptographyAlgorithmId<Digest>("SHA3-512")
+
+@DelicateCryptographyApi
+public object RIPEMD128 : CryptographyAlgorithmId<Digest>("RIPEMD-128")
+public object RIPEMD160 : CryptographyAlgorithmId<Digest>("RIPEMD-160")
+public object RIPEMD256 : CryptographyAlgorithmId<Digest>("RIPEMD-256")
+public object RIPEMD320 : CryptographyAlgorithmId<Digest>("RIPEMD-320")

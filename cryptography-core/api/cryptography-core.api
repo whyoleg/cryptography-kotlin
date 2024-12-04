@@ -446,6 +446,22 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/PBKDF2 : dev
 public final class dev/whyoleg/cryptography/algorithms/PBKDF2$Companion : dev/whyoleg/cryptography/CryptographyAlgorithmId {
 }
 
+public final class dev/whyoleg/cryptography/algorithms/RIPEMD128 : dev/whyoleg/cryptography/CryptographyAlgorithmId {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/RIPEMD128;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/RIPEMD160 : dev/whyoleg/cryptography/CryptographyAlgorithmId {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/RIPEMD160;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/RIPEMD256 : dev/whyoleg/cryptography/CryptographyAlgorithmId {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/RIPEMD256;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/RIPEMD320 : dev/whyoleg/cryptography/CryptographyAlgorithmId {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/RIPEMD320;
+}
+
 public abstract interface class dev/whyoleg/cryptography/algorithms/RSA : dev/whyoleg/cryptography/CryptographyAlgorithm {
 	public abstract fun keyPairGenerator-imL9hLU (ILdev/whyoleg/cryptography/CryptographyAlgorithmId;Ldev/whyoleg/cryptography/bigint/BigInt;)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
 	public static synthetic fun keyPairGenerator-imL9hLU$default (Ldev/whyoleg/cryptography/algorithms/RSA;ILdev/whyoleg/cryptography/CryptographyAlgorithmId;Ldev/whyoleg/cryptography/bigint/BigInt;ILjava/lang/Object;)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;

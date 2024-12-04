@@ -26,6 +26,11 @@ abstract class Sha3B256CompatibilityTest(provider: CryptographyProvider) : Diges
 abstract class Sha3B384CompatibilityTest(provider: CryptographyProvider) : DigestCompatibilityTest(SHA3_384, provider)
 abstract class Sha3B512CompatibilityTest(provider: CryptographyProvider) : DigestCompatibilityTest(SHA3_512, provider)
 
+abstract class Ripemd128CompatibilityTest(provider: CryptographyProvider) : DigestCompatibilityTest(RIPEMD128, provider)
+abstract class Ripemd160CompatibilityTest(provider: CryptographyProvider) : DigestCompatibilityTest(RIPEMD160, provider)
+abstract class Ripemd256CompatibilityTest(provider: CryptographyProvider) : DigestCompatibilityTest(RIPEMD256, provider)
+abstract class Ripemd320CompatibilityTest(provider: CryptographyProvider) : DigestCompatibilityTest(RIPEMD320, provider)
+
 abstract class DigestCompatibilityTest(algorithmId: CryptographyAlgorithmId<Digest>, provider: CryptographyProvider) :
     CompatibilityTest<Digest>(algorithmId, provider) {
     override suspend fun CompatibilityTestScope<Digest>.generate(isStressTest: Boolean) {

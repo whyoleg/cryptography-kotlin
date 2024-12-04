@@ -44,6 +44,11 @@ abstract class SupportedAlgorithmsTest(provider: CryptographyProvider) : Provide
         assertSupports(SHA3_384, supportsSha3)
         assertSupports(SHA3_512, supportsSha3)
 
+        assertSupports(RIPEMD128, !context.provider.isApple && !context.provider.isOpenssl3 && !context.provider.isWebCrypto)
+        assertSupports(RIPEMD160, !context.provider.isApple && !context.provider.isWebCrypto)
+        assertSupports(RIPEMD256, !context.provider.isApple && !context.provider.isOpenssl3 && !context.provider.isWebCrypto)
+        assertSupports(RIPEMD320, !context.provider.isApple && !context.provider.isOpenssl3 && !context.provider.isWebCrypto)
+
         assertSupports(ECDSA)
         assertSupports(ECDH, !context.provider.isApple)
 
