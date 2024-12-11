@@ -70,24 +70,24 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP
         }
 
         override fun decodeFromByteArrayBlocking(format: EC.PublicKey.Format, bytes: ByteArray): PublicK = when (format) {
-            EC.PublicKey.Format.JWK -> error("$format is not supported")
-            EC.PublicKey.Format.RAW -> {
-                check(bytes.isNotEmpty() && bytes[0].toInt() == 4) { "Encoded key should be in uncompressed format" }
-                val parameters = algorithmParameters(ECGenParameterSpec(curveName)).getParameterSpec(ECParameterSpec::class.java)
-                val fieldSize = parameters.curveOrderSize()
-                check(bytes.size == fieldSize * 2 + 1) { "Wrong encoded key size" }
-
-                val x = bytes.copyOfRange(1, fieldSize + 1)
-                val y = bytes.copyOfRange(fieldSize + 1, fieldSize + 1 + fieldSize)
-                val point = ECPoint(BigInteger(1, x), BigInteger(1, y))
-
-                keyFactory.use {
-                    it.generatePublic(ECPublicKeySpec(point, parameters))
-                }.convert()
-            }
-            EC.PublicKey.Format.DER -> decodeFromDer(bytes)
-            EC.PublicKey.Format.PEM -> decodeFromDer(unwrapPem(PemLabel.PublicKey, bytes))
+            EC.PublicKey.Format.JWK            -> error("$format is not supported")
+            EC.PublicKey.Format.RAW            -> decodeFromRaw(bytes)
+            EC.PublicKey.Format.RAW.Compressed -> decodeFromRaw(bytes)
+            EC.PublicKey.Format.DER            -> decodeFromDer(bytes)
+            EC.PublicKey.Format.PEM            -> decodeFromDer(unwrapPem(PemLabel.PublicKey, bytes))
         }
+
+        // use RawEncodedKeySpec
+        private fun decodeFromRaw(bytes: ByteArray): PublicK = run {
+            check(bytes.isNotEmpty()) { "Encoded key is empty!" }
+            val parameters = algorithmParameters(ECGenParameterSpec(curveName)).getParameterSpec(ECParameterSpec::class.java)
+            val point = parameters.decodePoint(bytes)
+
+            keyFactory.use {
+                it.generatePublic(ECPublicKeySpec(point, parameters))
+            }.convert()
+        }
+
     }
 
     private inner class EcPrivateKeyDecoder(
@@ -103,14 +103,14 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP
         }
 
         override fun decodeFromByteArrayBlocking(format: EC.PrivateKey.Format, bytes: ByteArray): PrivateK = when (format) {
-            EC.PrivateKey.Format.JWK -> error("$format is not supported")
-            EC.PrivateKey.Format.RAW -> {
+            EC.PrivateKey.Format.JWK      -> error("$format is not supported")
+            EC.PrivateKey.Format.RAW      -> {
                 val parameters = algorithmParameters(ECGenParameterSpec(curveName)).getParameterSpec(ECParameterSpec::class.java)
                 // decode as positive value
                 decode(ECPrivateKeySpec(BigInteger(1, bytes), parameters))
             }
-            EC.PrivateKey.Format.DER -> decodeFromDer(bytes)
-            EC.PrivateKey.Format.PEM -> decodeFromDer(unwrapPem(PemLabel.PrivateKey, bytes))
+            EC.PrivateKey.Format.DER      -> decodeFromDer(bytes)
+            EC.PrivateKey.Format.PEM      -> decodeFromDer(unwrapPem(PemLabel.PrivateKey, bytes))
             EC.PrivateKey.Format.DER.SEC1 -> decodeFromDer(convertSec1ToPkcs8(bytes))
             EC.PrivateKey.Format.PEM.SEC1 -> decodeFromDer(convertSec1ToPkcs8(unwrapPem(PemLabel.EcPrivateKey, bytes)))
         }
@@ -133,24 +133,35 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP
         private val key: JPublicKey,
     ) : EC.PublicKey, JdkEncodableKey<EC.PublicKey.Format>(key) {
         final override fun encodeToByteArrayBlocking(format: EC.PublicKey.Format): ByteArray = when (format) {
-            EC.PublicKey.Format.JWK -> error("$format is not supported")
-            EC.PublicKey.Format.RAW -> {
-                key as ECPublicKey
+            EC.PublicKey.Format.JWK            -> error("$format is not supported")
+            EC.PublicKey.Format.RAW            -> encodeToRaw(false)
+            EC.PublicKey.Format.RAW.Compressed -> encodeToRaw(true)
+            EC.PublicKey.Format.DER            -> encodeToDer()
+            EC.PublicKey.Format.PEM            -> wrapPem(PemLabel.PublicKey, encodeToDer())
+        }
 
-                val fieldSize = key.params.curveOrderSize()
-                val x = key.w.affineX.toByteArray().trimLeadingZeros()
-                val y = key.w.affineY.toByteArray().trimLeadingZeros()
-                check(x.size <= fieldSize && y.size <= fieldSize)
+        private fun encodeToRaw(compressed: Boolean): ByteArray = run {
+            key as ECPublicKey
 
+            val fieldSize = key.params.curveOrderSize()
+            val x = key.w.affineX.toByteArray().trimLeadingZeros()
+            val y = key.w.affineY.toByteArray().trimLeadingZeros()
+            check(x.size <= fieldSize && y.size <= fieldSize)
+
+            if (compressed) {
+                val output = ByteArray(fieldSize + 1)
+                output[0] = if (!BigInteger(1, y).testBit(0)) 0x02 else 0x03
+                x.copyInto(output, fieldSize - x.size + 1)
+                output
+            } else {
                 val output = ByteArray(fieldSize * 2 + 1)
-                output[0] = 4 // uncompressed
+                output[0] = 0x04
                 x.copyInto(output, fieldSize - x.size + 1)
                 y.copyInto(output, fieldSize * 2 - y.size + 1)
                 output
             }
-            EC.PublicKey.Format.DER -> encodeToDer()
-            EC.PublicKey.Format.PEM -> wrapPem(PemLabel.PublicKey, encodeToDer())
         }
+
     }
 
     protected abstract class BaseEcPrivateKey(
@@ -159,7 +170,7 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP
         final override fun encodeToByteArrayBlocking(format: EC.PrivateKey.Format): ByteArray = when (format) {
             EC.PrivateKey.Format.JWK      -> error("$format is not supported")
             EC.PrivateKey.Format.DER      -> encodeToDer()
-            EC.PrivateKey.Format.RAW -> {
+            EC.PrivateKey.Format.RAW      -> {
                 key as ECPrivateKey
                 val fieldSize = key.params.curveOrderSize()
                 val secret = key.s.toByteArray().trimLeadingZeros()
@@ -195,6 +206,39 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP
 
 internal fun ECParameterSpec.curveOrderSize(): Int {
     return (curve.field.fieldSize + 7) / 8
+}
+
+internal fun ECParameterSpec.decodePoint(bytes: ByteArray): ECPoint {
+    val fieldSize = curveOrderSize()
+    return when (bytes[0].toInt()) {
+        0x02, // compressed evenY
+        0x03, // compressed oddY
+             -> {
+            check(bytes.size == fieldSize + 1) { "Wrong compressed key size ${bytes.size}" }
+            val p = (curve.field as ECFieldFp).p
+            val a = curve.a
+            val b = curve.b
+            val x = BigInteger(1, bytes.copyOfRange(1, bytes.size))
+            var y = x.multiply(x).add(a).multiply(x).add(b).mod(p).modSqrt(p)
+            if (y.testBit(0) != (bytes[0].toInt() == 0x03)) {
+                y = p.subtract(y)
+            }
+            ECPoint(x, y)
+        }
+        0x04, // uncompressed
+             -> {
+            check(bytes.size == fieldSize * 2 + 1) { "Wrong uncompressed key size ${bytes.size}" }
+            val x = bytes.copyOfRange(1, fieldSize + 1)
+            val y = bytes.copyOfRange(fieldSize + 1, fieldSize + 1 + fieldSize)
+            ECPoint(BigInteger(1, x), BigInteger(1, y))
+        }
+        else -> error("Unsupported key type ${bytes[0].toInt()}")
+    }
+}
+
+internal fun BigInteger.modSqrt(p: BigInteger): BigInteger {
+    check(p.testBit(0) && p.testBit(1)) { "Unsupported curve modulus" }  // p ≡ 3 (mod 4)
+    return modPow(p.add(BigInteger.ONE).shiftRight(2), p) // Tonelli-Shanks
 }
 
 private fun JAlgorithmParameters.curveName(): String {

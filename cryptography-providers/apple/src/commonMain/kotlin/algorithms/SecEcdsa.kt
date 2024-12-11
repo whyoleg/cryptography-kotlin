@@ -58,10 +58,11 @@ private class EcdsaPublicKeyDecoder(
 ) : KeyDecoder<EC.PublicKey.Format, ECDSA.PublicKey> {
     override fun decodeFromByteArrayBlocking(format: EC.PublicKey.Format, bytes: ByteArray): ECDSA.PublicKey {
         val rawKey = when (format) {
-            EC.PublicKey.Format.JWK -> error("$format is not supported")
-            EC.PublicKey.Format.RAW -> bytes
-            EC.PublicKey.Format.DER -> decodeDer(bytes)
-            EC.PublicKey.Format.PEM -> decodeDer(unwrapPem(PemLabel.PublicKey, bytes))
+            EC.PublicKey.Format.JWK            -> error("$format is not supported")
+            EC.PublicKey.Format.RAW            -> bytes
+            EC.PublicKey.Format.RAW.Compressed -> error("$format is not supported")
+            EC.PublicKey.Format.DER            -> decodeDer(bytes)
+            EC.PublicKey.Format.PEM            -> decodeDer(unwrapPem(PemLabel.PublicKey, bytes))
         }
         check(rawKey.size == curve.orderSize * 2 + 1) {
             "Invalid raw key size: ${rawKey.size}, expected: ${curve.orderSize * 2 + 1}"
@@ -89,7 +90,7 @@ private class EcdsaPrivateKeyDecoder(
     override fun decodeFromByteArrayBlocking(format: EC.PrivateKey.Format, bytes: ByteArray): ECDSA.PrivateKey {
         val rawKey = when (format) {
             EC.PrivateKey.Format.JWK      -> error("$format is not supported")
-            EC.PrivateKey.Format.RAW -> error("$format is not supported")
+            EC.PrivateKey.Format.RAW      -> error("$format is not supported")
             EC.PrivateKey.Format.DER      -> decodeDerPkcs8(bytes)
             EC.PrivateKey.Format.PEM      -> decodeDerPkcs8(unwrapPem(PemLabel.PrivateKey, bytes))
             EC.PrivateKey.Format.DER.SEC1 -> decodeDerSec1(bytes)
@@ -176,10 +177,11 @@ private class EcdsaPublicKey(
         val rawKey = exportSecKey(publicKey)
 
         return when (format) {
-            EC.PublicKey.Format.JWK -> error("$format is not supported")
-            EC.PublicKey.Format.RAW -> rawKey
-            EC.PublicKey.Format.DER -> encodeDer(rawKey)
-            EC.PublicKey.Format.PEM -> wrapPem(PemLabel.PublicKey, encodeDer(rawKey))
+            EC.PublicKey.Format.JWK            -> error("$format is not supported")
+            EC.PublicKey.Format.RAW            -> rawKey
+            EC.PublicKey.Format.RAW.Compressed -> error("$format is not supported")
+            EC.PublicKey.Format.DER            -> encodeDer(rawKey)
+            EC.PublicKey.Format.PEM            -> wrapPem(PemLabel.PublicKey, encodeDer(rawKey))
         }
     }
 
@@ -212,7 +214,7 @@ private class EcdsaPrivateKey(
         val rawKey = exportSecKey(privateKey)
         return when (format) {
             EC.PrivateKey.Format.JWK      -> error("$format is not supported")
-            EC.PrivateKey.Format.RAW -> rawKey.copyOfRange(curve.orderSize * 2 + 1, curve.orderSize * 3 + 1)
+            EC.PrivateKey.Format.RAW      -> rawKey.copyOfRange(curve.orderSize * 2 + 1, curve.orderSize * 3 + 1)
             EC.PrivateKey.Format.DER      -> encodeDerPkcs8(rawKey)
             EC.PrivateKey.Format.PEM      -> wrapPem(PemLabel.PrivateKey, encodeDerPkcs8(rawKey))
             EC.PrivateKey.Format.DER.SEC1 -> encodeDerEcPrivateKey(rawKey)
