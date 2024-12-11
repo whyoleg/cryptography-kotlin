@@ -14,7 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ 'ubuntu-latest' ]
-        target: [ 'jvmAll', 'js', 'wasm', 'native' ]
+        target: [ 'jvmAll', 'js', 'wasm' ]
         include:
           - os: 'macos-latest'
             target: 'macos'
@@ -35,6 +35,8 @@ jobs:
           - os: 'ubuntu-22.04'
             target: 'connectedAndroid'
             android-api-level: 33
+          - os: 'ubuntu-24.04'
+            target: 'native'
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-environment
