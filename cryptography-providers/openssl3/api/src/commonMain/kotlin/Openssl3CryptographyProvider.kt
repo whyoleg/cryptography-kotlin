@@ -30,7 +30,7 @@ internal object Openssl3CryptographyProvider : CryptographyProvider() {
         SHA3_256  -> Openssl3Digest("SHA3-256", SHA3_256)
         SHA3_384  -> Openssl3Digest("SHA3-384", SHA3_384)
         SHA3_512  -> Openssl3Digest("SHA3-512", SHA3_512)
-        RIPEMD160  -> Openssl3Digest("RIPEMD160", RIPEMD160)
+        RIPEMD160 -> Openssl3Digest("RIPEMD160", RIPEMD160)
         HMAC    -> Openssl3Hmac
         AES.CBC -> Openssl3AesCbc
         AES.CTR -> Openssl3AesCtr

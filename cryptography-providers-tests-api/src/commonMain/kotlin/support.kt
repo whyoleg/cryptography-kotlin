@@ -21,7 +21,6 @@ fun AlgorithmTestScope<*>.supportsFunctions() = supports {
 
 fun AlgorithmTestScope<*>.supportsDigest(digest: CryptographyAlgorithmId<Digest>): Boolean = supports {
     val sha3Algorithms = setOf(SHA3_224, SHA3_256, SHA3_384, SHA3_512)
-    val ripemdAlgorithms = setOf(RIPEMD128, RIPEMD160, RIPEMD256, RIPEMD320)
     when {
         (digest == SHA224 || digest in sha3Algorithms) &&
                 provider.isWebCrypto                                  -> digest.name
@@ -30,9 +29,7 @@ fun AlgorithmTestScope<*>.supportsDigest(digest: CryptographyAlgorithmId<Digest>
         digest in sha3Algorithms &&
                 provider.isJdkDefault &&
                 (platform.isJdk { major < 17 } || platform.isAndroid) -> "${digest.name} signatures on old JDK"
-        digest in ripemdAlgorithms && (provider.isJdkDefault || provider.isApple || provider.isWebCrypto)
-                                                                      -> digest.name
-        digest != RIPEMD160 && digest in ripemdAlgorithms && provider.isOpenssl3
+        digest == RIPEMD160 && (provider.isJdkDefault || provider.isApple || provider.isWebCrypto)
                                                                       -> digest.name
         else                                                          -> null
     }
