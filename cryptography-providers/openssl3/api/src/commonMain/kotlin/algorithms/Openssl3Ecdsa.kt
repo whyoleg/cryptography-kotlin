@@ -55,7 +55,7 @@ internal object Openssl3Ecdsa : ECDSA {
         override fun inputType(format: EC.PublicKey.Format): String = when (format) {
             EC.PublicKey.Format.DER -> "DER"
             EC.PublicKey.Format.PEM -> "PEM"
-            EC.PublicKey.Format.RAW -> error("should not be called: handled explicitly in decodeFromBlocking")
+            EC.PublicKey.Format.RAW, EC.PublicKey.Format.RAW.Compressed -> error("should not be called: handled explicitly in decodeFromBlocking")
             EC.PublicKey.Format.JWK -> error("JWK format is not supported")
         }
 
@@ -124,12 +124,13 @@ internal object Openssl3Ecdsa : ECDSA {
         override fun outputType(format: EC.PublicKey.Format): String = when (format) {
             EC.PublicKey.Format.DER -> "DER"
             EC.PublicKey.Format.PEM -> "PEM"
-            EC.PublicKey.Format.RAW -> error("should not be called: handled explicitly in encodeToBlocking")
+            EC.PublicKey.Format.RAW, EC.PublicKey.Format.RAW.Compressed -> error("should not be called: handled explicitly in encodeToBlocking")
             EC.PublicKey.Format.JWK -> error("JWK format is not supported")
         }
 
         override fun encodeToByteArrayBlocking(format: EC.PublicKey.Format): ByteArray = when (format) {
             EC.PublicKey.Format.RAW -> encodePublicRawKey(key)
+            EC.PublicKey.Format.RAW.Compressed -> encodePublicRawCompressedKey(key)
             else -> super.encodeToByteArrayBlocking(format)
         }
 

@@ -99,6 +99,17 @@ internal fun encodePublicRawKey(key: CPointer<EVP_PKEY>): ByteArray = memScoped 
     output.ensureSizeExactly(outVar.value.convert())
 }
 
+@OptIn(UnsafeNumber::class)
+internal fun encodePublicRawCompressedKey(key: CPointer<EVP_PKEY>): ByteArray = memScoped {
+    val ecKey = checkError(EVP_PKEY_get1_EC_KEY(key))
+    val ecGroup = checkError(EC_KEY_get0_group(ecKey))
+    val ecPoint = checkError(EC_KEY_get0_public_key(ecKey))
+    val size = checkError(EC_POINT_point2oct(ecGroup, ecPoint, POINT_CONVERSION_COMPRESSED, null, 0.convert(), null))
+    val output = ByteArray(size.convert())
+    checkError(EC_POINT_point2oct(ecGroup, ecPoint, POINT_CONVERSION_COMPRESSED, output.safeRefToU(0), size, null))
+    output
+}
+
 internal fun encodePrivateRawKey(key: CPointer<EVP_PKEY>): ByteArray = memScoped {
     val orderSize = EC_order_size(key)
     val privVar = alloc<CPointerVar<BIGNUM>>()
