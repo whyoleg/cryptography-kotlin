@@ -57,6 +57,7 @@ For additional limitation please consult provider specific documentation.
 |                                             | SHA384           |  ✅  |     ✅     |   ✅   |    ✅     |
 |                                             | SHA512           |  ✅  |     ✅     |   ✅   |    ✅     |
 |                                             | SHA3 family      |  ✅  |     ❌     |   ❌   |    ✅     |
+|                                             | ⚠️ RIPEMD160     |  ✅  |     ❌     |   ❌   |    ✅     |
 | **MAC**                                     | HMAC             |  ✅  |     ✅     |   ✅   |    ✅     |
 | **Symmetric-key<br/>encryption/decryption** | AES-CBC          |  ✅  |     ✅     |   ✅   |    ✅     |
 |                                             | AES-CTR          |  ✅  |     ✅     |   ✅   |    ✅     |

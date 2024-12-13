@@ -801,6 +801,8 @@ open class dev.whyoleg.cryptography/CryptographyException : kotlin/RuntimeExcept
 
 final object dev.whyoleg.cryptography.algorithms/MD5 : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest> // dev.whyoleg.cryptography.algorithms/MD5|null[0]
 
+final object dev.whyoleg.cryptography.algorithms/RIPEMD160 : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest> // dev.whyoleg.cryptography.algorithms/RIPEMD160|null[0]
+
 final object dev.whyoleg.cryptography.algorithms/SHA1 : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest> // dev.whyoleg.cryptography.algorithms/SHA1|null[0]
 
 final object dev.whyoleg.cryptography.algorithms/SHA224 : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest> // dev.whyoleg.cryptography.algorithms/SHA224|null[0]

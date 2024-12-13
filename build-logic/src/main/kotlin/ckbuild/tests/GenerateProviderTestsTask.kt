@@ -88,6 +88,7 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
             "Sha3B256CompatibilityTest",
             "Sha3B384CompatibilityTest",
             "Sha3B512CompatibilityTest",
+            "Ripemd160CompatibilityTest",
 
             "AesCbcTest",
             "AesCbcCompatibilityTest",

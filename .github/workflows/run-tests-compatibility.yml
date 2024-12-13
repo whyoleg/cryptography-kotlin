@@ -18,11 +18,13 @@ jobs:
       fail-fast: false
       matrix:
         os: [ 'ubuntu-latest' ]
-        target: [ 'jvm', 'js', 'wasm',  'native' ]
+        target: [ 'jvm', 'js', 'wasm' ]
         include:
           - os: 'macos-latest'
             target: 'macos'
           - os: 'windows-latest'
+            target: 'native'
+          - os: 'ubuntu-24.04'
             target: 'native'
     steps:
       - uses: actions/checkout@v4
@@ -66,11 +68,13 @@ jobs:
       fail-fast: false
       matrix:
         os: [ 'ubuntu-latest' ]
-        target: [ 'jvm', 'js', 'wasm',  'native' ]
+        target: [ 'jvm', 'js', 'wasm' ]
         include:
           - os: 'macos-latest'
             target: 'macos'
           - os: 'windows-latest'
+            target: 'native'
+          - os: 'ubuntu-24.04'
             target: 'native'
     steps:
       - uses: actions/checkout@v4

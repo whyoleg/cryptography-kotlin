@@ -25,6 +25,7 @@ abstract class Sha3B224CompatibilityTest(provider: CryptographyProvider) : Diges
 abstract class Sha3B256CompatibilityTest(provider: CryptographyProvider) : DigestCompatibilityTest(SHA3_256, provider)
 abstract class Sha3B384CompatibilityTest(provider: CryptographyProvider) : DigestCompatibilityTest(SHA3_384, provider)
 abstract class Sha3B512CompatibilityTest(provider: CryptographyProvider) : DigestCompatibilityTest(SHA3_512, provider)
+abstract class Ripemd160CompatibilityTest(provider: CryptographyProvider) : DigestCompatibilityTest(RIPEMD160, provider)
 
 abstract class DigestCompatibilityTest(algorithmId: CryptographyAlgorithmId<Digest>, provider: CryptographyProvider) :
     CompatibilityTest<Digest>(algorithmId, provider) {

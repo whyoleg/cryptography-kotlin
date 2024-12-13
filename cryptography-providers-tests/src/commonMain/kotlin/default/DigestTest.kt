@@ -99,6 +99,9 @@ abstract class DigestTest(provider: CryptographyProvider) : ProviderTest(provide
     fun testSHA3_512() = test(SHA3_512, 64)
 
     @Test
+    fun testRIPEMD160() = test(RIPEMD160, 20)
+
+    @Test
     fun testFunctionIndexes() = testWithAlgorithm(SHA256) {
         if (!supportsFunctions()) return@testWithAlgorithm
 

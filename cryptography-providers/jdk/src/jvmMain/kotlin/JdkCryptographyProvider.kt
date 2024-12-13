@@ -77,6 +77,7 @@ internal class JdkCryptographyProvider(
             SHA3_256  -> JdkDigest(state, "SHA3-256", SHA3_256)
             SHA3_384  -> JdkDigest(state, "SHA3-384", SHA3_384)
             SHA3_512  -> JdkDigest(state, "SHA3-512", SHA3_512)
+            RIPEMD160 -> JdkDigest(state, "RIPEMD160", RIPEMD160)
             HMAC     -> JdkHmac(state)
             AES.CBC  -> JdkAesCbc(state)
             AES.CTR  -> JdkAesCtr(state)

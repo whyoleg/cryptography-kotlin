@@ -29,6 +29,8 @@ fun AlgorithmTestScope<*>.supportsDigest(digest: CryptographyAlgorithmId<Digest>
         digest in sha3Algorithms &&
                 provider.isJdkDefault &&
                 (platform.isJdk { major < 17 } || platform.isAndroid) -> "${digest.name} signatures on old JDK"
+        digest == RIPEMD160 && (provider.isJdkDefault || provider.isApple || provider.isWebCrypto)
+                                                                      -> digest.name
         else                                                          -> null
     }
 }
