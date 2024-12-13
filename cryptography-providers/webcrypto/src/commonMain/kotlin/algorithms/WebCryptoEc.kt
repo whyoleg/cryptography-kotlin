@@ -55,7 +55,9 @@ internal sealed class WebCryptoEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateK
 private object EcPublicKeyProcessor : WebCryptoKeyProcessor<EC.PublicKey.Format>() {
     override fun stringFormat(format: EC.PublicKey.Format): String = when (format) {
         EC.PublicKey.Format.JWK -> "jwk"
-        EC.PublicKey.Format.RAW -> "raw"
+        EC.PublicKey.Format.RAW,
+        EC.PublicKey.Format.RAW.Compressed,
+                                -> "raw"
         EC.PublicKey.Format.DER,
         EC.PublicKey.Format.PEM,
                                 -> "spki"
@@ -63,7 +65,9 @@ private object EcPublicKeyProcessor : WebCryptoKeyProcessor<EC.PublicKey.Format>
 
     override fun beforeDecoding(algorithm: Algorithm, format: EC.PublicKey.Format, key: ByteArray): ByteArray = when (format) {
         EC.PublicKey.Format.JWK -> key
-        EC.PublicKey.Format.RAW -> key
+        EC.PublicKey.Format.RAW,
+        EC.PublicKey.Format.RAW.Compressed,
+                                -> key
         EC.PublicKey.Format.DER -> key
         EC.PublicKey.Format.PEM -> unwrapPem(PemLabel.PublicKey, key)
     }
@@ -71,8 +75,17 @@ private object EcPublicKeyProcessor : WebCryptoKeyProcessor<EC.PublicKey.Format>
     override fun afterEncoding(format: EC.PublicKey.Format, key: ByteArray): ByteArray = when (format) {
         EC.PublicKey.Format.JWK -> key
         EC.PublicKey.Format.RAW -> key
+        EC.PublicKey.Format.RAW.Compressed
+                                -> compressPublicKey(key)
         EC.PublicKey.Format.DER -> key
         EC.PublicKey.Format.PEM -> wrapPem(PemLabel.PublicKey, key)
+    }
+
+    private fun compressPublicKey(key: ByteArray): ByteArray {
+        require(key[0] == 0x04.toByte() && key.size % 2 != 0) { "Invalid key format" }
+        return key.copyOfRange(0, (key.size - 1) / 2 + 1).also {
+            it[0] = if (key.last() % 2 == 0) 0x02 else 0x03
+        }
     }
 }
 
@@ -89,7 +102,7 @@ private object EcPrivateKeyProcessor : WebCryptoKeyProcessor<EC.PrivateKey.Forma
 
     override fun beforeDecoding(algorithm: Algorithm, format: EC.PrivateKey.Format, key: ByteArray): ByteArray = when (format) {
         EC.PrivateKey.Format.JWK      -> key
-        EC.PrivateKey.Format.RAW -> {
+        EC.PrivateKey.Format.RAW      -> {
             val curveId = when (val namedCurve = algorithm.ecKeyAlgorithmNamedCurve) {
                 EC.Curve.P256.name -> ObjectIdentifier.secp256r1
                 EC.Curve.P384.name -> ObjectIdentifier.secp384r1
@@ -110,7 +123,7 @@ private object EcPrivateKeyProcessor : WebCryptoKeyProcessor<EC.PrivateKey.Forma
 
     override fun afterEncoding(format: EC.PrivateKey.Format, key: ByteArray): ByteArray = when (format) {
         EC.PrivateKey.Format.JWK      -> key
-        EC.PrivateKey.Format.RAW -> {
+        EC.PrivateKey.Format.RAW      -> {
             Der.decodeFromByteArray(
                 EcPrivateKey.serializer(),
                 unwrapPrivateKey(ObjectIdentifier.EC, key)
