@@ -26,13 +26,13 @@ internal object Openssl3Ecdh : ECDH {
         override fun inputType(format: EC.PrivateKey.Format): String = when (format) {
             EC.PrivateKey.Format.DER, EC.PrivateKey.Format.DER.SEC1 -> "DER"
             EC.PrivateKey.Format.PEM, EC.PrivateKey.Format.PEM.SEC1 -> "PEM"
-            EC.PrivateKey.Format.RAW -> "DER" // with custom processing
+            EC.PrivateKey.Format.RAW                                -> "DER" // with custom processing
             EC.PrivateKey.Format.JWK                                -> error("JWK format is not supported")
         }
 
         override fun inputStruct(format: EC.PrivateKey.Format): String = when (format) {
             EC.PrivateKey.Format.DER.SEC1, EC.PrivateKey.Format.PEM.SEC1 -> "EC"
-            EC.PrivateKey.Format.RAW -> "EC" // with custom processing
+            EC.PrivateKey.Format.RAW                                     -> "EC" // with custom processing
             else                                                         -> super.inputStruct(format)
         }
 
@@ -53,13 +53,17 @@ internal object Openssl3Ecdh : ECDH {
         override fun inputType(format: EC.PublicKey.Format): String = when (format) {
             EC.PublicKey.Format.DER -> "DER"
             EC.PublicKey.Format.PEM -> "PEM"
-            EC.PublicKey.Format.RAW, EC.PublicKey.Format.RAW.Compressed -> error("should not be called: handled explicitly in decodeFromBlocking")
+            EC.PublicKey.Format.RAW,
+            EC.PublicKey.Format.RAW.Compressed,
+                                    -> error("should not be called: handled explicitly in decodeFromBlocking")
             EC.PublicKey.Format.JWK -> error("JWK format is not supported")
         }
 
         override fun decodeFromByteArrayBlocking(format: EC.PublicKey.Format, bytes: ByteArray): ECDH.PublicKey = when (format) {
-            EC.PublicKey.Format.RAW -> wrapKey(decodePublicRawKey(curve, bytes))
-            else                    -> super.decodeFromByteArrayBlocking(format, bytes)
+            EC.PublicKey.Format.RAW,
+            EC.PublicKey.Format.RAW.Compressed,
+                 -> wrapKey(decodePublicRawKey(curve, bytes))
+            else -> super.decodeFromByteArrayBlocking(format, bytes)
         }
 
         override fun wrapKey(key: CPointer<EVP_PKEY>): ECDH.PublicKey {
@@ -93,7 +97,7 @@ internal object Openssl3Ecdh : ECDH {
         override fun outputType(format: EC.PrivateKey.Format): String = when (format) {
             EC.PrivateKey.Format.DER, EC.PrivateKey.Format.DER.SEC1 -> "DER"
             EC.PrivateKey.Format.PEM, EC.PrivateKey.Format.PEM.SEC1 -> "PEM"
-            EC.PrivateKey.Format.RAW -> error("should not be called: handled explicitly in encodeToBlocking")
+            EC.PrivateKey.Format.RAW                                -> error("should not be called: handled explicitly in encodeToBlocking")
             EC.PrivateKey.Format.JWK                                -> error("JWK format is not supported")
         }
 
@@ -104,7 +108,7 @@ internal object Openssl3Ecdh : ECDH {
 
         override fun encodeToByteArrayBlocking(format: EC.PrivateKey.Format): ByteArray = when (format) {
             EC.PrivateKey.Format.RAW -> encodePrivateRawKey(key)
-            else -> super.encodeToByteArrayBlocking(format)
+            else                     -> super.encodeToByteArrayBlocking(format)
         }
 
         override fun sharedSecretGenerator(): SharedSecretGenerator<ECDH.PublicKey> = this
@@ -122,14 +126,16 @@ internal object Openssl3Ecdh : ECDH {
         override fun outputType(format: EC.PublicKey.Format): String = when (format) {
             EC.PublicKey.Format.DER -> "DER"
             EC.PublicKey.Format.PEM -> "PEM"
-            EC.PublicKey.Format.RAW, EC.PublicKey.Format.RAW.Compressed -> error("should not be called: handled explicitly in encodeToBlocking")
+            EC.PublicKey.Format.RAW,
+            EC.PublicKey.Format.RAW.Compressed,
+                                    -> error("should not be called: handled explicitly in encodeToBlocking")
             EC.PublicKey.Format.JWK -> error("JWK format is not supported")
         }
 
         override fun encodeToByteArrayBlocking(format: EC.PublicKey.Format): ByteArray = when (format) {
-            EC.PublicKey.Format.RAW -> encodePublicRawKey(key)
+            EC.PublicKey.Format.RAW            -> encodePublicRawKey(key)
             EC.PublicKey.Format.RAW.Compressed -> encodePublicRawCompressedKey(key)
-            else -> super.encodeToByteArrayBlocking(format)
+            else                               -> super.encodeToByteArrayBlocking(format)
         }
 
         override fun sharedSecretGenerator(): SharedSecretGenerator<ECDH.PrivateKey> = this
