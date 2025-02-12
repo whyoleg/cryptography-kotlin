@@ -4,6 +4,7 @@
 
 package dev.whyoleg.cryptography.providers.jdk
 
+import algorithms.*
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.providers.jdk.algorithms.*
@@ -78,19 +79,21 @@ internal class JdkCryptographyProvider(
             SHA3_384  -> JdkDigest(state, "SHA3-384", SHA3_384)
             SHA3_512  -> JdkDigest(state, "SHA3-512", SHA3_512)
             RIPEMD160 -> JdkDigest(state, "RIPEMD160", RIPEMD160)
-            HMAC     -> JdkHmac(state)
-            AES.CBC  -> JdkAesCbc(state)
-            AES.CTR  -> JdkAesCtr(state)
-            AES.ECB  -> JdkAesEcb(state)
-            AES.GCM  -> JdkAesGcm(state)
-            RSA.OAEP -> JdkRsaOaep(state)
+            HMAC      -> JdkHmac(state)
+            AES.CBC   -> JdkAesCbc(state)
+            AES.CTR   -> JdkAesCtr(state)
+            AES.ECB   -> JdkAesEcb(state)
+            AES.GCM   -> JdkAesGcm(state)
+            RSA.OAEP  -> JdkRsaOaep(state)
             RSA.PSS   -> JdkRsaPss(state)
             RSA.PKCS1 -> JdkRsaPkcs1(state)
-            RSA.RAW  -> JdkRsaRaw(state)
+            RSA.RAW   -> JdkRsaRaw(state)
             ECDSA     -> JdkEcdsa(state)
-            ECDH   -> JdkEcdh(state)
-            PBKDF2 -> JdkPbkdf2(state)
-            HKDF   -> JdkHkdf(state, this)
+            EdDSA     -> JdkEdDSA(state)
+            ECDH      -> JdkEcdh(state)
+            XDH       -> JdkXDH(state)
+            PBKDF2    -> JdkPbkdf2(state)
+            HKDF      -> JdkHkdf(state, this)
             else      -> null
         }
     } as A?
