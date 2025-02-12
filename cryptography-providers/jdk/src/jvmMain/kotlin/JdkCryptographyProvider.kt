@@ -4,6 +4,7 @@
 
 package dev.whyoleg.cryptography.providers.jdk
 
+import algorithms.*
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.providers.jdk.algorithms.*
@@ -131,7 +132,9 @@ internal class JdkCryptographyProvider(provider: Provider?) : CryptographyProvid
             RSA.PKCS1 -> JdkRsaPkcs1(state)
             RSA.RAW   -> JdkRsaRaw(state)
             ECDSA     -> JdkEcdsa(state)
+            EdDSA     -> JdkEdDSA(state)
             ECDH      -> JdkEcdh(state)
+            XDH       -> JdkXDH(state)
             PBKDF2    -> JdkPbkdf2(state)
             HKDF      -> JdkHkdf(state, this)
             else      -> null
