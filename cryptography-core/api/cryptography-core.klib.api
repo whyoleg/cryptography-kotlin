@@ -14,6 +14,117 @@ open annotation class dev.whyoleg.cryptography/DelicateCryptographyApi : kotlin/
     constructor <init>() // dev.whyoleg.cryptography/DelicateCryptographyApi.<init>|<init>(){}[0]
 }
 
+abstract interface <#A: algorithms/Ed.PublicKey, #B: algorithms/Ed.PrivateKey, #C: algorithms/Ed.KeyPair<#A, #B>> algorithms/Ed : dev.whyoleg.cryptography/CryptographyAlgorithm { // algorithms/Ed|null[0]
+    abstract fun keyPairGenerator(algorithms/Ed.Curve): dev.whyoleg.cryptography.materials.key/KeyGenerator<#C> // algorithms/Ed.keyPairGenerator|keyPairGenerator(algorithms.Ed.Curve){}[0]
+    abstract fun privateKeyDecoder(algorithms/Ed.Curve): dev.whyoleg.cryptography.materials.key/KeyDecoder<algorithms/Ed.PrivateKey.Format, #B> // algorithms/Ed.privateKeyDecoder|privateKeyDecoder(algorithms.Ed.Curve){}[0]
+    abstract fun publicKeyDecoder(algorithms/Ed.Curve): dev.whyoleg.cryptography.materials.key/KeyDecoder<algorithms/Ed.PublicKey.Format, #A> // algorithms/Ed.publicKeyDecoder|publicKeyDecoder(algorithms.Ed.Curve){}[0]
+
+    abstract interface <#A1: algorithms/Ed.PublicKey, #B1: algorithms/Ed.PrivateKey> KeyPair : dev.whyoleg.cryptography.materials.key/Key { // algorithms/Ed.KeyPair|null[0]
+        abstract val privateKey // algorithms/Ed.KeyPair.privateKey|{}privateKey[0]
+            abstract fun <get-privateKey>(): #B1 // algorithms/Ed.KeyPair.privateKey.<get-privateKey>|<get-privateKey>(){}[0]
+        abstract val publicKey // algorithms/Ed.KeyPair.publicKey|{}publicKey[0]
+            abstract fun <get-publicKey>(): #A1 // algorithms/Ed.KeyPair.publicKey.<get-publicKey>|<get-publicKey>(){}[0]
+    }
+
+    abstract interface PrivateKey : dev.whyoleg.cryptography.materials.key/EncodableKey<algorithms/Ed.PrivateKey.Format> { // algorithms/Ed.PrivateKey|null[0]
+        sealed class Format : dev.whyoleg.cryptography.materials.key/KeyFormat { // algorithms/Ed.PrivateKey.Format|null[0]
+            final fun toString(): kotlin/String // algorithms/Ed.PrivateKey.Format.toString|toString(){}[0]
+
+            final object DER : algorithms/Ed.PrivateKey.Format { // algorithms/Ed.PrivateKey.Format.DER|null[0]
+                final val name // algorithms/Ed.PrivateKey.Format.DER.name|{}name[0]
+                    final fun <get-name>(): kotlin/String // algorithms/Ed.PrivateKey.Format.DER.name.<get-name>|<get-name>(){}[0]
+
+                final fun equals(kotlin/Any?): kotlin/Boolean // algorithms/Ed.PrivateKey.Format.DER.equals|equals(kotlin.Any?){}[0]
+                final fun hashCode(): kotlin/Int // algorithms/Ed.PrivateKey.Format.DER.hashCode|hashCode(){}[0]
+            }
+
+            final object JWK : algorithms/Ed.PrivateKey.Format { // algorithms/Ed.PrivateKey.Format.JWK|null[0]
+                final val name // algorithms/Ed.PrivateKey.Format.JWK.name|{}name[0]
+                    final fun <get-name>(): kotlin/String // algorithms/Ed.PrivateKey.Format.JWK.name.<get-name>|<get-name>(){}[0]
+
+                final fun equals(kotlin/Any?): kotlin/Boolean // algorithms/Ed.PrivateKey.Format.JWK.equals|equals(kotlin.Any?){}[0]
+                final fun hashCode(): kotlin/Int // algorithms/Ed.PrivateKey.Format.JWK.hashCode|hashCode(){}[0]
+            }
+
+            final object PEM : algorithms/Ed.PrivateKey.Format { // algorithms/Ed.PrivateKey.Format.PEM|null[0]
+                final val name // algorithms/Ed.PrivateKey.Format.PEM.name|{}name[0]
+                    final fun <get-name>(): kotlin/String // algorithms/Ed.PrivateKey.Format.PEM.name.<get-name>|<get-name>(){}[0]
+
+                final fun equals(kotlin/Any?): kotlin/Boolean // algorithms/Ed.PrivateKey.Format.PEM.equals|equals(kotlin.Any?){}[0]
+                final fun hashCode(): kotlin/Int // algorithms/Ed.PrivateKey.Format.PEM.hashCode|hashCode(){}[0]
+            }
+
+            final object RAW : algorithms/Ed.PrivateKey.Format { // algorithms/Ed.PrivateKey.Format.RAW|null[0]
+                final val name // algorithms/Ed.PrivateKey.Format.RAW.name|{}name[0]
+                    final fun <get-name>(): kotlin/String // algorithms/Ed.PrivateKey.Format.RAW.name.<get-name>|<get-name>(){}[0]
+
+                final fun equals(kotlin/Any?): kotlin/Boolean // algorithms/Ed.PrivateKey.Format.RAW.equals|equals(kotlin.Any?){}[0]
+                final fun hashCode(): kotlin/Int // algorithms/Ed.PrivateKey.Format.RAW.hashCode|hashCode(){}[0]
+            }
+        }
+    }
+
+    abstract interface PublicKey : dev.whyoleg.cryptography.materials.key/EncodableKey<algorithms/Ed.PublicKey.Format> { // algorithms/Ed.PublicKey|null[0]
+        sealed class Format : dev.whyoleg.cryptography.materials.key/KeyFormat { // algorithms/Ed.PublicKey.Format|null[0]
+            final fun toString(): kotlin/String // algorithms/Ed.PublicKey.Format.toString|toString(){}[0]
+
+            final object DER : algorithms/Ed.PublicKey.Format { // algorithms/Ed.PublicKey.Format.DER|null[0]
+                final val name // algorithms/Ed.PublicKey.Format.DER.name|{}name[0]
+                    final fun <get-name>(): kotlin/String // algorithms/Ed.PublicKey.Format.DER.name.<get-name>|<get-name>(){}[0]
+
+                final fun equals(kotlin/Any?): kotlin/Boolean // algorithms/Ed.PublicKey.Format.DER.equals|equals(kotlin.Any?){}[0]
+                final fun hashCode(): kotlin/Int // algorithms/Ed.PublicKey.Format.DER.hashCode|hashCode(){}[0]
+            }
+
+            final object JWK : algorithms/Ed.PublicKey.Format { // algorithms/Ed.PublicKey.Format.JWK|null[0]
+                final val name // algorithms/Ed.PublicKey.Format.JWK.name|{}name[0]
+                    final fun <get-name>(): kotlin/String // algorithms/Ed.PublicKey.Format.JWK.name.<get-name>|<get-name>(){}[0]
+
+                final fun equals(kotlin/Any?): kotlin/Boolean // algorithms/Ed.PublicKey.Format.JWK.equals|equals(kotlin.Any?){}[0]
+                final fun hashCode(): kotlin/Int // algorithms/Ed.PublicKey.Format.JWK.hashCode|hashCode(){}[0]
+            }
+
+            final object PEM : algorithms/Ed.PublicKey.Format { // algorithms/Ed.PublicKey.Format.PEM|null[0]
+                final val name // algorithms/Ed.PublicKey.Format.PEM.name|{}name[0]
+                    final fun <get-name>(): kotlin/String // algorithms/Ed.PublicKey.Format.PEM.name.<get-name>|<get-name>(){}[0]
+
+                final fun equals(kotlin/Any?): kotlin/Boolean // algorithms/Ed.PublicKey.Format.PEM.equals|equals(kotlin.Any?){}[0]
+                final fun hashCode(): kotlin/Int // algorithms/Ed.PublicKey.Format.PEM.hashCode|hashCode(){}[0]
+            }
+
+            final object RAW : algorithms/Ed.PublicKey.Format { // algorithms/Ed.PublicKey.Format.RAW|null[0]
+                final val name // algorithms/Ed.PublicKey.Format.RAW.name|{}name[0]
+                    final fun <get-name>(): kotlin/String // algorithms/Ed.PublicKey.Format.RAW.name.<get-name>|<get-name>(){}[0]
+
+                final fun equals(kotlin/Any?): kotlin/Boolean // algorithms/Ed.PublicKey.Format.RAW.equals|equals(kotlin.Any?){}[0]
+                final fun hashCode(): kotlin/Int // algorithms/Ed.PublicKey.Format.RAW.hashCode|hashCode(){}[0]
+            }
+        }
+    }
+
+    final value class Curve { // algorithms/Ed.Curve|null[0]
+        constructor <init>(kotlin/String) // algorithms/Ed.Curve.<init>|<init>(kotlin.String){}[0]
+
+        final val name // algorithms/Ed.Curve.name|{}name[0]
+            final fun <get-name>(): kotlin/String // algorithms/Ed.Curve.name.<get-name>|<get-name>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // algorithms/Ed.Curve.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // algorithms/Ed.Curve.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // algorithms/Ed.Curve.toString|toString(){}[0]
+
+        final object Companion { // algorithms/Ed.Curve.Companion|null[0]
+            final val Ed25519 // algorithms/Ed.Curve.Companion.Ed25519|{}Ed25519[0]
+                final fun <get-Ed25519>(): algorithms/Ed.Curve // algorithms/Ed.Curve.Companion.Ed25519.<get-Ed25519>|<get-Ed25519>(){}[0]
+            final val Ed448 // algorithms/Ed.Curve.Companion.Ed448|{}Ed448[0]
+                final fun <get-Ed448>(): algorithms/Ed.Curve // algorithms/Ed.Curve.Companion.Ed448.<get-Ed448>|<get-Ed448>(){}[0]
+            final val X25519 // algorithms/Ed.Curve.Companion.X25519|{}X25519[0]
+                final fun <get-X25519>(): algorithms/Ed.Curve // algorithms/Ed.Curve.Companion.X25519.<get-X25519>|<get-X25519>(){}[0]
+            final val X448 // algorithms/Ed.Curve.Companion.X448|{}X448[0]
+                final fun <get-X448>(): algorithms/Ed.Curve // algorithms/Ed.Curve.Companion.X448.<get-X448>|<get-X448>(){}[0]
+        }
+    }
+}
+
 abstract interface <#A: dev.whyoleg.cryptography.algorithms/AES.Key> dev.whyoleg.cryptography.algorithms/AES : dev.whyoleg.cryptography/CryptographyAlgorithm { // dev.whyoleg.cryptography.algorithms/AES|null[0]
     abstract fun keyDecoder(): dev.whyoleg.cryptography.materials.key/KeyDecoder<dev.whyoleg.cryptography.algorithms/AES.Key.Format, #A> // dev.whyoleg.cryptography.algorithms/AES.keyDecoder|keyDecoder(){}[0]
     abstract fun keyGenerator(dev.whyoleg.cryptography/BinarySize = ...): dev.whyoleg.cryptography.materials.key/KeyGenerator<#A> // dev.whyoleg.cryptography.algorithms/AES.keyGenerator|keyGenerator(dev.whyoleg.cryptography.BinarySize){}[0]
@@ -265,6 +376,14 @@ abstract interface <#A: dev.whyoleg.cryptography.algorithms/EC.PublicKey, #B: de
                 final fun <get-P384>(): dev.whyoleg.cryptography.algorithms/EC.Curve // dev.whyoleg.cryptography.algorithms/EC.Curve.Companion.P384.<get-P384>|<get-P384>(){}[0]
             final val P521 // dev.whyoleg.cryptography.algorithms/EC.Curve.Companion.P521|{}P521[0]
                 final fun <get-P521>(): dev.whyoleg.cryptography.algorithms/EC.Curve // dev.whyoleg.cryptography.algorithms/EC.Curve.Companion.P521.<get-P521>|<get-P521>(){}[0]
+            final val brainpoolP256r1 // dev.whyoleg.cryptography.algorithms/EC.Curve.Companion.brainpoolP256r1|{}brainpoolP256r1[0]
+                final fun <get-brainpoolP256r1>(): dev.whyoleg.cryptography.algorithms/EC.Curve // dev.whyoleg.cryptography.algorithms/EC.Curve.Companion.brainpoolP256r1.<get-brainpoolP256r1>|<get-brainpoolP256r1>(){}[0]
+            final val brainpoolP384r1 // dev.whyoleg.cryptography.algorithms/EC.Curve.Companion.brainpoolP384r1|{}brainpoolP384r1[0]
+                final fun <get-brainpoolP384r1>(): dev.whyoleg.cryptography.algorithms/EC.Curve // dev.whyoleg.cryptography.algorithms/EC.Curve.Companion.brainpoolP384r1.<get-brainpoolP384r1>|<get-brainpoolP384r1>(){}[0]
+            final val brainpoolP512r1 // dev.whyoleg.cryptography.algorithms/EC.Curve.Companion.brainpoolP512r1|{}brainpoolP512r1[0]
+                final fun <get-brainpoolP512r1>(): dev.whyoleg.cryptography.algorithms/EC.Curve // dev.whyoleg.cryptography.algorithms/EC.Curve.Companion.brainpoolP512r1.<get-brainpoolP512r1>|<get-brainpoolP512r1>(){}[0]
+            final val secp256k1 // dev.whyoleg.cryptography.algorithms/EC.Curve.Companion.secp256k1|{}secp256k1[0]
+                final fun <get-secp256k1>(): dev.whyoleg.cryptography.algorithms/EC.Curve // dev.whyoleg.cryptography.algorithms/EC.Curve.Companion.secp256k1.<get-secp256k1>|<get-secp256k1>(){}[0]
         }
     }
 }
@@ -470,6 +589,40 @@ abstract interface <#A: dev.whyoleg.cryptography.materials.key/KeyFormat> dev.wh
     open suspend fun encodeTo(#A): kotlin/ByteArray // dev.whyoleg.cryptography.materials.key/EncodableKey.encodeTo|encodeTo(1:0){}[0]
     open suspend fun encodeToByteArray(#A): kotlin/ByteArray // dev.whyoleg.cryptography.materials.key/EncodableKey.encodeToByteArray|encodeToByteArray(1:0){}[0]
     open suspend fun encodeToByteString(#A): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.materials.key/EncodableKey.encodeToByteString|encodeToByteString(1:0){}[0]
+}
+
+abstract interface algorithms/EdDSA : algorithms/Ed<algorithms/EdDSA.PublicKey, algorithms/EdDSA.PrivateKey, algorithms/EdDSA.KeyPair> { // algorithms/EdDSA|null[0]
+    open val id // algorithms/EdDSA.id|{}id[0]
+        open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<algorithms/EdDSA> // algorithms/EdDSA.id.<get-id>|<get-id>(){}[0]
+
+    abstract interface KeyPair : algorithms/Ed.KeyPair<algorithms/EdDSA.PublicKey, algorithms/EdDSA.PrivateKey> // algorithms/EdDSA.KeyPair|null[0]
+
+    abstract interface PrivateKey : algorithms/Ed.PrivateKey { // algorithms/EdDSA.PrivateKey|null[0]
+        abstract fun signatureGenerator(): dev.whyoleg.cryptography.operations/SignatureGenerator // algorithms/EdDSA.PrivateKey.signatureGenerator|signatureGenerator(){}[0]
+    }
+
+    abstract interface PublicKey : algorithms/Ed.PublicKey { // algorithms/EdDSA.PublicKey|null[0]
+        abstract fun signatureVerifier(): dev.whyoleg.cryptography.operations/SignatureVerifier // algorithms/EdDSA.PublicKey.signatureVerifier|signatureVerifier(){}[0]
+    }
+
+    final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<algorithms/EdDSA> // algorithms/EdDSA.Companion|null[0]
+}
+
+abstract interface algorithms/XDH : algorithms/Ed<algorithms/XDH.PublicKey, algorithms/XDH.PrivateKey, algorithms/XDH.KeyPair> { // algorithms/XDH|null[0]
+    open val id // algorithms/XDH.id|{}id[0]
+        open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<algorithms/XDH> // algorithms/XDH.id.<get-id>|<get-id>(){}[0]
+
+    abstract interface KeyPair : algorithms/Ed.KeyPair<algorithms/XDH.PublicKey, algorithms/XDH.PrivateKey> // algorithms/XDH.KeyPair|null[0]
+
+    abstract interface PrivateKey : algorithms/Ed.PrivateKey { // algorithms/XDH.PrivateKey|null[0]
+        abstract fun sharedSecretGenerator(): dev.whyoleg.cryptography.operations/SharedSecretGenerator<algorithms/XDH.PublicKey> // algorithms/XDH.PrivateKey.sharedSecretGenerator|sharedSecretGenerator(){}[0]
+    }
+
+    abstract interface PublicKey : algorithms/Ed.PublicKey { // algorithms/XDH.PublicKey|null[0]
+        abstract fun sharedSecretGenerator(): dev.whyoleg.cryptography.operations/SharedSecretGenerator<algorithms/XDH.PrivateKey> // algorithms/XDH.PublicKey.sharedSecretGenerator|sharedSecretGenerator(){}[0]
+    }
+
+    final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<algorithms/XDH> // algorithms/XDH.Companion|null[0]
 }
 
 abstract interface dev.whyoleg.cryptography.algorithms/Digest : dev.whyoleg.cryptography/CryptographyAlgorithm { // dev.whyoleg.cryptography.algorithms/Digest|null[0]
