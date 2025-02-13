@@ -1,3 +1,144 @@
+public abstract interface class algorithms/Ed : dev/whyoleg/cryptography/CryptographyAlgorithm {
+	public abstract fun keyPairGenerator-48_mLeQ (Ljava/lang/String;)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
+	public abstract fun privateKeyDecoder-48_mLeQ (Ljava/lang/String;)Ldev/whyoleg/cryptography/materials/key/KeyDecoder;
+	public abstract fun publicKeyDecoder-48_mLeQ (Ljava/lang/String;)Ldev/whyoleg/cryptography/materials/key/KeyDecoder;
+}
+
+public final class algorithms/Ed$Curve {
+	public static final field Companion Lalgorithms/Ed$Curve$Companion;
+	public static final synthetic fun box-impl (Ljava/lang/String;)Lalgorithms/Ed$Curve;
+	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public final fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
+public final class algorithms/Ed$Curve$Companion {
+	public final fun getEd25519-ZWrx85M ()Ljava/lang/String;
+	public final fun getEd448-ZWrx85M ()Ljava/lang/String;
+	public final fun getX25519-ZWrx85M ()Ljava/lang/String;
+	public final fun getX448-ZWrx85M ()Ljava/lang/String;
+}
+
+public abstract interface class algorithms/Ed$KeyPair : dev/whyoleg/cryptography/materials/key/Key {
+	public abstract fun getPrivateKey ()Lalgorithms/Ed$PrivateKey;
+	public abstract fun getPublicKey ()Lalgorithms/Ed$PublicKey;
+}
+
+public abstract interface class algorithms/Ed$PrivateKey : dev/whyoleg/cryptography/materials/key/EncodableKey {
+}
+
+public abstract class algorithms/Ed$PrivateKey$Format : dev/whyoleg/cryptography/materials/key/KeyFormat {
+	public final fun toString ()Ljava/lang/String;
+}
+
+public final class algorithms/Ed$PrivateKey$Format$DER : algorithms/Ed$PrivateKey$Format {
+	public static final field INSTANCE Lalgorithms/Ed$PrivateKey$Format$DER;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+}
+
+public final class algorithms/Ed$PrivateKey$Format$JWK : algorithms/Ed$PrivateKey$Format {
+	public static final field INSTANCE Lalgorithms/Ed$PrivateKey$Format$JWK;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+}
+
+public final class algorithms/Ed$PrivateKey$Format$PEM : algorithms/Ed$PrivateKey$Format {
+	public static final field INSTANCE Lalgorithms/Ed$PrivateKey$Format$PEM;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+}
+
+public final class algorithms/Ed$PrivateKey$Format$RAW : algorithms/Ed$PrivateKey$Format {
+	public static final field INSTANCE Lalgorithms/Ed$PrivateKey$Format$RAW;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+}
+
+public abstract interface class algorithms/Ed$PublicKey : dev/whyoleg/cryptography/materials/key/EncodableKey {
+}
+
+public abstract class algorithms/Ed$PublicKey$Format : dev/whyoleg/cryptography/materials/key/KeyFormat {
+	public final fun toString ()Ljava/lang/String;
+}
+
+public final class algorithms/Ed$PublicKey$Format$DER : algorithms/Ed$PublicKey$Format {
+	public static final field INSTANCE Lalgorithms/Ed$PublicKey$Format$DER;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+}
+
+public final class algorithms/Ed$PublicKey$Format$JWK : algorithms/Ed$PublicKey$Format {
+	public static final field INSTANCE Lalgorithms/Ed$PublicKey$Format$JWK;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+}
+
+public final class algorithms/Ed$PublicKey$Format$PEM : algorithms/Ed$PublicKey$Format {
+	public static final field INSTANCE Lalgorithms/Ed$PublicKey$Format$PEM;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+}
+
+public final class algorithms/Ed$PublicKey$Format$RAW : algorithms/Ed$PublicKey$Format {
+	public static final field INSTANCE Lalgorithms/Ed$PublicKey$Format$RAW;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+}
+
+public abstract interface class algorithms/EdDSA : algorithms/Ed {
+	public static final field Companion Lalgorithms/EdDSA$Companion;
+	public fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
+}
+
+public final class algorithms/EdDSA$Companion : dev/whyoleg/cryptography/CryptographyAlgorithmId {
+}
+
+public abstract interface class algorithms/EdDSA$KeyPair : algorithms/Ed$KeyPair {
+}
+
+public abstract interface class algorithms/EdDSA$PrivateKey : algorithms/Ed$PrivateKey {
+	public abstract fun signatureGenerator ()Ldev/whyoleg/cryptography/operations/SignatureGenerator;
+}
+
+public abstract interface class algorithms/EdDSA$PublicKey : algorithms/Ed$PublicKey {
+	public abstract fun signatureVerifier ()Ldev/whyoleg/cryptography/operations/SignatureVerifier;
+}
+
+public abstract interface class algorithms/XDH : algorithms/Ed {
+	public static final field Companion Lalgorithms/XDH$Companion;
+	public fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
+}
+
+public final class algorithms/XDH$Companion : dev/whyoleg/cryptography/CryptographyAlgorithmId {
+}
+
+public abstract interface class algorithms/XDH$KeyPair : algorithms/Ed$KeyPair {
+}
+
+public abstract interface class algorithms/XDH$PrivateKey : algorithms/Ed$PrivateKey {
+	public abstract fun sharedSecretGenerator ()Ldev/whyoleg/cryptography/operations/SharedSecretGenerator;
+}
+
+public abstract interface class algorithms/XDH$PublicKey : algorithms/Ed$PublicKey {
+	public abstract fun sharedSecretGenerator ()Ldev/whyoleg/cryptography/operations/SharedSecretGenerator;
+}
+
 public final class dev/whyoleg/cryptography/BinarySize : java/lang/Comparable {
 	public static final field Companion Ldev/whyoleg/cryptography/BinarySize$Companion;
 	public static final synthetic fun box-impl (I)Ldev/whyoleg/cryptography/BinarySize;
