@@ -1,5 +1,6 @@
-package algorithms
+package dev.whyoleg.cryptography.providers.jdk.algorithms
 
+import dev.whyoleg.cryptography.algorithm.Ed
 import dev.whyoleg.cryptography.materials.key.KeyDecoder
 import dev.whyoleg.cryptography.materials.key.KeyGenerator
 import dev.whyoleg.cryptography.providers.jdk.JKeyPair
