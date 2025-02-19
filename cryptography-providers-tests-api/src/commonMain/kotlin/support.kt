@@ -85,7 +85,7 @@ fun AlgorithmTestScope<RSA.PKCS1>.supportsEncryption(): Boolean = supports {
 fun AlgorithmTestScope<out EC<*, *, *>>.supportsCurve(curve: EC.Curve): Boolean = supports {
     when {
         // JDK default, WebCrypto and Apple doesn't support secp256k1
-        curve.name == "secp256k1" && (
+        curve == EC.Curve.secp256k1 && (
                 provider.isJdkDefault || provider.isWebCrypto || provider.isApple
                 ) -> "ECDSA ${curve.name}"
         else      -> null
