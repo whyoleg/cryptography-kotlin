@@ -35,7 +35,7 @@ abstract class EcdsaTest(provider: CryptographyProvider) : AlgorithmTest<ECDSA>(
             EcdsaSize(EC.Curve.P256, 64, listOf(68, 69, 70, 71, 72), 91, listOf(67, 138, 150)),
             EcdsaSize(EC.Curve.P384, 96, listOf(100, 101, 102, 103, 104), 120, listOf(80, 185, 194)),
             EcdsaSize(EC.Curve.P521, 132, listOf(136, 137, 138, 139), 158, listOf(98, 241, 250)),
-            EcdsaSize(EC.Curve("secp256k1"), 64, listOf(68, 69, 70, 71, 72), 88, listOf(135, 144)),
+            EcdsaSize(EC.Curve.secp256k1, 64, listOf(68, 69, 70, 71, 72), 88, listOf(135, 144)),
         ).forEach { (curve, rawSignatureSize, derSignatureSizes, publicKeySize, privateKeySizes) ->
             if (!supportsCurve(curve)) return@forEach
 
@@ -93,7 +93,7 @@ abstract class EcdsaTest(provider: CryptographyProvider) : AlgorithmTest<ECDSA>(
             EC.Curve.P256,
             EC.Curve.P384,
             EC.Curve.P521,
-            EC.Curve("secp256k1"),
+            EC.Curve.secp256k1,
         ).forEach { curve ->
             if (!supportsCurve(curve)) return@forEach
 

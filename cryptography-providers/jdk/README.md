@@ -11,7 +11,7 @@ For supported targets and algorithms, please consult [Supported primitives secti
 ## Custom Java providers
 
 Some specific algorithms (SHA3 family of digests on JDK 8) or parameters (`secp256k1` curve for ECDSA) could be not supported by default JDK
-provider, but it doesn't mean, that you can not use them with `cryptography-kotlin`.
+provider, but it doesn't mean, that you cannot use them with `cryptography-kotlin`.
 There is a possibility to create [CryptographyProvider][CryptographyProvider]
 from [java.util.Provider](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/security/Provider.html), f.e.
 using [BouncyCastle](https://www.bouncycastle.org):
