@@ -253,9 +253,13 @@ public final class dev/whyoleg/cryptography/algorithms/EC$Curve {
 }
 
 public final class dev/whyoleg/cryptography/algorithms/EC$Curve$Companion {
+	public final fun getBrainpoolP256r1-pVITJAk ()Ljava/lang/String;
+	public final fun getBrainpoolP384r1-pVITJAk ()Ljava/lang/String;
+	public final fun getBrainpoolP512r1-pVITJAk ()Ljava/lang/String;
 	public final fun getP256-pVITJAk ()Ljava/lang/String;
 	public final fun getP384-pVITJAk ()Ljava/lang/String;
 	public final fun getP521-pVITJAk ()Ljava/lang/String;
+	public final fun getSecp256k1-pVITJAk ()Ljava/lang/String;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/EC$KeyPair : dev/whyoleg/cryptography/materials/key/Key {
