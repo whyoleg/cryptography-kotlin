@@ -16,6 +16,8 @@ val digest2: ByteArray = hasher.hash("text1".encodeToByteArray())
 
 // will print true
 println(digest1.contentEquals(digest2))
+
+Digest(SHA512).hash("text1".encodeToByteString())
 ```
 
 ## HMAC
@@ -27,6 +29,9 @@ An example shows how to generate, encode and decode keys as well as how to use t
 val provider = CryptographyProvider.Default
 // getting HMAC algorithm
 val hmac = provider.get(HMAC)
+
+val hmacKey = HmacKeyFactory(SHA512).generate()
+Hmac(hmacKey).sign("text1".encodeToByteString())
 
 // creating key generator with specified Digest algorithm
 val keyGenerator = hmac.keyGenerator(SHA512)
@@ -90,6 +95,8 @@ val derivedKey = signFunction.signToByteArray()
 An example shows how to generate, encode and decode keys as well as how to use them to encrypt or decrypt data
 
 ```kotlin
+val key = AesKeyFactory().generate(B256)
+AesGcmCipher(key).encryptToBox("text1")
 // getting default provider
 val provider = CryptographyProvider.Default
 // getting AES-GCM algorithm
@@ -125,6 +132,13 @@ An example shows how to generate, encode and decode keys
 as well as how to use them to generate and verify digital signatures using public key cryptography
 
 ```kotlin
+val keyPair = EcKeyPairFactory().generate(EcCurve.P521)
+
+EcdsaSigner(keyPair.privateKey, SHA512, EcdsaSignatureFormat.DER)
+    .sign("text1".encodeToByteString())
+
+EcPublicKeyFactory().decodeFromPem("...")
+
 // getting default provider
 val provider = CryptographyProvider.Default
 // getting ECDSA algorithm

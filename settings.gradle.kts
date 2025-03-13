@@ -43,7 +43,21 @@ projects("cryptography-kotlin") {
         }
     }
 
-    // providers API, high-level API
+    // providers API
+    module("cryptography-api")
+
+    module("cryptography-primitives") {
+        module("core")
+        module("async")
+    }
+
+    module("cryptography-algorithms") {
+        module("core")
+        module("async")
+    }
+
+
+    // TODO: what should be here
     module("cryptography-core")
 
     // providers
