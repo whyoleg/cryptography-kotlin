@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.serialization.pem
@@ -19,9 +19,9 @@ public object Pem {
     public fun encodeToByteString(content: PemContent): ByteString = encode(content).encodeToByteString()
     public fun encodeToByteArray(content: PemContent): ByteArray = encode(content).encodeToByteArray()
     public fun encode(content: PemContent): String = buildString {
-        append(BEGIN_PREFIX).append(content.label.representation).appendLine(SUFFIX)
+        append(BEGIN_PREFIX).append(content.label.value).appendLine(SUFFIX)
         Base64.encode(content.bytes).chunked(64).joinTo(this, separator = "\n", postfix = "\n")
-        append(END_PREFIX).append(content.label.representation).appendLine(SUFFIX)
+        append(END_PREFIX).append(content.label.value).appendLine(SUFFIX)
     }
 
     public fun decode(byteString: ByteString): PemContent = decode(byteString.decodeToString())
