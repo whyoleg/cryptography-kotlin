@@ -19,15 +19,13 @@ internal class JdkCmac(
         }
     }
 
-    override fun update(data: ByteArray) {
-        mac.update(data)
-    }
+    override fun update(data: ByteArray) = mac.update(data)
 
-    override fun doFinal(): ByteArray {
-        return mac.doFinal()
-    }
+    override fun update(data: ByteArray, startIndex: Int, endIndex: Int) = mac.update(data, startIndex, endIndex)
 
-    override fun reset() {
-        mac.reset()
-    }
+    override fun doFinal(): ByteArray = mac.doFinal()
+
+    override fun doFinal(out: ByteArray, offset: Int) = mac.doFinal(out, offset)
+
+    override fun reset() = mac.reset()
 }

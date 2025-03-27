@@ -10,6 +10,8 @@ public interface CMAC : CryptographyAlgorithm {
 
     public fun init(parameters: ByteArray)
     public fun update(data: ByteArray)
+    public fun update(data: ByteArray, startIndex: Int, endIndex: Int)
     public fun doFinal(): ByteArray
+    public fun doFinal(out: ByteArray, offset: Int)
     public fun reset()
 }
