@@ -59,6 +59,29 @@ val decodedKeyVerificationResult: Boolean = decodedKey1.signatureVerifier().veri
 println(decodedKeyVerificationResult)
 ```
 
+## CMAC
+
+An example shows how to generate CMAC key.
+
+```kotlin
+// getting default provider
+val provider = CryptographyProvider.Default
+// getting CMAC algorithm
+val cmac = provider.get(CMAC)
+
+val key = CryptographyRandom.nextBytes(16)
+val salt = CryptographyRandom.nextBytes(16)
+
+// initializing CMAC
+cmac.init(key)
+
+// Update salt
+cmac.update(salt)
+
+// Finalize CMAC
+val resultKey = cmac.doFinal()
+```
+
 ## AES-GCM
 
 An example shows how to generate, encode and decode keys as well as how to use them to encrypt or decrypt data
