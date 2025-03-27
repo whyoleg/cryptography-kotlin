@@ -102,6 +102,10 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
             "HmacCompatibilityTest",
             "HmacTestvectorsTest",
 
+            "CmacTest",
+            "CmacCompatibilityTest",
+            "CmacTestvectorsTest",
+
             "EcdsaTest",
             "EcdsaCompatibilityTest",
             "EcdhCompatibilityTest",

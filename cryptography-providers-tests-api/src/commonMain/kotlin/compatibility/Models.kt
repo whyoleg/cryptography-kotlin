@@ -87,3 +87,10 @@ data class DerivedSecretData(
     val input: ByteStringAsString,
     val secret: ByteStringAsString,
 ) : TestData
+
+@Serializable
+data class CmacData(
+    val key: ByteStringAsString,
+    val salt: ByteStringAsString,
+    val result: ByteStringAsString,
+) : TestData
