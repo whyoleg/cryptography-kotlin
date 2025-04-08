@@ -16,11 +16,11 @@ abstract class CmacCompatibilityTest(provider: CryptographyProvider) : Compatibi
         val key = CryptographyRandom.nextBytes(16)
         val salt = CryptographyRandom.nextBytes(16)
 
-        cmac.init(key)
-        cmac.update(salt)
-        val result = cmac.doFinal()
+        val cmacKey = cmac.keyGenerator(cipherParameters = key).generateKeyBlocking()
+        cmacKey.update(salt)
+        val diversifiedKey = cmacKey.encodeToByteArrayBlocking(CMAC.Key.Format.RAW)
 
-        api.signatures.saveData(signatureParametersId, CmacData(ByteString(key), ByteString(salt), ByteString(result)))
+        api.signatures.saveData(signatureParametersId, CmacData(ByteString(key), ByteString(salt), ByteString(diversifiedKey)))
     }
 
     override suspend fun CompatibilityTestScope<CMAC>.validate() {

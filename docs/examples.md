@@ -65,7 +65,7 @@ An example shows how to generate CMAC key.
 
 ```kotlin
 // getting default provider
-val provider = CryptographyProvider.Default
+val cmac = CryptographyProvider.Default
 // getting CMAC algorithm
 val cmac = provider.get(CMAC)
 
@@ -73,13 +73,13 @@ val key = CryptographyRandom.nextBytes(16)
 val salt = CryptographyRandom.nextBytes(16)
 
 // initializing CMAC
-cmac.init(key)
+val cmacKey = cmac.keyGenerator(cipherParameters = key).generateKeyBlocking()
 
 // Update salt
 cmac.update(salt)
 
 // Finalize CMAC
-val resultKey = cmac.doFinal()
+val diversifiedKey = cmacKey.encodeToByteArrayBlocking(CMAC.Key.Format.RAW)
 ```
 
 ## AES-GCM

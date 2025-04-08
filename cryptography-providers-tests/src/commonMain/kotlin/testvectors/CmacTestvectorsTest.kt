@@ -9,9 +9,9 @@ abstract class CmacTestvectorsTest(provider: CryptographyProvider) : AlgorithmTe
 
     private fun testCase(key: ByteArray, salt: ByteArray, expected: ByteArray) {
         testWithAlgorithm {
-            algorithm.init(key)
-            algorithm.update(salt)
-            val result = algorithm.doFinal()
+            val key = algorithm.keyGenerator(key).generateKeyBlocking()
+            key.update(salt)
+            val result = key.encodeToByteArrayBlocking(CMAC.Key.Format.RAW)
             assertEquals(16, result.size)
             assertEquals(result, expected)
         }

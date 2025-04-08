@@ -1,6 +1,7 @@
 package dev.whyoleg.cryptography.algorithms
 
 import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.materials.key.*
 
 @SubclassOptInRequired(CryptographyProviderApi::class)
 public interface CMAC : CryptographyAlgorithm {
@@ -8,10 +9,12 @@ public interface CMAC : CryptographyAlgorithm {
 
     public companion object : CryptographyAlgorithmId<CMAC>("CMAC")
 
-    public fun init(parameters: ByteArray)
-    public fun update(data: ByteArray)
-    public fun update(data: ByteArray, startIndex: Int, endIndex: Int)
-    public fun doFinal(): ByteArray
-    public fun doFinal(out: ByteArray, offset: Int)
-    public fun reset()
+    public fun keyGenerator(cipherParameters: ByteArray, algorithm: String = "AESCMAC"): KeyGenerator<Key>
+
+    public interface Key : EncodableKey<Key.Format> {
+        public fun update(data: ByteArray)
+        public fun update(data: ByteArray, startIndex: Int, endIndex: Int)
+        public fun reset()
+        public enum class Format : KeyFormat { RAW }
+    }
 }

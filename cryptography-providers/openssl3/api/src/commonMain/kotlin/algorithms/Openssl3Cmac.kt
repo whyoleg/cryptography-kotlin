@@ -1,6 +1,7 @@
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
 
 import dev.whyoleg.cryptography.algorithms.*
+import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
@@ -16,49 +17,61 @@ internal object Openssl3Cmac : CMAC {
 
     private lateinit var context: Resource<CPointer<EVP_MAC_CTX>>
 
-    override fun init(parameters: ByteArray) {
-        context = Resource(checkError(EVP_MAC_CTX_new(mac)), ::EVP_MAC_CTX_free)
-        parameters.usePinned {
-            checkError(EVP_MAC_init(context.access(), it.safeAddressOf(0).reinterpret(), parameters.size.convert(), null))
+    override fun keyGenerator(
+        cipherParameters: ByteArray,
+        algorithm: String,
+    ): KeyGenerator<CMAC.Key> {
+        return CmacKeyGenerator(cipherParameters, algorithm)
+    }
+
+    private class CmacKeyGenerator(
+        private val cipherParameters: ByteArray,
+        private val algorithm: String,
+    ) : KeyGenerator<CMAC.Key> {
+        override fun generateKeyBlocking(): CMAC.Key {
+            return CmacKey(cipherParameters, algorithm)
         }
     }
 
-    override fun update(data: ByteArray) {
-        val context = context.access()
-        data.usePinned {
-            checkError(EVP_MAC_update(context, it.safeAddressOf(0).reinterpret(), data.size.convert()))
+    private class CmacKey(
+        private val key: ByteArray,
+        private val algorithm: String,
+    ) : CMAC.Key {
+
+        init {
+            context = Resource(checkError(EVP_MAC_CTX_new(mac)), ::EVP_MAC_CTX_free)
+            key.usePinned {
+                checkError(EVP_MAC_init(context.access(), it.safeAddressOf(0).reinterpret(), key.size.convert(), null))
+            }
         }
-    }
 
-    override fun update(source: ByteArray, startIndex: Int, endIndex: Int) {
-        checkBounds(source.size, startIndex, endIndex)
-        val context = context.access()
-
-        source.usePinned {
-            checkError(EVP_MAC_update(context, it.safeAddressOf(startIndex).reinterpret(), (endIndex - startIndex).convert()))
+        override fun encodeToByteArrayBlocking(format: CMAC.Key.Format): ByteArray = when (format) {
+            CMAC.Key.Format.RAW -> {
+                val context = context.access()
+                val macSize = EVP_MAC_CTX_get_mac_size(context).convert<Int>()
+                val out = ByteArray(macSize)
+                checkBounds(out.size, 0, macSize)
+                out.usePinned { checkError(EVP_MAC_final(context, it.safeAddressOf(0).reinterpret(), null, macSize.convert())) }
+                out
+            }
         }
-    }
 
-    override fun doFinal(): ByteArray {
-        val context = context.access()
-        val macSize = EVP_MAC_CTX_get_mac_size(context).convert<Int>()
-        val result = ByteArray(macSize)
-        result.usePinned {
-            checkError(EVP_MAC_final(context, it.safeAddressOf(0).reinterpret(), null, macSize.convert()))
+        override fun update(data: ByteArray) {
+            val context = context.access()
+            data.usePinned { checkError(EVP_MAC_update(context, it.safeAddressOf(0).reinterpret(), data.size.convert())) }
         }
-        return result
-    }
 
-    override fun doFinal(out: ByteArray, offset: Int) {
-        val context = context.access()
-        val macSize = EVP_MAC_CTX_get_mac_size(context).convert<Int>()
-        checkBounds(out.size, offset, offset + macSize)
-        out.usePinned {
-            checkError(EVP_MAC_final(context, it.safeAddressOf(offset).reinterpret(), null, macSize.convert()))
+        override fun update(source: ByteArray, startIndex: Int, endIndex: Int) {
+            checkBounds(source.size, startIndex, endIndex)
+            val context = context.access()
+
+            source.usePinned {
+                checkError(EVP_MAC_update(context, it.safeAddressOf(startIndex).reinterpret(), (endIndex - startIndex).convert()))
+            }
         }
-    }
 
-    override fun reset() {
-        checkError(EVP_MAC_reset(context.access()))
+        override fun reset() {
+            checkError(EVP_MAC_reset(context.access()))
+        }
     }
 }

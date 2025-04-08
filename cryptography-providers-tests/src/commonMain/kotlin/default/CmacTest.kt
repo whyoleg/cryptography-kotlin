@@ -23,10 +23,10 @@ abstract class CmacTest(provider: CryptographyProvider) : AlgorithmTest<CMAC>(CM
         val key = "key".encodeToByteArray()
         val salt = "salt".encodeToByteArray()
         val cmac = provider.get(CMAC)
-        cmac.init(key)
-        cmac.update(salt)
-        val result = cmac.doFinal()
-        assertNotNull(result)
+        val cmacKey = cmac.keyGenerator(cipherParameters = key).generateKeyBlocking()
+        cmacKey.update(salt)
+        val diversifiedKey = cmacKey.encodeToByteArrayBlocking(CMAC.Key.Format.RAW)
+        assertNotNull(diversifiedKey)
     }
 
 }
