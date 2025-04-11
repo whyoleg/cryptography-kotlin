@@ -54,7 +54,7 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(kotlin("test"))
-            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:2.1.20")
         }
         jsMain.dependencies {
             implementation(cryptographyLibs.provider.webcrypto)
