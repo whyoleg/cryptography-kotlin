@@ -6,6 +6,7 @@ package dev.whyoleg.cryptography.api
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.EC.Curve.Companion.P256
+import dev.whyoleg.cryptography.api.keys.*
 import dev.whyoleg.cryptography.random.*
 import kotlinx.io.*
 import kotlinx.io.bytestring.*
@@ -52,7 +53,7 @@ public interface HashAlgorithm : HashOperation {
     public val async: AsyncHashOperation
 }
 
-public val SHA256: HashAlgorithm = TODO()
+//public val SHA256: HashAlgorithm = TODO()
 
 public object HMAC {
     public fun generateKey(size: Int): HmacRawKey = TODO()
@@ -150,7 +151,37 @@ public sealed interface AesCipherParameters {
 
 public interface AesKey : EncryptOperation2<AesCipherParameters>
 
+public interface RsaPublicKey {
+    // params of key
+}
+
+public interface RsaPrivateKey {
+    // params of key
+}
+
 private suspend fun prepareSecreteKey(myKey: String) {
+    val key: RsaPublicKey = RsaPublicKey.decodePem(myKey)
+
+    RsaKeyPair.generate(size)
+
+    key.get(RsaPssParameters(SHA256, saltSize = 32))
+
+    RsaPssSignature.verify(key, data, signature)
+
+
+
+    Hpke.sender(
+        key, // Ecdsa key
+        params,
+    )
+
+
+
+
+
+
+
+
     ECDH.deriveSharedSecret(
         localPrivateKey,
         remotePublicKey
