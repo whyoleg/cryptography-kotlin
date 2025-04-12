@@ -1,9 +1,9 @@
 [versions]
 
-kotlin = "2.0.20"
+kotlin = "2.1.20"
 
 # kotlin/kotlinx
-kotlin-dokka = "1.9.20"
+kotlin-dokka = "2.0.0"
 kotlinx-bcv = "0.16.3"
 kotlinx-kover = "0.8.3"
 kotlinx-io = "0.5.4"
