@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 import org.jetbrains.kotlin.gradle.*
@@ -64,16 +64,10 @@ kotlin {
             implementation(libs.ktor.client.core)
         }
         jvmMain.dependencies {
-            implementation(libs.ktor.client.okhttp)
-        }
-        linuxMain.dependencies {
             implementation(libs.ktor.client.cio)
         }
-        appleMain.dependencies {
+        nativeMain.dependencies {
             implementation(libs.ktor.client.cio)
-        }
-        mingwMain.dependencies {
-            implementation(libs.ktor.client.winhttp)
         }
     }
 }
