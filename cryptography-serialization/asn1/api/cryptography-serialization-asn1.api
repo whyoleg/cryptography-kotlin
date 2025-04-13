@@ -13,7 +13,6 @@ public synthetic class dev/whyoleg/cryptography/serialization/asn1/BitArray$$ser
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/whyoleg/cryptography/serialization/asn1/BitArray;)V
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class dev/whyoleg/cryptography/serialization/asn1/BitArray$Companion {
@@ -83,7 +82,6 @@ public synthetic class dev/whyoleg/cryptography/serialization/asn1/ObjectIdentif
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize-IHeWLgs (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/String;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class dev/whyoleg/cryptography/serialization/asn1/ObjectIdentifier$Companion {
