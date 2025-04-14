@@ -64,22 +64,25 @@ println(decodedKeyVerificationResult)
 An example shows how to generate CMAC key.
 
 ```kotlin
-// getting default provider
-val cmac = CryptographyProvider.Default
-// getting CMAC algorithm
-val cmac = provider.get(CMAC)
-
+// Dummy data
 val key = CryptographyRandom.nextBytes(16)
 val salt = CryptographyRandom.nextBytes(16)
 
+// getting default provider
+val provider = CryptographyProvider.Default
+
+// getting CMAC algorithm
+val cmacProvider = provider.get(AES.CMAC)
+
 // initializing CMAC
-val cmacKey = cmac.keyGenerator(cipherParameters = key).generateKeyBlocking()
+val decodedKey = cmacProvider.keyDecoder().decodeFromByteArrayBlocking(Key.Format.RAW, key)
+val signFunction = decodedKey.signatureGenerator().createSignFunction()
 
 // Update salt
-cmac.update(salt)
+signFunction.update(salt)
 
 // Finalize CMAC
-val diversifiedKey = cmacKey.encodeToByteArrayBlocking(CMAC.Key.Format.RAW)
+val derivedKey = signFunction.signToByteArray()
 ```
 
 ## AES-GCM
