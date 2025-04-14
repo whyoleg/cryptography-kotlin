@@ -4,31 +4,11 @@
 
 package dev.whyoleg.cryptography.providers.openssl3.operations
 
-import dev.whyoleg.cryptography.operations.SignatureVerifier
-import dev.whyoleg.cryptography.operations.VerifyFunction
-import dev.whyoleg.cryptography.providers.base.checkBounds
-import dev.whyoleg.cryptography.providers.openssl3.internal.Resource
-import dev.whyoleg.cryptography.providers.openssl3.internal.SafeCloseAction
-import dev.whyoleg.cryptography.providers.openssl3.internal.SafeCloseable
-import dev.whyoleg.cryptography.providers.openssl3.internal.allocArrayOf
-import dev.whyoleg.cryptography.providers.openssl3.internal.checkError
-import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.EVP_MAC_CTX
-import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.EVP_MAC_CTX_free
-import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.EVP_MAC_CTX_new
-import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.EVP_MAC_fetch
-import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.EVP_MAC_init
-import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.EVP_MAC_update
-import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.OSSL_PARAM_construct_end
-import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.OSSL_PARAM_construct_utf8_string
-import dev.whyoleg.cryptography.providers.openssl3.internal.safeAddressOf
-import kotlinx.cinterop.CPointer
-import kotlinx.cinterop.UnsafeNumber
-import kotlinx.cinterop.addressOf
-import kotlinx.cinterop.convert
-import kotlinx.cinterop.cstr
-import kotlinx.cinterop.memScoped
-import kotlinx.cinterop.reinterpret
-import kotlinx.cinterop.usePinned
+import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.providers.base.*
+import dev.whyoleg.cryptography.providers.openssl3.internal.*
+import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
+import kotlinx.cinterop.*
 
 internal class Openssl3CmacSignatureVerifier(
     private val key: ByteArray,
@@ -91,15 +71,27 @@ internal class Openssl3CmacSignatureVerifier(
             }
         }
 
+        @OptIn(UnsafeNumber::class)
         override fun tryVerify(signature: ByteArray, startIndex: Int, endIndex: Int): Boolean {
             checkBounds(signature.size, startIndex, endIndex)
 
             val context = context.access()
-            val result = signature.usePinned {
-                // TODO
+            val computedMac = ByteArray(EVP_MAC_CTX_get_mac_size(context).convert<Int>())
+
+            computedMac.usePinned { pinnedMac ->
+                checkError(
+                    EVP_MAC_final(
+                        ctx = context,
+                        out = pinnedMac.addressOf(0).reinterpret(),
+                        outl = null,
+                        outsize = computedMac.size.convert()
+                    )
+                )
             }
 
-            return true
+            val isValid = computedMac.contentEquals(signature.copyOfRange(startIndex, endIndex))
+            if (!isValid) throw IllegalArgumentException("Invalid signature")
+            return isValid
         }
 
         override fun verify(signature: ByteArray, startIndex: Int, endIndex: Int) {
