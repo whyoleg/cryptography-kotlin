@@ -1,9 +1,7 @@
-package algorithms
+package dev.whyoleg.cryptography.algorithms
 
-import dev.whyoleg.cryptography.CryptographyAlgorithmId
-import dev.whyoleg.cryptography.CryptographyProviderApi
-import dev.whyoleg.cryptography.operations.SignatureGenerator
-import dev.whyoleg.cryptography.operations.SignatureVerifier
+import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.operations.*
 
 @SubclassOptInRequired(CryptographyProviderApi::class)
 public interface EdDSA : Ed<EdDSA.PublicKey, EdDSA.PrivateKey, EdDSA.KeyPair> {

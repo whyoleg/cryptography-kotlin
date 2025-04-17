@@ -1,4 +1,4 @@
-package dev.whyoleg.cryptography.algorithm
+package dev.whyoleg.cryptography.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.materials.key.*

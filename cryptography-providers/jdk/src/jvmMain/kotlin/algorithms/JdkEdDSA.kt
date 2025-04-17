@@ -1,13 +1,9 @@
-package algorithms
+package dev.whyoleg.cryptography.providers.jdk.algorithms
 
-import dev.whyoleg.cryptography.operations.SignatureGenerator
-import dev.whyoleg.cryptography.operations.SignatureVerifier
-import dev.whyoleg.cryptography.providers.jdk.JKeyPair
-import dev.whyoleg.cryptography.providers.jdk.JPrivateKey
-import dev.whyoleg.cryptography.providers.jdk.JPublicKey
-import dev.whyoleg.cryptography.providers.jdk.JdkCryptographyState
-import dev.whyoleg.cryptography.providers.jdk.operations.JdkSignatureGenerator
-import dev.whyoleg.cryptography.providers.jdk.operations.JdkSignatureVerifier
+import dev.whyoleg.cryptography.algorithms.EdDSA
+import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.providers.jdk.*
+import dev.whyoleg.cryptography.providers.jdk.operations.*
 
 internal class JdkEdDSA(state: JdkCryptographyState) : JdkEd<EdDSA.PublicKey, EdDSA.PrivateKey, EdDSA.KeyPair>(state), EdDSA {
     override fun JPublicKey.convert(): EdDSA.PublicKey = EdDsaPublicKey(state, this)

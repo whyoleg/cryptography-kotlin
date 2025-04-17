@@ -1,4 +1,4 @@
-package algorithms
+package dev.whyoleg.cryptography.algorithms
 
 import dev.whyoleg.cryptography.CryptographyAlgorithmId
 import dev.whyoleg.cryptography.CryptographyProviderApi
