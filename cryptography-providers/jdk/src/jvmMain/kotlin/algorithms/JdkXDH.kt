@@ -1,5 +1,6 @@
-package algorithms
+package dev.whyoleg.cryptography.providers.jdk.algorithms
 
+import dev.whyoleg.cryptography.algorithms.XDH
 import dev.whyoleg.cryptography.operations.SharedSecretGenerator
 import dev.whyoleg.cryptography.providers.jdk.JKeyPair
 import dev.whyoleg.cryptography.providers.jdk.JPrivateKey
