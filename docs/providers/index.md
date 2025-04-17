@@ -59,7 +59,7 @@ For additional limitation please consult provider specific documentation.
 |                                             | SHA3 family      |  ✅  |     ❌     |   ❌   |    ✅     |
 |                                             | ⚠️ RIPEMD160     |  ✅  |     ❌     |   ❌   |    ✅     |
 | **MAC**                                     | HMAC             |  ✅  |     ✅     |   ✅   |    ✅     |
-|                                             | CMAC             |  ✅  |     ❌     |   ❌   |    ✅     |
+|                                             | ⚠️ CMAC          |  ✅  |     ❌     |   ❌   |    ✅     |
 | **Symmetric-key<br/>encryption/decryption** | AES-CBC          |  ✅  |     ✅     |   ✅   |    ✅     |
 |                                             | AES-CTR          |  ✅  |     ✅     |   ✅   |    ✅     |
 |                                             | AES-GCM          |  ✅  |     ✅     |   ❌   |    ✅     |

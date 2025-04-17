@@ -5,12 +5,13 @@
 package dev.whyoleg.cryptography.providers.tests.default
 
 import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.BinarySize.Companion.bits
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.algorithms.AES.*
 import dev.whyoleg.cryptography.providers.tests.api.*
+import dev.whyoleg.cryptography.random.*
 import kotlin.test.*
 
-class AesCmacTest(provider: CryptographyProvider) : AesBasedTest<AES.CMAC>(AES.CMAC, provider) {
+abstract class AesCmacTest(provider: CryptographyProvider) : AesBasedTest<AES.CMAC>(AES.CMAC, provider) {
 
     private class AesCmacTestScope(
         logger: TestLogger,
@@ -24,15 +25,10 @@ class AesCmacTest(provider: CryptographyProvider) : AesBasedTest<AES.CMAC>(AES.C
     }
 
     @Test
-    fun testStuff() = runTestWithScope {
-        val key = "key".encodeToByteArray()
-        val salt = "salt".encodeToByteArray()
-
-        val cmacProvider = provider.get(AES.CMAC)
-        val decodedKey = cmacProvider.keyDecoder().decodeFromByteArrayBlocking(Key.Format.RAW, key)
-
-        val signFunction = decodedKey.signatureGenerator().createSignFunction()
-        signFunction.update(salt)
-        val derivedKey = signFunction.signToByteArray()
+    fun verifyResult() = runTestWithScope {
+        val key = algorithm.keyGenerator(128.bits).generateKey()
+        val data = CryptographyRandom.nextBytes(100)
+        val signature = key.signatureGenerator().generateSignature(data)
+        assertTrue(key.signatureVerifier().tryVerifySignature(data, signature))
     }
 }
