@@ -30,6 +30,18 @@ abstract interface <#A: dev.whyoleg.cryptography.algorithms/AES.Key> dev.whyoleg
         final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/AES.CBC> // dev.whyoleg.cryptography.algorithms/AES.CBC.Companion|null[0]
     }
 
+    abstract interface CMAC : dev.whyoleg.cryptography.algorithms/AES<dev.whyoleg.cryptography.algorithms/AES.CMAC.Key> { // dev.whyoleg.cryptography.algorithms/AES.CMAC|null[0]
+        open val id // dev.whyoleg.cryptography.algorithms/AES.CMAC.id|{}id[0]
+            open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/AES.CMAC> // dev.whyoleg.cryptography.algorithms/AES.CMAC.id.<get-id>|<get-id>(){}[0]
+
+        abstract interface Key : dev.whyoleg.cryptography.algorithms/AES.Key { // dev.whyoleg.cryptography.algorithms/AES.CMAC.Key|null[0]
+            abstract fun signatureGenerator(): dev.whyoleg.cryptography.operations/SignatureGenerator // dev.whyoleg.cryptography.algorithms/AES.CMAC.Key.signatureGenerator|signatureGenerator(){}[0]
+            abstract fun signatureVerifier(): dev.whyoleg.cryptography.operations/SignatureVerifier // dev.whyoleg.cryptography.algorithms/AES.CMAC.Key.signatureVerifier|signatureVerifier(){}[0]
+        }
+
+        final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/AES.CMAC> // dev.whyoleg.cryptography.algorithms/AES.CMAC.Companion|null[0]
+    }
+
     abstract interface CTR : dev.whyoleg.cryptography.algorithms/AES<dev.whyoleg.cryptography.algorithms/AES.CTR.Key> { // dev.whyoleg.cryptography.algorithms/AES.CTR|null[0]
         open val id // dev.whyoleg.cryptography.algorithms/AES.CTR.id|{}id[0]
             open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/AES.CTR> // dev.whyoleg.cryptography.algorithms/AES.CTR.id.<get-id>|<get-id>(){}[0]
@@ -470,31 +482,6 @@ abstract interface <#A: dev.whyoleg.cryptography.materials.key/KeyFormat> dev.wh
     open suspend fun encodeTo(#A): kotlin/ByteArray // dev.whyoleg.cryptography.materials.key/EncodableKey.encodeTo|encodeTo(1:0){}[0]
     open suspend fun encodeToByteArray(#A): kotlin/ByteArray // dev.whyoleg.cryptography.materials.key/EncodableKey.encodeToByteArray|encodeToByteArray(1:0){}[0]
     open suspend fun encodeToByteString(#A): kotlinx.io.bytestring/ByteString // dev.whyoleg.cryptography.materials.key/EncodableKey.encodeToByteString|encodeToByteString(1:0){}[0]
-}
-
-abstract interface dev.whyoleg.cryptography.algorithms/CMAC : dev.whyoleg.cryptography/CryptographyAlgorithm { // dev.whyoleg.cryptography.algorithms/CMAC|null[0]
-    open val id // dev.whyoleg.cryptography.algorithms/CMAC.id|{}id[0]
-        open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/CMAC> // dev.whyoleg.cryptography.algorithms/CMAC.id.<get-id>|<get-id>(){}[0]
-
-    abstract fun keyGenerator(kotlin/ByteArray, kotlin/String = ...): dev.whyoleg.cryptography.materials.key/KeyGenerator<dev.whyoleg.cryptography.algorithms/CMAC.Key> // dev.whyoleg.cryptography.algorithms/CMAC.keyGenerator|keyGenerator(kotlin.ByteArray;kotlin.String){}[0]
-
-    abstract interface Key : dev.whyoleg.cryptography.materials.key/EncodableKey<dev.whyoleg.cryptography.algorithms/CMAC.Key.Format> { // dev.whyoleg.cryptography.algorithms/CMAC.Key|null[0]
-        abstract fun reset() // dev.whyoleg.cryptography.algorithms/CMAC.Key.reset|reset(){}[0]
-        abstract fun update(kotlin/ByteArray) // dev.whyoleg.cryptography.algorithms/CMAC.Key.update|update(kotlin.ByteArray){}[0]
-        abstract fun update(kotlin/ByteArray, kotlin/Int, kotlin/Int) // dev.whyoleg.cryptography.algorithms/CMAC.Key.update|update(kotlin.ByteArray;kotlin.Int;kotlin.Int){}[0]
-
-        final enum class Format : dev.whyoleg.cryptography.materials.key/KeyFormat, kotlin/Enum<dev.whyoleg.cryptography.algorithms/CMAC.Key.Format> { // dev.whyoleg.cryptography.algorithms/CMAC.Key.Format|null[0]
-            enum entry RAW // dev.whyoleg.cryptography.algorithms/CMAC.Key.Format.RAW|null[0]
-
-            final val entries // dev.whyoleg.cryptography.algorithms/CMAC.Key.Format.entries|#static{}entries[0]
-                final fun <get-entries>(): kotlin.enums/EnumEntries<dev.whyoleg.cryptography.algorithms/CMAC.Key.Format> // dev.whyoleg.cryptography.algorithms/CMAC.Key.Format.entries.<get-entries>|<get-entries>#static(){}[0]
-
-            final fun valueOf(kotlin/String): dev.whyoleg.cryptography.algorithms/CMAC.Key.Format // dev.whyoleg.cryptography.algorithms/CMAC.Key.Format.valueOf|valueOf#static(kotlin.String){}[0]
-            final fun values(): kotlin/Array<dev.whyoleg.cryptography.algorithms/CMAC.Key.Format> // dev.whyoleg.cryptography.algorithms/CMAC.Key.Format.values|values#static(){}[0]
-        }
-    }
-
-    final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/CMAC> // dev.whyoleg.cryptography.algorithms/CMAC.Companion|null[0]
 }
 
 abstract interface dev.whyoleg.cryptography.algorithms/Digest : dev.whyoleg.cryptography/CryptographyAlgorithm { // dev.whyoleg.cryptography.algorithms/Digest|null[0]

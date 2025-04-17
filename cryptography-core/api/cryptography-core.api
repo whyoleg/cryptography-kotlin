@@ -95,6 +95,19 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/AES$CBC$Key 
 	public static synthetic fun cipher$default (Ldev/whyoleg/cryptography/algorithms/AES$CBC$Key;ZILjava/lang/Object;)Ldev/whyoleg/cryptography/algorithms/AES$IvCipher;
 }
 
+public abstract interface class dev/whyoleg/cryptography/algorithms/AES$CMAC : dev/whyoleg/cryptography/algorithms/AES {
+	public static final field Companion Ldev/whyoleg/cryptography/algorithms/AES$CMAC$Companion;
+	public fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/AES$CMAC$Companion : dev/whyoleg/cryptography/CryptographyAlgorithmId {
+}
+
+public abstract interface class dev/whyoleg/cryptography/algorithms/AES$CMAC$Key : dev/whyoleg/cryptography/algorithms/AES$Key {
+	public abstract fun signatureGenerator ()Ldev/whyoleg/cryptography/operations/SignatureGenerator;
+	public abstract fun signatureVerifier ()Ldev/whyoleg/cryptography/operations/SignatureVerifier;
+}
+
 public abstract interface class dev/whyoleg/cryptography/algorithms/AES$CTR : dev/whyoleg/cryptography/algorithms/AES {
 	public static final field Companion Ldev/whyoleg/cryptography/algorithms/AES$CTR$Companion;
 	public fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
@@ -224,30 +237,6 @@ public final class dev/whyoleg/cryptography/algorithms/AES$Key$Size {
 	public final fun getB128-XsYwlU8 ()I
 	public final fun getB192-XsYwlU8 ()I
 	public final fun getB256-XsYwlU8 ()I
-}
-
-public abstract interface class dev/whyoleg/cryptography/algorithms/CMAC : dev/whyoleg/cryptography/CryptographyAlgorithm {
-	public static final field Companion Ldev/whyoleg/cryptography/algorithms/CMAC$Companion;
-	public fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
-	public abstract fun keyGenerator ([BLjava/lang/String;)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
-	public static synthetic fun keyGenerator$default (Ldev/whyoleg/cryptography/algorithms/CMAC;[BLjava/lang/String;ILjava/lang/Object;)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
-}
-
-public final class dev/whyoleg/cryptography/algorithms/CMAC$Companion : dev/whyoleg/cryptography/CryptographyAlgorithmId {
-}
-
-public abstract interface class dev/whyoleg/cryptography/algorithms/CMAC$Key : dev/whyoleg/cryptography/materials/key/EncodableKey {
-	public abstract fun reset ()V
-	public abstract fun update ([B)V
-	public abstract fun update ([BII)V
-}
-
-public final class dev/whyoleg/cryptography/algorithms/CMAC$Key$Format : java/lang/Enum, dev/whyoleg/cryptography/materials/key/KeyFormat {
-	public static final field RAW Ldev/whyoleg/cryptography/algorithms/CMAC$Key$Format;
-	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public synthetic fun getName ()Ljava/lang/String;
-	public static fun valueOf (Ljava/lang/String;)Ldev/whyoleg/cryptography/algorithms/CMAC$Key$Format;
-	public static fun values ()[Ldev/whyoleg/cryptography/algorithms/CMAC$Key$Format;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/Digest : dev/whyoleg/cryptography/CryptographyAlgorithm {
