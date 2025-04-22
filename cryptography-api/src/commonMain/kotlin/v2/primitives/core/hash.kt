@@ -2,22 +2,16 @@
  * Copyright (c) 2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
-package dev.whyoleg.cryptography.api
+package dev.whyoleg.cryptography.api.v2.primitives.core
 
 import kotlinx.io.*
 import kotlinx.io.bytestring.*
 
-public interface HashPrimitive<P> : CryptographyPrimitive {
+public interface HashPrimitive<P> {
     public fun createHashFunction(parameters: P): HashFunction<P>
 
     public fun hash(data: ByteString, parameters: P): ByteString
     public fun hash(data: RawSource, parameters: P): ByteString
-
-    // async counterpart
-    public interface Async<P> : CryptographyPrimitive {
-        public suspend fun hash(data: ByteString, parameters: P): ByteString
-        public suspend fun hash(data: RawSource, parameters: P): ByteString
-    }
 }
 
 public interface HashFunction<P> : AutoCloseable {
@@ -30,9 +24,3 @@ public interface HashFunction<P> : AutoCloseable {
     public fun reset(parameters: P)
     public fun hash(): ByteString
 }
-
-@Suppress("NOTHING_TO_INLINE")
-public inline fun HashPrimitive<Unit>.hash(data: ByteString): ByteString = hash(data, Unit)
-
-@Suppress("NOTHING_TO_INLINE")
-public suspend inline fun HashPrimitive.Async<Unit>.hash(data: ByteString): ByteString = hash(data, Unit)

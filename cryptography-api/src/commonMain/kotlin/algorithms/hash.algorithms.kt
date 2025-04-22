@@ -9,11 +9,20 @@ import dev.whyoleg.cryptography.api.async.*
 
 public interface SimpleDigest : HashPrimitive<Unit> {
     public val outputSize: Int
+
+    public interface Async : AsyncHashPrimitive<Unit> {
+        public val outputSize: Int
+    }
 }
 
-public interface AsyncSimpleDigest : AsyncHashPrimitive<Unit> {
-    public val outputSize: Int
+//public interface AsyncSimpleDigest : AsyncHashPrimitive<Unit> {
+//    public val outputSize: Int
+//}
+
+public object Sha1Digest : CryptographyProvider.Tag<SimpleDigest> {
+    public object Async : CryptographyProvider.Tag<SimpleDigest.Async>
 }
 
-public object Sha1 : CryptographyProvider.Tag<SimpleDigest>
-public object AsyncSha1 : CryptographyProvider.Tag<AsyncSimpleDigest>
+public object Sha1 : CryptographyProvider.Tag<SimpleDigest> {
+    public object Async : CryptographyProvider.Tag<SimpleDigest.Async>
+}

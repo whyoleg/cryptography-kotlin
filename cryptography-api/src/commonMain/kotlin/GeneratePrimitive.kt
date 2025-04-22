@@ -7,3 +7,7 @@ package dev.whyoleg.cryptography.api
 public interface GeneratePrimitive<P, K> : CryptographyPrimitive {
     public fun generate(parameters: P): K
 }
+
+public interface AsyncGeneratePrimitive<P, K> : CryptographyPrimitive {
+    public suspend fun generate(parameters: P): K
+}

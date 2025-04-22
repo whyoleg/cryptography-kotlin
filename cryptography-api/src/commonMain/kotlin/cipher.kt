@@ -7,12 +7,12 @@ package dev.whyoleg.cryptography.api
 import kotlinx.io.*
 import kotlinx.io.bytestring.*
 
+// crypto.primitives
 public interface CipherBox {
     public val combined: ByteString
 }
 
-//
-
+// crypto.primitives.core
 public interface EncryptPrimitive<P> : CryptographyPrimitive {
     public fun encrypt(plaintext: ByteString, parameters: P): ByteString
 }
@@ -37,8 +37,7 @@ public interface StreamingDecryptPrimitive<P> : CryptographyPrimitive {
     public fun decryptingSource(ciphertext: RawSource, parameters: P): RawSource
 }
 
-//
-
+// crypto.primitives.async
 public interface AsyncEncryptPrimitive<P> : CryptographyPrimitive {
     public suspend fun encrypt(plaintext: ByteString, parameters: P): ByteString
 }

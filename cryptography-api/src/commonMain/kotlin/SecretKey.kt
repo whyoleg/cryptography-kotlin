@@ -13,3 +13,7 @@ public interface SecretKey {
 public interface SecretKeyFactory<K : SecretKey, GP> : GeneratePrimitive<GP, K> {
     public fun decode(bytes: ByteString): K
 }
+
+public interface AsyncSecretKeyFactory<K : SecretKey, GP> : AsyncGeneratePrimitive<GP, K> {
+    public suspend fun decode(bytes: ByteString): K
+}

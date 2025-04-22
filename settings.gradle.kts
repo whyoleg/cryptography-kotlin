@@ -41,6 +41,20 @@ projects("cryptography-kotlin") {
         }
     }
 
+//    folder("v2") {
+//        module("crypto-api")
+//        module("crypto-core")
+//        module("crypto-async")
+//        module("crypto-primitives") {
+//            module("core")
+//            module("async")
+//        }
+//        module("crypto-algorithms") {
+//            module("core")
+//            module("async")
+//        }
+//    }
+
     // providers API, high-level API
     module("cryptography-api")
     module("cryptography-core")

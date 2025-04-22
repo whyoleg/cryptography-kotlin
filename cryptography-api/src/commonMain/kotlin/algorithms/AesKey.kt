@@ -14,6 +14,10 @@ public interface AesKeyFactory : SecretKeyFactory<AesKey, AesKeyGenerationParame
     public companion object Tag : CryptographyProvider.Tag<AesKeyFactory>
 }
 
+public interface AsyncAesKeyFactory : AsyncSecretKeyFactory<AesKey, AesKeyGenerationParameters> {
+    public companion object Tag : CryptographyProvider.Tag<AsyncAesKeyFactory>
+}
+
 public class AesKeyGenerationParameters(public val size: Int) {
     public companion object {
         public val B256: AesKeyGenerationParameters = AesKeyGenerationParameters(256)

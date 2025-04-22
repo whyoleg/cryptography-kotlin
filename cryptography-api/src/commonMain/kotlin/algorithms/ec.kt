@@ -4,8 +4,11 @@
 
 package dev.whyoleg.cryptography.api.algorithms
 
+import dev.whyoleg.cryptography.api.*
+
 import kotlin.jvm.*
 
+// crypto.algorithms
 @JvmInline
 public value class EcCurve(public val name: String) {
     public companion object {
@@ -13,26 +16,33 @@ public value class EcCurve(public val name: String) {
     }
 }
 
+// crypto.algorithms
 public class EcKeyPairGeneratorParameters(
     public val curve: EcCurve,
 )
 
-public interface EcKeyPairGenerator :
-    dev.whyoleg.cryptography.api.KeyPairGenerator<EcKeyPairGeneratorParameters, EcPublicKey, EcPrivateKey> {
-    public companion object Tag : dev.whyoleg.cryptography.api.CryptographyProvider.Tag<EcKeyPairGenerator>
+// crypto.core.algorithms
+public interface EcKeyPairGenerator : KeyPairGenerator<EcKeyPairGeneratorParameters, EcPublicKey, EcPrivateKey> {
+    public companion object Tag : CryptographyProvider.Tag<EcKeyPairGenerator>
 }
 
-public interface EcPublicKeyFactory : dev.whyoleg.cryptography.api.PublicKeyFactory<EcPublicKey> {
-    public companion object Tag : dev.whyoleg.cryptography.api.CryptographyProvider.Tag<EcPublicKeyFactory>
+// crypto.core.algorithms
+public interface EcPublicKeyFactory : PublicKeyFactory<EcPublicKey> {
+    public companion object Tag : CryptographyProvider.Tag<EcPublicKeyFactory>
 }
 
-public interface EcPublicKey : dev.whyoleg.cryptography.api.PublicKey, dev.whyoleg.cryptography.api.CryptographyComponent<EcPublicKey> {
+// crypto.algorithms
+public interface EcPublicKey : PublicKey, CryptographyComponent<EcPublicKey> {
 
 }
 
-public interface EcPrivateKey : dev.whyoleg.cryptography.api.PrivateKey, dev.whyoleg.cryptography.api.CryptographyComponent<EcPrivateKey> {
+// crypto.algorithms
+public interface EcPrivateKey : PrivateKey, CryptographyComponent<EcPrivateKey> {
 
 }
 
+// crypto.core.algorithms
 public interface EcdsaSigner
+
+// crypto.core.algorithms
 public interface EcdsaVerifier
