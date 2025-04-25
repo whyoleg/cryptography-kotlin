@@ -57,6 +57,8 @@ public final class dev/whyoleg/cryptography/serialization/asn1/Der$Default : dev
 public final class dev/whyoleg/cryptography/serialization/asn1/DerKt {
 	public static final fun DER (Ldev/whyoleg/cryptography/serialization/asn1/Der;Lkotlin/jvm/functions/Function1;)Ldev/whyoleg/cryptography/serialization/asn1/Der;
 	public static synthetic fun DER$default (Ldev/whyoleg/cryptography/serialization/asn1/Der;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ldev/whyoleg/cryptography/serialization/asn1/Der;
+	public static final fun Der (Ldev/whyoleg/cryptography/serialization/asn1/Der;Lkotlin/jvm/functions/Function1;)Ldev/whyoleg/cryptography/serialization/asn1/Der;
+	public static synthetic fun Der$default (Ldev/whyoleg/cryptography/serialization/asn1/Der;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ldev/whyoleg/cryptography/serialization/asn1/Der;
 }
 
 public final class dev/whyoleg/cryptography/serialization/asn1/ObjectIdentifier {
