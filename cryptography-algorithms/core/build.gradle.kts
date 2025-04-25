@@ -8,11 +8,13 @@ plugins {
     id("ckbuild.multiplatform-library")
 }
 
-description = "cryptography-kotlin API"
+description = "cryptography-kotlin algorithms-core"
 
 kotlin {
     allTargets()
 
     sourceSets.commonMain.dependencies {
+        api(projects.cryptographyAlgorithms)
+        api(projects.cryptographyPrimitivesCore)
     }
 }

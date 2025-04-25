@@ -8,11 +8,12 @@ plugins {
     id("ckbuild.multiplatform-library")
 }
 
-description = "cryptography-kotlin API"
+description = "cryptography-kotlin primitives-async"
 
 kotlin {
     allTargets()
 
     sourceSets.commonMain.dependencies {
+        api(projects.cryptographyPrimitives)
     }
 }

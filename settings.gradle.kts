@@ -41,22 +41,21 @@ projects("cryptography-kotlin") {
         }
     }
 
-//    folder("v2") {
-//        module("crypto-api")
-//        module("crypto-core")
-//        module("crypto-async")
-//        module("crypto-primitives") {
-//            module("core")
-//            module("async")
-//        }
-//        module("crypto-algorithms") {
-//            module("core")
-//            module("async")
-//        }
-//    }
-
-    // providers API, high-level API
+    // providers API
     module("cryptography-api")
+
+    module("cryptography-primitives") {
+        module("core")
+        module("async")
+    }
+
+    module("cryptography-algorithms") {
+        module("core")
+        module("async")
+    }
+
+
+    // TODO: what should be here
     module("cryptography-core")
 
     // providers

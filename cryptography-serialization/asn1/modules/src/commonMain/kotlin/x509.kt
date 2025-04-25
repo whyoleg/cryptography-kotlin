@@ -7,6 +7,7 @@ package dev.whyoleg.cryptography.serialization.asn1.modules
 import dev.whyoleg.cryptography.bigint.*
 import dev.whyoleg.cryptography.serialization.asn1.*
 import kotlinx.serialization.*
+import kotlin.jvm.*
 
 //Certificate  ::=  SEQUENCE  {
 //        tbsCertificate       TBSCertificate,
@@ -76,6 +77,7 @@ public class Extension(
 )
 
 @Serializable
+@JvmInline
 public value class Name(
     public val s: String, // TODO!!!
 )

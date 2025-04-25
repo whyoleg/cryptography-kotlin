@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
@@ -64,6 +64,7 @@ internal class Openssl3Digest(
         }
 
         override fun reset() {
+            EVP_DigestInit_ex2()
             checkError(EVP_DigestInit(context.access(), md))
         }
     }
