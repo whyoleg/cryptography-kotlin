@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package ckbuild
@@ -8,6 +8,13 @@ import org.gradle.jvm.toolchain.*
 import org.gradle.kotlin.dsl.*
 import org.jetbrains.kotlin.gradle.*
 import org.jetbrains.kotlin.gradle.dsl.*
+
+fun KotlinMultiplatformExtension.allTargets() {
+    jvmTarget()
+    jsTarget()
+    nativeTargets()
+    wasmTargets()
+}
 
 fun KotlinMultiplatformExtension.appleTargets() {
     macosX64()
