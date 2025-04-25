@@ -15,7 +15,7 @@ jobs:
       - uses: ./.github/actions/setup-environment
 
       - name: Build documentation
-        run: ./gradlew mkdocsBuild --no-configuration-cache
+        run: ./gradlew mkdocsBuild
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
