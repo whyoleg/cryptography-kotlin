@@ -1,14 +1,15 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.testtool.client
 
 import io.ktor.client.*
-import io.ktor.client.call.*
 import io.ktor.client.plugins.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.http.content.*
+import io.ktor.utils.io.*
 import kotlinx.coroutines.flow.*
 import kotlinx.io.*
 
@@ -38,21 +39,22 @@ private val client = HttpClient {
         host = hostOverride() ?: ""
         port = 9000
     }
-    install(HttpRequestRetry)
+    install(HttpRequestRetry) {
+        retryOnException(retryOnTimeout = true)
+    }
 }
 
 internal suspend fun postData(path: String, bytes: ByteArray): String = client.post(path) {
     setBody(ByteArrayContent(bytes))
-}.body<Source>().use { it.readString() }
+}.bodyAsChannel().readBuffer().readString()
 
 internal fun getData(path: String): Flow<Pair<String, ByteArray>> = flow {
-    client.get(path).body<Source>().use { source ->
-        while (!source.exhausted()) {
-            val idLength = source.readInt()
-            val id = source.readString(idLength.toLong())
-            val contentLength = source.readInt()
-            val content = source.readByteArray(contentLength)
-            emit(id to content)
-        }
+    val source = client.get(path).bodyAsChannel().readBuffer()
+    while (!source.exhausted()) {
+        val idLength = source.readInt()
+        val id = source.readString(idLength.toLong())
+        val contentLength = source.readInt()
+        val content = source.readByteArray(contentLength)
+        emit(id to content)
     }
 }
