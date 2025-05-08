@@ -6,6 +6,8 @@ package dev.whyoleg.cryptography.primitives.core
 
 import kotlinx.io.bytestring.*
 
-public interface SecretDerivationPrimitive<P> {
-    public fun deriveSecret(input: ByteString, parameters: P): ByteString
+public interface SecretDerivationPrimitive {
+    public val defaultSecretSize: Int
+
+    public fun deriveSecret(input: ByteString, secretSize: Int = defaultSecretSize): ByteString
 }

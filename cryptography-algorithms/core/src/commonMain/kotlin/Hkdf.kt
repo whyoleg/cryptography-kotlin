@@ -7,6 +7,6 @@ package dev.whyoleg.cryptography.algorithms.core
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.primitives.core.*
 
-public interface Hkdf : SecretDerivationPrimitive<HkdfDeriveParameters> {
+public interface Hkdf : SecretDerivationPrimitive {
     public companion object Tag : CryptographyProvider.Tag<Hkdf, HkdfParameters>
 }

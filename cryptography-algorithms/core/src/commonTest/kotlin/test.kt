@@ -32,6 +32,9 @@ public fun EcPublicKey.Companion.decodeFromPem(text: String): EcPublicKey {
 public fun EcPublicKey.ecdsaVerifier(): EcdsaVerifier = EcdsaVerifier(this)
 
 private fun test3(provider: CryptographyProvider) {
+    val kp = EcKeyFactory().decodePublicKeyFromPem("")
+    EcdsaVerifier(kp, EcdsaParameters(EcdsaSignatureFormat.DER))
+
     EcPublicKey.decodeFromPem("")
         .ecdsaVerifier()
         .verify("".encodeToByteString(), "".encodeToByteString(), Unit)
@@ -45,10 +48,15 @@ private fun test3(provider: CryptographyProvider) {
     }
     EcPublicKeyFactory().decodeFromPem("")
 
-    val (pub, priv) = EcKeyPairFactory().generate(EcCurve.P256)
+    val (pub, priv) = EcKeyFactory().generateKeyPair(EcCurve.P256)
 
     EcdsaSigner(priv, EcdsaParameters.DER)
         .sign("".encodeToByteString(), Unit)
+
+    KeyPairGenerator(Ec(EcCurve.P256))
+
+    EdKeyFactory()
+    EdKeyFactory()
 
 
 

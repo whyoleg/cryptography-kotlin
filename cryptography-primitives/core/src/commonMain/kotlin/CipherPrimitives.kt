@@ -10,7 +10,7 @@ import kotlinx.io.bytestring.*
 
 public interface CipherPrimitive<P> : EncryptPrimitive<P>, DecryptPrimitive<P>
 
-public interface CipherBoxPrimitive<P, SB : CipherBox> :
+public interface BoxCipherPrimitive<P, SB : CipherBox> :
     CipherPrimitive<P>,
     BoxEncryptPrimitive<P, SB>,
     BoxDecryptPrimitive<P, SB>

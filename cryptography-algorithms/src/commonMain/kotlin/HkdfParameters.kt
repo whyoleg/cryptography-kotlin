@@ -8,10 +8,6 @@ import kotlinx.io.bytestring.*
 
 public class HkdfParameters(
     public val digest: DigestAlgorithm,
-)
-
-public class HkdfDeriveParameters(
-    public val outputSize: BinarySize,
     public val salt: ByteString,
     public val info: ByteString? = null,
 )

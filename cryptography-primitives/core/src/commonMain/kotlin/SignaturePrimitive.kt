@@ -7,28 +7,30 @@ package dev.whyoleg.cryptography.primitives.core
 import kotlinx.io.*
 import kotlinx.io.bytestring.*
 
-public interface SignPrimitive<P> {
-    public fun createSignFunction(parameters: P): SignFunction<P>
+public interface MacPrimitive : SignPrimitive, VerifyPrimitive
 
-    public fun sign(data: ByteString, parameters: P): ByteString
-    public fun sign(data: RawSource, parameters: P): ByteString
+public interface SignPrimitive {
+    public fun createSignFunction(): SignFunction
+
+    public fun sign(data: ByteString): ByteString
+    public fun sign(data: RawSource): ByteString
 }
 
-public interface VerifyPrimitive<P> {
-    public fun createVerifyFunction(parameters: P): VerifyFunction<P>
+public interface VerifyPrimitive {
+    public fun createVerifyFunction(): VerifyFunction
 
-    public fun verify(data: ByteString, signature: ByteString, parameters: P)
-    public fun verify(data: RawSource, signature: ByteString, parameters: P)
+    public fun verify(data: ByteString, signature: ByteString)
+    public fun verify(data: RawSource, signature: ByteString)
 
-    public fun tryVerify(data: ByteString, signature: ByteString, parameters: P): Boolean
-    public fun tryVerify(data: RawSource, signature: ByteString, parameters: P): Boolean
+    public fun tryVerify(data: ByteString, signature: ByteString): Boolean
+    public fun tryVerify(data: RawSource, signature: ByteString): Boolean
 }
 
-public interface SignFunction<P> : AccumulatingFunction<P> {
+public interface SignFunction : AccumulatingFunction {
     public fun sign(): ByteString
 }
 
-public interface VerifyFunction<P> : AccumulatingFunction<P> {
+public interface VerifyFunction : AccumulatingFunction {
     public fun verify(signature: ByteString)
     public fun tryVerify(signature: ByteString): Boolean
 }

@@ -10,30 +10,26 @@ import dev.whyoleg.cryptography.primitives.core.*
 import kotlinx.io.bytestring.*
 
 public interface EcPublicKeyFactory : PublicKeyFactory<EcPublicKey> {
-    // TODO?
-    public fun decodeCompressedPoint(bytes: ByteString): EcPublicKey
-    public fun decodeUncompressedPoint(bytes: ByteString): EcPublicKey
-
     public companion object Tag : CryptographyProvider.Tag<EcPublicKeyFactory, Unit>
 }
 
 public interface EcPrivateKeyFactory : PrivateKeyFactory<EcPrivateKey> {
-    public fun decodeSecret(bytes: ByteString): EcPrivateKey
-
     public companion object Tag : CryptographyProvider.Tag<EcPrivateKeyFactory, Unit>
 }
 
-public interface EcKeyPairFactory {
-    public fun generate(curve: EcCurve): KeyPair<EcPublicKey, EcPrivateKey>
+public interface EcKeyFactory : KeyPairFactory<EcCurve, EcPublicKey, EcPrivateKey> {
+    public fun decodeCompressedPoint(bytes: ByteString): EcPublicKey
+    public fun decodeUncompressedPoint(bytes: ByteString): EcPublicKey
+    public fun decodeSecret(bytes: ByteString): EcPrivateKey
 
-    public companion object Tag : CryptographyProvider.Tag<EcKeyPairFactory, Unit>
+    public companion object Tag : CryptographyProvider.Tag<EcKeyFactory, Unit>
 }
 
-public interface EcdsaSigner : SignPrimitive<Unit> {
+public interface EcdsaSigner : SignPrimitive {
     public companion object Tag : EcPrivateKey.Tag<EcdsaSigner, EcdsaParameters>
 }
 
-public interface EcdsaVerifier : VerifyPrimitive<Unit> {
+public interface EcdsaVerifier : VerifyPrimitive {
     public companion object Tag : EcPublicKey.Tag<EcdsaVerifier, EcdsaParameters>
 }
 

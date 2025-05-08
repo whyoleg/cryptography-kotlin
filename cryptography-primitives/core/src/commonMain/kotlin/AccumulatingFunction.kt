@@ -7,12 +7,12 @@ package dev.whyoleg.cryptography.primitives.core
 import kotlinx.io.*
 import kotlinx.io.bytestring.*
 
-public interface AccumulatingFunction<P> : AutoCloseable {
+public interface AccumulatingFunction : AutoCloseable {
     public fun update(data: ByteString)
     public fun update(data: RawSource)
 
     public fun updatingSource(data: RawSource): RawSource
     public fun updatingSink(sink: RawSink): RawSink
 
-    public fun reinitialize(parameters: P)
+    public fun reset()
 }

@@ -19,8 +19,7 @@ public interface AesKeyFactory : SecretKeyFactory<AesKey> {
 //    public fun generate(digest: DigestAlgorithm, size: BinarySize)
 //}
 
-// TODO: may be support streaming encrypt at least?
-public interface AesGcmCipher : CipherBoxPrimitive<AesGcmCipherParameters, AesGcmCipherBox> {
+public interface AesGcmCipher : BoxCipherPrimitive<AesGcmCipherParameters, AesGcmCipherBox> {
     public override fun encryptToBox(plaintext: ByteString): AesGcmCipherBox {
         // random + default
         val parameters = AesGcmCipherParameters(

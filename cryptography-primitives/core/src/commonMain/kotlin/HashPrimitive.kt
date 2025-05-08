@@ -7,13 +7,26 @@ package dev.whyoleg.cryptography.primitives.core
 import kotlinx.io.*
 import kotlinx.io.bytestring.*
 
-public interface HashPrimitive<P> {
-    public fun createHashFunction(parameters: P): HashFunction<P>
+public interface HashPrimitive {
+    public val outputSize: Int
 
-    public fun hash(data: ByteString, parameters: P): ByteString
-    public fun hash(data: RawSource, parameters: P): ByteString
+    public fun createHashFunction(): HashFunction
+
+    public fun hash(data: ByteString): ByteString
+    public fun hash(data: RawSource): ByteString
 }
 
-public interface HashFunction<P> : AccumulatingFunction<P> {
+public interface HashFunction : AccumulatingFunction {
     public fun hash(): ByteString
+}
+
+public interface ExtendableHashPrimitive : HashPrimitive {
+    public override fun createHashFunction(): ExtendableHashFunction
+
+    public fun hash(data: ByteString, outputSize: Int): ByteString
+    public fun hash(data: RawSource, outputSize: Int): ByteString
+}
+
+public interface ExtendableHashFunction : HashFunction {
+    public fun hash(outputSize: Int): ByteString
 }
