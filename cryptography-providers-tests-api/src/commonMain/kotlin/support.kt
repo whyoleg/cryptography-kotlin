@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.tests.api
@@ -23,13 +23,13 @@ fun AlgorithmTestScope<*>.supportsDigest(digest: CryptographyAlgorithmId<Digest>
     val sha3Algorithms = setOf(SHA3_224, SHA3_256, SHA3_384, SHA3_512)
     when {
         (digest == SHA224 || digest in sha3Algorithms) &&
-                provider.isWebCrypto                                  -> digest.name
+                (provider.isWebCrypto || provider.isCryptoKit) -> digest.name
         digest in sha3Algorithms &&
                 provider.isApple                                      -> digest.name
         digest in sha3Algorithms &&
                 provider.isJdkDefault &&
                 (platform.isJdk { major < 17 } || platform.isAndroid) -> "${digest.name} signatures on old JDK"
-        digest == RIPEMD160 && (provider.isJdkDefault || provider.isApple || provider.isWebCrypto)
+        digest == RIPEMD160 && (provider.isJdkDefault || provider.isApple || provider.isWebCrypto || provider.isCryptoKit)
                                                                       -> digest.name
         else                                                          -> null
     }
@@ -86,7 +86,7 @@ fun AlgorithmTestScope<out EC<*, *, *>>.supportsCurve(curve: EC.Curve): Boolean 
     when {
         // JDK default, WebCrypto and Apple doesn't support secp256k1
         curve.name == "secp256k1" && (
-                provider.isJdkDefault || provider.isWebCrypto || provider.isApple
+                provider.isJdkDefault || provider.isWebCrypto || provider.isApple || provider.isCryptoKit
                 ) -> "ECDSA ${curve.name}"
         else      -> null
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.tests.api
@@ -34,6 +34,10 @@ sealed class TestProvider {
     @SerialName("openssl3")
     @Serializable
     data class OpenSSL3(val version: String) : TestProvider()
+
+    @SerialName("cryptokit")
+    @Serializable
+    data object CryptoKit : TestProvider()
 }
 
 val TestProvider.isJdk: Boolean get() = this is TestProvider.JDK
@@ -42,3 +46,4 @@ val TestProvider.isBouncyCastle: Boolean get() = this == TestProvider.JDK.Bouncy
 val TestProvider.isWebCrypto: Boolean get() = this == TestProvider.WebCrypto
 val TestProvider.isApple: Boolean get() = this == TestProvider.Apple
 val TestProvider.isOpenssl3: Boolean get() = this is TestProvider.OpenSSL3
+val TestProvider.isCryptoKit: Boolean get() = this == TestProvider.CryptoKit
