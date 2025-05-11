@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.apple.internal
@@ -142,9 +142,9 @@ internal class CCCipher(
 
             val dataOutMoved = alloc<size_tVar>()
             val moved = cryptorRef.update(
-                dataIn = plaintext.fixEmpty().refTo(0),
+                dataIn = plaintext.safeRefTo(0),
                 dataInLength = plaintext.size,
-                dataOut = ciphertextOutput.fixEmpty().refTo(0),
+                dataOut = ciphertextOutput.safeRefTo(0),
                 dataOutAvailable = ciphertextOutput.size,
                 dataOutMoved = dataOutMoved,
             )
@@ -166,9 +166,9 @@ internal class CCCipher(
 
             val dataOutMoved = alloc<size_tVar>()
             var moved = cryptorRef.update(
-                dataIn = ciphertext.refToFixed(ciphertextStartIndex),
+                dataIn = ciphertext.safeRefTo(ciphertextStartIndex),
                 dataInLength = ciphertext.size - ciphertextStartIndex,
-                dataOut = plaintextOutput.refToFixed(0),
+                dataOut = plaintextOutput.safeRefTo(0),
                 dataOutAvailable = plaintextOutput.size,
                 dataOutMoved = dataOutMoved
             )

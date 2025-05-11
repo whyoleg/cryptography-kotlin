@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
@@ -95,7 +95,7 @@ private class HmacSignature(
             val context = context.access()
 
             source.usePinned {
-                checkError(EVP_MAC_update(context, it.safeAddressOf(startIndex).reinterpret(), (endIndex - startIndex).convert()))
+                checkError(EVP_MAC_update(context, it.safeAddressOfU(startIndex), (endIndex - startIndex).convert()))
             }
         }
 
@@ -105,7 +105,7 @@ private class HmacSignature(
             checkBounds(destination.size, destinationOffset, destinationOffset + macSize)
 
             destination.usePinned {
-                checkError(EVP_MAC_final(context, it.safeAddressOf(destinationOffset).reinterpret(), null, macSize.convert()))
+                checkError(EVP_MAC_final(context, it.safeAddressOfU(destinationOffset), null, macSize.convert()))
             }
             return macSize
         }
@@ -132,7 +132,7 @@ private class HmacSignature(
                 checkError(
                     EVP_MAC_init(
                         ctx = context,
-                        key = it.safeAddressOf(0).reinterpret(),
+                        key = it.safeAddressOfU(0),
                         keylen = key.size.convert(),
                         params = OSSL_PARAM_array(
                             OSSL_PARAM_construct_utf8_string("digest".cstr.ptr, hashAlgorithm.cstr.ptr, 0.convert())
