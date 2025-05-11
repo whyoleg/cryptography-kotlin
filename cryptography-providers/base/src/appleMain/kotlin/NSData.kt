@@ -32,7 +32,7 @@ public fun <R> ByteArray.useNSData(block: (NSData) -> R): R {
             NSData.dataWithBytesNoCopy(
                 bytes = it.addressOf(0),
                 length = size.convert(),
-                freeWhenDone = true
+                freeWhenDone = false
             )
         )
     }
