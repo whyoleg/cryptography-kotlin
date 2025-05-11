@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.tests.api
@@ -20,6 +20,7 @@ abstract class ProviderTest(provider: CryptographyProvider) {
             "JDK"       -> TestProvider.JDK.Default
             "JDK (BC)"  -> TestProvider.JDK.BouncyCastle
             "Apple"     -> TestProvider.Apple
+            "CryptoKit" -> TestProvider.CryptoKit
             else        -> when {
                 provider.name.startsWith("OpenSSL3") -> TestProvider.OpenSSL3(
                     version = provider.name.substringAfter("(").substringBeforeLast(")")
