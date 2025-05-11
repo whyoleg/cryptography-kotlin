@@ -7,9 +7,11 @@ import cksettings.*
 pluginManagement {
     includeBuild("build-logic")
     includeBuild("build-settings")
-}
 
-includeBuild("testtool")
+    // nested gradle plugins
+    includeBuild("testtool")
+    includeBuild("swiftinterop")
+}
 
 plugins {
     id("cksettings.default")
