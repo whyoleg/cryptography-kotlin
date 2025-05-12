@@ -22,7 +22,9 @@ swiftInterop {
 }
 
 kotlin {
-    appleTargets()
+    appleTargets(
+        supportsWatchosArm32 = false,
+    )
 
     compilerOptions {
         optIn.addAll(

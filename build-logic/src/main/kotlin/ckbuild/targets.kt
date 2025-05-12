@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package ckbuild
@@ -9,7 +9,10 @@ import org.gradle.kotlin.dsl.*
 import org.jetbrains.kotlin.gradle.*
 import org.jetbrains.kotlin.gradle.dsl.*
 
-fun KotlinMultiplatformExtension.appleTargets() {
+fun KotlinMultiplatformExtension.appleTargets(
+    // not supported by Swift anymore -> not supported by CryptoKit
+    supportsWatchosArm32: Boolean = true,
+) {
     macosX64()
     macosArm64()
 
@@ -18,7 +21,7 @@ fun KotlinMultiplatformExtension.appleTargets() {
     iosSimulatorArm64()
 
     watchosX64()
-    watchosArm32()
+    if (supportsWatchosArm32) watchosArm32()
     watchosArm64()
     watchosSimulatorArm64()
     watchosDeviceArm64()
