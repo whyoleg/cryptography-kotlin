@@ -17,7 +17,7 @@ open annotation class dev.whyoleg.cryptography/DelicateCryptographyApi : kotlin/
 abstract interface <#A: dev.whyoleg.cryptography.algorithms/AES.Key> dev.whyoleg.cryptography.algorithms/AES : dev.whyoleg.cryptography/CryptographyAlgorithm { // dev.whyoleg.cryptography.algorithms/AES|null[0]
     abstract fun keyDecoder(): dev.whyoleg.cryptography.materials.key/KeyDecoder<dev.whyoleg.cryptography.algorithms/AES.Key.Format, #A> // dev.whyoleg.cryptography.algorithms/AES.keyDecoder|keyDecoder(){}[0]
     abstract fun keyGenerator(dev.whyoleg.cryptography/BinarySize = ...): dev.whyoleg.cryptography.materials.key/KeyGenerator<#A> // dev.whyoleg.cryptography.algorithms/AES.keyGenerator|keyGenerator(dev.whyoleg.cryptography.BinarySize){}[0]
-    open fun keyGenerator(dev.whyoleg.cryptography.algorithms.symmetric/SymmetricKeySize = ...): dev.whyoleg.cryptography.materials.key/KeyGenerator<#A> // dev.whyoleg.cryptography.algorithms/AES.keyGenerator|keyGenerator(dev.whyoleg.cryptography.algorithms.symmetric.SymmetricKeySize){}[0]
+    open fun keyGenerator(dev.whyoleg.cryptography.algorithms.symmetric/SymmetricKeySize): dev.whyoleg.cryptography.materials.key/KeyGenerator<#A> // dev.whyoleg.cryptography.algorithms/AES.keyGenerator|keyGenerator(dev.whyoleg.cryptography.algorithms.symmetric.SymmetricKeySize){}[0]
 
     abstract interface CBC : dev.whyoleg.cryptography.algorithms/AES<dev.whyoleg.cryptography.algorithms/AES.CBC.Key> { // dev.whyoleg.cryptography.algorithms/AES.CBC|null[0]
         open val id // dev.whyoleg.cryptography.algorithms/AES.CBC.id|{}id[0]

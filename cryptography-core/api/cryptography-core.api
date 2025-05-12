@@ -79,7 +79,6 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/AES : dev/wh
 	public abstract fun keyGenerator-6q1zMKY (I)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
 	public static synthetic fun keyGenerator-6q1zMKY$default (Ldev/whyoleg/cryptography/algorithms/AES;IILjava/lang/Object;)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
 	public fun keyGenerator-__FLmac (I)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
-	public static synthetic fun keyGenerator-__FLmac$default (Ldev/whyoleg/cryptography/algorithms/AES;IILjava/lang/Object;)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/AES$CBC : dev/whyoleg/cryptography/algorithms/AES {
