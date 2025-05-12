@@ -32,6 +32,10 @@ abstract class SwiftInteropPlugin : Plugin<Project> {
 
             task.swiftinteropModuleName.set(swiftInterop.swiftinteropModuleName)
             task.packageName.set(swiftInterop.packageName)
+            task.iosVersion.set(swiftInterop.iosVersion)
+            task.macosVersion.set(swiftInterop.macosVersion)
+            task.tvosVersion.set(swiftInterop.tvosVersion)
+            task.watchosVersion.set(swiftInterop.watchosVersion)
             task.outputDirectory.set(buildDirectory.map { it.dir("cinterop") })
         }
 

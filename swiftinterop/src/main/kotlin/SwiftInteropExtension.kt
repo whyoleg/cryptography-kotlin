@@ -11,9 +11,10 @@ import javax.inject.*
 abstract class SwiftInteropExtension @Inject constructor(objects: ObjectFactory) {
     val packageName: Property<String> = objects.property(String::class.java)
 
-    val swiftToolsVersion: Property<String> = objects.property(String::class.java).convention("5.5")
+    val swiftToolsVersion: Property<String> = objects.property(String::class.java).convention("5.10")
 
     // TODO: make defaults equal to K/N values ?
+    // TODO: rename to min*
     val iosVersion: Property<String> = objects.property(String::class.java)
     val macosVersion: Property<String> = objects.property(String::class.java)
     val tvosVersion: Property<String> = objects.property(String::class.java)

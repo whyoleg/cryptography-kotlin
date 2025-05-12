@@ -17,6 +17,22 @@ abstract class GenerateSwiftCinteropDefinitionTask : DefaultTask() {
     @get:Input
     abstract val packageName: Property<String>
 
+    @get:Input
+    @get:Optional
+    abstract val iosVersion: Property<String>
+
+    @get:Input
+    @get:Optional
+    abstract val macosVersion: Property<String>
+
+    @get:Input
+    @get:Optional
+    abstract val tvosVersion: Property<String>
+
+    @get:Input
+    @get:Optional
+    abstract val watchosVersion: Property<String>
+
     @get:OutputDirectory
     abstract val outputDirectory: DirectoryProperty
 
@@ -35,20 +51,32 @@ abstract class GenerateSwiftCinteropDefinitionTask : DefaultTask() {
             staticLibraries = libswiftinterop_${swiftinteropModuleName.get()}.a
             
             # linker options for Swift
-            # linkerOpts = -L/usr/lib/swift
-            linkerOpts.osx = -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx
-            linkerOpts.ios_arm64 = -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/
-            linkerOpts.ios_x64 = -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator/
-            linkerOpts.ios_simulator_arm64 = -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator/
-            linkerOpts.watchos_arm32 = -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/watchos/
-            linkerOpts.watchos_arm64 = -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/watchos/
-            linkerOpts.watchos_device_arm64 = -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/watchos/
-            linkerOpts.watchos_x64 = -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/watchsimulator/
-            linkerOpts.watchos_simulator_arm64 = -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/watchsimulator/
-            linkerOpts.tvos_arm64 = -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/appletvos/
-            linkerOpts.tvos_x64 = -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/appletvsimulator/
-            linkerOpts.tvos_simulator_arm64 = -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/appletvsimulator/
+            linkerOpts.osx = ${linkerOpts("macos", "macosx", macosVersion)}
+            
+            linkerOpts.ios_arm64 = ${linkerOpts("ios", "iphoneos", iosVersion)}
+            linkerOpts.ios_x64 = ${linkerOpts("ios-simulator", "iphonesimulator", iosVersion)}
+            linkerOpts.ios_simulator_arm64 = ${linkerOpts("ios-simulator", "iphonesimulator", iosVersion)}
+            
+            linkerOpts.watchos_arm32 = ${linkerOpts("watchos", "watchos", watchosVersion)}
+            linkerOpts.watchos_arm64 = ${linkerOpts("watchos", "watchos", watchosVersion)}
+            linkerOpts.watchos_device_arm64 = ${linkerOpts("watchos", "watchos", watchosVersion)}
+            linkerOpts.watchos_x64 = ${linkerOpts("watchos-simulator", "watchsimulator", watchosVersion)}
+            linkerOpts.watchos_simulator_arm64 = ${linkerOpts("watchos-simulator", "watchsimulator", watchosVersion)}
+            
+            linkerOpts.tvos_arm64 = ${linkerOpts("tvos", "appletvos", tvosVersion)}
+            linkerOpts.tvos_x64 = ${linkerOpts("tvos-simulator", "appletvsimulator", tvosVersion)}
+            linkerOpts.tvos_simulator_arm64 = ${linkerOpts("tvos-simulator", "appletvsimulator", tvosVersion)}
             """.trimIndent()
         )
+    }
+
+    private fun linkerOpts(
+        os: String,
+        libsDir: String,
+        version: Provider<String>,
+    ): String {
+        val linker = "-L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/$libsDir/"
+        val v = version.orNull ?: return linker
+        return "-platform_version $os ${v}.0 ${v}.0 $linker"
     }
 }
