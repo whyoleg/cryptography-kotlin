@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.tests.default
@@ -47,16 +47,24 @@ interface SignatureTest {
             it.tryVerify(signature)
         }
 
+        fun verify(signature: ByteString, block: UpdateFunction. () -> Unit) = signatureVerifier.createVerifyFunction().use {
+            it.block()
+            runCatching { it.verify(signature) }
+        }
+
         listOf(
             signatureGenerator.generateSignature(data),
             signature(chunked),
             signature(viaSource),
             signature(viaSink),
         ).forEach { signature ->
-            assertTrue(signatureVerifier.tryVerifySignature(data, signature))
+            signatureVerifier.assertVerifySignature(data, signature)
             assertTrue(tryVerify(signature, chunked))
             assertTrue(tryVerify(signature, viaSource))
             assertTrue(tryVerify(signature, viaSink))
+            assertTrue(verify(signature, chunked).isSuccess)
+            assertTrue(verify(signature, viaSource).isSuccess)
+            assertTrue(verify(signature, viaSink).isSuccess)
         }
     }
 }

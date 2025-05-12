@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.tests.default
@@ -57,7 +57,7 @@ abstract class EcdsaTest(provider: CryptographyProvider) : AlgorithmTest<ECDSA>(
                             val data = CryptographyRandom.nextBytes(size)
                             val signature = generateSignature(data)
                             assertEquals(rawSignatureSize, signature.size)
-                            assertTrue(verifier.tryVerifySignature(data, signature))
+                            verifier.assertVerifySignature(data, signature)
                         }
                     }
                 }
@@ -77,7 +77,7 @@ abstract class EcdsaTest(provider: CryptographyProvider) : AlgorithmTest<ECDSA>(
                             val data = CryptographyRandom.nextBytes(size)
                             val signature = generateSignature(data)
                             assertSignatureSize(signature)
-                            assertTrue(verifier.tryVerifySignature(data, signature))
+                            verifier.assertVerifySignature(data, signature)
                         }
                     }
                 }
