@@ -41,6 +41,7 @@ nav:
       - 'WebCrypto': modules/cryptography-provider-webcrypto.md
       - 'Apple': modules/cryptography-provider-apple.md
       - 'OpenSSL3': modules/cryptography-provider-openssl3.md
+      - 'CryptoKit': modules/cryptography-provider-cryptokit.md
   - 'API': api/index.html
 
 theme:
