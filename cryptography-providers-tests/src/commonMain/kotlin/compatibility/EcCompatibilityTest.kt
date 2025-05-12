@@ -41,7 +41,11 @@ abstract class EcCompatibilityTest<PublicK : EC.PublicKey, PrivateK : EC.Private
     }
 
     protected inline fun generateCurves(block: (curve: EC.Curve) -> Unit) {
-        generate(block, EC.Curve.P256, EC.Curve.P384, EC.Curve.P521, EC.Curve("secp256k1"))
+        generate(block,
+            EC.Curve.P256, EC.Curve.P384, EC.Curve.P521,
+            EC.Curve.secp256k1,
+            EC.Curve.brainpoolP256r1, EC.Curve.brainpoolP384r1, EC.Curve.brainpoolP512r1,
+        )
     }
 
     protected suspend fun CompatibilityTestScope<A>.generateKeys(
