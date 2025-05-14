@@ -31,14 +31,10 @@ internal class CryptoKitDigest(
 private class CryptoKitHashFunction(
     private val algorithm: SwiftHashAlgorithm,
 ) : HashFunction {
-    private var _function: SwiftHashFunction? = null
+    private var _function: SwiftHashFunction? = SwiftHashFunction(algorithm)
 
     private val function: SwiftHashFunction
         get() = _function ?: error("Hash function is closed")
-
-    init {
-        reset()
-    }
 
     override fun hashIntoByteArray(destination: ByteArray, destinationOffset: Int): Int {
         return function.doFinal().getIntoByteArray(destination, destinationOffset).also {
@@ -57,6 +53,7 @@ private class CryptoKitHashFunction(
     }
 
     override fun reset() {
+        checkNotNull(_function) { "Hash function is closed" }
         _function = SwiftHashFunction(algorithm)
     }
 

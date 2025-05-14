@@ -156,6 +156,9 @@ final fun (kotlinx.cinterop/Pinned<kotlin/ByteArray>).dev.whyoleg.cryptography.p
 final fun (kotlinx.cinterop/Pinned<kotlin/ByteArray>).dev.whyoleg.cryptography.providers.base/safeAddressOfU(kotlin/Int): kotlinx.cinterop/CPointer<kotlinx.cinterop/UByteVarOf<kotlin/UByte>> // dev.whyoleg.cryptography.providers.base/safeAddressOfU|safeAddressOfU@kotlinx.cinterop.Pinned<kotlin.ByteArray>(kotlin.Int){}[0]
 
 // Targets: [apple]
+final fun (kotlin/ByteArray).dev.whyoleg.cryptography.providers.base/toNSData(): platform.Foundation/NSData // dev.whyoleg.cryptography.providers.base/toNSData|toNSData@kotlin.ByteArray(){}[0]
+
+// Targets: [apple]
 final fun (platform.Foundation/NSData).dev.whyoleg.cryptography.providers.base/getIntoByteArray(kotlin/ByteArray, kotlin/Int = ...): kotlin/Int // dev.whyoleg.cryptography.providers.base/getIntoByteArray|getIntoByteArray@platform.Foundation.NSData(kotlin.ByteArray;kotlin.Int){}[0]
 
 // Targets: [apple]
