@@ -25,11 +25,11 @@ internal object CryptoKitCryptographyProvider : CryptographyProvider() {
         SHA256 -> CryptoKitDigest(SHA256, SwiftHash::sha256, SwiftHashAlgorithmSha256)
         SHA384 -> CryptoKitDigest(SHA384, SwiftHash::sha384, SwiftHashAlgorithmSha384)
         SHA512 -> CryptoKitDigest(SHA512, SwiftHash::sha512, SwiftHashAlgorithmSha512)
-//        HMAC    ->
+        HMAC -> CryptoKitHmac
+//        HKDF ->
 //        AES.GCM ->
 //        ECDSA   ->
 //        ECDH   ->
-//        HKDF ->
         else   -> null
     } as A?
 }

@@ -37,6 +37,16 @@ public fun NSData.toByteArray(): ByteArray {
 }
 
 @CryptographyProviderApi
+@OptIn(ExperimentalForeignApi::class, UnsafeNumber::class)
+public fun ByteArray.toNSData(): NSData {
+    if (isEmpty()) return EmptyNSData
+
+    return usePinned {
+        NSData.dataWithBytes(it.addressOf(0), size.convert())
+    }
+}
+
+@CryptographyProviderApi
 @OptIn(UnsafeNumber::class, ExperimentalForeignApi::class)
 public fun <R> ByteArray.useNSData(
     startIndex: Int = 0,
