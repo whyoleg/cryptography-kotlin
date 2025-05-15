@@ -33,12 +33,12 @@ import Foundation
 
     @objc public init(algorithm: SwiftHashAlgorithm) {
         self.algorithm = algorithm
-        switch algorithm {
-            case .md5:    function = Insecure.MD5()
-            case .sha1:   function = Insecure.SHA1()
-            case .sha256: function = SHA256()
-            case .sha384: function = SHA384()
-            case .sha512: function = SHA512()
+        self.function = switch algorithm {
+            case .md5:    Insecure.MD5()
+            case .sha1:   Insecure.SHA1()
+            case .sha256: SHA256()
+            case .sha384: SHA384()
+            case .sha512: SHA512()
         }
         super.init()
     }
