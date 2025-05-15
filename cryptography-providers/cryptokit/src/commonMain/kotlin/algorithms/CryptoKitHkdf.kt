@@ -44,12 +44,12 @@ private class HkdfSecretDerivation(
         return input.useNSData { ikm ->
             salt.useNSData { salt ->
                 info.useNSData { info ->
-                    SwiftHkdf.derive(
-                        algorithm,
-                        ikm,
-                        salt,
-                        info,
-                        outputSize.inBytes.convert()
+                    SwiftHkdf.deriveWithAlgorithm(
+                        algorithm = algorithm,
+                        inputKey = ikm,
+                        salt = salt,
+                        info = info,
+                        outputSize = outputSize.inBytes.convert()
                     ).toByteArray()
                 }
             }

@@ -3,7 +3,7 @@ import Foundation
 
 @objc public class SwiftHkdf: NSObject {
 
-    @objc(derive:::::) public static func derive(
+    @objc public static func derive(
         algorithm: SwiftHashAlgorithm,
         inputKey: NSData,
         salt: NSData,
