@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.tests.compatibility
@@ -43,6 +43,8 @@ abstract class AesGcmCompatibilityTest(provider: CryptographyProvider) :
 
         val parametersList = buildList {
             tagSizes.forEach { tagSize ->
+                if (!supportsTagSize(tagSize.bits)) return@forEach
+
                 // size of IV = 12
                 (List(ivIterations) { ByteString(CryptographyRandom.nextBytes(12)) } + listOf(null)).forEach { iv ->
                     val parameters = CipherParameters(tagSize, iv)
@@ -94,6 +96,7 @@ abstract class AesGcmCompatibilityTest(provider: CryptographyProvider) :
         val keys = validateKeys()
 
         api.ciphers.getParameters<CipherParameters> { (tagSize, iv), parametersId, _ ->
+            if (!supportsTagSize(tagSize.bits)) return@getParameters
             api.ciphers.getData<AuthenticatedCipherData>(parametersId) { (keyReference, associatedData, plaintext, ciphertext), _, _ ->
                 keys[keyReference]?.forEach { key ->
                     val cipher = key.cipher(tagSize.bits)

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.tests.default
@@ -21,6 +21,7 @@ abstract class AesGcmTest(provider: CryptographyProvider) : AesBasedTest<AES.GCM
         assertEquals(keySize.inBytes, key.encodeToByteString(AES.Key.Format.RAW).size)
 
         listOf(96, 104, 112, 120, 128).forEach { tagSizeBits ->
+            if (!supportsTagSize(tagSizeBits.bits)) return@forEach
             val tagSize = tagSizeBits.bits.inBytes
             key.cipher(tagSizeBits.bits).run {
                 listOf(0, 15, 16, 17, 319, 320, 321).forEach { inputSize ->
@@ -60,6 +61,7 @@ abstract class AesGcmTest(provider: CryptographyProvider) : AesBasedTest<AES.GCM
 
         val key = algorithm.keyGenerator(keySize).generateKey()
         listOf(96, 104, 112, 120, 128).forEach { tagSizeBits ->
+            if (!supportsTagSize(tagSizeBits.bits)) return@forEach
             val cipher = key.cipher(tagSizeBits.bits)
             repeat(100) {
                 val size = CryptographyRandom.nextInt(20000)
@@ -75,6 +77,7 @@ abstract class AesGcmTest(provider: CryptographyProvider) : AesBasedTest<AES.GCM
 
         val key = algorithm.keyGenerator(keySize).generateKey()
         listOf(96, 104, 112, 120, 128).forEach { tagSizeBits ->
+            if (!supportsTagSize(tagSizeBits.bits)) return@forEach
             val cipher = key.cipher(tagSizeBits.bits)
             repeat(100) {
                 val size = CryptographyRandom.nextInt(20000)

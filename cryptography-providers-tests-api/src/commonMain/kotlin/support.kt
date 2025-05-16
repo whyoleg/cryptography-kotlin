@@ -5,6 +5,7 @@
 package dev.whyoleg.cryptography.providers.tests.api
 
 import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.BinarySize.Companion.bytes
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.serialization.asn1.*
@@ -49,6 +50,14 @@ fun AlgorithmTestScope<AES.CBC>.supportsPadding(padding: Boolean): Boolean = sup
     when {
         provider.isWebCrypto && !padding -> "no padding"
         else                             -> null
+    }
+}
+
+// CryptoKit supports only the default tag size
+fun AlgorithmTestScope<AES.GCM>.supportsTagSize(tagSize: BinarySize): Boolean = supports {
+    when {
+        provider.isCryptoKit && tagSize != 16.bytes -> "non-default tag size"
+        else                                        -> null
     }
 }
 
