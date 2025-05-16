@@ -7,6 +7,12 @@ import dev.whyoleg.cryptography.algorithms.AES.*
 import dev.whyoleg.cryptography.providers.tests.api.*
 import kotlin.test.*
 
+/**
+ * Vector test for AES-CMAC algorithm found in:
+ * https://datatracker.ietf.org/doc/html/rfc5297
+ * https://github.com/aead/cmac/blob/master/vectors_test.go
+ * https://csrc.nist.gov/CSRC/media/Projects/Cryptographic-Standards-and-Guidelines/documents/examples/AES_Core_All.pdf
+ */
 abstract class AesCmacTestvectorsTest(provider: CryptographyProvider) : AlgorithmTest<AES.CMAC>(AES.CMAC, provider) {
 
     private fun testCase(key: ByteArray, salt: ByteArray, expected: ByteArray) {
