@@ -46,15 +46,15 @@ val signature2: ByteArray = key2.signatureGenerator().generateSignature("text1".
 println(signature1.contentEquals(signature2))
 
 // we also, of course, can verify signature
-val verificationResult: Boolean = key1.signatureVerifier().verifySignature("text1".encodeToByteArray(), signature1)
+val verificationResult: Boolean = key1.signatureVerifier().tryVerifySignature("text1".encodeToByteArray(), signature1)
 // will print true
 println(verificationResult)
 
 // key also can be encoded and decoded
-val encodedKey1: ByteArray = key1.encodeTo(HMAC.Key.Format.RAW)
-val decodedKey1: HMAC.Key = hmac.keyDecoder(SHA512).decodeFrom(HMAC.Key.Format.RAW, encodedKey1)
+val encodedKey1: ByteArray = key1.encodeToByteArray(HMAC.Key.Format.RAW)
+val decodedKey1: HMAC.Key = hmac.keyDecoder(SHA512).decodeFromByteArray(HMAC.Key.Format.RAW, encodedKey1)
 
-val decodedKeyVerificationResult: Boolean = decodedKey1.signatureVerifier().verifySignature("text1".encodeToByteArray(), signature1)
+val decodedKeyVerificationResult: Boolean = decodedKey1.signatureVerifier().tryVerifySignature("text1".encodeToByteArray(), signature1)
 // will print true
 println(decodedKeyVerificationResult)
 ```
@@ -96,7 +96,7 @@ val provider = CryptographyProvider.Default
 val aesGcm = provider.get(AES.GCM)
 
 // creating key generator with specified key size
-val keyGenerator = aesGcm.keyGenerator(SymmetricKeySize.B256)
+val keyGenerator = aesGcm.keyGenerator(keySize =  Key.Size.B256)
 
 // generating an AES key
 //  types here and below are not required, and just needed to hint reader
@@ -111,8 +111,8 @@ val ciphertext: ByteArray = cipher.encrypt(plaintext = "text1".encodeToByteArray
 println(cipher.decrypt(ciphertext = ciphertext).decodeToString())
 
 // key also can be encoded and decoded
-val encodedKey: ByteArray = key.encodeTo(AES.Key.Format.RAW)
-val decodedKey: AES.GCM.Key = aesGcm.keyDecoder().decodeFrom(AES.Key.Format.RAW, encodedKey)
+val encodedKey: ByteArray = key.encodeToByteArray(AES.Key.Format.RAW)
+val decodedKey: AES.GCM.Key = aesGcm.keyDecoder().decodeFromByteArray(AES.Key.Format.RAW, encodedKey)
 
 val decodedKeyCipher = decodedKey.cipher()
 // decrypting data with the cipher with the same key, will print `text1`
@@ -139,22 +139,24 @@ val keyPair: ECDSA.KeyPair = keyPairGenerator.generateKey()
 
 // generating signature using privateKey
 val signature: ByteArray =
-    keyPair.privateKey.signatureGenerator(digest = SHA512).generateSignature("text1".encodeToByteArray())
+    keyPair.privateKey.signatureGenerator(digest = SHA512, format = ECDSA.SignatureFormat.DER)
+        .generateSignature("text1".encodeToByteArray())
 
 // verifying signature with publicKey, note, digest should be the same
 val verificationResult: Boolean =
-    keyPair.publicKey.signatureVerifier(digest = SHA512).verifySignature("text1".encodeToByteArray(), signature)
+    keyPair.publicKey.signatureVerifier(digest = SHA512, format = ECDSA.SignatureFormat.DER)
+        .tryVerifySignature("text1".encodeToByteArray(), signature)
 
 // will print true
 println(verificationResult)
 
 // key also can be encoded and decoded
-val encodedPublicKey: ByteArray = keyPair.publicKey.encodeTo(EC.Key.Format.DER)
+val encodedPublicKey: ByteArray = keyPair.publicKey.encodeToByteArray(EC.PublicKey.Format.DER)
 // note, the curve should be the same
-val decodedPublicKey: ECDSA.PublicKey = ecdsa.publicKeyDecoder(EC.Curve.P521).decodeFrom(EC.Key.Format.DER, encodedKey)
+val decodedPublicKey: ECDSA.PublicKey = ecdsa.publicKeyDecoder(EC.Curve.P521).decodeFromByteArray(EC.PublicKey.Format.DER, encodedPublicKey)
 
 val decodedKeyVerificationResult: Boolean =
-    decodedPublicKey.signatureVerifier(digest = SHA512).verifySignature("text1".encodeToByteArray(), signature)
+    decodedPublicKey.signatureVerifier(digest = SHA512, format = ECDSA.SignatureFormat.DER).tryVerifySignature("text1".encodeToByteArray(), signature)
 
 // will print true
 println(decodedKeyVerificationResult)

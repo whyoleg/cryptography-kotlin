@@ -1,9 +1,8 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 import ckbuild.documentation.*
-import org.jetbrains.dokka.gradle.*
 import java.net.*
 
 plugins {
@@ -16,23 +15,29 @@ val documentation = extensions.create<DocumentationExtension>("documentation").a
 }
 
 tasks.register<Copy>("mkdocsCopy") {
-    onlyIf { documentation.includes.isPresent }
-    if (documentation.includes.isPresent) from(documentation.includes)
+    // store into variables to work around configuration cache issues
+    val includes = documentation.includes
+    val moduleName = documentation.moduleName
+
+    onlyIf { includes.isPresent }
+    if (includes.isPresent) from(file(includes))
     into(rootDir.resolve("docs/modules"))
-    rename { "${documentation.moduleName.get()}.md" }
+    rename { "${moduleName.get()}.md" }
 }
 
-tasks.withType<DokkaTaskPartial>().configureEach {
+dokka {
     moduleName.set(documentation.moduleName)
-    // we don't suppress inherited members explicitly as without it classes like RSA.OAEP don't show functions like keyGenerator
-    suppressInheritedMembers.set(false)
-    failOnWarning.set(true)
+    dokkaPublications.configureEach {
+        // we don't suppress inherited members explicitly as without it classes like RSA.OAEP don't show functions like keyGenerator
+        suppressInheritedMembers.set(false)
+        failOnWarning.set(true)
+    }
     dokkaSourceSets.configureEach {
-        if (documentation.includes.isPresent) includes.from(documentation.includes)
+        if (documentation.includes.isPresent) includes.from(file(documentation.includes))
         reportUndocumented.set(false) // set true later
         sourceLink {
             localDirectory.set(rootDir)
-            remoteUrl.set(URI("https://github.com/whyoleg/cryptography-kotlin/tree/${version}/").toURL())
+            remoteUrl.set(URI("https://github.com/whyoleg/cryptography-kotlin/tree/${version}/"))
             remoteLineSuffix.set("#L")
         }
     }

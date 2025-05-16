@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.tests.default
@@ -48,7 +48,7 @@ abstract class RsaPssTest(provider: CryptographyProvider) : AlgorithmTest<RSA.PS
                         val data = CryptographyRandom.nextBytes(size)
                         val signature = signatureGenerator.generateSignature(data)
                         assertEquals(keySize.inBytes, signature.size)
-                        assertTrue(signatureVerifier.tryVerifySignature(data, signature))
+                        signatureVerifier.assertVerifySignature(data, signature)
                     }
                 }
             }

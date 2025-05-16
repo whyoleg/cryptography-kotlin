@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.webcrypto.operations
@@ -25,7 +25,17 @@ internal class WebCryptoSignatureVerifier(
         }
     }
 
+    override suspend fun verifySignature(data: ByteArray, signature: ByteArray) {
+        check(tryVerifySignature(data, signature)) { "Invalid signature" }
+    }
+
+    override suspend fun verifySignature(data: RawSource, signature: ByteString) {
+        check(tryVerifySignature(data, signature)) { "Invalid signature" }
+    }
+
     override fun createVerifyFunction(): VerifyFunction = nonBlocking()
     override fun tryVerifySignatureBlocking(data: RawSource, signature: ByteString): Boolean = nonBlocking()
     override fun tryVerifySignatureBlocking(data: ByteArray, signature: ByteArray): Boolean = nonBlocking()
+    override fun verifySignatureBlocking(data: ByteArray, signature: ByteArray): Unit = nonBlocking()
+    override fun verifySignatureBlocking(data: RawSource, signature: ByteString): Unit = nonBlocking()
 }

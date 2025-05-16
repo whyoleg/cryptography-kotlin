@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.operations
@@ -82,9 +82,9 @@ internal open class EvpCipherFunction(
                     checkError(
                         EVP_CipherUpdate(
                             ctx = context,
-                            out = destinationPinned.safeAddressOf(destinationOffset).reinterpret(),
+                            out = destinationPinned.safeAddressOfU(destinationOffset),
                             outl = dataOutMoved.ptr,
-                            `in` = sourcePinned.safeAddressOf(startIndex).reinterpret(),
+                            `in` = sourcePinned.safeAddressOfU(startIndex),
                             inl = (endIndex - startIndex).convert(),
                         )
                     )
@@ -105,7 +105,7 @@ internal open class EvpCipherFunction(
                 checkError(
                     EVP_CipherFinal(
                         ctx = context,
-                        outm = destinationPinned.safeAddressOf(destinationOffset).reinterpret(),
+                        outm = destinationPinned.safeAddressOfU(destinationOffset),
                         outl = dataOutMoved.ptr
                     )
                 )

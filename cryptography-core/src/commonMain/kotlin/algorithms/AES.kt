@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.algorithms
@@ -23,7 +23,7 @@ public interface AES<K : AES.Key> : CryptographyAlgorithm {
         ReplaceWith("keyGenerator(keySize.value)"),
         DeprecationLevel.ERROR
     )
-    public fun keyGenerator(keySize: SymmetricKeySize = SymmetricKeySize.B256): KeyGenerator<K> = keyGenerator(keySize.value)
+    public fun keyGenerator(keySize: SymmetricKeySize): KeyGenerator<K> = keyGenerator(keySize.value)
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface Key : EncodableKey<Key.Format> {

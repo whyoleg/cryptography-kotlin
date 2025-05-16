@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.apple.internal
@@ -7,26 +7,6 @@ package dev.whyoleg.cryptography.providers.apple.internal
 import kotlinx.cinterop.*
 import platform.CoreFoundation.*
 import platform.Foundation.*
-
-private val EmptyNSData = NSData()
-internal val EmptyByteArray = ByteArray(0)
-
-private val almostEmptyArray = ByteArray(1)
-
-private val almostEmptyArrayPinned = ByteArray(1).pin()
-
-internal fun Pinned<ByteArray>.safeAddressOf(index: Int): CPointer<ByteVar> {
-    if (index == get().size) return almostEmptyArrayPinned.addressOf(0)
-    return addressOf(index)
-}
-
-//this hack will be dropped with introducing of new IO or functions APIs
-internal fun ByteArray.fixEmpty(): ByteArray = if (isNotEmpty()) this else almostEmptyArray
-
-internal fun ByteArray.refToFixed(index: Int): CValuesRef<ByteVar> {
-    if (index == size) return almostEmptyArray.refTo(0)
-    return refTo(index)
-}
 
 internal val CFErrorRefVar.releaseAndGetMessage get() = value.releaseBridgeAs<NSError>()?.description
 
@@ -58,30 +38,4 @@ internal inline fun CFMutableDictionary(size: Int, block: CFMutableDictionaryRef
     val dict = CFDictionaryCreateMutable(null, size.convert(), null, null)
     dict.block()
     return dict
-}
-
-@OptIn(UnsafeNumber::class)
-internal fun NSData.toByteArray(): ByteArray {
-    if (length.convert<Int>() == 0) return EmptyByteArray
-
-    return ByteArray(length.convert()).apply {
-        usePinned {
-            getBytes(it.addressOf(0), length)
-        }
-    }
-}
-
-@OptIn(UnsafeNumber::class)
-internal fun <R> ByteArray.useNSData(block: (NSData) -> R): R {
-    if (isEmpty()) return block(EmptyNSData)
-
-    return usePinned {
-        block(
-            NSData.dataWithBytesNoCopy(
-                bytes = it.addressOf(0),
-                length = size.convert(),
-                freeWhenDone = true
-            )
-        )
-    }
 }

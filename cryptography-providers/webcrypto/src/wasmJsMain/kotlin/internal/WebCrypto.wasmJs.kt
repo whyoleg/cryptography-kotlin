@@ -1,10 +1,8 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.webcrypto.internal
-
-import org.khronos.webgl.*
 
 internal actual object WebCrypto {
     private val subtle = getSubtleCrypto()

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.random
@@ -35,17 +35,4 @@ private external interface Crypto {
 }
 
 //language=JavaScript
-private fun getCrypto(): Crypto {
-    return js(
-        code = """
-    
-        var isNodeJs = typeof process !== 'undefined' && process.versions != null && process.versions.node != null
-        if (isNodeJs) {
-            return (eval('require')('node:crypto').webcrypto);
-        } else {
-            return (window ? (window.crypto ? window.crypto : window.msCrypto) : self.crypto);
-        }
-    
-               """
-    ).unsafeCast<Crypto>()
-}
+private fun getCrypto(): Crypto = js("(globalThis ? globalThis.crypto : (window.crypto || window.msCrypto))")

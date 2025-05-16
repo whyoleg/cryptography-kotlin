@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.testtool.server
 
 import io.ktor.server.application.*
+import io.ktor.server.cio.*
 import io.ktor.server.engine.*
-import io.ktor.server.netty.*
 import io.ktor.server.plugins.calllogging.*
 import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.routing.*
@@ -18,7 +18,7 @@ fun startTesttoolServer(
     storagePath: Path,
 ): Closeable {
     println("TesttoolServer: starting...")
-    val server = embeddedServer(Netty, 9000) {
+    val server = embeddedServer(CIO, 9000) {
         //TODO: redirect logback to file
         install(CallLogging) {
             disableDefaultColors()

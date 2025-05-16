@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.tests.compatibility
@@ -11,7 +11,6 @@ import dev.whyoleg.cryptography.providers.tests.api.compatibility.*
 import dev.whyoleg.cryptography.random.*
 import kotlinx.io.bytestring.*
 import kotlinx.serialization.*
-import kotlin.test.*
 
 private const val maxDataSize = 10000
 
@@ -52,7 +51,7 @@ abstract class HmacCompatibilityTest(provider: CryptographyProvider) : Compatibi
                     val signature = signatureGenerator.generateSignature(data)
                     logger.log { "signature.size = ${signature.size}" }
 
-                    assertTrue(signatureVerifier.tryVerifySignature(data, signature), "Initial Verify")
+                    signatureVerifier.assertVerifySignature(data, signature, "Initial Verify")
 
                     api.signatures.saveData(signatureParametersId, SignatureData(keyReference, data, signature))
                 }
@@ -88,8 +87,8 @@ abstract class HmacCompatibilityTest(provider: CryptographyProvider) : Compatibi
                     val verifier = key.signatureVerifier()
                     val generator = key.signatureGenerator()
 
-                    assertTrue(verifier.tryVerifySignature(data, signature), "Verify")
-                    assertTrue(verifier.tryVerifySignature(data, generator.generateSignature(data)), "Sign-Verify")
+                    verifier.assertVerifySignature(data, signature, "Verify")
+                    verifier.assertVerifySignature(data, generator.generateSignature(data), "Sign-Verify")
                 }
             }
         }
