@@ -24,8 +24,15 @@ abstract class SupportedAlgorithmsTest(provider: CryptographyProvider) : Provide
 
     @Test
     fun testSupported() = testWithProvider {
+
+        val supportsCmac = !context.provider.isJdkDefault &&
+                !context.provider.isJdk &&
+                !context.provider.isApple &&
+                !context.provider.isWebCrypto
+
         assertSupports(AES.ECB, !context.provider.isWebCrypto)
         assertSupports(AES.CBC)
+        assertSupports(AES.CMAC, supportsCmac)
         assertSupports(AES.CTR)
         assertSupports(AES.GCM, !context.provider.isApple)
 
