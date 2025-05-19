@@ -30,5 +30,6 @@ abstract class AesCmacTest(provider: CryptographyProvider) : AesBasedTest<AES.CM
         val data = CryptographyRandom.nextBytes(100)
         val signature = key.signatureGenerator().generateSignature(data)
         assertTrue(key.signatureVerifier().tryVerifySignature(data, signature))
+        assertTrue(signature.size == 16)
     }
 }
