@@ -12,32 +12,27 @@ internal class JdkAesCmac(
     private val state: JdkCryptographyState,
 ) : AES.CMAC {
     private val algorithm = "AESCMAC"
-    private val keyWrapper: (JSecretKey) -> AES.CMAC.Key = { key ->
-        object : AES.CMAC.Key, JdkEncodableKey<AES.Key.Format>(key) {
-            private val signature = JdkMacSignature(state, key, algorithm)
-            override fun signatureGenerator(): SignatureGenerator = signature
-            override fun signatureVerifier(): SignatureVerifier = signature
+    private val keyWrapper: (JSecretKey) -> AES.CMAC.Key = { key -> JdkAesCmacKey(state, key) }
+    private val keyDecoder = JdkSecretKeyDecoder<AES.Key.Format, _>(algorithm, keyWrapper)
 
-            override fun encodeToByteArrayBlocking(format: AES.Key.Format): ByteArray = when (format) {
-                AES.Key.Format.JWK -> error("$format is not supported")
-                AES.Key.Format.RAW -> encodeToRaw()
-            }
-        }
+    override fun keyDecoder(): KeyDecoder<AES.Key.Format, AES.CMAC.Key> = keyDecoder
+    override fun keyGenerator(keySize: BinarySize): KeyGenerator<AES.CMAC.Key> = JdkSecretKeyGenerator(state, "AES", keyWrapper) {
+        init(keySize.inBits, state.secureRandom)
     }
+}
 
-    override fun keyDecoder(): KeyDecoder<AES.Key.Format, AES.CMAC.Key> {
-        return JdkSecretKeyDecoder<AES.Key.Format, _>(algorithm, keyWrapper)
-    }
+private class JdkAesCmacKey(
+    state: JdkCryptographyState,
+    key: JSecretKey,
+) : AES.CMAC.Key, JdkEncodableKey<AES.Key.Format>(key) {
+    private val algorithm = "AESCMAC"
+    private val signature = JdkMacSignature(state, key, algorithm)
 
-    override fun keyGenerator(keySize: BinarySize): KeyGenerator<AES.CMAC.Key> {
-        return object : KeyGenerator<AES.CMAC.Key> {
-            override fun generateKeyBlocking(): AES.CMAC.Key {
-                // Use AES KeyGenerator to generate a key
-                val keyGen = javax.crypto.KeyGenerator.getInstance("AES")
-                keyGen.init(keySize.inBits, state.secureRandom)
-                val secretKey = keyGen.generateKey()
-                return keyWrapper.invoke(secretKey)
-            }
-        }
+    override fun signatureGenerator(): SignatureGenerator = signature
+    override fun signatureVerifier(): SignatureVerifier = signature
+
+    override fun encodeToByteArrayBlocking(format: AES.Key.Format): ByteArray = when (format) {
+        AES.Key.Format.JWK -> error("$format is not supported")
+        AES.Key.Format.RAW -> encodeToRaw()
     }
 }
