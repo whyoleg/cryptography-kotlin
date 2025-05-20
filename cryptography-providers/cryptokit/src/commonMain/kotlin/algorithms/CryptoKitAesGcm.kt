@@ -11,10 +11,9 @@ import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.base.algorithms.*
 import dev.whyoleg.cryptography.providers.base.operations.*
+import dev.whyoleg.cryptography.providers.cryptokit.internal.*
 import dev.whyoleg.cryptography.providers.cryptokit.internal.swiftinterop.*
 import dev.whyoleg.cryptography.random.*
-import kotlinx.cinterop.*
-import platform.Foundation.*
 
 internal object CryptoKitAesGcm : AES.GCM {
     override fun keyDecoder(): KeyDecoder<AES.Key.Format, AES.GCM.Key> = AesKeyDecoder()
@@ -125,16 +124,5 @@ private class AesGcmCipher(
 
     override fun createDecryptFunctionWithIv(iv: ByteArray, associatedData: ByteArray?): CipherFunction {
         return createDecryptFunctionWithIv(iv, 0, associatedData)
-    }
-}
-
-@OptIn(BetaInteropApi::class)
-private fun <T : Any> swiftTry(
-    block: (error: CPointer<ObjCObjectVar<NSError?>>) -> T?,
-): T = memScoped {
-    val errorH = alloc<ObjCObjectVar<NSError?>>()
-    when (val result = block(errorH.ptr)) {
-        null -> error("Swift call failed: ${errorH.value?.localizedDescription ?: "unknown error"}")
-        else -> result
     }
 }

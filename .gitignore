@@ -8,6 +8,7 @@ syntax: glob
 
 .gradle
 .kotlin
+.build
 classes
 build/
 *.log

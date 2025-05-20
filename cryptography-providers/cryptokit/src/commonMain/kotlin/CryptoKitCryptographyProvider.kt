@@ -20,15 +20,15 @@ internal object CryptoKitCryptographyProvider : CryptographyProvider() {
 
     @Suppress("UNCHECKED_CAST")
     override fun <A : CryptographyAlgorithm> getOrNull(identifier: CryptographyAlgorithmId<A>): A? = when (identifier) {
-        MD5     -> CryptoKitDigest(MD5, SwiftHash::md5, SwiftHashAlgorithmMd5)
-        SHA1    -> CryptoKitDigest(SHA1, SwiftHash::sha1, SwiftHashAlgorithmSha1)
-        SHA256  -> CryptoKitDigest(SHA256, SwiftHash::sha256, SwiftHashAlgorithmSha256)
-        SHA384  -> CryptoKitDigest(SHA384, SwiftHash::sha384, SwiftHashAlgorithmSha384)
-        SHA512  -> CryptoKitDigest(SHA512, SwiftHash::sha512, SwiftHashAlgorithmSha512)
+        MD5    -> CryptoKitDigest(MD5, SwiftHashAlgorithmMd5)
+        SHA1   -> CryptoKitDigest(SHA1, SwiftHashAlgorithmSha1)
+        SHA256 -> CryptoKitDigest(SHA256, SwiftHashAlgorithmSha256)
+        SHA384 -> CryptoKitDigest(SHA384, SwiftHashAlgorithmSha384)
+        SHA512 -> CryptoKitDigest(SHA512, SwiftHashAlgorithmSha512)
         HMAC    -> CryptoKitHmac
         HKDF    -> CryptoKitHkdf
         AES.GCM -> CryptoKitAesGcm
-//        ECDSA   ->
+        ECDSA  -> CryptoKitEcdsa
 //        ECDH   ->
         else    -> null
     } as A?

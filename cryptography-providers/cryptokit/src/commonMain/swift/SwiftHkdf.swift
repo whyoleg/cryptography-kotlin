@@ -11,7 +11,8 @@ import Foundation
         outputSize: Int
     ) -> Data {
         let ikm = SymmetricKey(data: inputKey as Data)
-        let outputKey = switch algorithm {
+        let outputKey =
+            switch algorithm {
             case .md5:
                 HKDF<Insecure.MD5>.deriveKey(
                     inputKeyMaterial: ikm,
@@ -51,7 +52,7 @@ import Foundation
                     info: info,
                     outputByteCount: outputSize
                 )
-        }
+            }
         return outputKey.withUnsafeBytes { Data($0) }
     }
 }

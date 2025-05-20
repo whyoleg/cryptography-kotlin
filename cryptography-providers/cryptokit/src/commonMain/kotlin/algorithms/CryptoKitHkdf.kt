@@ -8,6 +8,7 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.*
+import dev.whyoleg.cryptography.providers.cryptokit.internal.*
 import dev.whyoleg.cryptography.providers.cryptokit.internal.swiftinterop.*
 import kotlinx.cinterop.*
 
@@ -19,14 +20,7 @@ internal object CryptoKitHkdf : HKDF {
         salt: ByteArray?,
         info: ByteArray?,
     ): SecretDerivation = HkdfSecretDerivation(
-        algorithm = when (digest) {
-            MD5    -> SwiftHashAlgorithmMd5
-            SHA1   -> SwiftHashAlgorithmSha1
-            SHA256 -> SwiftHashAlgorithmSha256
-            SHA384 -> SwiftHashAlgorithmSha384
-            SHA512 -> SwiftHashAlgorithmSha512
-            else   -> throw IllegalStateException("Unsupported hash algorithm: $digest")
-        },
+        algorithm = digest.swiftHashAlgorithm(),
         outputSize = outputSize,
         salt = salt ?: EmptyByteArray,
         info = info ?: EmptyByteArray

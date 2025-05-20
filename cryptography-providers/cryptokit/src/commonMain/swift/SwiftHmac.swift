@@ -6,13 +6,14 @@ import Foundation
 
     @objc public init(algorithm: SwiftHashAlgorithm, key: NSData) {
         let secretKey = SymmetricKey(data: key as Data)
-        self.wrapper = switch algorithm {
-            case .md5:    HmacWrapper<Insecure.MD5>(key: secretKey)
-            case .sha1:   HmacWrapper<Insecure.SHA1>(key: secretKey)
+        self.wrapper =
+            switch algorithm {
+            case .md5: HmacWrapper<Insecure.MD5>(key: secretKey)
+            case .sha1: HmacWrapper<Insecure.SHA1>(key: secretKey)
             case .sha256: HmacWrapper<SHA256>(key: secretKey)
             case .sha384: HmacWrapper<SHA384>(key: secretKey)
             case .sha512: HmacWrapper<SHA512>(key: secretKey)
-        }
+            }
         super.init()
     }
 
@@ -25,12 +26,12 @@ import Foundation
     }
 }
 
-fileprivate protocol AnyHmacWrapper {
+private protocol AnyHmacWrapper {
     func doUpdate(data: NSData)
     func doFinal() -> Data
 }
 
-fileprivate final class HmacWrapper<H: HashFunction>: AnyHmacWrapper where H.Digest: ContiguousBytes {
+private final class HmacWrapper<H: HashFunction>: AnyHmacWrapper where H.Digest: ContiguousBytes {
     private var value: HMAC<H>
 
     init(key: SymmetricKey) {

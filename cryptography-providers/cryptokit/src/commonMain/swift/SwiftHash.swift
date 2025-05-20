@@ -1,24 +1,6 @@
 import CryptoKit
 import Foundation
 
-@objc public class SwiftHash : NSObject {
-    @objc(md5:) public static func md5(data: NSData) -> Data {
-        return Data(Insecure.MD5.hash(data: data))
-    }
-    @objc(sha1:) public static func sha1(data: NSData) -> Data {
-        return Data(Insecure.SHA1.hash(data: data))
-    }
-    @objc(sha256:) public static func sha256(data: NSData) -> Data {
-        return Data(SHA256.hash(data: data))
-    }
-    @objc(sha384:) public static func sha384(data: NSData) -> Data {
-        return Data(SHA384.hash(data: data))
-    }
-    @objc(sha512:) public static func sha512(data: NSData) -> Data {
-        return Data(SHA512.hash(data: data))
-    }
-}
-
 @objc public enum SwiftHashAlgorithm: Int {
     case md5
     case sha1
@@ -33,13 +15,14 @@ import Foundation
 
     @objc public init(algorithm: SwiftHashAlgorithm) {
         self.algorithm = algorithm
-        self.function = switch algorithm {
-            case .md5:    Insecure.MD5()
-            case .sha1:   Insecure.SHA1()
+        self.function =
+            switch algorithm {
+            case .md5: Insecure.MD5()
+            case .sha1: Insecure.SHA1()
             case .sha256: SHA256()
             case .sha384: SHA384()
             case .sha512: SHA512()
-        }
+            }
         super.init()
     }
 
@@ -49,11 +32,28 @@ import Foundation
 
     @objc public func doFinal() -> Data {
         return switch algorithm {
-            case .md5:    Data((function as! Insecure.MD5).finalize())
-            case .sha1:   Data((function as! Insecure.SHA1).finalize())
-            case .sha256: Data((function as! SHA256).finalize())
-            case .sha384: Data((function as! SHA384).finalize())
-            case .sha512: Data((function as! SHA512).finalize())
+        case .md5: Data((function as! Insecure.MD5).finalize())
+        case .sha1: Data((function as! Insecure.SHA1).finalize())
+        case .sha256: Data((function as! SHA256).finalize())
+        case .sha384: Data((function as! SHA384).finalize())
+        case .sha512: Data((function as! SHA512).finalize())
         }
+    }
+
+    @objc public func doFinalDigest() -> SwiftDigest {
+        return switch algorithm {
+        case .md5: SwiftDigest(digest: (function as! Insecure.MD5).finalize())
+        case .sha1: SwiftDigest(digest: (function as! Insecure.SHA1).finalize())
+        case .sha256: SwiftDigest(digest: (function as! SHA256).finalize())
+        case .sha384: SwiftDigest(digest: (function as! SHA384).finalize())
+        case .sha512: SwiftDigest(digest: (function as! SHA512).finalize())
+        }
+    }
+}
+
+@objc public class SwiftDigest: NSObject {
+    internal let digest: any Digest
+    internal init(digest: any Digest) {
+        self.digest = digest
     }
 }
