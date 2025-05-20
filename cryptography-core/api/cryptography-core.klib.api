@@ -832,3 +832,10 @@ final object dev.whyoleg.cryptography.algorithms/SHA3_384 : dev.whyoleg.cryptogr
 final object dev.whyoleg.cryptography.algorithms/SHA3_512 : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest> // dev.whyoleg.cryptography.algorithms/SHA3_512|null[0]
 
 final object dev.whyoleg.cryptography.algorithms/SHA512 : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest> // dev.whyoleg.cryptography.algorithms/SHA512|null[0]
+
+final object dev.whyoleg.cryptography/CryptographySystem { // dev.whyoleg.cryptography/CryptographySystem|null[0]
+    final fun getDefaultProvider(): dev.whyoleg.cryptography/CryptographyProvider // dev.whyoleg.cryptography/CryptographySystem.getDefaultProvider|getDefaultProvider(){}[0]
+    final fun getRegisteredProviders(): kotlin.collections/List<dev.whyoleg.cryptography/CryptographyProvider> // dev.whyoleg.cryptography/CryptographySystem.getRegisteredProviders|getRegisteredProviders(){}[0]
+    final fun registerProvider(kotlin/Lazy<dev.whyoleg.cryptography/CryptographyProvider>, kotlin/Int) // dev.whyoleg.cryptography/CryptographySystem.registerProvider|registerProvider(kotlin.Lazy<dev.whyoleg.cryptography.CryptographyProvider>;kotlin.Int){}[0]
+    final fun setDefaultProvider(dev.whyoleg.cryptography/CryptographyProvider) // dev.whyoleg.cryptography/CryptographySystem.setDefaultProvider|setDefaultProvider(dev.whyoleg.cryptography.CryptographyProvider){}[0]
+}

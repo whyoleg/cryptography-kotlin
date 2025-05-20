@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.jdk
@@ -98,5 +98,6 @@ internal class JdkCryptographyProvider(
 }
 
 internal class JdkCryptographyProviderContainer : CryptographyProviderContainer {
+    override val priority: Int get() = 100
     override val provider: Lazy<CryptographyProvider> get() = defaultProvider
 }

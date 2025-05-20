@@ -68,7 +68,16 @@ public abstract interface annotation class dev/whyoleg/cryptography/Cryptography
 }
 
 public abstract interface class dev/whyoleg/cryptography/CryptographyProviderContainer {
+	public abstract fun getPriority ()I
 	public abstract fun getProvider ()Lkotlin/Lazy;
+}
+
+public final class dev/whyoleg/cryptography/CryptographySystem {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/CryptographySystem;
+	public final fun getDefaultProvider ()Ldev/whyoleg/cryptography/CryptographyProvider;
+	public final fun getRegisteredProviders ()Ljava/util/List;
+	public final fun registerProvider (Lkotlin/Lazy;I)V
+	public final fun setDefaultProvider (Ldev/whyoleg/cryptography/CryptographyProvider;)V
 }
 
 public abstract interface annotation class dev/whyoleg/cryptography/DelicateCryptographyApi : java/lang/annotation/Annotation {

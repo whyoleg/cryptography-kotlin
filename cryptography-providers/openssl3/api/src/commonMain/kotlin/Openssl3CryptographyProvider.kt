@@ -1,12 +1,11 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.algorithms.RSA
 import dev.whyoleg.cryptography.providers.openssl3.algorithms.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import kotlinx.cinterop.*
@@ -52,4 +51,4 @@ internal object Openssl3CryptographyProvider : CryptographyProvider() {
 @Suppress("DEPRECATION")
 @OptIn(ExperimentalStdlibApi::class)
 @EagerInitialization
-private val initHook = CryptographyProvider.Registry.registerProvider(defaultProvider)
+private val initHook = CryptographySystem.registerProvider(defaultProvider, 100)
