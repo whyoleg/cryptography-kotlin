@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.apple
@@ -41,4 +41,4 @@ internal object AppleCryptographyProvider : CryptographyProvider() {
 @Suppress("DEPRECATION")
 @OptIn(ExperimentalStdlibApi::class)
 @EagerInitialization
-private val initHook = CryptographyProvider.Registry.registerProvider(defaultProvider)
+private val initHook = CryptographySystem.registerProvider(defaultProvider, 120)

@@ -37,4 +37,4 @@ internal object CryptoKitCryptographyProvider : CryptographyProvider() {
 @Suppress("DEPRECATION")
 @OptIn(ExperimentalStdlibApi::class)
 @EagerInitialization
-private val initHook = CryptographyProvider.Registry.registerProvider(defaultProvider)
+private val initHook = CryptographySystem.registerProvider(defaultProvider, 110)
