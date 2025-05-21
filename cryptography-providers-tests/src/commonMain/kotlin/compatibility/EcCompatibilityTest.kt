@@ -17,6 +17,7 @@ import kotlin.test.*
 private val publicKeyFormats = listOf(
     EC.PublicKey.Format.JWK,
     EC.PublicKey.Format.RAW,
+    EC.PublicKey.Format.RAW.Compressed,
     EC.PublicKey.Format.DER,
     EC.PublicKey.Format.PEM,
 ).associateBy { it.name }
@@ -84,6 +85,7 @@ abstract class EcCompatibilityTest<PublicK : EC.PublicKey, PrivateK : EC.Private
                     when (format) {
                         EC.PublicKey.Format.JWK -> {}
                         EC.PublicKey.Format.RAW,
+                        EC.PublicKey.Format.RAW.Compressed,
                         EC.PublicKey.Format.DER,
                         EC.PublicKey.Format.PEM,
                                                 -> {
