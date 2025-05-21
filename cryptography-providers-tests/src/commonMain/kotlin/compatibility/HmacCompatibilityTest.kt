@@ -59,7 +59,6 @@ abstract class HmacCompatibilityTest(provider: CryptographyProvider) : Compatibi
         }
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     override suspend fun CompatibilityTestScope<HMAC>.validate() {
         val keys = buildMap {
             api.keys.getParameters<KeyParameters> { parameters, parametersId, _ ->

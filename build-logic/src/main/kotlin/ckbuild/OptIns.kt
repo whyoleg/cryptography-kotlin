@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package ckbuild
@@ -9,8 +9,9 @@ object OptIns {
     const val CryptographyProviderApi = "dev.whyoleg.cryptography.CryptographyProviderApi"
     const val DelicateCryptographyApi = "dev.whyoleg.cryptography.DelicateCryptographyApi"
 
-    const val ExperimentalSubclassOptIn = "kotlin.ExperimentalSubclassOptIn"
     const val ExperimentalStdlibApi = "kotlin.ExperimentalStdlibApi"
     const val ExperimentalForeignApi = "kotlinx.cinterop.ExperimentalForeignApi"
+
+    // still needed because of kotlinx.io
     const val ExperimentalEncodingApi = "kotlin.io.encoding.ExperimentalEncodingApi"
 }

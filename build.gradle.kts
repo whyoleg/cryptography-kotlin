@@ -4,6 +4,8 @@
 
 import org.jetbrains.kotlin.gradle.targets.js.nodejs.*
 import org.jetbrains.kotlin.gradle.targets.js.npm.*
+import org.jetbrains.kotlin.gradle.targets.wasm.nodejs.*
+import org.jetbrains.kotlin.gradle.targets.wasm.npm.*
 
 plugins {
     alias(libs.plugins.kotlin.dokka)
@@ -15,10 +17,16 @@ plugins {
     id("ckbuild.use-openssl")
 }
 
+// ignore package lock
 plugins.withType<NodeJsRootPlugin> {
-    // ignore package lock
     extensions.configure<NpmExtension> {
-        lockFileDirectory.set(layout.buildDirectory.dir("kotlin-js-store"))
+        lockFileDirectory.set(layout.buildDirectory.dir("kotlin-js-store/js"))
+        packageLockMismatchReport.set(LockFileMismatchReport.NONE)
+    }
+}
+plugins.withType<WasmNodeJsRootPlugin> {
+    extensions.configure<WasmNpmExtension> {
+        lockFileDirectory.set(layout.buildDirectory.dir("kotlin-js-store/wasm"))
         packageLockMismatchReport.set(LockFileMismatchReport.NONE)
     }
 }

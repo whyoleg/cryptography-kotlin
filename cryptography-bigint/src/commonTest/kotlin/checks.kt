@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.bigint
@@ -11,12 +11,10 @@ fun checkBigInt(bigInt: BigInt, string: String, hex: String) {
     checkString(string, hex)
 }
 
-@OptIn(ExperimentalStdlibApi::class)
 fun checkString(string: String) {
     checkString(string, string.toBigInt().toHexString())
 }
 
-@OptIn(ExperimentalStdlibApi::class)
 fun checkString(string: String, hex: String) {
     val bigIntFromString = string.toBigInt()
     val bigIntFromHex = hex.hexToBigInt()
@@ -46,7 +44,6 @@ fun <T> checkPrimitive(
     test(string.toBigInt())
 }
 
-@OptIn(ExperimentalStdlibApi::class)
 private fun checkBigIntEncoding(value: BigInt, string: String, hex: String) {
     assertEquals(string, value.toString())
     assertEquals(hex, value.toHexString())
@@ -66,7 +63,6 @@ fun checkNumber(
     bytes: ByteArray?,
 ) = checkNumber(NumberData(value, string, hex, bytes))
 
-@OptIn(ExperimentalStdlibApi::class)
 fun checkNumber(data: NumberData) {
     listOfNotNull(
         data.value.toBigInt(),
