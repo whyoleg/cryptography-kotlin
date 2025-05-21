@@ -13,10 +13,11 @@ dependencies {
     implementation(libs.kotlin.gradle.plugin)
 }
 
+@Suppress("DEPRECATION")
 kotlin {
     compilerOptions {
-        languageVersion.set(KotlinVersion.KOTLIN_1_8)
-        apiVersion.set(KotlinVersion.KOTLIN_1_8)
+        languageVersion = KotlinVersion.KOTLIN_1_8
+        apiVersion = KotlinVersion.KOTLIN_1_8
     }
 }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.bigint
@@ -8,7 +8,6 @@ import kotlin.math.*
 import kotlin.random.*
 import kotlin.test.*
 
-@OptIn(ExperimentalStdlibApi::class)
 class BigIntArrayTest {
 
     @Test
