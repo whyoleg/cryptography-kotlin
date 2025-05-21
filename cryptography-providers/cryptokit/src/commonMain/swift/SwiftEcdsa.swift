@@ -23,15 +23,15 @@ import Foundation
         switch curve {
         case .p256:
             return SwiftEcdsaPublicKey(
-                key: try P256.Signing.PublicKey(rawRepresentation: rawRepresentation as Data),
+                key: try P256.Signing.PublicKey(x963Representation: rawRepresentation as Data),
                 curve: .p256)
         case .p384:
             return SwiftEcdsaPublicKey(
-                key: try P384.Signing.PublicKey(rawRepresentation: rawRepresentation as Data),
+                key: try P384.Signing.PublicKey(x963Representation: rawRepresentation as Data),
                 curve: .p384)
         case .p521:
             return SwiftEcdsaPublicKey(
-                key: try P521.Signing.PublicKey(rawRepresentation: rawRepresentation as Data),
+                key: try P521.Signing.PublicKey(x963Representation: rawRepresentation as Data),
                 curve: .p521)
         }
     }
@@ -122,9 +122,9 @@ import Foundation
 
     @objc public func rawRepresentation() -> Data {
         switch curve {
-        case .p256: return (key as! P256.Signing.PublicKey).rawRepresentation
-        case .p384: return (key as! P384.Signing.PublicKey).rawRepresentation
-        case .p521: return (key as! P521.Signing.PublicKey).rawRepresentation
+        case .p256: return (key as! P256.Signing.PublicKey).x963Representation
+        case .p384: return (key as! P384.Signing.PublicKey).x963Representation
+        case .p521: return (key as! P521.Signing.PublicKey).x963Representation
         }
     }
 

@@ -86,7 +86,7 @@ private class EcdsaPublicKey(
     override fun encodeToByteArrayBlocking(format: EC.PublicKey.Format): ByteArray = when (format) {
         EC.PublicKey.Format.DER -> publicKey.derRepresentation().toByteArray()
         EC.PublicKey.Format.JWK -> error("JWK is not supported")
-        EC.PublicKey.Format.PEM -> publicKey.pemRepresentation().encodeToByteArray()
+        EC.PublicKey.Format.PEM -> (publicKey.pemRepresentation() + "\n").encodeToByteArray()
         EC.PublicKey.Format.RAW -> publicKey.rawRepresentation().toByteArray()
     }
 
@@ -108,7 +108,7 @@ private class EcdsaPrivateKey(
         EC.PrivateKey.Format.DER      -> privateKey.derRepresentation().toByteArray()
         EC.PrivateKey.Format.DER.SEC1 -> TODO()
         EC.PrivateKey.Format.JWK      -> error("JWK is not supported")
-        EC.PrivateKey.Format.PEM      -> privateKey.pemRepresentation().encodeToByteArray()
+        EC.PrivateKey.Format.PEM -> (privateKey.pemRepresentation() + "\n").encodeToByteArray()
         EC.PrivateKey.Format.PEM.SEC1 -> TODO()
         EC.PrivateKey.Format.RAW      -> privateKey.rawRepresentation().toByteArray()
     }
