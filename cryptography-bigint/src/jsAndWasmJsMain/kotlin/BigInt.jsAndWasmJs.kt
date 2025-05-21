@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.bigint
@@ -81,7 +81,6 @@ public actual fun String.toBigIntOrNull(): BigInt? {
     }
 }
 
-@OptIn(ExperimentalStdlibApi::class)
 public actual fun ByteArray.decodeToBigInt(): BigInt {
     require(isNotEmpty()) { "empty array" }
     if (size == 1 && this[0] == 0.toByte()) return BigInt.ZERO
@@ -96,7 +95,6 @@ public actual fun ByteArray.decodeToBigInt(): BigInt {
     return BigInt(jsBigInt)
 }
 
-@OptIn(ExperimentalStdlibApi::class)
 public actual fun BigInt.encodeToByteArray(): ByteArray {
     // missing zero byte
     fun String.decodeFromHex(): ByteArray = (if (length % 2 == 0) this else "0$this").hexToByteArray()

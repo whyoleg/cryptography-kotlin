@@ -5,7 +5,7 @@ public final class dev/whyoleg/cryptography/serialization/asn1/BitArray {
 	public final fun getUnusedBits ()I
 }
 
-public synthetic class dev/whyoleg/cryptography/serialization/asn1/BitArray$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class dev/whyoleg/cryptography/serialization/asn1/BitArray$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Ldev/whyoleg/cryptography/serialization/asn1/BitArray$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/whyoleg/cryptography/serialization/asn1/BitArray;
@@ -24,7 +24,7 @@ public abstract interface annotation class dev/whyoleg/cryptography/serializatio
 	public abstract fun type ()Ldev/whyoleg/cryptography/serialization/asn1/ContextSpecificTag$TagType;
 }
 
-public synthetic class dev/whyoleg/cryptography/serialization/asn1/ContextSpecificTag$Impl : dev/whyoleg/cryptography/serialization/asn1/ContextSpecificTag {
+public final synthetic class dev/whyoleg/cryptography/serialization/asn1/ContextSpecificTag$Impl : dev/whyoleg/cryptography/serialization/asn1/ContextSpecificTag {
 	public fun <init> (BLdev/whyoleg/cryptography/serialization/asn1/ContextSpecificTag$TagType;)V
 	public final synthetic fun classIndex ()B
 	public final synthetic fun type ()Ldev/whyoleg/cryptography/serialization/asn1/ContextSpecificTag$TagType;
@@ -76,7 +76,7 @@ public final class dev/whyoleg/cryptography/serialization/asn1/ObjectIdentifier 
 	public final synthetic fun unbox-impl ()Ljava/lang/String;
 }
 
-public synthetic class dev/whyoleg/cryptography/serialization/asn1/ObjectIdentifier$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class dev/whyoleg/cryptography/serialization/asn1/ObjectIdentifier$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Ldev/whyoleg/cryptography/serialization/asn1/ObjectIdentifier$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;

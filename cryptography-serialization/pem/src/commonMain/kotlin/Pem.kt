@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.serialization.pem
@@ -10,7 +10,6 @@ import kotlin.io.encoding.*
 @Deprecated("Renamed to Pem", ReplaceWith("Pem"), DeprecationLevel.ERROR)
 public typealias PEM = Pem
 
-@OptIn(ExperimentalEncodingApi::class)
 public object Pem {
     private const val BEGIN_PREFIX = "-----BEGIN "
     private const val END_PREFIX = "-----END "
