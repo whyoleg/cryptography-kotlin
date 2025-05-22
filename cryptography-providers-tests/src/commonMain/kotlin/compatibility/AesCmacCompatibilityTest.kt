@@ -2,6 +2,7 @@ package dev.whyoleg.cryptography.providers.tests.compatibility
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
+import dev.whyoleg.cryptography.providers.tests.api.assertVerifySignature
 import dev.whyoleg.cryptography.providers.tests.api.compatibility.*
 import dev.whyoleg.cryptography.random.*
 import kotlinx.io.bytestring.*
@@ -12,11 +13,6 @@ private const val maxPlaintextSize = 10000
 
 abstract class AesCmacCompatibilityTest(provider: CryptographyProvider) :
     AesBasedCompatibilityTest<AES.CMAC.Key, AES.CMAC>(AES.CMAC, provider) {
-
-    @Serializable
-    private data class SignatureParameters(
-        val mockedPadding: Boolean,
-    ) : TestParameters
 
     override suspend fun CompatibilityTestScope<AES.CMAC>.generate(isStressTest: Boolean) {
         val dataIterations = when {
@@ -36,7 +32,7 @@ abstract class AesCmacCompatibilityTest(provider: CryptographyProvider) :
                 val signature = signer.generateSignatureBlocking(data)
                 logger.log { "signature.size = ${signature.size}" }
 
-                assertTrue(verifier.tryVerifySignatureBlocking(data, signature), "Initial Verify")
+                verifier.assertVerifySignature(data, signature, "Initial Verify")
                 api.ciphers.saveData(signatureParametersId, SignatureData(keyReference, data, signature))
             }
         }
@@ -44,11 +40,14 @@ abstract class AesCmacCompatibilityTest(provider: CryptographyProvider) :
 
     override suspend fun CompatibilityTestScope<AES.CMAC>.validate() {
         val keys = validateKeys()
-        api.ciphers.getParameters<SignatureParameters> { _, parametersId, _ ->
+        api.ciphers.getParameters<TestParameters.Empty> { _, parametersId, _ ->
             api.ciphers.getData<SignatureData>(parametersId) { (keyReference, data, signature), _, _ ->
-                val (verify, _) = keys[keyReference] ?: return@getData
-                val verifiers = verify.signatureVerifier()
-                assertTrue(verifiers.tryVerifySignatureBlocking(data, signature), "Verify")
+                keys[keyReference]?.forEach { key ->
+                    val verifier = key.signatureVerifier()
+                    val generator = key.signatureGenerator()
+                    verifier.assertVerifySignature(data, signature, "Verify")
+                    verifier.assertVerifySignature(data, generator.generateSignature(data), "Sign-Verify")
+                }
             }
         }
     }

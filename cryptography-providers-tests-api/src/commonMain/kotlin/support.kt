@@ -127,16 +127,7 @@ fun AlgorithmTestScope<out EC<*, *, *>>.supportsPrivateKeyDecoding(
 
 fun ProviderTestScope.supports(algorithmId: CryptographyAlgorithmId<*>): Boolean = validate {
     when {
-        algorithmId == AES.CMAC
-                && platform.isAndroid
-                && !provider.isBouncyCastle
-             -> "AES.CMAC is only available on Android with BouncyCastle provider"
-        algorithmId == AES.CMAC
-                && provider.isWebCrypto
-             -> "AES.CMAC is not supported by WebCrypto provider"
-        algorithmId == AES.CMAC
-                && provider.isApple
-                && !provider.isOpenssl3 -> "AES.CMAC is not supported by Apple without OpenSSL3 provider"
+        algorithmId == AES.CMAC && provider.isJdkDefault -> "Default JDK provider doesn't support AES-CMAC, only supported with BouncyCastle"
         algorithmId == RSA.PSS &&
                 provider.isJdkDefault &&
                 platform.isAndroid                    -> "JDK provider on Android doesn't support RSASSA-PSS"
