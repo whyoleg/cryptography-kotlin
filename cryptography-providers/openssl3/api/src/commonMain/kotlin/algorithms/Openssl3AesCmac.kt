@@ -12,9 +12,16 @@ import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import kotlinx.cinterop.*
 import kotlin.experimental.*
+import kotlin.native.ref.*
 
 @OptIn(ExperimentalNativeApi::class)
 internal object Openssl3AesCmac : AES.CMAC, Openssl3Aes<AES.CMAC.Key>() {
+    val mac = checkError(EVP_MAC_fetch(null, "CMAC", null))
+
+    // is it needed at all for `object`?
+    @OptIn(ExperimentalNativeApi::class)
+    private val cleaner = createCleaner(Openssl3Hmac.mac, ::EVP_MAC_free)
+
     override fun wrapKey(keySize: BinarySize, key: ByteArray): AES.CMAC.Key = AesCmacKey(keySize, key)
 
     private class AesCmacKey(keySize: BinarySize, key: ByteArray) : AES.CMAC.Key, AesKey(key) {
@@ -36,11 +43,11 @@ private class AesCmacSignature(
     private val algorithm: String,
     private val key: ByteArray,
 ) : SignatureGenerator, SignatureVerifier {
-    private val mac = checkError(EVP_MAC_fetch(null, "CMAC", null))
+
     private fun createFunction() = AesCmacFunction(
         key = key,
         algorithm = algorithm,
-        context = Resource(checkError(EVP_MAC_CTX_new(mac)), ::EVP_MAC_CTX_free)
+        context = Resource(checkError(EVP_MAC_CTX_new(Openssl3AesCmac.mac)), ::EVP_MAC_CTX_free)
     )
 
     override fun createSignFunction(): SignFunction = createFunction()
@@ -97,19 +104,28 @@ private class AesCmacSignature(
             return out
         }
 
+
         @OptIn(UnsafeNumber::class)
-        override fun reset() {
+        override fun tryVerify(signature: ByteArray, startIndex: Int, endIndex: Int): Boolean {
+            checkBounds(signature.size, startIndex, endIndex)
+            return signToByteArray().contentEquals(signature.copyOfRange(startIndex, endIndex))
+        }
+
+        override fun verify(signature: ByteArray, startIndex: Int, endIndex: Int) {
+            check(tryVerify(signature, startIndex, endIndex)) { "Invalid signature" }
+        }
+
+        @OptIn(UnsafeNumber::class)
+        override fun reset(): Unit = memScoped {
             val context = context.access()
             memScoped {
-                val params = allocArrayOf(
+                val params = OSSL_PARAM_array(
                     OSSL_PARAM_construct_utf8_string(
                         "cipher".cstr.ptr,
                         algorithm.cstr.ptr,
                         0.convert()
-                    ),
-                    OSSL_PARAM_construct_end()
+                    )
                 )
-
                 key.usePinned {
                     checkError(
                         EVP_MAC_init(
@@ -121,33 +137,6 @@ private class AesCmacSignature(
                     )
                 }
             }
-        }
-
-        @OptIn(UnsafeNumber::class)
-        override fun tryVerify(signature: ByteArray, startIndex: Int, endIndex: Int): Boolean {
-            checkBounds(signature.size, startIndex, endIndex)
-
-            val context = context.access()
-            val computedMac = ByteArray(EVP_MAC_CTX_get_mac_size(context).convert<Int>())
-
-            computedMac.usePinned { pinnedMac ->
-                checkError(
-                    EVP_MAC_final(
-                        ctx = context,
-                        out = pinnedMac.addressOf(0).reinterpret(),
-                        outl = null,
-                        outsize = computedMac.size.convert()
-                    )
-                )
-            }
-
-            val isValid = computedMac.contentEquals(signature.copyOfRange(startIndex, endIndex))
-            if (!isValid) throw IllegalArgumentException("Invalid signature")
-            return isValid
-        }
-
-        override fun verify(signature: ByteArray, startIndex: Int, endIndex: Int) {
-            check(tryVerify(signature, startIndex, endIndex)) { "Invalid signature" }
         }
     }
 }
