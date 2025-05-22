@@ -29,7 +29,7 @@ internal object CryptoKitCryptographyProvider : CryptographyProvider() {
         HKDF    -> CryptoKitHkdf
         AES.GCM -> CryptoKitAesGcm
         ECDSA  -> CryptoKitEcdsa
-//        ECDH   ->
+        ECDH   -> CryptoKitEcdh
         else    -> null
     } as A?
 }
