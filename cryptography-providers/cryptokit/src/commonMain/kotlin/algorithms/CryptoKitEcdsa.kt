@@ -9,9 +9,12 @@ import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.*
+import dev.whyoleg.cryptography.providers.base.algorithms.*
+import dev.whyoleg.cryptography.providers.base.materials.*
 import dev.whyoleg.cryptography.providers.cryptokit.internal.*
 import dev.whyoleg.cryptography.providers.cryptokit.internal.swiftinterop.*
 import dev.whyoleg.cryptography.providers.cryptokit.operations.*
+import dev.whyoleg.cryptography.serialization.pem.*
 import kotlinx.cinterop.*
 import platform.Foundation.*
 
@@ -47,10 +50,10 @@ internal object CryptoKitEcdsa : ECDSA {
         override fun decodeFromByteArrayBlocking(format: EC.PublicKey.Format, bytes: ByteArray): ECDSA.PublicKey {
             return EcdsaPublicKey(swiftTry { error ->
                 when (format) {
-                    EC.PublicKey.Format.DER -> bytes.useNSData { SwiftEcdsaPublicKey.decodeDerWithCurve(curve, it, error) }
                     EC.PublicKey.Format.JWK -> error("JWK is not supported")
-                    EC.PublicKey.Format.PEM -> SwiftEcdsaPublicKey.decodePemWithCurve(curve, bytes.decodeToString(), error)
                     EC.PublicKey.Format.RAW -> bytes.useNSData { SwiftEcdsaPublicKey.decodeRawWithCurve(curve, it, error) }
+                    EC.PublicKey.Format.DER -> bytes.useNSData { SwiftEcdsaPublicKey.decodeDerWithCurve(curve, it, error) }
+                    EC.PublicKey.Format.PEM -> SwiftEcdsaPublicKey.decodePemWithCurve(curve, bytes.decodeToString(), error)
                 }
             })
         }
@@ -62,14 +65,19 @@ internal object CryptoKitEcdsa : ECDSA {
         override fun decodeFromByteArrayBlocking(format: EC.PrivateKey.Format, bytes: ByteArray): ECDSA.PrivateKey {
             return EcdsaPrivateKey(swiftTry { error ->
                 when (format) {
-                    EC.PrivateKey.Format.DER      -> bytes.useNSData { SwiftEcdsaPrivateKey.decodeDerWithCurve(curve, it, error) }
-                    EC.PrivateKey.Format.DER.SEC1 -> TODO()
                     EC.PrivateKey.Format.JWK      -> error("JWK is not supported")
-                    EC.PrivateKey.Format.PEM      -> SwiftEcdsaPrivateKey.decodePemWithCurve(curve, bytes.decodeToString(), error)
-                    EC.PrivateKey.Format.PEM.SEC1 -> TODO()
                     EC.PrivateKey.Format.RAW      -> bytes.useNSData { SwiftEcdsaPrivateKey.decodeRawWithCurve(curve, it, error) }
+                    EC.PrivateKey.Format.DER      -> decodeFromDer(bytes, error)
+                    EC.PrivateKey.Format.DER.SEC1 -> decodeFromDer(convertEcPrivateKeyFromSec1ToPkcs8(bytes), error)
+                    EC.PrivateKey.Format.PEM,
+                    EC.PrivateKey.Format.PEM.SEC1,
+                                                  -> SwiftEcdsaPrivateKey.decodePemWithCurve(curve, bytes.decodeToString(), error)
                 }
             })
+        }
+
+        private fun decodeFromDer(bytes: ByteArray, error: SwiftErrorPointer): SwiftEcdsaPrivateKey? {
+            return bytes.useNSData { SwiftEcdsaPrivateKey.decodeDerWithCurve(curve, it, error) }
         }
     }
 }
@@ -84,10 +92,10 @@ private class EcdsaPublicKey(
     private val publicKey: SwiftEcdsaPublicKey,
 ) : ECDSA.PublicKey {
     override fun encodeToByteArrayBlocking(format: EC.PublicKey.Format): ByteArray = when (format) {
-        EC.PublicKey.Format.DER -> publicKey.derRepresentation().toByteArray()
         EC.PublicKey.Format.JWK -> error("JWK is not supported")
-        EC.PublicKey.Format.PEM -> (publicKey.pemRepresentation() + "\n").encodeToByteArray()
         EC.PublicKey.Format.RAW -> publicKey.rawRepresentation().toByteArray()
+        EC.PublicKey.Format.DER -> publicKey.derRepresentation().toByteArray()
+        EC.PublicKey.Format.PEM -> (publicKey.pemRepresentation() + "\n").encodeToByteArray()
     }
 
     override fun signatureVerifier(
@@ -105,12 +113,15 @@ private class EcdsaPrivateKey(
     private val privateKey: SwiftEcdsaPrivateKey,
 ) : ECDSA.PrivateKey {
     override fun encodeToByteArrayBlocking(format: EC.PrivateKey.Format): ByteArray = when (format) {
-        EC.PrivateKey.Format.DER      -> privateKey.derRepresentation().toByteArray()
-        EC.PrivateKey.Format.DER.SEC1 -> TODO()
         EC.PrivateKey.Format.JWK      -> error("JWK is not supported")
-        EC.PrivateKey.Format.PEM -> (privateKey.pemRepresentation() + "\n").encodeToByteArray()
-        EC.PrivateKey.Format.PEM.SEC1 -> TODO()
         EC.PrivateKey.Format.RAW      -> privateKey.rawRepresentation().toByteArray()
+        EC.PrivateKey.Format.DER      -> privateKey.derRepresentation().toByteArray()
+        EC.PrivateKey.Format.DER.SEC1 -> convertEcPrivateKeyFromPkcs8ToSec1(privateKey.derRepresentation().toByteArray())
+        EC.PrivateKey.Format.PEM      -> (privateKey.pemRepresentation() + "\n").encodeToByteArray()
+        EC.PrivateKey.Format.PEM.SEC1 -> wrapPem(
+            PemLabel.EcPrivateKey,
+            convertEcPrivateKeyFromPkcs8ToSec1(privateKey.derRepresentation().toByteArray())
+        )
     }
 
     override fun signatureGenerator(

@@ -38,7 +38,6 @@ fun AlgorithmTestScope<*>.supportsDigest(digest: CryptographyAlgorithmId<Digest>
 
 fun AlgorithmTestScope<*>.supportsKeyFormat(format: KeyFormat): Boolean = supports {
     when {
-        provider.isCryptoKit && (format == EC.PrivateKey.Format.DER.SEC1 || format == EC.PrivateKey.Format.PEM.SEC1) -> "TODO"
         // only WebCrypto supports JWK for now
         format.name == "JWK" &&
                 !provider.isWebCrypto -> "JWK key format"

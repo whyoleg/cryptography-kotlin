@@ -10,9 +10,11 @@ import dev.whyoleg.cryptography.providers.cryptokit.internal.swiftinterop.*
 import kotlinx.cinterop.*
 import platform.Foundation.*
 
+internal typealias SwiftErrorPointer = CPointer<ObjCObjectVar<NSError?>>
+
 @OptIn(BetaInteropApi::class)
 internal fun <T : Any> swiftTry(
-    block: (error: CPointer<ObjCObjectVar<NSError?>>) -> T?,
+    block: (error: SwiftErrorPointer) -> T?,
 ): T = memScoped {
     val errorH = alloc<ObjCObjectVar<NSError?>>()
     when (val result = block(errorH.ptr)) {

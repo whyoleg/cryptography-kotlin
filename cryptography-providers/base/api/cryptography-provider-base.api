@@ -58,6 +58,20 @@ public abstract class dev/whyoleg/cryptography/providers/base/algorithms/BaseHkd
 	public fun secretDerivation-nkIq3jI (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;I[B[B)Ldev/whyoleg/cryptography/operations/SecretDerivation;
 }
 
+public final class dev/whyoleg/cryptography/providers/base/algorithms/EcKt {
+	public static final fun convertEcPrivateKeyFromPkcs8ToSec1 ([B)[B
+	public static final fun convertEcPrivateKeyFromSec1ToPkcs8 ([B)[B
+}
+
+public final class dev/whyoleg/cryptography/providers/base/materials/KeysKt {
+	public static final fun unwrapPem-unSj4pc (Ljava/lang/String;[B)[B
+	public static final fun unwrapPrivateKeyInfo-4RESAxk (Ljava/lang/String;[B)[B
+	public static final fun unwrapSubjectPublicKeyInfo-4RESAxk (Ljava/lang/String;[B)[B
+	public static final fun wrapPem-unSj4pc (Ljava/lang/String;[B)[B
+	public static final fun wrapPrivateKeyInfo (ILdev/whyoleg/cryptography/serialization/asn1/modules/KeyAlgorithmIdentifier;[B)[B
+	public static final fun wrapSubjectPublicKeyInfo (Ldev/whyoleg/cryptography/serialization/asn1/modules/KeyAlgorithmIdentifier;[B)[B
+}
+
 public final class dev/whyoleg/cryptography/providers/base/operations/AccumulatingCipherFunction : dev/whyoleg/cryptography/providers/base/operations/BaseCipherFunction {
 	public fun <init> (Lkotlin/jvm/functions/Function1;)V
 	public fun close ()V

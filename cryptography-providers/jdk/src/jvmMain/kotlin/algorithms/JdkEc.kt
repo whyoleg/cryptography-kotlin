@@ -1,16 +1,16 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.jdk.algorithms
 
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.providers.base.algorithms.*
+import dev.whyoleg.cryptography.providers.base.materials.*
 import dev.whyoleg.cryptography.providers.jdk.*
 import dev.whyoleg.cryptography.providers.jdk.internal.*
 import dev.whyoleg.cryptography.providers.jdk.materials.*
-import dev.whyoleg.cryptography.serialization.asn1.*
-import dev.whyoleg.cryptography.serialization.asn1.modules.*
 import dev.whyoleg.cryptography.serialization.pem.*
 import java.math.*
 import java.security.interfaces.*
@@ -103,29 +103,16 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP
         }
 
         override fun decodeFromByteArrayBlocking(format: EC.PrivateKey.Format, bytes: ByteArray): PrivateK = when (format) {
-            EC.PrivateKey.Format.JWK -> error("$format is not supported")
-            EC.PrivateKey.Format.RAW -> {
+            EC.PrivateKey.Format.JWK      -> error("$format is not supported")
+            EC.PrivateKey.Format.RAW      -> {
                 val parameters = algorithmParameters(ECGenParameterSpec(curveName)).getParameterSpec(ECParameterSpec::class.java)
                 // decode as positive value
                 decode(ECPrivateKeySpec(BigInteger(1, bytes), parameters))
             }
-            EC.PrivateKey.Format.DER -> decodeFromDer(bytes)
-            EC.PrivateKey.Format.PEM -> decodeFromDer(unwrapPem(PemLabel.PrivateKey, bytes))
-            EC.PrivateKey.Format.DER.SEC1 -> decodeFromDer(convertSec1ToPkcs8(bytes))
-            EC.PrivateKey.Format.PEM.SEC1 -> decodeFromDer(convertSec1ToPkcs8(unwrapPem(PemLabel.EcPrivateKey, bytes)))
-        }
-
-        private fun convertSec1ToPkcs8(input: ByteArray): ByteArray {
-            val ecPrivateKey = Der.decodeFromByteArray(EcPrivateKey.serializer(), input)
-
-            checkNotNull(ecPrivateKey.parameters) { "EC Parameters are not present in the key" }
-
-            val privateKeyInfo = PrivateKeyInfo(
-                version = 0,
-                privateKeyAlgorithm = EcKeyAlgorithmIdentifier(ecPrivateKey.parameters),
-                privateKey = input
-            )
-            return Der.encodeToByteArray(PrivateKeyInfo.serializer(), privateKeyInfo)
+            EC.PrivateKey.Format.DER      -> decodeFromDer(bytes)
+            EC.PrivateKey.Format.PEM      -> decodeFromDer(unwrapPem(PemLabel.PrivateKey, bytes))
+            EC.PrivateKey.Format.DER.SEC1 -> decodeFromDer(convertEcPrivateKeyFromSec1ToPkcs8(bytes))
+            EC.PrivateKey.Format.PEM.SEC1 -> decodeFromDer(convertEcPrivateKeyFromSec1ToPkcs8(unwrapPem(PemLabel.EcPrivateKey, bytes)))
         }
     }
 
@@ -159,36 +146,15 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP
         final override fun encodeToByteArrayBlocking(format: EC.PrivateKey.Format): ByteArray = when (format) {
             EC.PrivateKey.Format.JWK      -> error("$format is not supported")
             EC.PrivateKey.Format.DER      -> encodeToDer()
-            EC.PrivateKey.Format.RAW -> {
+            EC.PrivateKey.Format.RAW      -> {
                 key as ECPrivateKey
                 val fieldSize = key.params.curveOrderSize()
                 val secret = key.s.toByteArray().trimLeadingZeros()
                 secret.copyInto(ByteArray(fieldSize), fieldSize - secret.size)
             }
             EC.PrivateKey.Format.PEM      -> wrapPem(PemLabel.PrivateKey, encodeToDer())
-            EC.PrivateKey.Format.DER.SEC1 -> convertPkcs8ToSec1(encodeToDer())
-            EC.PrivateKey.Format.PEM.SEC1 -> wrapPem(PemLabel.EcPrivateKey, convertPkcs8ToSec1(encodeToDer()))
-        }
-
-        private fun convertPkcs8ToSec1(input: ByteArray): ByteArray {
-            val privateKeyInfo = Der.decodeFromByteArray(PrivateKeyInfo.serializer(), input)
-
-            val privateKeyAlgorithm = privateKeyInfo.privateKeyAlgorithm
-            check(privateKeyAlgorithm is EcKeyAlgorithmIdentifier) {
-                "Expected algorithm '${ObjectIdentifier.EC}', received: '${privateKeyAlgorithm.algorithm}'"
-            }
-            // the produced key could not contain parameters in underlying EcPrivateKey,
-            // but they are available in `privateKeyAlgorithm`
-            val ecPrivateKey = Der.decodeFromByteArray(EcPrivateKey.serializer(), privateKeyInfo.privateKey)
-            if (ecPrivateKey.parameters != null) return privateKeyInfo.privateKey
-
-            val enhancedEcPrivateKey = EcPrivateKey(
-                version = ecPrivateKey.version,
-                privateKey = ecPrivateKey.privateKey,
-                parameters = privateKeyAlgorithm.parameters,
-                publicKey = ecPrivateKey.publicKey
-            )
-            return Der.encodeToByteArray(EcPrivateKey.serializer(), enhancedEcPrivateKey)
+            EC.PrivateKey.Format.DER.SEC1 -> convertEcPrivateKeyFromPkcs8ToSec1(encodeToDer())
+            EC.PrivateKey.Format.PEM.SEC1 -> wrapPem(PemLabel.EcPrivateKey, convertEcPrivateKeyFromPkcs8ToSec1(encodeToDer()))
         }
     }
 }
