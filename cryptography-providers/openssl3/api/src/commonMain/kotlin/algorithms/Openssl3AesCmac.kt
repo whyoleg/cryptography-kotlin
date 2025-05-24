@@ -116,7 +116,7 @@ private class AesCmacSignature(
         }
 
         @OptIn(UnsafeNumber::class)
-        override fun reset(): Unit = memScoped {
+        override fun reset() {
             val context = context.access()
             memScoped {
                 val params = OSSL_PARAM_array(
