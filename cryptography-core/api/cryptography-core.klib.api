@@ -30,6 +30,18 @@ abstract interface <#A: dev.whyoleg.cryptography.algorithms/AES.Key> dev.whyoleg
         final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/AES.CBC> // dev.whyoleg.cryptography.algorithms/AES.CBC.Companion|null[0]
     }
 
+    abstract interface CMAC : dev.whyoleg.cryptography.algorithms/AES<dev.whyoleg.cryptography.algorithms/AES.CMAC.Key> { // dev.whyoleg.cryptography.algorithms/AES.CMAC|null[0]
+        open val id // dev.whyoleg.cryptography.algorithms/AES.CMAC.id|{}id[0]
+            open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/AES.CMAC> // dev.whyoleg.cryptography.algorithms/AES.CMAC.id.<get-id>|<get-id>(){}[0]
+
+        abstract interface Key : dev.whyoleg.cryptography.algorithms/AES.Key { // dev.whyoleg.cryptography.algorithms/AES.CMAC.Key|null[0]
+            abstract fun signatureGenerator(): dev.whyoleg.cryptography.operations/SignatureGenerator // dev.whyoleg.cryptography.algorithms/AES.CMAC.Key.signatureGenerator|signatureGenerator(){}[0]
+            abstract fun signatureVerifier(): dev.whyoleg.cryptography.operations/SignatureVerifier // dev.whyoleg.cryptography.algorithms/AES.CMAC.Key.signatureVerifier|signatureVerifier(){}[0]
+        }
+
+        final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/AES.CMAC> // dev.whyoleg.cryptography.algorithms/AES.CMAC.Companion|null[0]
+    }
+
     abstract interface CTR : dev.whyoleg.cryptography.algorithms/AES<dev.whyoleg.cryptography.algorithms/AES.CTR.Key> { // dev.whyoleg.cryptography.algorithms/AES.CTR|null[0]
         open val id // dev.whyoleg.cryptography.algorithms/AES.CTR.id|{}id[0]
             open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/AES.CTR> // dev.whyoleg.cryptography.algorithms/AES.CTR.id.<get-id>|<get-id>(){}[0]

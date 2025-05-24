@@ -61,6 +61,19 @@ public interface AES<K : AES.Key> : CryptographyAlgorithm {
     }
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
+    public interface CMAC : AES<CMAC.Key> {
+        override val id: CryptographyAlgorithmId<CMAC> get() = Companion
+
+        public companion object : CryptographyAlgorithmId<CMAC>("AES-CMAC")
+
+        @SubclassOptInRequired(CryptographyProviderApi::class)
+        public interface Key : AES.Key {
+            public fun signatureGenerator(): SignatureGenerator
+            public fun signatureVerifier(): SignatureVerifier
+        }
+    }
+
+    @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface CTR : AES<CTR.Key> {
         override val id: CryptographyAlgorithmId<CTR> get() = Companion
 

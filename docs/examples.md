@@ -59,6 +59,32 @@ val decodedKeyVerificationResult: Boolean = decodedKey1.signatureVerifier().tryV
 println(decodedKeyVerificationResult)
 ```
 
+## CMAC
+
+An example shows how to generate CMAC key.
+
+```kotlin
+// Dummy data
+val key = CryptographyRandom.nextBytes(16)
+val salt = CryptographyRandom.nextBytes(16)
+
+// getting default provider
+val provider = CryptographyProvider.Default
+
+// getting CMAC algorithm
+val cmacProvider = provider.get(AES.CMAC)
+
+// initializing CMAC
+val decodedKey = cmacProvider.keyDecoder().decodeFromByteArrayBlocking(Key.Format.RAW, key)
+val signFunction = decodedKey.signatureGenerator().createSignFunction()
+
+// Update salt
+signFunction.update(salt)
+
+// Finalize CMAC
+val derivedKey = signFunction.signToByteArray()
+```
+
 ## AES-GCM
 
 An example shows how to generate, encode and decode keys as well as how to use them to encrypt or decrypt data
