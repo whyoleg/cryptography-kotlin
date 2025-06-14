@@ -62,6 +62,7 @@ projects("cryptography-kotlin") {
             module("test")
         }
         module("cryptokit")
+        module("optimal") // composite provider
     }
 
     // providers tests
