@@ -51,6 +51,7 @@ projects("cryptography-kotlin") {
         module("base")
         module("jdk") {
             module("android-tests")
+            module("bc") // preconfigured JDK with BC provider
         }
         module("apple")
         module("webcrypto")

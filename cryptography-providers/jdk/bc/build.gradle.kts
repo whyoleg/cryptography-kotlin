@@ -10,7 +10,7 @@ plugins {
     id("ckbuild.multiplatform-provider-tests")
 }
 
-description = "cryptography-kotlin JDK provider"
+description = "cryptography-kotlin JDK (BC) provider"
 
 @OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
@@ -25,13 +25,14 @@ kotlin {
 
     sourceSets {
         jvmMain.dependencies {
-            api(projects.cryptographyCore)
-            implementation(projects.cryptographyProviderBase)
+            api(projects.cryptographyProviderJdk)
+            implementation(libs.bouncycastle)
         }
     }
 }
 
 providerTests {
-    packageName.set("dev.whyoleg.cryptography.providers.jdk")
-    providerInitializers.put("JDK_Default", "CryptographyProvider.JDK")
+    packageName.set("dev.whyoleg.cryptography.providers.jdk.bc")
+    imports.addAll("dev.whyoleg.cryptography.providers.jdk.*")
+    providerInitializers.put("JDK_BC", "CryptographyProvider.JDK")
 }

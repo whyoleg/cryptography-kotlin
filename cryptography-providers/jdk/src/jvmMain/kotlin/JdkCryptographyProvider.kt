@@ -9,9 +9,17 @@ import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.providers.jdk.algorithms.*
 import dev.whyoleg.cryptography.random.*
 import java.security.*
+import java.util.*
 import java.util.concurrent.*
 
-private val defaultProvider = lazy { CryptographyProvider.Companion.JDK() }
+private val defaultProvider = lazy {
+    val defaultSecurityProviders = loadViaServiceLoader().toList()
+    when (defaultSecurityProviders.size) {
+        0    -> CryptographyProvider.Companion.JDK()
+        1    -> CryptographyProvider.Companion.JDK(defaultSecurityProviders.single().provider.value)
+        else -> error("Multiple default JDK security providers found: $defaultSecurityProviders")
+    }
+}
 
 public val CryptographyProvider.Companion.JDK: CryptographyProvider by defaultProvider
 
@@ -100,4 +108,18 @@ internal class JdkCryptographyProvider(
 internal class JdkCryptographyProviderContainer : CryptographyProviderContainer {
     override val priority: Int get() = 100
     override val provider: Lazy<CryptographyProvider> get() = defaultProvider
+}
+
+@CryptographyProviderApi
+public interface DefaultJdkSecurityProvider {
+    public val provider: Lazy<JProvider>
+}
+
+// uses specific calling convention to be optimized by R8
+@OptIn(CryptographyProviderApi::class)
+private fun loadViaServiceLoader(): Iterable<DefaultJdkSecurityProvider> = Iterable {
+    ServiceLoader.load(
+        DefaultJdkSecurityProvider::class.java,
+        DefaultJdkSecurityProvider::class.java.classLoader
+    ).iterator()
 }
