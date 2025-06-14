@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 plugins {
@@ -12,17 +12,12 @@ kotlin {
     sourceSets {
         androidInstrumentedTest.dependencies {
             implementation(projects.cryptographyProviderJdk)
-            implementation(libs.bouncycastle)
         }
     }
 }
 
 providerTests {
     packageName.set("dev.whyoleg.cryptography.providers.jdk.android")
-    imports.addAll(
-        "dev.whyoleg.cryptography.providers.jdk.*",
-        "org.bouncycastle.jce.provider.*"
-    )
+    imports.addAll("dev.whyoleg.cryptography.providers.jdk.*")
     providerInitializers.put("JDK_Android", "CryptographyProvider.JDK")
-    providerInitializers.put("JDK_BC_Android", "CryptographyProvider.JDK(BouncyCastleProvider())")
 }
