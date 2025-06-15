@@ -1,14 +1,14 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
 
+import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.providers.base.algorithms.*
 import dev.whyoleg.cryptography.providers.base.operations.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.providers.openssl3.operations.*
-import dev.whyoleg.cryptography.random.*
 import kotlinx.cinterop.*
 
 internal class Openssl3AesIvCipher(
@@ -18,7 +18,7 @@ internal class Openssl3AesIvCipher(
     private val init: (CPointer<EVP_CIPHER_CTX>?) -> Unit = {},
 ) : BaseAesIvCipher {
     override fun createEncryptFunction(): CipherFunction {
-        val iv = CryptographyRandom.nextBytes(ivSize)
+        val iv = CryptographySystem.getDefaultRandom().nextBytes(ivSize)
         return BaseAesImplicitIvEncryptFunction(iv, createEncryptFunctionWithIv(iv))
     }
 

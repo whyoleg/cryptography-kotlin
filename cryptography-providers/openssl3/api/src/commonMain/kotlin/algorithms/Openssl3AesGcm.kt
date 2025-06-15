@@ -12,7 +12,6 @@ import dev.whyoleg.cryptography.providers.base.operations.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.providers.openssl3.operations.*
-import dev.whyoleg.cryptography.random.*
 import kotlinx.cinterop.*
 import kotlin.experimental.*
 import kotlin.native.ref.*
@@ -47,7 +46,7 @@ private class Openssl3AesGcmCipher(
     private val ivSize: Int get() = 12
 
     override fun createEncryptFunction(associatedData: ByteArray?): CipherFunction {
-        val iv = CryptographyRandom.nextBytes(ivSize)
+        val iv = CryptographySystem.getDefaultRandom().nextBytes(ivSize)
         return BaseAesImplicitIvEncryptFunction(iv, createEncryptFunctionWithIv(iv, associatedData))
     }
 

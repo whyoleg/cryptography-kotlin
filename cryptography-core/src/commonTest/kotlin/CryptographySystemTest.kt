@@ -4,11 +4,47 @@
 
 package dev.whyoleg.cryptography
 
+import dev.whyoleg.cryptography.random.*
 import kotlin.test.*
 
 @OptIn(CryptographyProviderApi::class)
 class CryptographySystemTest {
     private fun testSystem(block: (system: CryptographySystemImpl) -> Unit) = block(CryptographySystemImpl())
+
+    @Test
+    fun getDefaultRandomReturnsDefaultIfNotSet() = testSystem { system ->
+        assertEquals(CryptographyRandom.Default, system.getDefaultRandom())
+    }
+
+    @Test
+    fun getDefaultRandomReturnsExplicitlySetProvider() = testSystem { system ->
+        val random = TestRandom()
+        system.setDefaultRandom(random)
+        assertEquals(random, system.getDefaultRandom())
+    }
+
+    @Test
+    fun setDefaultRandomThrowsErrorIfAlreadySet() = testSystem { system ->
+        val random = TestRandom()
+        system.setDefaultRandom(random)
+
+        val exception = assertFailsWith<IllegalStateException> {
+            system.setDefaultRandom(random)
+        }
+        assertEquals("Default random already set", exception.message)
+    }
+
+    @Test
+    fun setDefaultRandomThrowsErrorIfAlreadyAccessed() = testSystem { system ->
+        val random = TestRandom()
+
+        assertEquals(CryptographyRandom.Default, system.getDefaultRandom())
+
+        val exception = assertFailsWith<IllegalStateException> {
+            system.setDefaultRandom(random)
+        }
+        assertEquals("Cannot set default random after `getDefaultRandom` was called", exception.message)
+    }
 
     @Test
     fun registerProviderThrowsErrorWhenPriorityIsDuplicated() = testSystem { system ->
@@ -195,4 +231,10 @@ class CryptographySystemTest {
     class TestAlgorithm(override val id: CryptographyAlgorithmId<*>) : CryptographyAlgorithm
 
     class TestAlgorithmId(name: String) : CryptographyAlgorithmId<TestAlgorithm>(name)
+
+    class TestRandom : CryptographyRandom() {
+        override fun nextBits(bitCount: Int): Int {
+            TODO("Not yet implemented")
+        }
+    }
 }

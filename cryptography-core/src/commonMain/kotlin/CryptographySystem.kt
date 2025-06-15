@@ -4,6 +4,8 @@
 
 package dev.whyoleg.cryptography
 
+import dev.whyoleg.cryptography.random.*
+
 // thread-unsafe, mutations should be used only during APP initialzation if needed
 public object CryptographySystem {
     private val impl = CryptographySystemImpl()
@@ -12,15 +14,16 @@ public object CryptographySystem {
         loadProviders()
     }
 
-    public fun getDefaultProvider(): CryptographyProvider = impl.getDefaultProvider()
-
     // can be called at-most-once before calling `getDefaultProvider`
     public fun setDefaultProvider(provider: CryptographyProvider): Unit = impl.setDefaultProvider(provider)
-
-    public fun getRegisteredProviders(): List<CryptographyProvider> = impl.getRegisteredProviders()
+    public fun getDefaultProvider(): CryptographyProvider = impl.getDefaultProvider()
 
     // lower priority is better
     public fun registerProvider(provider: Lazy<CryptographyProvider>, priority: Int): Unit = impl.registerProvider(provider, priority)
+    public fun getRegisteredProviders(): List<CryptographyProvider> = impl.getRegisteredProviders()
+
+    public fun setDefaultRandom(random: CryptographyRandom): Unit = impl.setDefaultRandom(random)
+    public fun getDefaultRandom(): CryptographyRandom = impl.getDefaultRandom()
 }
 
 // to be able to test this
@@ -40,6 +43,11 @@ internal class CryptographySystemImpl {
                 else -> CompositeProvider(it)
             }
         }
+    }
+
+    private var defaultRandom: CryptographyRandom? = null
+    private val lazyDefaultRandom = lazy {
+        defaultRandom ?: CryptographyRandom.Default
     }
 
     fun getDefaultProvider(): CryptographyProvider = lazyDefaultProvider.value
@@ -67,6 +75,15 @@ internal class CryptographySystemImpl {
 
         registeredProviders[priority] = provider
     }
+
+    fun setDefaultRandom(random: CryptographyRandom) {
+        check(!lazyDefaultRandom.isInitialized()) { "Cannot set default random after `getDefaultRandom` was called" }
+        check(defaultRandom == null) { "Default random already set" }
+
+        defaultRandom = random
+    }
+
+    fun getDefaultRandom(): CryptographyRandom = lazyDefaultRandom.value
 
     @OptIn(CryptographyProviderApi::class)
     private class CompositeProvider(

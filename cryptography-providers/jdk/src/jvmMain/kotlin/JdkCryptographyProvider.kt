@@ -14,57 +14,91 @@ import java.util.concurrent.*
 
 private val defaultProvider = lazy {
     val defaultSecurityProviders = loadViaServiceLoader().toList()
-    when (defaultSecurityProviders.size) {
-        0    -> CryptographyProvider.Companion.JDK()
-        1    -> CryptographyProvider.Companion.JDK(defaultSecurityProviders.single().provider.value)
-        else -> error("Multiple default JDK security providers found: $defaultSecurityProviders")
+    if (defaultSecurityProviders.size > 1) {
+        error("Multiple default JDK security providers found: $defaultSecurityProviders")
     }
+    JdkCryptographyProvider(defaultSecurityProviders.singleOrNull()?.provider?.value)
 }
 
+// uses default security provider registered
 public val CryptographyProvider.Companion.JDK: CryptographyProvider by defaultProvider
 
+// uses all providers registered in the system
 @Suppress("FunctionName")
+public fun CryptographyProvider.Companion.JDK(): CryptographyProvider = JdkCryptographyProvider(null)
+
+@Suppress("FunctionName")
+public fun CryptographyProvider.Companion.JDK(provider: Provider): CryptographyProvider = JdkCryptographyProvider(provider)
+
+@Deprecated(
+    message = "Secure random should be provided via CryptographySystem.setDefaultRandom",
+    level = DeprecationLevel.ERROR,
+    replaceWith = ReplaceWith("CryptographyProvider.JDK")
+)
+@Suppress("FunctionName", "DEPRECATION_ERROR")
 public fun CryptographyProvider.Companion.JDK(
     cryptographyRandom: CryptographyRandom = CryptographyRandom.Default,
 ): CryptographyProvider = JDK(cryptographyRandom.asSecureRandom())
 
-@Suppress("FunctionName")
+@Deprecated(
+    message = "Secure random should be provided via CryptographySystem.setDefaultRandom",
+    level = DeprecationLevel.ERROR,
+    replaceWith = ReplaceWith("CryptographyProvider.JDK(provider)")
+)
+@Suppress("FunctionName", "DEPRECATION_ERROR")
 public fun CryptographyProvider.Companion.JDK(
     provider: Provider,
     cryptographyRandom: CryptographyRandom = CryptographyRandom.Default,
 ): CryptographyProvider = JDK(provider, cryptographyRandom.asSecureRandom())
 
-@Suppress("FunctionName")
+@Deprecated(
+    message = "Overload with `provideName` is deprecated, use Security.getProvider(providerName) instead",
+    level = DeprecationLevel.ERROR,
+    replaceWith = ReplaceWith("CryptographyProvider.JDK(checkNotNull(Security.getProvider(providerName)))")
+)
+@Suppress("FunctionName", "DEPRECATION_ERROR")
 public fun CryptographyProvider.Companion.JDK(
     providerName: String,
     cryptographyRandom: CryptographyRandom = CryptographyRandom.Default,
 ): CryptographyProvider = JDK(providerName, cryptographyRandom.asSecureRandom())
 
+@Deprecated(
+    message = "Secure random should be provided via CryptographySystem.setDefaultRandom",
+    level = DeprecationLevel.ERROR,
+    replaceWith = ReplaceWith("CryptographyProvider.JDK(provider)")
+)
 @Suppress("FunctionName")
 public fun CryptographyProvider.Companion.JDK(
     secureRandom: SecureRandom,
-): CryptographyProvider = JdkCryptographyProvider(null, secureRandom)
+): CryptographyProvider = JdkCryptographyProvider(null)
 
+@Deprecated(
+    message = "Secure random should be provided via CryptographySystem.setDefaultRandom",
+    level = DeprecationLevel.ERROR,
+    replaceWith = ReplaceWith("CryptographyProvider.JDK(provider)")
+)
 @Suppress("FunctionName")
 public fun CryptographyProvider.Companion.JDK(
     provider: Provider,
     secureRandom: SecureRandom,
-): CryptographyProvider = JdkCryptographyProvider(provider, secureRandom)
+): CryptographyProvider = JdkCryptographyProvider(provider)
 
+@Deprecated(
+    message = "Overload with `provideName` is deprecated, use Security.getProvider(providerName) instead",
+    level = DeprecationLevel.ERROR,
+    replaceWith = ReplaceWith("CryptographyProvider.JDK(checkNotNull(Security.getProvider(providerName)))")
+)
 @Suppress("FunctionName")
 public fun CryptographyProvider.Companion.JDK(
     providerName: String,
     secureRandom: SecureRandom,
 ): CryptographyProvider {
     val provider = checkNotNull(Security.getProvider(providerName)) { "No provider with name: $providerName" }
-    return JdkCryptographyProvider(provider, secureRandom)
+    return JdkCryptographyProvider(provider)
 }
 
-internal class JdkCryptographyProvider(
-    provider: Provider?,
-    secureRandom: SecureRandom,
-) : CryptographyProvider() {
-    private val state = JdkCryptographyState(provider, secureRandom)
+internal class JdkCryptographyProvider(provider: Provider?) : CryptographyProvider() {
+    private val state = JdkCryptographyState(provider)
     override val name: String = when (provider) {
         null -> "JDK"
         else -> "JDK (${provider.name})"

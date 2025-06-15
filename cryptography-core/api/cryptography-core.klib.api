@@ -835,7 +835,9 @@ final object dev.whyoleg.cryptography.algorithms/SHA512 : dev.whyoleg.cryptograp
 
 final object dev.whyoleg.cryptography/CryptographySystem { // dev.whyoleg.cryptography/CryptographySystem|null[0]
     final fun getDefaultProvider(): dev.whyoleg.cryptography/CryptographyProvider // dev.whyoleg.cryptography/CryptographySystem.getDefaultProvider|getDefaultProvider(){}[0]
+    final fun getDefaultRandom(): dev.whyoleg.cryptography.random/CryptographyRandom // dev.whyoleg.cryptography/CryptographySystem.getDefaultRandom|getDefaultRandom(){}[0]
     final fun getRegisteredProviders(): kotlin.collections/List<dev.whyoleg.cryptography/CryptographyProvider> // dev.whyoleg.cryptography/CryptographySystem.getRegisteredProviders|getRegisteredProviders(){}[0]
     final fun registerProvider(kotlin/Lazy<dev.whyoleg.cryptography/CryptographyProvider>, kotlin/Int) // dev.whyoleg.cryptography/CryptographySystem.registerProvider|registerProvider(kotlin.Lazy<dev.whyoleg.cryptography.CryptographyProvider>;kotlin.Int){}[0]
     final fun setDefaultProvider(dev.whyoleg.cryptography/CryptographyProvider) // dev.whyoleg.cryptography/CryptographySystem.setDefaultProvider|setDefaultProvider(dev.whyoleg.cryptography.CryptographyProvider){}[0]
+    final fun setDefaultRandom(dev.whyoleg.cryptography.random/CryptographyRandom) // dev.whyoleg.cryptography/CryptographySystem.setDefaultRandom|setDefaultRandom(dev.whyoleg.cryptography.random.CryptographyRandom){}[0]
 }

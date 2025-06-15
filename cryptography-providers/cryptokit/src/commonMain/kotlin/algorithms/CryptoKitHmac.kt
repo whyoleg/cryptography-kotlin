@@ -10,7 +10,6 @@ import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.cryptokit.internal.swiftinterop.*
-import dev.whyoleg.cryptography.random.*
 import kotlinx.cinterop.*
 import platform.CoreCrypto.*
 import platform.Foundation.*
@@ -58,7 +57,7 @@ private class HmacKeyGenerator(
     private val digestSize: Int,
 ) : KeyGenerator<HMAC.Key> {
     override fun generateKeyBlocking(): HMAC.Key {
-        val key = CryptographyRandom.nextBytes(blockSize)
+        val key = CryptographySystem.getDefaultRandom().nextBytes(blockSize)
         return HmacKey(key, algorithm, digestSize)
     }
 }

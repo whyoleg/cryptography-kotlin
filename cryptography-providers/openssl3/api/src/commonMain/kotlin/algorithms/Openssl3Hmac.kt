@@ -11,7 +11,6 @@ import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
-import dev.whyoleg.cryptography.random.*
 import kotlinx.cinterop.*
 import kotlin.experimental.*
 import kotlin.native.ref.*
@@ -48,7 +47,7 @@ private class HmacKeyGenerator(
     private val blockSize: Int,
 ) : KeyGenerator<HMAC.Key> {
     override fun generateKeyBlocking(): HMAC.Key {
-        val key = CryptographyRandom.nextBytes(blockSize)
+        val key = CryptographySystem.getDefaultRandom().nextBytes(blockSize)
         return HmacKey(hashAlgorithm, key)
     }
 }
