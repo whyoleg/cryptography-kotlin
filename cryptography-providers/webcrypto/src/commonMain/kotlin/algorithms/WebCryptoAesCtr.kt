@@ -1,13 +1,13 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.webcrypto.algorithms
 
+import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.providers.webcrypto.internal.*
 import dev.whyoleg.cryptography.providers.webcrypto.materials.*
-import dev.whyoleg.cryptography.random.*
 import kotlinx.io.*
 
 internal object WebCryptoAesCtr : WebCryptoAes<AES.CTR.Key>(
@@ -27,7 +27,7 @@ private const val ivSizeBits = ivSizeBytes * 8 //bits for CTR
 private class AesCtrCipher(private val key: CryptoKey) : AES.IvCipher {
 
     override suspend fun encrypt(plaintext: ByteArray): ByteArray {
-        val iv = CryptographyRandom.nextBytes(ivSizeBytes)
+        val iv = CryptographySystem.getDefaultRandom().nextBytes(ivSizeBytes)
         return iv + encryptWithIv(iv, plaintext)
     }
 

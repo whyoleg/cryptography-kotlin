@@ -13,7 +13,6 @@ import dev.whyoleg.cryptography.providers.base.algorithms.*
 import dev.whyoleg.cryptography.providers.base.operations.*
 import dev.whyoleg.cryptography.providers.cryptokit.internal.*
 import dev.whyoleg.cryptography.providers.cryptokit.internal.swiftinterop.*
-import dev.whyoleg.cryptography.random.*
 
 internal object CryptoKitAesGcm : AES.GCM {
     override fun keyDecoder(): KeyDecoder<AES.Key.Format, AES.GCM.Key> = AesKeyDecoder()
@@ -35,7 +34,7 @@ private class AesKeyDecoder : KeyDecoder<AES.Key.Format, AES.GCM.Key> {
 
 private class AesGcmKeyGenerator(private val keySizeBytes: Int) : KeyGenerator<AES.GCM.Key> {
     override fun generateKeyBlocking(): AES.GCM.Key {
-        val key = CryptographyRandom.nextBytes(keySizeBytes)
+        val key = CryptographySystem.getDefaultRandom().nextBytes(keySizeBytes)
         return AesGcmKey(key)
     }
 }
@@ -59,7 +58,7 @@ private class AesGcmCipher(
     private val ivSize: Int get() = 12
 
     override fun createEncryptFunction(associatedData: ByteArray?): CipherFunction {
-        val iv = CryptographyRandom.nextBytes(ivSize)
+        val iv = CryptographySystem.getDefaultRandom().nextBytes(ivSize)
         return BaseAesImplicitIvEncryptFunction(iv, createEncryptFunctionWithIv(iv, associatedData))
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
@@ -8,7 +8,6 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.BinarySize.Companion.bytes
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.materials.key.*
-import dev.whyoleg.cryptography.random.*
 
 internal abstract class Openssl3Aes<K : AES.Key> : AES<K> {
 
@@ -44,7 +43,7 @@ internal abstract class Openssl3Aes<K : AES.Key> : AES<K> {
         }
 
         override fun generateKeyBlocking(): K {
-            val key = CryptographyRandom.nextBytes(keySize.inBytes)
+            val key = CryptographySystem.getDefaultRandom().nextBytes(keySize.inBytes)
             return wrapKey(keySize, key)
         }
     }

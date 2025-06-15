@@ -1,13 +1,13 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.apple.algorithms
 
+import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.providers.apple.internal.*
 import dev.whyoleg.cryptography.providers.base.algorithms.*
 import dev.whyoleg.cryptography.providers.base.operations.*
-import dev.whyoleg.cryptography.random.*
 import platform.CoreCrypto.*
 
 internal class CCAesIvCipher(
@@ -19,7 +19,7 @@ internal class CCAesIvCipher(
     private val validateCiphertextInputSize: (Int) -> Unit = {},
 ) : BaseAesIvCipher {
     override fun createEncryptFunction(): CipherFunction {
-        val iv = CryptographyRandom.nextBytes(ivSize)
+        val iv = CryptographySystem.getDefaultRandom().nextBytes(ivSize)
         return BaseAesImplicitIvEncryptFunction(iv, createEncryptFunctionWithIv(iv))
     }
 

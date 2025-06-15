@@ -1,18 +1,18 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.jdk
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
+import dev.whyoleg.cryptography.random.*
 import java.util.concurrent.*
 
-//candidate for context receivers
-internal class JdkCryptographyState(
-    private val provider: JProvider?,
-    val secureRandom: JSecureRandom,
-) {
+//candidate for context parameters
+internal class JdkCryptographyState(private val provider: JProvider?) {
+    // TODO: move to something global?
+    val secureRandom: JSecureRandom = CryptographySystem.getDefaultRandom().asSecureRandom()
 
     private val ciphers: ConcurrentHashMap<String, Pooled<JCipher>> = ConcurrentHashMap()
     private val messageDigests: ConcurrentHashMap<String, Pooled<JMessageDigest>> = ConcurrentHashMap()

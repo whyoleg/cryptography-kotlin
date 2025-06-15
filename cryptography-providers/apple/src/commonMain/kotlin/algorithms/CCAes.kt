@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.apple.algorithms
@@ -7,7 +7,6 @@ package dev.whyoleg.cryptography.providers.apple.algorithms
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.materials.key.*
-import dev.whyoleg.cryptography.random.*
 
 internal abstract class CCAes<K : AES.Key> : AES<K> {
     protected abstract fun wrapKey(key: ByteArray): K
@@ -31,7 +30,7 @@ internal abstract class CCAes<K : AES.Key> : AES<K> {
 
     private inner class AesCtrKeyGenerator(private val keySizeBytes: Int) : KeyGenerator<K> {
         override fun generateKeyBlocking(): K {
-            val key = CryptographyRandom.nextBytes(keySizeBytes)
+            val key = CryptographySystem.getDefaultRandom().nextBytes(keySizeBytes)
             return wrapKey(key)
         }
     }
