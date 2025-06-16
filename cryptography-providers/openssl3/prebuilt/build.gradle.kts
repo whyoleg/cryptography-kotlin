@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 import ckbuild.*
@@ -82,7 +82,7 @@ kotlin {
 }
 
 tasks.withType<CInteropProcess>().configureEach {
-    uses(openssl.v3_3) {
+    uses(openssl.v3_5) {
         settings.extraOpts("-libraryPath", libDirectory(konanTarget).get().asFile.absolutePath)
     }
 }
