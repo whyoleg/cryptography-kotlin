@@ -41,3 +41,5 @@ runs:
       with:
         release: false
         install: mingw-w64-x86_64-openssl
+    - run: ./gradlew commonizeNativeDistribution
+      shell: bash
