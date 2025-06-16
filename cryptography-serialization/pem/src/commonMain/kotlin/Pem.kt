@@ -19,7 +19,7 @@ public object Pem {
     public fun encodeToByteArray(content: PemContent): ByteArray = encode(content).encodeToByteArray()
     public fun encode(content: PemContent): String = buildString {
         append(BEGIN_PREFIX).append(content.label.representation).appendLine(SUFFIX)
-        Base64.Pem.encodeToAppendable(content.bytes, this).appendLine()
+        Base64.encode(content.bytes).chunked(64).joinTo(this, separator = "\n", postfix = "\n")
         append(END_PREFIX).append(content.label.representation).appendLine(SUFFIX)
     }
 
