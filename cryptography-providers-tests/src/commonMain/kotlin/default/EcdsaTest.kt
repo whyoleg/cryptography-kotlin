@@ -56,22 +56,22 @@ abstract class EcdsaTest(provider: CryptographyProvider) : AlgorithmTest<ECDSA>(
 
         ).forEach { (curve, rawSignatureSize, derSignatureSizes, publicKeySize, privateKeySizes) ->
             if (!supportsCurve(curve)) {
-                println("Skipping size test for unsupported curve: ${curve.name}")
+                logger.log { "Skipping size test for unsupported curve: ${curve.name}" }
                 return@forEach
             }
 
-            println("\nRunning size test for curve: ${curve.name}")
+            logger.log { "\nRunning size test for curve: ${curve.name}" }
             val keyPair = algorithm.keyPairGenerator(curve).generateKey()
 
             val actualPublicKeySize = keyPair.publicKey.encodeToByteString(EC.PublicKey.Format.DER).size
-            println("Got ${curve.name} public key size: $actualPublicKeySize (expected $publicKeySize)")
+            logger.log { "Got ${curve.name} public key size: $actualPublicKeySize (expected $publicKeySize)" }
             assertEquals(
                 publicKeySize,
                 actualPublicKeySize,
                 "Public key size mismatch for ${curve.name}, expected: $publicKeySize, but got $actualPublicKeySize"
             )
             val actualPrivateKeySize = keyPair.privateKey.encodeToByteString(EC.PrivateKey.Format.DER).size
-            println("Got ${curve.name} private key size: $actualPrivateKeySize (allowed $privateKeySizes)")
+                logger.log { "Got ${curve.name} private key size: $actualPrivateKeySize (allowed $privateKeySizes)" }
             assertContains(
                 privateKeySizes,
                 actualPrivateKeySize,
@@ -80,7 +80,7 @@ abstract class EcdsaTest(provider: CryptographyProvider) : AlgorithmTest<ECDSA>(
 
             generateDigests { digest, _ ->
                 if (!supportsDigest(digest)) {
-                    println("Skipping digest $digest for curve ${curve.name}")
+                    logger.log { "Skipping digest $digest for curve ${curve.name}" }
                     return@generateDigests
                 }
 
@@ -150,7 +150,7 @@ abstract class EcdsaTest(provider: CryptographyProvider) : AlgorithmTest<ECDSA>(
     @Test
     fun testFunctions() = testWithAlgorithm {
         if (!supportsFunctions()) {
-            println("Skipping function test because functions are not supported by provider")
+            logger.log { "Skipping function test because functions are not supported by provider" }
             return@testWithAlgorithm
         }
 
@@ -164,21 +164,21 @@ abstract class EcdsaTest(provider: CryptographyProvider) : AlgorithmTest<ECDSA>(
             EC.Curve.brainpoolP512r1,
         ).forEach { curve ->
             if (!supportsCurve(curve)) {
-                println("Skipping function test for unsupported curve: ${curve.name}")
+                logger.log { "Skipping function test for unsupported curve: ${curve.name}" }
                 return@forEach
             }
-            println("Running function test for curve: ${curve.name}")
+            logger.log { "Running function test for curve: ${curve.name}" }
 
             val keyPair = algorithm.keyPairGenerator(curve).generateKey()
 
             generateDigests { digest, _ ->
                 if (!supportsDigest(digest)) {
-                    println("Skipping digest $digest for curve ${curve.name}")
+                    logger.log { "Skipping digest $digest for curve ${curve.name}" }
                     return@generateDigests
                 }
 
                 ECDSA.SignatureFormat.entries.forEach { format ->
-                    println("Testing format $format for ${curve.name} / ${digest.name}")
+                    logger.log { "Testing format $format for ${curve.name} / ${digest.name}" }
                     val signatureGenerator = keyPair.privateKey.signatureGenerator(digest, format)
                     val signatureVerifier = keyPair.publicKey.signatureVerifier(digest, format)
 
