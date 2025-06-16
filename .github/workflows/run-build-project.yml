@@ -19,7 +19,6 @@ jobs:
       - uses: ./.github/actions/setup-environment
         with:
           cache-read-only: ${{ github.ref_name != 'main' }}
-      - run: ./gradlew commonizeNativeDistribution
       - run: >
           ./gradlew
           build publishToMavenLocal
