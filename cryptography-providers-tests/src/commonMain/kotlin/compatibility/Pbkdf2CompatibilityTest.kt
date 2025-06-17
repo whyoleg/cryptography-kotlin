@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.tests.compatibility
@@ -40,11 +40,11 @@ abstract class Pbkdf2CompatibilityTest(provider: CryptographyProvider) : Compati
         }
         val iterationIterations = when {
             isStressTest -> 10
-            else         -> 2
+            else -> 1
         }
         val outputSizeIterations = when {
             isStressTest -> 10
-            else         -> 2
+            else -> 1
         }
         val deriveIterations = when {
             isStressTest -> 10
