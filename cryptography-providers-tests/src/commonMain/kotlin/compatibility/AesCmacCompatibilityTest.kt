@@ -35,15 +35,15 @@ abstract class AesCmacCompatibilityTest(provider: CryptographyProvider) :
                 logger.log { "signature.size = ${signature.size}" }
 
                 verifier.assertVerifySignature(data, signature, "Initial Verify")
-                api.ciphers.saveData(signatureParametersId, SignatureData(keyReference, data, signature))
+                api.signatures.saveData(signatureParametersId, SignatureData(keyReference, data, signature))
             }
         }
     }
 
     override suspend fun CompatibilityTestScope<AES.CMAC>.validate() {
         val keys = validateKeys()
-        api.ciphers.getParameters<TestParameters.Empty> { _, parametersId, _ ->
-            api.ciphers.getData<SignatureData>(parametersId) { (keyReference, data, signature), _, _ ->
+        api.signatures.getParameters<TestParameters.Empty> { _, parametersId, _ ->
+            api.signatures.getData<SignatureData>(parametersId) { (keyReference, data, signature), _, _ ->
                 keys[keyReference]?.forEach { key ->
                     val verifier = key.signatureVerifier()
                     val generator = key.signatureGenerator()
