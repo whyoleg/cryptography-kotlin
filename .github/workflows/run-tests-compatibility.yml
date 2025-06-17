@@ -24,7 +24,7 @@ jobs:
             target: 'macos'
           - os: 'windows-latest'
             target: 'native'
-          - os: 'ubuntu-24.04'
+          - os: 'ubuntu-latest'
             target: 'native'
     steps:
       - uses: actions/checkout@v4
@@ -74,7 +74,7 @@ jobs:
             target: 'macos'
           - os: 'windows-latest'
             target: 'native'
-          - os: 'ubuntu-24.04'
+          - os: 'ubuntu-latest'
             target: 'native'
     steps:
       - uses: actions/checkout@v4

@@ -26,16 +26,16 @@ jobs:
             target: 'tvos'
           - os: 'windows-latest'
             target: 'native'
-          - os: 'ubuntu-22.04'
+          - os: 'ubuntu-latest'
             target: 'connectedAndroid'
             android-api-level: 21
-          - os: 'ubuntu-22.04'
+          - os: 'ubuntu-latest'
             target: 'connectedAndroid'
             android-api-level: 27
-          - os: 'ubuntu-22.04'
+          - os: 'ubuntu-latest'
             target: 'connectedAndroid'
             android-api-level: 33
-          - os: 'ubuntu-24.04'
+          - os: 'ubuntu-latest'
             target: 'native'
     steps:
       - uses: actions/checkout@v4
