@@ -277,6 +277,14 @@ abstract interface <#A: dev.whyoleg.cryptography.algorithms/EC.PublicKey, #B: de
                 final fun <get-P384>(): dev.whyoleg.cryptography.algorithms/EC.Curve // dev.whyoleg.cryptography.algorithms/EC.Curve.Companion.P384.<get-P384>|<get-P384>(){}[0]
             final val P521 // dev.whyoleg.cryptography.algorithms/EC.Curve.Companion.P521|{}P521[0]
                 final fun <get-P521>(): dev.whyoleg.cryptography.algorithms/EC.Curve // dev.whyoleg.cryptography.algorithms/EC.Curve.Companion.P521.<get-P521>|<get-P521>(){}[0]
+            final val brainpoolP256r1 // dev.whyoleg.cryptography.algorithms/EC.Curve.Companion.brainpoolP256r1|{}brainpoolP256r1[0]
+                final fun <get-brainpoolP256r1>(): dev.whyoleg.cryptography.algorithms/EC.Curve // dev.whyoleg.cryptography.algorithms/EC.Curve.Companion.brainpoolP256r1.<get-brainpoolP256r1>|<get-brainpoolP256r1>(){}[0]
+            final val brainpoolP384r1 // dev.whyoleg.cryptography.algorithms/EC.Curve.Companion.brainpoolP384r1|{}brainpoolP384r1[0]
+                final fun <get-brainpoolP384r1>(): dev.whyoleg.cryptography.algorithms/EC.Curve // dev.whyoleg.cryptography.algorithms/EC.Curve.Companion.brainpoolP384r1.<get-brainpoolP384r1>|<get-brainpoolP384r1>(){}[0]
+            final val brainpoolP512r1 // dev.whyoleg.cryptography.algorithms/EC.Curve.Companion.brainpoolP512r1|{}brainpoolP512r1[0]
+                final fun <get-brainpoolP512r1>(): dev.whyoleg.cryptography.algorithms/EC.Curve // dev.whyoleg.cryptography.algorithms/EC.Curve.Companion.brainpoolP512r1.<get-brainpoolP512r1>|<get-brainpoolP512r1>(){}[0]
+            final val secp256k1 // dev.whyoleg.cryptography.algorithms/EC.Curve.Companion.secp256k1|{}secp256k1[0]
+                final fun <get-secp256k1>(): dev.whyoleg.cryptography.algorithms/EC.Curve // dev.whyoleg.cryptography.algorithms/EC.Curve.Companion.secp256k1.<get-secp256k1>|<get-secp256k1>(){}[0]
         }
     }
 }

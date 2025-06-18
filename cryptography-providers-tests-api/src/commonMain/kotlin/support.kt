@@ -93,10 +93,11 @@ fun AlgorithmTestScope<RSA.PKCS1>.supportsEncryption(): Boolean = supports {
 
 fun AlgorithmTestScope<out EC<*, *, *>>.supportsCurve(curve: EC.Curve): Boolean = supports {
     when {
-        // JDK default, WebCrypto and Apple doesn't support secp256k1
-        curve.name == "secp256k1" && (
+        // JDK default, WebCrypto and Apple don't support secp256k1 or brainpool
+        curve in listOf(EC.Curve.secp256k1, EC.Curve.brainpoolP256r1, EC.Curve.brainpoolP384r1, EC.Curve.brainpoolP512r1) && (
                 provider.isJdkDefault || provider.isWebCrypto || provider.isApple || provider.isCryptoKit
                 ) -> "ECDSA ${curve.name}"
+
         else      -> null
     }
 }
