@@ -51,25 +51,26 @@ private class AesGcmKey(private val key: ByteArray) : AES.GCM.Key {
     }
 }
 
+private const val defaultIvSize: Int = 12
+
 private class AesGcmCipher(
     private val key: ByteArray,
     private val tagSize: Int,
 ) : BaseAesIvAuthenticatedCipher {
-    private val ivSize: Int get() = 12
 
     override fun createEncryptFunction(associatedData: ByteArray?): CipherFunction {
-        val iv = CryptographySystem.getDefaultRandom().nextBytes(ivSize)
+        val iv = CryptographySystem.getDefaultRandom().nextBytes(defaultIvSize)
         return BaseAesImplicitIvEncryptFunction(iv, createEncryptFunctionWithIv(iv, associatedData))
     }
 
     override fun createDecryptFunction(associatedData: ByteArray?): CipherFunction {
-        return BaseAesImplicitIvDecryptFunction(ivSize) { iv, startIndex ->
-            createDecryptFunctionWithIv(iv, startIndex, associatedData)
+        return BaseAesImplicitIvDecryptFunction(defaultIvSize) { iv, startIndex ->
+            createDecryptFunctionWithIv(iv, startIndex, defaultIvSize, associatedData)
         }
     }
 
     override fun createEncryptFunctionWithIv(iv: ByteArray, associatedData: ByteArray?): CipherFunction {
-        require(iv.size == ivSize) { "IV size is wrong" }
+        require(iv.size >= defaultIvSize) { "IV size is wrong" }
 
         return AccumulatingCipherFunction { plaintext ->
             plaintext.useNSData { plaintextData ->
@@ -85,7 +86,7 @@ private class AesGcmCipher(
                                     error = error
                                 )
                             }.toByteArray().let {
-                                it.copyOfRange(ivSize, it.size)
+                                it.copyOfRange(iv.size, it.size)
                             }
                         }
                     }
@@ -94,7 +95,13 @@ private class AesGcmCipher(
         }
     }
 
-    private fun createDecryptFunctionWithIv(iv: ByteArray, startIndex: Int, associatedData: ByteArray?): CipherFunction {
+    private fun createDecryptFunctionWithIv(
+        iv: ByteArray,
+        startIndex: Int,
+        ivSize: Int,
+        associatedData: ByteArray?,
+    ): CipherFunction {
+        require(ivSize >= defaultIvSize) { "IV size is wrong" }
         require(iv.size - startIndex >= ivSize) { "IV size is wrong" }
 
         return AccumulatingCipherFunction { ciphertext ->
@@ -122,6 +129,6 @@ private class AesGcmCipher(
     }
 
     override fun createDecryptFunctionWithIv(iv: ByteArray, associatedData: ByteArray?): CipherFunction {
-        return createDecryptFunctionWithIv(iv, 0, associatedData)
+        return createDecryptFunctionWithIv(iv, 0, iv.size, associatedData)
     }
 }

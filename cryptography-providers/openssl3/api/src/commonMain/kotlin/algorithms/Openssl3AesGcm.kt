@@ -38,51 +38,59 @@ internal object Openssl3AesGcm : AES.GCM, Openssl3Aes<AES.GCM.Key>() {
     }
 }
 
+private const val defaultIvSize: Int = 12
+
 private class Openssl3AesGcmCipher(
     private val cipher: CPointer<EVP_CIPHER>?,
     private val key: ByteArray,
     private val tagSize: Int,
 ) : BaseAesIvAuthenticatedCipher {
-    private val ivSize: Int get() = 12
 
     override fun createEncryptFunction(associatedData: ByteArray?): CipherFunction {
-        val iv = CryptographySystem.getDefaultRandom().nextBytes(ivSize)
+        val iv = CryptographySystem.getDefaultRandom().nextBytes(defaultIvSize)
         return BaseAesImplicitIvEncryptFunction(iv, createEncryptFunctionWithIv(iv, associatedData))
     }
 
     override fun createDecryptFunction(associatedData: ByteArray?): CipherFunction {
-        return BaseAesImplicitIvDecryptFunction(ivSize) { iv, startIndex ->
-            createDecryptFunctionWithIv(iv, startIndex, associatedData)
+        return BaseAesImplicitIvDecryptFunction(defaultIvSize) { iv, startIndex ->
+            createDecryptFunctionWithIv(iv, startIndex, defaultIvSize, associatedData)
         }
     }
 
     override fun createEncryptFunctionWithIv(iv: ByteArray, associatedData: ByteArray?): CipherFunction {
-        require(iv.size == ivSize) { "IV size is wrong" }
+        require(iv.size >= defaultIvSize) { "IV size is wrong" }
 
-        return AesGcmEncryptFunction(createContext(iv, 0, encrypt = true, associatedData), tagSize)
+        return AesGcmEncryptFunction(createContext(iv, 0, iv.size, encrypt = true, associatedData), tagSize)
     }
 
-    private fun createDecryptFunctionWithIv(iv: ByteArray, startIndex: Int, associatedData: ByteArray?): CipherFunction {
+    private fun createDecryptFunctionWithIv(
+        iv: ByteArray,
+        startIndex: Int,
+        ivSize: Int,
+        associatedData: ByteArray?,
+    ): CipherFunction {
+        require(ivSize >= defaultIvSize) { "IV size is wrong" }
         require(iv.size - startIndex >= ivSize) { "IV size is wrong" }
 
         // GCM should validate data at the end, so it's not really streaming
         return AccumulatingCipherFunction { input ->
-            AesGcmDecryptFunction(createContext(iv, startIndex, encrypt = false, associatedData), tagSize)
+            AesGcmDecryptFunction(createContext(iv, startIndex, ivSize, encrypt = false, associatedData), tagSize)
                 .use { it.decrypt(input) }
         }
     }
 
     override fun createDecryptFunctionWithIv(iv: ByteArray, associatedData: ByteArray?): CipherFunction {
-        return createDecryptFunctionWithIv(iv, 0, associatedData)
+        return createDecryptFunctionWithIv(iv, 0, iv.size, associatedData)
     }
 
     private fun createContext(
         iv: ByteArray,
         ivStartIndex: Int,
+        ivSize: Int,
         encrypt: Boolean,
         associatedData: ByteArray?,
     ): Resource<CPointer<EVP_CIPHER_CTX>?> {
-        return EVP_CIPHER_CTX(cipher, key, iv, ivStartIndex, encrypt) { context ->
+        return EVP_CIPHER_CTX(cipher, key, iv, ivStartIndex, encrypt, ivSize) { context ->
             if (associatedData == null) return@EVP_CIPHER_CTX
             memScoped {
                 val dataOutMoved = alloc<IntVar>()

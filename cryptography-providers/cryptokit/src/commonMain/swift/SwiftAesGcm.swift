@@ -8,12 +8,19 @@ import Foundation
         plaintext: NSData,
         authenticatedData: NSData
     ) throws -> Data {
-        return try AES.GCM.seal(
+        var sealedBox = try AES.GCM.seal(
             plaintext as Data,
             using: SymmetricKey(data: key as Data),
             nonce: try AES.GCM.Nonce(data: nonce as Data),
             authenticating: authenticatedData
-        ).combined!
+        )
+
+        var combinedRepresentation = Data()
+        combinedRepresentation.reserveCapacity(nonce.count + sealedBox.ciphertext.count + sealedBox.tag.count)
+        combinedRepresentation.append(contentsOf: nonce)
+        combinedRepresentation.append(contentsOf: sealedBox.ciphertext)
+        combinedRepresentation.append(contentsOf: sealedBox.tag)
+        return combinedRepresentation
     }
 
     @objc public static func decrypt(

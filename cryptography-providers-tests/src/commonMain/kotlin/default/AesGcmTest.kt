@@ -12,7 +12,7 @@ import dev.whyoleg.cryptography.random.*
 import kotlinx.io.bytestring.*
 import kotlin.test.*
 
-private const val ivSize = 12
+private const val defaultIvSize = 12
 
 abstract class AesGcmTest(provider: CryptographyProvider) : AesBasedTest<AES.GCM>(AES.GCM, provider) {
     @Test
@@ -25,9 +25,32 @@ abstract class AesGcmTest(provider: CryptographyProvider) : AesBasedTest<AES.GCM
             val tagSize = tagSizeBits.bits.inBytes
             key.cipher(tagSizeBits.bits).run {
                 listOf(0, 15, 16, 17, 319, 320, 321).forEach { inputSize ->
-                    assertEquals(ivSize + inputSize + tagSize, encrypt(ByteArray(inputSize)).size)
+                    assertEquals(defaultIvSize + inputSize + tagSize, encrypt(ByteArray(inputSize)).size)
+                    listOf(12, 16).forEach { ivSize ->
+                        val iv = CryptographyRandom.nextBytes(ivSize)
+                        assertEquals(inputSize + tagSize, encryptWithIv(iv, ByteArray(inputSize)).size)
+                    }
                 }
             }
+        }
+    }
+
+    @Test
+    fun testCustomIvSize() = runTestForEachKeySize {
+        val key = algorithm.keyGenerator(keySize).generateKey()
+        assertEquals(keySize.inBytes, key.encodeToByteString(AES.Key.Format.RAW).size)
+
+        listOf(12, 14, 16).forEach { ivSizeBytes ->
+            val iv = ByteString(CryptographyRandom.nextBytes(ivSizeBytes))
+
+            val size = CryptographyRandom.nextInt(20000)
+            val data = ByteString(CryptographyRandom.nextBytes(size))
+            val cipher = key.cipher()
+            val ciphertext = cipher.encryptWithIv(iv, data)
+            val plaintext = cipher.decryptWithIv(iv, ciphertext)
+            assertContentEquals(data, plaintext)
+            if (!supportsFunctions()) return@forEach
+            assertCipherWithIvViaFunction(cipher, cipher, ivSizeBytes, data)
         }
     }
 
@@ -82,7 +105,7 @@ abstract class AesGcmTest(provider: CryptographyProvider) : AesBasedTest<AES.GCM
             repeat(100) {
                 val size = CryptographyRandom.nextInt(20000)
                 val data = ByteString(CryptographyRandom.nextBytes(size))
-                assertCipherWithIvViaFunction(cipher, cipher, ivSize, data)
+                assertCipherWithIvViaFunction(cipher, cipher, defaultIvSize, data)
             }
         }
     }

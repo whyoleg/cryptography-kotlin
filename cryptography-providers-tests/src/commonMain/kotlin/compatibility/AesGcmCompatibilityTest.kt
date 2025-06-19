@@ -28,28 +28,31 @@ abstract class AesGcmCompatibilityTest(provider: CryptographyProvider) :
     override suspend fun CompatibilityTestScope<AES.GCM>.generate(isStressTest: Boolean) {
         val associatedDataIterations = when {
             isStressTest -> 10
-            else         -> 5
+            else -> 3
         }
         val cipherIterations = when {
             isStressTest -> 10
-            else         -> 5
+            else -> 3
         }
         val ivIterations = when {
             isStressTest -> 10
-            else         -> 5
+            else -> 3
         }
 
         val tagSizes = listOf(96, 128)
+        val ivSizes = listOf(12, 16, null)
 
         val parametersList = buildList {
             tagSizes.forEach { tagSize ->
                 if (!supportsTagSize(tagSize.bits)) return@forEach
 
-                // size of IV = 12
-                (List(ivIterations) { ByteString(CryptographyRandom.nextBytes(12)) } + listOf(null)).forEach { iv ->
-                    val parameters = CipherParameters(tagSize, iv)
-                    val id = api.ciphers.saveParameters(parameters)
-                    add(id to parameters)
+                ivSizes.forEach { ivSize ->
+                    repeat(ivIterations) {
+                        val iv = ivSize?.let { ByteString(CryptographyRandom.nextBytes(it)) }
+                        val parameters = CipherParameters(tagSize, iv)
+                        val id = api.ciphers.saveParameters(parameters)
+                        add(id to parameters)
+                    }
                 }
             }
         }
