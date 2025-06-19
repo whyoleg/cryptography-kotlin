@@ -49,6 +49,8 @@ projects("cryptography-kotlin") {
     // providers
     folder("cryptography-providers", prefix = "cryptography-provider") {
         module("base")
+        module("tests")
+
         module("jdk") {
             module("android-tests")
             module("bc") // preconfigured JDK with BC provider
@@ -64,8 +66,4 @@ projects("cryptography-kotlin") {
         module("cryptokit")
         module("optimal") // composite provider
     }
-
-    // providers tests
-    module("cryptography-providers-tests-api")
-    module("cryptography-providers-tests")
 }
