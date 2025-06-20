@@ -6,7 +6,7 @@ package dev.whyoleg.cryptography.providers.tests.testvectors
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.AES.*
-import dev.whyoleg.cryptography.providers.tests.api.*
+import dev.whyoleg.cryptography.providers.tests.*
 import kotlin.test.*
 
 /**
