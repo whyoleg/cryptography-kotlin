@@ -2,10 +2,10 @@
  * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
-package dev.whyoleg.cryptography.providers.tests.api.compatibility
+package dev.whyoleg.cryptography.providers.tests.compatibility.api
 
 import dev.whyoleg.cryptography.providers.tests.api.*
-import dev.whyoleg.cryptography.providers.tests.api.compatibility.CompatibilityStorageApi.*
+import dev.whyoleg.cryptography.providers.tests.compatibility.api.CompatibilityStorageApi.*
 import kotlin.reflect.*
 
 class InMemory {

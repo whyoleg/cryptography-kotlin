@@ -7,7 +7,7 @@ package dev.whyoleg.cryptography.providers.tests.compatibility
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.providers.tests.api.*
-import dev.whyoleg.cryptography.providers.tests.api.compatibility.*
+import dev.whyoleg.cryptography.providers.tests.compatibility.api.*
 import kotlinx.serialization.*
 
 abstract class AesBasedCompatibilityTest<K : AES.Key, A : AES<K>>(
