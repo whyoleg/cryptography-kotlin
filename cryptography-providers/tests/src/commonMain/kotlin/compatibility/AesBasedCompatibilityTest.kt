@@ -6,7 +6,7 @@ package dev.whyoleg.cryptography.providers.tests.compatibility
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.providers.tests.api.*
+import dev.whyoleg.cryptography.providers.tests.*
 import dev.whyoleg.cryptography.providers.tests.compatibility.api.*
 import kotlinx.serialization.*
 

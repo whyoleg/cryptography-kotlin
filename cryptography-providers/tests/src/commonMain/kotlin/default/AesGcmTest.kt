@@ -7,7 +7,7 @@ package dev.whyoleg.cryptography.providers.tests.default
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.BinarySize.Companion.bits
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.providers.tests.api.*
+import dev.whyoleg.cryptography.providers.tests.*
 import dev.whyoleg.cryptography.random.*
 import kotlinx.io.bytestring.*
 import kotlin.test.*

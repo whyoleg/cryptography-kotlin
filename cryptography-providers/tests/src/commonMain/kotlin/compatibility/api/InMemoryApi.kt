@@ -4,7 +4,7 @@
 
 package dev.whyoleg.cryptography.providers.tests.compatibility.api
 
-import dev.whyoleg.cryptography.providers.tests.api.*
+import dev.whyoleg.cryptography.providers.tests.*
 import dev.whyoleg.cryptography.providers.tests.compatibility.api.CompatibilityStorageApi.*
 import kotlin.reflect.*
 

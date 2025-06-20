@@ -7,7 +7,7 @@ package dev.whyoleg.cryptography.providers.tests.testvectors
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.BinarySize.Companion.bytes
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.providers.tests.api.*
+import dev.whyoleg.cryptography.providers.tests.*
 import kotlinx.coroutines.test.*
 import kotlin.test.*
 
