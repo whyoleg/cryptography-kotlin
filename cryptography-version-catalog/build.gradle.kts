@@ -1,6 +1,8 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
+
+import ckbuild.*
 
 plugins {
     `version-catalog`
@@ -11,10 +13,9 @@ description = "cryptography-kotlin Gradle Version Catalog"
 
 catalog {
     versionCatalog {
-        //just a hint on a version used by the library
-        version("kotlin", libs.versions.kotlin.asProvider().get())
         val cryptographyVersion = version("cryptography", version.toString())
-        (ckbuild.artifacts + "cryptography-bom").forEach { name ->
+        Projects.published.forEach { name ->
+            if (project.name == name) return@forEach // skip version catalog :)
             library(
                 /* alias =    */ name.substringAfter("cryptography-"),
                 /* group =    */ "dev.whyoleg.cryptography",

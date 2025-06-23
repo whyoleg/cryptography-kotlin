@@ -2,6 +2,7 @@
  * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
+import ckbuild.*
 import org.jetbrains.kotlin.gradle.targets.js.nodejs.*
 import org.jetbrains.kotlin.gradle.targets.js.npm.*
 import org.jetbrains.kotlin.gradle.targets.wasm.nodejs.*
@@ -17,6 +18,8 @@ plugins {
     id("ckbuild.use-openssl")
 }
 
+Projects.validateProjectTags(project)
+
 // ignore package lock
 plugins.withType<NodeJsRootPlugin> {
     extensions.configure<NpmExtension> {
@@ -30,8 +33,9 @@ plugins.withType<WasmNodeJsRootPlugin> {
         packageLockMismatchReport.set(LockFileMismatchReport.NONE)
     }
 }
+
 dependencies {
-    ckbuild.artifacts.forEach {
+    Projects.libraries.forEach {
         dokka(project(":$it"))
     }
 }

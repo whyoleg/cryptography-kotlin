@@ -1,6 +1,8 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
+
+import ckbuild.*
 
 plugins {
     `java-platform`
@@ -11,7 +13,7 @@ description = "cryptography-kotlin BOM"
 
 dependencies {
     constraints {
-        ckbuild.artifacts.forEach {
+        Projects.libraries.forEach {
             api(project(":$it"))
         }
     }
