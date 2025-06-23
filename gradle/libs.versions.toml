@@ -17,7 +17,7 @@ androidx-test = "1.6.2"
 
 # gradle/build
 apache-commons-compress = "1.26.2"
-maven-publish = "0.31.0"
+maven-publish = "0.33.0"
 
 # other
 bouncycastle = "1.80"
