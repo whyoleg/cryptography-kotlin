@@ -20,7 +20,7 @@ apache-commons-compress = "1.26.2"
 maven-publish = "0.33.0"
 
 # other
-bouncycastle = "1.80"
+bouncycastle = "1.81"
 logback = "1.5.18"
 
 [libraries]
