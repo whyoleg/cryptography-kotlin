@@ -32,6 +32,31 @@ import Foundation
         }
     }
 
+    @objc public static func decodeRawCompressed(
+        curve: SwiftEcCurve,
+        compressedRepresentation: NSData
+    )
+        throws -> SwiftEcdhPublicKey
+    {
+        guard #available(iOS 16.0, macOS 13.0, tvOS 16.0, watchOS 9.0, *) else {
+            throw CryptoKitError.unavailableOSVersion
+        }
+        switch curve {
+        case .p256:
+            return SwiftEcdhPublicKey(
+                key: try P256.KeyAgreement.PublicKey(compressedRepresentation: compressedRepresentation as Data),
+                curve: .p256)
+        case .p384:
+            return SwiftEcdhPublicKey(
+                key: try P384.KeyAgreement.PublicKey(compressedRepresentation: compressedRepresentation as Data),
+                curve: .p384)
+        case .p521:
+            return SwiftEcdhPublicKey(
+                key: try P521.KeyAgreement.PublicKey(compressedRepresentation: compressedRepresentation as Data),
+                curve: .p521)
+        }
+    }
+
     @objc public static func decodeDer(
         curve: SwiftEcCurve,
         derRepresentation: NSData
@@ -77,6 +102,17 @@ import Foundation
         case .p256: return (key as! P256.KeyAgreement.PublicKey).x963Representation
         case .p384: return (key as! P384.KeyAgreement.PublicKey).x963Representation
         case .p521: return (key as! P521.KeyAgreement.PublicKey).x963Representation
+        }
+    }
+
+    @objc public func compressedRepresentation() throws -> Data {
+        guard #available(iOS 16.0, macOS 13.0, tvOS 16.0, watchOS 9.0, *) else {
+            throw CryptoKitError.unavailableOSVersion
+        }
+        switch curve {
+        case .p256: return (key as! P256.KeyAgreement.PublicKey).compressedRepresentation
+        case .p384: return (key as! P384.KeyAgreement.PublicKey).compressedRepresentation
+        case .p521: return (key as! P521.KeyAgreement.PublicKey).compressedRepresentation
         }
     }
 
