@@ -11,7 +11,4 @@ object OptIns {
 
     const val ExperimentalStdlibApi = "kotlin.ExperimentalStdlibApi"
     const val ExperimentalForeignApi = "kotlinx.cinterop.ExperimentalForeignApi"
-
-    // still needed because of kotlinx.io
-    const val ExperimentalEncodingApi = "kotlin.io.encoding.ExperimentalEncodingApi"
 }
