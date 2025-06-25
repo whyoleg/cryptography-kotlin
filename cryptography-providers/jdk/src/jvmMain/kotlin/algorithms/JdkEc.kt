@@ -136,7 +136,7 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP
 
             if (compressed) {
                 val output = ByteArray(fieldSize + 1)
-                output[0] = if (!BigInteger(1, y).testBit(0)) 0x02 else 0x03
+                output[0] = if (key.w.affineY.testBit(0)) 0x03 else 0x02
                 x.copyInto(output, fieldSize - x.size + 1)
                 output
             } else {
