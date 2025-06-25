@@ -77,7 +77,6 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP
             EC.PublicKey.Format.PEM            -> decodeFromDer(unwrapPem(PemLabel.PublicKey, bytes))
         }
 
-        // use RawEncodedKeySpec
         private fun decodeFromRaw(bytes: ByteArray): PublicK = run {
             check(bytes.isNotEmpty()) { "Encoded key is empty!" }
             val parameters = algorithmParameters(ECGenParameterSpec(curveName)).getParameterSpec(ECParameterSpec::class.java)
