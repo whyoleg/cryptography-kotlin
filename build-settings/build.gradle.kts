@@ -7,7 +7,7 @@ plugins {
 }
 
 dependencies {
-    implementation("com.gradle:develocity-gradle-plugin:4.0")
-    implementation("com.gradle:common-custom-user-data-gradle-plugin:2.2.1")
-    implementation("org.gradle.toolchains:foojay-resolver:0.10.0")
+    implementation("com.gradle:develocity-gradle-plugin:4.0.2")
+    implementation("com.gradle:common-custom-user-data-gradle-plugin:2.3")
+    implementation("org.gradle.toolchains:foojay-resolver:1.0.0")
 }
