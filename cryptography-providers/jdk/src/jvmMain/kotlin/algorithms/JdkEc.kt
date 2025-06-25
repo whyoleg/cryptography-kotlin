@@ -134,8 +134,8 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP
     ) : EC.PublicKey, JdkEncodableKey<EC.PublicKey.Format>(key) {
         final override fun encodeToByteArrayBlocking(format: EC.PublicKey.Format): ByteArray = when (format) {
             EC.PublicKey.Format.JWK            -> error("$format is not supported")
-            EC.PublicKey.Format.RAW            -> encodeToRaw(false)
-            EC.PublicKey.Format.RAW.Compressed -> encodeToRaw(true)
+            EC.PublicKey.Format.RAW            -> encodeToRaw(compressed = false)
+            EC.PublicKey.Format.RAW.Compressed -> encodeToRaw(compressed = true)
             EC.PublicKey.Format.DER            -> encodeToDer()
             EC.PublicKey.Format.PEM            -> wrapPem(PemLabel.PublicKey, encodeToDer())
         }
