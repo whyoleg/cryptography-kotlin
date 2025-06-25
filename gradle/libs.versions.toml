@@ -1,15 +1,15 @@
 [versions]
 
-kotlin = "2.0.20"
+kotlin = "2.1.20"
 
 # kotlin/kotlinx
-kotlin-dokka = "1.9.20"
-kotlinx-bcv = "0.16.3"
-kotlinx-kover = "0.8.3"
-kotlinx-io = "0.5.4"
-kotlinx-serialization = "1.7.3"
-kotlinx-coroutines = "1.9.0"
-ktor = "3.0.0"
+kotlin-dokka = "2.0.0"
+kotlinx-bcv = "0.17.0"
+kotlinx-kover = "0.9.1"
+kotlinx-io = "0.7.0"
+kotlinx-serialization = "1.8.1"
+kotlinx-coroutines = "1.10.2"
+ktor = "3.1.2"
 
 # android
 android = "8.5.0"
@@ -17,11 +17,11 @@ androidx-test = "1.6.2"
 
 # gradle/build
 apache-commons-compress = "1.26.2"
-maven-publish = "0.29.0"
+maven-publish = "0.33.0"
 
 # other
-bouncycastle = "1.78.1"
-logback = "1.5.9"
+bouncycastle = "1.80"
+logback = "1.5.18"
 
 [libraries]
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
@@ -47,11 +47,9 @@ androidx-test = { module = "androidx.test:runner", version.ref = "androidx-test"
 
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
-ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
-ktor-client-winhttp = { module = "io.ktor:ktor-client-winhttp", version.ref = "ktor" }
 
 ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
-ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor" }
+ktor-server-cio = { module = "io.ktor:ktor-server-cio", version.ref = "ktor" }
 ktor-server-cors = { module = "io.ktor:ktor-server-cors", version.ref = "ktor" }
 ktor-server-calllogging = { module = "io.ktor:ktor-server-call-logging", version.ref = "ktor" }
 

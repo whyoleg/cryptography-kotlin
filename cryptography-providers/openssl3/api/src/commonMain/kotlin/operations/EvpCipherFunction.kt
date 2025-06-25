@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.operations
@@ -9,15 +9,18 @@ import dev.whyoleg.cryptography.providers.base.operations.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import kotlinx.cinterop.*
+import platform.posix.*
 
+@OptIn(UnsafeNumber::class)
 internal fun EVP_CIPHER_CTX(
     cipher: CPointer<EVP_CIPHER>?,
     key: ByteArray,
     iv: ByteArray?,
     ivStartIndex: Int,
     encrypt: Boolean,
+    ivSizeOverride: Int = 0, // for GCM only
     init: (CPointer<EVP_CIPHER_CTX>?) -> Unit = {},
-): Resource<CPointer<EVP_CIPHER_CTX>?> {
+): Resource<CPointer<EVP_CIPHER_CTX>?> = memScoped {
     val context = checkError(EVP_CIPHER_CTX_new())
     val resource = Resource<CPointer<EVP_CIPHER_CTX>?>(context, ::EVP_CIPHER_CTX_free)
     try {
@@ -27,7 +30,9 @@ internal fun EVP_CIPHER_CTX(
                 cipher = cipher,
                 key = key.refToU(0),
                 iv = iv?.refToU(ivStartIndex),
-                params = null,
+                params = if (ivSizeOverride == 0) null else OSSL_PARAM_array(
+                    OSSL_PARAM_construct_size_t("ivlen".cstr.ptr, alloc(ivSizeOverride.convert<size_t>()).ptr)
+                ),
                 enc = if (encrypt) 1 else 0
             )
         )
@@ -36,7 +41,7 @@ internal fun EVP_CIPHER_CTX(
         resource.close()
         throw cause
     }
-    return resource
+    resource
 }
 
 internal fun EvpCipherFunction(
@@ -47,7 +52,7 @@ internal fun EvpCipherFunction(
     encrypt: Boolean,
     init: (CPointer<EVP_CIPHER_CTX>?) -> Unit = {},
 ): CipherFunction {
-    return EvpCipherFunction(EVP_CIPHER_CTX(cipher, key, iv, ivStartIndex, encrypt, init))
+    return EvpCipherFunction(EVP_CIPHER_CTX(cipher, key, iv, ivStartIndex, encrypt, init = init))
 }
 
 internal open class EvpCipherFunction(
@@ -82,9 +87,9 @@ internal open class EvpCipherFunction(
                     checkError(
                         EVP_CipherUpdate(
                             ctx = context,
-                            out = destinationPinned.safeAddressOf(destinationOffset).reinterpret(),
+                            out = destinationPinned.safeAddressOfU(destinationOffset),
                             outl = dataOutMoved.ptr,
-                            `in` = sourcePinned.safeAddressOf(startIndex).reinterpret(),
+                            `in` = sourcePinned.safeAddressOfU(startIndex),
                             inl = (endIndex - startIndex).convert(),
                         )
                     )
@@ -105,7 +110,7 @@ internal open class EvpCipherFunction(
                 checkError(
                     EVP_CipherFinal(
                         ctx = context,
-                        outm = destinationPinned.safeAddressOf(destinationOffset).reinterpret(),
+                        outm = destinationPinned.safeAddressOfU(destinationOffset),
                         outl = dataOutMoved.ptr
                     )
                 )

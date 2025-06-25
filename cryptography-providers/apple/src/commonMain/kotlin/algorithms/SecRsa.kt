@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.apple.algorithms
@@ -9,6 +9,7 @@ import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.bigint.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.providers.apple.internal.*
+import dev.whyoleg.cryptography.providers.base.materials.*
 import dev.whyoleg.cryptography.serialization.asn1.*
 import dev.whyoleg.cryptography.serialization.asn1.modules.*
 import dev.whyoleg.cryptography.serialization.pem.*
@@ -36,8 +37,8 @@ internal abstract class SecRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKe
                 RSA.PublicKey.Format.JWK -> error("$format is not supported")
                 RSA.PublicKey.Format.DER.PKCS1 -> bytes
                 RSA.PublicKey.Format.PEM.PKCS1 -> unwrapPem(PemLabel.RsaPublicKey, bytes)
-                RSA.PublicKey.Format.DER       -> unwrapPublicKey(ObjectIdentifier.RSA, bytes)
-                RSA.PublicKey.Format.PEM       -> unwrapPublicKey(ObjectIdentifier.RSA, unwrapPem(PemLabel.PublicKey, bytes))
+                RSA.PublicKey.Format.DER -> unwrapSubjectPublicKeyInfo(ObjectIdentifier.RSA, bytes)
+                RSA.PublicKey.Format.PEM -> unwrapSubjectPublicKeyInfo(ObjectIdentifier.RSA, unwrapPem(PemLabel.PublicKey, bytes))
             }
 
             val secKey = CFMutableDictionary(2) {
@@ -61,8 +62,8 @@ internal abstract class SecRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKe
                 RSA.PrivateKey.Format.JWK -> error("$format is not supported")
                 RSA.PrivateKey.Format.DER.PKCS1 -> bytes
                 RSA.PrivateKey.Format.PEM.PKCS1 -> unwrapPem(PemLabel.RsaPrivateKey, bytes)
-                RSA.PrivateKey.Format.DER       -> unwrapPrivateKey(ObjectIdentifier.RSA, bytes)
-                RSA.PrivateKey.Format.PEM       -> unwrapPrivateKey(ObjectIdentifier.RSA, unwrapPem(PemLabel.PrivateKey, bytes))
+                RSA.PrivateKey.Format.DER -> unwrapPrivateKeyInfo(ObjectIdentifier.RSA, bytes)
+                RSA.PrivateKey.Format.PEM -> unwrapPrivateKeyInfo(ObjectIdentifier.RSA, unwrapPem(PemLabel.PrivateKey, bytes))
             }
 
             val secKey = CFMutableDictionary(2) {
@@ -117,8 +118,8 @@ internal abstract class SecRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKe
                 RSA.PublicKey.Format.JWK -> error("$format is not supported")
                 RSA.PublicKey.Format.DER.PKCS1 -> pkcs1Key
                 RSA.PublicKey.Format.PEM.PKCS1 -> wrapPem(PemLabel.RsaPublicKey, pkcs1Key)
-                RSA.PublicKey.Format.DER       -> wrapPublicKey(RsaKeyAlgorithmIdentifier, pkcs1Key)
-                RSA.PublicKey.Format.PEM       -> wrapPem(PemLabel.PublicKey, wrapPublicKey(RsaKeyAlgorithmIdentifier, pkcs1Key))
+                RSA.PublicKey.Format.DER -> wrapSubjectPublicKeyInfo(RsaKeyAlgorithmIdentifier, pkcs1Key)
+                RSA.PublicKey.Format.PEM -> wrapPem(PemLabel.PublicKey, wrapSubjectPublicKeyInfo(RsaKeyAlgorithmIdentifier, pkcs1Key))
             }
         }
     }
@@ -136,8 +137,8 @@ internal abstract class SecRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKe
                 RSA.PrivateKey.Format.JWK -> error("$format is not supported")
                 RSA.PrivateKey.Format.DER.PKCS1 -> pkcs1Key
                 RSA.PrivateKey.Format.PEM.PKCS1 -> wrapPem(PemLabel.RsaPrivateKey, pkcs1Key)
-                RSA.PrivateKey.Format.DER       -> wrapPrivateKey(0, RsaKeyAlgorithmIdentifier, pkcs1Key)
-                RSA.PrivateKey.Format.PEM       -> wrapPem(PemLabel.PrivateKey, wrapPrivateKey(0, RsaKeyAlgorithmIdentifier, pkcs1Key))
+                RSA.PrivateKey.Format.DER -> wrapPrivateKeyInfo(0, RsaKeyAlgorithmIdentifier, pkcs1Key)
+                RSA.PrivateKey.Format.PEM -> wrapPem(PemLabel.PrivateKey, wrapPrivateKeyInfo(0, RsaKeyAlgorithmIdentifier, pkcs1Key))
             }
         }
     }

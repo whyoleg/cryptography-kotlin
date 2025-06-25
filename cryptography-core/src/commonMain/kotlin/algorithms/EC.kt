@@ -20,6 +20,13 @@ public interface EC<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP : EC.Ke
             public val P256: Curve get() = Curve("P-256")
             public val P384: Curve get() = Curve("P-384")
             public val P521: Curve get() = Curve("P-521")
+
+            public val secp256k1: Curve get() = Curve("secp256k1")
+
+            // Brainpool curves (used in European standards and some government applications)
+            public val brainpoolP256r1: Curve get() = Curve("brainpoolP256r1")
+            public val brainpoolP384r1: Curve get() = Curve("brainpoolP384r1")
+            public val brainpoolP512r1: Curve get() = Curve("brainpoolP512r1")
         }
     }
 

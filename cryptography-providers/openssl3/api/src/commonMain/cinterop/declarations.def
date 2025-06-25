@@ -24,3 +24,4 @@ noStringConversion = OSSL_PARAM_construct_double \
                      OSSL_PARAM_construct_octet_ptr \
                      OSSL_ENCODER_CTX_new_for_pkey \
                      OSSL_DECODER_CTX_new_for_pkey
+compilerOpts = -DOPENSSL_NO_DEPRECATED

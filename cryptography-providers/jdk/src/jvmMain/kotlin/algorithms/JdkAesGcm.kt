@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.jdk.algorithms
@@ -41,22 +41,23 @@ private class JdkAesGcmKey(
     }
 }
 
+private const val defaultIvSize: Int = 12
+
 private class JdkAesGcmCipher(
     private val state: JdkCryptographyState,
     private val key: JSecretKey,
     private val tagSizeBits: Int,
 ) : BaseAesIvAuthenticatedCipher {
-    private val ivSize: Int get() = 12
     private val cipher = state.cipher("AES/GCM/NoPadding")
 
     override fun createEncryptFunction(associatedData: ByteArray?): CipherFunction {
-        val iv = ByteArray(ivSize).also(state.secureRandom::nextBytes)
+        val iv = ByteArray(defaultIvSize).also(state.secureRandom::nextBytes)
         return BaseAesImplicitIvEncryptFunction(iv, createEncryptFunctionWithIv(iv, associatedData))
     }
 
     override fun createDecryptFunction(associatedData: ByteArray?): CipherFunction {
-        return BaseAesImplicitIvDecryptFunction(ivSize) { iv, startIndex ->
-            createDecryptFunctionWithIv(iv, startIndex, associatedData)
+        return BaseAesImplicitIvDecryptFunction(defaultIvSize) { iv, startIndex ->
+            createDecryptFunctionWithIv(iv, startIndex, defaultIvSize, associatedData)
         }
     }
 
@@ -67,7 +68,12 @@ private class JdkAesGcmCipher(
         })
     }
 
-    private fun createDecryptFunctionWithIv(iv: ByteArray, startIndex: Int, associatedData: ByteArray?): CipherFunction {
+    private fun createDecryptFunctionWithIv(
+        iv: ByteArray,
+        startIndex: Int,
+        ivSize: Int,
+        associatedData: ByteArray?,
+    ): CipherFunction {
         return JdkCipherFunction(cipher.borrowResource {
             init(JCipher.DECRYPT_MODE, key, GCMParameterSpec(tagSizeBits, iv, startIndex, ivSize), state.secureRandom)
             associatedData?.let(this::updateAAD)
@@ -75,6 +81,6 @@ private class JdkAesGcmCipher(
     }
 
     override fun createDecryptFunctionWithIv(iv: ByteArray, associatedData: ByteArray?): CipherFunction {
-        return createDecryptFunctionWithIv(iv, 0, associatedData)
+        return createDecryptFunctionWithIv(iv, 0, iv.size, associatedData)
     }
 }

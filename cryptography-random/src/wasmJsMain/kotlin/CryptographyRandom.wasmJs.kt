@@ -1,10 +1,8 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.random
-
-import org.khronos.webgl.*
 
 internal actual fun defaultCryptographyRandom(): CryptographyRandom = WebCryptoCryptographyRandom
 
@@ -33,22 +31,20 @@ private object WebCryptoCryptographyRandom : AbstractRandom() {
     }
 }
 
-private external interface Crypto : JsAny {
+private external interface Crypto {
     fun getRandomValues(array: Int8Array)
 }
 
 //language=JavaScript
-private fun getCrypto(): Crypto {
-    js(
-        code = """
-    
-        var isNodeJs = typeof process !== 'undefined' && process.versions != null && process.versions.node != null
-        if (isNodeJs) {
-            return (eval('require')('node:crypto').webcrypto);
-        } else {
-            return (window ? (window.crypto ? window.crypto : window.msCrypto) : self.crypto);
-        }
-    
-               """
-    )
+private fun getCrypto(): Crypto = js("(globalThis ? globalThis.crypto : (window.crypto || window.msCrypto))")
+
+private external class Int8Array {
+    constructor(length: Int)
+
+    val length: Int
+    fun subarray(start: Int, end: Int): Int8Array
 }
+
+private fun getImpl(obj: Int8Array, index: Int): Byte = js("obj[index]")
+
+private operator fun Int8Array.get(index: Int): Byte = getImpl(this, index)

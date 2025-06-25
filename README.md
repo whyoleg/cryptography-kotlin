@@ -22,7 +22,7 @@ cryptography-kotlin provides multiplatform API which consists of multiple compon
   like [ciphers][ciphers], [digests][digests], [signatures][signatures], [key derivation][key derivation], [Key agreement][Key agreement]
 * multiple algorithms definitions, like [AES][AES], [RSA][RSA], [ECDSA][ECDSA], [ECDH][ECDH], [SHA][SHA256], [HMAC][HMAC]
   and [PBKDF2][PBKDF2]
-* multiple cryptography [providers][providers], like [OpenSSL][OpenSSL], [WebCrypto][WebCrypto] and [JDK][JDK]
+* multiple cryptography [providers][providers], like [OpenSSL][OpenSSL], [WebCrypto][WebCrypto], [CryptoKit][CryptoKit] and [JDK][JDK]
 
 The library doesn't implement any cryptography algorithm on its own, but wraps well-known future-proof solutions
 like [OpenSSL 3.x](https://www.openssl.org), [WebCrypto](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API)
@@ -66,10 +66,10 @@ kotlin {
 
 ```kotlin
 repositories {
-    maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+    maven("https://central.sonatype.com/repository/maven-snapshots/")
 }
 dependencies {
-    implementation("dev.whyoleg.cryptography:cryptography-core:0.4.1-SNAPSHOT")
+    implementation("dev.whyoleg.cryptography:cryptography-core:0.5.0-SNAPSHOT")
 }
 ```
 
@@ -131,6 +131,8 @@ For bugs, questions and discussions, please use the [GitHub Issues](https://gith
 [OpenSSL]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-provider-openssl3/
 
 [WebCrypto]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-provider-webcrypto/
+
+[CryptoKit]: https://developer.apple.com/documentation/cryptokit/
 
 [JDK]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-provider-jdk/
 

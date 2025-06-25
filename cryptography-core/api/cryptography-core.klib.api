@@ -17,7 +17,7 @@ open annotation class dev.whyoleg.cryptography/DelicateCryptographyApi : kotlin/
 abstract interface <#A: dev.whyoleg.cryptography.algorithms/AES.Key> dev.whyoleg.cryptography.algorithms/AES : dev.whyoleg.cryptography/CryptographyAlgorithm { // dev.whyoleg.cryptography.algorithms/AES|null[0]
     abstract fun keyDecoder(): dev.whyoleg.cryptography.materials.key/KeyDecoder<dev.whyoleg.cryptography.algorithms/AES.Key.Format, #A> // dev.whyoleg.cryptography.algorithms/AES.keyDecoder|keyDecoder(){}[0]
     abstract fun keyGenerator(dev.whyoleg.cryptography/BinarySize = ...): dev.whyoleg.cryptography.materials.key/KeyGenerator<#A> // dev.whyoleg.cryptography.algorithms/AES.keyGenerator|keyGenerator(dev.whyoleg.cryptography.BinarySize){}[0]
-    open fun keyGenerator(dev.whyoleg.cryptography.algorithms.symmetric/SymmetricKeySize = ...): dev.whyoleg.cryptography.materials.key/KeyGenerator<#A> // dev.whyoleg.cryptography.algorithms/AES.keyGenerator|keyGenerator(dev.whyoleg.cryptography.algorithms.symmetric.SymmetricKeySize){}[0]
+    open fun keyGenerator(dev.whyoleg.cryptography.algorithms.symmetric/SymmetricKeySize): dev.whyoleg.cryptography.materials.key/KeyGenerator<#A> // dev.whyoleg.cryptography.algorithms/AES.keyGenerator|keyGenerator(dev.whyoleg.cryptography.algorithms.symmetric.SymmetricKeySize){}[0]
 
     abstract interface CBC : dev.whyoleg.cryptography.algorithms/AES<dev.whyoleg.cryptography.algorithms/AES.CBC.Key> { // dev.whyoleg.cryptography.algorithms/AES.CBC|null[0]
         open val id // dev.whyoleg.cryptography.algorithms/AES.CBC.id|{}id[0]
@@ -28,6 +28,18 @@ abstract interface <#A: dev.whyoleg.cryptography.algorithms/AES.Key> dev.whyoleg
         }
 
         final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/AES.CBC> // dev.whyoleg.cryptography.algorithms/AES.CBC.Companion|null[0]
+    }
+
+    abstract interface CMAC : dev.whyoleg.cryptography.algorithms/AES<dev.whyoleg.cryptography.algorithms/AES.CMAC.Key> { // dev.whyoleg.cryptography.algorithms/AES.CMAC|null[0]
+        open val id // dev.whyoleg.cryptography.algorithms/AES.CMAC.id|{}id[0]
+            open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/AES.CMAC> // dev.whyoleg.cryptography.algorithms/AES.CMAC.id.<get-id>|<get-id>(){}[0]
+
+        abstract interface Key : dev.whyoleg.cryptography.algorithms/AES.Key { // dev.whyoleg.cryptography.algorithms/AES.CMAC.Key|null[0]
+            abstract fun signatureGenerator(): dev.whyoleg.cryptography.operations/SignatureGenerator // dev.whyoleg.cryptography.algorithms/AES.CMAC.Key.signatureGenerator|signatureGenerator(){}[0]
+            abstract fun signatureVerifier(): dev.whyoleg.cryptography.operations/SignatureVerifier // dev.whyoleg.cryptography.algorithms/AES.CMAC.Key.signatureVerifier|signatureVerifier(){}[0]
+        }
+
+        final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/AES.CMAC> // dev.whyoleg.cryptography.algorithms/AES.CMAC.Companion|null[0]
     }
 
     abstract interface CTR : dev.whyoleg.cryptography.algorithms/AES<dev.whyoleg.cryptography.algorithms/AES.CTR.Key> { // dev.whyoleg.cryptography.algorithms/AES.CTR|null[0]
@@ -272,6 +284,14 @@ abstract interface <#A: dev.whyoleg.cryptography.algorithms/EC.PublicKey, #B: de
                 final fun <get-P384>(): dev.whyoleg.cryptography.algorithms/EC.Curve // dev.whyoleg.cryptography.algorithms/EC.Curve.Companion.P384.<get-P384>|<get-P384>(){}[0]
             final val P521 // dev.whyoleg.cryptography.algorithms/EC.Curve.Companion.P521|{}P521[0]
                 final fun <get-P521>(): dev.whyoleg.cryptography.algorithms/EC.Curve // dev.whyoleg.cryptography.algorithms/EC.Curve.Companion.P521.<get-P521>|<get-P521>(){}[0]
+            final val brainpoolP256r1 // dev.whyoleg.cryptography.algorithms/EC.Curve.Companion.brainpoolP256r1|{}brainpoolP256r1[0]
+                final fun <get-brainpoolP256r1>(): dev.whyoleg.cryptography.algorithms/EC.Curve // dev.whyoleg.cryptography.algorithms/EC.Curve.Companion.brainpoolP256r1.<get-brainpoolP256r1>|<get-brainpoolP256r1>(){}[0]
+            final val brainpoolP384r1 // dev.whyoleg.cryptography.algorithms/EC.Curve.Companion.brainpoolP384r1|{}brainpoolP384r1[0]
+                final fun <get-brainpoolP384r1>(): dev.whyoleg.cryptography.algorithms/EC.Curve // dev.whyoleg.cryptography.algorithms/EC.Curve.Companion.brainpoolP384r1.<get-brainpoolP384r1>|<get-brainpoolP384r1>(){}[0]
+            final val brainpoolP512r1 // dev.whyoleg.cryptography.algorithms/EC.Curve.Companion.brainpoolP512r1|{}brainpoolP512r1[0]
+                final fun <get-brainpoolP512r1>(): dev.whyoleg.cryptography.algorithms/EC.Curve // dev.whyoleg.cryptography.algorithms/EC.Curve.Companion.brainpoolP512r1.<get-brainpoolP512r1>|<get-brainpoolP512r1>(){}[0]
+            final val secp256k1 // dev.whyoleg.cryptography.algorithms/EC.Curve.Companion.secp256k1|{}secp256k1[0]
+                final fun <get-secp256k1>(): dev.whyoleg.cryptography.algorithms/EC.Curve // dev.whyoleg.cryptography.algorithms/EC.Curve.Companion.secp256k1.<get-secp256k1>|<get-secp256k1>(){}[0]
         }
     }
 }
@@ -808,6 +828,8 @@ open class dev.whyoleg.cryptography/CryptographyException : kotlin/RuntimeExcept
 
 final object dev.whyoleg.cryptography.algorithms/MD5 : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest> // dev.whyoleg.cryptography.algorithms/MD5|null[0]
 
+final object dev.whyoleg.cryptography.algorithms/RIPEMD160 : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest> // dev.whyoleg.cryptography.algorithms/RIPEMD160|null[0]
+
 final object dev.whyoleg.cryptography.algorithms/SHA1 : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest> // dev.whyoleg.cryptography.algorithms/SHA1|null[0]
 
 final object dev.whyoleg.cryptography.algorithms/SHA224 : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest> // dev.whyoleg.cryptography.algorithms/SHA224|null[0]
@@ -825,3 +847,12 @@ final object dev.whyoleg.cryptography.algorithms/SHA3_384 : dev.whyoleg.cryptogr
 final object dev.whyoleg.cryptography.algorithms/SHA3_512 : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest> // dev.whyoleg.cryptography.algorithms/SHA3_512|null[0]
 
 final object dev.whyoleg.cryptography.algorithms/SHA512 : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest> // dev.whyoleg.cryptography.algorithms/SHA512|null[0]
+
+final object dev.whyoleg.cryptography/CryptographySystem { // dev.whyoleg.cryptography/CryptographySystem|null[0]
+    final fun getDefaultProvider(): dev.whyoleg.cryptography/CryptographyProvider // dev.whyoleg.cryptography/CryptographySystem.getDefaultProvider|getDefaultProvider(){}[0]
+    final fun getDefaultRandom(): dev.whyoleg.cryptography.random/CryptographyRandom // dev.whyoleg.cryptography/CryptographySystem.getDefaultRandom|getDefaultRandom(){}[0]
+    final fun getRegisteredProviders(): kotlin.collections/List<dev.whyoleg.cryptography/CryptographyProvider> // dev.whyoleg.cryptography/CryptographySystem.getRegisteredProviders|getRegisteredProviders(){}[0]
+    final fun registerProvider(kotlin/Lazy<dev.whyoleg.cryptography/CryptographyProvider>, kotlin/Int) // dev.whyoleg.cryptography/CryptographySystem.registerProvider|registerProvider(kotlin.Lazy<dev.whyoleg.cryptography.CryptographyProvider>;kotlin.Int){}[0]
+    final fun setDefaultProvider(dev.whyoleg.cryptography/CryptographyProvider) // dev.whyoleg.cryptography/CryptographySystem.setDefaultProvider|setDefaultProvider(dev.whyoleg.cryptography.CryptographyProvider){}[0]
+    final fun setDefaultRandom(dev.whyoleg.cryptography.random/CryptographyRandom) // dev.whyoleg.cryptography/CryptographySystem.setDefaultRandom|setDefaultRandom(dev.whyoleg.cryptography.random.CryptographyRandom){}[0]
+}

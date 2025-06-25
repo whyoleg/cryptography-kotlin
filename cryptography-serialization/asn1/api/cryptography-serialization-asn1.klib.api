@@ -89,3 +89,4 @@ sealed class dev.whyoleg.cryptography.serialization.asn1/Der : kotlinx.serializa
 }
 
 final fun dev.whyoleg.cryptography.serialization.asn1/DER(dev.whyoleg.cryptography.serialization.asn1/Der = ..., kotlin/Function1<dev.whyoleg.cryptography.serialization.asn1/Der.Builder, kotlin/Unit>): dev.whyoleg.cryptography.serialization.asn1/Der // dev.whyoleg.cryptography.serialization.asn1/DER|DER(dev.whyoleg.cryptography.serialization.asn1.Der;kotlin.Function1<dev.whyoleg.cryptography.serialization.asn1.Der.Builder,kotlin.Unit>){}[0]
+final fun dev.whyoleg.cryptography.serialization.asn1/Der(dev.whyoleg.cryptography.serialization.asn1/Der = ..., kotlin/Function1<dev.whyoleg.cryptography.serialization.asn1/Der.Builder, kotlin/Unit>): dev.whyoleg.cryptography.serialization.asn1/Der // dev.whyoleg.cryptography.serialization.asn1/Der|Der(dev.whyoleg.cryptography.serialization.asn1.Der;kotlin.Function1<dev.whyoleg.cryptography.serialization.asn1.Der.Builder,kotlin.Unit>){}[0]

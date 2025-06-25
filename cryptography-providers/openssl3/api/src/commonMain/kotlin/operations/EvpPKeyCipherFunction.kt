@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.operations
@@ -55,7 +55,7 @@ internal class EvpPKeyCipherFunction(
                             ctx = context,
                             out = null,
                             outlen = outlen.ptr,
-                            `in` = inputPin.safeAddressOf(0).reinterpret(),
+                            `in` = inputPin.safeAddressOfU(0),
                             inlen = accumulator.size.convert()
                         )
                     )
@@ -64,9 +64,9 @@ internal class EvpPKeyCipherFunction(
                         checkError(
                             EVP_PKEY_cipher(
                                 ctx = context,
-                                out = outputPin.safeAddressOf(0).reinterpret(),
+                                out = outputPin.safeAddressOfU(0),
                                 outlen = outlen.ptr,
-                                `in` = inputPin.safeAddressOf(0).reinterpret(),
+                                `in` = inputPin.safeAddressOfU(0),
                                 inlen = accumulator.size.convert()
                             )
                         )

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
@@ -11,7 +11,6 @@ import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
-import dev.whyoleg.cryptography.random.*
 import kotlinx.cinterop.*
 import kotlin.experimental.*
 import kotlin.native.ref.*
@@ -48,7 +47,7 @@ private class HmacKeyGenerator(
     private val blockSize: Int,
 ) : KeyGenerator<HMAC.Key> {
     override fun generateKeyBlocking(): HMAC.Key {
-        val key = CryptographyRandom.nextBytes(blockSize)
+        val key = CryptographySystem.getDefaultRandom().nextBytes(blockSize)
         return HmacKey(hashAlgorithm, key)
     }
 }
@@ -95,7 +94,7 @@ private class HmacSignature(
             val context = context.access()
 
             source.usePinned {
-                checkError(EVP_MAC_update(context, it.safeAddressOf(startIndex).reinterpret(), (endIndex - startIndex).convert()))
+                checkError(EVP_MAC_update(context, it.safeAddressOfU(startIndex), (endIndex - startIndex).convert()))
             }
         }
 
@@ -105,7 +104,7 @@ private class HmacSignature(
             checkBounds(destination.size, destinationOffset, destinationOffset + macSize)
 
             destination.usePinned {
-                checkError(EVP_MAC_final(context, it.safeAddressOf(destinationOffset).reinterpret(), null, macSize.convert()))
+                checkError(EVP_MAC_final(context, it.safeAddressOfU(destinationOffset), null, macSize.convert()))
             }
             return macSize
         }
@@ -132,7 +131,7 @@ private class HmacSignature(
                 checkError(
                     EVP_MAC_init(
                         ctx = context,
-                        key = it.safeAddressOf(0).reinterpret(),
+                        key = it.safeAddressOfU(0),
                         keylen = key.size.convert(),
                         params = OSSL_PARAM_array(
                             OSSL_PARAM_construct_utf8_string("digest".cstr.ptr, hashAlgorithm.cstr.ptr, 0.convert())

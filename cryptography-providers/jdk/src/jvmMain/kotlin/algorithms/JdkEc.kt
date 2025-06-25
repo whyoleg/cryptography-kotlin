@@ -1,16 +1,16 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.jdk.algorithms
 
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.providers.base.algorithms.*
+import dev.whyoleg.cryptography.providers.base.materials.*
 import dev.whyoleg.cryptography.providers.jdk.*
 import dev.whyoleg.cryptography.providers.jdk.internal.*
 import dev.whyoleg.cryptography.providers.jdk.materials.*
-import dev.whyoleg.cryptography.serialization.asn1.*
-import dev.whyoleg.cryptography.serialization.asn1.modules.*
 import dev.whyoleg.cryptography.serialization.pem.*
 import java.math.*
 import java.security.interfaces.*
@@ -110,21 +110,8 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP
             }
             EC.PrivateKey.Format.DER      -> decodeFromDer(bytes)
             EC.PrivateKey.Format.PEM      -> decodeFromDer(unwrapPem(PemLabel.PrivateKey, bytes))
-            EC.PrivateKey.Format.DER.SEC1 -> decodeFromDer(convertSec1ToPkcs8(bytes))
-            EC.PrivateKey.Format.PEM.SEC1 -> decodeFromDer(convertSec1ToPkcs8(unwrapPem(PemLabel.EcPrivateKey, bytes)))
-        }
-
-        private fun convertSec1ToPkcs8(input: ByteArray): ByteArray {
-            val ecPrivateKey = Der.decodeFromByteArray(EcPrivateKey.serializer(), input)
-
-            checkNotNull(ecPrivateKey.parameters) { "EC Parameters are not present in the key" }
-
-            val privateKeyInfo = PrivateKeyInfo(
-                version = 0,
-                privateKeyAlgorithm = EcKeyAlgorithmIdentifier(ecPrivateKey.parameters),
-                privateKey = input
-            )
-            return Der.encodeToByteArray(PrivateKeyInfo.serializer(), privateKeyInfo)
+            EC.PrivateKey.Format.DER.SEC1 -> decodeFromDer(convertEcPrivateKeyFromSec1ToPkcs8(bytes))
+            EC.PrivateKey.Format.PEM.SEC1 -> decodeFromDer(convertEcPrivateKeyFromSec1ToPkcs8(unwrapPem(PemLabel.EcPrivateKey, bytes)))
         }
     }
 
@@ -176,29 +163,8 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP
                 secret.copyInto(ByteArray(fieldSize), fieldSize - secret.size)
             }
             EC.PrivateKey.Format.PEM      -> wrapPem(PemLabel.PrivateKey, encodeToDer())
-            EC.PrivateKey.Format.DER.SEC1 -> convertPkcs8ToSec1(encodeToDer())
-            EC.PrivateKey.Format.PEM.SEC1 -> wrapPem(PemLabel.EcPrivateKey, convertPkcs8ToSec1(encodeToDer()))
-        }
-
-        private fun convertPkcs8ToSec1(input: ByteArray): ByteArray {
-            val privateKeyInfo = Der.decodeFromByteArray(PrivateKeyInfo.serializer(), input)
-
-            val privateKeyAlgorithm = privateKeyInfo.privateKeyAlgorithm
-            check(privateKeyAlgorithm is EcKeyAlgorithmIdentifier) {
-                "Expected algorithm '${ObjectIdentifier.EC}', received: '${privateKeyAlgorithm.algorithm}'"
-            }
-            // the produced key could not contain parameters in underlying EcPrivateKey,
-            // but they are available in `privateKeyAlgorithm`
-            val ecPrivateKey = Der.decodeFromByteArray(EcPrivateKey.serializer(), privateKeyInfo.privateKey)
-            if (ecPrivateKey.parameters != null) return privateKeyInfo.privateKey
-
-            val enhancedEcPrivateKey = EcPrivateKey(
-                version = ecPrivateKey.version,
-                privateKey = ecPrivateKey.privateKey,
-                parameters = privateKeyAlgorithm.parameters,
-                publicKey = ecPrivateKey.publicKey
-            )
-            return Der.encodeToByteArray(EcPrivateKey.serializer(), enhancedEcPrivateKey)
+            EC.PrivateKey.Format.DER.SEC1 -> convertEcPrivateKeyFromPkcs8ToSec1(encodeToDer())
+            EC.PrivateKey.Format.PEM.SEC1 -> wrapPem(PemLabel.EcPrivateKey, convertEcPrivateKeyFromPkcs8ToSec1(encodeToDer()))
         }
     }
 }
@@ -209,14 +175,14 @@ internal fun ECParameterSpec.curveOrderSize(): Int {
 
 /**
  * Decodes an elliptic curve point from its byte representation.
- * 
+ *
  * This implementation follows ANSI X9.62 standard for point encoding:
  * - 0x02/0x03: Compressed point format (x-coordinate + y-parity bit)
  * - 0x04: Uncompressed point format (x-coordinate + y-coordinate)
- * 
+ *
  * For compressed points, the y-coordinate is computed by solving the curve equation:
  * y² = x³ + ax + b (mod p)
- * 
+ *
  * References:
  * - ANSI X9.62-2005: Public Key Cryptography for the Financial Services Industry - The Elliptic Curve Digital Signature Algorithm (ECDSA)
  * - SEC 1: Elliptic Curve Cryptography, Section 2.3.4: Octet-String-to-Elliptic-Curve-Point Conversion
@@ -252,12 +218,12 @@ internal fun ECParameterSpec.decodePoint(bytes: ByteArray): ECPoint {
 
 /**
  * Computes the modular square root using the Tonelli-Shanks algorithm.
- * 
+ *
  * This implementation is optimized for the case where p ≡ 3 (mod 4),
  * which applies to the NIST curves (P-256, P-384, P-521).
- * 
+ *
  * For such primes, the square root can be computed as: x^((p+1)/4) mod p
- * 
+ *
  * References:
  * - Handbook of Applied Cryptography, Algorithm 3.36
  * - NIST SP 800-186: Recommendations for Discrete Logarithm-based Cryptography

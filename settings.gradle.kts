@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 import cksettings.*
@@ -7,9 +7,11 @@ import cksettings.*
 pluginManagement {
     includeBuild("build-logic")
     includeBuild("build-settings")
-}
 
-includeBuild("testtool")
+    // nested gradle plugins
+    includeBuild("testtool")
+    includeBuild("swiftinterop")
+}
 
 plugins {
     id("cksettings.default")
@@ -47,8 +49,11 @@ projects("cryptography-kotlin") {
     // providers
     folder("cryptography-providers", prefix = "cryptography-provider") {
         module("base")
+        module("tests")
+
         module("jdk") {
             module("android-tests")
+            module("bc") // preconfigured JDK with BC provider
         }
         module("apple")
         module("webcrypto")
@@ -58,9 +63,7 @@ projects("cryptography-kotlin") {
             module("prebuilt")
             module("test")
         }
+        module("cryptokit")
+        module("optimal") // composite provider
     }
-
-    // providers tests
-    module("cryptography-providers-tests-api")
-    module("cryptography-providers-tests")
 }

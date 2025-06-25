@@ -1,12 +1,11 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.algorithms.RSA
 import dev.whyoleg.cryptography.providers.openssl3.algorithms.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import kotlinx.cinterop.*
@@ -30,8 +29,10 @@ internal object Openssl3CryptographyProvider : CryptographyProvider() {
         SHA3_256  -> Openssl3Digest("SHA3-256", SHA3_256)
         SHA3_384  -> Openssl3Digest("SHA3-384", SHA3_384)
         SHA3_512  -> Openssl3Digest("SHA3-512", SHA3_512)
+        RIPEMD160 -> Openssl3Digest("RIPEMD160", RIPEMD160)
         HMAC    -> Openssl3Hmac
         AES.CBC -> Openssl3AesCbc
+        AES.CMAC -> Openssl3AesCmac
         AES.CTR -> Openssl3AesCtr
         AES.ECB -> Openssl3AesEcb
         AES.GCM -> Openssl3AesGcm
@@ -50,4 +51,4 @@ internal object Openssl3CryptographyProvider : CryptographyProvider() {
 @Suppress("DEPRECATION")
 @OptIn(ExperimentalStdlibApi::class)
 @EagerInitialization
-private val initHook = CryptographyProvider.Registry.registerProvider(defaultProvider)
+private val initHook = CryptographySystem.registerProvider(defaultProvider, 100)

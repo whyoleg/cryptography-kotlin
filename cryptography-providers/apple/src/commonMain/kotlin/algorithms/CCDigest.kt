@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.apple.algorithms
@@ -44,7 +44,7 @@ private class CCHashFunction<CTX : CPointed>(
 
         val context = context.access()
         destination.usePinned {
-            check(algorithm.ccFinal(context, it.safeAddressOf(destinationOffset).reinterpret()) > 0)
+            check(algorithm.ccFinal(context, it.safeAddressOfU(destinationOffset)) > 0)
         }
         reset()
         return algorithm.digestSize

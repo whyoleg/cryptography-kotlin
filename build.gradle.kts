@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 import org.jetbrains.kotlin.gradle.targets.js.nodejs.*
@@ -22,8 +22,13 @@ plugins.withType<NodeJsRootPlugin> {
         packageLockMismatchReport.set(LockFileMismatchReport.NONE)
     }
 }
+dependencies {
+    ckbuild.artifacts.forEach {
+        dokka(project(":$it"))
+    }
+}
 
-tasks.dokkaHtmlMultiModule {
+tasks.dokkaGeneratePublicationHtml {
     outputDirectory.set(file("docs/api"))
 }
 
@@ -34,7 +39,7 @@ tasks.register<Copy>("mkdocsCopy") {
 }
 
 tasks.register<Exec>("mkdocsBuild") {
-    dependsOn(tasks.dokkaHtmlMultiModule)
+    dependsOn(tasks.dokkaGeneratePublicationHtml)
     dependsOn(tasks.named("mkdocsCopy"))
     dependsOn(subprojects.mapNotNull { it.tasks.findByName("mkdocsCopy") })
     commandLine("mkdocs", "build", "--clean", "--strict")

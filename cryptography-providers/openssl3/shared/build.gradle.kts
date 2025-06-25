@@ -1,13 +1,11 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 import ckbuild.*
 import ckbuild.openssl.*
 import org.jetbrains.kotlin.gradle.*
-import org.jetbrains.kotlin.gradle.plugin.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.*
-import org.jetbrains.kotlin.gradle.targets.native.tasks.*
 import org.jetbrains.kotlin.konan.target.*
 
 plugins {
@@ -52,39 +50,6 @@ kotlin {
             linkerOpts("-L${openssl.v3_0.libDirectory(konanTarget).get().asFile.absolutePath}")
             linkTaskProvider.configure { uses(openssl.v3_0) }
         }
-    }
-
-    targets.withType<KotlinNativeTargetWithTests<*>>().configureEach {
-        fun createTestRuns(classifier: String, extension: OpensslXExtension) {
-            fun createTestRun(name: String, buildType: NativeBuildType) {
-                testRuns.create(name) {
-                    setExecutionSourceFrom(binaries.getTest(buildType))
-                    @Suppress("UNCHECKED_CAST")
-                    (this as ExecutionTaskHolder<KotlinNativeTest>).executionTask.configure {
-                        val providerTestsStep = providers.gradleProperty("ckbuild.providerTests.step").orNull
-                        onlyIf { providerTestsStep == null }
-                        uses(extension)
-                        when (konanTarget.family) {
-                            Family.OSX   -> environment("DYLD_LIBRARY_PATH", extension.libDirectory(konanTarget).get().asFile.absolutePath)
-                            Family.LINUX -> environment("LD_LIBRARY_PATH", extension.libDirectory(konanTarget).get().asFile.absolutePath)
-                            Family.MINGW -> {
-                                val opensslBinPath = extension.binDirectory("windows-x64").get().asFile.absolutePath
-                                val currentPath = providers.environmentVariable("PATH").get()
-                                environment("PATH", "$opensslBinPath;$currentPath")
-                            }
-                            else         -> error("not supported: $konanTarget")
-                        }
-                    }
-                }
-            }
-            createTestRun("_${classifier}_Test", NativeBuildType.DEBUG)
-            createTestRun("release_${classifier}_Test", NativeBuildType.RELEASE)
-        }
-
-        createTestRuns("3_0", openssl.v3_0)
-        createTestRuns("3_1", openssl.v3_1)
-        createTestRuns("3_2", openssl.v3_2)
-        createTestRuns("3_3", openssl.v3_3)
     }
 }
 

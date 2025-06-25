@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.webcrypto.internal
@@ -45,18 +45,13 @@ internal external interface SubtleCrypto {
     ): Promise<CryptoKeyPair>
 }
 
+private external interface Crypto {
+    val subtle: SubtleCrypto?
+}
+
 //language=JavaScript
-internal fun getSubtleCrypto(): SubtleCrypto {
-    return js(
-        code = """
-    
-        var isNodeJs = typeof process !== 'undefined' && process.versions != null && process.versions.node != null
-        if (isNodeJs) {
-            return (eval('require')('node:crypto').webcrypto).subtle;
-        } else {
-            return (window ? (window.crypto ? window.crypto : window.msCrypto) : self.crypto).subtle;
-        }
-    
-               """
-    ).unsafeCast<SubtleCrypto>()
+private fun getCrypto(): Crypto? = js("(globalThis ? globalThis.crypto : (window.crypto || window.msCrypto))")
+
+internal fun getSubtleCrypto(): SubtleCrypto = requireNotNull(getCrypto()?.subtle) {
+    "WebCrypto API is not available. Check Secure Contexts definition (https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts) or report an issue"
 }

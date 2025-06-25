@@ -1,0 +1,10 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, macosArm64, macosX64, tvosArm64, tvosSimulatorArm64, tvosX64, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <dev.whyoleg.cryptography:cryptography-provider-cryptokit>
+final val dev.whyoleg.cryptography.providers.cryptokit/CryptoKit // dev.whyoleg.cryptography.providers.cryptokit/CryptoKit|@dev.whyoleg.cryptography.CryptographyProvider.Companion{}CryptoKit[0]
+    final fun (dev.whyoleg.cryptography/CryptographyProvider.Companion).<get-CryptoKit>(): dev.whyoleg.cryptography/CryptographyProvider // dev.whyoleg.cryptography.providers.cryptokit/CryptoKit.<get-CryptoKit>|<get-CryptoKit>@dev.whyoleg.cryptography.CryptographyProvider.Companion(){}[0]

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.serialization.asn1
@@ -35,7 +35,12 @@ public sealed class Der(
     }
 }
 
+@Deprecated("Renamed to Der", ReplaceWith("Der(from, builderAction)"), DeprecationLevel.ERROR)
 public fun DER(from: Der = Der.Default, builderAction: Der.Builder.() -> Unit): Der {
+    return Der(from, builderAction)
+}
+
+public fun Der(from: Der = Der.Default, builderAction: Der.Builder.() -> Unit): Der {
     return DerImpl(Der.Builder(from).apply(builderAction))
 }
 

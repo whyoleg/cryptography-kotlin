@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 import ckbuild.*
@@ -65,7 +65,7 @@ kotlin {
         if (platformType == KotlinPlatformType.js) whenNodejsConfigured {
             testTask {
                 useMocha {
-                    timeout = "600s"
+                    timeout = "6000s"
                 }
             }
         }

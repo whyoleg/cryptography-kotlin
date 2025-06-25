@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package ckbuild.tests
@@ -64,14 +64,15 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
     private companion object {
         private val defaultImports = listOf(
             "dev.whyoleg.cryptography.*",
-            "dev.whyoleg.cryptography.providers.tests.*",
             "dev.whyoleg.cryptography.providers.tests.compatibility.*",
             "dev.whyoleg.cryptography.providers.tests.default.*",
             "dev.whyoleg.cryptography.providers.tests.testvectors.*",
         )
 
         private val testClasses = listOf(
+            "DefaultProviderTest",
             "SupportedAlgorithmsTest",
+
             "Pbkdf2CompatibilityTest",
 
             "HkdfCompatibilityTest",
@@ -88,9 +89,13 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
             "Sha3B256CompatibilityTest",
             "Sha3B384CompatibilityTest",
             "Sha3B512CompatibilityTest",
+            "Ripemd160CompatibilityTest",
 
             "AesCbcTest",
             "AesCbcCompatibilityTest",
+            "AesCmacTest",
+            "AesCmacCompatibilityTest",
+            "AesCmacTestvectorsTest",
             "AesCtrTest",
             "AesCtrCompatibilityTest",
             "AesEcbCompatibilityTest",
