@@ -207,6 +207,21 @@ internal fun ECParameterSpec.curveOrderSize(): Int {
     return (curve.field.fieldSize + 7) / 8
 }
 
+/**
+ * Decodes an elliptic curve point from its byte representation.
+ * 
+ * This implementation follows ANSI X9.62 standard for point encoding:
+ * - 0x02/0x03: Compressed point format (x-coordinate + y-parity bit)
+ * - 0x04: Uncompressed point format (x-coordinate + y-coordinate)
+ * 
+ * For compressed points, the y-coordinate is computed by solving the curve equation:
+ * y² = x³ + ax + b (mod p)
+ * 
+ * References:
+ * - ANSI X9.62-2005: Public Key Cryptography for the Financial Services Industry - The Elliptic Curve Digital Signature Algorithm (ECDSA)
+ * - SEC 1: Elliptic Curve Cryptography, Section 2.3.4: Octet-String-to-Elliptic-Curve-Point Conversion
+ *   https://www.secg.org/sec1-v2.pdf
+ */
 internal fun ECParameterSpec.decodePoint(bytes: ByteArray): ECPoint {
     val fieldSize = curveOrderSize()
     return when (bytes[0].toInt()) {
@@ -235,6 +250,18 @@ internal fun ECParameterSpec.decodePoint(bytes: ByteArray): ECPoint {
     }
 }
 
+/**
+ * Computes the modular square root using the Tonelli-Shanks algorithm.
+ * 
+ * This implementation is optimized for the case where p ≡ 3 (mod 4),
+ * which applies to the NIST curves (P-256, P-384, P-521).
+ * 
+ * For such primes, the square root can be computed as: x^((p+1)/4) mod p
+ * 
+ * References:
+ * - Handbook of Applied Cryptography, Algorithm 3.36
+ * - NIST SP 800-186: Recommendations for Discrete Logarithm-based Cryptography
+ */
 internal fun BigInteger.modSqrt(p: BigInteger): BigInteger {
     check(p.testBit(0) && p.testBit(1)) { "Unsupported curve modulus" }  // p ≡ 3 (mod 4)
     return modPow(p.add(BigInteger.ONE).shiftRight(2), p) // Tonelli-Shanks
