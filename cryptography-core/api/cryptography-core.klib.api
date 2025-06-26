@@ -226,6 +226,21 @@ abstract interface <#A: dev.whyoleg.cryptography.algorithms/EC.PublicKey, #B: de
         sealed class Format : dev.whyoleg.cryptography.materials.key/KeyFormat { // dev.whyoleg.cryptography.algorithms/EC.PublicKey.Format|null[0]
             final fun toString(): kotlin/String // dev.whyoleg.cryptography.algorithms/EC.PublicKey.Format.toString|toString(){}[0]
 
+            sealed class RAW : dev.whyoleg.cryptography.algorithms/EC.PublicKey.Format { // dev.whyoleg.cryptography.algorithms/EC.PublicKey.Format.RAW|null[0]
+                final object Compressed : dev.whyoleg.cryptography.algorithms/EC.PublicKey.Format.RAW { // dev.whyoleg.cryptography.algorithms/EC.PublicKey.Format.RAW.Compressed|null[0]
+                    final val name // dev.whyoleg.cryptography.algorithms/EC.PublicKey.Format.RAW.Compressed.name|{}name[0]
+                        final fun <get-name>(): kotlin/String // dev.whyoleg.cryptography.algorithms/EC.PublicKey.Format.RAW.Compressed.name.<get-name>|<get-name>(){}[0]
+
+                    final fun equals(kotlin/Any?): kotlin/Boolean // dev.whyoleg.cryptography.algorithms/EC.PublicKey.Format.RAW.Compressed.equals|equals(kotlin.Any?){}[0]
+                    final fun hashCode(): kotlin/Int // dev.whyoleg.cryptography.algorithms/EC.PublicKey.Format.RAW.Compressed.hashCode|hashCode(){}[0]
+                }
+
+                final object Uncompressed : dev.whyoleg.cryptography.algorithms/EC.PublicKey.Format.RAW { // dev.whyoleg.cryptography.algorithms/EC.PublicKey.Format.RAW.Uncompressed|null[0]
+                    final val name // dev.whyoleg.cryptography.algorithms/EC.PublicKey.Format.RAW.Uncompressed.name|{}name[0]
+                        final fun <get-name>(): kotlin/String // dev.whyoleg.cryptography.algorithms/EC.PublicKey.Format.RAW.Uncompressed.name.<get-name>|<get-name>(){}[0]
+                }
+            }
+
             final object DER : dev.whyoleg.cryptography.algorithms/EC.PublicKey.Format { // dev.whyoleg.cryptography.algorithms/EC.PublicKey.Format.DER|null[0]
                 final val name // dev.whyoleg.cryptography.algorithms/EC.PublicKey.Format.DER.name|{}name[0]
                     final fun <get-name>(): kotlin/String // dev.whyoleg.cryptography.algorithms/EC.PublicKey.Format.DER.name.<get-name>|<get-name>(){}[0]
@@ -248,14 +263,6 @@ abstract interface <#A: dev.whyoleg.cryptography.algorithms/EC.PublicKey, #B: de
 
                 final fun equals(kotlin/Any?): kotlin/Boolean // dev.whyoleg.cryptography.algorithms/EC.PublicKey.Format.PEM.equals|equals(kotlin.Any?){}[0]
                 final fun hashCode(): kotlin/Int // dev.whyoleg.cryptography.algorithms/EC.PublicKey.Format.PEM.hashCode|hashCode(){}[0]
-            }
-
-            final object RAW : dev.whyoleg.cryptography.algorithms/EC.PublicKey.Format { // dev.whyoleg.cryptography.algorithms/EC.PublicKey.Format.RAW|null[0]
-                final val name // dev.whyoleg.cryptography.algorithms/EC.PublicKey.Format.RAW.name|{}name[0]
-                    final fun <get-name>(): kotlin/String // dev.whyoleg.cryptography.algorithms/EC.PublicKey.Format.RAW.name.<get-name>|<get-name>(){}[0]
-
-                final fun equals(kotlin/Any?): kotlin/Boolean // dev.whyoleg.cryptography.algorithms/EC.PublicKey.Format.RAW.equals|equals(kotlin.Any?){}[0]
-                final fun hashCode(): kotlin/Int // dev.whyoleg.cryptography.algorithms/EC.PublicKey.Format.RAW.hashCode|hashCode(){}[0]
             }
         }
     }

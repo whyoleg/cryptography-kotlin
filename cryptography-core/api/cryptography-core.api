@@ -357,11 +357,19 @@ public final class dev/whyoleg/cryptography/algorithms/EC$PublicKey$Format$PEM :
 	public fun hashCode ()I
 }
 
-public final class dev/whyoleg/cryptography/algorithms/EC$PublicKey$Format$RAW : dev/whyoleg/cryptography/algorithms/EC$PublicKey$Format {
-	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/EC$PublicKey$Format$RAW;
+public abstract class dev/whyoleg/cryptography/algorithms/EC$PublicKey$Format$RAW : dev/whyoleg/cryptography/algorithms/EC$PublicKey$Format {
+	public static final field Uncompressed Ldev/whyoleg/cryptography/algorithms/EC$PublicKey$Format$RAW$Uncompressed;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/EC$PublicKey$Format$RAW$Compressed : dev/whyoleg/cryptography/algorithms/EC$PublicKey$Format$RAW {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/EC$PublicKey$Format$RAW$Compressed;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getName ()Ljava/lang/String;
 	public fun hashCode ()I
+}
+
+public final class dev/whyoleg/cryptography/algorithms/EC$PublicKey$Format$RAW$Uncompressed : dev/whyoleg/cryptography/algorithms/EC$PublicKey$Format$RAW {
+	public fun getName ()Ljava/lang/String;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/ECDH : dev/whyoleg/cryptography/algorithms/EC {

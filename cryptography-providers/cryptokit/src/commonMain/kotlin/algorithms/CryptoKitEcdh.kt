@@ -49,6 +49,7 @@ internal object CryptoKitEcdh : ECDH {
                 when (format) {
                     EC.PublicKey.Format.JWK -> error("JWK is not supported")
                     EC.PublicKey.Format.RAW -> bytes.useNSData { SwiftEcdhPublicKey.decodeRawWithCurve(curve, it, error) }
+                    EC.PublicKey.Format.RAW.Compressed -> bytes.useNSData { SwiftEcdhPublicKey.decodeRawCompressedWithCurve(curve, it, error) }
                     EC.PublicKey.Format.DER -> bytes.useNSData { SwiftEcdhPublicKey.decodeDerWithCurve(curve, it, error) }
                     EC.PublicKey.Format.PEM -> SwiftEcdhPublicKey.decodePemWithCurve(curve, bytes.decodeToString(), error)
                 }
@@ -91,6 +92,7 @@ private class EcdhPublicKey(
     override fun encodeToByteArrayBlocking(format: EC.PublicKey.Format): ByteArray = when (format) {
         EC.PublicKey.Format.JWK -> error("JWK is not supported")
         EC.PublicKey.Format.RAW -> publicKey.rawRepresentation().toByteArray()
+        EC.PublicKey.Format.RAW.Compressed -> swiftTry { error -> publicKey.compressedRepresentationAndReturnError(error)?.toByteArray() }
         EC.PublicKey.Format.DER -> publicKey.derRepresentation().toByteArray()
         EC.PublicKey.Format.PEM -> (publicKey.pemRepresentation() + "\n").encodeToByteArray()
     }

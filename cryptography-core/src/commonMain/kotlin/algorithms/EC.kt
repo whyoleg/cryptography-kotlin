@@ -45,10 +45,18 @@ public interface EC<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP : EC.Ke
                 override val name: String get() = "JWK"
             }
 
-            // only uncompressed format is supported
-            // format defined in X963: 04 | X | Y
-            public data object RAW : Format() {
-                override val name: String get() = "RAW"
+            public sealed class RAW : Format() {
+
+                // uncompressed format: 0x04 | X | Y
+                public companion object Uncompressed : RAW() {
+                    override val name: String get() = "RAW"
+                }
+
+                // compressed format: 0x02 | X (odd Y)
+                //                    0x03 | X (even Y)
+                public data object Compressed : RAW() {
+                    override val name: String get() = "RAW/COMPRESSED"
+                }
             }
 
             // SPKI = SubjectPublicKeyInfo

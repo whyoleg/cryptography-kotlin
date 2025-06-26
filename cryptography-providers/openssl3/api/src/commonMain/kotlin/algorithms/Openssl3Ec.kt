@@ -99,6 +99,47 @@ internal fun encodePublicRawKey(key: CPointer<EVP_PKEY>): ByteArray = memScoped 
     output.ensureSizeExactly(outVar.value.convert())
 }
 
+/**
+ * Encodes a public key to compressed point format.
+ * 
+ * Note: We manually implement point compression instead of using the deprecated OpenSSL EC_* APIs
+ * (EVP_PKEY_get1_EC_KEY, EC_KEY_get0_group, EC_POINT_point2oct with POINT_CONVERSION_COMPRESSED)
+ * to stay compatible with OpenSSL 3.0+ where those methods are deprecated in favor of EVP_PKEY_* APIs.
+ * 
+ * @see <a href="https://docs.openssl.org/master/man3/EVP_PKEY_set1_RSA">OpenSSL Documentation</a>
+ */
+@OptIn(UnsafeNumber::class)
+internal fun encodePublicRawCompressedKey(key: CPointer<EVP_PKEY>): ByteArray = memScoped {
+    // coordinate size for this curve
+    val coordinateSize = EC_order_size(key)
+    val expectedCompressedSize = coordinateSize + 1
+    val expectedUncompressedSize = 2 * coordinateSize + 1
+    
+    // uncompressed public key point
+    val uncompressedSize = alloc<size_tVar>()
+    checkError(EVP_PKEY_get_octet_string_param(key, "pub", null, 0.convert(), uncompressedSize.ptr))
+    val uncompressed = ByteArray(uncompressedSize.value.convert())
+    checkError(EVP_PKEY_get_octet_string_param(key, "pub", uncompressed.safeRefToU(0), uncompressed.size.convert(), uncompressedSize.ptr))
+
+    // already compressed
+    if (uncompressed.size == expectedCompressedSize && (uncompressed[0] == 0x02.toByte() || uncompressed[0] == 0x03.toByte())) {
+        uncompressed
+    }
+    // standard uncompressed format (0x04 + X + Y)
+    else if (uncompressed.size == expectedUncompressedSize && uncompressed[0] == 0x04.toByte()) {
+        val compressed = ByteArray(expectedCompressedSize)
+        // Copy X coordinate (bytes 1 to coordinateSize)
+        uncompressed.copyInto(compressed, 1, 1, coordinateSize + 1)
+        val yLastByte = uncompressed[expectedUncompressedSize - 1] // Last byte of Y coordinate
+        compressed[0] = if ((yLastByte.toInt() and 1) == 0) 0x02.toByte() else 0x03.toByte()
+        compressed
+    }
+    // For other formats, return uncompressed
+    else {
+        uncompressed
+    }
+}
+
 internal fun encodePrivateRawKey(key: CPointer<EVP_PKEY>): ByteArray = memScoped {
     val orderSize = EC_order_size(key)
     val privVar = alloc<CPointerVar<BIGNUM>>()

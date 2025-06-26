@@ -70,24 +70,23 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP
         }
 
         override fun decodeFromByteArrayBlocking(format: EC.PublicKey.Format, bytes: ByteArray): PublicK = when (format) {
-            EC.PublicKey.Format.JWK -> error("$format is not supported")
-            EC.PublicKey.Format.RAW -> {
-                check(bytes.isNotEmpty() && bytes[0].toInt() == 4) { "Encoded key should be in uncompressed format" }
-                val parameters = algorithmParameters(ECGenParameterSpec(curveName)).getParameterSpec(ECParameterSpec::class.java)
-                val fieldSize = parameters.curveOrderSize()
-                check(bytes.size == fieldSize * 2 + 1) { "Wrong encoded key size" }
-
-                val x = bytes.copyOfRange(1, fieldSize + 1)
-                val y = bytes.copyOfRange(fieldSize + 1, fieldSize + 1 + fieldSize)
-                val point = ECPoint(BigInteger(1, x), BigInteger(1, y))
-
-                keyFactory.use {
-                    it.generatePublic(ECPublicKeySpec(point, parameters))
-                }.convert()
-            }
-            EC.PublicKey.Format.DER -> decodeFromDer(bytes)
-            EC.PublicKey.Format.PEM -> decodeFromDer(unwrapPem(PemLabel.PublicKey, bytes))
+            EC.PublicKey.Format.JWK            -> error("$format is not supported")
+            EC.PublicKey.Format.RAW            -> decodeFromRaw(bytes)
+            EC.PublicKey.Format.RAW.Compressed -> decodeFromRaw(bytes)
+            EC.PublicKey.Format.DER            -> decodeFromDer(bytes)
+            EC.PublicKey.Format.PEM            -> decodeFromDer(unwrapPem(PemLabel.PublicKey, bytes))
         }
+
+        private fun decodeFromRaw(bytes: ByteArray): PublicK = run {
+            check(bytes.isNotEmpty()) { "Encoded key is empty!" }
+            val parameters = algorithmParameters(ECGenParameterSpec(curveName)).getParameterSpec(ECParameterSpec::class.java)
+            val point = parameters.decodePoint(bytes)
+
+            keyFactory.use {
+                it.generatePublic(ECPublicKeySpec(point, parameters))
+            }.convert()
+        }
+
     }
 
     private inner class EcPrivateKeyDecoder(
@@ -120,24 +119,35 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP
         private val key: JPublicKey,
     ) : EC.PublicKey, JdkEncodableKey<EC.PublicKey.Format>(key) {
         final override fun encodeToByteArrayBlocking(format: EC.PublicKey.Format): ByteArray = when (format) {
-            EC.PublicKey.Format.JWK -> error("$format is not supported")
-            EC.PublicKey.Format.RAW -> {
-                key as ECPublicKey
+            EC.PublicKey.Format.JWK            -> error("$format is not supported")
+            EC.PublicKey.Format.RAW            -> encodeToRaw(compressed = false)
+            EC.PublicKey.Format.RAW.Compressed -> encodeToRaw(compressed = true)
+            EC.PublicKey.Format.DER            -> encodeToDer()
+            EC.PublicKey.Format.PEM            -> wrapPem(PemLabel.PublicKey, encodeToDer())
+        }
 
-                val fieldSize = key.params.curveOrderSize()
-                val x = key.w.affineX.toByteArray().trimLeadingZeros()
-                val y = key.w.affineY.toByteArray().trimLeadingZeros()
-                check(x.size <= fieldSize && y.size <= fieldSize)
+        private fun encodeToRaw(compressed: Boolean): ByteArray = run {
+            key as ECPublicKey
 
+            val fieldSize = key.params.curveOrderSize()
+            val x = key.w.affineX.toByteArray().trimLeadingZeros()
+            val y = key.w.affineY.toByteArray().trimLeadingZeros()
+            check(x.size <= fieldSize && y.size <= fieldSize)
+
+            if (compressed) {
+                val output = ByteArray(fieldSize + 1)
+                output[0] = if (key.w.affineY.testBit(0)) 0x03 else 0x02
+                x.copyInto(output, fieldSize - x.size + 1)
+                output
+            } else {
                 val output = ByteArray(fieldSize * 2 + 1)
-                output[0] = 4 // uncompressed
+                output[0] = 0x04
                 x.copyInto(output, fieldSize - x.size + 1)
                 y.copyInto(output, fieldSize * 2 - y.size + 1)
                 output
             }
-            EC.PublicKey.Format.DER -> encodeToDer()
-            EC.PublicKey.Format.PEM -> wrapPem(PemLabel.PublicKey, encodeToDer())
         }
+
     }
 
     protected abstract class BaseEcPrivateKey(
@@ -161,6 +171,66 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP
 
 internal fun ECParameterSpec.curveOrderSize(): Int {
     return (curve.field.fieldSize + 7) / 8
+}
+
+/**
+ * Decodes an elliptic curve point from its byte representation.
+ *
+ * This implementation follows ANSI X9.62 standard for point encoding:
+ * - 0x02/0x03: Compressed point format (x-coordinate + y-parity bit)
+ * - 0x04: Uncompressed point format (x-coordinate + y-coordinate)
+ *
+ * For compressed points, the y-coordinate is computed by solving the curve equation:
+ * y² = x³ + ax + b (mod p)
+ *
+ * References:
+ * - ANSI X9.62-2005: Public Key Cryptography for the Financial Services Industry - The Elliptic Curve Digital Signature Algorithm (ECDSA)
+ * - SEC 1: Elliptic Curve Cryptography, Section 2.3.4: Octet-String-to-Elliptic-Curve-Point Conversion
+ *   https://www.secg.org/sec1-v2.pdf
+ */
+internal fun ECParameterSpec.decodePoint(bytes: ByteArray): ECPoint {
+    val fieldSize = curveOrderSize()
+    return when (bytes[0].toInt()) {
+        0x02, // compressed evenY
+        0x03, // compressed oddY
+             -> {
+            check(bytes.size == fieldSize + 1) { "Wrong compressed key size ${bytes.size}" }
+            val p = (curve.field as ECFieldFp).p
+            val a = curve.a
+            val b = curve.b
+            val x = BigInteger(1, bytes.copyOfRange(1, bytes.size))
+            var y = x.multiply(x).add(a).multiply(x).add(b).mod(p).modSqrt(p)
+            if (y.testBit(0) != (bytes[0].toInt() == 0x03)) {
+                y = p.subtract(y)
+            }
+            ECPoint(x, y)
+        }
+        0x04, // uncompressed
+             -> {
+            check(bytes.size == fieldSize * 2 + 1) { "Wrong uncompressed key size ${bytes.size}" }
+            val x = bytes.copyOfRange(1, fieldSize + 1)
+            val y = bytes.copyOfRange(fieldSize + 1, fieldSize + 1 + fieldSize)
+            ECPoint(BigInteger(1, x), BigInteger(1, y))
+        }
+        else -> error("Unsupported key type ${bytes[0].toInt()}")
+    }
+}
+
+/**
+ * Computes the modular square root using the Tonelli-Shanks algorithm.
+ *
+ * This implementation is optimized for the case where p ≡ 3 (mod 4),
+ * which applies to the NIST curves (P-256, P-384, P-521).
+ *
+ * For such primes, the square root can be computed as: x^((p+1)/4) mod p
+ *
+ * References:
+ * - Handbook of Applied Cryptography, Algorithm 3.36
+ * - NIST SP 800-186: Recommendations for Discrete Logarithm-based Cryptography
+ */
+internal fun BigInteger.modSqrt(p: BigInteger): BigInteger {
+    check(p.testBit(0) && p.testBit(1)) { "Unsupported curve modulus" }  // p ≡ 3 (mod 4)
+    return modPow(p.add(BigInteger.ONE).shiftRight(2), p) // Tonelli-Shanks
 }
 
 private fun JAlgorithmParameters.curveName(): String {

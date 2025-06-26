@@ -52,6 +52,7 @@ internal object CryptoKitEcdsa : ECDSA {
                 when (format) {
                     EC.PublicKey.Format.JWK -> error("JWK is not supported")
                     EC.PublicKey.Format.RAW -> bytes.useNSData { SwiftEcdsaPublicKey.decodeRawWithCurve(curve, it, error) }
+                    EC.PublicKey.Format.RAW.Compressed -> bytes.useNSData { SwiftEcdsaPublicKey.decodeRawCompressedWithCurve(curve, it, error) }
                     EC.PublicKey.Format.DER -> bytes.useNSData { SwiftEcdsaPublicKey.decodeDerWithCurve(curve, it, error) }
                     EC.PublicKey.Format.PEM -> SwiftEcdsaPublicKey.decodePemWithCurve(curve, bytes.decodeToString(), error)
                 }
@@ -94,6 +95,7 @@ private class EcdsaPublicKey(
     override fun encodeToByteArrayBlocking(format: EC.PublicKey.Format): ByteArray = when (format) {
         EC.PublicKey.Format.JWK -> error("JWK is not supported")
         EC.PublicKey.Format.RAW -> publicKey.rawRepresentation().toByteArray()
+        EC.PublicKey.Format.RAW.Compressed -> swiftTry { error -> publicKey.compressedRepresentationAndReturnError(error)?.toByteArray() }
         EC.PublicKey.Format.DER -> publicKey.derRepresentation().toByteArray()
         EC.PublicKey.Format.PEM -> (publicKey.pemRepresentation() + "\n").encodeToByteArray()
     }
