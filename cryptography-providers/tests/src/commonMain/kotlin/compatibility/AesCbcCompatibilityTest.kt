@@ -23,7 +23,7 @@ abstract class AesCbcCompatibilityTest(provider: CryptographyProvider) :
     @Serializable
     private data class CipherParameters(
         val padding: Boolean,
-        val iv: ByteStringAsString?,
+        val iv: SerializableByteString?,
     ) : TestParameters
 
     override suspend fun CompatibilityTestScope<AES.CBC>.generate(isStressTest: Boolean) {

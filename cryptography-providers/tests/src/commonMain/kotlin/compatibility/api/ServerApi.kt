@@ -5,18 +5,20 @@
 package dev.whyoleg.cryptography.providers.tests.compatibility.api
 
 import dev.whyoleg.cryptography.providers.tests.*
+import dev.whyoleg.cryptography.testtool.api.*
 import dev.whyoleg.cryptography.testtool.client.*
 import kotlinx.coroutines.flow.*
 import kotlinx.serialization.*
-import kotlinx.serialization.json.*
 import kotlin.reflect.*
+import kotlin.uuid.*
 
 class ServerApi(
     private val algorithm: String,
     private val context: TestContext,
     private val logger: TestLogger,
+    private val client: TesttoolClient,
 ) : CompatibilityApi() {
-    private fun api(storageName: String): CompatibilityStorageApi = ServerStorageApi(algorithm, context, storageName, logger)
+    private fun api(storageName: String): CompatibilityStorageApi = ServerStorageApi(algorithm, context, storageName, logger, client)
     override val keys: CompatibilityStorageApi = api("keys")
     override val keyPairs: CompatibilityStorageApi = api("keyPairs")
     override val digests: CompatibilityStorageApi = api("digests")
@@ -26,55 +28,55 @@ class ServerApi(
     override val derivedSecrets: CompatibilityStorageApi = api("derivedSecrets")
 }
 
-private val json = Json {
-    prettyPrint = true
-    classDiscriminator = "_"
-    useAlternativeNames = false
-}
-
 @Serializable
 private class Payload<T>(
     val context: TestContext,
     val content: T,
 )
 
+@OptIn(ExperimentalSerializationApi::class, ExperimentalUuidApi::class)
 private class ServerStorageApi(
     private val algorithm: String,
     private val context: TestContext,
     storageName: String,
     logger: TestLogger,
+    private val client: TesttoolClient,
 ) : CompatibilityStorageApi(storageName, logger) {
     private val cachedSerializers = mutableMapOf<KType, KSerializer<Payload<Any?>>>()
 
     @Suppress("UNCHECKED_CAST")
     private fun <T> cachedSerializer(type: KType): KSerializer<Payload<T>> =
-        cachedSerializers.getOrPut(type) { Payload.serializer(json.serializersModule.serializer(type)) } as KSerializer<Payload<T>>
+        cachedSerializers.getOrPut(type) { Payload.serializer(ConfiguredCbor.serializersModule.serializer(type)) } as KSerializer<Payload<T>>
 
     private fun <T> encode(value: T, type: KType): ByteArray =
-        json.encodeToString(cachedSerializer(type), Payload(context, value)).encodeToByteArray()
+        ConfiguredCbor.encodeToByteArray(cachedSerializer(type), Payload(context, value))//.encodeToByteArray()
 
     private fun <T> decode(id: String, bytes: ByteArray, type: KType): TestContent<T> {
-        val payload = json.decodeFromString(cachedSerializer<T>(type), bytes.decodeToString())
+        val payload = ConfiguredCbor.decodeFromByteArray(cachedSerializer<T>(type), bytes)
         return TestContent(id, payload.content, payload.context)
     }
 
     override suspend fun <T : TestParameters> saveParameters(parameters: T, type: KType): String {
-        return TesttoolClient.Compatibility.saveParameters(algorithm, storageName, encode(parameters, type))
+        val id = Uuid.random().toString()
+        client.save(SaveParameters(id, algorithm, storageName, encode(parameters, type)))
+        return id
     }
 
-    override suspend fun <T : TestParameters> getParameters(type: KType): List<TestContent<T>> {
-        return TesttoolClient.Compatibility.getParameters(algorithm, storageName).map { (id, bytes) ->
-            decode<T>(id, bytes, type)
-        }.toList()
+    override fun <T : TestParameters> getParameters(type: KType): Flow<TestContent<T>> {
+        return client.get(GetParameters(Uuid.random().toString(), algorithm, storageName)).map { (_, id, payload) ->
+            decode(id, payload, type)
+        }
     }
 
     override suspend fun <T : TestData> saveData(parametersId: TestParametersId, data: T, type: KType): String {
-        return TesttoolClient.Compatibility.saveData(algorithm, storageName, parametersId.value, encode(data, type))
+        val id = Uuid.random().toString()
+        client.save(SaveData(id, algorithm, storageName, parametersId.value, encode(data, type)))
+        return id
     }
 
-    override suspend fun <T : TestData> getData(parametersId: TestParametersId, type: KType): List<TestContent<T>> {
-        return TesttoolClient.Compatibility.getData(algorithm, storageName, parametersId.value).map { (id, bytes) ->
-            decode<T>(id, bytes, type)
-        }.toList()
+    override fun <T : TestData> getData(parametersId: TestParametersId, type: KType): Flow<TestContent<T>> {
+        return client.get(GetData(Uuid.random().toString(), algorithm, storageName, parametersId.value)).map { (_, id, payload) ->
+            decode(id, payload, type)
+        }
     }
 }

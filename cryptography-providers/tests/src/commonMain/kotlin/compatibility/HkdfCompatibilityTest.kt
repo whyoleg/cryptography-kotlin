@@ -23,8 +23,8 @@ abstract class HkdfCompatibilityTest(provider: CryptographyProvider) : Compatibi
     @Serializable
     private data class Parameters(
         val digestName: String,
-        val salt: ByteStringAsString,
-        val info: ByteStringAsString?,
+        val salt: SerializableByteString,
+        val info: SerializableByteString?,
         val outputSizeBytes: Int,
     ) : TestParameters {
         val digest get() = digest(digestName)

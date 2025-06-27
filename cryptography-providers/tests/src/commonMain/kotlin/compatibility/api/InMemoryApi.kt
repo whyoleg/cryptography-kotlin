@@ -6,6 +6,7 @@ package dev.whyoleg.cryptography.providers.tests.compatibility.api
 
 import dev.whyoleg.cryptography.providers.tests.*
 import dev.whyoleg.cryptography.providers.tests.compatibility.api.CompatibilityStorageApi.*
+import kotlinx.coroutines.flow.*
 import kotlin.reflect.*
 
 class InMemory {
@@ -42,7 +43,9 @@ class InMemoryStorage {
         return id
     }
 
-    fun getParameters(): List<TestContent<*>> = parametersMap.values.toList()
+    @Suppress("UNCHECKED_CAST")
+    fun <T> getParameters(): Flow<TestContent<T>> =
+        parametersMap.values.toList().asFlow() as Flow<TestContent<T>>
 
     fun saveData(parametersId: TestParametersId, data: TestData, context: TestContext): String {
         val id = (++dataId).toString()
@@ -50,7 +53,9 @@ class InMemoryStorage {
         return id
     }
 
-    fun getData(parametersId: TestParametersId): List<TestContent<*>> = dataMap.getValue(parametersId.value).values.toList()
+    @Suppress("UNCHECKED_CAST")
+    fun <T> getData(parametersId: TestParametersId): Flow<TestContent<T>> =
+        dataMap.getValue(parametersId.value).values.toList().asFlow() as Flow<TestContent<T>>
 }
 
 @Suppress("UNCHECKED_CAST")
@@ -64,15 +69,15 @@ private class InMemoryStorageApi(
         return storage.saveParameters(parameters, context)
     }
 
-    override suspend fun <T : TestParameters> getParameters(type: KType): List<TestContent<T>> {
-        return storage.getParameters() as List<TestContent<T>>
+    override fun <T : TestParameters> getParameters(type: KType): Flow<TestContent<T>> {
+        return storage.getParameters()
     }
 
     override suspend fun <T : TestData> saveData(parametersId: TestParametersId, data: T, type: KType): String {
         return storage.saveData(parametersId, data, context)
     }
 
-    override suspend fun <T : TestData> getData(parametersId: TestParametersId, type: KType): List<TestContent<T>> {
-        return storage.getData(parametersId) as List<TestContent<T>>
+    override fun <T : TestData> getData(parametersId: TestParametersId, type: KType): Flow<TestContent<T>> {
+        return storage.getData(parametersId)
     }
 }

@@ -22,7 +22,7 @@ abstract class AesGcmCompatibilityTest(provider: CryptographyProvider) :
     @Serializable
     private data class CipherParameters(
         val tagSizeBits: Int,
-        val iv: ByteStringAsString?,
+        val iv: SerializableByteString?,
     ) : TestParameters
 
     override suspend fun CompatibilityTestScope<AES.GCM>.generate(isStressTest: Boolean) {

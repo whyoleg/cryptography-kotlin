@@ -5,6 +5,7 @@
 package dev.whyoleg.cryptography.providers.tests.compatibility.api
 
 import dev.whyoleg.cryptography.providers.tests.*
+import kotlinx.coroutines.flow.*
 import kotlin.reflect.*
 
 abstract class CompatibilityStorageApi(
@@ -20,9 +21,9 @@ abstract class CompatibilityStorageApi(
     }
 
     suspend inline fun <reified T : TestParameters> getParameters(
-        block: (parameters: T, parametersId: TestParametersId, context: TestContext) -> Unit,
+        crossinline block: suspend (parameters: T, parametersId: TestParametersId, context: TestContext) -> Unit,
     ) {
-        getParameters<T>(typeOf<T>()).forEach { (id, parameters, context) ->
+        getParameters<T>(typeOf<T>()).collect { (id, parameters, context) ->
             logger.log { "$storageName.getParameters: $id -> $parameters | $context" }
             block(parameters, TestParametersId(id), context)
         }
@@ -39,7 +40,7 @@ abstract class CompatibilityStorageApi(
         parametersId: TestParametersId,
         crossinline block: suspend (data: T, reference: TestReference, context: TestContext) -> Unit,
     ) {
-        getData<T>(parametersId, typeOf<T>()).forEach { (id, data, context) ->
+        getData<T>(parametersId, typeOf<T>()).collect { (id, data, context) ->
             val reference = TestReference(parametersId, TestDataId(id))
             logger.log { "$storageName.getData: $reference -> $data | $context" }
             block(data, reference, context)
@@ -47,10 +48,10 @@ abstract class CompatibilityStorageApi(
     }
 
     abstract suspend fun <T : TestParameters> saveParameters(parameters: T, type: KType): String
-    abstract suspend fun <T : TestParameters> getParameters(type: KType): List<TestContent<T>>
+    abstract fun <T : TestParameters> getParameters(type: KType): Flow<TestContent<T>>
 
     abstract suspend fun <T : TestData> saveData(parametersId: TestParametersId, data: T, type: KType): String
-    abstract suspend fun <T : TestData> getData(parametersId: TestParametersId, type: KType): List<TestContent<T>>
+    abstract fun <T : TestData> getData(parametersId: TestParametersId, type: KType): Flow<TestContent<T>>
 
     data class TestContent<T>(
         val id: String,

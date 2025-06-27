@@ -17,7 +17,10 @@ kotlin {
 }
 
 dependencies {
+    implementation(projects.api)
+    implementation(libs.ktor.serialization.cbor)
     implementation(libs.ktor.server.core)
+    implementation(libs.ktor.server.websockets)
     implementation(libs.ktor.server.cio)
     implementation(libs.ktor.server.calllogging)
     implementation(libs.ktor.server.cors)

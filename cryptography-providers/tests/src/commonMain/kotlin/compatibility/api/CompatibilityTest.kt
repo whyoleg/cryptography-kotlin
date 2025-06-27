@@ -6,6 +6,7 @@ package dev.whyoleg.cryptography.providers.tests.compatibility.api
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.providers.tests.*
+import dev.whyoleg.cryptography.testtool.client.*
 import kotlin.test.*
 
 abstract class CompatibilityTest<A : CryptographyAlgorithm>(
@@ -18,19 +19,25 @@ abstract class CompatibilityTest<A : CryptographyAlgorithm>(
     @Test
     fun generateStep() = testWithAlgorithm {
         val logger = logger.child("GENERATE")
-        runCompatibilityTestStep(logger, ServerApi(algorithmId.name, context, logger)) { generate(isStressTest = false) }
+        withTestToolClient { client ->
+            runCompatibilityTestStep(logger, ServerApi(algorithmId.name, context, logger, client)) { generate(isStressTest = false) }
+        }
     }
 
     @Test
     fun generateStressStep() = testWithAlgorithm {
         val logger = logger.child("GENERATE")
-        runCompatibilityTestStep(logger, ServerApi(algorithmId.name, context, logger)) { generate(isStressTest = true) }
+        withTestToolClient { client ->
+            runCompatibilityTestStep(logger, ServerApi(algorithmId.name, context, logger, client)) { generate(isStressTest = true) }
+        }
     }
 
     @Test
     fun validateStep() = testWithAlgorithm {
         val logger = logger.child("VALIDATE")
-        runCompatibilityTestStep(logger, ServerApi(algorithmId.name, context, logger)) { validate() }
+        withTestToolClient { client ->
+            runCompatibilityTestStep(logger, ServerApi(algorithmId.name, context, logger, client)) { validate() }
+        }
     }
 
     @Test
@@ -48,5 +55,14 @@ abstract class CompatibilityTest<A : CryptographyAlgorithm>(
         block: suspend CompatibilityTestScope<A>.() -> Unit,
     ) {
         CompatibilityTestScope(logger, context, provider, algorithm, api).block()
+    }
+
+    private suspend inline fun withTestToolClient(block: (TesttoolClient) -> Unit) {
+        val client = TesttoolClient()
+        try {
+            block(client)
+        } finally {
+            client.cleanup()
+        }
     }
 }

@@ -19,7 +19,7 @@ abstract class AesCtrCompatibilityTest(provider: CryptographyProvider) :
 
     @Serializable
     private data class CipherParameters(
-        val iv: ByteStringAsString?,
+        val iv: SerializableByteString?,
     ) : TestParameters {
         override fun toString(): String = "CipherParameters(iv.size=${iv?.size})"
     }

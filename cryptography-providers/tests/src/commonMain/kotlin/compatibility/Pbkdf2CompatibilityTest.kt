@@ -26,7 +26,7 @@ abstract class Pbkdf2CompatibilityTest(provider: CryptographyProvider) : Compati
     @Serializable
     private data class Parameters(
         val digestName: String,
-        val salt: ByteStringAsString,
+        val salt: SerializableByteString,
         val iterations: Int,
         val outputSizeBytes: Int,
     ) : TestParameters {

@@ -38,13 +38,13 @@ data class TestReference(
 
 @Serializable
 data class DigestData(
-    val data: ByteStringAsString,
-    val digest: ByteStringAsString,
+    val data: SerializableByteString,
+    val digest: SerializableByteString,
 ) : TestData
 
 @Serializable
 data class KeyData(
-    val formats: Map<String, ByteStringAsString>,
+    val formats: Map<String, SerializableByteString>,
 ) : TestData
 
 @Serializable
@@ -56,34 +56,34 @@ data class KeyPairData(
 @Serializable
 data class CipherData(
     val keyReference: TestReference,
-    val plaintext: ByteStringAsString,
-    val ciphertext: ByteStringAsString,
+    val plaintext: SerializableByteString,
+    val ciphertext: SerializableByteString,
 ) : TestData
 
 @Serializable
 data class AuthenticatedCipherData(
     val keyReference: TestReference,
-    val associatedData: ByteStringAsString?,
-    val plaintext: ByteStringAsString,
-    val ciphertext: ByteStringAsString,
+    val associatedData: SerializableByteString?,
+    val plaintext: SerializableByteString,
+    val ciphertext: SerializableByteString,
 ) : TestData
 
 @Serializable
 data class SignatureData(
     val keyReference: TestReference,
-    val data: ByteStringAsString,
-    val signature: ByteStringAsString,
+    val data: SerializableByteString,
+    val signature: SerializableByteString,
 ) : TestData
 
 @Serializable
 data class SharedSecretData(
     val keyReference: TestReference,
     val otherKeyReference: TestReference,
-    val sharedSecret: ByteStringAsString,
+    val sharedSecret: SerializableByteString,
 ) : TestData
 
 @Serializable
 data class DerivedSecretData(
-    val input: ByteStringAsString,
-    val secret: ByteStringAsString,
+    val input: SerializableByteString,
+    val secret: SerializableByteString,
 ) : TestData
