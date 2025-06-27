@@ -4,7 +4,7 @@ on:
   push:
     branches-ignore:
       - main
-      - dependabot/*
+      - dependabot/**
 
 jobs:
   checks:
