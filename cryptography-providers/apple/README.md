@@ -13,6 +13,8 @@ For supported targets and algorithms, please consult [Supported primitives secti
       in [RFC5915](https://datatracker.ietf.org/doc/html/rfc5915).
       Not all implementations in the wild include this field, as it's optional.
     * `RAW`: encoding is supported, but decoding is not supported
+* EC.PublicKey:
+    * `RAW.Compressed` key format is not supported
 
 ## Example
 
