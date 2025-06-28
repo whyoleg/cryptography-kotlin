@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
@@ -93,50 +93,30 @@ internal fun convertPrivateRawKeyToSec1(
 @OptIn(UnsafeNumber::class)
 internal fun encodePublicRawKey(key: CPointer<EVP_PKEY>): ByteArray = memScoped {
     val outVar = alloc<size_tVar>()
-    checkError(EVP_PKEY_get_octet_string_param(key, "encoded-pub-key", null, 0.convert(), outVar.ptr))
+    checkError(EVP_PKEY_get_octet_string_param(key, "pub", null, 0.convert(), outVar.ptr))
     val output = ByteArray(outVar.value.convert())
-    checkError(EVP_PKEY_get_octet_string_param(key, "encoded-pub-key", output.safeRefToU(0), output.size.convert(), outVar.ptr))
+    checkError(EVP_PKEY_get_octet_string_param(key, "pub", output.safeRefToU(0), output.size.convert(), outVar.ptr))
     output.ensureSizeExactly(outVar.value.convert())
 }
 
-/**
- * Encodes a public key to compressed point format.
- * 
- * Note: We manually implement point compression instead of using the deprecated OpenSSL EC_* APIs
- * (EVP_PKEY_get1_EC_KEY, EC_KEY_get0_group, EC_POINT_point2oct with POINT_CONVERSION_COMPRESSED)
- * to stay compatible with OpenSSL 3.0+ where those methods are deprecated in favor of EVP_PKEY_* APIs.
- * 
- * @see <a href="https://docs.openssl.org/master/man3/EVP_PKEY_set1_RSA">OpenSSL Documentation</a>
- */
 @OptIn(UnsafeNumber::class)
-internal fun encodePublicRawCompressedKey(key: CPointer<EVP_PKEY>): ByteArray = memScoped {
-    // coordinate size for this curve
-    val coordinateSize = EC_order_size(key)
-    val expectedCompressedSize = coordinateSize + 1
-    val expectedUncompressedSize = 2 * coordinateSize + 1
-    
-    // uncompressed public key point
-    val uncompressedSize = alloc<size_tVar>()
-    checkError(EVP_PKEY_get_octet_string_param(key, "pub", null, 0.convert(), uncompressedSize.ptr))
-    val uncompressed = ByteArray(uncompressedSize.value.convert())
-    checkError(EVP_PKEY_get_octet_string_param(key, "pub", uncompressed.safeRefToU(0), uncompressed.size.convert(), uncompressedSize.ptr))
-
-    // already compressed
-    if (uncompressed.size == expectedCompressedSize && (uncompressed[0] == 0x02.toByte() || uncompressed[0] == 0x03.toByte())) {
-        uncompressed
-    }
-    // standard uncompressed format (0x04 + X + Y)
-    else if (uncompressed.size == expectedUncompressedSize && uncompressed[0] == 0x04.toByte()) {
-        val compressed = ByteArray(expectedCompressedSize)
-        // Copy X coordinate (bytes 1 to coordinateSize)
-        uncompressed.copyInto(compressed, 1, 1, coordinateSize + 1)
-        val yLastByte = uncompressed[expectedUncompressedSize - 1] // Last byte of Y coordinate
-        compressed[0] = if ((yLastByte.toInt() and 1) == 0) 0x02.toByte() else 0x03.toByte()
-        compressed
-    }
-    // For other formats, return uncompressed
-    else {
-        uncompressed
+internal fun encodePublicRawCompressedKey(key: CPointer<EVP_PKEY>): ByteArray {
+    return EC_group_use_from_key(key) { group ->
+        val point = checkError(EC_POINT_new(group))
+        try {
+            val publicKey = encodePublicRawKey(key)
+            // init EC_POINT
+            checkError(EC_POINT_oct2point(group, point, publicKey.safeRefToU(0), publicKey.size.convert(), null))
+            // get the size of a compressed point
+            var outputSize = checkError(EC_POINT_point2oct(group, point, POINT_CONVERSION_COMPRESSED, null, 0.convert(), null))
+            val output = ByteArray(outputSize.convert())
+            // encode compressed point
+            outputSize =
+                checkError(EC_POINT_point2oct(group, point, POINT_CONVERSION_COMPRESSED, output.safeRefToU(0), outputSize.convert(), null))
+            output.ensureSizeExactly(outputSize.convert())
+        } finally {
+            EC_POINT_free(point)
+        }
     }
 }
 
@@ -177,6 +157,27 @@ internal fun EC_check_key_group(key: CPointer<EVP_PKEY>, expectedCurve: EC.Curve
         }
     } finally {
         EC_GROUP_free(expectedGroup)
+    }
+}
+
+@OptIn(UnsafeNumber::class)
+private fun <T> EC_group_use_from_key(
+    key: CPointer<EVP_PKEY>,
+    block: (group: CPointer<EC_GROUP>) -> T,
+): T = memScoped {
+    val keyGroupName = allocArray<ByteVar>(256).also {
+        checkError(EVP_PKEY_get_utf8_string_param(key, "group", it, 256.convert(), null))
+    }.toKString()
+
+    val group = checkError(
+        EC_GROUP_new_by_curve_name(
+            checkError(OBJ_txt2nid(keyGroupName))
+        )
+    )
+    try {
+        block(group)
+    } finally {
+        EC_GROUP_free(group)
     }
 }
 
