@@ -87,10 +87,6 @@ tasks.withType<CInteropProcess>().configureEach {
     }
 }
 
-documentation {
-    includes.set(null as String?)
-}
-
 providerTests {
     packageName.set("dev.whyoleg.cryptography.providers.openssl3.prebuilt")
     imports.addAll("dev.whyoleg.cryptography.providers.openssl3.*")

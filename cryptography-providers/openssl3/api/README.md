@@ -1,4 +1,4 @@
-# Module cryptography-provider-openssl3
+# Module cryptography-provider-openssl3-api
 
 Provides implementation of [CryptographyProvider][CryptographyProvider] via [OpenSSL 3.x][OpenSSL 3.x]
 

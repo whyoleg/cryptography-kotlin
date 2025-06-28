@@ -40,7 +40,7 @@ nav:
       - 'JDK': modules/cryptography-provider-jdk.md
       - 'WebCrypto': modules/cryptography-provider-webcrypto.md
       - 'Apple': modules/cryptography-provider-apple.md
-      - 'OpenSSL3': modules/cryptography-provider-openssl3.md
+      - 'OpenSSL3': modules/cryptography-provider-openssl3-api.md
       - 'CryptoKit': modules/cryptography-provider-cryptokit.md
   - 'API': api/index.html
 

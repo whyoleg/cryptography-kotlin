@@ -53,10 +53,6 @@ kotlin {
     }
 }
 
-documentation {
-    includes.set(null as String?)
-}
-
 providerTests {
     packageName.set("dev.whyoleg.cryptography.providers.openssl3.shared")
     imports.addAll("dev.whyoleg.cryptography.providers.openssl3.*")

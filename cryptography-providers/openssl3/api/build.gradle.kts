@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 import ckbuild.*
@@ -42,9 +42,4 @@ tasks.withType<CInteropProcess>().configureEach {
     uses(openssl.v3_0) {
         settings.includeDirs(includeDirectory(konanTarget))
     }
-}
-
-documentation {
-    moduleName.set("cryptography-provider-openssl3")
-    includes.set("../README.md")
 }

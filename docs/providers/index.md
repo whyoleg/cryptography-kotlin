@@ -10,7 +10,7 @@ On current moment following providers are available out of the box:
   [CommonCrypto](https://developer.apple.com/library/archive/documentation/Security/Conceptual/cryptoservices/Introduction/Introduction.html)
 * [CryptoKit](../modules/cryptography-provider-cryptokit.md) - via
   [CryptoKit](https://developer.apple.com/documentation/cryptokit/)
-* [OpenSSL3](../modules/cryptography-provider-openssl3.md) - via [OpenSSL 3.x](https://www.openssl.org),
+* [OpenSSL3](../modules/cryptography-provider-openssl3-api.md) - via [OpenSSL 3.x](https://www.openssl.org),
   statically linked to prebuilt OpenSSL 3.3.2 or dynamically linked (experimental)
 
 ## Supported primitives
