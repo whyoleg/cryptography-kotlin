@@ -21,62 +21,137 @@ abstract class EcdsaTest(provider: CryptographyProvider) : AlgorithmTest<ECDSA>(
     //  1. without parameters, without public key
     //  2. without parameters, with    public key
     //  3. with    parameters, with    public key
+    @Suppress("ArrayInDataClass")
     data class EcdsaSize(
         val curve: EC.Curve,
         val rawSignatureSize: Int,
         val derSignatureSizes: IntRange,
-        val publicKeySize: Int,
-        val privateKeySizes: List<Int>,
+        val rawCompressedPublicKeySize: Int = 0,
+        val rawUncompressedPublicKeySize: Int = 0,
+        val derPublicKeySize: Int,
+        val rawPrivateKeySize: Int = 0,
+        val derPrivateKeySizes: IntArray,
     )
 
     @Test
     fun testSizes() = testWithAlgorithm {
         listOf(
             // NIST curves
-            EcdsaSize(EC.Curve.P256, 64, 68.rangeTo(72), 91, listOf(67, 138, 150)),
-            EcdsaSize(EC.Curve.P384, 96, 100.rangeTo(104), 120, listOf(80, 185, 194)),
-            EcdsaSize(EC.Curve.P521, 132, 136.rangeTo(139), 158, listOf(98, 241, 250)),
+            EcdsaSize(
+                curve = EC.Curve.P256,
+                rawSignatureSize = 64,
+                derSignatureSizes = 68.rangeTo(72),
+                rawCompressedPublicKeySize = 33,
+                rawUncompressedPublicKeySize = 65,
+                derPublicKeySize = 91,
+                rawPrivateKeySize = 32,
+                derPrivateKeySizes = intArrayOf(67, 138, 150)
+            ),
+            EcdsaSize(
+                curve = EC.Curve.P384,
+                rawSignatureSize = 96,
+                derSignatureSizes = 100.rangeTo(104),
+                rawCompressedPublicKeySize = 49,
+                rawUncompressedPublicKeySize = 97,
+                derPublicKeySize = 120,
+                rawPrivateKeySize = 48,
+                derPrivateKeySizes = intArrayOf(80, 185, 194)
+            ),
+            EcdsaSize(
+                curve = EC.Curve.P521,
+                rawSignatureSize = 132,
+                derSignatureSizes = 136.rangeTo(139),
+                rawCompressedPublicKeySize = 67,
+                rawUncompressedPublicKeySize = 133,
+                derPublicKeySize = 158,
+                rawPrivateKeySize = 66,
+                derPrivateKeySizes = intArrayOf(98, 241, 250)
+            ),
 
             // Note "private key sizes": smaller = openssl, larger = BouncyCastle
 
             // SECP256k1
-            EcdsaSize(EC.Curve.secp256k1, 64, 68.rangeTo(72), 88, listOf(135, 144)),
+            EcdsaSize(
+                curve = EC.Curve.secp256k1,
+                rawSignatureSize = 64,
+                derSignatureSizes = 68.rangeTo(72),
+                rawCompressedPublicKeySize = 33,
+                rawUncompressedPublicKeySize = 65,
+                derPublicKeySize = 88,
+                rawPrivateKeySize = 32,
+                derPrivateKeySizes = intArrayOf(135, 144)
+            ),
 
             // Brainpool curves
-            EcdsaSize(EC.Curve.brainpoolP256r1, 64, 68.rangeTo(72), 92, listOf(139, 152)),
-            EcdsaSize(EC.Curve.brainpoolP384r1, 96, 100.rangeTo(104), 124, listOf(189, 202)),
             EcdsaSize(
-                EC.Curve.brainpoolP512r1,
-                128,
-                132.rangeTo(139),
-                158,
-                listOf(239, 252)
+                curve = EC.Curve.brainpoolP256r1,
+                rawSignatureSize = 64,
+                derSignatureSizes = 68.rangeTo(72),
+                rawCompressedPublicKeySize = 33,
+                rawUncompressedPublicKeySize = 65,
+                derPublicKeySize = 92,
+                rawPrivateKeySize = 32,
+                derPrivateKeySizes = intArrayOf(139, 152)
+            ),
+            EcdsaSize(
+                curve = EC.Curve.brainpoolP384r1,
+                rawSignatureSize = 96,
+                derSignatureSizes = 100.rangeTo(104),
+                rawCompressedPublicKeySize = 49,
+                rawUncompressedPublicKeySize = 97,
+                derPublicKeySize = 124,
+                rawPrivateKeySize = 48,
+                derPrivateKeySizes = intArrayOf(189, 202)
+            ),
+            EcdsaSize(
+                curve = EC.Curve.brainpoolP512r1,
+                rawSignatureSize = 128,
+                derSignatureSizes = 132.rangeTo(139),
+                rawCompressedPublicKeySize = 65,
+                rawUncompressedPublicKeySize = 129,
+                derPublicKeySize = 158,
+                rawPrivateKeySize = 64,
+                derPrivateKeySizes = intArrayOf(239, 252)
             ) // Raw 128, DER sig slightly larger; PubKey ~154; PrivKey ~P521
+        ).forEach {
+            val (
+                curve,
+                rawSignatureSize,
+                derSignatureSizes,
+                rawCompressedPublicKeySize,
+                rawUncompressedPublicKeySize,
+                derPublicKeySize,
+                rawPrivateKeySize,
+                rawPrivateKeySizes,
+            ) = it
 
+            if (!supportsCurve(curve)) return@forEach
 
-        ).forEach { (curve, rawSignatureSize, derSignatureSizes, publicKeySize, privateKeySizes) ->
-            if (!supportsCurve(curve)) {
-                logger.log { "Skipping size test for unsupported curve: ${curve.name}" }
-                return@forEach
-            }
-
-            logger.log { "\nRunning size test for curve: ${curve.name}" }
+            logger.log { "Running size test for curve: ${curve.name}" }
             val keyPair = algorithm.keyPairGenerator(curve).generateKey()
 
-            val actualPublicKeySize = keyPair.publicKey.encodeToByteString(EC.PublicKey.Format.DER).size
-            logger.log { "Got ${curve.name} public key size: $actualPublicKeySize (expected $publicKeySize)" }
-            assertEquals(
-                publicKeySize,
-                actualPublicKeySize,
-                "Public key size mismatch for ${curve.name}, expected: $publicKeySize, but got $actualPublicKeySize"
-            )
-            val actualPrivateKeySize = keyPair.privateKey.encodeToByteString(EC.PrivateKey.Format.DER).size
-                logger.log { "Got ${curve.name} private key size: $actualPrivateKeySize (allowed $privateKeySizes)" }
-            assertContains(
-                privateKeySizes,
-                actualPrivateKeySize,
-                "Private key size mismatch for ${curve.name}, expected one of $privateKeySizes, but got $actualPrivateKeySize"
-            )
+            suspend fun assertPublicKeySize(format: EC.PublicKey.Format, expectedSize: Int) {
+                if (supportsKeyFormat(format)) assertEquals(
+                    expected = expectedSize,
+                    actual = keyPair.publicKey.encodeToByteString(format).size,
+                    message = "Public key ($format) size mismatch for ${curve.name}"
+                )
+            }
+
+            suspend fun assertPrivateKeySize(format: EC.PrivateKey.Format, expectedSizes: IntArray) {
+                if (supportsKeyFormat(format)) assertContains(
+                    array = expectedSizes,
+                    element = keyPair.privateKey.encodeToByteString(format).size,
+                    message = "Private key ($format) size mismatch for ${curve.name}"
+                )
+            }
+
+            assertPublicKeySize(EC.PublicKey.Format.DER, derPublicKeySize)
+            assertPublicKeySize(EC.PublicKey.Format.RAW.Compressed, rawCompressedPublicKeySize)
+            assertPublicKeySize(EC.PublicKey.Format.RAW.Uncompressed, rawUncompressedPublicKeySize)
+
+            assertPrivateKeySize(EC.PrivateKey.Format.RAW, intArrayOf(rawPrivateKeySize))
+            assertPrivateKeySize(EC.PrivateKey.Format.DER, rawPrivateKeySizes)
 
             generateDigests { digest, _ ->
                 if (!supportsDigest(digest)) {
@@ -163,19 +238,14 @@ abstract class EcdsaTest(provider: CryptographyProvider) : AlgorithmTest<ECDSA>(
             EC.Curve.brainpoolP384r1,
             EC.Curve.brainpoolP512r1,
         ).forEach { curve ->
-            if (!supportsCurve(curve)) {
-                logger.log { "Skipping function test for unsupported curve: ${curve.name}" }
-                return@forEach
-            }
+            if (!supportsCurve(curve)) return@forEach
+
             logger.log { "Running function test for curve: ${curve.name}" }
 
             val keyPair = algorithm.keyPairGenerator(curve).generateKey()
 
             generateDigests { digest, _ ->
-                if (!supportsDigest(digest)) {
-                    logger.log { "Skipping digest $digest for curve ${curve.name}" }
-                    return@generateDigests
-                }
+                if (!supportsDigest(digest)) return@generateDigests
 
                 ECDSA.SignatureFormat.entries.forEach { format ->
                     logger.log { "Testing format $format for ${curve.name} / ${digest.name}" }
