@@ -24,7 +24,8 @@ cryptography-kotlin provides multiplatform API which consists of multiple compon
 * multiple cryptography [providers][providers], like [OpenSSL][OpenSSL], [WebCrypto][WebCrypto], [CryptoKit][CryptoKit] and [JDK][JDK]
 
 The library doesn't implement any cryptography algorithm on its own, but wraps well-known future-proof solutions
-like [OpenSSL 3.x](https://www.openssl.org), [WebCrypto](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API)
+like [OpenSSL 3.x](https://www.openssl.org), [CryptoKit](https://developer.apple.com/documentation/cryptokit/),
+[WebCrypto](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API)
 or [JCA](https://docs.oracle.com/en/java/javase/17/security/java-cryptography-architecture-jca-reference-guide.html)
 with type-safe multiplatform API providing uniform experience with aligned default behavior,
 and same expected results using identical parameters while allowing to use platform-specific capabilities.
@@ -32,48 +33,21 @@ For supported algorithms, primitives and targets, please consult [Providers docu
 
 ## Using in your projects
 
-Make sure that you use Kotlin 2.0.20+.
-Using an earlier Kotlin version could still work, but not tested.  
-Additionally, it's possible to use [BOM][BOM] or [Gradle version catalog][Gradle version catalog] to add dependencies easier.
-The library is published to Maven Central, so make sure, that it’s added to repositories.
+Make sure that you use Kotlin 2.2.0+. Using an earlier Kotlin version could still work, but not tested.
+The library is published to Maven Central, so make sure that it’s added to repositories.
 
 ```kotlin
 kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation("dev.whyoleg.cryptography:cryptography-core:0.4.0")
-        }
-        // or androidMain
-        jvmMain.dependencies {
-            implementation("dev.whyoleg.cryptography:cryptography-provider-jdk:0.4.0")
-        }
-        appleMain.dependencies {
-            implementation("dev.whyoleg.cryptography:cryptography-provider-apple:0.4.0")
-            // or openssl3 provider with better algorithms coverage and other native targets support  
-            // implementation("dev.whyoleg.cryptography:cryptography-provider-openssl3-prebuilt:0.4.0")
-        }
-        wasmJsMain.dependencies {
-            implementation("dev.whyoleg.cryptography:cryptography-provider-webcrypto:0.4.0")
+            implementation("dev.whyoleg.cryptography:cryptography-provider-optimal:0.4.0")
         }
     }
 }
 ```
 
-<details>
-<summary>Snapshots of the development version are available in Sonatype's snapshot repository.</summary>
-<p>
-
-```kotlin
-repositories {
-    maven("https://central.sonatype.com/repository/maven-snapshots/")
-}
-dependencies {
-    implementation("dev.whyoleg.cryptography:cryptography-core:0.5.0-SNAPSHOT")
-}
-```
-
-</p>
-</details>
+Additionally, it's possible to use [BOM][BOM] or [Gradle version catalog][Gradle version catalog] to add dependencies easier.
 
 [Secure random]: https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-random
 

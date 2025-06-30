@@ -14,7 +14,6 @@ dependencies {
 
     // now you can declare other dependencies without a version 
     implementation("dev.whyoleg.cryptography:cryptography-core")
-    // some provider
-    implementation("dev.whyoleg.cryptography:cryptography-provider-jdk")
+    implementation("dev.whyoleg.cryptography:cryptography-provider-optimal")
 }
 ```

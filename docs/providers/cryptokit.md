@@ -1,4 +1,4 @@
-# Module cryptography-provider-cryptokit
+# CryptoKit
 
 Provides implementation of [CryptographyProvider][CryptographyProvider] via [CryptoKit][CryptoKit]
 
@@ -26,8 +26,8 @@ dependencies {
 }
 ```
 
-[CryptographyProvider]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography/-cryptography-provider/index.html
+[CryptographyProvider]: ../api/cryptography-core/dev.whyoleg.cryptography/-cryptography-provider/index.html
 
 [CryptoKit]: https://developer.apple.com/documentation/cryptokit/
 
-[Supported primitives section]: https://whyoleg.github.io/cryptography-kotlin/providers#supported-primitives
+[Supported primitives section]: index.md#supported-primitives

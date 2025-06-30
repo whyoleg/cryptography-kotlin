@@ -1,25 +1,44 @@
 # Providers
 
-On current moment following providers are available out of the box:
+At the current moment, the following providers are available out of the box:
 
-* [JDK](../modules/cryptography-provider-jdk.md) - via
+* [JDK](jdk.md) - via
   JDK built-in [JCA](https://docs.oracle.com/en/java/javase/17/security/java-cryptography-architecture-jca-reference-guide.html)
-* [WebCrypto](../modules/cryptography-provider-webcrypto.md) - via
+* [WebCrypto](webcrypto.md) - via
   [WebCrypto](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API)
-* [Apple](../modules/cryptography-provider-apple.md) - via
+* [Apple](apple.md) - via
   [CommonCrypto](https://developer.apple.com/library/archive/documentation/Security/Conceptual/cryptoservices/Introduction/Introduction.html)
-* [CryptoKit](../modules/cryptography-provider-cryptokit.md) - via
+* [CryptoKit](cryptokit.md) - via
   [CryptoKit](https://developer.apple.com/documentation/cryptokit/)
-* [OpenSSL3](../modules/cryptography-provider-openssl3-api.md) - via [OpenSSL 3.x](https://www.openssl.org),
+* [OpenSSL3](openssl3.md) - via [OpenSSL 3.x](https://www.openssl.org),
   statically linked to prebuilt OpenSSL 3.3.2 or dynamically linked (experimental)
 
-## Supported primitives
+## Optimal provider
 
 While the library is overall multiplatform and all algorithm/operation interfaces are available on all targets,
 support for a specific algorithm for a specific target depends on the used provider.
-Below there are several tables which show what is supported and what not
-(I know that it's not the easiest thing to understand...
-But we have what we have).
+Still, most of the popular algorithms are supported by providers, with minimal dependencies.
+That's why a library provides a specific dependency called `optimal` provider: it doesn't implement any new algorithms, but allows to use it
+as a single dependency with best-fit preconfigured providers per target:
+
+* js, wasmJs: [WebCrypto](webcrypto.md) provider will be used
+* jvm: [JDK](jdk.md) provider with an ability to use [custom security providers](jdk.md#custom-java-providers)
+  like [BouncyCastle](https://www.bouncycastle.org)
+* ios, macos, watchos, tvos: [CryptoKit](cryptokit.md) provider with the fallback to [Apple](apple.md)
+* linux, mingw, androidNative: [OpenSSL3](openssl3.md) provider will be used
+
+To use `optimal` provider just add the following dependency for any target/platform/source-set:
+
+```kotlin
+dependencies {
+    implementation("dev.whyoleg.cryptography:cryptography-provider-optimal:0.5.0")
+}
+```
+
+## Supported primitives
+
+Below there are several tables that show what is supported and what is not
+(I know that it's not the easiest thing to understand... But we have what we have).
 
 For additional limitation please consult provider specific documentation.
 

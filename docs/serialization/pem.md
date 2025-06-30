@@ -1,8 +1,8 @@
-# Module cryptography-serialization-pem
+# PEM
 
 [PEM][PEM]: encoding/decoding of PEM content from/to [String][String] or [ByteArray][ByteArray]
 
-> The module is currently experimental and is subject to API/ABI changes
+> PEM functionality is currently experimental and is subject to API/ABI changes
 
 ## Example
 
@@ -36,7 +36,7 @@ dependencies {
 }
 ```
 
-[PEM]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-serialization-pem/dev.whyoleg.cryptography.serialization.pem/-p-e-m/index.html
+[PEM]: ../api/cryptography-serialization-pem/dev.whyoleg.cryptography.serialization.pem/-pem/index.html
 
 [String]: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/
 

@@ -46,7 +46,6 @@ tasks.dokkaGeneratePublicationHtml {
 
 tasks.register<Copy>("mkdocsCopy") {
     into(rootDir.resolve("docs"))
-    from("README.md")
     from("CHANGELOG.md")
 }
 

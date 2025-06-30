@@ -1,4 +1,4 @@
-# Module cryptography-provider-openssl3-api
+# OpenSSL3
 
 Provides implementation of [CryptographyProvider][CryptographyProvider] via [OpenSSL 3.x][OpenSSL 3.x]
 
@@ -42,8 +42,8 @@ dependencies {
 }
 ```
 
-[CryptographyProvider]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography/-cryptography-provider/index.html
+[CryptographyProvider]: ../api/cryptography-core/dev.whyoleg.cryptography/-cryptography-provider/index.html
 
 [OpenSSL 3.x]: https://www.openssl.org
 
-[Supported primitives section]: https://whyoleg.github.io/cryptography-kotlin/providers#supported-primitives
+[Supported primitives section]: index.md#supported-primitives

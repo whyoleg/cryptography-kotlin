@@ -22,8 +22,7 @@ Use version catalog in any of `build.gradle.kts`:
 ```kotlin
 dependencies {
     implementation(cryptographyLibs.core)
-    // some provider
-    implementation(cryptographyLibs.provider.jdk)
+    implementation(cryptographyLibs.provider.optimal)
 }
 ```
 
@@ -37,10 +36,7 @@ cryptography = "0.4.0"
 
 [libraries]
 cryptography-core = { group = "dev.whyoleg.cryptography", name = "cryptography-core", version.ref = "cryptography" }
-cryptography-provider-apple = { group = "dev.whyoleg.cryptography", name = "cryptography-provider-apple", version.ref = "cryptography" }
-cryptography-provider-jdk = { group = "dev.whyoleg.cryptography", name = "cryptography-provider-jdk", version.ref = "cryptography" }
-cryptography-provider-openssl3-prebuilt = { group = "dev.whyoleg.cryptography", name = "cryptography-provider-openssl3-prebuilt", version.ref = "cryptography" }
-cryptography-provider-webcrypto = { group = "dev.whyoleg.cryptography", name = "cryptography-provider-webcrypto", version.ref = "cryptography" }
+cryptography-provider-optimal = { group = "dev.whyoleg.cryptography", name = "cryptography-provider-optimal", version.ref = "cryptography" }
 cryptography-random = { group = "dev.whyoleg.cryptography", name = "cryptography-random", version.ref = "cryptography" }
 ```
 
@@ -49,7 +45,6 @@ Use version catalog in any of `build.gradle.kts`:
 ```kotlin
 dependencies {
     implementation(libc.cryptography.core)
-    // some provider
-    implementation(libs.cryptography.provider.jdk)
+    implementation(libs.cryptography.provider.optimal)
 }
 ```

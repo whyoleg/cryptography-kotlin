@@ -1,4 +1,4 @@
-# Module cryptography-random
+# Secure random
 
 [CryptographyRandom][CryptographyRandom]: zero-dependency platform-dependent CSPRNG exposed via [kotlin.Random][kotlin.Random] API
 
@@ -30,4 +30,4 @@ dependencies {
 
 [kotlin.Random]: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.random/-random/
 
-[CryptographyRandom]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-random/dev.whyoleg.cryptography.random/-cryptography-random/index.html
+[CryptographyRandom]: api/cryptography-random/dev.whyoleg.cryptography.random/-cryptography-random/index.html

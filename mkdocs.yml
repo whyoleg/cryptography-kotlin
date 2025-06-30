@@ -7,7 +7,7 @@ repo_name: cryptography-kotlin
 repo_url: https://github.com/whyoleg/cryptography-kotlin
 remote_branch: gh-pages
 
-copyright: 'Copyright &copy; 2023 Oleg Yukhnevich'
+copyright: 'Copyright &copy; 2025 Oleg Yukhnevich'
 
 extra:
   social:
@@ -22,26 +22,26 @@ extra:
 
 nav:
   - 'Overview':
-      - README.md
+      - index.md
+      - 'Secure random': random.md
+      - 'BigInt': bigint.md
       - 'Changelog': CHANGELOG.md
       - 'Examples': examples.md
-      - 'Modules':
-          - 'Secure Random': modules/cryptography-random.md
-          - 'BigInt': modules/cryptography-bigint.md
-          - 'Core primitives': modules/cryptography-core.md
-          - 'PEM': modules/cryptography-serialization-pem.md
-          - 'ASN.1/DER': modules/cryptography-serialization-asn1.md
-          - 'ASN.1/DER modules': modules/cryptography-serialization-asn1-modules.md
       - 'Dependency management':
-          - 'Gradle version catalog': gradle-version-catalog.md
-          - 'BOM': bom.md
+          - 'Gradle version catalog': dependencies/gradle-version-catalog.md
+          - 'BOM': dependencies/bom.md
+          - 'Snapshots': dependencies/snapshots.md
   - 'Providers':
       - providers/index.md
-      - 'JDK': modules/cryptography-provider-jdk.md
-      - 'WebCrypto': modules/cryptography-provider-webcrypto.md
-      - 'Apple': modules/cryptography-provider-apple.md
-      - 'OpenSSL3': modules/cryptography-provider-openssl3-api.md
-      - 'CryptoKit': modules/cryptography-provider-cryptokit.md
+      - 'JDK': providers/jdk.md
+      - 'Apple': providers/apple.md
+      - 'CryptoKit': providers/cryptokit.md
+      - 'WebCrypto': providers/webcrypto.md
+      - 'OpenSSL3': providers/openssl3.md
+  - 'Serialization':
+      - serialization/index.md
+      - 'PEM': serialization/pem.md
+      - 'ASN.1/DER': serialization/asn1.md
   - 'API': api/index.html
 
 theme:

@@ -1,4 +1,4 @@
-# Module cryptography-provider-webcrypto
+# WebCrypto
 
 Provides implementation of [CryptographyProvider][CryptographyProvider] via [WebCrypto][WebCrypto]
 
@@ -27,8 +27,8 @@ dependencies {
 }
 ```
 
-[CryptographyProvider]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography/-cryptography-provider/index.html
+[CryptographyProvider]: ../api/cryptography-core/dev.whyoleg.cryptography/-cryptography-provider/index.html
 
 [WebCrypto]: https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API
 
-[Supported primitives section]: https://whyoleg.github.io/cryptography-kotlin/providers#supported-primitives
+[Supported primitives section]: index.md#supported-primitives

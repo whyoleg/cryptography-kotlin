@@ -1,8 +1,6 @@
-# Module cryptography-bigint
+# BigInt
 
 [BigInt][BigInt]: an arbitrary-precision integer.
-
-> The module is currently experimental and is subject to API/ABI changes
 
 On current moment [BigInt][BigInt] provides only simple operations:
 
@@ -32,7 +30,7 @@ dependencies {
 }
 ```
 
-[BigInt]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-bigint/dev.whyoleg.cryptography.bigint/-big-int/index.html
+[BigInt]: api/cryptography-bigint/dev.whyoleg.cryptography.bigint/-big-int/index.html
 
 [String]: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/
 
