@@ -15,8 +15,8 @@ repositories {
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("dev.whyoleg.cryptography:cryptography-core:0.5.0-SNAPSHOT")
-            implementation("dev.whyoleg.cryptography:cryptography-provider-optimal:0.5.0-SNAPSHOT")
+            implementation("dev.whyoleg.cryptography:cryptography-core:0.6.0-SNAPSHOT")
+            implementation("dev.whyoleg.cryptography:cryptography-provider-optimal:0.6.0-SNAPSHOT")
         }
     }
 }

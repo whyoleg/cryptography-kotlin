@@ -26,7 +26,7 @@ println(bigInt > 0) // prints "true"
 
 ```kotlin
 dependencies {
-    implementation("dev.whyoleg.cryptography:cryptography-bigint:0.4.0")
+    implementation("dev.whyoleg.cryptography:cryptography-bigint:0.5.0")
 }
 ```
 

@@ -16,7 +16,7 @@ jobs:
           cache-disabled: true
 
       - name: Publish snapshot to Maven Central
-        run: ./gradlew publishToMavenCentral -Pversion=0.5.0-SNAPSHOT
+        run: ./gradlew publishToMavenCentral -Pversion=0.6.0-SNAPSHOT
         env:
           ORG_GRADLE_PROJECT_signingInMemoryKey: ${{secrets.signingKey}}
           ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{secrets.signingPassword}}

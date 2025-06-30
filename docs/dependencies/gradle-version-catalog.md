@@ -11,7 +11,7 @@ Configure `settings.gradle.kts`:
 dependencyResolutionManagement {
     versionCatalogs {
         create("cryptographyLibs") {
-            from("dev.whyoleg.cryptography:cryptography-version-catalog:0.4.0")
+            from("dev.whyoleg.cryptography:cryptography-version-catalog:0.5.0")
         }
     }
 }
@@ -32,7 +32,7 @@ Paste into `libs.versions.toml`:
 
 ```toml
 [versions]
-cryptography = "0.4.0"
+cryptography = "0.5.0"
 
 [libraries]
 cryptography-core = { group = "dev.whyoleg.cryptography", name = "cryptography-core", version.ref = "cryptography" }

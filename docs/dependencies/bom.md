@@ -10,7 +10,7 @@ of all modules because of direct dependency on the BOM module
 
 ```kotlin
 dependencies {
-    implementation(platform("dev.whyoleg.cryptography:cryptography-bom:0.4.0"))
+    implementation(platform("dev.whyoleg.cryptography:cryptography-bom:0.5.0"))
 
     // now you can declare other dependencies without a version 
     implementation("dev.whyoleg.cryptography:cryptography-core")

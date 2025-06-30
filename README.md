@@ -40,8 +40,8 @@ The library is published to Maven Central, so make sure that it’s added to rep
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("dev.whyoleg.cryptography:cryptography-core:0.4.0")
-            implementation("dev.whyoleg.cryptography:cryptography-provider-optimal:0.4.0")
+            implementation("dev.whyoleg.cryptography:cryptography-core:0.5.0")
+            implementation("dev.whyoleg.cryptography:cryptography-provider-optimal:0.5.0")
         }
     }
 }
