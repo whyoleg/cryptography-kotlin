@@ -1,5 +1,41 @@
 # CHANGELOG
 
+## 0.5.0 – CryptoKit & optimal providers
+
+> Published 30 Jun 2025
+
+### Features
+
+* New [**CryptoKit**](https://developer.apple.com/documentation/cryptokit/) based provider for all Apple targets, which brings support for
+  **AES-GCM** and **ECDH** without requiring to use OpenSSL
+* New [**optimal** provider](https://whyoleg.github.io/cryptography-kotlin/providers/#optimal-provider), which allows using preconfigured
+  providers for all targets via a single dependency
+* New algorithms: RIPEMD160 ([#55](https://github.com/whyoleg/cryptography-kotlin/pull/55)) and
+  CMAC ([#69](https://github.com/whyoleg/cryptography-kotlin/pull/69))
+* Support for compressed encoding of EC public keys ([#57](https://github.com/whyoleg/cryptography-kotlin/pull/57))
+* Support for IV size larger than 12 bytes in AES GCM ([#75](https://github.com/whyoleg/cryptography-kotlin/issues/75))
+
+### Bug fixes
+
+* Fix `verifySignature` declaration in WebCrypto ([#62](https://github.com/whyoleg/cryptography-kotlin/issues/62))
+* Fix `AES.keyGenerator` overload resolution ambiguity ([#53](https://github.com/whyoleg/cryptography-kotlin/issues/53))
+
+### Other improvements
+
+* Kotlin 2.0.20 -> 2.2.0
+* kotlinx-io 0.5.4 -> 0.8.0
+* Update the prebuilt OpenSSL version to 3.5.0 LTS
+* Additional EC curves definitions: secp256k1 & brainpool ([#78](https://github.com/whyoleg/cryptography-kotlin/pull/78))
+* Improve the implementation around `WebCrypto` JS
+  API ([#59](https://github.com/whyoleg/cryptography-kotlin/issues/59) & [#71](https://github.com/whyoleg/cryptography-kotlin/issues/71))
+* Introduce an ability to configure
+  the [default security provider](https://whyoleg.github.io/cryptography-kotlin/modules/cryptography-provider-jdk/#custom-java-providers)
+  for JDK provider and additional dependency to
+  use [BouncyCastle](https://www.bouncycastle.org) provider by default
+* New
+  [CryptographySystem](https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography/-cryptography-system/index.html)
+  API to configure the default provider, with the ability to work with multiple providers at the same time
+
 ## 0.4.0 – Secret derivation, more algorithms, kotlinx-io
 
 > Published 12 Oct 2024
