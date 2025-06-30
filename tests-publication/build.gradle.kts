@@ -5,7 +5,7 @@
 import org.jetbrains.kotlin.gradle.*
 
 plugins {
-    kotlin("multiplatform") version "2.0.20"
+    kotlin("multiplatform") version "2.2.0"
 }
 
 kotlin {
@@ -51,22 +51,11 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(cryptographyLibs.core)
+            implementation(cryptographyLibs.provider.optimal)
         }
         commonTest.dependencies {
             implementation(kotlin("test"))
             implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
-        }
-        jsMain.dependencies {
-            implementation(cryptographyLibs.provider.webcrypto)
-        }
-        wasmJsMain.dependencies {
-            implementation(cryptographyLibs.provider.webcrypto)
-        }
-        jvmMain.dependencies {
-            implementation(cryptographyLibs.provider.jdk)
-        }
-        nativeMain.dependencies {
-            implementation(cryptographyLibs.provider.openssl3.prebuilt)
         }
     }
 }
