@@ -31,13 +31,3 @@ dependencies {
 [CryptoKit]: https://developer.apple.com/documentation/cryptokit/
 
 [Supported primitives section]: https://whyoleg.github.io/cryptography-kotlin/providers#supported-primitives
-
-# Package dev.whyoleg.cryptography.providers.cryptokit
-
-Provides implementation of [CryptographyProvider][CryptographyProvider] via [CryptoKit][CryptoKit]
-
-[CryptographyProvider]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography/-cryptography-provider/index.html
-
-[CryptoKit]: https://developer.apple.com/documentation/cryptokit/
-
-[Supported primitives section]: https://whyoleg.github.io/cryptography-kotlin/providers#supported-primitives

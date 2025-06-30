@@ -39,9 +39,3 @@ dependencies {
 [ByteArray]: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/
 
 [kotlinx.serialization]: https://github.com/Kotlin/kotlinx.serialization
-
-# Package dev.whyoleg.cryptography.bigint
-
-[BigInt][BigInt]: an arbitrary-precision integer.
-
-[BigInt]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-bigint/dev.whyoleg.cryptography.bigint/-big-int/index.html

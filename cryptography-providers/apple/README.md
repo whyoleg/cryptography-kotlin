@@ -38,13 +38,3 @@ dependencies {
 [CommonCrypto]: https://developer.apple.com/library/archive/documentation/Security/Conceptual/cryptoservices/Introduction/Introduction.html
 
 [Supported primitives section]: https://whyoleg.github.io/cryptography-kotlin/providers#supported-primitives
-
-# Package dev.whyoleg.cryptography.providers.apple
-
-Provides implementation of [CryptographyProvider][CryptographyProvider] via [CommonCrypto][CommonCrypto]
-
-[CryptographyProvider]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography/-cryptography-provider/index.html
-
-[CommonCrypto]: https://developer.apple.com/library/archive/documentation/Security/Conceptual/cryptoservices/Introduction/Introduction.html
-
-[Supported primitives section]: https://whyoleg.github.io/cryptography-kotlin/providers#supported-primitives
