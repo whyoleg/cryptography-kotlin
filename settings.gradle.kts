@@ -45,6 +45,9 @@ projects("cryptography-kotlin") {
 
     // providers API, high-level API
     module("cryptography-core")
+    
+    // standalone modules
+    module("cryptography-jose")
 
     // providers
     folder("cryptography-providers", prefix = "cryptography-provider") {
