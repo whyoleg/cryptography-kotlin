@@ -66,6 +66,22 @@ public value class JwkKeyOperation(public val value: String) {
 }
 
 /**
+ * Elliptic Curve identifiers
+ */
+@Serializable
+@JvmInline
+public value class JwkEllipticCurve(public val value: String) {
+    public companion object {
+        /** P-256 curve */
+        public val P256: JwkEllipticCurve = JwkEllipticCurve("P-256")
+        /** P-384 curve */
+        public val P384: JwkEllipticCurve = JwkEllipticCurve("P-384")
+        /** P-521 curve */
+        public val P521: JwkEllipticCurve = JwkEllipticCurve("P-521")
+    }
+}
+
+/**
  * JSON Web Key (JWK) as defined in RFC 7517.
  * 
  * A JWK is a JSON object that represents a cryptographic key.
@@ -99,9 +115,75 @@ public data class JsonWebKey(
     /** X.509 Certificate SHA-256 Thumbprint */
     @SerialName("x5t#S256")
     val x509CertificateSha256Thumbprint: String? = null,
+    
+    // RSA Key Parameters (RFC 7518 Section 6.3)
+    /** Modulus (for RSA keys) */
+    @SerialName("n")
+    val modulus: String? = null,
+    /** Exponent (for RSA keys) */
+    @SerialName("e")
+    val exponent: String? = null,
+    /** Private Exponent (for RSA private keys) or ECC Private Key (for EC private keys) */
+    @SerialName("d")
+    val privateKey: String? = null,
+    /** First Prime Factor (for RSA private keys) */
+    @SerialName("p")
+    val firstPrimeFactor: String? = null,
+    /** Second Prime Factor (for RSA private keys) */
+    @SerialName("q")
+    val secondPrimeFactor: String? = null,
+    /** First Factor CRT Exponent (for RSA private keys) */
+    @SerialName("dp")
+    val firstFactorCrtExponent: String? = null,
+    /** Second Factor CRT Exponent (for RSA private keys) */
+    @SerialName("dq")
+    val secondFactorCrtExponent: String? = null,
+    /** First CRT Coefficient (for RSA private keys) */
+    @SerialName("qi")
+    val firstCrtCoefficient: String? = null,
+    
+    // Elliptic Curve Key Parameters (RFC 7518 Section 6.2)
+    /** Curve (for EC keys) */
+    @SerialName("crv")
+    val curve: JwkEllipticCurve? = null,
+    /** X Coordinate (for EC keys) */
+    @SerialName("x")
+    val xCoordinate: String? = null,
+    /** Y Coordinate (for EC keys) */
+    @SerialName("y")
+    val yCoordinate: String? = null,
+    
+    // Symmetric Key Parameters (RFC 7518 Section 6.4)
+    /** Key Value (for symmetric keys) */
+    @SerialName("k")
+    val keyValue: String? = null,
+    
     /** Additional key-specific parameters */
     val additionalParameters: Map<String, JsonElement> = emptyMap()
-)
+) {
+    
+    /**
+     * Determines if this is a private key based on the presence of private key parameters.
+     */
+    val isPrivateKey: Boolean
+        get() = when (keyType) {
+            JwkKeyType.RSA -> privateKey != null
+            JwkKeyType.EC -> privateKey != null
+            JwkKeyType.SYMMETRIC -> keyValue != null
+            else -> false
+        }
+    
+    /**
+     * Determines if this is a public key (not private and has public key parameters).
+     */
+    val isPublicKey: Boolean
+        get() = when (keyType) {
+            JwkKeyType.RSA -> modulus != null && exponent != null && privateKey == null
+            JwkKeyType.EC -> curve != null && xCoordinate != null && yCoordinate != null && privateKey == null
+            JwkKeyType.SYMMETRIC -> false // Symmetric keys are neither public nor private in the traditional sense
+            else -> false
+        }
+}
 
 /**
  * JSON Web Key Set (JWK Set) as defined in RFC 7517.
@@ -127,4 +209,19 @@ public data class JsonWebKeySet(
      * Finds keys by their algorithm.
      */
     public fun findByAlgorithm(algorithm: JwsAlgorithm): List<JsonWebKey> = keys.filter { it.algorithm == algorithm }
+    
+    /**
+     * Finds keys by their key type.
+     */
+    public fun findByKeyType(keyType: JwkKeyType): List<JsonWebKey> = keys.filter { it.keyType == keyType }
+    
+    /**
+     * Finds all public keys in the set.
+     */
+    public fun findPublicKeys(): List<JsonWebKey> = keys.filter { it.isPublicKey }
+    
+    /**
+     * Finds all private keys in the set.
+     */
+    public fun findPrivateKeys(): List<JsonWebKey> = keys.filter { it.isPrivateKey }
 }
