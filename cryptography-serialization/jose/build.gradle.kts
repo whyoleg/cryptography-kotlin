@@ -9,7 +9,7 @@ plugins {
     alias(libs.plugins.kotlin.plugin.serialization)
 }
 
-description = "cryptography-kotlin JOSE support"
+description = "cryptography-kotlin JOSE API"
 
 kotlin {
     jvmTarget()

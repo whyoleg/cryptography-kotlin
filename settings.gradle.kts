@@ -41,13 +41,11 @@ projects("cryptography-kotlin") {
         module("asn1") {
             module("modules")
         }
+        module("jose")
     }
 
     // providers API, high-level API
     module("cryptography-core")
-    
-    // standalone modules
-    module("cryptography-jose")
 
     // providers
     folder("cryptography-providers", prefix = "cryptography-provider") {
