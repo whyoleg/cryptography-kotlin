@@ -4,12 +4,14 @@
 
 package dev.whyoleg.cryptography.serialization.jose
 
+import dev.whyoleg.cryptography.serialization.jose.internal.Base64UrlUtils
+import dev.whyoleg.cryptography.serialization.jose.internal.CommonJoseHeader
+import dev.whyoleg.cryptography.serialization.jose.internal.JoseCompactSerialization
+import dev.whyoleg.cryptography.serialization.jose.internal.JoseCompactUtils
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
-import kotlin.io.encoding.Base64
-import kotlin.io.encoding.ExperimentalEncodingApi
 
 /**
  * JSON Web Encryption (JWE) as defined in RFC 7516.
@@ -30,31 +32,31 @@ public data class JweHeader(
     val encryptionAlgorithm: JweContentEncryptionAlgorithm,
     /** JWE Type parameter */
     @SerialName("typ")
-    val type: String? = null,
+    override val type: String? = null,
     /** Content Type parameter */
     @SerialName("cty")
-    val contentType: String? = null,
+    override val contentType: String? = null,
     /** Key ID hint indicating which key was used to encrypt the JWE */
     @SerialName("kid")
-    val keyId: String? = null,
+    override val keyId: String? = null,
     /** JSON Web Key parameter */
     @SerialName("jwk")
-    val jsonWebKey: JsonWebKey? = null,
+    override val jsonWebKey: JsonWebKey? = null,
     /** X.509 URL parameter */
     @SerialName("x5u")
-    val x509Url: String? = null,
+    override val x509Url: String? = null,
     /** X.509 Certificate Chain parameter */
     @SerialName("x5c")
-    val x509CertificateChain: List<String>? = null,
+    override val x509CertificateChain: List<String>? = null,
     /** X.509 Certificate SHA-1 Thumbprint parameter */
     @SerialName("x5t")
-    val x509CertificateSha1Thumbprint: String? = null,
+    override val x509CertificateSha1Thumbprint: String? = null,
     /** X.509 Certificate SHA-256 Thumbprint parameter */
     @SerialName("x5t#S256")
-    val x509CertificateSha256Thumbprint: String? = null,
+    override val x509CertificateSha256Thumbprint: String? = null,
     /** Critical parameter - identifies which extensions are critical */
     @SerialName("crit")
-    val critical: List<String>? = null,
+    override val critical: List<String>? = null,
     /** Ephemeral Public Key parameter (for ECDH-ES key agreement) */
     @SerialName("epk")
     val ephemeralPublicKey: JsonWebKey? = null,
@@ -77,8 +79,8 @@ public data class JweHeader(
     @SerialName("p2c")
     val pbes2Count: Long? = null,
     /** Additional header parameters */
-    val additionalParameters: Map<String, JsonElement> = emptyMap()
-)
+    override val additionalParameters: Map<String, JsonElement> = emptyMap()
+) : CommonJoseHeader
 
 /**
  * JSON Web Encryption Compact Serialization format.
@@ -97,55 +99,45 @@ public data class JweCompact(
     val initializationVector: ByteArray,
     val ciphertext: ByteArray,
     val authenticationTag: ByteArray
-) {
+) : JoseCompactSerialization {
     /**
      * Encodes the JWE as a compact serialization string.
      */
-    @OptIn(ExperimentalEncodingApi::class)
-    public fun encode(): String {
-        val headerJson = Json.encodeToString(JweHeader.serializer(), header)
-        val headerEncoded = Base64.UrlSafe.encode(headerJson.encodeToByteArray()).trimEnd('=')
-        val encryptedKeyEncoded = Base64.UrlSafe.encode(encryptedKey).trimEnd('=')
-        val ivEncoded = Base64.UrlSafe.encode(initializationVector).trimEnd('=')
-        val ciphertextEncoded = Base64.UrlSafe.encode(ciphertext).trimEnd('=')
-        val authTagEncoded = Base64.UrlSafe.encode(authenticationTag).trimEnd('=')
+    override fun encode(): String {
+        val headerEncoded = Base64UrlUtils.encode(getHeaderJson())
+        val encryptedKeyEncoded = Base64UrlUtils.encode(encryptedKey)
+        val ivEncoded = Base64UrlUtils.encode(initializationVector)
+        val ciphertextEncoded = Base64UrlUtils.encode(ciphertext)
+        val authTagEncoded = Base64UrlUtils.encode(authenticationTag)
         
-        return "$headerEncoded.$encryptedKeyEncoded.$ivEncoded.$ciphertextEncoded.$authTagEncoded"
+        return JoseCompactUtils.createCompactString(
+            headerEncoded, encryptedKeyEncoded, ivEncoded, ciphertextEncoded, authTagEncoded
+        )
     }
+    
+    override fun getHeaderJson(): String = Json.encodeToString(JweHeader.serializer(), header)
     
     /**
      * Returns the Additional Authenticated Data (AAD) for decryption.
      */
-    @OptIn(ExperimentalEncodingApi::class)
-    public fun getAdditionalAuthenticatedData(): ByteArray {
-        val headerJson = Json.encodeToString(JweHeader.serializer(), header)
-        val headerEncoded = Base64.UrlSafe.encode(headerJson.encodeToByteArray()).trimEnd('=')
-        return headerEncoded.encodeToByteArray()
-    }
+    public fun getAdditionalAuthenticatedData(): ByteArray = Base64UrlUtils.encode(getHeaderJson()).encodeToByteArray()
     
     public companion object {
         /**
          * Decodes a JWE from its compact serialization string.
          */
-        @OptIn(ExperimentalEncodingApi::class)
         public fun decode(jweString: String): JweCompact {
-            val parts = jweString.split('.')
-            require(parts.size == 5) { "Invalid JWE format: expected 5 parts separated by dots" }
+            val parts = JoseCompactUtils.parseCompactString(jweString, 5)
             
-            val headerJson = Base64.UrlSafe.decode(parts[0].padBase64()).decodeToString()
-            val encryptedKey = Base64.UrlSafe.decode(parts[1].padBase64())
-            val initializationVector = Base64.UrlSafe.decode(parts[2].padBase64())
-            val ciphertext = Base64.UrlSafe.decode(parts[3].padBase64())
-            val authenticationTag = Base64.UrlSafe.decode(parts[4].padBase64())
+            val headerJson = Base64UrlUtils.decodeToString(parts[0])
+            val encryptedKey = Base64UrlUtils.decode(parts[1])
+            val initializationVector = Base64UrlUtils.decode(parts[2])
+            val ciphertext = Base64UrlUtils.decode(parts[3])
+            val authenticationTag = Base64UrlUtils.decode(parts[4])
             
             val header = Json.decodeFromString(JweHeader.serializer(), headerJson)
             
             return JweCompact(header, encryptedKey, initializationVector, ciphertext, authenticationTag)
-        }
-        
-        private fun String.padBase64(): String {
-            val padding = (4 - length % 4) % 4
-            return this + "=".repeat(padding)
         }
     }
     
@@ -222,16 +214,15 @@ public data class JweJson(
     /**
      * Converts this JSON serialization to compact serialization if it contains exactly one recipient.
      */
-    @OptIn(ExperimentalEncodingApi::class)
     public fun toCompact(): JweCompact? {
         // Handle Flattened JSON Serialization
         if (recipients == null && encryptedKey != null && protectedHeader != null) {
-            val headerJson = Base64.UrlSafe.decode(protectedHeader.padBase64()).decodeToString()
+            val headerJson = Base64UrlUtils.decodeToString(protectedHeader)
             val header = Json.decodeFromString(JweHeader.serializer(), headerJson)
-            val encryptedKeyBytes = Base64.UrlSafe.decode(encryptedKey.padBase64())
-            val ivBytes = Base64.UrlSafe.decode(initializationVector.padBase64())
-            val ciphertextBytes = Base64.UrlSafe.decode(ciphertext.padBase64())
-            val authTagBytes = Base64.UrlSafe.decode(authenticationTag.padBase64())
+            val encryptedKeyBytes = Base64UrlUtils.decode(encryptedKey)
+            val ivBytes = Base64UrlUtils.decode(initializationVector)
+            val ciphertextBytes = Base64UrlUtils.decode(ciphertext)
+            val authTagBytes = Base64UrlUtils.decode(authenticationTag)
             
             return JweCompact(header, encryptedKeyBytes, ivBytes, ciphertextBytes, authTagBytes)
         }
@@ -239,12 +230,12 @@ public data class JweJson(
         // Handle General JSON Serialization with single recipient
         if (recipients?.size == 1 && protectedHeader != null) {
             val recipient = recipients.first()
-            val headerJson = Base64.UrlSafe.decode(protectedHeader.padBase64()).decodeToString()
+            val headerJson = Base64UrlUtils.decodeToString(protectedHeader)
             val header = Json.decodeFromString(JweHeader.serializer(), headerJson)
-            val encryptedKeyBytes = Base64.UrlSafe.decode(recipient.encryptedKey.padBase64())
-            val ivBytes = Base64.UrlSafe.decode(initializationVector.padBase64())
-            val ciphertextBytes = Base64.UrlSafe.decode(ciphertext.padBase64())
-            val authTagBytes = Base64.UrlSafe.decode(authenticationTag.padBase64())
+            val encryptedKeyBytes = Base64UrlUtils.decode(recipient.encryptedKey)
+            val ivBytes = Base64UrlUtils.decode(initializationVector)
+            val ciphertextBytes = Base64UrlUtils.decode(ciphertext)
+            val authTagBytes = Base64UrlUtils.decode(authenticationTag)
             
             return JweCompact(header, encryptedKeyBytes, ivBytes, ciphertextBytes, authTagBytes)
         }
@@ -268,14 +259,12 @@ public data class JweJson(
         /**
          * Creates a flattened JSON serialization from a compact JWE.
          */
-        @OptIn(ExperimentalEncodingApi::class)
         public fun fromCompact(compact: JweCompact): JweJson {
-            val headerJson = Json.encodeToString(JweHeader.serializer(), compact.header)
-            val protectedHeader = Base64.UrlSafe.encode(headerJson.encodeToByteArray()).trimEnd('=')
-            val encryptedKey = Base64.UrlSafe.encode(compact.encryptedKey).trimEnd('=')
-            val iv = Base64.UrlSafe.encode(compact.initializationVector).trimEnd('=')
-            val ciphertext = Base64.UrlSafe.encode(compact.ciphertext).trimEnd('=')
-            val authTag = Base64.UrlSafe.encode(compact.authenticationTag).trimEnd('=')
+            val protectedHeader = Base64UrlUtils.encode(compact.getHeaderJson())
+            val encryptedKey = Base64UrlUtils.encode(compact.encryptedKey)
+            val iv = Base64UrlUtils.encode(compact.initializationVector)
+            val ciphertext = Base64UrlUtils.encode(compact.ciphertext)
+            val authTag = Base64UrlUtils.encode(compact.authenticationTag)
             
             return JweJson(
                 protectedHeader = protectedHeader,
@@ -284,11 +273,6 @@ public data class JweJson(
                 ciphertext = ciphertext,
                 authenticationTag = authTag
             )
-        }
-        
-        private fun String.padBase64(): String {
-            val padding = (4 - length % 4) % 4
-            return this + "=".repeat(padding)
         }
     }
 }

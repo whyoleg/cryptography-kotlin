@@ -4,6 +4,7 @@
 
 package dev.whyoleg.cryptography.serialization.jose
 
+import dev.whyoleg.cryptography.serialization.jose.internal.JwkSerializationUtils
 import kotlinx.serialization.*
 import kotlinx.serialization.descriptors.*
 import kotlinx.serialization.encoding.*
@@ -274,7 +275,7 @@ public object JsonWebKeySerializer : KSerializer<JsonWebKey> {
                 put("kty", JsonPrimitive("RSA"))
                 put("n", JsonPrimitive(value.modulus))
                 put("e", JsonPrimitive(value.exponent))
-                addCommonFields(value)
+                JwkSerializationUtils.run { addCommonFields(value) }
             }
             is RsaPrivateJsonWebKey -> buildJsonObject {
                 put("kty", JsonPrimitive("RSA"))
@@ -286,14 +287,14 @@ public object JsonWebKeySerializer : KSerializer<JsonWebKey> {
                 value.firstFactorCrtExponent?.let { put("dp", JsonPrimitive(it)) }
                 value.secondFactorCrtExponent?.let { put("dq", JsonPrimitive(it)) }
                 value.firstCrtCoefficient?.let { put("qi", JsonPrimitive(it)) }
-                addCommonFields(value)
+                JwkSerializationUtils.run { addCommonFields(value) }
             }
             is EcPublicJsonWebKey -> buildJsonObject {
                 put("kty", JsonPrimitive("EC"))
                 put("crv", JsonPrimitive(value.curve.value))
                 put("x", JsonPrimitive(value.xCoordinate))
                 put("y", JsonPrimitive(value.yCoordinate))
-                addCommonFields(value)
+                JwkSerializationUtils.run { addCommonFields(value) }
             }
             is EcPrivateJsonWebKey -> buildJsonObject {
                 put("kty", JsonPrimitive("EC"))
@@ -301,12 +302,12 @@ public object JsonWebKeySerializer : KSerializer<JsonWebKey> {
                 put("x", JsonPrimitive(value.xCoordinate))
                 put("y", JsonPrimitive(value.yCoordinate))
                 put("d", JsonPrimitive(value.privateKey))
-                addCommonFields(value)
+                JwkSerializationUtils.run { addCommonFields(value) }
             }
             is SymmetricJsonWebKey -> buildJsonObject {
                 put("kty", JsonPrimitive("oct"))
                 put("k", JsonPrimitive(value.keyValue))
-                addCommonFields(value)
+                JwkSerializationUtils.run { addCommonFields(value) }
             }
             else -> error("Unknown JsonWebKey type: ${value::class}")
         }
@@ -319,6 +320,7 @@ public object JsonWebKeySerializer : KSerializer<JsonWebKey> {
         
         val kty = element["kty"]?.jsonPrimitive?.content ?: error("Missing 'kty' field")
         val keyType = JwkKeyType(kty)
+        val common = JwkSerializationUtils.extractCommonParameters(element)
         
         return when (keyType) {
             JwkKeyType.RSA -> {
@@ -336,29 +338,29 @@ public object JsonWebKeySerializer : KSerializer<JsonWebKey> {
                         firstFactorCrtExponent = element["dp"]?.jsonPrimitive?.content,
                         secondFactorCrtExponent = element["dq"]?.jsonPrimitive?.content,
                         firstCrtCoefficient = element["qi"]?.jsonPrimitive?.content,
-                        keyUse = element["use"]?.jsonPrimitive?.content?.let { JwkKeyUse(it) },
-                        keyOperations = element["key_ops"]?.jsonArray?.map { JwkKeyOperation(it.jsonPrimitive.content) },
-                        algorithm = element["alg"]?.jsonPrimitive?.content?.let { JwsAlgorithm(it) },
-                        keyId = element["kid"]?.jsonPrimitive?.content,
-                        x509Url = element["x5u"]?.jsonPrimitive?.content,
-                        x509CertificateChain = element["x5c"]?.jsonArray?.map { it.jsonPrimitive.content },
-                        x509CertificateSha1Thumbprint = element["x5t"]?.jsonPrimitive?.content,
-                        x509CertificateSha256Thumbprint = element["x5t#S256"]?.jsonPrimitive?.content,
-                        additionalParameters = element.filterKeys { it !in standardFields }
+                        keyUse = common.keyUse,
+                        keyOperations = common.keyOperations,
+                        algorithm = common.algorithm,
+                        keyId = common.keyId,
+                        x509Url = common.x509Url,
+                        x509CertificateChain = common.x509CertificateChain,
+                        x509CertificateSha1Thumbprint = common.x509CertificateSha1Thumbprint,
+                        x509CertificateSha256Thumbprint = common.x509CertificateSha256Thumbprint,
+                        additionalParameters = common.additionalParameters
                     )
                 } else {
                     RsaPublicJsonWebKey(
                         modulus = modulus,
                         exponent = exponent,
-                        keyUse = element["use"]?.jsonPrimitive?.content?.let { JwkKeyUse(it) },
-                        keyOperations = element["key_ops"]?.jsonArray?.map { JwkKeyOperation(it.jsonPrimitive.content) },
-                        algorithm = element["alg"]?.jsonPrimitive?.content?.let { JwsAlgorithm(it) },
-                        keyId = element["kid"]?.jsonPrimitive?.content,
-                        x509Url = element["x5u"]?.jsonPrimitive?.content,
-                        x509CertificateChain = element["x5c"]?.jsonArray?.map { it.jsonPrimitive.content },
-                        x509CertificateSha1Thumbprint = element["x5t"]?.jsonPrimitive?.content,
-                        x509CertificateSha256Thumbprint = element["x5t#S256"]?.jsonPrimitive?.content,
-                        additionalParameters = element.filterKeys { it !in standardFields }
+                        keyUse = common.keyUse,
+                        keyOperations = common.keyOperations,
+                        algorithm = common.algorithm,
+                        keyId = common.keyId,
+                        x509Url = common.x509Url,
+                        x509CertificateChain = common.x509CertificateChain,
+                        x509CertificateSha1Thumbprint = common.x509CertificateSha1Thumbprint,
+                        x509CertificateSha256Thumbprint = common.x509CertificateSha256Thumbprint,
+                        additionalParameters = common.additionalParameters
                     )
                 }
             }
@@ -374,30 +376,30 @@ public object JsonWebKeySerializer : KSerializer<JsonWebKey> {
                         xCoordinate = xCoordinate,
                         yCoordinate = yCoordinate,
                         privateKey = privateKey,
-                        keyUse = element["use"]?.jsonPrimitive?.content?.let { JwkKeyUse(it) },
-                        keyOperations = element["key_ops"]?.jsonArray?.map { JwkKeyOperation(it.jsonPrimitive.content) },
-                        algorithm = element["alg"]?.jsonPrimitive?.content?.let { JwsAlgorithm(it) },
-                        keyId = element["kid"]?.jsonPrimitive?.content,
-                        x509Url = element["x5u"]?.jsonPrimitive?.content,
-                        x509CertificateChain = element["x5c"]?.jsonArray?.map { it.jsonPrimitive.content },
-                        x509CertificateSha1Thumbprint = element["x5t"]?.jsonPrimitive?.content,
-                        x509CertificateSha256Thumbprint = element["x5t#S256"]?.jsonPrimitive?.content,
-                        additionalParameters = element.filterKeys { it !in standardFields }
+                        keyUse = common.keyUse,
+                        keyOperations = common.keyOperations,
+                        algorithm = common.algorithm,
+                        keyId = common.keyId,
+                        x509Url = common.x509Url,
+                        x509CertificateChain = common.x509CertificateChain,
+                        x509CertificateSha1Thumbprint = common.x509CertificateSha1Thumbprint,
+                        x509CertificateSha256Thumbprint = common.x509CertificateSha256Thumbprint,
+                        additionalParameters = common.additionalParameters
                     )
                 } else {
                     EcPublicJsonWebKey(
                         curve = curve,
                         xCoordinate = xCoordinate,
                         yCoordinate = yCoordinate,
-                        keyUse = element["use"]?.jsonPrimitive?.content?.let { JwkKeyUse(it) },
-                        keyOperations = element["key_ops"]?.jsonArray?.map { JwkKeyOperation(it.jsonPrimitive.content) },
-                        algorithm = element["alg"]?.jsonPrimitive?.content?.let { JwsAlgorithm(it) },
-                        keyId = element["kid"]?.jsonPrimitive?.content,
-                        x509Url = element["x5u"]?.jsonPrimitive?.content,
-                        x509CertificateChain = element["x5c"]?.jsonArray?.map { it.jsonPrimitive.content },
-                        x509CertificateSha1Thumbprint = element["x5t"]?.jsonPrimitive?.content,
-                        x509CertificateSha256Thumbprint = element["x5t#S256"]?.jsonPrimitive?.content,
-                        additionalParameters = element.filterKeys { it !in standardFields }
+                        keyUse = common.keyUse,
+                        keyOperations = common.keyOperations,
+                        algorithm = common.algorithm,
+                        keyId = common.keyId,
+                        x509Url = common.x509Url,
+                        x509CertificateChain = common.x509CertificateChain,
+                        x509CertificateSha1Thumbprint = common.x509CertificateSha1Thumbprint,
+                        x509CertificateSha256Thumbprint = common.x509CertificateSha256Thumbprint,
+                        additionalParameters = common.additionalParameters
                     )
                 }
             }
@@ -405,39 +407,20 @@ public object JsonWebKeySerializer : KSerializer<JsonWebKey> {
                 val keyValue = element["k"]?.jsonPrimitive?.content ?: error("Missing 'k' field for symmetric key")
                 SymmetricJsonWebKey(
                     keyValue = keyValue,
-                    keyUse = element["use"]?.jsonPrimitive?.content?.let { JwkKeyUse(it) },
-                    keyOperations = element["key_ops"]?.jsonArray?.map { JwkKeyOperation(it.jsonPrimitive.content) },
-                    algorithm = element["alg"]?.jsonPrimitive?.content?.let { JwsAlgorithm(it) },
-                    keyId = element["kid"]?.jsonPrimitive?.content,
-                    x509Url = element["x5u"]?.jsonPrimitive?.content,
-                    x509CertificateChain = element["x5c"]?.jsonArray?.map { it.jsonPrimitive.content },
-                    x509CertificateSha1Thumbprint = element["x5t"]?.jsonPrimitive?.content,
-                    x509CertificateSha256Thumbprint = element["x5t#S256"]?.jsonPrimitive?.content,
-                    additionalParameters = element.filterKeys { it !in standardFields }
+                    keyUse = common.keyUse,
+                    keyOperations = common.keyOperations,
+                    algorithm = common.algorithm,
+                    keyId = common.keyId,
+                    x509Url = common.x509Url,
+                    x509CertificateChain = common.x509CertificateChain,
+                    x509CertificateSha1Thumbprint = common.x509CertificateSha1Thumbprint,
+                    x509CertificateSha256Thumbprint = common.x509CertificateSha256Thumbprint,
+                    additionalParameters = common.additionalParameters
                 )
             }
             else -> error("Unsupported key type: $kty")
         }
     }
-    
-    private fun JsonObjectBuilder.addCommonFields(value: JsonWebKey) {
-        value.keyUse?.let { put("use", JsonPrimitive(it.value)) }
-        value.keyOperations?.let { ops -> put("key_ops", JsonArray(ops.map { JsonPrimitive(it.value) })) }
-        value.algorithm?.let { put("alg", JsonPrimitive(it.value)) }
-        value.keyId?.let { put("kid", JsonPrimitive(it)) }
-        value.x509Url?.let { put("x5u", JsonPrimitive(it)) }
-        value.x509CertificateChain?.let { chain -> put("x5c", JsonArray(chain.map { JsonPrimitive(it) })) }
-        value.x509CertificateSha1Thumbprint?.let { put("x5t", JsonPrimitive(it)) }
-        value.x509CertificateSha256Thumbprint?.let { put("x5t#S256", JsonPrimitive(it)) }
-        value.additionalParameters.forEach { (key, value) -> put(key, value) }
-    }
-    
-    private val standardFields = setOf(
-        "kty", "use", "key_ops", "alg", "kid", "x5u", "x5c", "x5t", "x5t#S256",
-        "n", "e", "d", "p", "q", "dp", "dq", "qi", // RSA
-        "crv", "x", "y", // EC
-        "k" // Symmetric
-    )
 }
 
 /**
