@@ -4,12 +4,13 @@
 
 package dev.whyoleg.cryptography.serialization.jose
 
+import dev.whyoleg.cryptography.serialization.jose.internal.Base64UrlUtils
+import dev.whyoleg.cryptography.serialization.jose.internal.JoseCompactSerialization
+import dev.whyoleg.cryptography.serialization.jose.internal.JoseCompactUtils
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
-import kotlin.io.encoding.Base64
-import kotlin.io.encoding.ExperimentalEncodingApi
 
 /**
  * JSON Web Token (JWT) representation as defined in RFC 7519.
@@ -24,48 +25,44 @@ public data class JsonWebToken(
     val header: JwtHeader,
     val payload: JwtPayload,
     val signature: String? = null
-) {
+) : JoseCompactSerialization {
     /**
      * Encodes the JWT as a compact serialization string.
      * Format: base64url(header).base64url(payload).base64url(signature)
      */
-    @OptIn(ExperimentalEncodingApi::class)
-    public fun encode(): String {
-        val headerJson = Json.encodeToString(JwtHeader.serializer(), header)
-        val payloadJson = Json.encodeToString(JwtPayload.serializer(), payload)
-        
-        val headerEncoded = Base64.UrlSafe.encode(headerJson.encodeToByteArray()).trimEnd('=')
-        val payloadEncoded = Base64.UrlSafe.encode(payloadJson.encodeToByteArray()).trimEnd('=')
+    override fun encode(): String {
+        val headerEncoded = Base64UrlUtils.encode(getHeaderJson())
+        val payloadEncoded = Base64UrlUtils.encode(getPayloadJson())
         
         return if (signature != null) {
-            "$headerEncoded.$payloadEncoded.$signature"
+            JoseCompactUtils.createCompactString(headerEncoded, payloadEncoded, signature)
         } else {
-            "$headerEncoded.$payloadEncoded."
+            JoseCompactUtils.createCompactString(headerEncoded, payloadEncoded, "")
         }
     }
+    
+    override fun getHeaderJson(): String = Json.encodeToString(JwtHeader.serializer(), header)
+    
+    /**
+     * Gets the payload as a JSON string for encoding.
+     */
+    public fun getPayloadJson(): String = Json.encodeToString(JwtPayload.serializer(), payload)
     
     public companion object {
         /**
          * Decodes a JWT from its compact serialization string.
          */
-        @OptIn(ExperimentalEncodingApi::class)
         public fun decode(token: String): JsonWebToken {
-            val parts = token.split('.')
-            require(parts.size == 3) { "Invalid JWT format: expected 3 parts separated by dots" }
+            val parts = JoseCompactUtils.parseCompactString(token, 3)
             
-            val headerJson = Base64.UrlSafe.decode(parts[0].padBase64()).decodeToString()
-            val payloadJson = Base64.UrlSafe.decode(parts[1].padBase64()).decodeToString()
+            val headerJson = Base64UrlUtils.decodeToString(parts[0])
+            val payloadJson = Base64UrlUtils.decodeToString(parts[1])
             val signature = parts[2].takeIf { it.isNotEmpty() }
             
             val header = Json.decodeFromString(JwtHeader.serializer(), headerJson)
             val payload = Json.decodeFromString(JwtPayload.serializer(), payloadJson)
             
             return JsonWebToken(header, payload, signature)
-        }
-        
-        private fun String.padBase64(): String {
-            val padding = (4 - length % 4) % 4
-            return this + "=".repeat(padding)
         }
     }
 }
