@@ -99,7 +99,7 @@ public data class JwtPayload(
     val subject: String? = null,
     /** Audience - identifies the recipients that the JWT is intended for */
     @SerialName("aud")
-    val audience: String? = null,
+    val audience: List<String>? = null,
     /** Expiration Time - identifies the expiration time on or after which the JWT MUST NOT be accepted */
     @SerialName("exp")
     val expirationTime: Long? = null,
@@ -114,4 +114,31 @@ public data class JwtPayload(
     val jwtId: String? = null,
     /** Additional custom claims */
     val customClaims: Map<String, JsonElement> = emptyMap()
-)
+) {
+    /**
+     * Convenience property for accessing single audience value.
+     */
+    val singleAudience: String?
+        get() = audience?.singleOrNull()
+    
+    /**
+     * Checks if the JWT is expired at the given time (in seconds since epoch).
+     */
+    public fun isExpired(currentTime: Long = System.currentTimeMillis() / 1000): Boolean {
+        return expirationTime != null && currentTime >= expirationTime
+    }
+    
+    /**
+     * Checks if the JWT is not yet valid at the given time (in seconds since epoch).
+     */
+    public fun isNotYetValid(currentTime: Long = System.currentTimeMillis() / 1000): Boolean {
+        return notBefore != null && currentTime < notBefore
+    }
+    
+    /**
+     * Checks if the JWT is currently valid (not expired and not before current time).
+     */
+    public fun isValid(currentTime: Long = System.currentTimeMillis() / 1000): Boolean {
+        return !isExpired(currentTime) && !isNotYetValid(currentTime)
+    }
+}
