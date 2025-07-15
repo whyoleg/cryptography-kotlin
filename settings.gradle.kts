@@ -55,6 +55,7 @@ projects("cryptography-kotlin") {
             module("android-tests")
             module("bc") // preconfigured JDK with BC provider
         }
+        module("bouncycastle")
         module("apple")
         module("webcrypto")
         folder("openssl3") {
