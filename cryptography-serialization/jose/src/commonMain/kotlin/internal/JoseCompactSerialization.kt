@@ -4,8 +4,6 @@
 
 package dev.whyoleg.cryptography.serialization.jose.internal
 
-import kotlinx.serialization.json.Json
-
 /**
  * Common interface for JOSE compact serialization formats.
  */

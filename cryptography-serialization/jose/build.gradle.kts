@@ -17,12 +17,9 @@ kotlin {
     nativeTargets()
     wasmTargets()
 
-    sourceSets.commonMain.dependencies {
-        api(projects.cryptographyCore)
-        implementation(libs.kotlinx.serialization.json)
-    }
-    
-    sourceSets.commonTest.dependencies {
-        implementation(libs.kotlin.test)
+    sourceSets {
+        commonMain.dependencies {
+            api(libs.kotlinx.serialization.json)
+        }
     }
 }

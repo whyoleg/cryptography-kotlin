@@ -4,12 +4,12 @@
 
 package dev.whyoleg.cryptography.serialization.jose
 
-import dev.whyoleg.cryptography.serialization.jose.internal.JwkSerializationUtils
+import dev.whyoleg.cryptography.serialization.jose.internal.*
 import kotlinx.serialization.*
 import kotlinx.serialization.descriptors.*
 import kotlinx.serialization.encoding.*
 import kotlinx.serialization.json.*
-import kotlin.jvm.JvmInline
+import kotlin.jvm.*
 
 /**
  * Key Types as defined in RFC 7518

@@ -4,14 +4,9 @@
 
 package dev.whyoleg.cryptography.serialization.jose
 
-import dev.whyoleg.cryptography.serialization.jose.internal.Base64UrlUtils
-import dev.whyoleg.cryptography.serialization.jose.internal.CommonJoseHeader
-import dev.whyoleg.cryptography.serialization.jose.internal.JoseCompactSerialization
-import dev.whyoleg.cryptography.serialization.jose.internal.JoseCompactUtils
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonElement
+import dev.whyoleg.cryptography.serialization.jose.internal.*
+import kotlinx.serialization.*
+import kotlinx.serialization.json.*
 
 /**
  * JSON Web Encryption (JWE) as defined in RFC 7516.

@@ -4,8 +4,7 @@
 
 package dev.whyoleg.cryptography.serialization.jose.internal
 
-import kotlin.io.encoding.Base64
-import kotlin.io.encoding.ExperimentalEncodingApi
+import kotlin.io.encoding.*
 
 /**
  * Internal utilities for Base64 URL-safe encoding/decoding used across JOSE implementations.

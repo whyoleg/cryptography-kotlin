@@ -4,8 +4,8 @@
 
 package dev.whyoleg.cryptography.serialization.jose.internal
 
-import dev.whyoleg.cryptography.serialization.jose.JsonWebKey
-import kotlinx.serialization.json.JsonElement
+import dev.whyoleg.cryptography.serialization.jose.*
+import kotlinx.serialization.json.*
 
 /**
  * Common header parameters shared across JOSE specifications.

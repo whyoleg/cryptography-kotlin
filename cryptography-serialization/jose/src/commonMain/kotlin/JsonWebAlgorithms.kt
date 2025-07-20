@@ -4,8 +4,8 @@
 
 package dev.whyoleg.cryptography.serialization.jose
 
-import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmInline
+import kotlinx.serialization.*
+import kotlin.jvm.*
 
 /**
  * JSON Web Algorithms (JWA) as defined in RFC 7518.

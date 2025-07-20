@@ -4,11 +4,8 @@
 
 package dev.whyoleg.cryptography.serialization.jose
 
-import kotlinx.serialization.json.Json
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
+import kotlinx.serialization.json.*
+import kotlin.test.*
 
 /**
  * Tests with examples from RFC 7520 - Examples of Protecting Content Using JSON Object Signing and Encryption (JOSE)
