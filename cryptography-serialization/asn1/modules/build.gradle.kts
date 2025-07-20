@@ -12,10 +12,7 @@ plugins {
 description = "cryptography-kotlin ASN.1 modules"
 
 kotlin {
-    jvmTarget()
-    jsTarget()
-    nativeTargets()
-    wasmTargets()
+    allTargets()
 
     sourceSets {
         commonMain.dependencies {

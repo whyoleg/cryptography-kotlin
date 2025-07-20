@@ -14,10 +14,9 @@ plugins {
 
 @OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
-    jvmTarget()
-    jsTarget()
-    nativeTargets()
-    wasmJsTarget()
+    allTargets(
+        supportsWasmWasi = false
+    )
 
     applyDefaultHierarchyTemplate {
         common {

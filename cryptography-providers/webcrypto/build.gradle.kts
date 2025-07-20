@@ -14,8 +14,7 @@ description = "cryptography-kotlin WebCrypto provider"
 
 @OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
-    jsTarget()
-    wasmJsTarget()
+    webTargets()
 
     compilerOptions {
         optIn.addAll(

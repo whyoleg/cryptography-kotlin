@@ -9,6 +9,15 @@ import org.gradle.kotlin.dsl.*
 import org.jetbrains.kotlin.gradle.*
 import org.jetbrains.kotlin.gradle.dsl.*
 
+fun KotlinMultiplatformExtension.allTargets(
+    supportsWasmWasi: Boolean = true,
+) {
+    jvmTarget()
+    webTargets()
+    nativeTargets()
+    if (supportsWasmWasi) wasmWasiTarget()
+}
+
 fun KotlinMultiplatformExtension.appleTargets(
     // not supported by Swift anymore -> not supported by CryptoKit
     supportsWatchosArm32: Boolean = true,
@@ -51,24 +60,10 @@ fun KotlinMultiplatformExtension.nativeTargets() {
     androidNativeArm32()
 }
 
-fun KotlinMultiplatformExtension.jsTarget(
-    supportsNode: Boolean = true,
-    supportsBrowser: Boolean = true,
-) {
+fun KotlinMultiplatformExtension.jsTarget() {
     js {
-        if (supportsNode) nodejs()
-        if (supportsBrowser) browser()
-    }
-}
-
-@OptIn(ExperimentalWasmDsl::class)
-fun KotlinMultiplatformExtension.wasmTargets() {
-    wasmJs {
         nodejs()
         browser()
-    }
-    wasmWasi {
-        nodejs()
     }
 }
 
@@ -78,6 +73,18 @@ fun KotlinMultiplatformExtension.wasmJsTarget() {
         nodejs()
         browser()
     }
+}
+
+@OptIn(ExperimentalWasmDsl::class)
+fun KotlinMultiplatformExtension.wasmWasiTarget() {
+    wasmWasi {
+        nodejs()
+    }
+}
+
+fun KotlinMultiplatformExtension.webTargets() {
+    jsTarget()
+    wasmJsTarget()
 }
 
 fun KotlinMultiplatformExtension.jvmTarget(

@@ -12,10 +12,7 @@ plugins {
 description = "cryptography-kotlin ASN.1 (DER) API"
 
 kotlin {
-    jvmTarget()
-    jsTarget()
-    nativeTargets()
-    wasmTargets()
+    allTargets()
 
     sourceSets {
         commonMain.dependencies {

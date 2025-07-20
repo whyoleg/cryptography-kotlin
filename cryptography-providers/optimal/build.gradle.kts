@@ -15,10 +15,9 @@ description = "cryptography-kotlin optimal provider"
 
 @OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
-    jvmTarget()
-    jsTarget()
-    wasmJsTarget()
-    nativeTargets()
+    allTargets(
+        supportsWasmWasi = false
+    )
 
     applyDefaultHierarchyTemplate {
         common {
