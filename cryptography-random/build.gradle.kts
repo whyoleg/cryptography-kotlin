@@ -13,10 +13,7 @@ description = "cryptography-kotlin random API"
 
 @OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
-    jvmTarget()
-    jsTarget()
-    nativeTargets()
-    wasmTargets()
+    allTargets()
 
     applyDefaultHierarchyTemplate {
         common {

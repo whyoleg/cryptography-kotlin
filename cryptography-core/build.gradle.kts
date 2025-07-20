@@ -12,10 +12,7 @@ plugins {
 description = "cryptography-kotlin core API"
 
 kotlin {
-    jvmTarget()
-    jsTarget()
-    nativeTargets()
-    wasmTargets()
+    allTargets()
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     applyDefaultHierarchyTemplate {

@@ -11,10 +11,7 @@ plugins {
 description = "cryptography-kotlin PEM API"
 
 kotlin {
-    jvmTarget()
-    jsTarget()
-    nativeTargets()
-    wasmTargets()
+    allTargets()
 
     sourceSets {
         commonMain.dependencies {

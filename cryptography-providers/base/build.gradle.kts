@@ -11,10 +11,7 @@ plugins {
 description = "cryptography-kotlin base provider"
 
 kotlin {
-    jvmTarget()
-    jsTarget()
-    nativeTargets()
-    wasmTargets()
+    allTargets()
 
     sourceSets.commonMain.dependencies {
         api(projects.cryptographyCore)

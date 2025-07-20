@@ -14,10 +14,7 @@ description = "cryptography-kotlin BigInt API"
 
 @OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
-    jvmTarget()
-    jsTarget()
-    nativeTargets()
-    wasmTargets()
+    allTargets()
 
     compilerOptions {
         freeCompilerArgs.add("-Xexpect-actual-classes")
