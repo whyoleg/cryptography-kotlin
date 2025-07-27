@@ -39,7 +39,7 @@ projects("cryptography-kotlin") {
     folder("cryptography-serialization") {
         module("pem")
         module("asn1") {
-            module("modules")
+            module("modules") // TODO: rename to `pki`
         }
         module("jose")
     }
