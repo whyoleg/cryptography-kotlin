@@ -5,61 +5,14 @@
 package dev.whyoleg.cryptography.serialization.jose.v0
 
 import kotlinx.serialization.*
+import kotlinx.serialization.builtins.*
 import kotlinx.serialization.json.*
 import kotlin.io.encoding.*
 
 public val Json.Default.JoseCompliant: Json by lazy {
     Json {
         ignoreUnknownKeys = true
-        encodeDefaults = true // TODO?
-    }
-}
-
-// header = JsonObject/TypeSafeMap/custom-class-impl
-public sealed interface JoseHeader : Map<String, JsonElement> {
-    public fun <T> decode(deserializer: DeserializationStrategy<T>): T {
-        return Json.JoseCompliant.decodeFromJsonElement(deserializer, toJsonObject())
-    }
-
-    // TODO: nullable/absent parameter handling
-    public fun <T> decodeParameter(name: String, deserializer: DeserializationStrategy<T>): T? {
-        return Json.JoseCompliant.decodeFromJsonElement(
-            deserializer = deserializer,
-            element = get(name) ?: return null
-        )
-    }
-
-    public fun toJsonObject(): JsonObject = JsonObject(this)
-    public fun toJsonString(): String = toJsonObject().toString()
-    // override fun toString(): String = toJsonString()
-
-    public interface Parser<H : JoseHeader> {
-        public fun fromJsonString(string: String): H
-        public fun fromJsonObject(obj: JsonObject): H
-    }
-
-    public sealed interface Builder {
-
-    }
-}
-
-public class JosePayload private constructor(
-
-) {
-    public fun toByteArray(): ByteArray {}
-    public fun toUtf8String(): String {} // TODO
-    public fun toBase64UrlString(): String {} //
-    public fun toJsonElement(): JsonElement {}
-
-    public fun <T> decode(format: StringFormat, serializer: DeserializationStrategy<T>): T {}
-    public fun <T> decode(format: BinaryFormat, serializer: DeserializationStrategy<T>): T {}
-    public fun <T> decodeJson(serializer: DeserializationStrategy<T>): T {}
-
-    public companion object {
-        public fun fromUtf8String(string: String): JosePayload {}
-        public fun fromBase64UrlString(string: String): JosePayload {}
-        public fun fromJsonElement(element: JsonElement): JosePayload {}
-        public fun fromByteArray(bytes: ByteArray): JosePayload {}
+        encodeDefaults = false // TODO?
     }
 }
 
@@ -79,20 +32,84 @@ internal fun parseCompactString(compact: String, expectedParts: Int): List<Strin
     return parts
 }
 
-private fun test(obj: JsonWebSignatureObject) {
+@OptIn(DelicateJoseApi::class)
+private suspend fun test(obj: JwsObject) {
+    val header = jwsObjectHeader(JwsHeader.Algorithm.HS256) {
+        protected {
+            type = JoseHeader.Type.JWT
+            putCritical("custom", String.serializer(), "value")
+        }
+        unprotected.contentType = JoseHeader.ContentType("application/json")
+    }
+
+    if (JoseHeader.Type in header) {
+        // do something
+    }
+
+    val signer: suspend (JwsHeader, ByteArray) -> ByteArray = { _: JwsHeader, _: ByteArray ->
+        "".encodeToByteArray()
+    }
+
+    JwsObject.sign("data".encodeToByteArray(), header) { header, signingInput ->
+        signer(header, signingInput)
+    }
+
+    val jws = JwsObject.sign("data".encodeToByteArray(), header) { header, signingInput ->
+        signingInput
+    }
+    val jwsMulti = JwsObject.sign(
+        "data".encodeToByteArray(), listOf(
+            header,
+            jwsObjectHeader {
+                fromObjectHeader(header)
+                protected.put("kid", String.serializer(), "test-key")
+            },
+        )
+    ) { header, signingInput ->
+        signingInput
+    }
+    val jws2 = JwsObject.presigned("    ".encodeToByteArray(), header, "xxx".encodeToByteArray())
+
+    JwsObject.parseCompactString("") { header, payload, signature ->
+    }
+    JwsObject.parseCompactStringUnverified("")
+
+    JwsObject(
+        "".encodeToByteArray(),
+        JwsHeader {
+
+        },
+
+        ) {
+
+    }
+    JwsObject(
+        buildJoseHeader {
+            from(JWT())
+            from(OID4VP(...))
+            put(JoseHeaderParameter("test", String.serializer()), "test")
+        },
+        "".encodeToByteArray()
+    ) {
+        // sign function
+    }
+
+    // JsonWebSignatureObject.build
+
+
     val c1 = JsonWebTokenClaims.fromJsonString(obj.payload.decodeToString())
-    val c2 = JsonWebTokenClaims.fromHeader(obj.signature.header)
+    val c2 = JsonWebTokenClaims.fromHeader(obj.signatures.single().header)
 
 
     Json.JoseCompliant.decodeFromString<JsonObject>(obj.payload.decodeToString())
 
     buildJsonObject { }
-    JsonWebSignatureObject.Header.fromFields(
-        JsonWebSignatureObject.Algorithm.HS256
+    JwsObject.Header.fromFields(
+        JwsObject.Algorithm.HS256
     )
 
-    val jwt = JsonWebSignatureObject.create(
-        JsonWebSignatureObject.Header.fromFields(null),
+    val jwt = JwsObject.create(
+        JwsObject.Header.fromFields(null),
         Json.JoseCompliant.encodeToString(
             JwtClaims()
         ).encodeToByteArray()
