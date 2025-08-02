@@ -42,6 +42,7 @@ projects("cryptography-kotlin") {
             module("modules") // TODO: rename to `pki`
         }
         module("jose")
+        module("cose")
     }
 
     // providers API, high-level API
