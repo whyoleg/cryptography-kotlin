@@ -52,13 +52,13 @@ public sealed interface JoseHeader {
     }
 
     public class Type(public val value: String) {
-        public companion object : ParameterKey<String> by ParameterKey.of("typ") {
+        public companion object : ParameterKey<Type> by ParameterKey.of("typ") {
             public val JWT: Type = Type("JWT")
         }
     }
 
     public class ContentType(public val value: String) {
-        public companion object : ParameterKey<String> by ParameterKey.of("cty") {
+        public companion object : ParameterKey<ContentType> by ParameterKey.of("cty") {
             // public val JSON: ContentType = ContentType("application/json")
         }
     }
@@ -110,33 +110,33 @@ public operator fun <T> JoseHeader.ParameterKey<T>.setValue(thisRef: JoseHeaderB
 //public val JoseHeader.type: String by JoseHeader.DefaultParameters.TYPE
 //public var JoseHeaderBuilder.type: String by JoseHeader.DefaultParameters.TYPE
 
-private class JoseHeaderImpl private constructor(
-    private var obj: JsonObject?,
-    private var string: String?,
-) : JoseHeader {
-    constructor(obj: JsonObject) : this(obj, null)
-    constructor(string: String) : this(null, string)
-
-    override fun <T> decode(deserializer: DeserializationStrategy<T>): T = when {
-        string != null -> Json.JoseCompliant.decodeFromString(deserializer, string!!)
-        obj != null    -> Json.JoseCompliant.decodeFromJsonElement(deserializer, obj!!)
-        else           -> error("should not happen")
-    }
-
-    override fun toJsonObject(): JsonObject {
-        if (obj == null) obj = Json.JoseCompliant.decodeFromString(JsonObject.serializer(), string!!)
-        return obj!!
-    }
-
-    override fun toJsonString(): String {
-        // TODO: this vs obj.toString()
-        if (string == null) string = Json.JoseCompliant.encodeToString(JsonObject.serializer(), obj!!)
-        return string!!
-    }
-
-    override operator fun plus(other: JoseHeader): JoseHeader {
-        return JoseHeaderImpl(JsonObject(toJsonObject() + other.toJsonObject()))
-    }
-
-    override fun toString(): String = "JoseHeader${toJsonString()}"
-}
+//private class JoseHeaderImpl private constructor(
+//    private var obj: JsonObject?,
+//    private var string: String?,
+//) : JoseHeader {
+//    constructor(obj: JsonObject) : this(obj, null)
+//    constructor(string: String) : this(null, string)
+//
+//    override fun <T> decode(deserializer: DeserializationStrategy<T>): T = when {
+//        string != null -> Json.JoseCompliant.decodeFromString(deserializer, string!!)
+//        obj != null    -> Json.JoseCompliant.decodeFromJsonElement(deserializer, obj!!)
+//        else           -> error("should not happen")
+//    }
+//
+//    override fun toJsonObject(): JsonObject {
+//        if (obj == null) obj = Json.JoseCompliant.decodeFromString(JsonObject.serializer(), string!!)
+//        return obj!!
+//    }
+//
+//    override fun toJsonString(): String {
+//        // TODO: this vs obj.toString()
+//        if (string == null) string = Json.JoseCompliant.encodeToString(JsonObject.serializer(), obj!!)
+//        return string!!
+//    }
+//
+//    override operator fun plus(other: JoseHeader): JoseHeader {
+//        return JoseHeaderImpl(JsonObject(toJsonObject() + other.toJsonObject()))
+//    }
+//
+//    override fun toString(): String = "JoseHeader${toJsonString()}"
+//}

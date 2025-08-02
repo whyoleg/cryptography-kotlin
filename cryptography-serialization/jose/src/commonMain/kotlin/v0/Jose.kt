@@ -32,15 +32,102 @@ internal fun parseCompactString(compact: String, expectedParts: Int): List<Strin
     return parts
 }
 
+private fun sign(header: JwsHeader, signingInput: ByteArray): ByteArray = TODO()
+private suspend fun sign2(header: JwsHeader, signingInput: ByteArray): ByteArray = TODO()
+
 @OptIn(DelicateJoseApi::class)
 private suspend fun test(obj: JwsObject) {
-    val header = jwsObjectHeader(JwsHeader.Algorithm.HS256) {
-        protected {
+    val header = jwsCompositeHeader(JwsHeader.Algorithm.HS256) {
+        protected.apply {
             type = JoseHeader.Type.JWT
             putCritical("custom", String.serializer(), "value")
         }
         unprotected.contentType = JoseHeader.ContentType("application/json")
+        unprotected.put(JoseHeader.ContentType, JoseHeader.ContentType("application/json"))
     }
+    val token = jsonWebToken {
+        issuer = "test-issuer"
+    }
+
+    jwsContent(
+        jwsHeader(JwsHeader.Algorithm.HS256) {
+            type = JoseHeader.Type.JWT
+            putCritical("custom", String.serializer(), "value")
+        },
+        jsonWebToken {
+            issuer = "test-issuer"
+        }.toJsonString().encodeToByteArray()
+    ).sign { _, si ->
+        si
+    }.toCompactString()
+
+    jwsContent(
+        listOf(
+            jwsCompositeHeader {
+
+            }
+        ),
+        jsonWebToken {
+
+        }.toJsonString().encodeToByteArray()
+    ).sign {
+
+    }.toJsonString()
+
+    JwsObject.parseCompactString("")
+        .verify { _, _, _ -> }
+        .payload
+
+
+    jwsContent(payload, header)
+    jwsContent(payload, listOf(header))
+
+    JwsObject.parseCompactString()
+    JwsObject.parseJsonString()
+
+    val jwsxx = JwsObject.sign("".encodeToByteArray(), header.combined, ::sign)
+
+    JwsObject.sign("".encodeToByteArray(), jwsHeader {
+
+    }) { header, signingInput ->
+        signingInput
+    }.verify { header, signingInput, signature ->
+    }
+
+    JwsObject.sign(
+        payload = "".encodeToByteArray(),
+        headers = listOf(
+            jwsCompositeHeader {
+
+            },
+            jwsCompositeHeader {
+
+            },
+        )
+    ) { header, signingInput ->
+
+    }
+
+    jwsxx.header.contentType
+    jwsxx.header.merged.contentType
+
+    val jwt = JwsObject.sign(
+        token.toJsonString().encodeToByteArray(),
+        header,
+    ) { header, signingInput ->
+        signingInput
+    }
+
+    val string = jwt.toCompactString()
+    val parsed = JwsObject.parseCompactString(string) { header, payload, signature ->
+        error("?")
+    }
+
+    jsonWebToken {
+        fromJsonObject(parsed.payloads.single().header.toJsonObject())
+        fromJsonString(parsed.payload.decodeToString())
+    }
+
 
     if (JoseHeader.Type in header) {
         // do something
@@ -60,8 +147,8 @@ private suspend fun test(obj: JwsObject) {
     val jwsMulti = JwsObject.sign(
         "data".encodeToByteArray(), listOf(
             header,
-            jwsObjectHeader {
-                fromObjectHeader(header)
+            jwsCompositeHeader {
+                fromCompositeHeader(header)
                 protected.put("kid", String.serializer(), "test-key")
             },
         )
@@ -98,7 +185,7 @@ private suspend fun test(obj: JwsObject) {
 
 
     val c1 = JsonWebTokenClaims.fromJsonString(obj.payload.decodeToString())
-    val c2 = JsonWebTokenClaims.fromHeader(obj.signatures.single().header)
+    val c2 = JsonWebTokenClaims.fromHeader(obj.payloads.single().header)
 
 
     Json.JoseCompliant.decodeFromString<JsonObject>(obj.payload.decodeToString())
@@ -108,10 +195,10 @@ private suspend fun test(obj: JwsObject) {
         JwsObject.Algorithm.HS256
     )
 
-    val jwt = JwsObject.create(
+    JwsObject.create(
         JwsObject.Header.fromFields(null),
         Json.JoseCompliant.encodeToString(
-            JwtClaims()
+            JsonWebToken()
         ).encodeToByteArray()
     ) { x, y ->
         x.algorithm

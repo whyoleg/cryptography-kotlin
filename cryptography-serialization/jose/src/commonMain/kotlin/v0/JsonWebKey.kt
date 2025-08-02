@@ -99,7 +99,9 @@ public class JsonWebKey(
     }
 }
 
-public class JsonWebKeySet
+public class JsonWebKeySet(
+    public val keys: List<JsonWebKey>,
+)
 
 ///**
 // * Key Operations
