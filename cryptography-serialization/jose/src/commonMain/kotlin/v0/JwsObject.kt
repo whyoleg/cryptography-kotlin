@@ -23,6 +23,7 @@ public sealed interface JwsObject : JoseObject {
 
     public companion object {
         public fun parseCompactString(string: String): Compact = TODO()
+        public fun parseCompactString(string: String, detachedPayload: ByteArray/*detached content?*/): Compact = TODO()
         public fun parseJsonString(string: String): JwsObject = TODO()
     }
 }

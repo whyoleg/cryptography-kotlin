@@ -14,6 +14,7 @@ public inline fun JwsContent.sign(signer: JwsSigner): JwsObject = TODO()
 @DelicateJoseApi
 public inline fun JwsContent.Compact.sign(signer: JwsSigner): JwsObject.Compact = TODO()
 
+// options: at least once (will return all valid), at most once (will stop after first), all (will return all or not at all)
 // TODO: decide what to do on partial verification
 @DelicateJoseApi
 public inline fun JwsObject.verify(verifier: JwsVerifier): JwsContent = TODO()

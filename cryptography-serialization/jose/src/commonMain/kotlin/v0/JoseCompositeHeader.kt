@@ -4,6 +4,7 @@
 
 package dev.whyoleg.cryptography.serialization.jose.v0
 
+// TODO: may be renamed it to just `JoseHeaders`?
 public sealed interface JoseCompositeHeader {
     public val protected: JoseHeader
     public val unprotected: JoseHeader
