@@ -6,7 +6,6 @@ package dev.whyoleg.cryptography.serialization.jose.v0
 
 // TODO: decide on how to support `direct encryption / previously exchanged key`
 public sealed interface JweObject : JoseObject {
-    public val authenticatedData: ByteArray?
     public val ciphertext: JweCiphertext
 
     // TODO: decide on shared and per-recipient header
@@ -22,9 +21,6 @@ public sealed interface JweObject : JoseObject {
     public sealed interface Compact : JweObject, JoseObject.Compact {
         override val header: JweHeader
         public val encryptedKey: ByteArray
-
-        // always null
-        override val authenticatedData: ByteArray? get() = null
 
         // has only protected part equals to `header`
         override val sharedHeader: JweCompositeHeader

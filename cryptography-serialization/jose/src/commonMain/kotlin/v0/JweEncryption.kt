@@ -35,7 +35,6 @@ public typealias JweContentDecryptor = (
 // TODO: decide should we support partial encryption
 @DelicateJoseApi
 public inline fun JweContent.encrypt(
-    authenticatedData: ByteArray?,
     keyEncryptor: JweKeyEncryptor,
     contentEncryptor: JweContentEncryptor,
 ): JweObject = TODO()
@@ -49,7 +48,6 @@ public inline fun JweContent.Compact.encrypt(
 // TODO: decide what to do on partial decryption
 @DelicateJoseApi
 public inline fun JweObject.decrypt(
-    authenticatedData: ByteArray?,
     keyDecryptor: JweKeyDecryptor,
     contentDecryptor: JweContentDecryptor,
 ): JweContent = TODO()
