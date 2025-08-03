@@ -4,23 +4,25 @@
 
 package dev.whyoleg.cryptography.serialization.jose.v0
 
+// alg
+public class JweKeyManagementAlgorithm(public val value: String) {
+    public companion object {
+        // public val HS256: Algorithm = Algorithm("HS256")
+    }
+}
+
+// enc
+public class JweContentEncryptionAlgorithm(public val value: String) {
+    public companion object {
+        // public val HS256: Algorithm = Algorithm("HS256")
+    }
+}
+
 public sealed interface JweHeader : JoseHeader {
-    override val algorithm: Algorithm
-    public val encryptionAlgorithm: EncryptionAlgorithm
+    public val algorithm: JweKeyManagementAlgorithm
+    public val encryptionAlgorithm: JweContentEncryptionAlgorithm
 
     public operator fun plus(other: JweHeader): JweHeader
-
-    public class Algorithm(override val value: String) : JoseHeader.Algorithm {
-        public companion object : JoseHeader.ParameterKey<Algorithm> by JoseHeader.ParameterKey.of("alg") {
-            // public val HS256: Algorithm = Algorithm("HS256")
-        }
-    }
-
-    public class EncryptionAlgorithm(public val value: String) {
-        public companion object : JoseHeader.ParameterKey<EncryptionAlgorithm> by JoseHeader.ParameterKey.of("enc") {
-            // public val HS256: Algorithm = Algorithm("HS256")
-        }
-    }
 
     public companion object {
         public val Empty: JweHeader = TODO()
@@ -28,8 +30,8 @@ public sealed interface JweHeader : JoseHeader {
 }
 
 public sealed interface JweHeaderBuilder : JoseHeaderBuilder, JweHeader {
-    public override var algorithm: JweHeader.Algorithm
-    public override var encryptionAlgorithm: JweHeader.EncryptionAlgorithm
+    public override var algorithm: JweKeyManagementAlgorithm
+    public override var encryptionAlgorithm: JweContentEncryptionAlgorithm
 
     public fun fromHeader(header: JweHeader)
 }
@@ -37,7 +39,7 @@ public sealed interface JweHeaderBuilder : JoseHeaderBuilder, JweHeader {
 public inline fun jweHeader(builderAction: JweHeaderBuilder.() -> Unit): JweHeader = TODO()
 
 public inline fun jweHeader(
-    algorithm: JweHeader.Algorithm,
-    encryptionAlgorithm: JweHeader.EncryptionAlgorithm,
+    algorithm: JweKeyManagementAlgorithm,
+    encryptionAlgorithm: JweContentEncryptionAlgorithm,
     builderAction: JweHeaderBuilder.() -> Unit,
 ): JweHeader = TODO()

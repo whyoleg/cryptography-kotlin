@@ -22,7 +22,7 @@ public inline fun jweCompositeHeader(builderAction: JweCompositeHeaderBuilder.()
 
 // algorithm will be used for protected header
 public inline fun jweCompositeHeader(
-    algorithm: JweHeader.Algorithm,
-    encryptionAlgorithm: JweHeader.EncryptionAlgorithm,
+    algorithm: JweKeyManagementAlgorithm,
+    encryptionAlgorithm: JweContentEncryptionAlgorithm,
     builderAction: JweCompositeHeaderBuilder.() -> Unit,
 ): JweCompositeHeader = TODO()

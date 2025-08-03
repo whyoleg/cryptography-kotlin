@@ -22,6 +22,6 @@ public inline fun jwsCompositeHeader(builderAction: JwsCompositeHeaderBuilder.()
 
 // algorithm will be used for protected header
 public inline fun jwsCompositeHeader(
-    algorithm: JwsHeader.Algorithm,
+    algorithm: JwsAlgorithm,
     builderAction: JwsCompositeHeaderBuilder.() -> Unit,
 ): JwsCompositeHeader = TODO()

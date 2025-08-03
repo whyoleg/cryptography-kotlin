@@ -4,16 +4,16 @@
 
 package dev.whyoleg.cryptography.serialization.jose.v0
 
+public class JwsAlgorithm(public val value: String) {
+    public companion object {
+        public val HS256: JwsAlgorithm = JwsAlgorithm("HS256")
+    }
+}
+
 public sealed interface JwsHeader : JoseHeader {
-    override val algorithm: Algorithm
+    public val algorithm: JwsAlgorithm
 
     public operator fun plus(other: JwsHeader): JwsHeader
-
-    public class Algorithm(override val value: String) : JoseHeader.Algorithm {
-        public companion object : JoseHeader.ParameterKey<String> by JoseHeader.ParameterKey.of("alg") {
-            public val HS256: Algorithm = Algorithm("HS256")
-        }
-    }
 
     public companion object {
         public val Empty: JwsHeader = TODO()
@@ -21,7 +21,7 @@ public sealed interface JwsHeader : JoseHeader {
 }
 
 public sealed interface JwsHeaderBuilder : JoseHeaderBuilder, JwsHeader {
-    public override var algorithm: JwsHeader.Algorithm
+    public override var algorithm: JwsAlgorithm
 
     public fun fromHeader(header: JwsHeader)
 }
@@ -29,6 +29,6 @@ public sealed interface JwsHeaderBuilder : JoseHeaderBuilder, JwsHeader {
 public inline fun jwsHeader(builderAction: JwsHeaderBuilder.() -> Unit): JwsHeader = TODO()
 
 public inline fun jwsHeader(
-    algorithm: JwsHeader.Algorithm,
+    algorithm: JwsAlgorithm,
     builderAction: JwsHeaderBuilder.() -> Unit,
 ): JwsHeader = TODO()

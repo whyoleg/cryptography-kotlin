@@ -37,13 +37,12 @@ private suspend fun sign2(header: JwsHeader, signingInput: ByteArray): ByteArray
 
 @OptIn(DelicateJoseApi::class)
 private suspend fun test(obj: JwsObject) {
-    val header = jwsCompositeHeader(JwsHeader.Algorithm.HS256) {
+    val header = jwsCompositeHeader(JwsAlgorithm.HS256) {
         protected.apply {
-            type = JoseHeader.Type.JWT
-            putCritical("custom", String.serializer(), "value")
+            type = "jwt"
+            setCritical("custom", String.serializer(), "value")
         }
-        unprotected.contentType = JoseHeader.ContentType("application/json")
-        unprotected.put(JoseHeader.ContentType, JoseHeader.ContentType("application/json"))
+        unprotected.contentType = "application/json"
     }
     val token = jsonWebToken {
         issuer = "test-issuer"
