@@ -32,3 +32,25 @@ public inline fun jwsHeader(
     algorithm: JwsAlgorithm,
     builderAction: JwsHeaderBuilder.() -> Unit,
 ): JwsHeader = TODO()
+
+public sealed interface JwsHeaders : JoseHeaders {
+    override val protected: JwsHeader
+    override val unprotected: JwsHeader
+
+    override val combined: JwsHeader
+}
+
+public sealed interface JwsHeadersBuilder : JwsHeaders, JoseHeadersBuilder {
+    override val protected: JwsHeaderBuilder
+    override val unprotected: JwsHeaderBuilder
+
+    public fun fromHeaders(headers: JwsHeaders)
+}
+
+public inline fun jwsHeaders(builderAction: JwsHeadersBuilder.() -> Unit): JwsHeaders = TODO()
+
+// algorithm will be used for protected header
+public inline fun jwsHeaders(
+    algorithm: JwsAlgorithm,
+    builderAction: JwsHeadersBuilder.() -> Unit,
+): JwsHeaders = TODO()

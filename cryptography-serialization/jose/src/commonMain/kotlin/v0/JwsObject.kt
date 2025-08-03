@@ -10,12 +10,13 @@ public sealed interface JwsObject : JoseObject {
 
     public sealed interface Signature {
         public val signature: ByteArray
-        public val header: JwsCompositeHeader
+        public val headers: JwsHeaders
     }
 
     public sealed interface Compact : JwsObject, JoseObject.Compact {
-        override val header: JwsHeader // protected only
         public val signature: ByteArray
+
+        override val header: JwsHeader // protected only
 
         // single signature
         override val signatures: List<Signature>

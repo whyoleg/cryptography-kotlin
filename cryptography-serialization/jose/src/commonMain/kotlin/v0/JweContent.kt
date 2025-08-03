@@ -7,7 +7,7 @@ package dev.whyoleg.cryptography.serialization.jose.v0
 public sealed interface JweContent : JoseContent {
     public val authenticatedData: ByteArray?
 
-    public val sharedHeader: JweCompositeHeader
+    public val sharedHeaders: JweHeaders
     public val recipientHeaders: List<JweHeader>
 
     public sealed interface Compact : JweContent, JoseContent.Compact {
@@ -17,7 +17,7 @@ public sealed interface JweContent : JoseContent {
         override val authenticatedData: ByteArray?
 
         // has only protected part equals to `header`
-        override val sharedHeader: JweCompositeHeader
+        override val sharedHeaders: JweHeaders
 
         // single empty header
         override val recipientHeaders: List<JweHeader>
@@ -30,7 +30,7 @@ public fun jweContent(
 ): JweContent.Compact = TODO()
 
 public fun jweContent(
-    sharedHeader: JweCompositeHeader,
+    sharedHeaders: JweHeaders,
     recipientHeaders: List<JweHeader>,
     payload: ByteArray,
     authenticatedData: ByteArray?,

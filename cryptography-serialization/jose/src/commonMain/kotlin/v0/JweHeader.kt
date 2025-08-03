@@ -43,3 +43,26 @@ public inline fun jweHeader(
     encryptionAlgorithm: JweContentEncryptionAlgorithm,
     builderAction: JweHeaderBuilder.() -> Unit,
 ): JweHeader = TODO()
+
+public sealed interface JweHeaders : JoseHeaders {
+    override val protected: JweHeader
+    override val unprotected: JweHeader
+
+    override val combined: JweHeader
+}
+
+public sealed interface JweHeadersBuilder : JweHeaders, JoseHeadersBuilder {
+    override val protected: JweHeaderBuilder
+    override val unprotected: JweHeaderBuilder
+
+    public fun fromHeaders(headers: JweHeaders)
+}
+
+public inline fun jweHeaders(builderAction: JweHeadersBuilder.() -> Unit): JweHeaders = TODO()
+
+// algorithm will be used for protected header
+public inline fun jweHeaders(
+    algorithm: JweKeyManagementAlgorithm,
+    encryptionAlgorithm: JweContentEncryptionAlgorithm,
+    builderAction: JweHeadersBuilder.() -> Unit,
+): JweHeaders = TODO()

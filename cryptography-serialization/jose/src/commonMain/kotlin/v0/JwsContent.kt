@@ -5,13 +5,13 @@
 package dev.whyoleg.cryptography.serialization.jose.v0
 
 public sealed interface JwsContent : JoseContent {
-    public val signatureHeaders: List<JwsCompositeHeader>
+    public val signatureHeaders: List<JwsHeaders>
 
     public sealed interface Compact : JwsContent, JoseContent.Compact {
         override val header: JwsHeader
 
         // single header, with protected part equals to `header`
-        override val signatureHeaders: List<JwsCompositeHeader>
+        override val signatureHeaders: List<JwsHeaders>
     }
 }
 
@@ -22,6 +22,6 @@ public fun jwsContent(
 ): JwsContent.Compact = TODO()
 
 public fun jwsContent(
-    signatureHeaders: List<JwsCompositeHeader>,
+    signatureHeaders: List<JwsHeaders>,
     payload: ByteArray,
 ): JwsContent = TODO()

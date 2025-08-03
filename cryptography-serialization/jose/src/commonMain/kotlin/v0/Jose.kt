@@ -37,7 +37,7 @@ private suspend fun sign2(header: JwsHeader, signingInput: ByteArray): ByteArray
 
 @OptIn(DelicateJoseApi::class)
 private suspend fun test(obj: JwsObject) {
-    val header = jwsCompositeHeader(JwsAlgorithm.HS256) {
+    val header = jwsHeaders(JwsAlgorithm.HS256) {
         protected.apply {
             type = "jwt"
             setCritical("custom", String.serializer(), "value")
@@ -62,7 +62,7 @@ private suspend fun test(obj: JwsObject) {
 
     jwsContent(
         listOf(
-            jwsCompositeHeader {
+            jwsHeaders {
 
             }
         ),
@@ -96,10 +96,10 @@ private suspend fun test(obj: JwsObject) {
     JwsObject.sign(
         payload = "".encodeToByteArray(),
         headers = listOf(
-            jwsCompositeHeader {
+            jwsHeaders {
 
             },
-            jwsCompositeHeader {
+            jwsHeaders {
 
             },
         )
@@ -146,8 +146,8 @@ private suspend fun test(obj: JwsObject) {
     val jwsMulti = JwsObject.sign(
         "data".encodeToByteArray(), listOf(
             header,
-            jwsCompositeHeader {
-                fromCompositeHeader(header)
+            jwsHeaders {
+                fromHeaders(header)
                 protected.put("kid", String.serializer(), "test-key")
             },
         )

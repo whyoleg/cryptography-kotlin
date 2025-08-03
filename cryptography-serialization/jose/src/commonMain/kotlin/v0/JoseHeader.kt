@@ -46,6 +46,18 @@ public inline fun <reified T> JoseHeader.decode(): T = decode(serializer())
 
 public inline fun <reified T> JoseHeaderBuilder.fromEncoded(value: T): Unit = fromEncoded(serializer(), value)
 
+public sealed interface JoseHeaders {
+    public val protected: JoseHeader
+    public val unprotected: JoseHeader
+
+    public val combined: JoseHeader
+}
+
+public sealed interface JoseHeadersBuilder : JoseHeaders {
+    override val protected: JoseHeaderBuilder
+    override val unprotected: JoseHeaderBuilder
+}
+
 //private class JoseHeaderImpl private constructor(
 //    private var obj: JsonObject?,
 //    private var string: String?,

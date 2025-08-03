@@ -8,8 +8,7 @@ package dev.whyoleg.cryptography.serialization.jose.v0
 public sealed interface JweObject : JoseObject {
     public val ciphertext: JweCiphertext
 
-    // TODO: decide on shared and per-recipient header
-    public val sharedHeader: JweCompositeHeader // - shared header for recipients
+    public val sharedHeaders: JweHeaders // - shared header for recipients
 
     public val recipients: List<Recipient>
 
@@ -19,11 +18,12 @@ public sealed interface JweObject : JoseObject {
     }
 
     public sealed interface Compact : JweObject, JoseObject.Compact {
-        override val header: JweHeader
         public val encryptedKey: ByteArray
 
+        override val header: JweHeader
+
         // has only protected part equals to `header`
-        override val sharedHeader: JweCompositeHeader
+        override val sharedHeaders: JweHeaders
 
         // single recipient = empty header
         override val recipients: List<Recipient>
