@@ -4,14 +4,14 @@
 
 package dev.whyoleg.cryptography.serialization.jose.v0
 
-public class JwsAlgorithm(public val value: String) {
+public class JwsAlgorithm(override val value: String) : JoseAlgorithm {
     public companion object {
         public val HS256: JwsAlgorithm = JwsAlgorithm("HS256")
     }
 }
 
 public sealed interface JwsHeader : JoseHeader {
-    public val algorithm: JwsAlgorithm
+    public override val algorithm: JwsAlgorithm?
 
     public operator fun plus(other: JwsHeader): JwsHeader
 
@@ -21,7 +21,7 @@ public sealed interface JwsHeader : JoseHeader {
 }
 
 public sealed interface JwsHeaderBuilder : JoseHeaderBuilder, JwsHeader {
-    public override var algorithm: JwsAlgorithm
+    override var algorithm: JwsAlgorithm?
 
     public fun fromHeader(header: JwsHeader)
 }

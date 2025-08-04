@@ -17,7 +17,7 @@ public sealed interface JwsContent : JoseContent {
 
 // TODO: may be add overloads for string?json?etc?
 public fun jwsContent(
-    header: JwsHeader,
+    protectedHeader: JwsHeader,
     payload: ByteArray,
 ): JwsContent.Compact = TODO()
 

@@ -25,7 +25,7 @@ public sealed interface JweContent : JoseContent {
 }
 
 public fun jweContent(
-    header: JweHeader,
+    protectedHeader: JweHeader,
     payload: ByteArray,
 ): JweContent.Compact = TODO()
 
