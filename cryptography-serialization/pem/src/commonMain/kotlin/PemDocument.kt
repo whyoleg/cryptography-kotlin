@@ -8,6 +8,7 @@ import kotlinx.io.*
 import kotlinx.io.bytestring.*
 import kotlin.io.encoding.*
 
+
 @OptIn(ExperimentalEncodingApi::class)
 public class PemDocument internal constructor(
     public val label: PemLabel,
@@ -15,14 +16,25 @@ public class PemDocument internal constructor(
 ) {
     // TODO: this could be optimized :)
     public fun encodeToString(): String = buildString {
-        append(BEGIN_PREFIX).append(label.value).appendLine(SUFFIX)
-        Base64.Default.encode(bytes).chunked(64).joinTo(this, separator = "\n", postfix = "\n")
-        append(END_PREFIX).append(label.value).appendLine(SUFFIX)
+        encodeLines().forEach { appendLine(it) }
+//        append(BEGIN_PREFIX).append(label.value).appendLine(SUFFIX)
+//        Base64.Default.encode(bytes).chunked(64).joinTo(this, separator = "\n", postfix = "\n")
+//        append(END_PREFIX).append(label.value).appendLine(SUFFIX)
     }
 
     // TODO: this could be optimized :)
     public fun encodeTo(sink: Sink) {
+        encodeLines().forEach {
+            sink.writeString(it)
+            sink.writeCodePointValue('\n'.code)
+        }
         sink.writeString(encodeToString())
+    }
+
+    private fun encodeLines(): Sequence<String> = sequence {
+        yield(BEGIN_PREFIX + label.value + SUFFIX)
+        yieldAll(Base64.Default.encode(bytes).chunked(64))
+        yield(END_PREFIX + label.value + SUFFIX)
     }
 
     public companion object {
