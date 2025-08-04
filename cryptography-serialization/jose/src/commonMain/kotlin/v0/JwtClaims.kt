@@ -6,10 +6,22 @@ package dev.whyoleg.cryptography.serialization.jose.v0
 
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
+import kotlin.time.*
 
 public sealed interface JwtClaims {
-    // "iss" Issuer claim (String)
-    public val issuer: String?
+    public val issuer: String? // iss
+    public val subject: String? // sub
+    public val audience: String? // aud
+    public val jwtId: String? //jti
+
+    @ExperimentalTime
+    public val expirationTime: Instant? // exp
+
+    @ExperimentalTime
+    public val notBeforeTime: Instant? // nbf
+
+    @ExperimentalTime
+    public val issuedAtTime: Instant? // iat
 
     public fun toJsonObject(): JsonObject
     public fun toJsonString(): String
@@ -20,16 +32,6 @@ public sealed interface JwtClaims {
     public fun <T> get(key: String, serializer: DeserializationStrategy<T>): T
     public fun <T> getOrNull(key: String, serializer: DeserializationStrategy<T>): T?
 
-    public object StandardClaims {
-//        public val ISSUER = ClaimKey<String>("iss")
-//        public val SUBJECT = ClaimKey<String>("sub")
-//        public val AUDIENCE = ClaimKey<String>("aud")
-//        public val EXPIRATION_TIME = ClaimKey<Long>("exp")
-//        public val NOT_BEFORE = ClaimKey<Long>("nbf")
-//        public val ISSUED_AT = ClaimKey<Long>("iat")
-//        public val JWT_ID = ClaimKey<String>("jti")
-    }
-
     public companion object {
         public fun fromJsonObject(obj: JsonObject): JwtClaims = TODO()
         public fun fromJsonString(string: String): JwtClaims = TODO()
@@ -38,6 +40,18 @@ public sealed interface JwtClaims {
 
 public sealed interface JwtClaimsBuilder : JwtClaims {
     override var issuer: String?
+    override var subject: String?
+    override var audience: String?
+    override var jwtId: String?
+
+    @ExperimentalTime
+    override var expirationTime: Instant?
+
+    @ExperimentalTime
+    override var notBeforeTime: Instant?
+
+    @ExperimentalTime
+    override var issuedAtTime: Instant?
 
     public fun fromJsonObject(obj: JsonObject)
     public fun fromJsonString(string: String)
