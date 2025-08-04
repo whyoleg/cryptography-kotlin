@@ -1,8 +1,16 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.serialization.asn1.internal
+
+internal sealed class BinaryOutput {
+    abstract fun write(byte: Byte)
+    fun write(byte: Int): Unit = write(byte.toByte())
+    abstract fun write(bytes: ByteArray)
+    abstract fun write(output: BinaryOutput)
+    abstract fun newBinaryOutput(): BinaryOutput
+}
 
 internal class ByteArrayOutput {
     private var array: ByteArray = ByteArray(32)
