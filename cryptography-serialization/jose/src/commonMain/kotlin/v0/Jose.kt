@@ -44,7 +44,7 @@ private suspend fun test(obj: JwsObject) {
         }
         unprotected.contentType = "application/json"
     }
-    val token = jsonWebToken {
+    val token = jwtClaims {
         issuer = "test-issuer"
     }
 
@@ -53,7 +53,7 @@ private suspend fun test(obj: JwsObject) {
             type = JoseHeader.Type.JWT
             putCritical("custom", String.serializer(), "value")
         },
-        jsonWebToken {
+        jwtClaims {
             issuer = "test-issuer"
         }.toJsonString().encodeToByteArray()
     ).sign { _, si ->
@@ -66,7 +66,7 @@ private suspend fun test(obj: JwsObject) {
 
             }
         ),
-        jsonWebToken {
+        jwtClaims {
 
         }.toJsonString().encodeToByteArray()
     ).sign {
@@ -122,7 +122,7 @@ private suspend fun test(obj: JwsObject) {
         error("?")
     }
 
-    jsonWebToken {
+    jwtClaims {
         fromJsonObject(parsed.payloads.single().header.toJsonObject())
         fromJsonString(parsed.payload.decodeToString())
     }
@@ -197,7 +197,7 @@ private suspend fun test(obj: JwsObject) {
     JwsObject.create(
         JwsObject.Header.fromFields(null),
         Json.JoseCompliant.encodeToString(
-            JsonWebToken()
+            JwtClaims()
         ).encodeToByteArray()
     ) { x, y ->
         x.algorithm
