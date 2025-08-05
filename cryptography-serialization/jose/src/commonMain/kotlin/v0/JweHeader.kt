@@ -4,23 +4,9 @@
 
 package dev.whyoleg.cryptography.serialization.jose.v0
 
-// alg
-public class JweAlgorithm(override val value: String) : JoseAlgorithm {
-    public companion object {
-        // public val HS256: Algorithm = Algorithm("HS256")
-    }
-}
-
-// enc
-public class JweContentEncryptionAlgorithm(public val value: String) {
-    public companion object {
-        // public val HS256: Algorithm = Algorithm("HS256")
-    }
-}
-
 public sealed interface JweHeader : JoseHeader {
-    public override val algorithm: JweAlgorithm?
-    public val encryptionAlgorithm: JweContentEncryptionAlgorithm
+    public val algorithm: JweAlgorithm?
+    public val encryptionAlgorithm: JweEncryptionAlgorithm
 
     public operator fun plus(other: JweHeader): JweHeader
 
@@ -31,16 +17,16 @@ public sealed interface JweHeader : JoseHeader {
 
 public sealed interface JweHeaderBuilder : JoseHeaderBuilder, JweHeader {
     public override var algorithm: JweAlgorithm?
-    public override var encryptionAlgorithm: JweContentEncryptionAlgorithm
+    public override var encryptionAlgorithm: JweEncryptionAlgorithm
 
     public fun fromHeader(header: JweHeader)
 }
 
-public inline fun jweHeader(builderAction: JweHeaderBuilder.() -> Unit): JweHeader = TODO()
+public inline fun JweHeader(builderAction: JweHeaderBuilder.() -> Unit): JweHeader = TODO()
 
-public inline fun jweHeader(
+public inline fun JweHeader(
     algorithm: JweAlgorithm,
-    encryptionAlgorithm: JweContentEncryptionAlgorithm,
+    encryptionAlgorithm: JweEncryptionAlgorithm,
     builderAction: JweHeaderBuilder.() -> Unit,
 ): JweHeader = TODO()
 
@@ -58,11 +44,11 @@ public sealed interface JweHeadersBuilder : JweHeaders, JoseHeadersBuilder {
     public fun fromHeaders(headers: JweHeaders)
 }
 
-public inline fun jweHeaders(builderAction: JweHeadersBuilder.() -> Unit): JweHeaders = TODO()
+public inline fun JweHeaders(builderAction: JweHeadersBuilder.() -> Unit): JweHeaders = TODO()
 
 // algorithm will be used for protected header
-public inline fun jweHeaders(
+public inline fun JweHeaders(
     algorithm: JweAlgorithm,
-    encryptionAlgorithm: JweContentEncryptionAlgorithm,
+    encryptionAlgorithm: JweEncryptionAlgorithm,
     builderAction: JweHeadersBuilder.() -> Unit,
 ): JweHeaders = TODO()

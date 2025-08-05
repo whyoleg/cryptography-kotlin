@@ -37,56 +37,70 @@ private suspend fun sign2(header: JwsHeader, signingInput: ByteArray): ByteArray
 
 @OptIn(DelicateJoseApi::class)
 private suspend fun test(obj: JwsObject) {
-    val header = jwsHeaders(JwsAlgorithm.HS256) {
+    val header = JwsHeaders(JwsAlgorithm.HS256) {
         protected.apply {
             type = "jwt"
             setCritical("custom", String.serializer(), "value")
         }
         unprotected.contentType = "application/json"
     }
-    val token = jwtClaims {
+    val token = JwtClaims {
         issuer = "test-issuer"
     }
 
-    jwsContent(
-        jwsHeader(JwsHeader.Algorithm.HS256) {
+    JwsContent(
+        JwsHeader(JwsAlgorithm.HS256) {
             type = JoseHeader.Type.JWT
             putCritical("custom", String.serializer(), "value")
         },
-        jwtClaims {
+        JwtClaims {
             issuer = "test-issuer"
         }.toJsonString().encodeToByteArray()
     ).sign { _, si ->
         si
     }.toCompactString()
 
-    jwsContent(
+    JwsContent(
         listOf(
-            jwsHeaders {
+            JwsHeaders {
 
             }
         ),
-        jwtClaims {
+        JwtClaims {
 
         }.toJsonString().encodeToByteArray()
     ).sign {
 
     }.toJsonString()
 
+    JwkObject(
+        parameters = JwkParameters.RSA(
+            modulus = byteArrayOf(),
+            exponent = byteArrayOf(),
+            null
+        ),
+        keyId = "test-key-id",
+        publicKeyUse = JwkPublicKeyUse.Signature,
+        keyOperations = listOf(JwkOperation.Sign),
+        algorithm = null // ???
+    )
+
+    Json.JoseCompliant.decodeFromString<JwkObject>("")
+
     JwsObject.parseCompactString("")
         .verify { _, _, _ -> }
         .payload
 
 
-    jwsContent(payload, header)
-    jwsContent(payload, listOf(header))
+    JwsContent(payload, header)
+    JwsContent(payload, listOf(header))
 
     JwsObject.parseCompactString()
     JwsObject.parseJsonString()
 
     val jwsxx = JwsObject.sign("".encodeToByteArray(), header.combined, ::sign)
 
-    JwsObject.sign("".encodeToByteArray(), jwsHeader {
+    JwsObject.sign("".encodeToByteArray(), JwsHeader {
 
     }) { header, signingInput ->
         signingInput
@@ -96,10 +110,10 @@ private suspend fun test(obj: JwsObject) {
     JwsObject.sign(
         payload = "".encodeToByteArray(),
         headers = listOf(
-            jwsHeaders {
+            JwsHeaders {
 
             },
-            jwsHeaders {
+            JwsHeaders {
 
             },
         )
@@ -122,7 +136,7 @@ private suspend fun test(obj: JwsObject) {
         error("?")
     }
 
-    jwtClaims {
+    JwtClaims {
         fromJsonObject(parsed.payloads.single().header.toJsonObject())
         fromJsonString(parsed.payload.decodeToString())
     }
@@ -146,7 +160,7 @@ private suspend fun test(obj: JwsObject) {
     val jwsMulti = JwsObject.sign(
         "data".encodeToByteArray(), listOf(
             header,
-            jwsHeaders {
+            JwsHeaders {
                 fromHeaders(header)
                 protected.put("kid", String.serializer(), "test-key")
             },

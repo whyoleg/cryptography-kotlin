@@ -62,4 +62,4 @@ public sealed interface JwtClaimsBuilder : JwtClaims {
     public fun remove(key: String)
 }
 
-public inline fun jwtClaims(block: JwtClaimsBuilder.() -> Unit): JwtClaims = TODO()
+public inline fun JwtClaims(block: JwtClaimsBuilder.() -> Unit): JwtClaims = TODO()

@@ -4,14 +4,8 @@
 
 package dev.whyoleg.cryptography.serialization.jose.v0
 
-public class JwsAlgorithm(override val value: String) : JoseAlgorithm {
-    public companion object {
-        public val HS256: JwsAlgorithm = JwsAlgorithm("HS256")
-    }
-}
-
 public sealed interface JwsHeader : JoseHeader {
-    public override val algorithm: JwsAlgorithm?
+    public val algorithm: JwsAlgorithm?
 
     public operator fun plus(other: JwsHeader): JwsHeader
 
@@ -26,9 +20,9 @@ public sealed interface JwsHeaderBuilder : JoseHeaderBuilder, JwsHeader {
     public fun fromHeader(header: JwsHeader)
 }
 
-public inline fun jwsHeader(builderAction: JwsHeaderBuilder.() -> Unit): JwsHeader = TODO()
+public inline fun JwsHeader(builderAction: JwsHeaderBuilder.() -> Unit): JwsHeader = TODO()
 
-public inline fun jwsHeader(
+public inline fun JwsHeader(
     algorithm: JwsAlgorithm,
     builderAction: JwsHeaderBuilder.() -> Unit,
 ): JwsHeader = TODO()
@@ -47,10 +41,10 @@ public sealed interface JwsHeadersBuilder : JwsHeaders, JoseHeadersBuilder {
     public fun fromHeaders(headers: JwsHeaders)
 }
 
-public inline fun jwsHeaders(builderAction: JwsHeadersBuilder.() -> Unit): JwsHeaders = TODO()
+public inline fun JwsHeaders(builderAction: JwsHeadersBuilder.() -> Unit): JwsHeaders = TODO()
 
 // algorithm will be used for protected header
-public inline fun jwsHeaders(
+public inline fun JwsHeaders(
     algorithm: JwsAlgorithm,
     builderAction: JwsHeadersBuilder.() -> Unit,
 ): JwsHeaders = TODO()

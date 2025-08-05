@@ -13,9 +13,12 @@ public class JweCiphertext(
     public val authenticationTag: ByteArray,
 )
 
-// output: iv, ciphertext, authentication tag, encryption key
-public typealias JweKeyEncryptor = (header: JweHeader, key: ByteArray) -> ByteArray
-public typealias JweKeyDecryptor = (header: JweHeader, encryptedKey: ByteArray) -> ByteArray
+// outputs: cek (content encryption key)
+public typealias JweKeyGenerator = (header: JweHeader) -> ByteArray
+// outputs: encrypted key if needed, null if pre-shared (dir) or derived key (ecdh-es)
+public typealias JweKeyEncryptor = (header: JweHeader, key: ByteArray) -> ByteArray?
+// outputs: cek (content encryption key)
+public typealias JweKeyDecryptor = (header: JweHeader, encryptedKey: ByteArray?) -> ByteArray
 
 // a shared header only
 public typealias JweContentEncryptor = (
@@ -35,12 +38,14 @@ public typealias JweContentDecryptor = (
 // TODO: decide should we support partial encryption
 @DelicateJoseApi
 public inline fun JweContent.encrypt(
+    keyGenerator: JweKeyGenerator,
     keyEncryptor: JweKeyEncryptor,
     contentEncryptor: JweContentEncryptor,
 ): JweObject = TODO()
 
 @DelicateJoseApi
 public inline fun JweContent.Compact.encrypt(
+    keyGenerator: JweKeyGenerator,
     keyEncryptor: JweKeyEncryptor,
     contentEncryptor: JweContentEncryptor,
 ): JweObject.Compact = TODO()

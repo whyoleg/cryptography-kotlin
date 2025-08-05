@@ -7,13 +7,7 @@ package dev.whyoleg.cryptography.serialization.jose.v0
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
 
-@Serializable // TODO: custom serializer?
-public sealed interface JoseAlgorithm {
-    public val value: String
-}
-
 public sealed interface JoseHeader {
-    public val algorithm: JoseAlgorithm?
     public val type: String? // typ
     public val contentType: String? // cty
 

@@ -18,7 +18,8 @@ public data class JwkObject(
     public val parameters: JwkParameters,
     public val publicKeyUse: JwkPublicKeyUse? = null,
     public val keyOperations: List<JwkOperation> = emptyList(),
-    public val algorithm: JoseAlgorithm? = null, // TODO????????
+    @Contextual
+    public val algorithm: JwaAlgorithm? = null, // TODO????????
     public val keyId: String? = null,
     public val x509Url: String? = null,
     public val x509CertificateChain: List<ByteArray> = emptyList(),
@@ -163,6 +164,14 @@ public class JwkSet(public val keys: List<JwkObject>) {
 }
 
 private fun test() {
+//    Json(Json.JoseCompliant) {
+//        serializersModule = SerializersModule {
+//            contextual(JwaAlgorithm::class, JwaAlgorithmSerializer)
+//            contextual(JwkParameters::class, TODO())
+//        }
+//    }
+
+
     JwkObject.decodeFromString("").encodeToString()
 
     jwkRsaKey(

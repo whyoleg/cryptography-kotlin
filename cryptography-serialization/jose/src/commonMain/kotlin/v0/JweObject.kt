@@ -4,7 +4,6 @@
 
 package dev.whyoleg.cryptography.serialization.jose.v0
 
-// TODO: decide on how to support `direct encryption / previously exchanged key`
 public sealed interface JweObject : JoseObject {
     public val ciphertext: JweCiphertext
 
@@ -13,12 +12,12 @@ public sealed interface JweObject : JoseObject {
     public val recipients: List<Recipient>
 
     public sealed interface Recipient {
-        public val encryptedKey: ByteArray
+        public val encryptedKey: ByteArray?
         public val header: JweHeader // unprotected header
     }
 
     public sealed interface Compact : JweObject, JoseObject.Compact {
-        public val encryptedKey: ByteArray
+        public val encryptedKey: ByteArray?
 
         override val header: JweHeader
 

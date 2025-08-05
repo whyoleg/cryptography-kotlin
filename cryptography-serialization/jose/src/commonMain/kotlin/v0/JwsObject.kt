@@ -4,9 +4,13 @@
 
 package dev.whyoleg.cryptography.serialization.jose.v0
 
-// TODO: decide on how to support `signature with detached content`
 public sealed interface JwsObject : JoseObject {
     public val signatures: List<Signature>
+
+    public fun toJsonString(
+        /*named*/preferFlattened: Boolean = false,
+        /*named*/detachedPayload: Boolean = false, // if true, payload will not be encoded
+    ): String
 
     public sealed interface Signature {
         public val signature: ByteArray
@@ -18,14 +22,18 @@ public sealed interface JwsObject : JoseObject {
 
         override val header: JwsHeader // protected only
 
-        // single signature
+        // single signature with only protected header
         override val signatures: List<Signature>
+
+        public fun toCompactString(/*named*/detachedPayload: Boolean = false): String
     }
 
     public companion object {
         public fun parseCompactString(string: String): Compact = TODO()
-        public fun parseCompactString(string: String, detachedPayload: ByteArray/*detached content?*/): Compact = TODO()
+        public fun parseCompactString(string: String, detachedPayload: ByteArray): Compact = TODO()
+
         public fun parseJsonString(string: String): JwsObject = TODO()
+        public fun parseJsonString(string: String, detachedPayload: ByteArray): JwsObject = TODO()
     }
 }
 

@@ -24,12 +24,14 @@ public sealed interface JweContent : JoseContent {
     }
 }
 
-public fun jweContent(
+@Suppress("FunctionName")
+public fun JweContent(
     protectedHeader: JweHeader,
     payload: ByteArray,
 ): JweContent.Compact = TODO()
 
-public fun jweContent(
+// check that all `enc` algorithms are equal
+public fun JweContent(
     sharedHeaders: JweHeaders,
     recipientHeaders: List<JweHeader>,
     payload: ByteArray,
