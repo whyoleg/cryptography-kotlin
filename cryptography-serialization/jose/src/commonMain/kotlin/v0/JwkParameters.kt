@@ -17,7 +17,7 @@ import kotlin.jvm.*
 
 @Serializable
 @JvmInline
-public value class JwkType(public val value: String) {
+public value class JwkType(public val name: String) {
     public companion object {
         public val RSA: JwkType = JwkType("RSA")
         public val EC: JwkType = JwkType("EC")
@@ -28,7 +28,7 @@ public value class JwkType(public val value: String) {
 
 @Serializable
 @JvmInline
-public value class JwkPublicKeyUse(public val value: String) {
+public value class JwkPublicKeyUse(public val name: String) {
     public companion object {
         public val Signature: JwkPublicKeyUse = JwkPublicKeyUse("sig")
         public val Encryption: JwkPublicKeyUse = JwkPublicKeyUse("enc")
@@ -37,7 +37,7 @@ public value class JwkPublicKeyUse(public val value: String) {
 
 @Serializable
 @JvmInline
-public value class JwkOperation(public val value: String) {
+public value class JwkOperation(public val name: String) {
     public companion object {
         public val Sign: JwkOperation = JwkOperation("sign")
         public val Verify: JwkOperation = JwkOperation("verify")
@@ -52,7 +52,7 @@ public value class JwkOperation(public val value: String) {
 
 @Serializable
 @JvmInline
-public value class JwkEllipticCurve(public val value: String) {
+public value class JwkEllipticCurve(public val name: String) {
     public companion object {
         public val P256: JwkEllipticCurve = JwkEllipticCurve("P-256")
         public val P384: JwkEllipticCurve = JwkEllipticCurve("P-384")

@@ -10,6 +10,15 @@ import kotlinx.serialization.*
 public sealed interface JoseHeader {
     public val type: String? // typ
     public val contentType: String? // cty
+    public val keyId: String? // kid
+
+    public val jwkSetUrl: String? // jku
+    public val jwk: JwkObject? // jwk
+
+    public val x509Url: String? // x5u
+    public val x509CertificateChain: List<ByteArray> // x5c
+    public val x509CertificateSha1Thumbprint: ByteArray? // x5t
+    public val x509CertificateSha256Thumbprint: ByteArray? // x5t#S256
 
     public fun <T> decode(deserializer: DeserializationStrategy<T>): T
     public fun <T> decodeField(key: String, serializer: DeserializationStrategy<T>): T
@@ -20,6 +29,15 @@ public sealed interface JoseHeader {
 public sealed interface JoseHeaderBuilder : JoseHeader {
     public override var type: String?
     public override var contentType: String?
+    public override var keyId: String?
+
+    public override var jwkSetUrl: String?
+    public override var jwk: JwkObject?
+
+    public override var x509Url: String?
+    public override var x509CertificateChain: List<ByteArray>
+    public override var x509CertificateSha1Thumbprint: ByteArray?
+    public override var x509CertificateSha256Thumbprint: ByteArray?
 
     public fun <T> encode(serializer: SerializationStrategy<T>, value: T)
     public fun <T> encodeField(key: String, serializer: SerializationStrategy<T>, value: T)

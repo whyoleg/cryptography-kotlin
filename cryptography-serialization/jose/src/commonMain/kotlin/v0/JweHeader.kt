@@ -9,7 +9,22 @@ import kotlinx.serialization.*
 @Serializable
 public sealed interface JweHeader : JoseHeader {
     public val algorithm: JweAlgorithm?
-    public val encryptionAlgorithm: JweEncryptionAlgorithm
+    public val encryptionAlgorithm: JweEncryptionAlgorithm // enc
+
+    public val compressionAlgorithm: JweCompressionAlgorithm? // zip
+
+    // ECDH-ES key agreement parameters
+    public val ephemeralPublicKey: JwkObject? // epk
+    public val agreementPartyUInfo: ByteArray? // apu
+    public val agreementPartyVInfo: ByteArray? // apv
+
+    // AES GCM (A___GCMKW)
+    public val initializationVector: ByteArray? // iv
+    public val authenticationTag: ByteArray? // tag
+
+    // PBES2 key encryption parameters
+    public val pbes2SaltInput: ByteArray? // p2s
+    public val pbes2Count: Long? // p2c
 
     public operator fun plus(other: JweHeader): JweHeader
 
@@ -21,6 +36,18 @@ public sealed interface JweHeader : JoseHeader {
 public sealed interface JweHeaderBuilder : JoseHeaderBuilder, JweHeader {
     public override var algorithm: JweAlgorithm?
     public override var encryptionAlgorithm: JweEncryptionAlgorithm
+
+    public override var compressionAlgorithm: JweCompressionAlgorithm?
+
+    public override var ephemeralPublicKey: JwkObject?
+    public override var agreementPartyUInfo: ByteArray?
+    public override var agreementPartyVInfo: ByteArray?
+
+    public override var initializationVector: ByteArray?
+    public override var authenticationTag: ByteArray?
+
+    public override var pbes2SaltInput: ByteArray?
+    public override var pbes2Count: Long?
 }
 
 public inline fun JweHeader(builderAction: JweHeaderBuilder.() -> Unit): JweHeader = TODO()
