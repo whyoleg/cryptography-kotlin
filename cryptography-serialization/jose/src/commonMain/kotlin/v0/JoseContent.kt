@@ -4,8 +4,6 @@
 
 package dev.whyoleg.cryptography.serialization.jose.v0
 
-// TODO: may be it's also possible to add `sharedHeader` and `customHeaders`,
-//  but not sure if it's needed
 public sealed interface JoseContent {
     public val payload: ByteArray
 

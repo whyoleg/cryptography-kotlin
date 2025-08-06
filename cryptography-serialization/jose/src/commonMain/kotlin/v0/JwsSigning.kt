@@ -4,20 +4,35 @@
 
 package dev.whyoleg.cryptography.serialization.jose.v0
 
-public typealias JwsSigner = (header: JwsHeader, signingInput: ByteArray) -> ByteArray
+// null, if not supported, affects JwsSigningMode
+public typealias JwsSigner = (header: JwsHeader, signingInput: ByteArray) -> ByteArray?
 public typealias JwsVerifier = (header: JwsHeader, signingInput: ByteArray, signature: ByteArray) -> Boolean
 
-// TODO: decide should we support partial signing
+public enum class JwsSigningMode {
+    // requires to sign and verify all signatures - fail otherwise
+    ALL,
+
+    // requires to sign at least one signature, will try to sign/verify all signatures - fail otherwise
+    AT_LEAST_ONCE,
+
+    // requires to verify at most one signature, stop after at least one signature is signed/verified - fail otherwise
+    AT_MOST_ONCE,
+}
+
 @DelicateJoseApi
-public inline fun JwsContent.sign(signer: JwsSigner): JwsObject = TODO()
+public inline fun JwsContent.sign(
+    mode: JwsSigningMode,
+    signer: JwsSigner,
+): JwsObject = TODO()
 
 @DelicateJoseApi
 public inline fun JwsContent.Compact.sign(signer: JwsSigner): JwsObject.Compact = TODO()
 
-// options: at least once (will return all valid), at most once (will stop after first), all (will return all or not at all)
-// TODO: decide what to do on partial verification
 @DelicateJoseApi
-public inline fun JwsObject.verify(verifier: JwsVerifier): JwsContent = TODO()
+public inline fun JwsObject.verify(
+    mode: JwsSigningMode,
+    verifier: JwsVerifier,
+): JwsContent = TODO()
 
 @DelicateJoseApi
 public inline fun JwsObject.Compact.verify(verifier: JwsVerifier): JwsContent.Compact = TODO()

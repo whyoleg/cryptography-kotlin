@@ -18,7 +18,6 @@ public data class JwkObject(
     public val parameters: JwkParameters,
     public val publicKeyUse: JwkPublicKeyUse? = null,
     public val keyOperations: List<JwkOperation> = emptyList(),
-    @Contextual
     public val algorithm: JwaAlgorithm? = null, // TODO????????
     public val keyId: String? = null,
     public val x509Url: String? = null,

@@ -35,12 +35,22 @@ internal fun parseCompactString(compact: String, expectedParts: Int): List<Strin
 private fun sign(header: JwsHeader, signingInput: ByteArray): ByteArray = TODO()
 private suspend fun sign2(header: JwsHeader, signingInput: ByteArray): ByteArray = TODO()
 
+private fun test(alg: JwaAlgorithm) {
+    when (alg) {
+        is JweAlgorithm           -> TODO()
+        is JweEncryptionAlgorithm -> TODO()
+        is JwsAlgorithm           -> TODO()
+        else                      -> TODO()
+    }
+}
+
 @OptIn(DelicateJoseApi::class)
 private suspend fun test(obj: JwsObject) {
     val header = JwsHeaders(JwsAlgorithm.HS256) {
         protected.apply {
             type = "jwt"
-            setCritical("custom", String.serializer(), "value")
+            encodeField("custom", String.serializer(), "value")
+            criticalFields("custom")
         }
         unprotected.contentType = "application/json"
     }
@@ -48,17 +58,25 @@ private suspend fun test(obj: JwsObject) {
         issuer = "test-issuer"
     }
 
-    JwsContent(
-        JwsHeader(JwsAlgorithm.HS256) {
-            type = JoseHeader.Type.JWT
-            putCritical("custom", String.serializer(), "value")
-        },
-        JwtClaims {
-            issuer = "test-issuer"
-        }.toJsonString().encodeToByteArray()
-    ).sign { _, si ->
-        si
-    }.toCompactString()
+    val header2 = JwsHeader(JwsAlgorithm.HS256) {
+        type = "JWT"
+        encodeField("custom", String.serializer(), "value")
+        criticalFields("custom")
+    }
+    val claims2 = JwtClaims {
+        issuer = "test-issuer"
+    }
+    val payload2 = Json.JoseCompliant.encodeToString(claims2).encodeToByteArray()
+    val content2 = JwsContent(header2, payload2)
+    val object2 = content2.sign { _, si -> si }
+    val TOKEN = object2.toCompactString()
+
+    val object2A = JwsObject.parseCompactString(TOKEN)
+    val content2A = object2.verify { header, signingInput, signature -> true }
+    val token2A = Json.JoseCompliant.decodeFromString<JwtClaims>(content2A.payload.decodeToString())
+    val issuer2a = token2A.issuer
+    val aaa = content2A.header.algorithm
+
 
     JwsContent(
         listOf(
@@ -92,8 +110,8 @@ private suspend fun test(obj: JwsObject) {
         .payload
 
 
-    JwsContent(payload, header)
-    JwsContent(payload, listOf(header))
+    JwsContent(payload2, header)
+    JwsContent(payload2, listOf(header))
 
     JwsObject.parseCompactString()
     JwsObject.parseJsonString()
@@ -137,7 +155,8 @@ private suspend fun test(obj: JwsObject) {
     }
 
     JwtClaims {
-        fromJsonObject(parsed.payloads.single().header.toJsonObject())
+        encode(parsed.payloads.single().header.toJsonObject())
+        fromJsonObject()
         fromJsonString(parsed.payload.decodeToString())
     }
 

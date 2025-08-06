@@ -4,6 +4,9 @@
 
 package dev.whyoleg.cryptography.serialization.jose.v0
 
+import kotlinx.serialization.*
+
+@Serializable
 public sealed interface JwsHeader : JoseHeader {
     public val algorithm: JwsAlgorithm?
 
@@ -16,8 +19,6 @@ public sealed interface JwsHeader : JoseHeader {
 
 public sealed interface JwsHeaderBuilder : JoseHeaderBuilder, JwsHeader {
     override var algorithm: JwsAlgorithm?
-
-    public fun fromHeader(header: JwsHeader)
 }
 
 public inline fun JwsHeader(builderAction: JwsHeaderBuilder.() -> Unit): JwsHeader = TODO()
@@ -32,13 +33,18 @@ public sealed interface JwsHeaders : JoseHeaders {
     override val unprotected: JwsHeader
 
     override val combined: JwsHeader
+
+    // protected + protected, unprotected + unprotected
+    public operator fun plus(other: JwsHeaders): JwsHeaders
+
+    public companion object {
+        public val Empty: JwsHeaders = TODO()
+    }
 }
 
 public sealed interface JwsHeadersBuilder : JwsHeaders, JoseHeadersBuilder {
     override val protected: JwsHeaderBuilder
     override val unprotected: JwsHeaderBuilder
-
-    public fun fromHeaders(headers: JwsHeaders)
 }
 
 public inline fun JwsHeaders(builderAction: JwsHeadersBuilder.() -> Unit): JwsHeaders = TODO()

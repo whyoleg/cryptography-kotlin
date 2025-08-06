@@ -5,9 +5,11 @@
 package dev.whyoleg.cryptography.serialization.jose.v0
 
 import kotlinx.serialization.*
-import kotlinx.serialization.json.*
+import kotlinx.serialization.descriptors.*
+import kotlinx.serialization.encoding.*
 import kotlin.time.*
 
+@Serializable(JwtClaimsSerializer::class) // json
 public sealed interface JwtClaims {
     public val issuer: String? // iss
     public val subject: String? // sub
@@ -23,19 +25,10 @@ public sealed interface JwtClaims {
     @ExperimentalTime
     public val issuedAtTime: Instant? // iat
 
-    public fun toJsonObject(): JsonObject
-    public fun toJsonString(): String
-
     public fun <T> decode(deserializer: DeserializationStrategy<T>): T
+    public fun <T> decodeField(key: String, deserializer: DeserializationStrategy<T>): T
 
     public operator fun contains(key: String): Boolean
-    public fun <T> get(key: String, serializer: DeserializationStrategy<T>): T
-    public fun <T> getOrNull(key: String, serializer: DeserializationStrategy<T>): T?
-
-    public companion object {
-        public fun fromJsonObject(obj: JsonObject): JwtClaims = TODO()
-        public fun fromJsonString(string: String): JwtClaims = TODO()
-    }
 }
 
 public sealed interface JwtClaimsBuilder : JwtClaims {
@@ -53,13 +46,29 @@ public sealed interface JwtClaimsBuilder : JwtClaims {
     @ExperimentalTime
     override var issuedAtTime: Instant?
 
-    public fun fromJsonObject(obj: JsonObject)
-    public fun fromJsonString(string: String)
+    public fun <T> encode(serializer: SerializationStrategy<T>, value: T)
+    public fun <T> encodeField(key: String, serializer: SerializationStrategy<T>, value: T)
 
-    public fun <T> fromEncoded(serializer: SerializationStrategy<T>, value: T)
-
-    public fun <T> set(key: String, serializer: SerializationStrategy<T>, value: T)
     public fun remove(key: String)
 }
 
 public inline fun JwtClaims(block: JwtClaimsBuilder.() -> Unit): JwtClaims = TODO()
+
+public inline fun <reified T> JwtClaims.decode(): T = decode(serializer<T>())
+public inline fun <reified T> JwtClaims.decodeField(key: String): T = decodeField(key, serializer<T>())
+
+public inline fun <reified T> JwtClaimsBuilder.encode(value: T): Unit = encode(serializer<T>(), value)
+public inline fun <reified T> JwtClaimsBuilder.encodeField(key: String, value: T): Unit = encodeField(key, serializer<T>(), value)
+
+internal object JwtClaimsSerializer : KSerializer<JwtClaims> {
+    override val descriptor: SerialDescriptor
+        get() = TODO("Not yet implemented")
+
+    override fun serialize(encoder: Encoder, value: JwtClaims) {
+        TODO("Not yet implemented")
+    }
+
+    override fun deserialize(decoder: Decoder): JwtClaims {
+        TODO("Not yet implemented")
+    }
+}

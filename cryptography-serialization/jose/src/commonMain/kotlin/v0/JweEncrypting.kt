@@ -14,11 +14,11 @@ public class JweCiphertext(
 )
 
 // outputs: cek (content encryption key)
-public typealias JweKeyGenerator = (header: JweHeader) -> ByteArray
+public typealias JweKeyGenerator = (header: JweHeader) -> ByteArray? // if null -> can't generate key -> can't encrypt
 // outputs: encrypted key if needed, null if pre-shared (dir) or derived key (ecdh-es)
 public typealias JweKeyEncryptor = (header: JweHeader, key: ByteArray) -> ByteArray?
 // outputs: cek (content encryption key)
-public typealias JweKeyDecryptor = (header: JweHeader, encryptedKey: ByteArray?) -> ByteArray
+public typealias JweKeyDecryptor = (header: JweHeader, encryptedKey: ByteArray?) -> ByteArray? // if null -> can't decrypt
 
 // a shared header only
 public typealias JweContentEncryptor = (
@@ -35,9 +35,20 @@ public typealias JweContentDecryptor = (
     authenticatedData: ByteArray,
 ) -> ByteArray
 
-// TODO: decide should we support partial encryption
+public enum class JweEncryptingMode {
+    // requires to encrypt/decrypt all recipients - fail otherwise
+    ALL,
+
+    // requires to encrypt/decrypt at least one recipient, will try to encrypt/decrypt all recipients - fail otherwise
+    AT_LEAST_ONCE,
+
+    // requires to encrypt/decrypt at most one recipient, stop after at least one recipient is encrypted/decrypted - fail otherwise
+    AT_MOST_ONCE,
+}
+
 @DelicateJoseApi
 public inline fun JweContent.encrypt(
+    mode: JweEncryptingMode,
     keyGenerator: JweKeyGenerator,
     keyEncryptor: JweKeyEncryptor,
     contentEncryptor: JweContentEncryptor,
@@ -50,9 +61,9 @@ public inline fun JweContent.Compact.encrypt(
     contentEncryptor: JweContentEncryptor,
 ): JweObject.Compact = TODO()
 
-// TODO: decide what to do on partial decryption
 @DelicateJoseApi
 public inline fun JweObject.decrypt(
+    mode: JweEncryptingMode,
     keyDecryptor: JweKeyDecryptor,
     contentDecryptor: JweContentDecryptor,
 ): JweContent = TODO()

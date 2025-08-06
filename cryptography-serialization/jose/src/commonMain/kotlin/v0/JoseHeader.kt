@@ -5,46 +5,32 @@
 package dev.whyoleg.cryptography.serialization.jose.v0
 
 import kotlinx.serialization.*
-import kotlinx.serialization.json.*
 
+@Serializable
 public sealed interface JoseHeader {
     public val type: String? // typ
     public val contentType: String? // cty
 
-    public fun toJsonObject(): JsonObject
-    public fun toJsonString(): String
-
     public fun <T> decode(deserializer: DeserializationStrategy<T>): T
+    public fun <T> decodeField(key: String, serializer: DeserializationStrategy<T>): T
 
     public operator fun contains(key: String): Boolean
-    public fun <T> get(key: String, serializer: DeserializationStrategy<T>): T
-    public fun <T> getOrNull(key: String, serializer: DeserializationStrategy<T>): T?
-
-    // TODO: decide on what to do with `critical` parameter
-    public fun isCritical(key: String): Boolean
 }
 
-// TODO: better naming of `from` functions?
 public sealed interface JoseHeaderBuilder : JoseHeader {
     public override var type: String?
     public override var contentType: String?
 
-    public fun fromJsonObject(obj: JsonObject)
-    public fun fromJsonString(string: String)
+    public fun <T> encode(serializer: SerializationStrategy<T>, value: T)
+    public fun <T> encodeField(key: String, serializer: SerializationStrategy<T>, value: T)
 
-    public fun <T> fromEncoded(serializer: SerializationStrategy<T>, value: T)
-
-    public fun <T> set(key: String, serializer: SerializationStrategy<T>, value: T)
-    public fun <T> setCritical(key: String, serializer: SerializationStrategy<T>, value: T)
-
-    public fun remove(key: String)
-
-    public fun critical(key: String)
+    // can be used only inside protected header
+    public fun criticalFields(vararg keys: String)
 }
 
 public inline fun <reified T> JoseHeader.decode(): T = decode(serializer())
 
-public inline fun <reified T> JoseHeaderBuilder.fromEncoded(value: T): Unit = fromEncoded(serializer(), value)
+public inline fun <reified T> JoseHeaderBuilder.encode(value: T): Unit = encode(serializer(), value)
 
 public sealed interface JoseHeaders {
     public val protected: JoseHeader

@@ -15,7 +15,6 @@ public sealed interface JwsContent : JoseContent {
     }
 }
 
-// TODO: may be add overloads for string?json?etc?
 @Suppress("FunctionName")
 public fun JwsContent(
     protectedHeader: JwsHeader,
