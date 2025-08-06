@@ -47,6 +47,7 @@ public sealed interface JwsHeadersBuilder : JwsHeaders, JoseHeadersBuilder {
     override val unprotected: JwsHeaderBuilder
 }
 
+// TODO: JwsHeaders vs buildJwsHeaders
 public inline fun JwsHeaders(builderAction: JwsHeadersBuilder.() -> Unit): JwsHeaders = TODO()
 
 // algorithm will be used for protected header

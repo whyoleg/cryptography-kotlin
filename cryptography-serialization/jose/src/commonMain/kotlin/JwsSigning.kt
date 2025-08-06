@@ -5,8 +5,8 @@
 package dev.whyoleg.cryptography.serialization.jose
 
 // null, if not supported, affects JwsSigningMode
-public typealias JwsSigner = (header: JwsHeader, signingInput: ByteArray) -> ByteArray?
-public typealias JwsVerifier = (header: JwsHeader, signingInput: ByteArray, signature: ByteArray) -> Boolean
+public typealias JwsSigner = (header: JwsHeaders, signingInput: ByteArray) -> ByteArray?
+public typealias JwsVerifier = (header: JwsHeaders, signingInput: ByteArray, signature: ByteArray) -> Boolean
 
 public enum class JwsSigningMode {
     // requires to sign and verify all signatures - fail otherwise

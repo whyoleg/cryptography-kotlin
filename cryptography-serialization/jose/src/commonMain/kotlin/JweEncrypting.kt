@@ -14,22 +14,22 @@ public class JweCiphertext(
 )
 
 // outputs: cek (content encryption key)
-public typealias JweKeyGenerator = (header: JweHeader) -> ByteArray? // if null -> can't generate key -> can't encrypt
+public typealias JweKeyGenerator = (header: JweHeaders) -> ByteArray? // if null -> can't generate key -> can't encrypt
 // outputs: encrypted key if needed, null if pre-shared (dir) or derived key (ecdh-es)
-public typealias JweKeyEncryptor = (header: JweHeader, key: ByteArray) -> ByteArray?
+public typealias JweKeyEncryptor = (header: JweHeaders, key: ByteArray) -> ByteArray?
 // outputs: cek (content encryption key)
-public typealias JweKeyDecryptor = (header: JweHeader, encryptedKey: ByteArray?) -> ByteArray? // if null -> can't decrypt
+public typealias JweKeyDecryptor = (header: JweHeaders, encryptedKey: ByteArray?) -> ByteArray? // if null -> can't decrypt
 
 // a shared header only
 public typealias JweContentEncryptor = (
-    header: JweHeader,
+    header: JweHeaders,
     key: ByteArray,
     plaintext: ByteArray,
     authenticatedData: ByteArray,
 ) -> JweCiphertext // iv, ciphertext, auth tag
 
 public typealias JweContentDecryptor = (
-    header: JweHeader,
+    header: JweHeaders,
     key: ByteArray,
     ciphertext: JweCiphertext,
     authenticatedData: ByteArray,
