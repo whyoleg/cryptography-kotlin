@@ -7,7 +7,7 @@
     ByteArrayAsBase64UrlSerializer::class
 )
 
-package dev.whyoleg.cryptography.serialization.jose.v0
+package dev.whyoleg.cryptography.serialization.jose
 
 import dev.whyoleg.cryptography.bigint.*
 import kotlinx.serialization.*
