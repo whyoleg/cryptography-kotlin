@@ -35,5 +35,5 @@ public fun JweContent(
     sharedHeaders: JweHeaders,
     recipientHeaders: List<JweHeader>,
     payload: ByteArray,
-    authenticatedData: ByteArray?,
+    authenticatedData: ByteArray? = null,
 ): JweContent = TODO()

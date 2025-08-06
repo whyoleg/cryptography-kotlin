@@ -4,7 +4,6 @@
 
 package dev.whyoleg.cryptography.serialization.jose
 
-import dev.whyoleg.cryptography.serialization.jose.*
 import kotlinx.serialization.*
 import kotlinx.serialization.builtins.*
 import kotlinx.serialization.json.*
