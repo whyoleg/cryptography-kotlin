@@ -19,6 +19,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            api(projects.cryptographyBigint)
             api(libs.kotlinx.serialization.json)
         }
     }
