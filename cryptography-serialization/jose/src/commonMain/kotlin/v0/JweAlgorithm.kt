@@ -17,7 +17,7 @@ public class JweAlgorithm internal constructor(
     override val name: String,
     @Suppress("UNUSED_PARAMETER") dummy: Any?,
 ) : JwaAlgorithm {
-    override fun toString(): String = name
+    override fun toString(): String = "JweAlgorithm($name)"
     override fun equals(other: Any?): Boolean = this === other || other is JweAlgorithm && name == other.name
     override fun hashCode(): Int = name.hashCode()
 

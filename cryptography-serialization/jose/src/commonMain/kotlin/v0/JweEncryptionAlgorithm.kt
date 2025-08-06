@@ -17,7 +17,7 @@ public class JweEncryptionAlgorithm internal constructor(
     override val name: String,
     @Suppress("UNUSED_PARAMETER") dummy: Any?,
 ) : JwaAlgorithm {
-    override fun toString(): String = name
+    override fun toString(): String = "JweEncryptionAlgorithm($name)"
     override fun equals(other: Any?): Boolean = this === other || other is JweEncryptionAlgorithm && name == other.name
     override fun hashCode(): Int = name.hashCode()
 
@@ -30,13 +30,9 @@ public class JweEncryptionAlgorithm internal constructor(
         public val A192GCM: JweEncryptionAlgorithm = JweEncryptionAlgorithm("A192GCM", null)
         public val A256GCM: JweEncryptionAlgorithm = JweEncryptionAlgorithm("A256GCM", null)
 
-        // TODO: recheck
-        public val XCHACHA20_POLY1305: JweEncryptionAlgorithm = JweEncryptionAlgorithm("XCHACHA20-POLY1305", null)
-
         internal val lookupMap = listOf(
             A128CBC_HS256, A192CBC_HS384, A256CBC_HS512,
             A128GCM, A192GCM, A256GCM,
-            XCHACHA20_POLY1305,
         ).associateBy(JweEncryptionAlgorithm::name)
     }
 }

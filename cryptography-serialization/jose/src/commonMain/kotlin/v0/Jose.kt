@@ -4,6 +4,7 @@
 
 package dev.whyoleg.cryptography.serialization.jose.v0
 
+import dev.whyoleg.cryptography.serialization.jose.*
 import kotlinx.serialization.*
 import kotlinx.serialization.builtins.*
 import kotlinx.serialization.json.*
@@ -237,4 +238,59 @@ private suspend fun test(obj: JwsObject) {
         y
     }.toCompactString()
 //    Uuid.parse("test-uuid-v0")
+}
+
+private fun test() {
+//    Json(Json.JoseCompliant) {
+//        serializersModule = SerializersModule {
+//            contextual(JwaAlgorithm::class, JwaAlgorithmSerializer)
+//            contextual(JwkParameters::class, TODO())
+//        }
+//    }
+
+
+    JwkObject.decodeFromString("").encodeToString()
+
+    jwkRsaKey(
+
+    )
+
+
+
+    jwkRsaParameters()
+    jwkObject(
+        //use, operations, kid, etc
+        JwkParameters.rsa()
+        // rsaParameters(modulus, exponent)
+    )
+
+    JsonWebKey.RSA(
+        modulus = byteArrayOf(),
+        exponent = byteArrayOf(),
+        JsonWebKey.Use.Signature,
+        listof(JsonWebKey.Operation.Sign),
+        ""
+    )
+
+    JsonWebKey(
+        JsonWebKey.Parameters.RSA(
+            modulus = byteArrayOf(),
+            exponent = byteArrayOf()
+        ),
+        JsonWebKey.Use.Signature,
+        listof(JsonWebKey.Operation.Sign),
+        ""
+    )
+
+    JwkObject(
+        parameters = JwkParameters.RSA(
+            modulus = byteArrayOf(),
+            exponent = byteArrayOf(),
+            null
+        ),
+        keyId = "test-key-id",
+        publicKeyUse = JwkPublicKeyUse.Signature,
+        keyOperations = listOf(JwkOperation.Sign),
+        algorithm = null // ???
+    )
 }
