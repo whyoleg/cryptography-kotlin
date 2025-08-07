@@ -4,7 +4,6 @@ kotlin = "2.2.0"
 
 # kotlin/kotlinx
 kotlin-dokka = "2.0.0"
-kotlinx-bcv = "0.18.0"
 kotlinx-kover = "0.9.1"
 kotlinx-io = "0.8.0"
 kotlinx-serialization = "1.9.0"
@@ -26,7 +25,6 @@ logback = "1.5.18"
 [libraries]
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-dokka-gradle-plugin = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "kotlin-dokka" }
-kotlinx-bcv-gradle-plugin = { module = "org.jetbrains.kotlinx:binary-compatibility-validator", version.ref = "kotlinx-bcv" }
 kotlinx-kover-gradle-plugin = { module = "org.jetbrains.kotlinx:kover-gradle-plugin", version.ref = "kotlinx-kover" }
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "android" }
 maven-publish-gradle-plugin = { module = "com.vanniktech:gradle-maven-publish-plugin", version.ref = "maven-publish" }

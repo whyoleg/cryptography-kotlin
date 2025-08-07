@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 plugins {
@@ -9,7 +9,6 @@ plugins {
 dependencies {
     implementation(libs.kotlin.gradle.plugin)
     implementation(libs.kotlin.dokka.gradle.plugin)
-    implementation(libs.kotlinx.bcv.gradle.plugin)
     implementation(libs.kotlinx.kover.gradle.plugin)
     implementation(libs.android.gradle.plugin)
     implementation(libs.maven.publish.gradle.plugin)

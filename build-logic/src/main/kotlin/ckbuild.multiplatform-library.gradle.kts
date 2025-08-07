@@ -1,24 +1,24 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
-import kotlinx.validation.*
+@file:OptIn(ExperimentalAbiValidation::class)
+
+import org.jetbrains.kotlin.gradle.dsl.abi.*
 
 plugins {
     id("ckbuild.multiplatform-base")
     id("ckbuild.publication")
     id("ckbuild.documentation")
-
-    id("org.jetbrains.kotlinx.binary-compatibility-validator")
 }
 
 kotlin {
     explicitApi()
-}
-
-apiValidation {
-    @OptIn(ExperimentalBCVApi::class)
-    klib {
+    abiValidation {
         enabled = true
     }
+}
+
+tasks.check {
+    dependsOn(tasks.checkLegacyAbi)
 }
