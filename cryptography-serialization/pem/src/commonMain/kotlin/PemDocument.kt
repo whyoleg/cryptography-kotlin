@@ -8,32 +8,47 @@ import kotlinx.io.*
 import kotlinx.io.bytestring.*
 import kotlin.io.encoding.*
 
-@OptIn(ExperimentalEncodingApi::class)
-public class PemDocument internal constructor(
+public class PemDocument(
     public val label: PemLabel,
     public val content: ByteString,
 ) {
-    // TODO: this could be optimized :)
     public fun encodeToString(): String = buildString {
-        encodeLines().forEach { appendLine(it) }
-//        append(BEGIN_PREFIX).append(label.value).appendLine(SUFFIX)
-//        Base64.Default.encode(bytes).chunked(64).joinTo(this, separator = "\n", postfix = "\n")
-//        append(END_PREFIX).append(label.value).appendLine(SUFFIX)
+        encodedLines().forEach(::appendLine)
     }
 
-    // TODO: this could be optimized :)
+    public fun encodeToByteString(): ByteString = encodeToString().encodeToByteString()
+
     public fun encodeToSink(sink: Sink) {
-        encodeLines().forEach {
-            sink.writeString(it)
+        encodedLines().forEach { line ->
+            sink.writeString(line)
             sink.writeCodePointValue('\n'.code)
         }
-        sink.writeString(encodeToString())
     }
 
-    private fun encodeLines(): Sequence<String> = sequence {
+    private fun encodedLines(): Sequence<String> = sequence {
         yield(BEGIN_PREFIX + label.value + SUFFIX)
-        yieldAll(Base64.Default.encode(content).chunked(64))
+        yieldAll(Base64.encode(content).chunkedSequence(64))
         yield(END_PREFIX + label.value + SUFFIX)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is PemDocument) return false
+
+        if (label != other.label) return false
+        if (content != other.content) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = label.hashCode()
+        result = 31 * result + content.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "PemDocument(label=$label, content=$content)"
     }
 
     public companion object {
@@ -41,17 +56,20 @@ public class PemDocument internal constructor(
         private const val END_PREFIX = "-----END "
         private const val SUFFIX = "-----"
 
-        // will skip comments
+        // decode will skip comments and everything else which is not label or content
+
         // will decode only the first one, even if there is something else after it
         public fun decode(text: String): PemDocument = decode(text.lineSequence())
+        public fun decode(bytes: ByteString): PemDocument = decode(bytes.decodeToString().lineSequence())
         public fun decode(source: Source): PemDocument = decode(generateSequence(source::readLine))
 
         public fun decodeToSequence(text: String): Sequence<PemDocument> = decodeToSequence(text.lineSequence())
+        public fun decodeToSequence(bytes: ByteString): Sequence<PemDocument> = decodeToSequence(bytes.decodeToString().lineSequence())
         public fun decodeToSequence(source: Source): Sequence<PemDocument> = decodeToSequence(generateSequence(source::readLine))
 
-        private fun decode(lines: Sequence<String>): PemDocument {
-            return decodeToSequence(lines).first() // it will never be empty
-        }
+        // implementation
+
+        private fun decode(lines: Sequence<String>): PemDocument = decodeToSequence(lines).first() // it will never be empty
 
         // TODO: recheck :)
         // it will never be empty, or will throw an error - TBD
@@ -62,32 +80,41 @@ public class PemDocument internal constructor(
 
             for (line in lines) {
                 if (beginLabel == null) {
-                    if (line.startsWith(BEGIN_PREFIX)) {
-                        hasAtLeastOneBeginLabel = true
-                        beginLabel = line.substringAfter(BEGIN_PREFIX).substringBefore(SUFFIX).trim()
-                        check(beginLabel.isNotBlank()) { "Invalid PEM format: BEGIN label is empty" }
-                    }
+                    beginLabel = line.findLabel(BEGIN_PREFIX, "BEGIN") ?: continue
+                    hasAtLeastOneBeginLabel = true
                 } else {
-                    if (line.startsWith(END_PREFIX)) {
-                        val endLabel = line.substringAfter(END_PREFIX).substringBefore(SUFFIX).trim()
-                        check(endLabel.isNotBlank()) { "Invalid PEM format: BEGIN label is empty" }
-
-                        check(beginLabel == endLabel) { "Invalid PEM format: BEGIN=`$beginLabel`, END=`$endLabel`" }
-                        val document = PemDocument(
-                            label = PemLabel(beginLabel),
-                            content = Base64.Default.decodeToByteString(content.toString())
-                        )
-                        content.clear()
-                        beginLabel = null
-
-                        yield(document)
-                    } else {
+                    val endLabel = line.findLabel(END_PREFIX, "END") ?: run {
                         content.append(line)
+                        continue
                     }
+                    check(beginLabel == endLabel) { "Invalid PEM format: BEGIN=`$beginLabel`, END=`$endLabel`" }
+
+                    val document = PemDocument(
+                        label = PemLabel(beginLabel),
+                        content = Base64.decodeToByteString(content.toString())
+                    )
+                    content.clear()
+                    beginLabel = null
+
+                    yield(document)
                 }
             }
+
             check(hasAtLeastOneBeginLabel) { "Invalid PEM format: missing BEGIN label" }
             check(beginLabel == null) { "Invalid PEM format: missing END label" }
+        }
+
+        private fun String.findLabel(prefix: String, type: String): String? {
+            val startIndex = indexOf(prefix)
+            if (startIndex == -1) return null
+
+            val endIndex = lastIndexOf(SUFFIX)
+            if (endIndex == -1) error("Invalid PEM format: missing suffix")
+
+            val label = substring(startIndex + prefix.length, endIndex)
+            if (label.isBlank()) error("Invalid PEM format: $type label is empty")
+
+            return label
         }
     }
 }
