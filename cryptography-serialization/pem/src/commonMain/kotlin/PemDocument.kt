@@ -8,11 +8,10 @@ import kotlinx.io.*
 import kotlinx.io.bytestring.*
 import kotlin.io.encoding.*
 
-
 @OptIn(ExperimentalEncodingApi::class)
 public class PemDocument internal constructor(
     public val label: PemLabel,
-    public val bytes: ByteString,
+    public val content: ByteString,
 ) {
     // TODO: this could be optimized :)
     public fun encodeToString(): String = buildString {
@@ -23,7 +22,7 @@ public class PemDocument internal constructor(
     }
 
     // TODO: this could be optimized :)
-    public fun encodeTo(sink: Sink) {
+    public fun encodeToSink(sink: Sink) {
         encodeLines().forEach {
             sink.writeString(it)
             sink.writeCodePointValue('\n'.code)
@@ -33,7 +32,7 @@ public class PemDocument internal constructor(
 
     private fun encodeLines(): Sequence<String> = sequence {
         yield(BEGIN_PREFIX + label.value + SUFFIX)
-        yieldAll(Base64.Default.encode(bytes).chunked(64))
+        yieldAll(Base64.Default.encode(content).chunked(64))
         yield(END_PREFIX + label.value + SUFFIX)
     }
 
@@ -76,7 +75,7 @@ public class PemDocument internal constructor(
                         check(beginLabel == endLabel) { "Invalid PEM format: BEGIN=`$beginLabel`, END=`$endLabel`" }
                         val document = PemDocument(
                             label = PemLabel(beginLabel),
-                            bytes = Base64.Default.decodeToByteString(content.toString())
+                            content = Base64.Default.decodeToByteString(content.toString())
                         )
                         content.clear()
                         beginLabel = null
