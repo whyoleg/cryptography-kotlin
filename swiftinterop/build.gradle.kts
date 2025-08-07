@@ -10,18 +10,6 @@ plugins {
 }
 
 dependencies {
-    implementation(libs.kotlin.gradle.plugin)
-}
-
-@Suppress("DEPRECATION")
-kotlin {
-    compilerOptions {
-        languageVersion = KotlinVersion.KOTLIN_1_8
-        apiVersion = KotlinVersion.KOTLIN_1_8
-    }
-}
-
-dependencies {
     compileOnly(kotlin("stdlib"))
     compileOnly(libs.kotlin.gradle.plugin)
 }

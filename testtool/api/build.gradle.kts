@@ -3,19 +3,10 @@
  */
 
 import org.jetbrains.kotlin.gradle.*
-import org.jetbrains.kotlin.gradle.dsl.*
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlin.plugin.serialization)
-}
-
-@Suppress("DEPRECATION")
-kotlin {
-    compilerOptions {
-        languageVersion = KotlinVersion.KOTLIN_1_8
-        apiVersion = KotlinVersion.KOTLIN_1_8
-    }
 }
 
 @OptIn(ExperimentalWasmDsl::class)
