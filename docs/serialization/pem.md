@@ -36,7 +36,7 @@ dependencies {
 }
 ```
 
-[PEM]: ../api/cryptography-serialization-pem/dev.whyoleg.cryptography.serialization.pem/-pem/index.html
+[PEM]: ../api/cryptography-serialization-pem/dev.whyoleg.cryptography.serialization.pem/-pem-document/index.html
 
 [String]: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/
 

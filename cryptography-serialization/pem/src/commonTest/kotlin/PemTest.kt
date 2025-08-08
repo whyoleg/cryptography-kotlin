@@ -4,6 +4,7 @@
 
 package dev.whyoleg.cryptography.serialization.pem
 
+import kotlinx.io.bytestring.*
 import kotlin.test.*
 
 class PemTest {
@@ -17,18 +18,16 @@ class PemTest {
             -----END UNKNOWN-----
             
             """.trimIndent(),
-            Pem.encode(
-                PemContent(
-                    PemLabel("UNKNOWN"),
-                    "Hello World".encodeToByteArray()
-                )
-            )
+            PemDocument(
+                PemLabel("UNKNOWN"),
+                "Hello World".encodeToByteArray()
+            ).encodeToString()
         )
     }
 
     @Test
     fun testDecoding() {
-        val content = Pem.decode(
+        val content = PemDocument.decode(
             """
             -----BEGIN UNKNOWN-----
             SGVsbG8gV29ybGQ=
@@ -38,7 +37,7 @@ class PemTest {
         )
 
         assertEquals(PemLabel("UNKNOWN"), content.label)
-        assertEquals("Hello World", content.bytes.decodeToString())
+        assertEquals("Hello World", content.content.decodeToString())
     }
 
     @Test
@@ -52,18 +51,16 @@ class PemTest {
             -----END UNKNOWN CHUNKED-----
             
             """.trimIndent(),
-            Pem.encode(
-                PemContent(
-                    PemLabel("UNKNOWN CHUNKED"),
-                    "Hello World".repeat(10).encodeToByteArray()
-                )
-            )
+            PemDocument(
+                PemLabel("UNKNOWN CHUNKED"),
+                "Hello World".repeat(10).encodeToByteArray()
+            ).encodeToString().lines().joinToString("\n")
         )
     }
 
     @Test
     fun testChunkedDecoding() {
-        val content = Pem.decode(
+        val content = PemDocument.decode(
             """
             -----BEGIN UNKNOWN CHUNKED-----
             SGVsbG8gV29ybGRIZWxsbyBXb3JsZEhlbGxvIFdvcmxkSGVsbG8gV29ybGRIZWxs
@@ -75,12 +72,12 @@ class PemTest {
         )
 
         assertEquals(PemLabel("UNKNOWN CHUNKED"), content.label)
-        assertEquals("Hello World".repeat(10), content.bytes.decodeToString())
+        assertEquals("Hello World".repeat(10), content.content.decodeToString())
     }
 
     @Test
     fun testDecodingWithComment() {
-        val content = Pem.decode(
+        val content = PemDocument.decode(
             """
             Here is some description for pem
             it should not affect anything
@@ -91,27 +88,27 @@ class PemTest {
         )
 
         assertEquals(PemLabel("UNKNOWN"), content.label)
-        assertEquals("Hello World", content.bytes.decodeToString())
+        assertEquals("Hello World", content.content.decodeToString())
     }
 
     @Test
     fun testDecodingWithNoBeginLabel() {
         assertFails {
-            Pem.decode("SGVsbG8gV29ybGQ=\n-----END UNKNOWN-----")
+            PemDocument.decode("SGVsbG8gV29ybGQ=\n-----END UNKNOWN-----")
         }
     }
 
     @Test
     fun testDecodingWithNoEndLabel() {
         assertFails {
-            Pem.decode("-----BEGIN UNKNOWN-----\nSGVsbG8gV29ybGQ=")
+            PemDocument.decode("-----BEGIN UNKNOWN-----\nSGVsbG8gV29ybGQ=")
         }
     }
 
     @Test
     fun testDecodingWithDifferentLabels() {
         assertFails {
-            Pem.decode(
+            PemDocument.decode(
                 """
                 -----BEGIN UNKNOWN1-----
                 SGVsbG8gV29ybGQ=

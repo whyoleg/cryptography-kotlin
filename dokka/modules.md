@@ -110,7 +110,7 @@ Provides API for working with keys: [encoding][EncodableKey], [decoding][KeyDeco
 
 [PEM][PEM]: encoding/decoding of PEM content from/to [String][String] or [ByteArray][ByteArray]
 
-[PEM]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-serialization-pem/dev.whyoleg.cryptography.serialization.pem/-p-e-m/index.html
+[PEM]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-serialization-pem/dev.whyoleg.cryptography.serialization.pem/-pem-document/index.html
 
 [String]: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/
 
@@ -120,7 +120,7 @@ Provides API for working with keys: [encoding][EncodableKey], [decoding][KeyDeco
 
 [PEM][PEM]: encoding/decoding of PEM files from/to [String][String] or [ByteArray][ByteArray]
 
-[PEM]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-serialization-pem/dev.whyoleg.cryptography.serialization.pem/-p-e-m/index.html
+[PEM]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-serialization-pem/dev.whyoleg.cryptography.serialization.pem/-pem-document/index.html
 
 [String]: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/
 

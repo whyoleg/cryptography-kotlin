@@ -122,8 +122,8 @@ fun AlgorithmTestScope<out EC<*, *, *>>.supportsPrivateKeyDecoding(
                 EC.PrivateKey.Format.RAW      -> return false
                 EC.PrivateKey.Format.DER      -> decodePki(key)
                 EC.PrivateKey.Format.DER.SEC1 -> key
-                EC.PrivateKey.Format.PEM      -> decodePki(Pem.decode(key).byteString)
-                EC.PrivateKey.Format.PEM.SEC1 -> Pem.decode(key).byteString
+                EC.PrivateKey.Format.PEM      -> decodePki(PemDocument.decode(key).content)
+                EC.PrivateKey.Format.PEM.SEC1 -> PemDocument.decode(key).content
             }
         )
     }

@@ -8,15 +8,21 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.serialization.asn1.*
 import dev.whyoleg.cryptography.serialization.asn1.modules.*
 import dev.whyoleg.cryptography.serialization.pem.*
+import kotlinx.io.bytestring.unsafe.*
 
+@OptIn(UnsafeByteStringApi::class)
 @CryptographyProviderApi
 public fun unwrapPem(label: PemLabel, key: ByteArray): ByteArray {
-    return Pem.decode(key).ensurePemLabel(label).bytes
+    val document = PemDocument.decode(key)
+    check(document.label == label) { "Wrong PEM label, expected $label, actual ${document.label}" }
+    UnsafeByteStringOperations.withByteArrayUnsafe(document.content) { return it }
 }
 
+@OptIn(UnsafeByteStringApi::class)
 @CryptographyProviderApi
 public fun wrapPem(label: PemLabel, key: ByteArray): ByteArray {
-    return Pem.encodeToByteArray(PemContent(label, key))
+    val document = PemDocument(label, UnsafeByteStringOperations.wrapUnsafe(key))
+    return document.encodeToByteArray()
 }
 
 @CryptographyProviderApi

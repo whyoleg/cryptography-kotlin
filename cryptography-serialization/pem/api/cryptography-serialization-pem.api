@@ -20,6 +20,32 @@ public final class dev/whyoleg/cryptography/serialization/pem/PemContentKt {
 	public static final fun ensurePemLabel-fi-TaOo (Ldev/whyoleg/cryptography/serialization/pem/PemContent;Ljava/lang/String;)Ldev/whyoleg/cryptography/serialization/pem/PemContent;
 }
 
+public final class dev/whyoleg/cryptography/serialization/pem/PemDocument {
+	public static final field Companion Ldev/whyoleg/cryptography/serialization/pem/PemDocument$Companion;
+	public synthetic fun <init> (Ljava/lang/String;Lkotlinx/io/bytestring/ByteString;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Ljava/lang/String;[BLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun encodeToByteArray ()[B
+	public final fun encodeToByteString ()Lkotlinx/io/bytestring/ByteString;
+	public final fun encodeToSink (Lkotlinx/io/Sink;)V
+	public final fun encodeToString ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getContent ()Lkotlinx/io/bytestring/ByteString;
+	public final fun getLabel-2EFq_Wg ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/whyoleg/cryptography/serialization/pem/PemDocument$Companion {
+	public final fun decode (Ljava/lang/String;)Ldev/whyoleg/cryptography/serialization/pem/PemDocument;
+	public final fun decode (Lkotlinx/io/Source;)Ldev/whyoleg/cryptography/serialization/pem/PemDocument;
+	public final fun decode (Lkotlinx/io/bytestring/ByteString;)Ldev/whyoleg/cryptography/serialization/pem/PemDocument;
+	public final fun decode ([B)Ldev/whyoleg/cryptography/serialization/pem/PemDocument;
+	public final fun decodeToSequence (Ljava/lang/String;)Lkotlin/sequences/Sequence;
+	public final fun decodeToSequence (Lkotlinx/io/Source;)Lkotlin/sequences/Sequence;
+	public final fun decodeToSequence (Lkotlinx/io/bytestring/ByteString;)Lkotlin/sequences/Sequence;
+	public final fun decodeToSequence ([B)Lkotlin/sequences/Sequence;
+}
+
 public final class dev/whyoleg/cryptography/serialization/pem/PemLabel {
 	public static final field Companion Ldev/whyoleg/cryptography/serialization/pem/PemLabel$Companion;
 	public static final synthetic fun box-impl (Ljava/lang/String;)Ldev/whyoleg/cryptography/serialization/pem/PemLabel;
@@ -27,7 +53,7 @@ public final class dev/whyoleg/cryptography/serialization/pem/PemLabel {
 	public fun equals (Ljava/lang/Object;)Z
 	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
 	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
-	public final fun getRepresentation ()Ljava/lang/String;
+	public final fun getValue ()Ljava/lang/String;
 	public fun hashCode ()I
 	public static fun hashCode-impl (Ljava/lang/String;)I
 	public fun toString ()Ljava/lang/String;

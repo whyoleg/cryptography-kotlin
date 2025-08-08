@@ -8,7 +8,9 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.providers.tests.*
 import dev.whyoleg.cryptography.providers.tests.compatibility.api.*
+import dev.whyoleg.cryptography.serialization.pem.*
 import kotlinx.serialization.*
+import kotlin.test.*
 
 private val publicKeyFormats = listOf(
     RSA.PublicKey.Format.JWK,
@@ -89,13 +91,25 @@ abstract class RsaBasedCompatibilityTest<PublicK : RSA.PublicKey, PrivateK : RSA
                     supports = ::supportsKeyFormat
                 ) { key, format, bytes ->
                     when (format) {
-                        RSA.PublicKey.Format.DER,
-                        RSA.PublicKey.Format.PEM,
-                        RSA.PublicKey.Format.DER.PKCS1,
-                        RSA.PublicKey.Format.PEM.PKCS1,
-                                                 ->
+                        RSA.PublicKey.Format.DER, RSA.PublicKey.Format.DER.PKCS1 -> {
                             assertContentEquals(bytes, key.encodeToByteString(format), "Public Key $format encoding")
-                        RSA.PublicKey.Format.JWK -> {}
+                        }
+                        RSA.PublicKey.Format.PEM, RSA.PublicKey.Format.PEM.PKCS1 -> {
+                            val expected = PemDocument.decode(bytes)
+                            val actual = PemDocument.decode(key.encodeToByteString(format))
+
+                            val expectedLabel = when (format) {
+                                RSA.PublicKey.Format.PEM       -> PemLabel.PublicKey
+                                RSA.PublicKey.Format.PEM.PKCS1 -> PemLabel.RsaPublicKey
+                                else                           -> {}
+                            }
+
+                            assertEquals(expected.label, actual.label)
+                            assertEquals(expectedLabel, actual.label)
+
+                            assertContentEquals(expected.content, actual.content, "Public Key $format content encoding")
+                        }
+                        RSA.PublicKey.Format.JWK                                 -> {}
 
                     }
                 }
@@ -105,13 +119,26 @@ abstract class RsaBasedCompatibilityTest<PublicK : RSA.PublicKey, PrivateK : RSA
                     supports = ::supportsKeyFormat
                 ) { key, format, bytes ->
                     when (format) {
-                        RSA.PrivateKey.Format.DER,
-                        RSA.PrivateKey.Format.PEM,
-                        RSA.PrivateKey.Format.DER.PKCS1,
-                        RSA.PrivateKey.Format.PEM.PKCS1,
-                                                  ->
+                        RSA.PrivateKey.Format.DER, RSA.PrivateKey.Format.DER.PKCS1 -> {
                             assertContentEquals(bytes, key.encodeToByteString(format), "Private Key $format encoding")
-                        RSA.PrivateKey.Format.JWK -> {}
+                        }
+                        RSA.PrivateKey.Format.PEM, RSA.PrivateKey.Format.PEM.PKCS1 -> {
+                            val expected = PemDocument.decode(bytes)
+                            val actual = PemDocument.decode(key.encodeToByteString(format))
+
+                            val expectedLabel = when (format) {
+                                RSA.PrivateKey.Format.PEM       -> PemLabel.PrivateKey
+                                RSA.PrivateKey.Format.PEM.PKCS1 -> PemLabel.RsaPrivateKey
+                                else                            -> {}
+                            }
+
+                            assertEquals(expected.label, actual.label)
+                            assertEquals(expectedLabel, actual.label)
+
+                            assertContentEquals(expected.content, actual.content, "Private Key $format content encoding")
+                        }
+
+                        RSA.PrivateKey.Format.JWK                                  -> {}
                     }
                 }
                 put(keyReference, publicKeys to privateKeys)

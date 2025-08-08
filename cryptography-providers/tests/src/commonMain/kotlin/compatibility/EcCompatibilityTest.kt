@@ -42,7 +42,8 @@ abstract class EcCompatibilityTest<PublicK : EC.PublicKey, PrivateK : EC.Private
     }
 
     protected inline fun generateCurves(block: (curve: EC.Curve) -> Unit) {
-        generate(block,
+        generate(
+            block,
             EC.Curve.P256, EC.Curve.P384, EC.Curve.P521,
             EC.Curve.secp256k1,
             EC.Curve.brainpoolP256r1, EC.Curve.brainpoolP384r1, EC.Curve.brainpoolP512r1,
@@ -91,9 +92,16 @@ abstract class EcCompatibilityTest<PublicK : EC.PublicKey, PrivateK : EC.Private
                         EC.PublicKey.Format.RAW,
                         EC.PublicKey.Format.RAW.Compressed,
                         EC.PublicKey.Format.DER,
-                        EC.PublicKey.Format.PEM,
                                                 -> {
                             assertContentEquals(bytes, key.encodeToByteString(format), "Public Key $format encoding")
+                        }
+                        EC.PublicKey.Format.PEM -> {
+                            val expected = PemDocument.decode(bytes)
+                            val actual = PemDocument.decode(key.encodeToByteString(format))
+
+                            assertEquals(expected.label, actual.label)
+                            assertEquals(PemLabel.PublicKey, actual.label)
+                            assertContentEquals(expected.content, actual.content, "Public Key $format content encoding")
                         }
                     }
                 }
@@ -112,23 +120,25 @@ abstract class EcCompatibilityTest<PublicK : EC.PublicKey, PrivateK : EC.Private
                             assertEcPrivateKeyEquals(byteString.toByteArray(), key.encodeToByteArray(format))
                         }
                         EC.PrivateKey.Format.PEM.SEC1 -> {
-                            val expected = Pem.decode(byteString)
-                            val actual = Pem.decode(key.encodeToByteString(format))
+                            val expected = PemDocument.decode(byteString)
+                            val actual = PemDocument.decode(key.encodeToByteString(format))
 
+                            assertEquals(PemLabel.EcPrivateKey, actual.label)
                             assertEquals(expected.label, actual.label)
 
-                            assertEcPrivateKeyEquals(expected.bytes, actual.bytes)
+                            assertEcPrivateKeyEquals(expected.content.toByteArray(), actual.content.toByteArray())
                         }
                         EC.PrivateKey.Format.DER -> {
                             assertPkcs8EcPrivateKeyEquals(byteString.toByteArray(), key.encodeToByteArray(format))
                         }
                         EC.PrivateKey.Format.PEM -> {
-                            val expected = Pem.decode(byteString)
-                            val actual = Pem.decode(key.encodeToByteString(format))
+                            val expected = PemDocument.decode(byteString)
+                            val actual = PemDocument.decode(key.encodeToByteString(format))
 
                             assertEquals(expected.label, actual.label)
+                            assertEquals(PemLabel.PrivateKey, actual.label)
 
-                            assertPkcs8EcPrivateKeyEquals(expected.bytes, actual.bytes)
+                            assertPkcs8EcPrivateKeyEquals(expected.content.toByteArray(), actual.content.toByteArray())
                         }
                     }
                 }
