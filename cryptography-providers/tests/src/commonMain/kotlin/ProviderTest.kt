@@ -32,7 +32,6 @@ abstract class ProviderTest(provider: CryptographyProvider) {
     private val scope = ProviderTestScope(logger, context, provider)
 
     fun testWithProvider(block: suspend ProviderTestScope.() -> Unit): TestResult = runTest(timeout = timeout) {
-        disableJsConsoleDebug()
         scope.block()
     }
 

@@ -88,5 +88,3 @@ fun Buffer(bytes: ByteString): Buffer = Buffer().apply { write(bytes) }
 
 fun Buffer.bufferedSource(): Source = (this as RawSource).buffered()
 fun Buffer.bufferedSink(): Sink = (this as RawSink).buffered()
-
-expect fun disableJsConsoleDebug()

@@ -17,17 +17,6 @@ kotlin {
         supportsWasmWasi = false,
     )
 
-    applyDefaultHierarchyTemplate {
-        common {
-            group("nonJs") {
-                withJvm()
-                withWasmJs()
-                withWasmWasi()
-                group("native")
-            }
-        }
-    }
-
     compilerOptions {
         optIn.addAll(
             OptIns.DelicateCryptographyApi,
