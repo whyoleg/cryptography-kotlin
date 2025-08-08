@@ -18,13 +18,11 @@ jobs:
       fail-fast: false
       matrix:
         os: [ 'ubuntu-latest' ]
-        target: [ 'jvm', 'js', 'wasm' ]
+        target: [ 'jvm', 'js', 'wasm', 'native', 'connectedAndroid' ]
         include:
           - os: 'macos-latest'
             target: 'macos'
           - os: 'windows-latest'
-            target: 'native'
-          - os: 'ubuntu-latest'
             target: 'native'
     steps:
       - uses: actions/checkout@v4
@@ -37,28 +35,27 @@ jobs:
           ${{ matrix.target }}ProviderTest
           --continue
           -Pckbuild.providerTests.step=compatibility.generate
-          -Pckbuild.testtool.instanceId=${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }}
+          -Pckbuild.testtool.instanceId=${{ matrix.os }}-${{ matrix.target }}
 
       - name: Run tests (android)
         if: ${{ matrix.target == 'connectedAndroid' }}
         uses: ./.github/actions/run-android-emulator-tests
         with:
-          api-level: ${{ matrix.android-api-level }}
           test-reports-classifier: 'compatibility-generate'
           run: >
             ./gradlew
             ${{ matrix.target }}ProviderTest
             --continue
             -Pckbuild.providerTests.step=compatibility.generate
-            -Pckbuild.testtool.instanceId=${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }}
+            -Pckbuild.testtool.instanceId=${{ matrix.os }}-${{ matrix.target }}
 
       - name: Dump testtool server-storage
-        run: tar -cf ${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }}.tar build/testtool/server-storage
+        run: tar -cf ${{ matrix.os }}-${{ matrix.target }}.tar build/testtool/server-storage
       - name: Upload testtool server-storage
         uses: actions/upload-artifact@v4
         with:
-          name: compatibility-tests-data-${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }}
-          path: ${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }}.tar
+          name: compatibility-tests-data-${{ matrix.os }}-${{ matrix.target }}
+          path: ${{ matrix.os }}-${{ matrix.target }}.tar
           if-no-files-found: error
 
   tests-compatibility-validate:
@@ -68,13 +65,11 @@ jobs:
       fail-fast: false
       matrix:
         os: [ 'ubuntu-latest' ]
-        target: [ 'jvm', 'js', 'wasm' ]
+        target: [ 'jvm', 'js', 'wasm', 'native', 'connectedAndroid' ]
         include:
           - os: 'macos-latest'
             target: 'macos'
           - os: 'windows-latest'
-            target: 'native'
-          - os: 'ubuntu-latest'
             target: 'native'
     steps:
       - uses: actions/checkout@v4
@@ -97,17 +92,16 @@ jobs:
           ${{ matrix.target }}ProviderTest
           --continue
           -Pckbuild.providerTests.step=compatibility.validate
-          -Pckbuild.testtool.instanceId=${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }}
+          -Pckbuild.testtool.instanceId=${{ matrix.os }}-${{ matrix.target }}
 
       - name: Run tests (android)
         if: ${{ matrix.target == 'connectedAndroid' }}
         uses: ./.github/actions/run-android-emulator-tests
         with:
-          api-level: ${{ matrix.android-api-level }}
           test-reports-classifier: 'compatibility-validate'
           run: >
             ./gradlew
             ${{ matrix.target }}ProviderTest
             --continue
             -Pckbuild.providerTests.step=compatibility.validate
-            -Pckbuild.testtool.instanceId=${{ matrix.os }}-${{ matrix.target }}-${{ matrix.android-api-level }}
+            -Pckbuild.testtool.instanceId=${{ matrix.os }}-${{ matrix.target }}

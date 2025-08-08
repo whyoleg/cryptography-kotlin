@@ -2,8 +2,12 @@
  * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
+@file:Suppress("UnstableApiUsage")
+
 package ckbuild
 
+import com.android.build.api.dsl.*
+import org.gradle.api.artifacts.*
 import org.gradle.jvm.toolchain.*
 import org.gradle.kotlin.dsl.*
 import org.jetbrains.kotlin.gradle.*
@@ -11,11 +15,13 @@ import org.jetbrains.kotlin.gradle.dsl.*
 
 fun KotlinMultiplatformExtension.allTargets(
     supportsWasmWasi: Boolean = true,
+    enableAndroid: Boolean = false, // false by default
 ) {
     jvmTarget()
     webTargets()
     nativeTargets()
     if (supportsWasmWasi) wasmWasiTarget()
+    if (enableAndroid) androidLibraryTarget()
 }
 
 fun KotlinMultiplatformExtension.appleTargets(
@@ -88,11 +94,8 @@ fun KotlinMultiplatformExtension.webTargets() {
 }
 
 fun KotlinMultiplatformExtension.jvmTarget(
-    jdkVersion: Int = 8,
     jdkAdditionalTestVersions: Set<Int> = setOf(11, 17, 21),
 ) {
-    jvmToolchain(jdkVersion)
-
     jvm {
         val javaToolchains = project.extensions.getByName<JavaToolchainService>("javaToolchains")
 
@@ -110,5 +113,30 @@ fun KotlinMultiplatformExtension.jvmTarget(
     //version enforcement using bom works only for jvm
     sourceSets.jvmMain.dependencies {
         api(project.dependencies.platform(project(":cryptography-bom")))
+    }
+}
+
+fun KotlinMultiplatformExtension.androidLibraryTarget() {
+    project.plugins.apply("com.android.kotlin.multiplatform.library")
+
+    androidLibrary {
+        namespace = "${project.group}.${project.name.replace("-", ".")}"
+        compileSdk = 36
+        minSdk = 21
+
+        withDeviceTestBuilder {
+            // to make it dependent on `commonTest`
+            sourceSetTreeName = "test"
+        }.configure {
+            instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        }
+    }
+
+    val versionCatalogs = project.extensions.getByName<VersionCatalogsExtension>("versionCatalogs")
+
+    sourceSets.named("androidDeviceTest") {
+        dependencies {
+            implementation(versionCatalogs.named("libs").findLibrary("androidx-test").get())
+        }
     }
 }

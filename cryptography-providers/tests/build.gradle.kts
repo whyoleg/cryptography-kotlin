@@ -7,7 +7,6 @@ import org.jetbrains.kotlin.gradle.*
 
 plugins {
     id("ckbuild.multiplatform-base")
-    id("ckbuild.multiplatform-android")
 
     id("org.jetbrains.kotlin.plugin.serialization")
 }
@@ -15,13 +14,13 @@ plugins {
 @OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
     allTargets(
-        supportsWasmWasi = false
+        supportsWasmWasi = false,
+        enableAndroid = true
     )
 
     applyDefaultHierarchyTemplate {
         common {
             group("nonJs") {
-                withAndroidTarget()
                 withJvm()
                 withWasmJs()
                 withWasmWasi()

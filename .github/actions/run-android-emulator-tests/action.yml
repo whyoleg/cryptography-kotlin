@@ -1,9 +1,6 @@
 name: 'Run Android emulator tests'
 description: 'Setups android emulator caching and running'
 inputs:
-  api-level:
-    description: Android API level for testing
-    required: true
   run:
     description: Arguments for running gradle with Android Emulator
     required: false
@@ -25,7 +22,8 @@ runs:
       uses: reactivecircus/android-emulator-runner@v2
       with:
         arch: x86_64
-        api-level: ${{ inputs.api-level }}
+        api-level: 35
+        target: aosp_atd
         script: ${{ inputs.run }}
 
     # Android test failures are not available in gradle build scans

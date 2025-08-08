@@ -24,6 +24,9 @@ val warningsAsErrors = providers.gradleProperty("ckbuild.warningsAsErrors").orNu
 
 @OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
+    // default JDK version
+    jvmToolchain(8)
+
     compilerOptions {
         allWarningsAsErrors.set(warningsAsErrors)
         progressiveMode.set(true)

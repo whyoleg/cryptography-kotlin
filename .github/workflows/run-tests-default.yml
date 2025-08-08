@@ -14,7 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ 'ubuntu-latest' ]
-        target: [ 'jvmAll', 'js', 'wasm' ]
+        target: [ 'jvmAll', 'js', 'wasm', 'native', 'connectedAndroid' ]
         include:
           - os: 'macos-latest'
             target: 'macos'
@@ -25,17 +25,6 @@ jobs:
           - os: 'macos-latest'
             target: 'tvos'
           - os: 'windows-latest'
-            target: 'native'
-          - os: 'ubuntu-latest'
-            target: 'connectedAndroid'
-            android-api-level: 21
-          - os: 'ubuntu-latest'
-            target: 'connectedAndroid'
-            android-api-level: 27
-          - os: 'ubuntu-latest'
-            target: 'connectedAndroid'
-            android-api-level: 33
-          - os: 'ubuntu-latest'
             target: 'native'
     steps:
       - uses: actions/checkout@v4
@@ -49,6 +38,5 @@ jobs:
         if: ${{ matrix.target == 'connectedAndroid' }}
         uses: ./.github/actions/run-android-emulator-tests
         with:
-          api-level: ${{ matrix.android-api-level }}
           test-reports-classifier: 'default'
           run: ./gradlew ${{ matrix.target }}Test --continue

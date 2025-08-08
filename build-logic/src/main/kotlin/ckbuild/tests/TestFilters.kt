@@ -2,9 +2,11 @@
  * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
+@file:Suppress("UnstableApiUsage")
+
 package ckbuild.tests
 
-import com.android.build.gradle.*
+import com.android.build.api.dsl.*
 import org.gradle.api.*
 import org.gradle.api.tasks.testing.*
 import org.gradle.kotlin.dsl.*
@@ -20,8 +22,8 @@ fun Project.applyProviderTestFilters() {
     val providerTestsStep = providers.gradleProperty("ckbuild.providerTests.step").orNull
 
     val testFilters = when (providerTestsStep) {
-        null -> TestFilters(
-            androidTestRegex = "^((?!CompatibilityTest#(generateStep|generateStressStep|validateStep)).)*\$",
+        null                           -> TestFilters(
+            androidTestRegex = "^((?!CompatibilityTest#(generateStep|generateStressStep|validateStep)).)*$",
             kotlinTestFilter = {
                 setExcludePatterns(
                     "*CompatibilityTest.generateStep",
@@ -30,25 +32,25 @@ fun Project.applyProviderTestFilters() {
                 )
             }
         )
-        "compatibility.generate" -> TestFilters(
-            androidTestRegex = "^.*CompatibilityTest#generateStep\$",
+        "compatibility.generate"       -> TestFilters(
+            androidTestRegex = "^.*CompatibilityTest#generateStep$",
             kotlinTestFilter = {
                 setIncludePatterns("*CompatibilityTest.generateStep")
             }
         )
         "compatibility.generateStress" -> TestFilters(
-            androidTestRegex = "^.*CompatibilityTest#generateStressStep\$",
+            androidTestRegex = "^.*CompatibilityTest#generateStressStep$",
             kotlinTestFilter = {
                 setIncludePatterns("*CompatibilityTest.generateStressStep")
             }
         )
-        "compatibility.validate" -> TestFilters(
-            androidTestRegex = "^.*CompatibilityTest#validateStep\$",
+        "compatibility.validate"       -> TestFilters(
+            androidTestRegex = "^.*CompatibilityTest#validateStep$",
             kotlinTestFilter = {
                 setIncludePatterns("*CompatibilityTest.validateStep")
             }
         )
-        else -> error("wrong argument")
+        else                           -> error("wrong argument")
     }
 
     plugins.withId("org.jetbrains.kotlin.multiplatform") {
@@ -58,12 +60,14 @@ fun Project.applyProviderTestFilters() {
                     filter(testFilters.kotlinTestFilter)
                 }
             }
-        }
-    }
 
-    plugins.withId("com.android.library") {
-        extensions.configure<LibraryExtension>("android") {
-            defaultConfig.testInstrumentationRunnerArguments["tests_regex"] = testFilters.androidTestRegex
+            plugins.withId("com.android.kotlin.multiplatform.library") {
+                androidLibrary {
+                    compilations.withType(KotlinMultiplatformAndroidDeviceTestCompilation::class).configureEach {
+                        instrumentationRunnerArguments["tests_regex"] = testFilters.androidTestRegex
+                    }
+                }
+            }
         }
     }
 }
