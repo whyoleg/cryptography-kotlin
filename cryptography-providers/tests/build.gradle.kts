@@ -15,7 +15,6 @@ plugins {
 kotlin {
     allTargets(
         supportsWasmWasi = false,
-        enableAndroid = true
     )
 
     applyDefaultHierarchyTemplate {
@@ -54,9 +53,6 @@ kotlin {
             api(kotlin("test-js"))
         }
         jvmMain.dependencies {
-            api(kotlin("test-junit"))
-        }
-        androidMain.dependencies {
             api(kotlin("test-junit"))
         }
     }

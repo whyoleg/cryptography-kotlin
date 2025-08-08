@@ -15,13 +15,11 @@ import org.jetbrains.kotlin.gradle.dsl.*
 
 fun KotlinMultiplatformExtension.allTargets(
     supportsWasmWasi: Boolean = true,
-    enableAndroid: Boolean = false, // false by default
 ) {
     jvmTarget()
     webTargets()
     nativeTargets()
     if (supportsWasmWasi) wasmWasiTarget()
-    if (enableAndroid) androidLibraryTarget()
 }
 
 fun KotlinMultiplatformExtension.appleTargets(
