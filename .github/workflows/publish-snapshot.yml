@@ -12,8 +12,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-environment
-        with:
-          cache-disabled: true
 
       - name: Publish snapshot to Maven Central
         run: ./gradlew publishToMavenCentral -Pversion=0.6.0-SNAPSHOT
