@@ -8,6 +8,7 @@ import org.jetbrains.kotlin.gradle.dsl.abi.*
 
 plugins {
     id("ckbuild.multiplatform-base")
+    id("ckbuild.multiplatform-tests")
     id("ckbuild.publication")
     id("ckbuild.documentation")
 }

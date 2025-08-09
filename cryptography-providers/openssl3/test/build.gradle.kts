@@ -6,7 +6,7 @@ import ckbuild.*
 import org.jetbrains.kotlin.gradle.*
 
 plugins {
-    id("ckbuild.multiplatform-base")
+    id("ckbuild.multiplatform-tests")
 }
 
 @OptIn(ExperimentalKotlinGradlePluginApi::class)

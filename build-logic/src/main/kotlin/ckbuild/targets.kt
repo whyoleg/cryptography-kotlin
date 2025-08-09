@@ -7,7 +7,6 @@
 package ckbuild
 
 import com.android.build.api.dsl.*
-import org.gradle.api.artifacts.*
 import org.gradle.jvm.toolchain.*
 import org.gradle.kotlin.dsl.*
 import org.jetbrains.kotlin.gradle.*
@@ -20,6 +19,12 @@ fun KotlinMultiplatformExtension.allTargets(
     webTargets()
     nativeTargets()
     if (supportsWasmWasi) wasmWasiTarget()
+}
+
+fun KotlinMultiplatformExtension.allBenchmarkTargets() {
+    jvmTarget(jdkAdditionalTestVersions = emptySet())
+    desktopTargets()
+    webTargets(supportsBrowser = false)
 }
 
 fun KotlinMultiplatformExtension.appleTargets(
@@ -64,18 +69,22 @@ fun KotlinMultiplatformExtension.nativeTargets() {
     androidNativeArm32()
 }
 
-fun KotlinMultiplatformExtension.jsTarget() {
+fun KotlinMultiplatformExtension.jsTarget(
+    supportsBrowser: Boolean = true,
+) {
     js {
         nodejs()
-        browser()
+        if (supportsBrowser) browser()
     }
 }
 
 @OptIn(ExperimentalWasmDsl::class)
-fun KotlinMultiplatformExtension.wasmJsTarget() {
+fun KotlinMultiplatformExtension.wasmJsTarget(
+    supportsBrowser: Boolean = true,
+) {
     wasmJs {
         nodejs()
-        browser()
+        if (supportsBrowser) browser()
     }
 }
 
@@ -86,9 +95,11 @@ fun KotlinMultiplatformExtension.wasmWasiTarget() {
     }
 }
 
-fun KotlinMultiplatformExtension.webTargets() {
-    jsTarget()
-    wasmJsTarget()
+fun KotlinMultiplatformExtension.webTargets(
+    supportsBrowser: Boolean = true,
+) {
+    jsTarget(supportsBrowser = supportsBrowser)
+    wasmJsTarget(supportsBrowser = supportsBrowser)
 }
 
 fun KotlinMultiplatformExtension.jvmTarget(
@@ -130,11 +141,9 @@ fun KotlinMultiplatformExtension.androidLibraryTarget() {
         }
     }
 
-    val versionCatalogs = project.extensions.getByName<VersionCatalogsExtension>("versionCatalogs")
-
     sourceSets.named("androidDeviceTest") {
         dependencies {
-            implementation(versionCatalogs.named("libs").findLibrary("androidx-test").get())
+            implementation(project.versionCatalogLib("androidx-test"))
         }
     }
 

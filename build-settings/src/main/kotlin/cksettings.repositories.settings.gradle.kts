@@ -13,13 +13,8 @@ pluginManagement {
                 includeGroupAndSubgroups("androidx")
             }
         }
-        gradlePluginPortal {
-            content {
-                includeGroupAndSubgroups("com.gradle")
-                includeGroupAndSubgroups("org.gradle")
-            }
-        }
         mavenCentral()
+        gradlePluginPortal()
     }
 }
 
@@ -32,12 +27,7 @@ dependencyResolutionManagement {
                 includeGroupAndSubgroups("androidx")
             }
         }
-        gradlePluginPortal {
-            content {
-                includeGroupAndSubgroups("com.gradle")
-                includeGroupAndSubgroups("org.gradle")
-            }
-        }
         mavenCentral()
+        gradlePluginPortal()
     }
 }
