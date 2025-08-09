@@ -17,6 +17,7 @@ object Projects {
         "cryptography-random" to setOf(Tag.PUBLISHED),
 
         "cryptography-serialization-pem" to setOf(Tag.PUBLISHED),
+        "cryptography-serialization-pem-benchmarks" to setOf(),
         "cryptography-serialization-asn1" to setOf(Tag.PUBLISHED),
         "cryptography-serialization-asn1-modules" to setOf(Tag.PUBLISHED),
 

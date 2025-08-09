@@ -37,7 +37,9 @@ projects("cryptography-kotlin") {
     module("cryptography-bigint")
     module("cryptography-random")
     folder("cryptography-serialization") {
-        module("pem")
+        module("pem") {
+            module("benchmarks")
+        }
         module("asn1") {
             module("modules")
         }
