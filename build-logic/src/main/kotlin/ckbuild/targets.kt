@@ -137,4 +137,8 @@ fun KotlinMultiplatformExtension.androidLibraryTarget() {
             implementation(versionCatalogs.named("libs").findLibrary("androidx-test").get())
         }
     }
+
+    project.tasks.named("check") {
+        dependsOn(project.tasks.named("androidConnectedCheck"))
+    }
 }
