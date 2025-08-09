@@ -19,6 +19,7 @@ jobs:
       - uses: ./.github/actions/setup-environment
         with:
           cache-read-only: ${{ github.ref_name != 'main' }}
+          submit-dependency-graph: true
       - run: >
           ./gradlew
           build publishToMavenLocal

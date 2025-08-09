@@ -6,6 +6,8 @@ on:
 jobs:
   build-project:
     uses: ./.github/workflows/run-build-project.yml
+    permissions:
+      contents: write
 
   build-website:
     needs: [ build-project ]

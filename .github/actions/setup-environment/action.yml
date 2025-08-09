@@ -7,6 +7,9 @@ inputs:
   cache-read-only:
     description: 'gradle.cache-read-only'
     default: 'true'
+  submit-dependency-graph:
+    description: 'gradle.dependency-graph.generate-and-submit'
+    default: 'false'
 runs:
   using: 'composite'
   steps:
@@ -36,6 +39,8 @@ runs:
 
         cache-disabled: ${{ inputs.cache-disabled }}
         cache-read-only: ${{ inputs.cache-read-only }}
+
+        dependency-graph: ${{ (inputs.submit-dependency-graph == 'true') && 'generate-and-submit' || 'disabled' }}
     - if: runner.os == 'Windows'
       uses: msys2/setup-msys2@v2
       with:
