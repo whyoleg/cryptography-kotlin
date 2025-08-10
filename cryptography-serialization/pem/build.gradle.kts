@@ -19,3 +19,14 @@ kotlin {
         }
     }
 }
+
+kover {
+    reports {
+        filters.excludes {
+            annotatedBy("kotlin.Deprecated")
+        }
+        verify.rule {
+            minBound(90)
+        }
+    }
+}
