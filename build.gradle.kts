@@ -34,6 +34,10 @@ plugins.withType<WasmNodeJsRootPlugin> {
     }
 }
 
+dokka {
+    setupHomepageLink()
+}
+
 dependencies {
     Projects.libraries.forEach {
         dokka(project(":$it"))

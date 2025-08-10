@@ -1,6 +1,14 @@
 package ckbuild
 
+import org.gradle.kotlin.dsl.*
 import org.jetbrains.dokka.gradle.*
+import org.jetbrains.dokka.gradle.engine.plugins.*
+
+fun DokkaExtension.setupHomepageLink() {
+    pluginsConfiguration.named<DokkaHtmlPluginParameters>("html") {
+        homepageLink.set("https://whyoleg.github.io/cryptography-kotlin")
+    }
+}
 
 fun DokkaExtension.registerKotlinxIoExternalDocumentation() {
     dokkaSourceSets.configureEach {
