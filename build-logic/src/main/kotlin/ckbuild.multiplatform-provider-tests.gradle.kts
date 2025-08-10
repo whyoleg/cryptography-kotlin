@@ -12,7 +12,7 @@ import org.jetbrains.kotlin.gradle.targets.jvm.tasks.*
 import org.jetbrains.kotlin.gradle.targets.native.tasks.*
 
 plugins {
-    kotlin("multiplatform")
+    id("ckbuild.multiplatform-tests")
     id("testtool.server")
 }
 
@@ -50,7 +50,10 @@ registerTestAggregationTask(
     name = "jvmAllProviderTest",
     taskDependencies = { tasks.withType<KotlinJvmTest>() },
     targetFilter = { it.platformType == KotlinPlatformType.jvm }
-)
+) {
+    // kover is only supported for JVM tests
+    finalizedBy("koverVerify")
+}
 
 // test only on min and max JDK versions
 registerTestAggregationTask(

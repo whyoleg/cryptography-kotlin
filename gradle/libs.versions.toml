@@ -8,6 +8,7 @@ kotlinx-io = "0.8.0"
 kotlinx-serialization = "1.9.0"
 kotlinx-coroutines = "1.10.2"
 kotlinx-benchmark = "0.4.14"
+kotlinx-kover = "0.9.1"
 ktor = "3.2.3"
 
 # android
@@ -26,6 +27,7 @@ logback = "1.5.18"
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-allopen-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-allopen", version.ref = "kotlin" }
 kotlin-dokka-gradle-plugin = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "kotlin-dokka" }
+kotlinx-kover-gradle-plugin = { module = "org.jetbrains.kotlinx:kover-gradle-plugin", version.ref = "kotlinx-kover" }
 kotlinx-benchmark-gradle-plugin = { module = "org.jetbrains.kotlinx:kotlinx-benchmark-plugin", version.ref = "kotlinx-benchmark" }
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "android" }
 maven-publish-gradle-plugin = { module = "com.vanniktech:gradle-maven-publish-plugin", version.ref = "maven-publish" }

@@ -10,8 +10,8 @@ import org.jetbrains.kotlin.konan.target.*
 
 plugins {
     id("ckbuild.multiplatform-library")
-    id("ckbuild.use-openssl")
     id("ckbuild.multiplatform-provider-tests")
+    id("ckbuild.use-openssl")
 }
 
 description = "cryptography-kotlin OpenSSL3 provider (shared)"

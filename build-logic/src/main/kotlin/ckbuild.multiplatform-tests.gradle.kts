@@ -16,6 +16,14 @@ plugins {
     id("ckbuild.multiplatform-base")
 }
 
+// https://github.com/Kotlin/kotlinx-kover/issues/747
+if (project.name != "cryptography-provider-jdk-android-tests") {
+    plugins.apply("org.jetbrains.kotlinx.kover")
+} else {
+    // as we depend on it in the ` jvmAllTest ` task
+    tasks.register("koverVerify")
+}
+
 @OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
     // just applying `kotlin-test` doesn't work for JVM if there are multiple test tasks (like when we test on different JDKs)
@@ -73,7 +81,10 @@ registerTestAggregationTask(
     name = "jvmAllTest",
     taskDependencies = { tasks.withType<KotlinJvmTest>() },
     targetFilter = { it.platformType == KotlinPlatformType.jvm }
-)
+) {
+    // kover is only supported for JVM tests
+    finalizedBy("koverVerify")
+}
 
 registerTestAggregationTask(
     name = "nativeTest",
@@ -96,5 +107,5 @@ listOf("ios", "watchos", "tvos", "macos").forEach { targetGroup ->
 }
 
 if (providers.gradleProperty("ckbuild.skipTestTasks").map(String::toBoolean).getOrElse(false)) {
-    tasks.matching { it is AbstractTestTask || it is AndroidTestTask }.configureEach { onlyIf { false } }
+    tasks.matching { it is AbstractTestTask || it is AndroidTestTask || it.name == "koverVerify" }.configureEach { onlyIf { false } }
 }

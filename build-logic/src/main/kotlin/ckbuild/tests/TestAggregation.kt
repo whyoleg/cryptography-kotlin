@@ -13,6 +13,7 @@ fun Project.registerTestAggregationTask(
     name: String,
     taskDependencies: () -> TaskCollection<*>,
     targetFilter: (KotlinTarget) -> Boolean,
+    configure: Task.() -> Unit = {},
 ) {
     extensions.configure<KotlinMultiplatformExtension>("kotlin") {
         var called = false
@@ -23,6 +24,7 @@ fun Project.registerTestAggregationTask(
             tasks.register(name) {
                 group = "verification"
                 dependsOn(taskDependencies())
+                configure()
             }
         }
     }

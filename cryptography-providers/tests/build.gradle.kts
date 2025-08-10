@@ -7,7 +7,6 @@ import org.jetbrains.kotlin.gradle.*
 
 plugins {
     id("ckbuild.multiplatform-tests")
-
     id("org.jetbrains.kotlin.plugin.serialization")
 }
 
