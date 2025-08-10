@@ -2,7 +2,7 @@
 
 At this moment the library provides separate independent modules to work with different cryptography-related serialization formats:
 
-* [PEM](pem.md)
+* [PEM](../api/cryptography-serialization-pem/index.html)
 * [ASN.1/DER](asn1.md)
 
 Support for [JOSE](https://github.com/whyoleg/cryptography-kotlin/issues/16)

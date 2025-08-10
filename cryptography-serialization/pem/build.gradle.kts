@@ -32,5 +32,6 @@ kover {
 }
 
 dokka {
+    includeCommonDocs()
     registerKotlinxIoExternalDocumentation()
 }

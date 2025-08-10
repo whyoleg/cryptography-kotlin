@@ -106,26 +106,6 @@ Provides API for working with keys: [encoding][EncodableKey], [decoding][KeyDeco
 
 [KeyGenerator]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.materials.key/-key-generator/index.html
 
-# Module cryptography-serialization-pem
-
-[PEM][PEM]: encoding/decoding of PEM content from/to [String][String] or [ByteArray][ByteArray]
-
-[PEM]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-serialization-pem/dev.whyoleg.cryptography.serialization.pem/-pem-document/index.html
-
-[String]: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/
-
-[ByteArray]: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/
-
-# Package dev.whyoleg.cryptography.serialization.pem
-
-[PEM][PEM]: encoding/decoding of PEM files from/to [String][String] or [ByteArray][ByteArray]
-
-[PEM]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-serialization-pem/dev.whyoleg.cryptography.serialization.pem/-pem-document/index.html
-
-[String]: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/
-
-[ByteArray]: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/
-
 # Module cryptography-serialization-asn1
 
 ASN.1/[DER][DER]: binary serialization of ASN.1/DER content via [kotlinx.serialization][kotlinx.serialization]

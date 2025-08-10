@@ -40,8 +40,8 @@ nav:
       - 'OpenSSL3': providers/openssl3.md
   - 'Serialization':
       - serialization/index.md
-      - 'PEM': serialization/pem.md
       - 'ASN.1/DER': serialization/asn1.md
+  - 'PEM': api/cryptography-serialization-pem/index.html
   - 'API': api/index.html
 
 theme:
