@@ -30,3 +30,7 @@ kover {
         }
     }
 }
+
+dokka {
+    registerKotlinxIoExternalDocumentation()
+}
