@@ -60,7 +60,6 @@ public class PemDocument(
             while (startIndex < text.length) {
                 yield(tryDecodeFromString(text, startIndex) { startIndex = it } ?: break)
             }
-            if (startIndex == 0) throwPemMissingBeginLabel()
         }
 
         @OptIn(UnsafeByteStringApi::class)
@@ -82,7 +81,6 @@ public class PemDocument(
             while (startIndex < bytes.size) {
                 yield(tryDecodeFromByteString(bytes, startIndex) { startIndex = it } ?: break)
             }
-            if (startIndex == 0) throwPemMissingBeginLabel()
         }
 
         public fun decode(source: Source): PemDocument {
@@ -90,12 +88,9 @@ public class PemDocument(
         }
 
         public fun decodeToSequence(source: Source): Sequence<PemDocument> = sequence {
-            var hasAtLeastOneBeginLabel = false
             while (!source.exhausted()) {
                 yield(tryDecodeFromSource(source) ?: break)
-                hasAtLeastOneBeginLabel = true
             }
-            if (!hasAtLeastOneBeginLabel) throwPemMissingBeginLabel()
         }
     }
 }
