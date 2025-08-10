@@ -9,24 +9,111 @@ import kotlinx.io.bytestring.*
 import kotlinx.io.bytestring.unsafe.*
 import kotlin.io.encoding.*
 
+/**
+ * Represents a single PEM (Privacy-Enhanced Mail) document as defined by [RFC 7468](https://datatracker.ietf.org/doc/html/rfc7468),
+ * consisting of a textual [label], and the binary [content] it encapsulates
+ *
+ * To encode the document into a PEM-encoded string use one of
+ * [encodeToString], [encodeToByteArray], [encodeToByteString], or [encodeToSink] depending on the desired output type
+ *
+ * Encoding produces the canonical PEM form:
+ *
+ * ```text
+ * -----BEGIN {label}-----
+ * Base64-encoded {content} with line breaks every 64 characters
+ * -----END {label}-----
+ * ```
+ *
+ * Creation of document instances can be done using one of the following methods:
+ *
+ * - using constructor, accepting [label] and [content]
+ * - using [PemDocument.decode] for decoding from a string or binary input
+ * - using [PemDocument.decodeToSequence] for decoding multiple documents from a single string or binary input
+ *
+ * [PemDocument] is an **immutable**, **thread-safe** value object, with structural equality and hash code that uses both [label] and [content].
+ *
+ * @constructor Creates a new [PemDocument] with the provided [label] and [content]
+ * @property label Case-sensitive encapsulation label (for example, `"CERTIFICATE"` or `"PRIVATE KEY"`)
+ * @property content Raw binary payload (commonly DER or any arbitrary bytes) that is base64-armored when encoded to PEM
+ */
 public class PemDocument(
     public val label: PemLabel,
     public val content: ByteString,
 ) {
+    /**
+     * Creates a new [PemDocument] with the provided [label] and [content]
+     */
     public constructor(
         label: PemLabel,
         content: ByteArray,
     ) : this(label, ByteString(content))
 
+    /**
+     * Encodes this document into a [String] in [PEM](https://datatracker.ietf.org/doc/html/rfc7468) format
+     *
+     * The output uses the form:
+     *
+     * ```text
+     * -----BEGIN {label}-----
+     * Base64-encoded {content} with line breaks every 64 characters
+     * -----END {label}-----
+     * ```
+     *
+     * @return the PEM-encoded string
+     */
     public fun encodeToString(): String = encodeToByteArrayImpl().decodeToString()
 
+    /**
+     * Encodes this document into a [ByteArray] as a string in [PEM](https://datatracker.ietf.org/doc/html/rfc7468) format
+     *
+     * The output uses the form:
+     *
+     * ```text
+     * -----BEGIN {label}-----
+     * Base64-encoded {content} with line breaks every 64 characters
+     * -----END {label}-----
+     * ```
+     *
+     * @return the bytes representing PEM-encoded string
+     */
     public fun encodeToByteArray(): ByteArray = encodeToByteArrayImpl()
 
+    /**
+     * Encodes this document into a [ByteString] as a string in [PEM](https://datatracker.ietf.org/doc/html/rfc7468) format
+     *
+     * The output uses the form:
+     *
+     * ```text
+     * -----BEGIN {label}-----
+     * Base64-encoded {content} with line breaks every 64 characters
+     * -----END {label}-----
+     * ```
+     *
+     * @return the bytes representing PEM-encoded string
+     */
     @OptIn(UnsafeByteStringApi::class)
     public fun encodeToByteString(): ByteString = UnsafeByteStringOperations.wrapUnsafe(encodeToByteArrayImpl())
 
+    /**
+     * Encodes this document to the provided [sink] as a string in [PEM](https://datatracker.ietf.org/doc/html/rfc7468) format
+     *
+     * The output uses the form:
+     *
+     * ```text
+     * -----BEGIN {label}-----
+     * Base64-encoded {content} with line breaks every 64 characters
+     * -----END {label}-----
+     * ```
+     *
+     * @param sink the destination to write bytes representing PEM-encoded string into
+     */
     public fun encodeToSink(sink: Sink): Unit = sink.write(encodeToByteArrayImpl())
 
+    /**
+     * Returns `true` if [other] is a [PemDocument] with the same [label] and [content]
+     *
+     * [content] should contain exactly the same byte sequence
+     */
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is PemDocument) return false
@@ -37,24 +124,71 @@ public class PemDocument(
         return true
     }
 
+    /**
+     * Returns a hash code consistent with [equals], computed from [label] and [content]
+     */
     override fun hashCode(): Int {
         var result = label.hashCode()
         result = 31 * result + content.hashCode()
         return result
     }
 
+    /**
+     * Returns a concise debug representation of this document including its [label] and [content]
+     *
+     * **Avoid logging if the [content] is sensitive**
+     */
     override fun toString(): String {
         return "PemDocument(label=$label, content=$content)"
     }
 
     public companion object {
-        // decode will skip comments and everything else which is not label or content
-
-        // will decode only the first one, even if there is something else after it
+        /**
+         * Decodes the first [PEM](https://datatracker.ietf.org/doc/html/rfc7468) document found in [text]
+         *
+         * The input should be in the form:
+         *
+         * ```text
+         * -----BEGIN {label}-----
+         * Base64-encoded {content} with line breaks every 64 characters
+         * -----END {label}-----
+         * ```
+         *
+         * Any content before `-----BEGIN {label}-----` and after `-----END {label}-----` is ignored
+         *
+         * Only the first complete document is decoded. For decoding of multiple documents, use [PemDocument.decodeToSequence]
+         *
+         * @param text the textual input that may contain a PEM document
+         * @return the decoded [PemDocument]
+         * @throws IllegalArgumentException if no PEM documents present in [text], or the PEM encoding is invalid
+         */
         public fun decode(text: String): PemDocument {
             return tryDecodeFromString(text, startIndex = 0, saveEndIndex = {}) ?: throwPemMissingBeginLabel()
         }
 
+        /**
+         * Lazily decodes all [PEM](https://datatracker.ietf.org/doc/html/rfc7468) documents found in [text]
+         *
+         * The input should be in the form:
+         *
+         * ```text
+         * -----BEGIN {LABEL1}-----
+         * Base64-encoded {content} with line breaks every 64 characters
+         * -----END {LABEL1}-----
+         *
+         * -----BEGIN {LABEL2}-----
+         * Base64-encoded {content} with line breaks every 64 characters
+         * -----END {LABEL2}-----
+         * ```
+         *
+         * Any content before the first `-----BEGIN {label}-----` and after the last `-----END {label}-----` is ignored,
+         * as well as any content after each document and before the next `-----BEGIN {label}-----`.
+         * The sequence yields each discovered [PemDocument] in order
+         *
+         * @param text the textual input that may contain multiple PEM documents
+         * @return a sequence of decoded [PemDocument]s, empty sequence if no PEM documents present
+         * @throws IllegalArgumentException if the PEM encoding of any document is invalid
+         */
         public fun decodeToSequence(text: String): Sequence<PemDocument> = sequence {
             var startIndex = 0
             while (startIndex < text.length) {
@@ -62,20 +196,108 @@ public class PemDocument(
             }
         }
 
+        /**
+         * Decodes the first [PEM](https://datatracker.ietf.org/doc/html/rfc7468) document found in [bytes].
+         * The [bytes] are treated as an encoded string
+         *
+         * The input should be in the form:
+         *
+         * ```text
+         * -----BEGIN {label}-----
+         * Base64-encoded {content} with line breaks every 64 characters
+         * -----END {label}-----
+         * ```
+         *
+         * Any content before `-----BEGIN {label}-----` and after `-----END {label}-----` is ignored
+         *
+         * Only the first complete document is decoded. For decoding of multiple documents, use [PemDocument.decodeToSequence]
+         *
+         * @param bytes the byte array that may contain a PEM document
+         * @return the decoded [PemDocument]
+         * @throws IllegalArgumentException if no PEM documents present in [bytes], or the PEM encoding is invalid
+         */
         @OptIn(UnsafeByteStringApi::class)
         public fun decode(bytes: ByteArray): PemDocument {
             return decode(UnsafeByteStringOperations.wrapUnsafe(bytes))
         }
 
+        /**
+         * Lazily decodes all [PEM](https://datatracker.ietf.org/doc/html/rfc7468) documents found in [bytes].
+         * The [bytes] are treated as an encoded string
+         *
+         * The input should be in the form:
+         *
+         * ```text
+         * -----BEGIN {LABEL1}-----
+         * Base64-encoded {content} with line breaks every 64 characters
+         * -----END {LABEL1}-----
+         *
+         * -----BEGIN {LABEL2}-----
+         * Base64-encoded {content} with line breaks every 64 characters
+         * -----END {LABEL2}-----
+         * ```
+         *
+         * Any content before the first `-----BEGIN {label}-----` and after the last `-----END {label}-----` is ignored,
+         * as well as any content after each document and before the next `-----BEGIN {label}-----`.
+         * The sequence yields each discovered [PemDocument] in order
+         *
+         * @param bytes the byte array that may contain multiple PEM documents
+         * @return a sequence of decoded [PemDocument]s, empty sequence if no PEM documents present
+         * @throws IllegalArgumentException if the PEM encoding of any document is invalid
+         */
         @OptIn(UnsafeByteStringApi::class)
         public fun decodeToSequence(bytes: ByteArray): Sequence<PemDocument> {
             return decodeToSequence(UnsafeByteStringOperations.wrapUnsafe(bytes))
         }
 
+        /**
+         * Decodes the first [PEM](https://datatracker.ietf.org/doc/html/rfc7468) document found in [bytes].
+         * The [bytes] are treated as an encoded string
+         *
+         * The input should be in the form:
+         *
+         * ```text
+         * -----BEGIN {label}-----
+         * Base64-encoded {content} with line breaks every 64 characters
+         * -----END {label}-----
+         * ```
+         *
+         * Any content before `-----BEGIN {label}-----` and after `-----END {label}-----` is ignored
+         *
+         * Only the first complete document is decoded. For decoding of multiple documents, use [PemDocument.decodeToSequence]
+         *
+         * @param bytes the byte array that may contain a PEM document
+         * @return the decoded [PemDocument]
+         * @throws IllegalArgumentException if no PEM documents present in [bytes], or the PEM encoding is invalid
+         */
         public fun decode(bytes: ByteString): PemDocument {
             return tryDecodeFromByteString(bytes, startIndex = 0, saveEndIndex = {}) ?: throwPemMissingBeginLabel()
         }
 
+        /**
+         * Lazily decodes all [PEM](https://datatracker.ietf.org/doc/html/rfc7468) documents found in [bytes].
+         * The [bytes] are treated as an encoded string
+         *
+         * The input should be in the form:
+         *
+         * ```text
+         * -----BEGIN {LABEL1}-----
+         * Base64-encoded {content} with line breaks every 64 characters
+         * -----END {LABEL1}-----
+         *
+         * -----BEGIN {LABEL2}-----
+         * Base64-encoded {content} with line breaks every 64 characters
+         * -----END {LABEL2}-----
+         * ```
+         *
+         * Any content before the first `-----BEGIN {label}-----` and after the last `-----END {label}-----` is ignored,
+         * as well as any content after each document and before the next `-----BEGIN {label}-----`.
+         * The sequence yields each discovered [PemDocument] in order
+         *
+         * @param bytes the byte array that may contain multiple PEM documents
+         * @return a sequence of decoded [PemDocument]s, empty sequence if no PEM documents present
+         * @throws IllegalArgumentException if the PEM encoding of any document is invalid
+         */
         public fun decodeToSequence(bytes: ByteString): Sequence<PemDocument> = sequence {
             var startIndex = 0
             while (startIndex < bytes.size) {
@@ -83,10 +305,55 @@ public class PemDocument(
             }
         }
 
+        /**
+         * Decodes the first [PEM](https://datatracker.ietf.org/doc/html/rfc7468) document found in [source].
+         * The [source] is treated as an encoded string and is consumed up to and including the decoded document
+         *
+         *
+         * The input should be in the form:
+         *
+         * ```text
+         * -----BEGIN {label}-----
+         * Base64-encoded {content} with line breaks every 64 characters
+         * -----END {label}-----
+         * ```
+         *
+         * Any content before `-----BEGIN {label}-----` and after `-----END {label}-----` is ignored
+         *
+         * Only the first complete document is decoded. For decoding of multiple documents, use [PemDocument.decodeToSequence]
+         *
+         * @param source the source to read from
+         * @return the decoded [PemDocument]
+         * @throws IllegalArgumentException if no PEM documents present in [source], or the PEM encoding is invalid
+         */
         public fun decode(source: Source): PemDocument {
             return tryDecodeFromSource(source) ?: throwPemMissingBeginLabel()
         }
 
+        /**
+         * Lazily decodes all [PEM](https://datatracker.ietf.org/doc/html/rfc7468) documents found in [source].
+         * The [source] is treated as an encoded string and is consumed up to and including the last decoded document, which was consumed from the sequence
+         *
+         * The input should be in the form:
+         *
+         * ```text
+         * -----BEGIN {LABEL1}-----
+         * Base64-encoded {content} with line breaks every 64 characters
+         * -----END {LABEL1}-----
+         *
+         * -----BEGIN {LABEL2}-----
+         * Base64-encoded {content} with line breaks every 64 characters
+         * -----END {LABEL2}-----
+         * ```
+         *
+         * Any content before the first `-----BEGIN {label}-----` and after the last `-----END {label}-----` is ignored,
+         * as well as any content after each document and before the next `-----BEGIN {label}-----`.
+         * The sequence yields each discovered [PemDocument] in order
+         *
+         * @param source the source to read from
+         * @return a sequence of decoded [PemDocument]s, empty sequence if no PEM documents present
+         * @throws IllegalArgumentException if the PEM encoding of any document is invalid
+         */
         public fun decodeToSequence(source: Source): Sequence<PemDocument> = sequence {
             while (!source.exhausted()) {
                 yield(tryDecodeFromSource(source) ?: break)
