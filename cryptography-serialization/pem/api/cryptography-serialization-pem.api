@@ -62,7 +62,10 @@ public final class dev/whyoleg/cryptography/serialization/pem/PemLabel {
 }
 
 public final class dev/whyoleg/cryptography/serialization/pem/PemLabel$Companion {
+	public final fun getCertificate-2EFq_Wg ()Ljava/lang/String;
+	public final fun getCertificateRequest-2EFq_Wg ()Ljava/lang/String;
 	public final fun getEcPrivateKey-2EFq_Wg ()Ljava/lang/String;
+	public final fun getEncryptedPrivateKey-2EFq_Wg ()Ljava/lang/String;
 	public final fun getPrivateKey-2EFq_Wg ()Ljava/lang/String;
 	public final fun getPublicKey-2EFq_Wg ()Ljava/lang/String;
 	public final fun getRsaPrivateKey-2EFq_Wg ()Ljava/lang/String;
