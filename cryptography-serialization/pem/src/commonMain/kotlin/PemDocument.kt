@@ -52,7 +52,7 @@ public class PemDocument(
 
         // will decode only the first one, even if there is something else after it
         public fun decode(text: String): PemDocument {
-            return tryDecodeFromString(text, startIndex = 0, saveEndIndex = {}) ?: error("Invalid PEM format: missing BEGIN label")
+            return tryDecodeFromString(text, startIndex = 0, saveEndIndex = {}) ?: throwPemMissingBeginLabel()
         }
 
         public fun decodeToSequence(text: String): Sequence<PemDocument> = sequence {
@@ -60,7 +60,7 @@ public class PemDocument(
             while (startIndex < text.length) {
                 yield(tryDecodeFromString(text, startIndex) { startIndex = it } ?: break)
             }
-            if (startIndex == 0) error("Invalid PEM format: missing BEGIN label")
+            if (startIndex == 0) throwPemMissingBeginLabel()
         }
 
         @OptIn(UnsafeByteStringApi::class)
@@ -74,7 +74,7 @@ public class PemDocument(
         }
 
         public fun decode(bytes: ByteString): PemDocument {
-            return tryDecodeFromByteString(bytes, startIndex = 0, saveEndIndex = {}) ?: error("Invalid PEM format: missing BEGIN label")
+            return tryDecodeFromByteString(bytes, startIndex = 0, saveEndIndex = {}) ?: throwPemMissingBeginLabel()
         }
 
         public fun decodeToSequence(bytes: ByteString): Sequence<PemDocument> = sequence {
@@ -82,11 +82,11 @@ public class PemDocument(
             while (startIndex < bytes.size) {
                 yield(tryDecodeFromByteString(bytes, startIndex) { startIndex = it } ?: break)
             }
-            if (startIndex == 0) error("Invalid PEM format: missing BEGIN label")
+            if (startIndex == 0) throwPemMissingBeginLabel()
         }
 
         public fun decode(source: Source): PemDocument {
-            return tryDecodeFromSource(source) ?: error("Invalid PEM format: missing BEGIN label")
+            return tryDecodeFromSource(source) ?: throwPemMissingBeginLabel()
         }
 
         public fun decodeToSequence(source: Source): Sequence<PemDocument> = sequence {
@@ -95,7 +95,7 @@ public class PemDocument(
                 yield(tryDecodeFromSource(source) ?: break)
                 hasAtLeastOneBeginLabel = true
             }
-            if (!hasAtLeastOneBeginLabel) error("Invalid PEM format: missing BEGIN label")
+            if (!hasAtLeastOneBeginLabel) throwPemMissingBeginLabel()
         }
     }
 }
@@ -180,20 +180,20 @@ private inline fun tryDecodeFromString(
     val beginIndex = text.indexOf(BEGIN_PREFIX, startIndex)
     if (beginIndex == -1) return null
     val beginLineEndIndex = text.indexOf(NEW_LINE, beginIndex + BEGIN_PREFIX.length)
-    if (beginLineEndIndex == -1) error("Invalid PEM format: missing new line after BEGIN label")
+    if (beginLineEndIndex == -1) throwPemMissingNewLineAfterBeginLabel()
     val beginSuffixIndex = text.indexOf(SUFFIX, beginIndex + BEGIN_PREFIX.length)
-    if (beginSuffixIndex == -1 || beginSuffixIndex > beginLineEndIndex) error("Invalid PEM format: missing BEGIN label suffix")
+    if (beginSuffixIndex == -1 || beginSuffixIndex > beginLineEndIndex) throwPemMissingBeginLabelSuffix()
 
     val beginLabel = text.substring(beginIndex + BEGIN_PREFIX.length, beginSuffixIndex)
 
     val endIndex = text.indexOf(END_PREFIX, beginLineEndIndex)
-    if (endIndex == -1) error("Invalid PEM format: missing END label")
+    if (endIndex == -1) throwPemMissingEndLabel()
     val endLineEndIndex = text.indexOf(NEW_LINE, endIndex + END_PREFIX.length)
     val endSuffixIndex = text.indexOf(SUFFIX, endIndex + END_PREFIX.length)
-    if (endSuffixIndex == -1 || (endLineEndIndex != -1 && endSuffixIndex > endLineEndIndex)) error("Invalid PEM format: missing END label suffix")
+    if (endSuffixIndex == -1 || (endLineEndIndex != -1 && endSuffixIndex > endLineEndIndex)) throwPemMissingEndLabelSuffix()
 
     val endLabel = text.substring(endIndex + END_PREFIX.length, endSuffixIndex)
-    if (endLabel != beginLabel) error("Invalid PEM format: BEGIN=`$beginLabel`, END=`$endLabel`")
+    if (endLabel != beginLabel) throwPemBeginEndLabelMismatch(beginLabel, endLabel)
 
     saveEndIndex(
         if (endLineEndIndex == -1) {
@@ -222,20 +222,20 @@ private inline fun tryDecodeFromByteString(
     val beginIndex = bytes.indexOf(BEGIN_BYTES, startIndex)
     if (beginIndex == -1) return null
     val beginLineEndIndex = bytes.indexOf(NEW_LINE_BYTE, beginIndex + BEGIN_BYTES.size)
-    if (beginLineEndIndex == -1) error("Invalid PEM format: missing new line after BEGIN label")
+    if (beginLineEndIndex == -1) throwPemMissingNewLineAfterBeginLabel()
     val beginSuffixIndex = bytes.indexOf(SUFFIX_BYTES, beginIndex + BEGIN_BYTES.size)
-    if (beginSuffixIndex == -1 || beginSuffixIndex > beginLineEndIndex) error("Invalid PEM format: missing BEGIN label suffix")
+    if (beginSuffixIndex == -1 || beginSuffixIndex > beginLineEndIndex) throwPemMissingBeginLabelSuffix()
 
     val beginLabel = bytes.substring(beginIndex + BEGIN_BYTES.size, beginSuffixIndex)
 
     val endIndex = bytes.indexOf(END_BYTES, beginLineEndIndex)
-    if (endIndex == -1) error("Invalid PEM format: missing END label")
+    if (endIndex == -1) throwPemMissingEndLabel()
     val endLineEndIndex = bytes.indexOf(NEW_LINE_BYTE, endIndex + END_BYTES.size)
     val endSuffixIndex = bytes.indexOf(SUFFIX_BYTES, endIndex + END_BYTES.size)
-    if (endSuffixIndex == -1 || (endLineEndIndex != -1 && endSuffixIndex > endLineEndIndex)) error("Invalid PEM format: missing END label suffix")
+    if (endSuffixIndex == -1 || (endLineEndIndex != -1 && endSuffixIndex > endLineEndIndex)) throwPemMissingEndLabelSuffix()
 
     val endLabel = bytes.substring(endIndex + END_BYTES.size, endSuffixIndex)
-    if (endLabel != beginLabel) error("Invalid PEM format: BEGIN=`${beginLabel.decodeToString()}`, END=`${endLabel.decodeToString()}`")
+    if (endLabel != beginLabel) throwPemBeginEndLabelMismatch(beginLabel.decodeToString(), endLabel.decodeToString())
 
     saveEndIndex(
         if (endLineEndIndex == -1) {
@@ -272,22 +272,22 @@ private fun tryDecodeFromSource(source: Source): PemDocument? {
     source.skip(beginIndex + BEGIN_BYTES.size)
 
     val beginLineEndIndex = source.indexOf(NEW_LINE_BYTE)
-    if (beginLineEndIndex == -1L) error("Invalid PEM format: missing new line after BEGIN label")
+    if (beginLineEndIndex == -1L) throwPemMissingNewLineAfterBeginLabel()
     val beginSuffixIndex = source.indexOf(SUFFIX_BYTES)
-    if (beginSuffixIndex == -1L || beginSuffixIndex > beginLineEndIndex) error("Invalid PEM format: missing BEGIN label suffix")
+    if (beginSuffixIndex == -1L || beginSuffixIndex > beginLineEndIndex) throwPemMissingBeginLabelSuffix()
 
     val beginLabel = source.readByteString(beginSuffixIndex.toInt())
     source.skip(beginLineEndIndex + 1 - beginSuffixIndex) // skip suffix & new line
 
     val endIndex = source.indexOf(END_BYTES)
-    if (endIndex == -1L) error("Invalid PEM format: missing END label")
+    if (endIndex == -1L) throwPemMissingEndLabel()
 
     val base64Content = source.readByteString(endIndex.toInt())
     source.skip(END_BYTES.size.toLong())
 
     val endLineEndIndex = source.indexOf(NEW_LINE_BYTE)
     val endSuffixIndex = source.indexOf(SUFFIX_BYTES)
-    if (endSuffixIndex == -1L || (endLineEndIndex != -1L && endSuffixIndex > endLineEndIndex)) error("Invalid PEM format: missing END label suffix")
+    if (endSuffixIndex == -1L || (endLineEndIndex != -1L && endSuffixIndex > endLineEndIndex)) throwPemMissingEndLabelSuffix()
 
     val endLabel = source.readByteString(endSuffixIndex.toInt())
     if (endLineEndIndex == -1L) {
@@ -296,10 +296,19 @@ private fun tryDecodeFromSource(source: Source): PemDocument? {
         source.skip(endLineEndIndex + 1 - endSuffixIndex)
     }
 
-    if (endLabel != beginLabel) error("Invalid PEM format: BEGIN=`${beginLabel.decodeToString()}`, END=`${endLabel.decodeToString()}`")
+    if (endLabel != beginLabel) throwPemBeginEndLabelMismatch(beginLabel.decodeToString(), endLabel.decodeToString())
 
     return PemDocument(
         label = PemLabel(beginLabel.decodeToString()),
         content = Base64.Pem.decodeToByteString(base64Content)
     )
 }
+
+private fun throwPemInvalid(message: String): Nothing = throw IllegalArgumentException("Invalid PEM format: $message")
+private fun throwPemMissingBeginLabel(): Nothing = throwPemInvalid("missing BEGIN label")
+private fun throwPemMissingNewLineAfterBeginLabel(): Nothing = throwPemInvalid("missing new line after BEGIN label")
+private fun throwPemMissingBeginLabelSuffix(): Nothing = throwPemInvalid("missing BEGIN label suffix")
+private fun throwPemMissingEndLabel(): Nothing = throwPemInvalid("missing END label")
+private fun throwPemMissingEndLabelSuffix(): Nothing = throwPemInvalid("missing END label suffix")
+private fun throwPemBeginEndLabelMismatch(beginLabel: String, endLabel: String): Nothing =
+    throwPemInvalid("BEGIN($beginLabel) and END($endLabel) labels mismatch")

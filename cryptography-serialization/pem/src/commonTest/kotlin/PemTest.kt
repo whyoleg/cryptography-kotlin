@@ -4,118 +4,149 @@
 
 package dev.whyoleg.cryptography.serialization.pem
 
+import kotlinx.io.*
 import kotlinx.io.bytestring.*
 import kotlin.test.*
 
 class PemTest {
 
     @Test
-    fun testEncoding() {
+    fun testHelloWorld() = testPem(
+        label = "UNKNOWN",
+        content = "Hello World".encodeToByteString(),
+        document = """
+        -----BEGIN UNKNOWN-----
+        SGVsbG8gV29ybGQ=
+        -----END UNKNOWN-----
+        """.trimIndent()
+    )
+
+    @Test
+    fun testMultiLine() = testPem(
+        label = "UNKNOWN CHUNKED",
+        content = "Hello World".repeat(10).encodeToByteString(),
+        document = """
+        -----BEGIN UNKNOWN CHUNKED-----
+        SGVsbG8gV29ybGRIZWxsbyBXb3JsZEhlbGxvIFdvcmxkSGVsbG8gV29ybGRIZWxs
+        byBXb3JsZEhlbGxvIFdvcmxkSGVsbG8gV29ybGRIZWxsbyBXb3JsZEhlbGxvIFdv
+        cmxkSGVsbG8gV29ybGQ=
+        -----END UNKNOWN CHUNKED-----
+        """.trimIndent()
+    )
+
+    @Test
+    fun testDecodingWithComment() = testPemDecode(
+        label = "UNKNOWN",
+        content = "Hello World".encodeToByteString(),
+        // because of comments we test only if's decoded correctly
+        document = """
+        Here is some description for pem
+        it should not affect anything
+        -----BEGIN UNKNOWN-----
+        SGVsbG8gV29ybGQ=
+        -----END UNKNOWN-----
+        Here is some comments in the end
+        """
+    )
+
+    @Test
+    fun testDecodingWithNoBeginLabel() = testPemDecodeFailure(
+        document = "SGVsbG8gV29ybGQ=\n-----END UNKNOWN-----"
+    ) {
+        assertIs<IllegalArgumentException>(it)
+        assertEquals("Invalid PEM format: missing BEGIN label", it.message)
+    }
+
+    @Test
+    fun testDecodingWithNoEndLabel() = testPemDecodeFailure(
+        document = "-----BEGIN UNKNOWN-----\nSGVsbG8gV29ybGQ="
+    ) {
+        assertIs<IllegalArgumentException>(it)
+        assertEquals("Invalid PEM format: missing END label", it.message)
+    }
+
+    @Test
+    fun testDecodingWithDifferentLabels() = testPemDecodeFailure(
+        document = """
+        -----BEGIN UNKNOWN1-----
+        SGVsbG8gV29ybGQ=
+        -----END UNKNOWN2-----
+        """.trimIndent()
+    ) {
+        assertIs<IllegalArgumentException>(it)
+        assertEquals("Invalid PEM format: BEGIN(UNKNOWN1) and END(UNKNOWN2) labels mismatch", it.message)
+    }
+
+    private fun testPem(
+        label: String,
+        content: ByteString,
+        document: String,
+    ) {
+        testPemDecode(label, content, document)
+        testPemEncode(label, content, document)
+    }
+
+    private fun testPemDecode(
+        label: String,
+        content: ByteString,
+        document: String,
+    ) {
+        val expectedDocument = PemDocument(PemLabel(label), content)
+
+        assertEquals(expectedDocument, PemDocument.decode(document))
+        assertEquals(expectedDocument, PemDocument.decode(document.encodeToByteString()))
+        assertEquals(expectedDocument, PemDocument.decode(document.encodeToByteArray()))
+        assertEquals(expectedDocument, PemDocument.decode(Buffer().also {
+            it.write(document.encodeToByteArray())
+        }))
+        assertEquals(expectedDocument, PemDocument.decode((Buffer().also {
+            it.write(document.encodeToByteArray())
+        } as Source).buffered()))
+    }
+
+    private fun testPemDecodeFailure(
+        document: String,
+        assertThrowable: (Throwable) -> Unit,
+    ) {
+        assertThrowable(assertFails { PemDocument.decode(document) })
+        assertThrowable(assertFails { PemDocument.decode(document.encodeToByteString()) })
+        assertThrowable(assertFails { PemDocument.decode(document.encodeToByteArray()) })
+        assertThrowable(assertFails {
+            PemDocument.decode(Buffer().also {
+                it.write(document.encodeToByteArray())
+            })
+        })
+        assertThrowable(assertFails {
+            PemDocument.decode((Buffer().also {
+                it.write(document.encodeToByteArray())
+            } as Source).buffered())
+        })
+    }
+
+    private fun testPemEncode(
+        label: String,
+        content: ByteString,
+        document: String,
+    ) {
+        val expectedDocument = PemDocument(PemLabel(label), content)
+
+        assertLinesEquals(document, expectedDocument.encodeToString())
+        assertLinesEquals(document, expectedDocument.encodeToByteArray().decodeToString())
+        assertLinesEquals(document, expectedDocument.encodeToByteString().decodeToString())
+        assertLinesEquals(document, Buffer().also {
+            expectedDocument.encodeToSink(it)
+        }.readString())
+        assertLinesEquals(document, Buffer().also {
+            val sink = (it as Sink).buffered()
+            expectedDocument.encodeToSink(sink)
+            sink.flush()
+        }.readString())
+    }
+
+    private fun assertLinesEquals(expected: String, actual: String) {
         assertEquals(
-            """
-            -----BEGIN UNKNOWN-----
-            SGVsbG8gV29ybGQ=
-            -----END UNKNOWN-----
-            
-            """.trimIndent(),
-            PemDocument(
-                PemLabel("UNKNOWN"),
-                "Hello World".encodeToByteArray()
-            ).encodeToString()
+            expected.lines().dropLastWhile { it.isBlank() },
+            actual.lines().dropLastWhile { it.isBlank() },
         )
     }
-
-    @Test
-    fun testDecoding() {
-        val content = PemDocument.decode(
-            """
-            -----BEGIN UNKNOWN-----
-            SGVsbG8gV29ybGQ=
-            -----END UNKNOWN-----
-            
-            """.trimIndent(),
-        )
-
-        assertEquals(PemLabel("UNKNOWN"), content.label)
-        assertEquals("Hello World", content.content.decodeToString())
-    }
-
-    @Test
-    fun testChunkedEncoding() {
-        assertEquals(
-            """
-            -----BEGIN UNKNOWN CHUNKED-----
-            SGVsbG8gV29ybGRIZWxsbyBXb3JsZEhlbGxvIFdvcmxkSGVsbG8gV29ybGRIZWxs
-            byBXb3JsZEhlbGxvIFdvcmxkSGVsbG8gV29ybGRIZWxsbyBXb3JsZEhlbGxvIFdv
-            cmxkSGVsbG8gV29ybGQ=
-            -----END UNKNOWN CHUNKED-----
-            
-            """.trimIndent(),
-            PemDocument(
-                PemLabel("UNKNOWN CHUNKED"),
-                "Hello World".repeat(10).encodeToByteArray()
-            ).encodeToString().lines().joinToString("\n")
-        )
-    }
-
-    @Test
-    fun testChunkedDecoding() {
-        val content = PemDocument.decode(
-            """
-            -----BEGIN UNKNOWN CHUNKED-----
-            SGVsbG8gV29ybGRIZWxsbyBXb3JsZEhlbGxvIFdvcmxkSGVsbG8gV29ybGRIZWxs
-            byBXb3JsZEhlbGxvIFdvcmxkSGVsbG8gV29ybGRIZWxsbyBXb3JsZEhlbGxvIFdv
-            cmxkSGVsbG8gV29ybGQ=
-            -----END UNKNOWN CHUNKED-----
-            
-            """.trimIndent(),
-        )
-
-        assertEquals(PemLabel("UNKNOWN CHUNKED"), content.label)
-        assertEquals("Hello World".repeat(10), content.content.decodeToString())
-    }
-
-    @Test
-    fun testDecodingWithComment() {
-        val content = PemDocument.decode(
-            """
-            Here is some description for pem
-            it should not affect anything
-            -----BEGIN UNKNOWN-----
-            SGVsbG8gV29ybGQ=
-            -----END UNKNOWN-----
-            """.trimIndent(),
-        )
-
-        assertEquals(PemLabel("UNKNOWN"), content.label)
-        assertEquals("Hello World", content.content.decodeToString())
-    }
-
-    @Test
-    fun testDecodingWithNoBeginLabel() {
-        assertFails {
-            PemDocument.decode("SGVsbG8gV29ybGQ=\n-----END UNKNOWN-----")
-        }
-    }
-
-    @Test
-    fun testDecodingWithNoEndLabel() {
-        assertFails {
-            PemDocument.decode("-----BEGIN UNKNOWN-----\nSGVsbG8gV29ybGQ=")
-        }
-    }
-
-    @Test
-    fun testDecodingWithDifferentLabels() {
-        assertFails {
-            PemDocument.decode(
-                """
-                -----BEGIN UNKNOWN1-----
-                SGVsbG8gV29ybGQ=
-                -----END UNKNOWN2-----
-                """.trimIndent(),
-            )
-        }
-    }
-
 }
