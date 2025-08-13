@@ -143,7 +143,7 @@ public class PemDocument(
      * **Avoid logging if the [content] is sensitive**
      */
     override fun toString(): String {
-        return "PemDocument(label=$label, content=$content)"
+        return "PemDocument(label=${label.value}, content=$content)"
     }
 
     public companion object {

@@ -11,6 +11,129 @@ import kotlin.test.*
 class PemTest {
 
     @Test
+    fun testByteArrayConstructorImmutability() {
+        val content = byteArrayOf(1, 2, 3, 4)
+        val expected = ByteString(content)
+        val doc = PemDocument(PemLabel("LABEL"), content)
+        // mutate the original byte array after construction
+        content[0] = 9
+        // content must be unaffected (constructor copies input)
+        assertEquals(expected, doc.content)
+    }
+
+    @Test
+    fun testEqualsHashCode() {
+        val doc = PemDocument(PemLabel("LABEL"), byteArrayOf(1, 2, 3, 4))
+
+        // equals/hashCode with the same logical content
+        val doc2 = PemDocument(PemLabel("LABEL"), ByteString(1, 2, 3, 4))
+        assertEquals(doc.content, doc2.content)
+        assertEquals(doc, doc2)
+        assertEquals(doc.hashCode(), doc2.hashCode())
+
+        // different label -> not equal
+        val doc3 = PemDocument(PemLabel("OTHER"), ByteString(1, 2, 3, 4))
+        assertNotEquals(doc, doc3)
+
+        // different content -> not equal
+        val doc4 = PemDocument(PemLabel("LABEL"), ByteString(4, 3, 2, 1))
+        assertNotEquals(doc, doc4)
+
+    }
+
+    @Test
+    fun testToString() {
+        assertEquals(
+            "PemDocument(label=LABEL, content=ByteString(size=4 hex=01020304))",
+            PemDocument(PemLabel("LABEL"), byteArrayOf(1, 2, 3, 4)).toString()
+        )
+    }
+
+    @Test
+    fun testDecodeToSequenceEmptyAndNoPem() {
+        testPemDecodeSequence(emptyList(), "")
+        testPemDecodeSequence(emptyList(), "no pem here")
+    }
+
+    @Test
+    fun testDecodeToSequenceWithContentAroundAndBetween(): Unit = testPemDecodeSequence(
+        expected = listOf(
+            PemDocument(PemLabel.Certificate, "ONE".encodeToByteString()),
+            PemDocument(PemLabel.Certificate, "TWO".encodeToByteString())
+        ),
+        document = """
+        Some heading that should be ignored
+        -----BEGIN CERTIFICATE-----
+        T05F
+        -----END CERTIFICATE-----
+        Some text between documents should be ignored too
+        -----BEGIN CERTIFICATE-----
+        VFdP
+        -----END CERTIFICATE-----
+        Final trailing text that should be ignored as well
+        """.trimIndent()
+    )
+
+    @Test
+    fun testDecodeSourcePartialConsumption() {
+        val pem = """
+            IGNORE
+            -----BEGIN X-----
+            QQ==
+            -----END X-----
+            BETWEEN
+            -----BEGIN X-----
+            Qg==
+            -----END X-----
+            AFTER
+        """.trimIndent()
+
+        val buffer = Buffer()
+        buffer.writeString(pem)
+
+        assertEquals(
+            expected = PemDocument(PemLabel("X"), "A".encodeToByteString()),
+            // read from buffer one document
+            actual = PemDocument.decode(buffer)
+        )
+        assertEquals(
+            expected = PemDocument(PemLabel("X"), "B".encodeToByteString()),
+            // read from buffer second document
+            actual = PemDocument.decode(buffer)
+        )
+
+        assertEquals("AFTER", buffer.readString())
+    }
+
+    @Test
+    fun testDecodeToSequenceSourcePartialConsumption() {
+        val pem = """
+            IGNORE
+            -----BEGIN X-----
+            QQ==
+            -----END X-----
+            BETWEEN
+            -----BEGIN X-----
+            Qg==
+            -----END X-----
+            AFTER
+        """.trimIndent()
+
+        val buffer = Buffer()
+        buffer.writeString(pem)
+
+        assertEquals(
+            listOf(
+                PemDocument(PemLabel("X"), "A".encodeToByteString()),
+                PemDocument(PemLabel("X"), "B".encodeToByteString())
+            ),
+            PemDocument.decodeToSequence(buffer).take(2).toList()
+        )
+
+        assertEquals("AFTER", buffer.readString())
+    }
+
+    @Test
     fun testHelloWorld() = testPem(
         label = "UNKNOWN",
         content = "Hello World".encodeToByteString(),
@@ -58,6 +181,14 @@ class PemTest {
     }
 
     @Test
+    fun testDecodingWithEmpty() = testPemDecodeFailure(
+        document = ""
+    ) {
+        assertIs<IllegalArgumentException>(it)
+        assertEquals("Invalid PEM format: missing BEGIN label", it.message)
+    }
+
+    @Test
     fun testDecodingWithNoEndLabel() = testPemDecodeFailure(
         document = "-----BEGIN UNKNOWN-----\nSGVsbG8gV29ybGQ="
     ) {
@@ -76,6 +207,31 @@ class PemTest {
         assertIs<IllegalArgumentException>(it)
         assertEquals("Invalid PEM format: BEGIN(UNKNOWN1) and END(UNKNOWN2) labels mismatch", it.message)
     }
+
+    @Test
+    fun testDecodingWithMissingNewLineAfterBegin() = testPemDecodeFailure(
+        document = "-----BEGIN X-----"
+    ) {
+        assertIs<IllegalArgumentException>(it)
+        assertEquals("Invalid PEM format: missing new line after BEGIN label", it.message)
+    }
+
+    @Test
+    fun testDecodingWithMissingBeginLabelSuffix() = testPemDecodeFailure(
+        document = "-----BEGIN X\nQQ==\n-----END X-----"
+    ) {
+        assertIs<IllegalArgumentException>(it)
+        assertEquals("Invalid PEM format: missing BEGIN label suffix", it.message)
+    }
+
+    @Test
+    fun testDecodingWithMissingEndLabelSuffix() = testPemDecodeFailure(
+        document = "-----BEGIN X-----\nQQ==\n-----END X"
+    ) {
+        assertIs<IllegalArgumentException>(it)
+        assertEquals("Invalid PEM format: missing END label suffix", it.message)
+    }
+
 
     private fun testPem(
         label: String,
@@ -100,6 +256,25 @@ class PemTest {
             it.write(document.encodeToByteArray())
         }))
         assertEquals(expectedDocument, PemDocument.decode((Buffer().also {
+            it.write(document.encodeToByteArray())
+        } as Source).buffered()))
+    }
+
+    private fun testPemDecodeSequence(
+        expected: List<PemDocument>,
+        document: String,
+    ) {
+        fun assertSequenceEquals(expectedDocs: List<PemDocument>, actualSeq: Sequence<PemDocument>) {
+            assertEquals(expectedDocs, actualSeq.toList())
+        }
+
+        assertSequenceEquals(expected, PemDocument.decodeToSequence(document))
+        assertSequenceEquals(expected, PemDocument.decodeToSequence(document.encodeToByteArray()))
+        assertSequenceEquals(expected, PemDocument.decodeToSequence(document.encodeToByteString()))
+        assertSequenceEquals(expected, PemDocument.decodeToSequence(Buffer().also {
+            it.write(document.encodeToByteArray())
+        }))
+        assertSequenceEquals(expected, PemDocument.decodeToSequence((Buffer().also {
             it.write(document.encodeToByteArray())
         } as Source).buffered()))
     }
