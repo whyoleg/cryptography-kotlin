@@ -13,7 +13,6 @@ class TesttoolServerConfiguration(rootProject: Project) {
         require(rootProject == rootProject.rootProject) { "Root project required" }
     }
 
-    val instanceId: Provider<String> = rootProject.providers.gradleProperty("ckbuild.testtool.instanceId")
-    val buildDir: Provider<Directory> = rootProject.layout.buildDirectory.dir("testtool")
-    val serverStorageDir: Provider<Directory> = buildDir.map { it.dir("server-storage") }
+    val enabled = rootProject.providers.gradleProperty("ckbuild.testtool.enabled").orNull?.toBoolean() == true
+    val serverStorageDir: Provider<Directory> = rootProject.layout.buildDirectory.dir("testtool/server-storage")
 }
