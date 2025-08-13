@@ -25,5 +25,17 @@ dokka {
             localDirectory = rootDir
             remoteUrl("https://github.com/whyoleg/cryptography-kotlin/tree/$version/")
         }
+
+        if (name.endsWith("Main")) {
+            samples.from("src/${name.replace("Main", "Samples")}/kotlin")
+        }
+    }
+}
+
+kotlin {
+    sourceSets.configureEach {
+        if (name.endsWith("Test")) {
+            kotlin.srcDir("src/${name.replace("Test", "Samples")}/kotlin")
+        }
     }
 }

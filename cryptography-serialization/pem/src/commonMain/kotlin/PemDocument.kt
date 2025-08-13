@@ -60,6 +60,7 @@ public class PemDocument(
      * ```
      *
      * @return the PEM-encoded string
+     * @sample dev.whyoleg.cryptography.serialization.pem.PemSamples.encodeToString
      */
     public fun encodeToString(): String = encodeToByteArrayImpl().decodeToString()
 
@@ -75,6 +76,7 @@ public class PemDocument(
      * ```
      *
      * @return the bytes representing PEM-encoded string
+     * @sample dev.whyoleg.cryptography.serialization.pem.PemSamples.encodeToByteArray
      */
     public fun encodeToByteArray(): ByteArray = encodeToByteArrayImpl()
 
@@ -90,6 +92,7 @@ public class PemDocument(
      * ```
      *
      * @return the bytes representing PEM-encoded string
+     * @sample dev.whyoleg.cryptography.serialization.pem.PemSamples.encodeToByteString
      */
     @OptIn(UnsafeByteStringApi::class)
     public fun encodeToByteString(): ByteString = UnsafeByteStringOperations.wrapUnsafe(encodeToByteArrayImpl())
@@ -106,6 +109,7 @@ public class PemDocument(
      * ```
      *
      * @param sink the destination to write bytes representing PEM-encoded string into
+     * @sample dev.whyoleg.cryptography.serialization.pem.PemSamples.encodeToSink
      */
     public fun encodeToSink(sink: Sink): Unit = sink.write(encodeToByteArrayImpl())
 
@@ -161,6 +165,7 @@ public class PemDocument(
          * @param text the textual input that may contain a PEM document
          * @return the decoded [PemDocument]
          * @throws IllegalArgumentException if no PEM documents present in [text], or the PEM encoding is invalid
+         * @sample dev.whyoleg.cryptography.serialization.pem.PemSamples.decodeFromString
          */
         public fun decode(text: String): PemDocument {
             return tryDecodeFromString(text, startIndex = 0, saveEndIndex = {}) ?: throwPemMissingBeginLabel()
@@ -188,6 +193,7 @@ public class PemDocument(
          * @param text the textual input that may contain multiple PEM documents
          * @return a sequence of decoded [PemDocument]s, empty sequence if no PEM documents present
          * @throws IllegalArgumentException if the PEM encoding of any document is invalid
+         * @sample dev.whyoleg.cryptography.serialization.pem.PemSamples.decodeToSequenceFromString
          */
         public fun decodeToSequence(text: String): Sequence<PemDocument> = sequence {
             var startIndex = 0
@@ -215,6 +221,7 @@ public class PemDocument(
          * @param bytes the byte array that may contain a PEM document
          * @return the decoded [PemDocument]
          * @throws IllegalArgumentException if no PEM documents present in [bytes], or the PEM encoding is invalid
+         * @sample dev.whyoleg.cryptography.serialization.pem.PemSamples.decodeFromByteArray
          */
         @OptIn(UnsafeByteStringApi::class)
         public fun decode(bytes: ByteArray): PemDocument {
@@ -244,6 +251,7 @@ public class PemDocument(
          * @param bytes the byte array that may contain multiple PEM documents
          * @return a sequence of decoded [PemDocument]s, empty sequence if no PEM documents present
          * @throws IllegalArgumentException if the PEM encoding of any document is invalid
+         * @sample dev.whyoleg.cryptography.serialization.pem.PemSamples.decodeToSequenceFromByteArray
          */
         @OptIn(UnsafeByteStringApi::class)
         public fun decodeToSequence(bytes: ByteArray): Sequence<PemDocument> {
@@ -269,6 +277,7 @@ public class PemDocument(
          * @param bytes the byte array that may contain a PEM document
          * @return the decoded [PemDocument]
          * @throws IllegalArgumentException if no PEM documents present in [bytes], or the PEM encoding is invalid
+         * @sample dev.whyoleg.cryptography.serialization.pem.PemSamples.decodeFromByteString
          */
         public fun decode(bytes: ByteString): PemDocument {
             return tryDecodeFromByteString(bytes, startIndex = 0, saveEndIndex = {}) ?: throwPemMissingBeginLabel()
@@ -297,6 +306,7 @@ public class PemDocument(
          * @param bytes the byte array that may contain multiple PEM documents
          * @return a sequence of decoded [PemDocument]s, empty sequence if no PEM documents present
          * @throws IllegalArgumentException if the PEM encoding of any document is invalid
+         * @sample dev.whyoleg.cryptography.serialization.pem.PemSamples.decodeToSequenceFromByteString
          */
         public fun decodeToSequence(bytes: ByteString): Sequence<PemDocument> = sequence {
             var startIndex = 0
@@ -325,6 +335,7 @@ public class PemDocument(
          * @param source the source to read from
          * @return the decoded [PemDocument]
          * @throws IllegalArgumentException if no PEM documents present in [source], or the PEM encoding is invalid
+         * @sample dev.whyoleg.cryptography.serialization.pem.PemSamples.decodeFromSource
          */
         public fun decode(source: Source): PemDocument {
             return tryDecodeFromSource(source) ?: throwPemMissingBeginLabel()
@@ -353,6 +364,7 @@ public class PemDocument(
          * @param source the source to read from
          * @return a sequence of decoded [PemDocument]s, empty sequence if no PEM documents present
          * @throws IllegalArgumentException if the PEM encoding of any document is invalid
+         * @sample dev.whyoleg.cryptography.serialization.pem.PemSamples.decodeToSequenceFromSource
          */
         public fun decodeToSequence(source: Source): Sequence<PemDocument> = sequence {
             while (!source.exhausted()) {
