@@ -7,18 +7,16 @@ package dev.whyoleg.cryptography.testtool.plugin
 import com.android.build.gradle.internal.tasks.*
 import org.gradle.api.*
 import org.gradle.api.tasks.testing.*
-import org.gradle.kotlin.dsl.*
 
 open class TesttoolServerPlugin : Plugin<Project> {
     override fun apply(target: Project): Unit = with(target) {
-        val instance = TesttoolServerConfiguration(rootProject)
+        val configuration = TesttoolServerConfiguration(rootProject)
         val serverProvider = gradle.sharedServices.registerIfAbsent(
             "testtool-server-service",
             TesttoolServerService::class.java
         ) {
             it.parameters {
-                it.instanceId.set(instance.instanceId)
-                it.storage.set(instance.serverStorageDir)
+                it.storageDirectory.set(configuration.serverStorageDir)
             }
         }
 
@@ -26,7 +24,7 @@ open class TesttoolServerPlugin : Plugin<Project> {
             it is AbstractTestTask || it is AndroidTestTask
         }.configureEach {
             it.doFirst {
-                if (instance.instanceId.isPresent) serverProvider.get()
+                if (configuration.enabled) serverProvider.get()
             }
             it.usesService(serverProvider)
         }
