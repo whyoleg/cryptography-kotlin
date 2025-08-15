@@ -35,9 +35,7 @@ internal class DerOutput(private val output: ByteArrayOutput) {
 
     fun writeObjectIdentifier(tagOverride: ContextSpecificTag?, value: ObjectIdentifier) {
         output.writeTagWithOverride(tagOverride, DerTag_OID) {
-            writeBytes {
-                writeOidElements(value.value.split("."))
-            }
+            writeBytes(value.toDerBytes())
         }
     }
 
@@ -63,6 +61,7 @@ private inline fun ByteArrayOutput.writeTagWithOverride(
     write(tagOverride.tag)
     when (tagOverride.type) {
         ContextSpecificTag.TagType.IMPLICIT -> block()
+        // TODO: we can try to optimize this intermediate bytes creation
         ContextSpecificTag.TagType.EXPLICIT -> writeBytes {
             write(tag)
             block()
@@ -90,24 +89,4 @@ private fun ByteArrayOutput.writeLength(length: Int) {
     val numberOfLengthBytes = Int.SIZE_BYTES - length.countLeadingZeroBits() / 8
     write(numberOfLengthBytes or 0b10000000)
     repeat(numberOfLengthBytes) { write(length ushr 8 * (numberOfLengthBytes - 1 - it)) }
-}
-
-private fun ByteArrayOutput.writeOidElements(elements: List<String>) {
-    check(elements.size >= 2) { "at least 2 components expected but was ${elements.size}" }
-    fun element(index: Int): Int = elements[index].toInt()
-
-    writeOidElement(element(0) * 40 + element(1))
-    repeat(elements.size - 2) { writeOidElement(element(it + 2)) }
-}
-
-private fun ByteArrayOutput.writeOidElement(element: Int) {
-    if (element < 128) return write(element)
-
-    val l = (Int.SIZE_BITS - element.countLeadingZeroBits()) / 7
-    repeat(l) {
-        // zero should not be encoded
-        val value = element ushr (l - it) * 7
-        if (value != 0) write((value and 0b01111111) or 0b10000000)
-    }
-    write(element and 0b01111111)
 }

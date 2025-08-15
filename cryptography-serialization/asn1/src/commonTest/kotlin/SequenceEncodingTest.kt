@@ -17,7 +17,7 @@ class SequenceEncodingTest {
 
     @Test
     fun testAlgorithmIdentifier() {
-        val algorithm = SimpleAlgorithmIdentifier(ObjectIdentifier("1.2.840.113549.1.1.11"), null)
+        val algorithm = SimpleAlgorithmIdentifier(ObjectIdentifier.parse("1.2.840.113549.1.1.11"), null)
         val bytes = Der.encodeToByteArray(algorithm)
         assertEquals("300d06092a864886f70d01010b0500", bytes.toHexString())
 

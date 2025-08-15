@@ -56,8 +56,7 @@ internal class DerInput(private val input: ByteArrayInput) {
 
     fun readObjectIdentifier(tagOverride: ContextSpecificTag?): ObjectIdentifier = input.readTagWithOverride(tagOverride, DerTag_OID) {
         val length = readLength()
-        val slice = readSlice(length)
-        ObjectIdentifier(slice.readOidElements())
+        ObjectIdentifier.fromDerBytes(read(length))
     }
 
     fun readSequence(tagOverride: ContextSpecificTag?): ByteArrayInput = input.readTagWithOverride(tagOverride, DerTag_SEQUENCE) {
@@ -106,28 +105,4 @@ private fun ByteArrayInput.readLength(): Int {
     repeat(numberOfLengthBytes) { length = (length shl 8) + (read().toInt() and 0b11111111) }
     check(length > 0) { "length overflow: $length" }
     return length
-}
-
-private fun ByteArrayInput.readOidElements(): String = buildString {
-    // 0.(0..<40) = 0..<40
-    // 1.(0..<40) = 40..<80
-    // 2.(0..XXX) = 80..XXX+80
-    val first = readOidElement()
-    when {
-        first < 40 -> append('0').append('.').append(first)
-        first < 80 -> append('1').append('.').append(first - 40)
-        else       -> append('2').append('.').append(first - 80)
-    }
-
-    while (!eof) append('.').append(readOidElement())
-}
-
-private fun ByteArrayInput.readOidElement(): Int {
-    var element = 0
-    do {
-        val b = read().toInt()
-        element = (element shl 7) + (b and 0b01111111)
-    } while (b and 0b10000000 == 0b10000000)
-    check(element >= 0) { "element overflow: $element" }
-    return element
 }
