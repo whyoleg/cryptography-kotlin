@@ -5,6 +5,9 @@
 package dev.whyoleg.cryptography.serialization.asn1
 
 import dev.whyoleg.cryptography.serialization.asn1.internal.*
+import kotlinx.io.*
+import kotlinx.io.bytestring.*
+import kotlinx.io.bytestring.unsafe.*
 import kotlinx.serialization.*
 import kotlinx.serialization.modules.*
 
@@ -47,3 +50,62 @@ public fun Der(from: Der = Der.Default, builderAction: Der.Builder.() -> Unit): 
 private class DerImpl(builder: Builder) : Der(
     serializersModule = builder.serializersModule
 )
+
+@OptIn(UnsafeByteStringApi::class)
+public fun <T> Der.encodeToByteString(serializer: SerializationStrategy<T>, value: T): ByteString {
+    return UnsafeByteStringOperations.wrapUnsafe(encodeToByteArray(serializer, value))
+}
+
+@OptIn(UnsafeByteStringApi::class)
+public fun <T> Der.decodeFromByteString(deserializer: DeserializationStrategy<T>, bytes: ByteString): T {
+    UnsafeByteStringOperations.withByteArrayUnsafe(bytes) {
+        return decodeFromByteArray(deserializer, it)
+    }
+}
+
+public fun <T> Der.encodeToSink(serializer: SerializationStrategy<T>, value: T, sink: Sink) {
+
+}
+
+public fun <T> Der.decodeFromSource(deserializer: DeserializationStrategy<T>, source: Source): T {
+    TODO()
+}
+
+public inline fun <reified T> Der.encodeToByteString(value: T): ByteString = encodeToByteString(serializersModule.serializer(), value)
+
+public inline fun <reified T> Der.decodeFromByteString(bytes: ByteString): T = decodeFromByteString(serializersModule.serializer(), bytes)
+
+public inline fun <reified T> Der.encodeToSink(value: T, sink: Sink): Unit = encodeToSink(serializersModule.serializer(), value, sink)
+
+public inline fun <reified T> Der.decodeFromSource(source: Source): T = decodeFromSource(serializersModule.serializer(), source)
+
+// internals
+//internal sealed class BinaryOutput {
+//    abstract fun write(byte: Byte)
+//    fun write(byte: Int): Unit = write(byte.toByte())
+//    abstract fun write(bytes: ByteArray)
+//    abstract fun write(output: BinaryOutput)
+//    abstract fun newBinaryOutput(): BinaryOutput
+//}
+//
+//internal class SinkOutput(
+//    private val sink: Sink,
+//    private val source: Source
+//) : BinaryOutput() {
+//    override fun write(byte: Byte) {
+//        sink.writeByte(byte)
+//    }
+//
+//    override fun write(bytes: ByteArray) {
+//        sink.write(bytes)
+//    }
+//
+//    override fun write(output: BinaryOutput) {
+//        output as SinkOutput
+//        output.sink.transferFrom(sink)
+//    }
+//
+//    override fun newBinaryOutput(): BinaryOutput {
+//        TODO("Not yet implemented")
+//    }
+//}
