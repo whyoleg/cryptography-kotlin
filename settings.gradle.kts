@@ -43,6 +43,8 @@ projects("cryptography-kotlin") {
         module("asn1") {
             module("modules")
         }
+        module("jose")
+        module("cose")
     }
 
     // providers API, high-level API
