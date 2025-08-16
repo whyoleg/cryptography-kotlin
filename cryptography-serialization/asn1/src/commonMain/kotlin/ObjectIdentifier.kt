@@ -11,6 +11,11 @@ import kotlinx.serialization.descriptors.*
 import kotlinx.serialization.encoding.*
 import kotlin.concurrent.*
 
+// TODO: useful extensions:
+//  - startsWith(oid)/startsWith(prefix)
+//  - endsWith - may be?
+//  - parent - may be?
+//  - resolve(oid)/resolve(text) - may be?
 @Serializable(ObjectIdentifierSerializer::class)
 public class ObjectIdentifier private constructor(
     private val derBytes: ByteArray,
