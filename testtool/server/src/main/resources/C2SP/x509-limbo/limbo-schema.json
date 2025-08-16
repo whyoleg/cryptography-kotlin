@@ -1,0 +1,354 @@
+{
+  "$defs": {
+    "ExpectedResult": {
+      "description": "Represents an expected testcase evaluation result.",
+      "enum": [
+        "SUCCESS",
+        "FAILURE"
+      ],
+      "title": "ExpectedResult",
+      "type": "string"
+    },
+    "Feature": {
+      "description": "Feature tags for testcases.",
+      "enum": [
+        "has-policy-constraints",
+        "has-cert-policies",
+        "no-cert-policies",
+        "pedantic-public-suffix-wildcard",
+        "name-constraint-dn",
+        "pedantic-webpki-subscriber-key",
+        "pedantic-webpki-eku",
+        "pedantic-serial-number",
+        "max-chain-depth",
+        "pedantic-rfc5280",
+        "rfc5280-incompatible-with-webpki",
+        "denial-of-service",
+        "has-crl"
+      ],
+      "title": "Feature",
+      "type": "string"
+    },
+    "Importance": {
+      "description": "A subjective ranking of a testcase's importance.",
+      "enum": [
+        "undetermined",
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "title": "Importance",
+      "type": "string"
+    },
+    "KeyUsage": {
+      "description": "X.509 key usages.\n\nSee: https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.1.3",
+      "enum": [
+        "digitalSignature",
+        "contentCommitment",
+        "keyEncipherment",
+        "dataEncipherment",
+        "keyAgreement",
+        "keyCertSign",
+        "cRLSign",
+        "encipherOnly",
+        "decipherOnly"
+      ],
+      "title": "KeyUsage",
+      "type": "string"
+    },
+    "KnownEKUs": {
+      "description": "Well-known extended key usages, from RFC 5280.\n\nSee: https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.1.12",
+      "enum": [
+        "anyExtendedKeyUsage",
+        "serverAuth",
+        "clientAuth",
+        "codeSigning",
+        "emailProtection",
+        "timeStamping",
+        "OCSPSigning"
+      ],
+      "title": "KnownEKUs",
+      "type": "string"
+    },
+    "Limbo": {
+      "description": "The top-level testcase container.",
+      "properties": {
+        "version": {
+          "const": 1,
+          "description": "The limbo schema version; this must currently always be 1",
+          "title": "Version",
+          "type": "integer"
+        },
+        "testcases": {
+          "description": "One or more testcases in this testsuite",
+          "items": {
+            "$ref": "#/$defs/Testcase"
+          },
+          "title": "Testcases",
+          "type": "array"
+        }
+      },
+      "required": [
+        "version",
+        "testcases"
+      ],
+      "title": "Limbo",
+      "type": "object"
+    },
+    "PeerKind": {
+      "description": "Different types of peer subjects.",
+      "enum": [
+        "RFC822",
+        "DNS",
+        "IP"
+      ],
+      "title": "PeerKind",
+      "type": "string"
+    },
+    "PeerName": {
+      "description": "Represents a peer (i.e., end entity) certificate's name (Subject or SAN).",
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/PeerKind",
+          "description": "The kind of peer name"
+        },
+        "value": {
+          "description": "The peer's name",
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "value"
+      ],
+      "title": "PeerName",
+      "type": "object"
+    },
+    "SignatureAlgorithm": {
+      "description": "Valid X.509 signature algorithms.",
+      "enum": [
+        "RSA_WITH_MD5",
+        "RSA_WITH_SHA1",
+        "RSA_WITH_SHA224",
+        "RSA_WITH_SHA256",
+        "RSA_WITH_SHA384",
+        "RSA_WITH_SHA512",
+        "RSA_WITH_SHA3_224",
+        "RSA_WITH_SHA3_256",
+        "RSA_WITH_SHA3_384",
+        "RSA_WITH_SHA3_512",
+        "RSASSA_PSS",
+        "ECDSA_WITH_SHA1",
+        "ECDSA_WITH_SHA224",
+        "ECDSA_WITH_SHA256",
+        "ECDSA_WITH_SHA384",
+        "ECDSA_WITH_SHA512",
+        "ECDSA_WITH_SHA3_224",
+        "ECDSA_WITH_SHA3_256",
+        "ECDSA_WITH_SHA3_384",
+        "ECDSA_WITH_SHA3_512",
+        "DSA_WITH_SHA1",
+        "DSA_WITH_SHA224",
+        "DSA_WITH_SHA256",
+        "DSA_WITH_SHA384",
+        "DSA_WITH_SHA512",
+        "ED25519",
+        "ED448",
+        "GOSTR3411_94_WITH_3410_2001",
+        "GOSTR3410_2012_WITH_3411_2012_256",
+        "GOSTR3410_2012_WITH_3411_2012_512"
+      ],
+      "title": "SignatureAlgorithm",
+      "type": "string"
+    },
+    "Testcase": {
+      "description": "Represents an individual Limbo testcase.",
+      "properties": {
+        "id": {
+          "description": "A short, unique identifier for this testcase",
+          "pattern": "^([A-Za-z][A-Za-z0-9-.]+::)*([A-Za-z][A-Za-z0-9-.]+)$",
+          "title": "Id",
+          "type": "string"
+        },
+        "conflicts_with": {
+          "default": [],
+          "description": "A list of testcase IDs that this testcase is mutually incompatible with",
+          "items": {
+            "pattern": "^([A-Za-z][A-Za-z0-9-.]+::)*([A-Za-z][A-Za-z0-9-.]+)$",
+            "type": "string"
+          },
+          "title": "Conflicts With",
+          "type": "array"
+        },
+        "features": {
+          "default": [],
+          "description": "Zero or more human-readable tags that describe OPTIONAL functionality described by this testcase. Implementers should use this to specify testcases for non-mandatory X.509 behavior (like certificate policy validation) or for 'pedantic' cases. Consumers that don't understand a given feature should skip tests that are marked with it.",
+          "items": {
+            "$ref": "#/$defs/Feature"
+          },
+          "title": "Features",
+          "type": "array"
+        },
+        "importance": {
+          "$ref": "#/$defs/Importance",
+          "default": "undetermined",
+          "description": "The testcase's importance"
+        },
+        "description": {
+          "description": "A short, Markdown-formatted description",
+          "title": "Description",
+          "type": "string"
+        },
+        "validation_kind": {
+          "$ref": "#/$defs/ValidationKind",
+          "description": "The kind of validation to perform"
+        },
+        "trusted_certs": {
+          "description": "A list of PEM-encoded CA certificates to consider trusted",
+          "items": {
+            "type": "string"
+          },
+          "title": "Trusted Certs",
+          "type": "array"
+        },
+        "untrusted_intermediates": {
+          "description": "A list of PEM-encoded untrusted intermediates to use during path building",
+          "items": {
+            "type": "string"
+          },
+          "title": "Untrusted Intermediates",
+          "type": "array"
+        },
+        "peer_certificate": {
+          "description": "The PEM-encoded peer (EE) certificate",
+          "title": "Peer Certificate",
+          "type": "string"
+        },
+        "peer_certificate_key": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The PEM-encoded private key for the peer certificate, if present",
+          "title": "Peer Certificate Key"
+        },
+        "validation_time": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The time at which to perform the validation",
+          "title": "Validation Time"
+        },
+        "signature_algorithms": {
+          "description": "A list of acceptable signature algorithms to constrain against",
+          "items": {
+            "$ref": "#/$defs/SignatureAlgorithm"
+          },
+          "title": "Signature Algorithms",
+          "type": "array"
+        },
+        "key_usage": {
+          "description": "A constraining list of key usages",
+          "items": {
+            "$ref": "#/$defs/KeyUsage"
+          },
+          "title": "Key Usage",
+          "type": "array"
+        },
+        "extended_key_usage": {
+          "description": "A constraining list of extended key usages, either in well-known form or as OIDs",
+          "items": {
+            "$ref": "#/$defs/KnownEKUs"
+          },
+          "title": "Extended Key Usage",
+          "type": "array"
+        },
+        "expected_result": {
+          "$ref": "#/$defs/ExpectedResult",
+          "description": "The expected validation result"
+        },
+        "expected_peer_name": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PeerName"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "For server (i.e. client-side) validation: the expected peer name, if any"
+        },
+        "expected_peer_names": {
+          "description": "For client (i.e. server-side) validation: the expected peer names",
+          "items": {
+            "$ref": "#/$defs/PeerName"
+          },
+          "title": "Expected Peer Names",
+          "type": "array"
+        },
+        "max_chain_depth": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The maximum chain-building depth",
+          "title": "Max Chain Depth"
+        },
+        "crls": {
+          "default": [],
+          "description": "A list of PEM-encoded Certificate Revocation Lists (CRLs)",
+          "items": {
+            "type": "string"
+          },
+          "title": "CRLs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "description",
+        "validation_kind",
+        "trusted_certs",
+        "untrusted_intermediates",
+        "peer_certificate",
+        "signature_algorithms",
+        "key_usage",
+        "extended_key_usage",
+        "expected_result",
+        "expected_peer_names"
+      ],
+      "title": "Testcase",
+      "type": "object"
+    },
+    "ValidationKind": {
+      "description": "The kind of validation to perform.",
+      "enum": [
+        "CLIENT",
+        "SERVER"
+      ],
+      "title": "ValidationKind",
+      "type": "string"
+    }
+  },
+  "title": "x509-limbo schemas"
+}
