@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.serialization.asn1.internal
@@ -71,5 +71,4 @@ internal class DerEncoder(
     override fun encodeBoolean(value: Boolean): Unit = error("Boolean encoding is not supported")
     override fun encodeFloat(value: Float): Unit = error("Float encoding is not supported")
     override fun encodeDouble(value: Double): Unit = error("Double encoding is not supported")
-    override fun encodeValue(value: Any): Unit = error("should not be called")
 }

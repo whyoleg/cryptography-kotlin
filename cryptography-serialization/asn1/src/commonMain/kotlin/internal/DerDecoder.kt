@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.serialization.asn1.internal
@@ -28,6 +28,8 @@ internal class DerDecoder(
         tagOverride = null
         return tag
     }
+
+    // decodeSequentially -> always true?
 
     override fun decodeElementIndex(descriptor: SerialDescriptor): Int {
         if (input.eof) return CompositeDecoder.DECODE_DONE

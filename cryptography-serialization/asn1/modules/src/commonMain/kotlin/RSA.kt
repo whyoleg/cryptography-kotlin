@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.serialization.asn1.modules
@@ -8,7 +8,7 @@ import dev.whyoleg.cryptography.bigint.*
 import dev.whyoleg.cryptography.serialization.asn1.*
 import kotlinx.serialization.*
 
-public val ObjectIdentifier.Companion.RSA: ObjectIdentifier get() = ObjectIdentifier("1.2.840.113549.1.1.1")
+public val ObjectIdentifier.Companion.RSA: ObjectIdentifier get() = ObjectIdentifier.parse("1.2.840.113549.1.1.1")
 
 public object RsaKeyAlgorithmIdentifier : KeyAlgorithmIdentifier {
     override val algorithm: ObjectIdentifier get() = ObjectIdentifier.RSA

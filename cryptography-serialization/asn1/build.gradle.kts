@@ -34,3 +34,7 @@ kotlin {
         }
     }
 }
+
+//https://datatracker.ietf.org/doc/html/rfc5280
+//https://csrc.nist.gov/Projects/pki-testing/sample-certificates-and-crls
+//https://csrc.nist.gov/Projects/pki-testing/x-509-path-validation-test-suite
