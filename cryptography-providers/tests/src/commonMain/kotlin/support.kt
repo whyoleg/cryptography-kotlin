@@ -146,6 +146,11 @@ fun ProviderTestScope.supports(algorithmId: CryptographyAlgorithmId<*>): Boolean
     when (algorithmId) {
         AES.CMAC if provider.isJdkDefault                      -> "Default JDK provider doesn't support AES-CMAC, only supported with BouncyCastle"
         RSA.PSS if provider.isJdkDefault && platform.isAndroid -> "JDK provider on Android doesn't support RSASSA-PSS"
+        EdDSA if provider.isWebCrypto                          -> "WebCrypto EdDSA not yet supported in this engine"
+        XDH  if provider.isWebCrypto                           -> "WebCrypto X25519/X448 not yet supported in this engine"
+        // Some JDKs used in CI (jvm / jvm11) lack these algorithms
+        EdDSA if provider.isJdkDefault                         -> "Default JDK may not support EdDSA on this JDK version"
+        XDH  if provider.isJdkDefault && platform.isJdk { major < 11 } -> "Default JDK doesn't support XDH before JDK 11"
         else                                                   -> null
     }
 }

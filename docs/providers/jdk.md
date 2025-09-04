@@ -7,6 +7,12 @@ For supported targets and algorithms, please consult [Supported primitives secti
 ## Limitations
 
 * KeyFormat: doesn't support `JWK` key format yet
+
+### EdDSA and XDH
+
+EdDSA (Ed25519/Ed448) and XDH (X25519/X448) are exposed when supported by the underlying JDK.
+Availability depends on JDK version and provider configuration. If your default JDK provider lacks them,
+consider supplying a custom provider (e.g., BouncyCastle) as described below.
 ## Example
 
 ```kotlin

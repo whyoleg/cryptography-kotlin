@@ -64,6 +64,9 @@ internal actual fun EcdsaSignatureAlgorithm(hash: String): Algorithm =
 internal actual fun EcdhKeyDeriveAlgorithm(publicKey: CryptoKey): Algorithm =
     js("({ name: 'ECDH', public: publicKey })")
 
+internal actual fun KeyDeriveAlgorithm(name: String, publicKey: CryptoKey): Algorithm =
+    js("({ name: name, public: publicKey })")
+
 internal actual fun Pbkdf2DeriveAlgorithm(hash: String, iterations: Int, salt: ByteArray): Algorithm =
     jsPbkdf2DeriveAlgorithm(hash, iterations, salt.toInt8Array())
 
@@ -105,3 +108,8 @@ internal actual val Algorithm.rsaKeyAlgorithmHashName: String get() = rsaKeyAlgo
 
 @Suppress("UNUSED_PARAMETER")
 private fun rsaKeyAlgorithmHashName(algorithm: Algorithm): String = js("algorithm.hash.name")
+
+internal actual val Algorithm.algorithmName: String get() = algorithmName(this)
+
+@Suppress("UNUSED_PARAMETER")
+private fun algorithmName(algorithm: Algorithm): String = js("algorithm.name")

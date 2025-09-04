@@ -51,6 +51,9 @@ internal actual fun EcdsaSignatureAlgorithm(hash: String): Algorithm =
 internal actual fun EcdhKeyDeriveAlgorithm(publicKey: CryptoKey): Algorithm =
     js("{ name: 'ECDH', public: publicKey }").unsafeCast<Algorithm>()
 
+internal actual fun KeyDeriveAlgorithm(name: String, publicKey: CryptoKey): Algorithm =
+    js("{ name: name, public: publicKey }").unsafeCast<Algorithm>()
+
 internal actual fun Pbkdf2DeriveAlgorithm(hash: String, iterations: Int, salt: ByteArray): Algorithm =
     js("{ name: 'PBKDF2', hash: hash, iterations: iterations, salt: salt }").unsafeCast<Algorithm>()
 
@@ -77,3 +80,8 @@ internal actual val Algorithm.rsaKeyAlgorithmHashName: String get() = rsaKeyAlgo
 
 @Suppress("UNUSED_PARAMETER")
 private fun rsaKeyAlgorithmHashName(algorithm: Algorithm): String = js("algorithm.hash.name").unsafeCast<String>()
+
+internal actual val Algorithm.algorithmName: String get() = algorithmName(this)
+
+@Suppress("UNUSED_PARAMETER")
+private fun algorithmName(algorithm: Algorithm): String = js("algorithm.name").unsafeCast<String>()

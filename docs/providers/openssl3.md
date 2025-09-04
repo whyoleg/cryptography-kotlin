@@ -21,6 +21,11 @@ For supported targets and algorithms, please consult [Supported primitives secti
 
 * KeyFormat: doesn't support `JWK` key format yet
 
+### EdDSA and XDH
+
+OpenSSL 3.x supports EdDSA (Ed25519/Ed448) and XDH (X25519/X448). These algorithms are available via the OpenSSL3 provider modules
+(`api`, `shared`, or `prebuilt`).
+
 ## Example
 
 ```kotlin
