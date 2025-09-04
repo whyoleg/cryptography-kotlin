@@ -45,9 +45,18 @@ public abstract class AlgorithmIdentifierSerializer<AI : AlgorithmIdentifier> : 
             index = 0,
             deserializer = ObjectIdentifier.serializer()
         )
-        check(decodeElementIndex(descriptor) == 1)
-        val parameters = decodeParameters(algorithm)
-        check(decodeElementIndex(descriptor) == CompositeDecoder.DECODE_DONE)
-        parameters
+        when (val idx = decodeElementIndex(descriptor)) {
+            1 -> {
+                val parameters = decodeParameters(algorithm)
+                check(decodeElementIndex(descriptor) == CompositeDecoder.DECODE_DONE)
+                parameters
+            }
+            CompositeDecoder.DECODE_DONE -> {
+                // Some algorithms (e.g., Ed25519/Ed448/X25519/X448 per RFC 8410) omit parameters.
+                // Delegate to subclass to construct an identifier without consuming parameters from the stream.
+                decodeParameters(algorithm)
+            }
+            else -> error("Unexpected element index: $idx")
+        }
     }
 }

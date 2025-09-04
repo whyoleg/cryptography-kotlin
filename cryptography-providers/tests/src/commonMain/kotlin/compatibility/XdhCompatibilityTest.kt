@@ -32,7 +32,12 @@ abstract class XdhCompatibilityTest(
 
     @Serializable
     private data class KeyParameters(val curveName: String) : TestParameters {
-        val curve get() = XDH.Curve(curveName)
+        val curve: XDH.Curve
+            get() = when (curveName) {
+                XDH.Curve.X25519.name -> XDH.Curve.X25519
+                XDH.Curve.X448.name   -> XDH.Curve.X448
+                else -> error("Unsupported curve: $curveName")
+            }
     }
 
     override suspend fun CompatibilityTestScope<XDH>.generate(isStressTest: Boolean) {

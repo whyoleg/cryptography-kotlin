@@ -34,7 +34,12 @@ abstract class EdDsaCompatibilityTest(
 
     @Serializable
     private data class KeyParameters(val curveName: String) : TestParameters {
-        val curve get() = EdDSA.Curve(curveName)
+        val curve: EdDSA.Curve
+            get() = when (curveName) {
+                EdDSA.Curve.Ed25519.name -> EdDSA.Curve.Ed25519
+                EdDSA.Curve.Ed448.name   -> EdDSA.Curve.Ed448
+                else -> error("Unsupported curve: $curveName")
+            }
     }
 
     override suspend fun CompatibilityTestScope<EdDSA>.generate(isStressTest: Boolean) {
