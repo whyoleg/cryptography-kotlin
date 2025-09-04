@@ -8,11 +8,17 @@ import dev.whyoleg.cryptography.providers.jdk.materials.*
 import dev.whyoleg.cryptography.providers.base.materials.*
 import dev.whyoleg.cryptography.providers.jdk.operations.*
 import dev.whyoleg.cryptography.serialization.pem.*
+import dev.whyoleg.cryptography.serialization.asn1.*
+import dev.whyoleg.cryptography.serialization.asn1.modules.*
 
 internal class JdkXDH(private val state: JdkCryptographyState) : XDH {
     private fun curveName(curve: XDH.Curve): String = when (curve) {
         XDH.Curve.X25519 -> "X25519"
         XDH.Curve.X448   -> "X448"
+    }
+    private fun oid(curve: XDH.Curve): ObjectIdentifier = when (curve) {
+        XDH.Curve.X25519 -> ObjectIdentifier("1.3.101.110")
+        XDH.Curve.X448   -> ObjectIdentifier("1.3.101.111")
     }
 
     override fun publicKeyDecoder(curve: XDH.Curve): KeyDecoder<XDH.PublicKey.Format, XDH.PublicKey> =
@@ -21,7 +27,9 @@ internal class JdkXDH(private val state: JdkCryptographyState) : XDH {
 
             override fun decodeFromByteArrayBlocking(format: XDH.PublicKey.Format, bytes: ByteArray): XDH.PublicKey = when (format) {
                 XDH.PublicKey.Format.JWK -> error("JWK is not supported")
-                XDH.PublicKey.Format.RAW -> TODO("RAW encoding is not supported yet")
+                XDH.PublicKey.Format.RAW -> decodeFromDer(
+                    wrapSubjectPublicKeyInfo(UnknownKeyAlgorithmIdentifier(oid(curve)), bytes)
+                )
                 XDH.PublicKey.Format.DER -> decodeFromDer(bytes)
                 XDH.PublicKey.Format.PEM -> decodeFromDer(unwrapPem(PemLabel.PublicKey, bytes))
             }
@@ -33,7 +41,13 @@ internal class JdkXDH(private val state: JdkCryptographyState) : XDH {
 
             override fun decodeFromByteArrayBlocking(format: XDH.PrivateKey.Format, bytes: ByteArray): XDH.PrivateKey = when (format) {
                 XDH.PrivateKey.Format.JWK -> error("JWK is not supported")
-                XDH.PrivateKey.Format.RAW -> TODO("RAW encoding is not supported yet")
+                XDH.PrivateKey.Format.RAW -> decodeFromDer(
+                    wrapPrivateKeyInfo(
+                        0,
+                        UnknownKeyAlgorithmIdentifier(oid(curve)),
+                        bytes
+                    )
+                )
                 XDH.PrivateKey.Format.DER -> decodeFromDer(bytes)
                 XDH.PrivateKey.Format.PEM -> decodeFromDer(unwrapPem(PemLabel.PrivateKey, bytes))
             }
@@ -68,7 +82,12 @@ internal class JdkXDH(private val state: JdkCryptographyState) : XDH {
 
         override fun encodeToByteArrayBlocking(format: XDH.PublicKey.Format): ByteArray = when (format) {
             XDH.PublicKey.Format.JWK -> error("JWK is not supported")
-            XDH.PublicKey.Format.RAW -> TODO("RAW encoding is not supported yet")
+            XDH.PublicKey.Format.RAW -> {
+                val der = encodeToDer()
+                try { unwrapSubjectPublicKeyInfo(ObjectIdentifier("1.3.101.110"), der) } catch (_: Throwable) {
+                    unwrapSubjectPublicKeyInfo(ObjectIdentifier("1.3.101.111"), der)
+                }
+            }
             XDH.PublicKey.Format.DER -> encodeToDer()
             XDH.PublicKey.Format.PEM -> wrapPem(PemLabel.PublicKey, encodeToDer())
         }
@@ -87,9 +106,16 @@ internal class JdkXDH(private val state: JdkCryptographyState) : XDH {
 
         override fun encodeToByteArrayBlocking(format: XDH.PrivateKey.Format): ByteArray = when (format) {
             XDH.PrivateKey.Format.JWK -> error("JWK is not supported")
-            XDH.PrivateKey.Format.RAW -> TODO("RAW encoding is not supported yet")
+            XDH.PrivateKey.Format.RAW -> {
+                val der = encodeToDer()
+                try { unwrapPrivateKeyInfo(ObjectIdentifier("1.3.101.110"), der) } catch (_: Throwable) {
+                    unwrapPrivateKeyInfo(ObjectIdentifier("1.3.101.111"), der)
+                }
+            }
             XDH.PrivateKey.Format.DER -> encodeToDer()
             XDH.PrivateKey.Format.PEM -> wrapPem(PemLabel.PrivateKey, encodeToDer())
         }
     }
 }
+
+ 
