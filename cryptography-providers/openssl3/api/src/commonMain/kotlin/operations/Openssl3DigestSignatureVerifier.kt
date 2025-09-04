@@ -13,19 +13,21 @@ import kotlin.experimental.*
 
 internal abstract class Openssl3DigestSignatureVerifier(
     private val publicKey: CPointer<EVP_PKEY>,
-    private val hashAlgorithm: String,
+    // when null, performs one-shot verification (e.g., EdDSA)
+    private val hashAlgorithm: String?,
 ) : SignatureVerifier {
     @OptIn(ExperimentalNativeApi::class)
     private val cleaner = publicKey.upRef().cleaner()
 
     protected abstract fun MemScope.createParams(): CValuesRef<OSSL_PARAM>?
 
-    override fun createVerifyFunction(): VerifyFunction {
-        return Openssl3DigestVerifyFunction(Resource(checkError(EVP_MD_CTX_new()), ::EVP_MD_CTX_free))
+    override fun createVerifyFunction(): VerifyFunction = when (hashAlgorithm) {
+        null -> OneShotVerifyFunction()
+        else -> StreamingVerifyFunction(Resource(checkError(EVP_MD_CTX_new()), ::EVP_MD_CTX_free))
     }
 
     // inner class to have a reference to class with cleaner
-    private inner class Openssl3DigestVerifyFunction(
+    private inner class StreamingVerifyFunction(
         private val context: Resource<CPointer<EVP_MD_CTX>>,
     ) : VerifyFunction, SafeCloseable(SafeCloseAction(context, AutoCloseable::close)) {
         init {
@@ -67,13 +69,72 @@ internal abstract class Openssl3DigestSignatureVerifier(
                 EVP_DigestVerifyInit_ex(
                     ctx = context,
                     pctx = null,
-                    mdname = hashAlgorithm,
+                    mdname = hashAlgorithm!!,
                     libctx = null,
                     props = null,
                     pkey = publicKey,
                     params = createParams()
                 )
             )
+        }
+    }
+
+    private inner class OneShotVerifyFunction : VerifyFunction {
+        private var isClosed = false
+        private var accumulator = EmptyByteArray
+
+        private fun ensureOpen() = check(!isClosed) { "Already closed" }
+
+        override fun update(source: ByteArray, startIndex: Int, endIndex: Int) {
+            ensureOpen()
+            checkBounds(source.size, startIndex, endIndex)
+            accumulator += source.copyOfRange(startIndex, endIndex)
+        }
+
+        @OptIn(UnsafeNumber::class)
+        override fun tryVerify(signature: ByteArray, startIndex: Int, endIndex: Int): Boolean = memScoped {
+            checkBounds(signature.size, startIndex, endIndex)
+            ensureOpen()
+            val ctx = checkError(EVP_MD_CTX_new())
+            try {
+                checkError(
+                    EVP_DigestVerifyInit_ex(
+                        ctx = ctx,
+                        pctx = null,
+                        mdname = null, // one-shot mode
+                        libctx = null,
+                        props = null,
+                        pkey = publicKey,
+                        params = createParams()
+                    )
+                )
+
+                val result = accumulator.usePinned { dataPin ->
+                    signature.usePinned { sigPin ->
+                        EVP_DigestVerify(
+                            ctx,
+                            sigPin.safeAddressOfU(startIndex),
+                            (endIndex - startIndex).convert(),
+                            dataPin.safeAddressOfU(0),
+                            accumulator.size.convert()
+                        )
+                    }
+                }
+                if (result != 0) checkError(result)
+                result == 1
+            } finally {
+                EVP_MD_CTX_free(ctx)
+                isClosed = true
+            }
+        }
+
+        override fun verify(signature: ByteArray, startIndex: Int, endIndex: Int) {
+            check(tryVerify(signature, startIndex, endIndex)) { "Invalid signature" }
+        }
+
+        override fun reset() {
+            isClosed = false
+            accumulator = EmptyByteArray
         }
     }
 }

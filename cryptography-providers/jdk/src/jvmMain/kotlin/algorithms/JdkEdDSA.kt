@@ -81,10 +81,7 @@ internal class JdkEdDSA(private val state: JdkCryptographyState) : EdDSA {
             EdDSA.PublicKey.Format.JWK -> error("JWK is not supported")
             EdDSA.PublicKey.Format.RAW -> {
                 val der = encodeToDer()
-                // unwrap SPKI to raw for known OIDs
-                try { unwrapSubjectPublicKeyInfo(EdwardsOids.Ed25519, der) } catch (_: Throwable) {
-                    unwrapSubjectPublicKeyInfo(EdwardsOids.Ed448, der)
-                }
+                KeyInfoUnwrap.unwrapSpkiForOids(der, listOf(EdwardsOids.Ed25519, EdwardsOids.Ed448))
             }
             EdDSA.PublicKey.Format.DER -> encodeToDer()
             EdDSA.PublicKey.Format.PEM -> wrapPem(PemLabel.PublicKey, encodeToDer())
@@ -103,10 +100,7 @@ internal class JdkEdDSA(private val state: JdkCryptographyState) : EdDSA {
             EdDSA.PrivateKey.Format.JWK -> error("JWK is not supported")
             EdDSA.PrivateKey.Format.RAW -> {
                 val der = encodeToDer()
-                // unwrap PKCS#8 to raw for known OIDs
-                try { unwrapPrivateKeyInfo(EdwardsOids.Ed25519, der) } catch (_: Throwable) {
-                    unwrapPrivateKeyInfo(EdwardsOids.Ed448, der)
-                }
+                KeyInfoUnwrap.unwrapPkcs8ForOids(der, listOf(EdwardsOids.Ed25519, EdwardsOids.Ed448))
             }
             EdDSA.PrivateKey.Format.DER -> encodeToDer()
             EdDSA.PrivateKey.Format.PEM -> wrapPem(PemLabel.PrivateKey, encodeToDer())

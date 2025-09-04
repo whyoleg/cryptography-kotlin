@@ -84,9 +84,7 @@ internal class JdkXDH(private val state: JdkCryptographyState) : XDH {
             XDH.PublicKey.Format.JWK -> error("JWK is not supported")
             XDH.PublicKey.Format.RAW -> {
                 val der = encodeToDer()
-                try { unwrapSubjectPublicKeyInfo(MontgomeryOids.X25519, der) } catch (_: Throwable) {
-                    unwrapSubjectPublicKeyInfo(MontgomeryOids.X448, der)
-                }
+                KeyInfoUnwrap.unwrapSpkiForOids(der, listOf(MontgomeryOids.X25519, MontgomeryOids.X448))
             }
             XDH.PublicKey.Format.DER -> encodeToDer()
             XDH.PublicKey.Format.PEM -> wrapPem(PemLabel.PublicKey, encodeToDer())
@@ -108,9 +106,7 @@ internal class JdkXDH(private val state: JdkCryptographyState) : XDH {
             XDH.PrivateKey.Format.JWK -> error("JWK is not supported")
             XDH.PrivateKey.Format.RAW -> {
                 val der = encodeToDer()
-                try { unwrapPrivateKeyInfo(MontgomeryOids.X25519, der) } catch (_: Throwable) {
-                    unwrapPrivateKeyInfo(MontgomeryOids.X448, der)
-                }
+                KeyInfoUnwrap.unwrapPkcs8ForOids(der, listOf(MontgomeryOids.X25519, MontgomeryOids.X448))
             }
             XDH.PrivateKey.Format.DER -> encodeToDer()
             XDH.PrivateKey.Format.PEM -> wrapPem(PemLabel.PrivateKey, encodeToDer())
