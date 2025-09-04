@@ -17,8 +17,8 @@ internal class JdkXDH(private val state: JdkCryptographyState) : XDH {
         XDH.Curve.X448   -> "X448"
     }
     private fun oid(curve: XDH.Curve): ObjectIdentifier = when (curve) {
-        XDH.Curve.X25519 -> ObjectIdentifier("1.3.101.110")
-        XDH.Curve.X448   -> ObjectIdentifier("1.3.101.111")
+        XDH.Curve.X25519 -> MontgomeryOids.X25519
+        XDH.Curve.X448   -> MontgomeryOids.X448
     }
 
     override fun publicKeyDecoder(curve: XDH.Curve): KeyDecoder<XDH.PublicKey.Format, XDH.PublicKey> =
@@ -84,8 +84,8 @@ internal class JdkXDH(private val state: JdkCryptographyState) : XDH {
             XDH.PublicKey.Format.JWK -> error("JWK is not supported")
             XDH.PublicKey.Format.RAW -> {
                 val der = encodeToDer()
-                try { unwrapSubjectPublicKeyInfo(ObjectIdentifier("1.3.101.110"), der) } catch (_: Throwable) {
-                    unwrapSubjectPublicKeyInfo(ObjectIdentifier("1.3.101.111"), der)
+                try { unwrapSubjectPublicKeyInfo(MontgomeryOids.X25519, der) } catch (_: Throwable) {
+                    unwrapSubjectPublicKeyInfo(MontgomeryOids.X448, der)
                 }
             }
             XDH.PublicKey.Format.DER -> encodeToDer()
@@ -108,8 +108,8 @@ internal class JdkXDH(private val state: JdkCryptographyState) : XDH {
             XDH.PrivateKey.Format.JWK -> error("JWK is not supported")
             XDH.PrivateKey.Format.RAW -> {
                 val der = encodeToDer()
-                try { unwrapPrivateKeyInfo(ObjectIdentifier("1.3.101.110"), der) } catch (_: Throwable) {
-                    unwrapPrivateKeyInfo(ObjectIdentifier("1.3.101.111"), der)
+                try { unwrapPrivateKeyInfo(MontgomeryOids.X25519, der) } catch (_: Throwable) {
+                    unwrapPrivateKeyInfo(MontgomeryOids.X448, der)
                 }
             }
             XDH.PrivateKey.Format.DER -> encodeToDer()

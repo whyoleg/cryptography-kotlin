@@ -17,8 +17,8 @@ internal class JdkEdDSA(private val state: JdkCryptographyState) : EdDSA {
         EdDSA.Curve.Ed448   -> "Ed448"
     }
     private fun oid(curve: EdDSA.Curve): ObjectIdentifier = when (curve) {
-        EdDSA.Curve.Ed25519 -> ObjectIdentifier("1.3.101.112")
-        EdDSA.Curve.Ed448   -> ObjectIdentifier("1.3.101.113")
+        EdDSA.Curve.Ed25519 -> EdwardsOids.Ed25519
+        EdDSA.Curve.Ed448   -> EdwardsOids.Ed448
     }
 
     override fun publicKeyDecoder(curve: EdDSA.Curve): KeyDecoder<EdDSA.PublicKey.Format, EdDSA.PublicKey> =
@@ -82,8 +82,8 @@ internal class JdkEdDSA(private val state: JdkCryptographyState) : EdDSA {
             EdDSA.PublicKey.Format.RAW -> {
                 val der = encodeToDer()
                 // unwrap SPKI to raw for known OIDs
-                try { unwrapSubjectPublicKeyInfo(ObjectIdentifier("1.3.101.112"), der) } catch (_: Throwable) {
-                    unwrapSubjectPublicKeyInfo(ObjectIdentifier("1.3.101.113"), der)
+                try { unwrapSubjectPublicKeyInfo(EdwardsOids.Ed25519, der) } catch (_: Throwable) {
+                    unwrapSubjectPublicKeyInfo(EdwardsOids.Ed448, der)
                 }
             }
             EdDSA.PublicKey.Format.DER -> encodeToDer()
@@ -104,8 +104,8 @@ internal class JdkEdDSA(private val state: JdkCryptographyState) : EdDSA {
             EdDSA.PrivateKey.Format.RAW -> {
                 val der = encodeToDer()
                 // unwrap PKCS#8 to raw for known OIDs
-                try { unwrapPrivateKeyInfo(ObjectIdentifier("1.3.101.112"), der) } catch (_: Throwable) {
-                    unwrapPrivateKeyInfo(ObjectIdentifier("1.3.101.113"), der)
+                try { unwrapPrivateKeyInfo(EdwardsOids.Ed25519, der) } catch (_: Throwable) {
+                    unwrapPrivateKeyInfo(EdwardsOids.Ed448, der)
                 }
             }
             EdDSA.PrivateKey.Format.DER -> encodeToDer()

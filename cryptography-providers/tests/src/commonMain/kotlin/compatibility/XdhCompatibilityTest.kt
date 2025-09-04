@@ -13,12 +13,14 @@ import kotlinx.serialization.*
 import kotlin.test.*
 
 private val xdhPublicKeyFormats = listOf(
+    XDH.PublicKey.Format.JWK,
     XDH.PublicKey.Format.RAW,
     XDH.PublicKey.Format.DER,
     XDH.PublicKey.Format.PEM,
 ).associateBy { it.name }
 
 private val xdhPrivateKeyFormats = listOf(
+    XDH.PrivateKey.Format.JWK,
     XDH.PrivateKey.Format.RAW,
     XDH.PrivateKey.Format.DER,
     XDH.PrivateKey.Format.PEM,
@@ -131,4 +133,3 @@ abstract class XdhCompatibilityTest(
         }
     }
 }
-

@@ -26,12 +26,12 @@ internal object CryptoKitXDH : XDH {
                     swiftTry<SwiftXdhPublicKey> { error -> bytes.useNSData { SwiftXdhPublicKey.decodeRawWithRawRepresentation(it, error) } }
                 )
                 XDH.PublicKey.Format.DER -> {
-                    val raw = unwrapSubjectPublicKeyInfo(ObjectIdentifier("1.3.101.110"), bytes)
+                    val raw = unwrapSubjectPublicKeyInfo(MontgomeryOids.X25519, bytes)
                     XPublic(swiftTry { error -> raw.useNSData { SwiftXdhPublicKey.decodeRawWithRawRepresentation(it, error) } })
                 }
                 XDH.PublicKey.Format.PEM -> {
                     val der = unwrapPem(PemLabel.PublicKey, bytes)
-                    val raw = unwrapSubjectPublicKeyInfo(ObjectIdentifier("1.3.101.110"), der)
+                    val raw = unwrapSubjectPublicKeyInfo(MontgomeryOids.X25519, der)
                     XPublic(swiftTry { error -> raw.useNSData { SwiftXdhPublicKey.decodeRawWithRawRepresentation(it, error) } })
                 }
                 else -> error("$format is not supported by CryptoKit XDH")
@@ -47,12 +47,12 @@ internal object CryptoKitXDH : XDH {
                     swiftTry<SwiftXdhPrivateKey> { error -> bytes.useNSData { SwiftXdhPrivateKey.decodeRawWithRawRepresentation(it, error) } }
                 )
                 XDH.PrivateKey.Format.DER -> {
-                    val raw = unwrapPrivateKeyInfo(ObjectIdentifier("1.3.101.110"), bytes)
+                    val raw = unwrapPrivateKeyInfo(MontgomeryOids.X25519, bytes)
                     XPrivate(swiftTry { error -> raw.useNSData { SwiftXdhPrivateKey.decodeRawWithRawRepresentation(it, error) } })
                 }
                 XDH.PrivateKey.Format.PEM -> {
                     val der = unwrapPem(PemLabel.PrivateKey, bytes)
-                    val raw = unwrapPrivateKeyInfo(ObjectIdentifier("1.3.101.110"), der)
+                    val raw = unwrapPrivateKeyInfo(MontgomeryOids.X25519, der)
                     XPrivate(swiftTry { error -> raw.useNSData { SwiftXdhPrivateKey.decodeRawWithRawRepresentation(it, error) } })
                 }
                 else -> error("$format is not supported by CryptoKit XDH")
@@ -81,13 +81,13 @@ internal object CryptoKitXDH : XDH {
         override fun encodeToByteArrayBlocking(format: XDH.PublicKey.Format): ByteArray = when (format) {
             XDH.PublicKey.Format.RAW -> key.rawRepresentation().toByteArray()
             XDH.PublicKey.Format.DER -> wrapSubjectPublicKeyInfo(
-                UnknownKeyAlgorithmIdentifier(ObjectIdentifier("1.3.101.110")),
+                UnknownKeyAlgorithmIdentifier(MontgomeryOids.X25519),
                 key.rawRepresentation().toByteArray()
             )
             XDH.PublicKey.Format.PEM -> wrapPem(
                 PemLabel.PublicKey,
                 wrapSubjectPublicKeyInfo(
-                    UnknownKeyAlgorithmIdentifier(ObjectIdentifier("1.3.101.110")),
+                    UnknownKeyAlgorithmIdentifier(MontgomeryOids.X25519),
                     key.rawRepresentation().toByteArray()
                 )
             )
@@ -107,14 +107,14 @@ internal object CryptoKitXDH : XDH {
             XDH.PrivateKey.Format.RAW -> key.rawRepresentation().toByteArray()
             XDH.PrivateKey.Format.DER -> wrapPrivateKeyInfo(
                 0,
-                UnknownKeyAlgorithmIdentifier(ObjectIdentifier("1.3.101.110")),
+                UnknownKeyAlgorithmIdentifier(MontgomeryOids.X25519),
                 key.rawRepresentation().toByteArray()
             )
             XDH.PrivateKey.Format.PEM -> wrapPem(
                 PemLabel.PrivateKey,
                 wrapPrivateKeyInfo(
                     0,
-                    UnknownKeyAlgorithmIdentifier(ObjectIdentifier("1.3.101.110")),
+                    UnknownKeyAlgorithmIdentifier(MontgomeryOids.X25519),
                     key.rawRepresentation().toByteArray()
                 )
             )

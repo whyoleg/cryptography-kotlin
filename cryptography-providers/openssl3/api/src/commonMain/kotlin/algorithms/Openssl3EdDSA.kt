@@ -14,15 +14,16 @@ import dev.whyoleg.cryptography.providers.openssl3.materials.*
 import kotlinx.cinterop.*
 import platform.posix.*
 import kotlin.experimental.*
+import dev.whyoleg.cryptography.serialization.asn1.modules.*
 
 internal object Openssl3EdDSA : EdDSA {
     private fun algorithmName(curve: EdDSA.Curve): String = when (curve) {
         EdDSA.Curve.Ed25519 -> "ED25519"
         EdDSA.Curve.Ed448   -> "ED448"
     }
-    private fun oid(curve: EdDSA.Curve): String = when (curve) {
-        EdDSA.Curve.Ed25519 -> "1.3.101.112"
-        EdDSA.Curve.Ed448   -> "1.3.101.113"
+    private fun oid(curve: EdDSA.Curve): ObjectIdentifier = when (curve) {
+        EdDSA.Curve.Ed25519 -> EdwardsOids.Ed25519
+        EdDSA.Curve.Ed448   -> EdwardsOids.Ed448
     }
 
     override fun publicKeyDecoder(curve: EdDSA.Curve): KeyDecoder<EdDSA.PublicKey.Format, EdDSA.PublicKey> =
@@ -35,11 +36,9 @@ internal object Openssl3EdDSA : EdDSA {
             }
 
             override fun decodeFromByteArrayBlocking(format: EdDSA.PublicKey.Format, bytes: ByteArray): EdDSA.PublicKey = when (format) {
-                EdDSA.PublicKey.Format.RAW -> super.decodeFromByteArrayBlocking(EdDSA.PublicKey.Format.DER,
-                    wrapSubjectPublicKeyInfo(
-                        UnknownKeyAlgorithmIdentifier(ObjectIdentifier(oid(curve))),
-                        bytes
-                    )
+                EdDSA.PublicKey.Format.RAW -> super.decodeFromByteArrayBlocking(
+                    EdDSA.PublicKey.Format.DER,
+                    wrapSubjectPublicKeyInfo(UnknownKeyAlgorithmIdentifier(oid(curve)), bytes)
                 )
                 else -> super.decodeFromByteArrayBlocking(format, bytes)
             }
@@ -57,12 +56,9 @@ internal object Openssl3EdDSA : EdDSA {
             }
 
             override fun decodeFromByteArrayBlocking(format: EdDSA.PrivateKey.Format, bytes: ByteArray): EdDSA.PrivateKey = when (format) {
-                EdDSA.PrivateKey.Format.RAW -> super.decodeFromByteArrayBlocking(EdDSA.PrivateKey.Format.DER,
-                    wrapPrivateKeyInfo(
-                        0,
-                        UnknownKeyAlgorithmIdentifier(ObjectIdentifier(oid(curve))),
-                        bytes
-                    )
+                EdDSA.PrivateKey.Format.RAW -> super.decodeFromByteArrayBlocking(
+                    EdDSA.PrivateKey.Format.DER,
+                    wrapPrivateKeyInfo(0, UnknownKeyAlgorithmIdentifier(oid(curve)), bytes)
                 )
                 else -> super.decodeFromByteArrayBlocking(format, bytes)
             }
@@ -97,7 +93,7 @@ internal object Openssl3EdDSA : EdDSA {
 
         override fun encodeToByteArrayBlocking(format: EdDSA.PublicKey.Format): ByteArray = when (format) {
             EdDSA.PublicKey.Format.RAW -> unwrapSubjectPublicKeyInfo(
-                ObjectIdentifier(oid(curve)),
+                oid(curve),
                 super.encodeToByteArrayBlocking(EdDSA.PublicKey.Format.DER)
             )
             else -> super.encodeToByteArrayBlocking(format)
@@ -119,7 +115,7 @@ internal object Openssl3EdDSA : EdDSA {
 
         override fun encodeToByteArrayBlocking(format: EdDSA.PrivateKey.Format): ByteArray = when (format) {
             EdDSA.PrivateKey.Format.RAW -> unwrapPrivateKeyInfo(
-                ObjectIdentifier(oid(curve)),
+                oid(curve),
                 super.encodeToByteArrayBlocking(EdDSA.PrivateKey.Format.DER)
             )
             else -> super.encodeToByteArrayBlocking(format)

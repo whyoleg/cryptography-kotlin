@@ -15,15 +15,16 @@ import kotlinx.cinterop.*
 import platform.posix.*
 import kotlin.experimental.*
 import dev.whyoleg.cryptography.providers.openssl3.operations.*
+import dev.whyoleg.cryptography.serialization.asn1.modules.*
 
 internal object Openssl3XDH : XDH {
     private fun algorithmName(curve: XDH.Curve): String = when (curve) {
         XDH.Curve.X25519 -> "X25519"
         XDH.Curve.X448   -> "X448"
     }
-    private fun oid(curve: XDH.Curve): String = when (curve) {
-        XDH.Curve.X25519 -> "1.3.101.110"
-        XDH.Curve.X448   -> "1.3.101.111"
+    private fun oid(curve: XDH.Curve): ObjectIdentifier = when (curve) {
+        XDH.Curve.X25519 -> MontgomeryOids.X25519
+        XDH.Curve.X448   -> MontgomeryOids.X448
     }
 
     override fun publicKeyDecoder(curve: XDH.Curve): KeyDecoder<XDH.PublicKey.Format, XDH.PublicKey> =
@@ -38,10 +39,7 @@ internal object Openssl3XDH : XDH {
             override fun decodeFromByteArrayBlocking(format: XDH.PublicKey.Format, bytes: ByteArray): XDH.PublicKey = when (format) {
                 XDH.PublicKey.Format.RAW -> super.decodeFromByteArrayBlocking(
                     XDH.PublicKey.Format.DER,
-                    wrapSubjectPublicKeyInfo(
-                        UnknownKeyAlgorithmIdentifier(ObjectIdentifier(oid(curve))),
-                        bytes
-                    )
+                    wrapSubjectPublicKeyInfo(UnknownKeyAlgorithmIdentifier(oid(curve)), bytes)
                 )
                 else -> super.decodeFromByteArrayBlocking(format, bytes)
             }
@@ -61,11 +59,7 @@ internal object Openssl3XDH : XDH {
             override fun decodeFromByteArrayBlocking(format: XDH.PrivateKey.Format, bytes: ByteArray): XDH.PrivateKey = when (format) {
                 XDH.PrivateKey.Format.RAW -> super.decodeFromByteArrayBlocking(
                     XDH.PrivateKey.Format.DER,
-                    wrapPrivateKeyInfo(
-                        0,
-                        UnknownKeyAlgorithmIdentifier(ObjectIdentifier(oid(curve))),
-                        bytes
-                    )
+                    wrapPrivateKeyInfo(0, UnknownKeyAlgorithmIdentifier(oid(curve)), bytes)
                 )
                 else -> super.decodeFromByteArrayBlocking(format, bytes)
             }
@@ -99,10 +93,7 @@ internal object Openssl3XDH : XDH {
         }
 
         override fun encodeToByteArrayBlocking(format: XDH.PublicKey.Format): ByteArray = when (format) {
-            XDH.PublicKey.Format.RAW -> unwrapSubjectPublicKeyInfo(
-                ObjectIdentifier(oid(curve)),
-                super.encodeToByteArrayBlocking(XDH.PublicKey.Format.DER)
-            )
+            XDH.PublicKey.Format.RAW -> unwrapSubjectPublicKeyInfo(oid(curve), super.encodeToByteArrayBlocking(XDH.PublicKey.Format.DER))
             else -> super.encodeToByteArrayBlocking(format)
         }
 
@@ -125,10 +116,7 @@ internal object Openssl3XDH : XDH {
         }
 
         override fun encodeToByteArrayBlocking(format: XDH.PrivateKey.Format): ByteArray = when (format) {
-            XDH.PrivateKey.Format.RAW -> unwrapPrivateKeyInfo(
-                ObjectIdentifier(oid(curve)),
-                super.encodeToByteArrayBlocking(XDH.PrivateKey.Format.DER)
-            )
+            XDH.PrivateKey.Format.RAW -> unwrapPrivateKeyInfo(oid(curve), super.encodeToByteArrayBlocking(XDH.PrivateKey.Format.DER))
             else -> super.encodeToByteArrayBlocking(format)
         }
 
@@ -139,4 +127,3 @@ internal object Openssl3XDH : XDH {
         }
     }
 }
-

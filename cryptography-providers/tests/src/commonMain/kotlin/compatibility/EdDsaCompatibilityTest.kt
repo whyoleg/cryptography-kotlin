@@ -15,12 +15,14 @@ import kotlinx.serialization.*
 import kotlin.test.*
 
 private val edPublicKeyFormats = listOf(
+    EdDSA.PublicKey.Format.JWK,
     EdDSA.PublicKey.Format.RAW,
     EdDSA.PublicKey.Format.DER,
     EdDSA.PublicKey.Format.PEM,
 ).associateBy { it.name }
 
 private val edPrivateKeyFormats = listOf(
+    EdDSA.PrivateKey.Format.JWK,
     EdDSA.PrivateKey.Format.RAW,
     EdDSA.PrivateKey.Format.DER,
     EdDSA.PrivateKey.Format.PEM,
@@ -85,6 +87,7 @@ abstract class EdDsaCompatibilityTest(
                         supports = ::supportsKeyFormat
                     ) { key, format, bytes ->
                         when (format) {
+                            EdDSA.PublicKey.Format.JWK -> {}
                             EdDSA.PublicKey.Format.PEM -> {
                                 val expected = PemDocument.decode(bytes)
                                 val actual = PemDocument.decode(key.encodeToByteString(format))
@@ -101,6 +104,7 @@ abstract class EdDsaCompatibilityTest(
                         supports = ::supportsKeyFormat
                     ) { key, format, bytes ->
                         when (format) {
+                            EdDSA.PrivateKey.Format.JWK -> {}
                             EdDSA.PrivateKey.Format.PEM -> {
                                 val expected = PemDocument.decode(bytes)
                                 val actual = PemDocument.decode(key.encodeToByteString(format))
@@ -134,4 +138,3 @@ abstract class EdDsaCompatibilityTest(
         }
     }
 }
-

@@ -26,12 +26,12 @@ internal object CryptoKitEdDSA : EdDSA {
                     swiftTry<SwiftEdDsaPublicKey> { error -> bytes.useNSData { SwiftEdDsaPublicKey.decodeRawWithRawRepresentation(it, error) } }
                 )
                 EdDSA.PublicKey.Format.DER -> {
-                    val raw = unwrapSubjectPublicKeyInfo(ObjectIdentifier("1.3.101.112"), bytes)
+                    val raw = unwrapSubjectPublicKeyInfo(EdwardsOids.Ed25519, bytes)
                     EdPublic(swiftTry { error -> raw.useNSData { SwiftEdDsaPublicKey.decodeRawWithRawRepresentation(it, error) } })
                 }
                 EdDSA.PublicKey.Format.PEM -> {
                     val der = unwrapPem(PemLabel.PublicKey, bytes)
-                    val raw = unwrapSubjectPublicKeyInfo(ObjectIdentifier("1.3.101.112"), der)
+                    val raw = unwrapSubjectPublicKeyInfo(EdwardsOids.Ed25519, der)
                     EdPublic(swiftTry { error -> raw.useNSData { SwiftEdDsaPublicKey.decodeRawWithRawRepresentation(it, error) } })
                 }
                 else -> error("$format is not supported by CryptoKit EdDSA")
@@ -47,12 +47,12 @@ internal object CryptoKitEdDSA : EdDSA {
                     swiftTry<SwiftEdDsaPrivateKey> { error -> bytes.useNSData { SwiftEdDsaPrivateKey.decodeRawWithRawRepresentation(it, error) } }
                 )
                 EdDSA.PrivateKey.Format.DER -> {
-                    val raw = unwrapPrivateKeyInfo(ObjectIdentifier("1.3.101.112"), bytes)
+                    val raw = unwrapPrivateKeyInfo(EdwardsOids.Ed25519, bytes)
                     EdPrivate(swiftTry { error -> raw.useNSData { SwiftEdDsaPrivateKey.decodeRawWithRawRepresentation(it, error) } })
                 }
                 EdDSA.PrivateKey.Format.PEM -> {
                     val der = unwrapPem(PemLabel.PrivateKey, bytes)
-                    val raw = unwrapPrivateKeyInfo(ObjectIdentifier("1.3.101.112"), der)
+                    val raw = unwrapPrivateKeyInfo(EdwardsOids.Ed25519, der)
                     EdPrivate(swiftTry { error -> raw.useNSData { SwiftEdDsaPrivateKey.decodeRawWithRawRepresentation(it, error) } })
                 }
                 else -> error("$format is not supported by CryptoKit EdDSA")
@@ -81,13 +81,13 @@ internal object CryptoKitEdDSA : EdDSA {
         override fun encodeToByteArrayBlocking(format: EdDSA.PublicKey.Format): ByteArray = when (format) {
             EdDSA.PublicKey.Format.RAW -> key.rawRepresentation().toByteArray()
             EdDSA.PublicKey.Format.DER -> wrapSubjectPublicKeyInfo(
-                UnknownKeyAlgorithmIdentifier(ObjectIdentifier("1.3.101.112")),
+                UnknownKeyAlgorithmIdentifier(EdwardsOids.Ed25519),
                 key.rawRepresentation().toByteArray()
             )
             EdDSA.PublicKey.Format.PEM -> wrapPem(
                 PemLabel.PublicKey,
                 wrapSubjectPublicKeyInfo(
-                    UnknownKeyAlgorithmIdentifier(ObjectIdentifier("1.3.101.112")),
+                    UnknownKeyAlgorithmIdentifier(EdwardsOids.Ed25519),
                     key.rawRepresentation().toByteArray()
                 )
             )
@@ -106,14 +106,14 @@ internal object CryptoKitEdDSA : EdDSA {
             EdDSA.PrivateKey.Format.RAW -> key.rawRepresentation().toByteArray()
             EdDSA.PrivateKey.Format.DER -> wrapPrivateKeyInfo(
                 0,
-                UnknownKeyAlgorithmIdentifier(ObjectIdentifier("1.3.101.112")),
+                UnknownKeyAlgorithmIdentifier(EdwardsOids.Ed25519),
                 key.rawRepresentation().toByteArray()
             )
             EdDSA.PrivateKey.Format.PEM -> wrapPem(
                 PemLabel.PrivateKey,
                 wrapPrivateKeyInfo(
                     0,
-                    UnknownKeyAlgorithmIdentifier(ObjectIdentifier("1.3.101.112")),
+                    UnknownKeyAlgorithmIdentifier(EdwardsOids.Ed25519),
                     key.rawRepresentation().toByteArray()
                 )
             )
@@ -178,4 +178,3 @@ private class EdVerifyFunction(
     override fun reset() { buffer.clear() }
     override fun close() { closed = true; buffer.clear() }
 }
-
