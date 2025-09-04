@@ -46,7 +46,7 @@ internal object WebCryptoEdDSA : EdDSA {
         val publicKey: CryptoKey,
     ) : WebCryptoEncodableKey<EdDSA.PublicKey.Format>(publicKey, EdPublicKeyProcessor), EdDSA.PublicKey {
         override fun signatureVerifier(): SignatureVerifier {
-            return WebCryptoSignatureVerifier(Algorithm(publicKey.algorithm.algorithmName), publicKey)
+            return WebCryptoSignatureVerifier(publicKey.algorithm, publicKey)
         }
     }
 
@@ -54,7 +54,7 @@ internal object WebCryptoEdDSA : EdDSA {
         val privateKey: CryptoKey,
     ) : WebCryptoEncodableKey<EdDSA.PrivateKey.Format>(privateKey, EdPrivateKeyProcessor), EdDSA.PrivateKey {
         override fun signatureGenerator(): SignatureGenerator {
-            return WebCryptoSignatureGenerator(Algorithm(privateKey.algorithm.algorithmName), privateKey)
+            return WebCryptoSignatureGenerator(privateKey.algorithm, privateKey)
         }
     }
 }
@@ -84,16 +84,15 @@ private object EdPublicKeyProcessor : WebCryptoKeyProcessor<EdDSA.PublicKey.Form
 
 private object EdPrivateKeyProcessor : WebCryptoKeyProcessor<EdDSA.PrivateKey.Format>() {
     override fun stringFormat(format: EdDSA.PrivateKey.Format): String = when (format) {
-        EdDSA.PrivateKey.Format.JWK,
-        EdDSA.PrivateKey.Format.RAW,
-        EdDSA.PrivateKey.Format.DER,
-        EdDSA.PrivateKey.Format.PEM,
-                                  -> "pkcs8"
+        EdDSA.PrivateKey.Format.JWK -> "jwk"
+        EdDSA.PrivateKey.Format.RAW -> "raw"
+        EdDSA.PrivateKey.Format.DER -> "pkcs8"
+        EdDSA.PrivateKey.Format.PEM -> "pkcs8"
     }
 
     override fun beforeDecoding(algorithm: Algorithm, format: EdDSA.PrivateKey.Format, key: ByteArray): ByteArray = when (format) {
         EdDSA.PrivateKey.Format.JWK -> key
-        EdDSA.PrivateKey.Format.RAW -> key // treat as already PKCS8 if user passes raw bytes; no wrap
+        EdDSA.PrivateKey.Format.RAW -> key
         EdDSA.PrivateKey.Format.DER -> key
         EdDSA.PrivateKey.Format.PEM -> unwrapPem(PemLabel.PrivateKey, key)
     }

@@ -8,11 +8,17 @@ import dev.whyoleg.cryptography.providers.jdk.materials.*
 import dev.whyoleg.cryptography.providers.base.materials.*
 import dev.whyoleg.cryptography.providers.jdk.operations.*
 import dev.whyoleg.cryptography.serialization.pem.*
+import dev.whyoleg.cryptography.serialization.asn1.*
+import dev.whyoleg.cryptography.serialization.asn1.modules.*
 
 internal class JdkEdDSA(private val state: JdkCryptographyState) : EdDSA {
     private fun curveName(curve: EdDSA.Curve): String = when (curve) {
         EdDSA.Curve.Ed25519 -> "Ed25519"
         EdDSA.Curve.Ed448   -> "Ed448"
+    }
+    private fun oid(curve: EdDSA.Curve): ObjectIdentifier = when (curve) {
+        EdDSA.Curve.Ed25519 -> ObjectIdentifier("1.3.101.112")
+        EdDSA.Curve.Ed448   -> ObjectIdentifier("1.3.101.113")
     }
 
     override fun publicKeyDecoder(curve: EdDSA.Curve): KeyDecoder<EdDSA.PublicKey.Format, EdDSA.PublicKey> =
@@ -21,7 +27,9 @@ internal class JdkEdDSA(private val state: JdkCryptographyState) : EdDSA {
 
             override fun decodeFromByteArrayBlocking(format: EdDSA.PublicKey.Format, bytes: ByteArray): EdDSA.PublicKey = when (format) {
                 EdDSA.PublicKey.Format.JWK -> error("JWK is not supported")
-                EdDSA.PublicKey.Format.RAW -> TODO("RAW encoding is not supported yet")
+                EdDSA.PublicKey.Format.RAW -> decodeFromDer(
+                    wrapSubjectPublicKeyInfo(UnknownKeyAlgorithmIdentifier(oid(curve)), bytes)
+                )
                 EdDSA.PublicKey.Format.DER -> decodeFromDer(bytes)
                 EdDSA.PublicKey.Format.PEM -> decodeFromDer(unwrapPem(PemLabel.PublicKey, bytes))
             }
@@ -33,7 +41,13 @@ internal class JdkEdDSA(private val state: JdkCryptographyState) : EdDSA {
 
             override fun decodeFromByteArrayBlocking(format: EdDSA.PrivateKey.Format, bytes: ByteArray): EdDSA.PrivateKey = when (format) {
                 EdDSA.PrivateKey.Format.JWK -> error("JWK is not supported")
-                EdDSA.PrivateKey.Format.RAW -> TODO("RAW encoding is not supported yet")
+                EdDSA.PrivateKey.Format.RAW -> decodeFromDer(
+                    wrapPrivateKeyInfo(
+                        0,
+                        UnknownKeyAlgorithmIdentifier(oid(curve)),
+                        bytes
+                    )
+                )
                 EdDSA.PrivateKey.Format.DER -> decodeFromDer(bytes)
                 EdDSA.PrivateKey.Format.PEM -> decodeFromDer(unwrapPem(PemLabel.PrivateKey, bytes))
             }
@@ -65,7 +79,13 @@ internal class JdkEdDSA(private val state: JdkCryptographyState) : EdDSA {
 
         override fun encodeToByteArrayBlocking(format: EdDSA.PublicKey.Format): ByteArray = when (format) {
             EdDSA.PublicKey.Format.JWK -> error("JWK is not supported")
-            EdDSA.PublicKey.Format.RAW -> TODO("RAW encoding is not supported yet")
+            EdDSA.PublicKey.Format.RAW -> {
+                val der = encodeToDer()
+                // unwrap SPKI to raw for known OIDs
+                try { unwrapSubjectPublicKeyInfo(ObjectIdentifier("1.3.101.112"), der) } catch (_: Throwable) {
+                    unwrapSubjectPublicKeyInfo(ObjectIdentifier("1.3.101.113"), der)
+                }
+            }
             EdDSA.PublicKey.Format.DER -> encodeToDer()
             EdDSA.PublicKey.Format.PEM -> wrapPem(PemLabel.PublicKey, encodeToDer())
         }
@@ -81,7 +101,13 @@ internal class JdkEdDSA(private val state: JdkCryptographyState) : EdDSA {
 
         override fun encodeToByteArrayBlocking(format: EdDSA.PrivateKey.Format): ByteArray = when (format) {
             EdDSA.PrivateKey.Format.JWK -> error("JWK is not supported")
-            EdDSA.PrivateKey.Format.RAW -> TODO("RAW encoding is not supported yet")
+            EdDSA.PrivateKey.Format.RAW -> {
+                val der = encodeToDer()
+                // unwrap PKCS#8 to raw for known OIDs
+                try { unwrapPrivateKeyInfo(ObjectIdentifier("1.3.101.112"), der) } catch (_: Throwable) {
+                    unwrapPrivateKeyInfo(ObjectIdentifier("1.3.101.113"), der)
+                }
+            }
             EdDSA.PrivateKey.Format.DER -> encodeToDer()
             EdDSA.PrivateKey.Format.PEM -> wrapPem(PemLabel.PrivateKey, encodeToDer())
         }

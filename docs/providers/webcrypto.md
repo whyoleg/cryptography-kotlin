@@ -9,9 +9,7 @@ For supported targets and algorithms, please consult [Supported primitives secti
 * only `suspend` functions are supported, because `WebCrypto` API is async by default
 * AES.* (browser only): may not support `192 bit` keys
 * AES.CBC: only `padding=true` is supported
-* EdDSA/XDH availability depends on the engine:
-  - Node.js, Firefox, Safari: supported (Ed25519/Ed448, X25519/X448)
-  - Chromium-based (Chrome/Edge/Opera): requires enabling experimental web platform features; otherwise not exposed by the provider
+* EdDSA/XDH: These algorithms were added later to WebCrypto and might not be available in all engines/browsers yet. If unsupported, operations will fail at runtime with an error from the underlying engine.
 
 ## Example
 
@@ -21,13 +19,6 @@ val provider = CryptographyProvider.WebCrypto // or CryptographyProvider.Default
 
 // get some algorithm
 provider.get(SHA512)
-```
-
-To opt-in to EdDSA/XDH on Chromium-based engines (with experimental web platform features enabled),
-explicitly enable experimental Edwards algorithms:
-
-```kotlin
-val provider = CryptographyProvider.WebCrypto(enableExperimentalEdwards = true)
 ```
 
 ## Using in your projects

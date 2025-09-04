@@ -30,7 +30,6 @@ internal expect val Algorithm.ecKeyAlgorithmNamedCurve: String
 
 internal expect fun EcdsaSignatureAlgorithm(hash: String): Algorithm
 
-internal expect fun EcdhKeyDeriveAlgorithm(publicKey: CryptoKey): Algorithm
 internal expect fun KeyDeriveAlgorithm(name: String, publicKey: CryptoKey): Algorithm
 
 internal expect fun Pbkdf2DeriveAlgorithm(hash: String, iterations: Int, salt: ByteArray): Algorithm

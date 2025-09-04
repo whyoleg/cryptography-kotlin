@@ -48,9 +48,6 @@ private fun ecKeyAlgorithmNamedCurve(algorithm: Algorithm): String = js("algorit
 internal actual fun EcdsaSignatureAlgorithm(hash: String): Algorithm =
     js("{ name: 'ECDSA', hash: hash }").unsafeCast<Algorithm>()
 
-internal actual fun EcdhKeyDeriveAlgorithm(publicKey: CryptoKey): Algorithm =
-    js("{ name: 'ECDH', public: publicKey }").unsafeCast<Algorithm>()
-
 internal actual fun KeyDeriveAlgorithm(name: String, publicKey: CryptoKey): Algorithm =
     js("{ name: name, public: publicKey }").unsafeCast<Algorithm>()
 

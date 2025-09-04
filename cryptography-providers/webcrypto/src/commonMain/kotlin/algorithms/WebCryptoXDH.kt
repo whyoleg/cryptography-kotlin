@@ -113,11 +113,10 @@ private object XdhPublicKeyProcessor : WebCryptoKeyProcessor<XDH.PublicKey.Forma
 
 private object XdhPrivateKeyProcessor : WebCryptoKeyProcessor<XDH.PrivateKey.Format>() {
     override fun stringFormat(format: XDH.PrivateKey.Format): String = when (format) {
-        XDH.PrivateKey.Format.JWK,
-        XDH.PrivateKey.Format.RAW,
-        XDH.PrivateKey.Format.DER,
-        XDH.PrivateKey.Format.PEM,
-                                 -> "pkcs8"
+        XDH.PrivateKey.Format.JWK -> "jwk"
+        XDH.PrivateKey.Format.RAW -> "raw"
+        XDH.PrivateKey.Format.DER -> "pkcs8"
+        XDH.PrivateKey.Format.PEM -> "pkcs8"
     }
 
     override fun beforeDecoding(algorithm: Algorithm, format: XDH.PrivateKey.Format, key: ByteArray): ByteArray = when (format) {

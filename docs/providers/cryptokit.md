@@ -8,7 +8,7 @@ For supported targets and algorithms, please consult [Supported primitives secti
 
 * KeyFormat: doesn't support `JWK` key format yet
 * AES.GCM supports only a default tag size of 96 bits
-* EdDSA/XDH: Ed25519 and X25519 are supported via RAW key formats. DER/PEM for these curves are not exposed in CryptoKit and are not supported here.
+* EdDSA/XDH: CryptoKit supports Ed25519 and X25519. DER/PEM and RAW key encodings are available via the provider APIs.
 
 ## Example
 

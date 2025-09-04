@@ -14,11 +14,16 @@ import dev.whyoleg.cryptography.providers.openssl3.materials.*
 import kotlinx.cinterop.*
 import platform.posix.*
 import kotlin.experimental.*
+import dev.whyoleg.cryptography.providers.openssl3.operations.*
 
 internal object Openssl3XDH : XDH {
     private fun algorithmName(curve: XDH.Curve): String = when (curve) {
         XDH.Curve.X25519 -> "X25519"
         XDH.Curve.X448   -> "X448"
+    }
+    private fun oid(curve: XDH.Curve): String = when (curve) {
+        XDH.Curve.X25519 -> "1.3.101.110"
+        XDH.Curve.X448   -> "1.3.101.111"
     }
 
     override fun publicKeyDecoder(curve: XDH.Curve): KeyDecoder<XDH.PublicKey.Format, XDH.PublicKey> =
@@ -27,10 +32,21 @@ internal object Openssl3XDH : XDH {
                 XDH.PublicKey.Format.DER -> "DER"
                 XDH.PublicKey.Format.PEM -> "PEM"
                 XDH.PublicKey.Format.JWK,
-                XDH.PublicKey.Format.RAW -> error("$format format is not supported")
+                XDH.PublicKey.Format.RAW -> error("should not be called: handled explicitly in decodeFromBlocking")
             }
 
-            override fun wrapKey(key: CPointer<EVP_PKEY>): XDH.PublicKey = XdhPublicKey(key)
+            override fun decodeFromByteArrayBlocking(format: XDH.PublicKey.Format, bytes: ByteArray): XDH.PublicKey = when (format) {
+                XDH.PublicKey.Format.RAW -> super.decodeFromByteArrayBlocking(
+                    XDH.PublicKey.Format.DER,
+                    wrapSubjectPublicKeyInfo(
+                        UnknownKeyAlgorithmIdentifier(ObjectIdentifier(oid(curve))),
+                        bytes
+                    )
+                )
+                else -> super.decodeFromByteArrayBlocking(format, bytes)
+            }
+
+            override fun wrapKey(key: CPointer<EVP_PKEY>): XDH.PublicKey = XdhPublicKey(key, curve)
         }
 
     override fun privateKeyDecoder(curve: XDH.Curve): KeyDecoder<XDH.PrivateKey.Format, XDH.PrivateKey> =
@@ -39,18 +55,30 @@ internal object Openssl3XDH : XDH {
                 XDH.PrivateKey.Format.DER -> "DER"
                 XDH.PrivateKey.Format.PEM -> "PEM"
                 XDH.PrivateKey.Format.JWK,
-                XDH.PrivateKey.Format.RAW -> error("$format format is not supported")
+                XDH.PrivateKey.Format.RAW -> error("should not be called: handled explicitly in decodeFromBlocking")
             }
 
-            override fun wrapKey(key: CPointer<EVP_PKEY>): XDH.PrivateKey = XdhPrivateKey(key)
+            override fun decodeFromByteArrayBlocking(format: XDH.PrivateKey.Format, bytes: ByteArray): XDH.PrivateKey = when (format) {
+                XDH.PrivateKey.Format.RAW -> super.decodeFromByteArrayBlocking(
+                    XDH.PrivateKey.Format.DER,
+                    wrapPrivateKeyInfo(
+                        0,
+                        UnknownKeyAlgorithmIdentifier(ObjectIdentifier(oid(curve))),
+                        bytes
+                    )
+                )
+                else -> super.decodeFromByteArrayBlocking(format, bytes)
+            }
+
+            override fun wrapKey(key: CPointer<EVP_PKEY>): XDH.PrivateKey = XdhPrivateKey(key, curve)
         }
 
     override fun keyPairGenerator(curve: XDH.Curve): KeyGenerator<XDH.KeyPair> =
         object : Openssl3KeyPairGenerator<XDH.KeyPair>(algorithmName(curve)) {
             override fun MemScope.createParams(): CValuesRef<OSSL_PARAM>? = null
             override fun wrapKeyPair(keyPair: CPointer<EVP_PKEY>): XDH.KeyPair = XdhKeyPair(
-                publicKey = XdhPublicKey(keyPair),
-                privateKey = XdhPrivateKey(keyPair)
+                publicKey = XdhPublicKey(keyPair, curve),
+                privateKey = XdhPrivateKey(keyPair, curve)
             )
         }
 
@@ -61,12 +89,21 @@ internal object Openssl3XDH : XDH {
 
     private class XdhPublicKey(
         key: CPointer<EVP_PKEY>,
+        private val curve: XDH.Curve,
     ) : XDH.PublicKey, Openssl3PublicKeyEncodable<XDH.PublicKey.Format>(key), SharedSecretGenerator<XDH.PrivateKey> {
         override fun outputType(format: XDH.PublicKey.Format): String = when (format) {
             XDH.PublicKey.Format.DER -> "DER"
             XDH.PublicKey.Format.PEM -> "PEM"
             XDH.PublicKey.Format.JWK,
-            XDH.PublicKey.Format.RAW -> error("$format format is not supported")
+            XDH.PublicKey.Format.RAW -> error("should not be called: handled explicitly in encodeToBlocking")
+        }
+
+        override fun encodeToByteArrayBlocking(format: XDH.PublicKey.Format): ByteArray = when (format) {
+            XDH.PublicKey.Format.RAW -> unwrapSubjectPublicKeyInfo(
+                ObjectIdentifier(oid(curve)),
+                super.encodeToByteArrayBlocking(XDH.PublicKey.Format.DER)
+            )
+            else -> super.encodeToByteArrayBlocking(format)
         }
 
         override fun sharedSecretGenerator(): SharedSecretGenerator<XDH.PrivateKey> = this
@@ -78,12 +115,21 @@ internal object Openssl3XDH : XDH {
 
     private class XdhPrivateKey(
         key: CPointer<EVP_PKEY>,
+        private val curve: XDH.Curve,
     ) : XDH.PrivateKey, Openssl3PrivateKeyEncodable<XDH.PrivateKey.Format>(key), SharedSecretGenerator<XDH.PublicKey> {
         override fun outputType(format: XDH.PrivateKey.Format): String = when (format) {
             XDH.PrivateKey.Format.DER -> "DER"
             XDH.PrivateKey.Format.PEM -> "PEM"
             XDH.PrivateKey.Format.JWK,
-            XDH.PrivateKey.Format.RAW -> error("$format format is not supported")
+            XDH.PrivateKey.Format.RAW -> error("should not be called: handled explicitly in encodeToBlocking")
+        }
+
+        override fun encodeToByteArrayBlocking(format: XDH.PrivateKey.Format): ByteArray = when (format) {
+            XDH.PrivateKey.Format.RAW -> unwrapPrivateKeyInfo(
+                ObjectIdentifier(oid(curve)),
+                super.encodeToByteArrayBlocking(XDH.PrivateKey.Format.DER)
+            )
+            else -> super.encodeToByteArrayBlocking(format)
         }
 
         override fun sharedSecretGenerator(): SharedSecretGenerator<XDH.PublicKey> = this
@@ -94,21 +140,4 @@ internal object Openssl3XDH : XDH {
     }
 }
 
-@OptIn(UnsafeNumber::class)
-private fun deriveSharedSecret(
-    publicKey: CPointer<EVP_PKEY>,
-    privateKey: CPointer<EVP_PKEY>,
-): ByteArray = memScoped {
-    val context = checkError(EVP_PKEY_CTX_new_from_pkey(null, privateKey, null))
-    try {
-        checkError(EVP_PKEY_derive_init(context))
-        checkError(EVP_PKEY_derive_set_peer(context, publicKey))
-        val secretSize = alloc<size_tVar>()
-        checkError(EVP_PKEY_derive(context, null, secretSize.ptr))
-        val secret = ByteArray(secretSize.value.toInt())
-        checkError(EVP_PKEY_derive(context, secret.refToU(0), secretSize.ptr))
-        secret
-    } finally {
-        EVP_PKEY_CTX_free(context)
-    }
-}
+// shared implementation moved to operations/KeyAgreement.kt

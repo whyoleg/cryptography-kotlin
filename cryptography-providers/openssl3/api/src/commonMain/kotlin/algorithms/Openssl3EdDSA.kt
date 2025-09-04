@@ -20,6 +20,10 @@ internal object Openssl3EdDSA : EdDSA {
         EdDSA.Curve.Ed25519 -> "ED25519"
         EdDSA.Curve.Ed448   -> "ED448"
     }
+    private fun oid(curve: EdDSA.Curve): String = when (curve) {
+        EdDSA.Curve.Ed25519 -> "1.3.101.112"
+        EdDSA.Curve.Ed448   -> "1.3.101.113"
+    }
 
     override fun publicKeyDecoder(curve: EdDSA.Curve): KeyDecoder<EdDSA.PublicKey.Format, EdDSA.PublicKey> =
         object : Openssl3PublicKeyDecoder<EdDSA.PublicKey.Format, EdDSA.PublicKey>(algorithmName(curve)) {
@@ -27,10 +31,20 @@ internal object Openssl3EdDSA : EdDSA {
                 EdDSA.PublicKey.Format.DER -> "DER"
                 EdDSA.PublicKey.Format.PEM -> "PEM"
                 EdDSA.PublicKey.Format.JWK,
-                EdDSA.PublicKey.Format.RAW -> error("$format format is not supported")
+                EdDSA.PublicKey.Format.RAW -> error("should not be called: handled explicitly in decodeFromBlocking")
             }
 
-            override fun wrapKey(key: CPointer<EVP_PKEY>): EdDSA.PublicKey = EdDsaPublicKey(key)
+            override fun decodeFromByteArrayBlocking(format: EdDSA.PublicKey.Format, bytes: ByteArray): EdDSA.PublicKey = when (format) {
+                EdDSA.PublicKey.Format.RAW -> super.decodeFromByteArrayBlocking(EdDSA.PublicKey.Format.DER,
+                    wrapSubjectPublicKeyInfo(
+                        UnknownKeyAlgorithmIdentifier(ObjectIdentifier(oid(curve))),
+                        bytes
+                    )
+                )
+                else -> super.decodeFromByteArrayBlocking(format, bytes)
+            }
+
+            override fun wrapKey(key: CPointer<EVP_PKEY>): EdDSA.PublicKey = EdDsaPublicKey(key, curve)
         }
 
     override fun privateKeyDecoder(curve: EdDSA.Curve): KeyDecoder<EdDSA.PrivateKey.Format, EdDSA.PrivateKey> =
@@ -39,18 +53,29 @@ internal object Openssl3EdDSA : EdDSA {
                 EdDSA.PrivateKey.Format.DER -> "DER"
                 EdDSA.PrivateKey.Format.PEM -> "PEM"
                 EdDSA.PrivateKey.Format.JWK,
-                EdDSA.PrivateKey.Format.RAW -> error("$format format is not supported")
+                EdDSA.PrivateKey.Format.RAW -> error("should not be called: handled explicitly in decodeFromBlocking")
             }
 
-            override fun wrapKey(key: CPointer<EVP_PKEY>): EdDSA.PrivateKey = EdDsaPrivateKey(key)
+            override fun decodeFromByteArrayBlocking(format: EdDSA.PrivateKey.Format, bytes: ByteArray): EdDSA.PrivateKey = when (format) {
+                EdDSA.PrivateKey.Format.RAW -> super.decodeFromByteArrayBlocking(EdDSA.PrivateKey.Format.DER,
+                    wrapPrivateKeyInfo(
+                        0,
+                        UnknownKeyAlgorithmIdentifier(ObjectIdentifier(oid(curve))),
+                        bytes
+                    )
+                )
+                else -> super.decodeFromByteArrayBlocking(format, bytes)
+            }
+
+            override fun wrapKey(key: CPointer<EVP_PKEY>): EdDSA.PrivateKey = EdDsaPrivateKey(key, curve)
         }
 
     override fun keyPairGenerator(curve: EdDSA.Curve): KeyGenerator<EdDSA.KeyPair> =
         object : Openssl3KeyPairGenerator<EdDSA.KeyPair>(algorithmName(curve)) {
             override fun MemScope.createParams(): CValuesRef<OSSL_PARAM>? = null
             override fun wrapKeyPair(keyPair: CPointer<EVP_PKEY>): EdDSA.KeyPair = EdDsaKeyPair(
-                publicKey = EdDsaPublicKey(keyPair),
-                privateKey = EdDsaPrivateKey(keyPair)
+                publicKey = EdDsaPublicKey(keyPair, curve),
+                privateKey = EdDsaPrivateKey(keyPair, curve)
             )
         }
 
@@ -61,12 +86,21 @@ internal object Openssl3EdDSA : EdDSA {
 
     private class EdDsaPublicKey(
         key: CPointer<EVP_PKEY>,
+        private val curve: EdDSA.Curve,
     ) : EdDSA.PublicKey, Openssl3PublicKeyEncodable<EdDSA.PublicKey.Format>(key) {
         override fun outputType(format: EdDSA.PublicKey.Format): String = when (format) {
             EdDSA.PublicKey.Format.DER -> "DER"
             EdDSA.PublicKey.Format.PEM -> "PEM"
             EdDSA.PublicKey.Format.JWK,
-            EdDSA.PublicKey.Format.RAW -> error("$format format is not supported")
+            EdDSA.PublicKey.Format.RAW -> error("should not be called: handled explicitly in encodeToBlocking")
+        }
+
+        override fun encodeToByteArrayBlocking(format: EdDSA.PublicKey.Format): ByteArray = when (format) {
+            EdDSA.PublicKey.Format.RAW -> unwrapSubjectPublicKeyInfo(
+                ObjectIdentifier(oid(curve)),
+                super.encodeToByteArrayBlocking(EdDSA.PublicKey.Format.DER)
+            )
+            else -> super.encodeToByteArrayBlocking(format)
         }
 
         override fun signatureVerifier(): SignatureVerifier = EdDsaSignatureVerifier(key)
@@ -74,12 +108,21 @@ internal object Openssl3EdDSA : EdDSA {
 
     private class EdDsaPrivateKey(
         key: CPointer<EVP_PKEY>,
+        private val curve: EdDSA.Curve,
     ) : EdDSA.PrivateKey, Openssl3PrivateKeyEncodable<EdDSA.PrivateKey.Format>(key) {
         override fun outputType(format: EdDSA.PrivateKey.Format): String = when (format) {
             EdDSA.PrivateKey.Format.DER -> "DER"
             EdDSA.PrivateKey.Format.PEM -> "PEM"
             EdDSA.PrivateKey.Format.JWK,
-            EdDSA.PrivateKey.Format.RAW -> error("$format format is not supported")
+            EdDSA.PrivateKey.Format.RAW -> error("should not be called: handled explicitly in encodeToBlocking")
+        }
+
+        override fun encodeToByteArrayBlocking(format: EdDSA.PrivateKey.Format): ByteArray = when (format) {
+            EdDSA.PrivateKey.Format.RAW -> unwrapPrivateKeyInfo(
+                ObjectIdentifier(oid(curve)),
+                super.encodeToByteArrayBlocking(EdDSA.PrivateKey.Format.DER)
+            )
+            else -> super.encodeToByteArrayBlocking(format)
         }
 
         override fun signatureGenerator(): SignatureGenerator = EdDsaSignatureGenerator(key)

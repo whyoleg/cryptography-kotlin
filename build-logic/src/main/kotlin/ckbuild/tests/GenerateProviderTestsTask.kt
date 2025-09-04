@@ -112,7 +112,9 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
 
             // Edwards-family
             "EdDsaTest",
+            "EdDsaCompatibilityTest",
             "XdhTest",
+            "XdhCompatibilityTest",
 
             "RsaOaepTest",
             "RsaOaepCompatibilityTest",
