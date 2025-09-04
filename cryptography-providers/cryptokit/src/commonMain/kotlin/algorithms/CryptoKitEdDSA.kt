@@ -179,4 +179,3 @@ private class EdVerifyFunction(
     override fun close() { closed = true; buffer.clear() }
 }
 
-// NSData helpers provided by cryptography-providers-base
