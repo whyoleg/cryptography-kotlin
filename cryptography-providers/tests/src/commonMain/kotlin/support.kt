@@ -156,9 +156,7 @@ fun ProviderTestScope.supports(algorithmId: CryptographyAlgorithmId<*>): Boolean
         RSA.OAEP if provider.isCryptoKit                       -> "CryptoKit RSA-OAEP"
         RSA.PKCS1 if provider.isCryptoKit                      -> "CryptoKit RSA-PKCS1"
         RSA.RAW  if provider.isCryptoKit                       -> "CryptoKit RSA-RAW"
-        // Browsers may not expose EdDSA/XDH via WebCrypto
-        EdDSA if provider.isWebCrypto && platform.isBrowser     -> "WebCrypto EdDSA not available in this engine"
-        XDH  if provider.isWebCrypto && platform.isBrowser      -> "WebCrypto X25519/X448 not available in this engine"
+        // No explicit WebCrypto skips: let engines handle availability
         // Some JDKs used in CI (jvm / jvm11) lack these algorithms in the default provider
         EdDSA if provider.isJdkDefault && platform.isJdk { major < 15 } -> "Default JDK may not support EdDSA before JDK 15"
         XDH  if provider.isJdkDefault && platform.isJdk { major < 11 } -> "Default JDK may not support XDH before JDK 11"
