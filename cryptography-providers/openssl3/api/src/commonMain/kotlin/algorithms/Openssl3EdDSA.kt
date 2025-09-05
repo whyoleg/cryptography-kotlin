@@ -15,6 +15,10 @@ import kotlinx.cinterop.*
 import platform.posix.*
 import kotlin.experimental.*
 import dev.whyoleg.cryptography.serialization.asn1.modules.*
+import dev.whyoleg.cryptography.serialization.asn1.ObjectIdentifier
+import dev.whyoleg.cryptography.providers.base.materials.*
+import dev.whyoleg.cryptography.providers.openssl3.operations.Openssl3DigestSignatureGenerator
+import dev.whyoleg.cryptography.providers.openssl3.operations.Openssl3DigestSignatureVerifier
 
 internal object Openssl3EdDSA : EdDSA {
     private fun algorithmName(curve: EdDSA.Curve): String = when (curve) {

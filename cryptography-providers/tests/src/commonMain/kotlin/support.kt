@@ -41,6 +41,11 @@ fun AlgorithmTestScope<*>.supportsKeyFormat(format: KeyFormat): Boolean = suppor
         // only WebCrypto supports JWK for now
         format.name == "JWK" && !provider.isWebCrypto
              -> "JWK key format"
+        // WebCrypto cannot export/import private keys in 'raw' format; requires PKCS#8
+        (provider.isWebCrypto && (
+            format == EdDSA.PrivateKey.Format.RAW ||
+            format == XDH.PrivateKey.Format.RAW
+        )) -> "RAW private key format"
         format == EC.PublicKey.Format.RAW.Compressed && provider.isApple
              -> "compressed key format"
         else -> null
@@ -146,6 +151,14 @@ fun ProviderTestScope.supports(algorithmId: CryptographyAlgorithmId<*>): Boolean
     when (algorithmId) {
         AES.CMAC if provider.isJdkDefault                      -> "Default JDK provider doesn't support AES-CMAC, only supported with BouncyCastle"
         RSA.PSS if provider.isJdkDefault && platform.isAndroid -> "JDK provider on Android doesn't support RSASSA-PSS"
+        // CryptoKit does not expose RSA primitives
+        RSA.PSS  if provider.isCryptoKit                       -> "CryptoKit RSA-PSS"
+        RSA.OAEP if provider.isCryptoKit                       -> "CryptoKit RSA-OAEP"
+        RSA.PKCS1 if provider.isCryptoKit                      -> "CryptoKit RSA-PKCS1"
+        RSA.RAW  if provider.isCryptoKit                       -> "CryptoKit RSA-RAW"
+        // Browsers may not expose EdDSA/XDH via WebCrypto
+        EdDSA if provider.isWebCrypto && platform.isBrowser     -> "WebCrypto EdDSA not available in this engine"
+        XDH  if provider.isWebCrypto && platform.isBrowser      -> "WebCrypto X25519/X448 not available in this engine"
         // Some JDKs used in CI (jvm / jvm11) lack these algorithms in the default provider
         EdDSA if provider.isJdkDefault && platform.isJdk { major < 15 } -> "Default JDK may not support EdDSA before JDK 15"
         XDH  if provider.isJdkDefault && platform.isJdk { major < 15 } -> "Default JDK may not support XDH before JDK 15"

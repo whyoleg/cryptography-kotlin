@@ -13,7 +13,11 @@ abstract class XdhTest(provider: CryptographyProvider) : AlgorithmTest<XDH>(XDH,
 
     @Test
     fun testDeriveSharedSecret() = testWithAlgorithm {
-        listOf(XDH.Curve.X25519, XDH.Curve.X448).forEach { curve ->
+        val curves = listOf(XDH.Curve.X25519, XDH.Curve.X448).filter { curve ->
+            // CryptoKit supports only X25519
+            !(context.provider.isCryptoKit && curve == XDH.Curve.X448)
+        }.ifEmpty { listOf(XDH.Curve.X25519) }
+        curves.forEach { curve ->
             val a = algorithm.keyPairGenerator(curve).generateKey()
             val b = algorithm.keyPairGenerator(curve).generateKey()
 
@@ -28,4 +32,3 @@ abstract class XdhTest(provider: CryptographyProvider) : AlgorithmTest<XDH>(XDH,
         }
     }
 }
-

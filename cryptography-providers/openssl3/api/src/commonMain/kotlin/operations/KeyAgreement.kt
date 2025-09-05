@@ -5,6 +5,7 @@
 package dev.whyoleg.cryptography.providers.openssl3.operations
 
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
+import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import kotlinx.cinterop.*
 import platform.posix.*
@@ -28,4 +29,3 @@ internal fun deriveSharedSecret(
         EVP_PKEY_CTX_free(context)
     }
 }
-

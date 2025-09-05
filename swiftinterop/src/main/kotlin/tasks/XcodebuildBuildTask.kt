@@ -45,13 +45,19 @@ abstract class XcodebuildBuildTask : DefaultTask() {
 
         exec.exec {
             it.workingDir(temporaryDir)
-            it.commandLine(
+            val developerDir = System.getenv("DEVELOPER_DIR") ?: ""
+            val forceNoCompat = listOf("SWIFT_RUNTIME_COMPATIBILITY_VERSION=none")
+            val base = mutableListOf(
                 "xcodebuild", "build",
                 "-scheme", swiftinteropModuleName.get(),
                 "-configuration", "Release",
                 "-derivedDataPath", outputDirectory.get().asFile.absolutePath,
                 "-destination", destination.get()
             )
+            // Prefer setting runtime compatibility to none for newer toolchains (Xcode 26+)
+            // We conservatively always append it; older toolchains ignore unknown setting.
+            base.addAll(forceNoCompat)
+            it.commandLine(base)
         }
     }
 }

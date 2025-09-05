@@ -75,8 +75,14 @@ abstract class EdDsaCompatibilityTest(
     }
 
     private fun ProviderTestScope.supportsAlgorithmOnCurve(curve: EdDSA.Curve): Boolean {
-        // no per-curve gating at the moment; provider-level SupportedAlgorithmsTest already checks availability
-        return true
+        return when {
+            // CryptoKit supports only Ed25519
+            context.provider.isCryptoKit && curve == EdDSA.Curve.Ed448 -> {
+                logger.print("SKIP: CryptoKit supports Ed25519 only")
+                false
+            }
+            else -> true
+        }
     }
 
     override suspend fun CompatibilityTestScope<EdDSA>.validate() {

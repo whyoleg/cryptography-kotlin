@@ -44,11 +44,12 @@ abstract class GenerateSwiftPackageDefinitionTask : DefaultTask() {
         outputDirectory.get().asFile.recreateDirectories()
 
         val swiftinteropModuleName = swiftinteropModuleName.get()
+        fun ver(v: String) = ".v$v"
         val platforms = listOfNotNull(
-            iosVersion.orNull?.let { ".iOS(\"$it\")" },
-            macosVersion.orNull?.let { ".macOS(\"$it\")" },
-            tvosVersion.orNull?.let { ".tvOS(\"$it\")" },
-            watchosVersion.orNull?.let { ".watchOS(\"$it\")" },
+            iosVersion.orNull?.let { ".iOS(${ver(it)})" },
+            macosVersion.orNull?.let { ".macOS(${ver(it)})" },
+            tvosVersion.orNull?.let { ".tvOS(${ver(it)})" },
+            watchosVersion.orNull?.let { ".watchOS(${ver(it)})" },
         ).joinToString(",")
 
         swiftPackageFile.get().asFile.writeText(
@@ -69,7 +70,11 @@ abstract class GenerateSwiftPackageDefinitionTask : DefaultTask() {
                 dependencies: [],
                 targets: [
                     .target(
-                        name: "$swiftinteropModuleName"
+                        name: "$swiftinteropModuleName",
+                        swiftSettings: [
+                            // Prefer OS runtime, avoid back-deployment compatibility libs on newer toolchains
+                            .unsafeFlags(["-runtime-compatibility-version", "none"]) 
+                        ]
                     )
                 ]
             )

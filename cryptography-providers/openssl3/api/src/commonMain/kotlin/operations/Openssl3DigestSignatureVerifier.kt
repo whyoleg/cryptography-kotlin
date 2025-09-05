@@ -136,5 +136,10 @@ internal abstract class Openssl3DigestSignatureVerifier(
             isClosed = false
             accumulator = EmptyByteArray
         }
+
+        override fun close() {
+            isClosed = true
+            accumulator = EmptyByteArray
+        }
     }
 }

@@ -16,6 +16,8 @@ import platform.posix.*
 import kotlin.experimental.*
 import dev.whyoleg.cryptography.providers.openssl3.operations.*
 import dev.whyoleg.cryptography.serialization.asn1.modules.*
+import dev.whyoleg.cryptography.serialization.asn1.ObjectIdentifier
+import dev.whyoleg.cryptography.providers.base.materials.*
 
 internal object Openssl3XDH : XDH {
     private fun algorithmName(curve: XDH.Curve): String = when (curve) {

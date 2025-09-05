@@ -15,7 +15,11 @@ abstract class EdDsaTest(provider: CryptographyProvider) : AlgorithmTest<EdDSA>(
 
     @Test
     fun testSignVerify() = testWithAlgorithm {
-        listOf(EdDSA.Curve.Ed25519, EdDSA.Curve.Ed448).forEach { curve ->
+        val curves = listOf(EdDSA.Curve.Ed25519, EdDSA.Curve.Ed448).filter { curve ->
+            // CryptoKit supports only Ed25519
+            !(context.provider.isCryptoKit && curve == EdDSA.Curve.Ed448)
+        }.ifEmpty { listOf(EdDSA.Curve.Ed25519) }
+        curves.forEach { curve ->
             val keyPair = algorithm.keyPairGenerator(curve).generateKey()
 
             val dataSets = listOf(
@@ -36,7 +40,10 @@ abstract class EdDsaTest(provider: CryptographyProvider) : AlgorithmTest<EdDSA>(
     fun testFunctions() = testWithAlgorithm {
         if (!supportsFunctions()) return@testWithAlgorithm
 
-        listOf(EdDSA.Curve.Ed25519, EdDSA.Curve.Ed448).forEach { curve ->
+        val curves = listOf(EdDSA.Curve.Ed25519, EdDSA.Curve.Ed448).filter { curve ->
+            !(context.provider.isCryptoKit && curve == EdDSA.Curve.Ed448)
+        }.ifEmpty { listOf(EdDSA.Curve.Ed25519) }
+        curves.forEach { curve ->
             val keyPair = algorithm.keyPairGenerator(curve).generateKey()
             repeat(5) {
                 val size = CryptographyRandom.nextInt(256, 4096)
@@ -46,4 +53,3 @@ abstract class EdDsaTest(provider: CryptographyProvider) : AlgorithmTest<EdDSA>(
         }
     }
 }
-

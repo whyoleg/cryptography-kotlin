@@ -26,7 +26,9 @@ internal object KeyAlgorithmIdentifierSerializer : AlgorithmIdentifierSerializer
         }
         ObjectIdentifier.EC  -> EcKeyAlgorithmIdentifier(decodeParameters(EcParameters.serializer()))
         else                 -> {
-            // TODO: somehow we should ignore parameters here
+            // For algorithms like Ed25519/Ed448/X25519/X448 (RFC 8410), parameters MUST be absent.
+            // Some encoders still emit NULL; consume it if present to keep the decoder position in sync.
+            decodeParameters<Nothing>(NothingSerializer())
             UnknownKeyAlgorithmIdentifier(algorithm)
         }
     }

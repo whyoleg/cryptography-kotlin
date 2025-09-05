@@ -44,6 +44,8 @@ abstract class XdhCompatibilityTest(
         val parametersId = api.sharedSecrets.saveParameters(TestParameters.Empty)
 
         listOf(XDH.Curve.X25519, XDH.Curve.X448).forEach { curve ->
+            // CryptoKit supports only X25519
+            if (context.provider.isCryptoKit && curve == XDH.Curve.X448) return@forEach
             val keyParametersId = api.keyPairs.saveParameters(KeyParameters(curve.name))
 
             val keyIterations = if (isStressTest) 5 else 2

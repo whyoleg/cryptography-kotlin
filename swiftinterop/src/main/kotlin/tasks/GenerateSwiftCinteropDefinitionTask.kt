@@ -75,7 +75,8 @@ abstract class GenerateSwiftCinteropDefinitionTask : DefaultTask() {
         libsDir: String,
         version: Provider<String>,
     ): String {
-        val linker = "-L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/$libsDir/"
+        val developerDir = System.getenv("DEVELOPER_DIR") ?: "/Applications/Xcode.app/Contents/Developer"
+        val linker = "-L$developerDir/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/$libsDir/"
         val v = version.orNull ?: return linker
         return "-platform_version $os ${v}.0 ${v}.0 $linker"
     }
