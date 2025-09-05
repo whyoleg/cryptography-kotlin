@@ -11,6 +11,7 @@ import dev.whyoleg.cryptography.providers.cryptokit.internal.*
 import dev.whyoleg.cryptography.providers.cryptokit.internal.swiftinterop.*
 import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.base.materials.*
+import dev.whyoleg.cryptography.providers.base.operations.*
 import dev.whyoleg.cryptography.serialization.asn1.*
 import dev.whyoleg.cryptography.serialization.asn1.modules.*
 import dev.whyoleg.cryptography.serialization.pem.*
@@ -95,7 +96,14 @@ internal object CryptoKitEdDSA : EdDSA {
         }
 
         override fun signatureVerifier(): SignatureVerifier = object : SignatureVerifier {
-            override fun createVerifyFunction(): VerifyFunction = EdVerifyFunction(key)
+            override fun createVerifyFunction(): VerifyFunction =
+                AccumulatingVerifyFunction { data, signature, startIndex, endIndex ->
+                    val sig = signature.copyOfRange(startIndex, endIndex)
+                    val ok = data.useNSData { dataNs -> sig.useNSData { sigNs ->
+                        key.verifyWithSignature(sigNs, message = dataNs)
+                    } } as Boolean
+                    ok
+                }
         }
     }
 
@@ -121,60 +129,12 @@ internal object CryptoKitEdDSA : EdDSA {
         }
 
         override fun signatureGenerator(): SignatureGenerator = object : SignatureGenerator {
-            override fun createSignFunction(): SignFunction = EdSignFunction(key)
+            override fun createSignFunction(): SignFunction =
+                AccumulatingSignFunction { data ->
+                    swiftTry { error -> data.useNSData { key.signWithMessage(it, error) } }.toByteArray()
+                }
             override fun generateSignatureBlocking(data: ByteArray): ByteArray =
                 swiftTry { error -> data.useNSData { key.signWithMessage(it, error) } }.toByteArray()
         }
     }
-}
-
-private class EdSignFunction(
-    private val key: SwiftEdDsaPrivateKey,
-) : SignFunction {
-    private var closed = false
-    private val buffer = ArrayList<ByteArray>(4)
-    override fun update(source: ByteArray, startIndex: Int, endIndex: Int) {
-        check(!closed) { "Already closed" }
-        buffer += source.copyOfRange(startIndex, endIndex)
-    }
-    override fun signIntoByteArray(destination: ByteArray, destinationOffset: Int): Int {
-        val sig = signToByteArray()
-        sig.copyInto(destination, destinationOffset)
-        return sig.size
-    }
-    override fun signToByteArray(): ByteArray {
-        check(!closed) { "Already closed" }
-        val data = buffer.fold(ByteArray(0)) { acc, arr -> acc + arr }
-        val out = swiftTry { error -> data.useNSData { key.signWithMessage(it, error) } }
-        reset()
-        return out.toByteArray()
-    }
-    override fun reset() { buffer.clear() }
-    override fun close() { closed = true; buffer.clear() }
-}
-
-private class EdVerifyFunction(
-    private val key: SwiftEdDsaPublicKey,
-) : VerifyFunction {
-    private var closed = false
-    private val buffer = ArrayList<ByteArray>(4)
-    override fun update(source: ByteArray, startIndex: Int, endIndex: Int) {
-        check(!closed) { "Already closed" }
-        buffer += source.copyOfRange(startIndex, endIndex)
-    }
-    override fun tryVerify(signature: ByteArray, startIndex: Int, endIndex: Int): Boolean {
-        check(!closed) { "Already closed" }
-        val data = buffer.fold(ByteArray(0)) { acc, arr -> acc + arr }
-        val sig = signature.copyOfRange(startIndex, endIndex)
-        val ok = data.useNSData { dataNs -> sig.useNSData { sigNs ->
-            key.verifyWithSignature(sigNs, message = dataNs)
-        } } as Boolean
-        reset()
-        return ok
-    }
-    override fun verify(signature: ByteArray, startIndex: Int, endIndex: Int) {
-        check(tryVerify(signature, startIndex, endIndex)) { "Invalid signature" }
-    }
-    override fun reset() { buffer.clear() }
-    override fun close() { closed = true; buffer.clear() }
 }
