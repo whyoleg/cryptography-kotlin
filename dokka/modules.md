@@ -48,7 +48,7 @@ Provides common algorithms:
 * asymmetric encryption and signature ([RSA][RSA] and [ECDSA][ECDSA])
 * MAC ([HMAC][HMAC])
 * Key derivation ([PBKDF2][PBKDF2] and [HKDF][HKDF])
-* Key agreement ([ECDH][ECDH])
+* Key agreement ([ECDH][ECDH] and [DH][DH])
 
 [SHA256]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-s-h-a256/index.html
 
@@ -63,6 +63,8 @@ Provides common algorithms:
 [ECDSA]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-e-c-d-s-a/index.html
 
 [ECDH]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-e-c-d-h/index.html
+
+[DH]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-d-h/index.html
 
 [PBKDF2]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-p-b-k-d-f2/index.html
 
