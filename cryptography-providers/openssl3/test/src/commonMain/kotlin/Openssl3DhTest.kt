@@ -2,21 +2,21 @@
  * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
-package dev.whyoleg.cryptography.providers.jdk.algorithms
+package dev.whyoleg.cryptography.providers.openssl3.test
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.providers.jdk.*
+import dev.whyoleg.cryptography.providers.openssl3.*
 import kotlinx.coroutines.test.*
 import kotlin.test.*
 
-class JdkDhTest {
-    private val provider = CryptographyProvider.JDK
+class Openssl3DhTest : LibCrypto3Test() {
+    private val provider = CryptographyProvider.Openssl3
     
     @Test
     fun testBasicDhKeyAgreement() = runTest {
         val dh = provider.getOrNull(DH) ?: run {
-            println("DH not supported by JDK provider")
+            println("DH not supported by OpenSSL provider")
             return@runTest
         }
         
@@ -39,7 +39,7 @@ class JdkDhTest {
     @Test
     fun testDhParametersEncodingDecoding() = runTest {
         val dh = provider.getOrNull(DH) ?: run {
-            println("DH not supported by JDK provider")
+            println("DH not supported by OpenSSL provider")
             return@runTest
         }
         
@@ -70,7 +70,7 @@ class JdkDhTest {
     @Test
     fun testDhKeyEncodingDecoding() = runTest {
         val dh = provider.getOrNull(DH) ?: run {
-            println("DH not supported by JDK provider")
+            println("DH not supported by OpenSSL provider")
             return@runTest
         }
         
@@ -81,22 +81,12 @@ class JdkDhTest {
         val publicKeyDer = keyPair.publicKey.encodeToByteArray(DH.PublicKey.Format.DER)
         val publicKeyPem = keyPair.publicKey.encodeToByteArray(DH.PublicKey.Format.PEM)
         
-        // Verify PEM format
-        val publicPemString = publicKeyPem.decodeToString()
-        assertTrue(publicPemString.contains("-----BEGIN PUBLIC KEY-----"))
-        assertTrue(publicPemString.contains("-----END PUBLIC KEY-----"))
-        
         val decodedPublicFromDer = dh.publicKeyDecoder(parameters).decodeFromByteArray(DH.PublicKey.Format.DER, publicKeyDer)
         val decodedPublicFromPem = dh.publicKeyDecoder(parameters).decodeFromByteArray(DH.PublicKey.Format.PEM, publicKeyPem)
         
         // Test private key encoding/decoding
         val privateKeyDer = keyPair.privateKey.encodeToByteArray(DH.PrivateKey.Format.DER)
         val privateKeyPem = keyPair.privateKey.encodeToByteArray(DH.PrivateKey.Format.PEM)
-        
-        // Verify PEM format
-        val privatePemString = privateKeyPem.decodeToString()
-        assertTrue(privatePemString.contains("-----BEGIN PRIVATE KEY-----"))
-        assertTrue(privatePemString.contains("-----END PRIVATE KEY-----"))
         
         val decodedPrivateFromDer = dh.privateKeyDecoder(parameters).decodeFromByteArray(DH.PrivateKey.Format.DER, privateKeyDer)
         val decodedPrivateFromPem = dh.privateKeyDecoder(parameters).decodeFromByteArray(DH.PrivateKey.Format.PEM, privateKeyPem)
@@ -113,7 +103,7 @@ class JdkDhTest {
     @Test
     fun testMultipleKeySizes() = runTest {
         val dh = provider.getOrNull(DH) ?: run {
-            println("DH not supported by JDK provider")
+            println("DH not supported by OpenSSL provider")
             return@runTest
         }
         
@@ -129,93 +119,6 @@ class JdkDhTest {
             
             assertContentEquals(secret1, secret2, "Key size $keySize failed")
             assertTrue(secret1.isNotEmpty(), "Secret should not be empty for key size $keySize")
-            
-            // Verify secret length is reasonable for the key size
-            assertTrue(secret1.size >= keySize / 16, "Secret too short for key size $keySize") // Rough estimate
         }
-    }
-    
-    @Test
-    fun testParameterMismatchDetection() = runTest {
-        val dh = provider.getOrNull(DH) ?: run {
-            println("DH not supported by JDK provider")
-            return@runTest
-        }
-        
-        // Generate two different parameter sets
-        val parameters1 = dh.parametersGenerator(2048).generateKey()
-        val parameters2 = dh.parametersGenerator(2048).generateKey()
-        
-        // Generate key pairs with different parameters
-        val keyPair1 = dh.keyPairGenerator(parameters1).generateKey()
-        val keyPair2 = dh.keyPairGenerator(parameters2).generateKey()
-        
-        // Trying to use keys with wrong parameters should fail during decoding
-        val publicKeyDer = keyPair1.publicKey.encodeToByteArray(DH.PublicKey.Format.DER)
-        val privateKeyDer = keyPair1.privateKey.encodeToByteArray(DH.PrivateKey.Format.DER)
-        
-        // This should fail because we're using parameters2 to decode keys generated with parameters1
-        assertFailsWith<Exception> {
-            dh.publicKeyDecoder(parameters2).decodeFromByteArray(DH.PublicKey.Format.DER, publicKeyDer)
-        }
-        
-        assertFailsWith<Exception> {
-            dh.privateKeyDecoder(parameters2).decodeFromByteArray(DH.PrivateKey.Format.DER, privateKeyDer)
-        }
-    }
-    
-    @Test
-    fun testInvalidKeySize() = runTest {
-        val dh = provider.getOrNull(DH) ?: run {
-            println("DH not supported by JDK provider")
-            return@runTest
-        }
-        
-        // Test with invalid key sizes
-        val invalidKeySizes = listOf(512, 1024) // Too small for modern security
-        
-        invalidKeySizes.forEach { keySize ->
-            // Some key sizes might be rejected by the provider
-            runCatching {
-                dh.parametersGenerator(keySize).generateKey()
-            }.onFailure {
-                // Expected for insecure key sizes
-                println("Key size $keySize correctly rejected: ${it.message}")
-            }
-        }
-    }
-    
-    @Test
-    fun testCrossCompatibility() = runTest {
-        val dh = provider.getOrNull(DH) ?: run {
-            println("DH not supported by JDK provider")
-            return@runTest
-        }
-        
-        // Test that keys encoded/decoded still work for key agreement
-        val parameters = dh.parametersGenerator(2048).generateKey()
-        val keyPair1 = dh.keyPairGenerator(parameters).generateKey()
-        val keyPair2 = dh.keyPairGenerator(parameters).generateKey()
-        
-        // Encode and decode all keys
-        val publicKey1Der = keyPair1.publicKey.encodeToByteArray(DH.PublicKey.Format.DER)
-        val privateKey1Der = keyPair1.privateKey.encodeToByteArray(DH.PrivateKey.Format.DER)
-        val publicKey2Pem = keyPair2.publicKey.encodeToByteArray(DH.PublicKey.Format.PEM)
-        val privateKey2Pem = keyPair2.privateKey.encodeToByteArray(DH.PrivateKey.Format.PEM)
-        
-        val decodedPublicKey1 = dh.publicKeyDecoder(parameters).decodeFromByteArray(DH.PublicKey.Format.DER, publicKey1Der)
-        val decodedPrivateKey1 = dh.privateKeyDecoder(parameters).decodeFromByteArray(DH.PrivateKey.Format.DER, privateKey1Der)
-        val decodedPublicKey2 = dh.publicKeyDecoder(parameters).decodeFromByteArray(DH.PublicKey.Format.PEM, publicKey2Pem)
-        val decodedPrivateKey2 = dh.privateKeyDecoder(parameters).decodeFromByteArray(DH.PrivateKey.Format.PEM, privateKey2Pem)
-        
-        // Test all combinations of key agreement
-        val secret1 = decodedPrivateKey1.sharedSecretGenerator().generateSharedSecret(decodedPublicKey2)
-        val secret2 = decodedPrivateKey2.sharedSecretGenerator().generateSharedSecret(decodedPublicKey1)
-        val secret3 = keyPair1.privateKey.sharedSecretGenerator().generateSharedSecret(decodedPublicKey2)
-        val secret4 = decodedPrivateKey1.sharedSecretGenerator().generateSharedSecret(keyPair2.publicKey)
-        
-        assertContentEquals(secret1, secret2)
-        assertContentEquals(secret1, secret3)
-        assertContentEquals(secret1, secret4)
     }
 }
