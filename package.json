@@ -1,0 +1,15 @@
+{
+  "name": "cryptography-kotlin",
+  "private": true,
+  "packageManager": "pnpm@10.15.1",
+  "devDependencies": {
+    "@web/test-runner": "^0.20.2",
+    "@web/test-runner-mocha": "^0.9.0",
+    "@web/test-runner-playwright": "^0.11.1",
+    "playwright": "^1.55.0"
+  },
+  "scripts": {
+    "wtr": "web-test-runner --config web-test-runner.config.mjs",
+    "browsers:install": "playwright install --with-deps chrome"
+  }
+}

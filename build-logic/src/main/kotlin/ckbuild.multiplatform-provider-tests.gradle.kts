@@ -42,9 +42,20 @@ registerTestAggregationTask(
 
 registerTestAggregationTask(
     name = "jsProviderTest",
-    taskDependencies = { tasks.withType<KotlinJsTest>().matching { it.compilation.platformType == KotlinPlatformType.js } },
+    taskDependencies = {
+        // Only Node-based JS tests here; browser tests are handled by :test
+        tasks.withType<KotlinJsTest>().matching {
+            it.compilation.platformType == KotlinPlatformType.js && it.name.contains("Node", ignoreCase = true)
+        }
+    },
     targetFilter = { it.platformType == KotlinPlatformType.js }
 )
+
+// Ensure provider JS browser tests can run via Web Test Runner when available
+tasks.matching { it.name == "jsProviderTest" }.configureEach {
+    // If this project defines :test (for JS browser targets), include it
+    dependsOn(tasks.matching { it.name == "test" })
+}
 
 registerTestAggregationTask(
     name = "jvmAllProviderTest",

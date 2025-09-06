@@ -27,9 +27,34 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-environment
+      - name: Setup Node with pnpm cache
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Install JS deps
+        run: pnpm install --prefer-offline --frozen-lockfile=false
 
-      - name: Run tests
-        if: ${{ matrix.target != 'connectedAndroid' }}
+      - name: Install Playwright (Chrome for Testing)
+        if: ${{ matrix.target == 'js' }}
+        run: pnpm exec playwright install --with-deps chrome
+
+      - name: Run tests (js: Node + browser)
+        if: ${{ matrix.target == 'js' }}
+        env:
+          WTR_CONCURRENCY: '2'
+        run: >
+          ./gradlew
+          jsProviderTest jsBrowserTest
+          --continue
+          -Pckbuild.providerTests.step=compatibility.generate
+          -Pckbuild.testtool.instanceId=${{ matrix.os }}-${{ matrix.target }}
+          -Pckbuild.wtrConcurrency=${{ env.WTR_CONCURRENCY }}
+
+      - name: Run tests (non-js)
+        if: ${{ matrix.target != 'connectedAndroid' && matrix.target != 'js' }}
         run: >
           ./gradlew
           ${{ matrix.target }}ProviderTest
@@ -74,6 +99,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-environment
+      - name: Setup Node with pnpm cache
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Install JS deps
+        run: pnpm install --prefer-offline --frozen-lockfile=false
 
       - name: Download testtool server-storage
         uses: actions/download-artifact@v4
@@ -85,8 +119,24 @@ jobs:
       - name: Delete downloaded testtool server-storage
         run: rm *.tar
 
-      - name: Run tests
-        if: ${{ matrix.target != 'connectedAndroid' }}
+      - name: Install Playwright (Chrome for Testing)
+        if: ${{ matrix.target == 'js' }}
+        run: pnpm exec playwright install --with-deps chrome
+
+      - name: Run tests (js: Node + browser)
+        if: ${{ matrix.target == 'js' }}
+        env:
+          WTR_CONCURRENCY: '2'
+        run: >
+          ./gradlew
+          jsProviderTest jsBrowserTest
+          --continue
+          -Pckbuild.providerTests.step=compatibility.validate
+          -Pckbuild.testtool.instanceId=${{ matrix.os }}-${{ matrix.target }}
+          -Pckbuild.wtrConcurrency=${{ env.WTR_CONCURRENCY }}
+
+      - name: Run tests (non-js)
+        if: ${{ matrix.target != 'connectedAndroid' && matrix.target != 'js' }}
         run: >
           ./gradlew
           ${{ matrix.target }}ProviderTest

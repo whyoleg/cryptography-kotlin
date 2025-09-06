@@ -59,6 +59,12 @@ projects("cryptography-kotlin") {
         }
         module("apple")
         module("webcrypto")
+        module("webcrypto-tests-core")
+        module("webcrypto-tests-aes")
+        module("webcrypto-tests-mac")
+        module("webcrypto-tests-ec")
+        module("webcrypto-tests-rsa")
+        module("webcrypto-tests-compat")
         folder("openssl3") {
             module("api")
             module("shared")

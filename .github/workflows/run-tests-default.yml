@@ -29,10 +29,30 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-environment
+      - name: Setup Node with pnpm cache
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Install JS deps
+        run: pnpm install --prefer-offline --frozen-lockfile=false
 
-      - name: Run tests
-        if: ${{ matrix.target != 'connectedAndroid' }}
+      - name: Install Playwright (Chrome for Testing)
+        if: ${{ matrix.target == 'js' }}
+        run: pnpm exec playwright install --with-deps chrome
+
+      - name: Run tests (non-JS or JS Node-only)
+        if: ${{ matrix.target != 'connectedAndroid' && matrix.target != 'js' }}
         run: ./gradlew ${{ matrix.target }}Test --continue
+
+      - name: Run JS tests (Node + WebCrypto browser)
+        if: ${{ matrix.target == 'js' }}
+        env:
+          # Tune WTR parallelism across test files
+          WTR_CONCURRENCY: '2'
+        run: ./gradlew jsAllTest --continue -Pckbuild.wtrConcurrency=${{ env.WTR_CONCURRENCY }}
 
       - name: Run tests (android)
         if: ${{ matrix.target == 'connectedAndroid' }}

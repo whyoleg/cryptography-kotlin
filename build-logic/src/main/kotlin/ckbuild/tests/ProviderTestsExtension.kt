@@ -13,6 +13,7 @@ import org.jetbrains.kotlin.gradle.dsl.*
 abstract class ProviderTestsExtension {
     abstract val packageName: Property<String>
     abstract val imports: ListProperty<String>
+    abstract val testClasses: ListProperty<String>
 
     // map key=`prefix for tests`, value=`provider initialization kotlin code`
     abstract val providerInitializers: MapProperty<String, String>
@@ -27,6 +28,61 @@ private fun Project.registerGenerationProviderTestsTask(extension: ProviderTests
     val generateProviderTestsTask = tasks.register<GenerateProviderTestsTask>("generateProviderTests") {
         packageName.set(extension.packageName)
         imports.set(extension.imports)
+        // default testClasses if not set
+        val defaults = listOf(
+            "DefaultProviderTest",
+            "SupportedAlgorithmsTest",
+
+            "Pbkdf2CompatibilityTest",
+
+            "HkdfCompatibilityTest",
+            "HkdfTestvectorsTest",
+
+            "DigestTest",
+            "Md5CompatibilityTest",
+            "Sha1CompatibilityTest",
+            "Sha224CompatibilityTest",
+            "Sha256CompatibilityTest",
+            "Sha384CompatibilityTest",
+            "Sha512CompatibilityTest",
+            "Sha3B224CompatibilityTest",
+            "Sha3B256CompatibilityTest",
+            "Sha3B384CompatibilityTest",
+            "Sha3B512CompatibilityTest",
+            "Ripemd160CompatibilityTest",
+
+            "AesCbcTest",
+            "AesCbcCompatibilityTest",
+            "AesCmacTest",
+            "AesCmacCompatibilityTest",
+            "AesCmacTestvectorsTest",
+            "AesCtrTest",
+            "AesCtrCompatibilityTest",
+            "AesEcbCompatibilityTest",
+            "AesGcmTest",
+            "AesGcmCompatibilityTest",
+
+            "HmacTest",
+            "HmacCompatibilityTest",
+            "HmacTestvectorsTest",
+
+            "EdDsaTest",
+            "XdhTest",
+
+            "EcdsaTest",
+            "EcdsaCompatibilityTest",
+            "EcdhCompatibilityTest",
+
+            "RsaOaepTest",
+            "RsaOaepCompatibilityTest",
+            "RsaPkcs1Test",
+            "RsaPkcs1CompatibilityTest",
+            "RsaPkcs1EsCompatibilityTest",
+            "RsaPssTest",
+            "RsaPssCompatibilityTest",
+            "RsaRawCompatibilityTest",
+        )
+        testClasses.set(extension.testClasses.orElse(defaults))
         providerInitializers.set(extension.providerInitializers)
         outputDirectory.set(layout.buildDirectory.dir("generated/providerTests"))
     }

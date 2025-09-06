@@ -33,4 +33,6 @@ kotlin {
 providerTests {
     packageName.set("dev.whyoleg.cryptography.providers.webcrypto")
     providerInitializers.put("WebCrypto", "CryptographyProvider.WebCrypto")
+    // Disable auto-generated test wrappers in this module; split test suites live in dedicated modules
+    testClasses.set(emptyList())
 }

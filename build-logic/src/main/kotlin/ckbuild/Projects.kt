@@ -37,6 +37,13 @@ object Projects {
         "cryptography-provider-jdk-android-tests" to setOf(),
         "cryptography-provider-openssl3-test" to setOf(),
         "cryptography-provider-tests" to setOf(),
+        // WebCrypto split browser test modules (not published)
+        "cryptography-provider-webcrypto-tests-core" to setOf(),
+        "cryptography-provider-webcrypto-tests-aes" to setOf(),
+        "cryptography-provider-webcrypto-tests-mac" to setOf(),
+        "cryptography-provider-webcrypto-tests-ec" to setOf(),
+        "cryptography-provider-webcrypto-tests-rsa" to setOf(),
+        "cryptography-provider-webcrypto-tests-compat" to setOf(),
     )
 
     val published: Set<String> = projectTags.filter { Tag.PUBLISHED in it.value }.keys

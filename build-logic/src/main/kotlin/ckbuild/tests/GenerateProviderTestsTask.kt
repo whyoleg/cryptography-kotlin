@@ -17,6 +17,9 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
     abstract val imports: ListProperty<String>
 
     @get:Input
+    abstract val testClasses: ListProperty<String>
+
+    @get:Input
     abstract val providerInitializers: MapProperty<String, String>
 
     @get:OutputDirectory
@@ -29,11 +32,13 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
         check(outputDirectory.deleteRecursively()) { "Failed to cleanup files" }
         check(outputDirectory.mkdirs()) { "Failed to create directories" }
 
+        val classes = testClasses.get()
         providerInitializers.get().forEach { (classifier, providerInitialization) ->
             outputDirectory.resolve("${classifier}_tests.kt").writeText(
                 testsFileContent(
                     packageName = packageName.get(),
                     imports = imports.get(),
+                    testClasses = classes,
                     providerClassifier = classifier,
                     providerInitialization = providerInitialization
                 )
@@ -44,6 +49,7 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
     private fun testsFileContent(
         packageName: String,
         imports: List<String>,
+        testClasses: List<String>,
         providerClassifier: String,
         providerInitialization: String,
     ): String = buildString {
@@ -67,57 +73,6 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
             "dev.whyoleg.cryptography.providers.tests.compatibility.*",
             "dev.whyoleg.cryptography.providers.tests.default.*",
             "dev.whyoleg.cryptography.providers.tests.testvectors.*",
-        )
-
-        private val testClasses = listOf(
-            "DefaultProviderTest",
-            "SupportedAlgorithmsTest",
-
-            "Pbkdf2CompatibilityTest",
-
-            "HkdfCompatibilityTest",
-            "HkdfTestvectorsTest",
-
-            "DigestTest",
-            "Md5CompatibilityTest",
-            "Sha1CompatibilityTest",
-            "Sha224CompatibilityTest",
-            "Sha256CompatibilityTest",
-            "Sha384CompatibilityTest",
-            "Sha512CompatibilityTest",
-            "Sha3B224CompatibilityTest",
-            "Sha3B256CompatibilityTest",
-            "Sha3B384CompatibilityTest",
-            "Sha3B512CompatibilityTest",
-            "Ripemd160CompatibilityTest",
-
-            "AesCbcTest",
-            "AesCbcCompatibilityTest",
-            "AesCmacTest",
-            "AesCmacCompatibilityTest",
-            "AesCmacTestvectorsTest",
-            "AesCtrTest",
-            "AesCtrCompatibilityTest",
-            "AesEcbCompatibilityTest",
-            "AesGcmTest",
-            "AesGcmCompatibilityTest",
-
-            "HmacTest",
-            "HmacCompatibilityTest",
-            "HmacTestvectorsTest",
-
-            "EcdsaTest",
-            "EcdsaCompatibilityTest",
-            "EcdhCompatibilityTest",
-
-            "RsaOaepTest",
-            "RsaOaepCompatibilityTest",
-            "RsaPkcs1Test",
-            "RsaPkcs1CompatibilityTest",
-            "RsaPkcs1EsCompatibilityTest",
-            "RsaPssTest",
-            "RsaPssCompatibilityTest",
-            "RsaRawCompatibilityTest",
         )
     }
 }

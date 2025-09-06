@@ -22,9 +22,10 @@ abstract class DigestTest(provider: CryptographyProvider) : ProviderTest(provide
 
             val hasher = algorithm.hasher()
             assertEquals(digestSize, hasher.hash(ByteArray(0)).size)
-            repeat(8) { n ->
+            repeat(if (dev.whyoleg.cryptography.providers.tests.TestTuning.fast) 3 else 8) { n ->
                 val maxSize = 10.0.pow(n).toInt()
-                ((1..5).map { CryptographyRandom.nextInt(maxSize) } + maxSize).forEach { size ->
+                val range = if (dev.whyoleg.cryptography.providers.tests.TestTuning.fast) (1..2) else (1..5)
+                (range.map { CryptographyRandom.nextInt(maxSize) } + maxSize).forEach { size ->
                     val data = ByteString(CryptographyRandom.nextBytes(size))
 
                     val digest = hasher.hash(data)
@@ -121,11 +122,11 @@ abstract class DigestTest(provider: CryptographyProvider) : ProviderTest(provide
         if (!supportsFunctions()) return@testWithAlgorithm
 
         val hasher = algorithm.hasher()
-        val bytes = ByteString(CryptographyRandom.nextBytes(10000))
+        val bytes = ByteString(CryptographyRandom.nextBytes(if (dev.whyoleg.cryptography.providers.tests.TestTuning.fast) 2000 else 10000))
 
         val digest = hasher.hash(bytes)
         hasher.createHashFunction().use { function ->
-            repeat(10) {
+            repeat(if (dev.whyoleg.cryptography.providers.tests.TestTuning.fast) 3 else 10) {
                 function.update(bytes, it * 1000, (it + 1) * 1000)
             }
             assertContentEquals(digest, function.hash())

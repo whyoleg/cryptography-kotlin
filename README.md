@@ -92,3 +92,30 @@ Additionally, it's possible to use [BOM][BOM] or [Gradle version catalog][Gradle
 [BOM]: https://whyoleg.github.io/cryptography-kotlin/bom/
 
 [Gradle version catalog]: https://whyoleg.github.io/cryptography-kotlin/gradle-version-catalog/
+
+## JS Tests (Web Test Runner + Playwright)
+
+- Install browsers once: `./gradlew installBrowsers` (or `npm run browsers:install`)
+- Run JS Node tests: `./gradlew jsNodeTest`
+- Run WebCrypto browser tests (all groups): `./gradlew jsBrowserTest`
+- Run both (Node + browser): `./gradlew jsAllTest`
+
+Per‑group browser tasks:
+- `./gradlew jsBrowserTestCore` (KDF + digests)
+- `./gradlew jsBrowserTestAes` (AES modes)
+- `./gradlew jsBrowserTestMac` (HMAC)
+- `./gradlew jsBrowserTestEc` (ECDSA/ECDH)
+- `./gradlew jsBrowserTestRsa` (RSA)
+- `./gradlew jsBrowserTestCompat` (compatibility suites)
+
+Filtering and flags:
+- Filter to suite/test (regex): `-Pckbuild.wtrGrep="..."`
+- Compatibility sub‑steps: `-Pckbuild.providerTests.step=compatibility.generate|compatibility.generateStress|compatibility.validate`
+- Browser logs: `-Pckbuild.wtrLogs=true` (local default: on)
+- Live progress (less buffered): `-Pckbuild.wtrLive=true` (local default: on)
+- Fast mode (fewer iterations/smaller sizes): `-Pckbuild.fast=true` (local default: on)
+- Concurrency across files: `-Pckbuild.wtrConcurrency=4` (local default: 4)
+
+Defaults by environment:
+- Local runs (no `CI`/`GITHUB_ACTIONS`): logs/live/fast are enabled and concurrency=4 unless you override.
+- CI runs: no local defaults are applied; set flags explicitly in workflows.

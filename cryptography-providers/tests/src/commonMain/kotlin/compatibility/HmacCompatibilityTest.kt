@@ -12,7 +12,7 @@ import dev.whyoleg.cryptography.random.*
 import kotlinx.io.bytestring.*
 import kotlinx.serialization.*
 
-private const val maxDataSize = 10000
+private val maxDataSize = if (dev.whyoleg.cryptography.providers.tests.TestTuning.fast) 1000 else 10000
 
 abstract class HmacCompatibilityTest(provider: CryptographyProvider) : CompatibilityTest<HMAC>(HMAC, provider) {
 
