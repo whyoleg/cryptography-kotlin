@@ -41,6 +41,11 @@ fun AlgorithmTestScope<*>.supportsKeyFormat(format: KeyFormat): Boolean = suppor
         // only WebCrypto supports JWK for now
         format.name == "JWK" && !provider.isWebCrypto
              -> "JWK key format"
+        // WebCrypto cannot export/import private keys in 'raw' format; requires PKCS#8
+        (provider.isWebCrypto && (
+            format == EdDSA.PrivateKey.Format.RAW ||
+            format == XDH.PrivateKey.Format.RAW
+        )) -> "RAW private key format"
         format == EC.PublicKey.Format.RAW.Compressed && provider.isApple
              -> "compressed key format"
         else -> null
@@ -96,9 +101,14 @@ fun AlgorithmTestScope<RSA.PKCS1>.supportsEncryption(): Boolean = supports {
 fun AlgorithmTestScope<out EC<*, *, *>>.supportsCurve(curve: EC.Curve): Boolean = supports {
     when {
         // JDK default, WebCrypto and Apple don't support secp256k1 or brainpool
-        curve in listOf(EC.Curve.secp256k1, EC.Curve.brainpoolP256r1, EC.Curve.brainpoolP384r1, EC.Curve.brainpoolP512r1) && (
-                provider.isJdkDefault || provider.isWebCrypto || provider.isApple || provider.isCryptoKit
-                ) -> "ECDSA ${curve.name}"
+        curve in listOf(
+            EC.Curve.secp256k1,
+            EC.Curve.brainpoolP256r1,
+            EC.Curve.brainpoolP384r1,
+            EC.Curve.brainpoolP512r1,
+        ) && (
+            provider.isJdkDefault || provider.isWebCrypto || provider.isApple || provider.isCryptoKit
+        ) -> "ECDSA ${curve.name}"
 
         else      -> null
     }
@@ -141,6 +151,15 @@ fun ProviderTestScope.supports(algorithmId: CryptographyAlgorithmId<*>): Boolean
     when (algorithmId) {
         AES.CMAC if provider.isJdkDefault                      -> "Default JDK provider doesn't support AES-CMAC, only supported with BouncyCastle"
         RSA.PSS if provider.isJdkDefault && platform.isAndroid -> "JDK provider on Android doesn't support RSASSA-PSS"
+        // CryptoKit does not expose RSA primitives
+        RSA.PSS  if provider.isCryptoKit                       -> "CryptoKit RSA-PSS"
+        RSA.OAEP if provider.isCryptoKit                       -> "CryptoKit RSA-OAEP"
+        RSA.PKCS1 if provider.isCryptoKit                      -> "CryptoKit RSA-PKCS1"
+        RSA.RAW  if provider.isCryptoKit                       -> "CryptoKit RSA-RAW"
+        // No explicit WebCrypto skips: let engines handle availability
+        // Some JDKs used in CI (jvm / jvm11) lack these algorithms in the default provider
+        EdDSA if provider.isJdkDefault && platform.isJdk { major < 15 } -> "Default JDK may not support EdDSA before JDK 15"
+        XDH  if provider.isJdkDefault && platform.isJdk { major < 11 } -> "Default JDK may not support XDH before JDK 11"
         else                                                   -> null
     }
 }

@@ -51,6 +51,10 @@ abstract class SupportedAlgorithmsTest(provider: CryptographyProvider) : Provide
         assertSupports(ECDSA)
         assertSupports(ECDH, !context.provider.isApple)
 
+        // Edwards-family
+        assertSupports(EdDSA, !context.provider.isApple)
+        assertSupports(XDH, !context.provider.isApple)
+
         assertSupports(RSA.PSS, !context.provider.isCryptoKit)
         assertSupports(RSA.OAEP, !context.provider.isCryptoKit)
         assertSupports(RSA.PKCS1, !context.provider.isCryptoKit)
