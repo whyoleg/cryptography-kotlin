@@ -47,6 +47,10 @@ internal class DerOutput(private val output: ByteArrayOutput) {
         }
     }
 
+    fun writeAnyRaw(bytes: ByteArray) {
+        // Write raw TLV bytes as-is
+        output.write(bytes)
+    }
 }
 
 private inline fun ByteArrayOutput.writeTagWithOverride(

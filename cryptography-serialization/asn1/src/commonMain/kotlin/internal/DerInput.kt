@@ -64,6 +64,23 @@ internal class DerInput(private val input: ByteArrayInput) {
         val length = readLength()
         readSlice(length)
     }
+
+    // Read arbitrary ASN.1 element (tag + length + content) as raw bytes.
+    // Currently used for capturing unknown AlgorithmIdentifier parameters.
+    fun readAnyElement(tagOverride: ContextSpecificTag?): ByteArray {
+        // No context-specific override use-case for ANY in current structures.
+        check(tagOverride == null) { "Context-specific override is not supported for ANY" }
+
+        val tag = input.read()
+        val length = input.readLength()
+        val content = input.read(length)
+
+        val out = ByteArrayOutput()
+        out.write(tag)
+        writeLength(out, length)
+        out.write(content)
+        return out.toByteArray()
+    }
 }
 
 private inline fun <T> ByteArrayInput.readTagWithOverride(
@@ -130,4 +147,15 @@ private fun ByteArrayInput.readOidElement(): Int {
     } while (b and 0b10000000 == 0b10000000)
     check(element >= 0) { "element overflow: $element" }
     return element
+}
+
+// local helper to encode DER length bytes
+private fun writeLength(out: ByteArrayOutput, length: Int) {
+    if (length < 128) {
+        out.write(length)
+        return
+    }
+    val numberOfLengthBytes = Int.SIZE_BYTES - length.countLeadingZeroBits() / 8
+    out.write(numberOfLengthBytes or 0b10000000)
+    repeat(numberOfLengthBytes) { out.write(length ushr 8 * (numberOfLengthBytes - 1 - it)) }
 }

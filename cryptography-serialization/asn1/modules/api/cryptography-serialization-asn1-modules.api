@@ -248,6 +248,5 @@ public final class dev/whyoleg/cryptography/serialization/asn1/modules/UnknownKe
 	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun getAlgorithm-STa95mE ()Ljava/lang/String;
 	public synthetic fun getParameters ()Ljava/lang/Object;
-	public fun getParameters ()Ljava/lang/Void;
+	public fun getParameters ()Ljava/lang/Object;
 }
-
