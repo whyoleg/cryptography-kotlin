@@ -60,6 +60,7 @@ projects("cryptography-kotlin") {
             module("bc") // preconfigured JDK with BC provider
         }
         module("apple")
+        module("apple-keychain")
         module("webcrypto")
         folder("openssl3") {
             module("api")

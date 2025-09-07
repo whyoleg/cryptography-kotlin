@@ -28,6 +28,7 @@ object Projects {
         "cryptography-provider-jdk" to setOf(Tag.PUBLISHED),
         "cryptography-provider-jdk-bc" to setOf(Tag.PUBLISHED),
         "cryptography-provider-apple" to setOf(Tag.PUBLISHED),
+        "cryptography-provider-apple-keychain" to setOf(Tag.PUBLISHED),
         "cryptography-provider-cryptokit" to setOf(Tag.PUBLISHED),
         "cryptography-provider-webcrypto" to setOf(Tag.PUBLISHED),
         "cryptography-provider-openssl3-api" to setOf(Tag.PUBLISHED),
