@@ -22,6 +22,7 @@ object Projects {
         "cryptography-serialization-asn1-modules" to setOf(Tag.PUBLISHED),
 
         "cryptography-core" to setOf(Tag.PUBLISHED),
+        "cryptography-storage" to setOf(Tag.PUBLISHED),
 
         "cryptography-provider-base" to setOf(Tag.PUBLISHED),
         "cryptography-provider-jdk" to setOf(Tag.PUBLISHED),
