@@ -7,9 +7,11 @@ package dev.whyoleg.cryptography.serialization.asn1
 import kotlinx.serialization.Serializable
 
 /**
- * Represents a raw ASN.1 element (tag + length + value) captured as-is.
- * Useful for preserving unknown parameters for round-trip encoding.
+ * Represents a raw ASN.1 element captured as-is.
+ *
+ * Notes:
+ * - [bytes] contains the full TLV (Tag + Length + Value), not only the value bytes.
+ * - Useful for preserving unknown parameters for exact round‑trip encoding.
  */
 @Serializable
 public class Asn1Any(public val bytes: ByteArray)
-
