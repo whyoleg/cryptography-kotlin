@@ -8,6 +8,18 @@
 - Unknown AlgorithmIdentifier parameters are preserved as raw ASN.1 for round-trip via new `Asn1Any` type.
 - Support SEQUENCE OF (list) encode/decode in DER codec.
 
+#### Breaking changes
+
+- `UnknownKeyAlgorithmIdentifier` now carries `parameters: Any?` (previously always `null`) and the constructor signature changed to
+  `UnknownKeyAlgorithmIdentifier(algorithm: ObjectIdentifier, parameters: Any? = null)`. This is an ABI change in
+  `cryptography-serialization-asn1-modules`. Source usage that previously constructed the class with a single
+  `algorithm` argument remains valid.
+
+#### Other improvements
+
+- AlgorithmIdentifier base deserializer now permits an ABSENT-parameters path (subclass constructs the value without consuming
+  a parameters element), improving compatibility with inputs that omit parameters.
+
 
 ## 0.5.0 – CryptoKit & optimal providers
 
