@@ -38,6 +38,8 @@ internal object Openssl3CryptographyProvider : CryptographyProvider() {
         AES.GCM -> Openssl3AesGcm
         ECDSA   -> Openssl3Ecdsa
         ECDH    -> Openssl3Ecdh
+        EdDSA   -> Openssl3EdDSA
+        XDH     -> Openssl3XDH
         RSA.PSS   -> Openssl3RsaPss
         RSA.PKCS1 -> Openssl3RsaPkcs1
         RSA.OAEP  -> Openssl3RsaOaep

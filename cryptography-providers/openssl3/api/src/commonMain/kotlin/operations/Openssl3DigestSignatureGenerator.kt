@@ -8,25 +8,57 @@ import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
+import dev.whyoleg.cryptography.providers.base.operations.*
 import kotlinx.cinterop.*
 import platform.posix.*
 import kotlin.experimental.*
 
 internal abstract class Openssl3DigestSignatureGenerator(
     private val privateKey: CPointer<EVP_PKEY>,
-    private val hashAlgorithm: String,
+    // when null, performs one-shot signing (e.g., EdDSA)
+    private val hashAlgorithm: String?,
 ) : SignatureGenerator {
     @OptIn(ExperimentalNativeApi::class)
     private val cleaner = privateKey.upRef().cleaner()
 
     protected abstract fun MemScope.createParams(): CValuesRef<OSSL_PARAM>?
 
-    override fun createSignFunction(): SignFunction {
-        return Openssl3DigestSignFunction(Resource(checkError(EVP_MD_CTX_new()), ::EVP_MD_CTX_free))
+    override fun createSignFunction(): SignFunction = when (hashAlgorithm) {
+        null -> AccumulatingSignFunction { data ->
+            memScoped {
+                val ctx = checkError(EVP_MD_CTX_new())
+                try {
+                    checkError(
+                        EVP_DigestSignInit_ex(
+                            ctx = ctx,
+                            pctx = null,
+                            mdname = null, // one-shot mode
+                            libctx = null,
+                            props = null,
+                            pkey = privateKey,
+                            params = createParams()
+                        )
+                    )
+                    val siglen = alloc<size_tVar>()
+                    data.usePinned { pin ->
+                        checkError(EVP_DigestSign(ctx, null, siglen.ptr, pin.safeAddressOfU(0), data.size.convert()))
+                        val out = ByteArray(siglen.value.convert())
+                        out.usePinned { outPin ->
+                            checkError(EVP_DigestSign(ctx, outPin.safeAddressOfU(0), siglen.ptr, pin.safeAddressOfU(0), data.size.convert()))
+                        }
+                        out.ensureSizeExactly(siglen.value.convert())
+                        out
+                    }
+                } finally {
+                    EVP_MD_CTX_free(ctx)
+                }
+            }
+        }
+        else -> StreamingSignFunction(Resource(checkError(EVP_MD_CTX_new()), ::EVP_MD_CTX_free))
     }
 
     // inner class to have a reference to class with cleaner
-    private inner class Openssl3DigestSignFunction(
+    private inner class StreamingSignFunction(
         private val context: Resource<CPointer<EVP_MD_CTX>>,
     ) : SignFunction, SafeCloseable(SafeCloseAction(context, AutoCloseable::close)) {
         init {
@@ -66,7 +98,7 @@ internal abstract class Openssl3DigestSignatureGenerator(
                 EVP_DigestSignInit_ex(
                     ctx = context,
                     pctx = null,
-                    mdname = hashAlgorithm,
+                    mdname = hashAlgorithm!!,
                     libctx = null,
                     props = null,
                     pkey = privateKey,
@@ -75,4 +107,6 @@ internal abstract class Openssl3DigestSignatureGenerator(
             )
         }
     }
+
+    // One-shot path now handled by AccumulatingSignFunction in createSignFunction
 }
