@@ -7,6 +7,7 @@ For supported targets and algorithms, please consult [Supported primitives secti
 ## Limitations
 
 * KeyFormat: doesn't support `JWK` key format yet
+* Algorithm availability: XDH is available since JDK 11; EdDSA generally since newer JDK versions (e.g., 15+)
 
 ## Example
 
