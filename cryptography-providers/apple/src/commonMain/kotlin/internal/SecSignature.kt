@@ -107,7 +107,7 @@ private class SecSignFunction(
     override fun signIntoByteArray(destination: ByteArray, destinationOffset: Int): Int {
         val signature = signToByteArray()
         checkBounds(destination.size, destinationOffset, destinationOffset + signature.size)
-        signature.copyInto(destination, destinationOffset, destinationOffset)
+        signature.copyInto(destination, destinationOffset, 0, signature.size)
         return signature.size
     }
 
