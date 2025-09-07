@@ -33,6 +33,15 @@ public fun unwrapSubjectPublicKeyInfo(algorithm: ObjectIdentifier, key: ByteArra
 }
 
 @CryptographyProviderApi
+public fun unwrapSubjectPublicKeyInfo(algorithms: Set<ObjectIdentifier>, key: ByteArray): ByteArray {
+    return Der.decodeFromByteArray(SubjectPublicKeyInfo.serializer(), key).also {
+        check(it.algorithm.algorithm in algorithms) {
+            "Expected one of algorithms '${algorithms.joinToString { a -> a.value }}', received: '${it.algorithm.algorithm}'"
+        }
+    }.subjectPublicKey.byteArray
+}
+
+@CryptographyProviderApi
 public fun wrapSubjectPublicKeyInfo(identifier: KeyAlgorithmIdentifier, key: ByteArray): ByteArray {
     return Der.encodeToByteArray(
         SubjectPublicKeyInfo.serializer(),
