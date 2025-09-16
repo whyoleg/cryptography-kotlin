@@ -79,6 +79,7 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
             "HkdfTestvectorsTest",
 
             "DigestTest",
+            "Md4CompatibilityTest",
             "Md5CompatibilityTest",
             "Sha1CompatibilityTest",
             "Sha224CompatibilityTest",

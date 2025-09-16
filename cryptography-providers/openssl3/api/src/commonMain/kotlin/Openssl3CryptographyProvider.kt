@@ -19,6 +19,7 @@ internal object Openssl3CryptographyProvider : CryptographyProvider() {
 
     @Suppress("UNCHECKED_CAST")
     override fun <A : CryptographyAlgorithm> getOrNull(identifier: CryptographyAlgorithmId<A>): A? = when (identifier) {
+        MD4 -> Openssl3Digest("MD4", MD4)
         MD5       -> Openssl3Digest("MD5", MD5)
         SHA1      -> Openssl3Digest("SHA1", SHA1)
         SHA224    -> Openssl3Digest("SHA224", SHA224)

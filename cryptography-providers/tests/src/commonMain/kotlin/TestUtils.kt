@@ -71,6 +71,7 @@ suspend inline fun <KF : KeyFormat, K : EncodableKey<KF>> KeyDecoder<KF, K>.deco
 }
 
 fun digest(name: String): CryptographyAlgorithmId<Digest> = when (name) {
+    MD4.name -> MD4
     MD5.name      -> MD5
     SHA1.name     -> SHA1
     SHA224.name   -> SHA224

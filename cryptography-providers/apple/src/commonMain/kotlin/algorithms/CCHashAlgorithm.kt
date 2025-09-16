@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.apple.algorithms
@@ -67,5 +67,14 @@ internal abstract class CCHashAlgorithm<CTX : CPointed> {
         override fun ccFinal(context: CPointer<CC_MD5_CTX>, digest: CValuesRef<UByteVar>): Int = CC_MD5_Final(digest, context)
         override fun ccUpdate(context: CPointer<CC_MD5_CTX>, data: CValuesRef<ByteVar>, dataLength: CC_LONG): Int =
             CC_MD5_Update(context, data, dataLength)
+    }
+
+    object MD4 : CCHashAlgorithm<CC_MD4_CTX>() {
+        override val digestSize: Int get() = CC_MD4_DIGEST_LENGTH
+        override fun alloc(): CPointer<CC_MD4_CTX> = nativeHeap.alloc<CC_MD4_CTX>().ptr
+        override fun ccInit(context: CPointer<CC_MD4_CTX>): Int = CC_MD4_Init(context)
+        override fun ccFinal(context: CPointer<CC_MD4_CTX>, digest: CValuesRef<UByteVar>): Int = CC_MD4_Final(digest, context)
+        override fun ccUpdate(context: CPointer<CC_MD4_CTX>, data: CValuesRef<ByteVar>, dataLength: CC_LONG): Int =
+            CC_MD4_Update(context, data, dataLength)
     }
 }

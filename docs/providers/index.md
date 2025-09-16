@@ -71,13 +71,14 @@ For additional limitation please consult provider specific documentation.
 
 | Operation                                   | Algorithm        | jdk | webcrypto | apple | cryptokit | openssl3 |
 |---------------------------------------------|------------------|:---:|:---------:|:-----:|-----------|:--------:|
-| **Digest**                                  | ⚠️ MD5           |  ✅  |     ❌     |   ✅   | ✅         |    ✅     |
-|                                             | ⚠️ SHA1          |  ✅  |     ✅     |   ✅   | ✅         |    ✅     |
-|                                             | SHA224           |  ✅  |     ❌     |   ✅   | ❌         |    ✅     |
+| **Digest**                                  | SHA224           |  ✅  |     ❌     |   ✅   | ❌         |    ✅     |
 |                                             | SHA256           |  ✅  |     ✅     |   ✅   | ✅         |    ✅     |
 |                                             | SHA384           |  ✅  |     ✅     |   ✅   | ✅         |    ✅     |
 |                                             | SHA512           |  ✅  |     ✅     |   ✅   | ✅         |    ✅     |
 |                                             | SHA3 family      |  ✅  |     ❌     |   ❌   | ❌         |    ✅     |
+|                                             | ⚠️ SHA1          |  ✅  |     ✅     |   ✅   | ✅         |    ✅     |
+|                                             | ⚠️ MD5           |  ✅  |     ❌     |   ✅   | ✅         |    ✅     |
+|                                             | ⚠️ MD4           |  ✅  |     ❌     |   ✅   | ❌         |    ✅     |
 |                                             | ⚠️ RIPEMD160     |  ✅  |     ❌     |   ❌   | ❌         |    ✅     |
 | **MAC**                                     | HMAC             |  ✅  |     ✅     |   ✅   | ✅         |    ✅     |
 |                                             | CMAC             |  ✅  |     ❌     |   ❌   | ❌         |    ✅     |

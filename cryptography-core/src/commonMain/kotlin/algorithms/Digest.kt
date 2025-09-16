@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 @file:OptIn(CryptographyProviderApi::class)
@@ -15,6 +15,9 @@ public interface Digest : CryptographyAlgorithm {
     override val id: CryptographyAlgorithmId<Digest>
     public fun hasher(): Hasher
 }
+
+@DelicateCryptographyApi
+public object MD4 : CryptographyAlgorithmId<Digest>("MD4")
 
 @DelicateCryptographyApi
 public object MD5 : CryptographyAlgorithmId<Digest>("MD5")

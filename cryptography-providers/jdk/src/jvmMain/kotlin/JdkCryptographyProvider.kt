@@ -109,6 +109,7 @@ internal class JdkCryptographyProvider(provider: Provider?) : CryptographyProvid
     @Suppress("UNCHECKED_CAST")
     override fun <A : CryptographyAlgorithm> getOrNull(identifier: CryptographyAlgorithmId<A>): A? = cache.getOrPut(identifier) {
         when (identifier) {
+            MD4 -> JdkDigest(state, "MD4", MD4)
             MD5       -> JdkDigest(state, "MD5", MD5)
             SHA1      -> JdkDigest(state, "SHA-1", SHA1)
             SHA224    -> JdkDigest(state, "SHA-224", SHA224)

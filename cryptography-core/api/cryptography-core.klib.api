@@ -826,6 +826,8 @@ open class dev.whyoleg.cryptography/CryptographyException : kotlin/RuntimeExcept
     constructor <init>(kotlin/Throwable?) // dev.whyoleg.cryptography/CryptographyException.<init>|<init>(kotlin.Throwable?){}[0]
 }
 
+final object dev.whyoleg.cryptography.algorithms/MD4 : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest> // dev.whyoleg.cryptography.algorithms/MD4|null[0]
+
 final object dev.whyoleg.cryptography.algorithms/MD5 : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest> // dev.whyoleg.cryptography.algorithms/MD5|null[0]
 
 final object dev.whyoleg.cryptography.algorithms/RIPEMD160 : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest> // dev.whyoleg.cryptography.algorithms/RIPEMD160|null[0]

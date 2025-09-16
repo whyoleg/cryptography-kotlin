@@ -455,6 +455,10 @@ public final class dev/whyoleg/cryptography/algorithms/HMAC$Key$Format : java/la
 	public static fun values ()[Ldev/whyoleg/cryptography/algorithms/HMAC$Key$Format;
 }
 
+public final class dev/whyoleg/cryptography/algorithms/MD4 : dev/whyoleg/cryptography/CryptographyAlgorithmId {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/MD4;
+}
+
 public final class dev/whyoleg/cryptography/algorithms/MD5 : dev/whyoleg/cryptography/CryptographyAlgorithmId {
 	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/MD5;
 }

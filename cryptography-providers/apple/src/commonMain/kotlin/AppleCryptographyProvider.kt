@@ -17,6 +17,7 @@ internal object AppleCryptographyProvider : CryptographyProvider() {
 
     @Suppress("UNCHECKED_CAST")
     override fun <A : CryptographyAlgorithm> getOrNull(identifier: CryptographyAlgorithmId<A>): A? = when (identifier) {
+        MD4 -> CCDigest(CCHashAlgorithm.MD4, MD4)
         MD5       -> CCDigest(CCHashAlgorithm.MD5, MD5)
         SHA1      -> CCDigest(CCHashAlgorithm.SHA1, SHA1)
         SHA224    -> CCDigest(CCHashAlgorithm.SHA224, SHA224)

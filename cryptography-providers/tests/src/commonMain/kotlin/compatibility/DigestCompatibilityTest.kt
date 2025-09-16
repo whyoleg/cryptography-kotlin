@@ -13,6 +13,7 @@ import kotlinx.io.bytestring.*
 
 private const val maxDataSize = 10000
 
+abstract class Md4CompatibilityTest(provider: CryptographyProvider) : DigestCompatibilityTest(MD4, provider)
 abstract class Md5CompatibilityTest(provider: CryptographyProvider) : DigestCompatibilityTest(MD5, provider)
 abstract class Sha1CompatibilityTest(provider: CryptographyProvider) : DigestCompatibilityTest(SHA1, provider)
 

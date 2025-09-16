@@ -33,6 +33,7 @@ abstract class SupportedAlgorithmsTest(provider: CryptographyProvider) : Provide
 
         assertSupports(HMAC)
 
+        assertSupports(MD4, !context.provider.isWebCrypto && !context.provider.isCryptoKit)
         assertSupports(MD5, !context.provider.isWebCrypto)
         assertSupports(SHA1)
         assertSupports(SHA224, !context.provider.isWebCrypto && !context.provider.isCryptoKit)

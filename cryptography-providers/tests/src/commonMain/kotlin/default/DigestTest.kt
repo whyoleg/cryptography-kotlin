@@ -69,6 +69,9 @@ abstract class DigestTest(provider: CryptographyProvider) : ProviderTest(provide
         }
 
     @Test
+    fun testMD4() = test(MD4, 16)
+
+    @Test
     fun testMD5() = test(MD5, 16)
 
     @Test
