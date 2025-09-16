@@ -25,6 +25,8 @@ abstract class SupportedAlgorithmsTest(provider: CryptographyProvider) : Provide
     @Test
     fun testSupported() = testWithProvider {
 
+        assertSupports(AES.OFB, !context.provider.isWebCrypto && !context.provider.isCryptoKit)
+        assertSupports(AES.CFB, !context.provider.isWebCrypto && !context.provider.isCryptoKit)
         assertSupports(AES.ECB, !context.provider.isWebCrypto && !context.provider.isCryptoKit)
         assertSupports(AES.CBC, !context.provider.isCryptoKit)
         assertSupports(AES.CMAC, !context.provider.isApple && !context.provider.isWebCrypto && !context.provider.isCryptoKit)

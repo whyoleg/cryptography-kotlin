@@ -125,6 +125,8 @@ internal class JdkCryptographyProvider(provider: Provider?) : CryptographyProvid
             AES.CBC   -> JdkAesCbc(state)
             AES.CMAC  -> JdkAesCmac(state)
             AES.CTR   -> JdkAesCtr(state)
+            AES.CFB -> JdkAesCfb(state)
+            AES.OFB -> JdkAesOfb(state)
             AES.ECB   -> JdkAesEcb(state)
             AES.GCM   -> JdkAesGcm(state)
             RSA.OAEP  -> JdkRsaOaep(state)

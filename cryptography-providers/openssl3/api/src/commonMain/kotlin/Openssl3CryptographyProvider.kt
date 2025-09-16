@@ -35,6 +35,8 @@ internal object Openssl3CryptographyProvider : CryptographyProvider() {
         AES.CBC -> Openssl3AesCbc
         AES.CMAC -> Openssl3AesCmac
         AES.CTR -> Openssl3AesCtr
+        AES.CFB -> Openssl3AesCfb
+        AES.OFB -> Openssl3AesOfb
         AES.ECB -> Openssl3AesEcb
         AES.GCM -> Openssl3AesGcm
         ECDSA   -> Openssl3Ecdsa

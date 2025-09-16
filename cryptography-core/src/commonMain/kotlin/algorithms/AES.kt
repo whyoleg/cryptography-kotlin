@@ -85,6 +85,32 @@ public interface AES<K : AES.Key> : CryptographyAlgorithm {
         }
     }
 
+    @DelicateCryptographyApi
+    @SubclassOptInRequired(CryptographyProviderApi::class)
+    public interface CFB : AES<CFB.Key> {
+        override val id: CryptographyAlgorithmId<CFB> get() = Companion
+
+        public companion object : CryptographyAlgorithmId<CFB>("AES-CFB")
+
+        @SubclassOptInRequired(CryptographyProviderApi::class)
+        public interface Key : AES.Key {
+            public fun cipher(): IvCipher
+        }
+    }
+
+    @DelicateCryptographyApi
+    @SubclassOptInRequired(CryptographyProviderApi::class)
+    public interface OFB : AES<OFB.Key> {
+        override val id: CryptographyAlgorithmId<OFB> get() = Companion
+
+        public companion object : CryptographyAlgorithmId<OFB>("AES-OFB")
+
+        @SubclassOptInRequired(CryptographyProviderApi::class)
+        public interface Key : AES.Key {
+            public fun cipher(): IvCipher
+        }
+    }
+
     @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface GCM : AES<GCM.Key> {
         override val id: CryptographyAlgorithmId<GCM> get() = Companion

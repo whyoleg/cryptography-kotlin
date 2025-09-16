@@ -86,6 +86,8 @@ For additional limitation please consult provider specific documentation.
 |                                             | AES-CTR          |  ✅  |     ✅     |   ✅   | ❌         |    ✅     |
 |                                             | AES-GCM          |  ✅  |     ✅     |   ❌   | ✅         |    ✅     |
 |                                             | ⚠️ AES-ECB       |  ✅  |     ❌     |   ✅   | ❌         |    ✅     |
+|                                             | ⚠️ AES-CFB       |  ✅  |     ❌     |   ✅   | ❌         |    ✅     |
+|                                             | ⚠️ AES-OFB       |  ✅  |     ❌     |   ✅   | ❌         |    ✅     |
 | **Public-key<br/>encryption/decryption**    | RSA-OAEP         |  ✅  |     ✅     |   ✅   | ❌         |    ✅     |
 |                                             | ⚠️ RSA-PKS1-v1_5 |  ✅  |     ❌     |   ✅   | ❌         |    ✅     |
 |                                             | ⚠️ RSA-RAW       |  ✅  |     ❌     |   ✅   | ❌         |    ✅     |
