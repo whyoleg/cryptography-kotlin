@@ -20,7 +20,7 @@ jobs:
         os: [ 'ubuntu-latest' ]
         target: [ 'jvm', 'js', 'wasm', 'native', 'connectedAndroid' ]
         include:
-          - os: 'macos-latest'
+          - os: 'macos-26'
             target: 'macos'
           - os: 'windows-latest'
             target: 'native'
@@ -67,7 +67,7 @@ jobs:
         os: [ 'ubuntu-latest' ]
         target: [ 'jvm', 'js', 'wasm', 'native', 'connectedAndroid' ]
         include:
-          - os: 'macos-latest'
+          - os: 'macos-26'
             target: 'macos'
           - os: 'windows-latest'
             target: 'native'
