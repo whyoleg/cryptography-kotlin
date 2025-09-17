@@ -1,10 +1,11 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.apple.algorithms
 
 import dev.whyoleg.cryptography.algorithms.*
+import dev.whyoleg.cryptography.operations.*
 import kotlinx.cinterop.*
 import platform.CoreCrypto.*
 
@@ -12,7 +13,7 @@ internal object CCAesCtr : CCAes<AES.CTR.Key>(), AES.CTR {
     override fun wrapKey(key: ByteArray): AES.CTR.Key = AesCtrKey(key)
 
     private class AesCtrKey(private val key: ByteArray) : AES.CTR.Key {
-        override fun cipher(): AES.IvCipher = CCAesIvCipher(
+        override fun cipher(): IvCipher = CCAesIvCipher(
             algorithm = kCCAlgorithmAES,
             mode = kCCModeCTR,
             padding = 0.convert(), // not applicable

@@ -6,6 +6,7 @@ package dev.whyoleg.cryptography.providers.webcrypto.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
+import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.webcrypto.internal.*
 import dev.whyoleg.cryptography.providers.webcrypto.materials.*
 import kotlinx.io.*
@@ -15,7 +16,7 @@ internal object WebCryptoAesGcm : WebCryptoAes<AES.GCM.Key>(
     keyWrapper = WebCryptoKeyWrapper(arrayOf("encrypt", "decrypt"), ::AesGcmKey)
 ), AES.GCM {
     private class AesGcmKey(key: CryptoKey) : AesKey(key), AES.GCM.Key {
-        override fun cipher(tagSize: BinarySize): AES.IvAuthenticatedCipher = AesGcmCipher(key, tagSize.inBits)
+        override fun cipher(tagSize: BinarySize): IvAuthenticatedCipher = AesGcmCipher(key, tagSize.inBits)
     }
 }
 
@@ -24,7 +25,7 @@ private const val ivSizeBytes = 12 // bytes for GCM
 private class AesGcmCipher(
     private val key: CryptoKey,
     private val tagSizeBits: Int,
-) : AES.IvAuthenticatedCipher {
+) : IvAuthenticatedCipher {
 
     override suspend fun encrypt(plaintext: ByteArray, associatedData: ByteArray?): ByteArray {
         val iv = CryptographySystem.getDefaultRandom().nextBytes(ivSizeBytes)

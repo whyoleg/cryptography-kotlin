@@ -5,6 +5,7 @@
 package dev.whyoleg.cryptography.providers.apple.algorithms
 
 import dev.whyoleg.cryptography.algorithms.*
+import dev.whyoleg.cryptography.operations.*
 import kotlinx.cinterop.*
 import platform.CoreCrypto.*
 
@@ -12,7 +13,7 @@ internal object CCAesCfb : CCAes<AES.CFB.Key>(), AES.CFB {
     override fun wrapKey(key: ByteArray): AES.CFB.Key = AesCfbKey(key)
 
     private class AesCfbKey(private val key: ByteArray) : AES.CFB.Key {
-        override fun cipher(): AES.IvCipher = CCAesIvCipher(
+        override fun cipher(): IvCipher = CCAesIvCipher(
             algorithm = kCCAlgorithmAES,
             mode = kCCModeCFB,
             padding = 0.convert(), // not applicable
