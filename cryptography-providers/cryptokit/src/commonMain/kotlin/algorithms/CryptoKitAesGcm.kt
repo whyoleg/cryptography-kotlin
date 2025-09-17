@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.cryptokit.algorithms
@@ -8,8 +8,8 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.BinarySize.Companion.bytes
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.*
-import dev.whyoleg.cryptography.providers.base.algorithms.*
 import dev.whyoleg.cryptography.providers.base.operations.*
 import dev.whyoleg.cryptography.providers.cryptokit.internal.*
 import dev.whyoleg.cryptography.providers.cryptokit.internal.swift.DwcCryptoKitInterop.*
@@ -40,7 +40,7 @@ private class AesGcmKeyGenerator(private val keySizeBytes: Int) : KeyGenerator<A
 }
 
 private class AesGcmKey(private val key: ByteArray) : AES.GCM.Key {
-    override fun cipher(tagSize: BinarySize): AES.IvAuthenticatedCipher {
+    override fun cipher(tagSize: BinarySize): IvAuthenticatedCipher {
         require(tagSize == 16.bytes) { "GCM tag size must be 16 bytes, but was $tagSize" }
         return AesGcmCipher(key, tagSize.inBytes)
     }
@@ -56,15 +56,15 @@ private const val defaultIvSize: Int = 12
 private class AesGcmCipher(
     private val key: ByteArray,
     private val tagSize: Int,
-) : BaseAesIvAuthenticatedCipher {
+) : BaseIvAuthenticatedCipher {
 
     override fun createEncryptFunction(associatedData: ByteArray?): CipherFunction {
         val iv = CryptographySystem.getDefaultRandom().nextBytes(defaultIvSize)
-        return BaseAesImplicitIvEncryptFunction(iv, createEncryptFunctionWithIv(iv, associatedData))
+        return BaseImplicitIvEncryptFunction(iv, createEncryptFunctionWithIv(iv, associatedData))
     }
 
     override fun createDecryptFunction(associatedData: ByteArray?): CipherFunction {
-        return BaseAesImplicitIvDecryptFunction(defaultIvSize) { iv, startIndex ->
+        return BaseImplicitIvDecryptFunction(defaultIvSize) { iv, startIndex ->
             createDecryptFunctionWithIv(iv, startIndex, defaultIvSize, associatedData)
         }
     }

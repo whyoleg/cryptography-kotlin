@@ -7,6 +7,7 @@ package dev.whyoleg.cryptography.providers.jdk.algorithms
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.jdk.*
 import dev.whyoleg.cryptography.providers.jdk.materials.*
 
@@ -26,7 +27,7 @@ private class JdkAesCfb8Key(
     private val state: JdkCryptographyState,
     private val key: JSecretKey,
 ) : AES.CFB8.Key, JdkEncodableKey<AES.Key.Format>(key) {
-    override fun cipher(): AES.IvCipher = JdkAesIvCipher(
+    override fun cipher(): IvCipher = JdkAesIvCipher(
         state = state,
         key = key,
         ivSize = 16,

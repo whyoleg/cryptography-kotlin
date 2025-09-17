@@ -5,13 +5,14 @@
 package dev.whyoleg.cryptography.providers.apple.algorithms
 
 import dev.whyoleg.cryptography.algorithms.*
+import dev.whyoleg.cryptography.operations.*
 import platform.CoreCrypto.*
 
 internal object CCAesCfb8 : CCAes<AES.CFB8.Key>(), AES.CFB8 {
     override fun wrapKey(key: ByteArray): AES.CFB8.Key = AesCFBKey(key)
 
     private class AesCFBKey(private val key: ByteArray) : AES.CFB8.Key {
-        override fun cipher(): AES.IvCipher = CCAesIvCipher(
+        override fun cipher(): IvCipher = CCAesIvCipher(
             algorithm = kCCAlgorithmAES,
             mode = kCCModeCFB8,
             padding = ccNoPadding,

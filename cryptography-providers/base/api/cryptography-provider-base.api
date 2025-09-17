@@ -4,54 +4,6 @@ public final class dev/whyoleg/cryptography/providers/base/BytesKt {
 	public static final fun getEmptyByteArray ()[B
 }
 
-public final class dev/whyoleg/cryptography/providers/base/algorithms/BaseAesImplicitIvDecryptFunction : dev/whyoleg/cryptography/providers/base/operations/CipherFunction {
-	public fun <init> (ILkotlin/jvm/functions/Function2;)V
-	public fun transform ([BII)[B
-	public fun transformedSink (Lkotlinx/io/RawSink;)Lkotlinx/io/RawSink;
-	public fun transformedSource (Lkotlinx/io/RawSource;)Lkotlinx/io/RawSource;
-}
-
-public final class dev/whyoleg/cryptography/providers/base/algorithms/BaseAesImplicitIvEncryptFunction : dev/whyoleg/cryptography/providers/base/operations/CipherFunction {
-	public fun <init> ([BLdev/whyoleg/cryptography/providers/base/operations/CipherFunction;)V
-	public fun transform ([BII)[B
-	public fun transformedSink (Lkotlinx/io/RawSink;)Lkotlinx/io/RawSink;
-	public fun transformedSource (Lkotlinx/io/RawSource;)Lkotlinx/io/RawSource;
-}
-
-public abstract interface class dev/whyoleg/cryptography/providers/base/algorithms/BaseAesIvAuthenticatedCipher : dev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedCipher, dev/whyoleg/cryptography/providers/base/algorithms/BaseAesIvAuthenticatedDecryptor, dev/whyoleg/cryptography/providers/base/algorithms/BaseAesIvAuthenticatedEncryptor, dev/whyoleg/cryptography/providers/base/operations/BaseAuthenticatedCipher {
-}
-
-public abstract interface class dev/whyoleg/cryptography/providers/base/algorithms/BaseAesIvAuthenticatedDecryptor : dev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedDecryptor, dev/whyoleg/cryptography/providers/base/operations/BaseAuthenticatedDecryptor {
-	public abstract fun createDecryptFunctionWithIv ([B[B)Ldev/whyoleg/cryptography/providers/base/operations/CipherFunction;
-	public fun decryptWithIvBlocking ([B[B[B)[B
-	public fun decryptingSinkWithIv ([BLkotlinx/io/RawSink;[B)Lkotlinx/io/RawSink;
-	public fun decryptingSourceWithIv ([BLkotlinx/io/RawSource;[B)Lkotlinx/io/RawSource;
-}
-
-public abstract interface class dev/whyoleg/cryptography/providers/base/algorithms/BaseAesIvAuthenticatedEncryptor : dev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedEncryptor, dev/whyoleg/cryptography/providers/base/operations/BaseAuthenticatedEncryptor {
-	public abstract fun createEncryptFunctionWithIv ([B[B)Ldev/whyoleg/cryptography/providers/base/operations/CipherFunction;
-	public fun encryptWithIvBlocking ([B[B[B)[B
-	public fun encryptingSinkWithIv ([BLkotlinx/io/RawSink;[B)Lkotlinx/io/RawSink;
-	public fun encryptingSourceWithIv ([BLkotlinx/io/RawSource;[B)Lkotlinx/io/RawSource;
-}
-
-public abstract interface class dev/whyoleg/cryptography/providers/base/algorithms/BaseAesIvCipher : dev/whyoleg/cryptography/algorithms/AES$IvCipher, dev/whyoleg/cryptography/providers/base/algorithms/BaseAesIvDecryptor, dev/whyoleg/cryptography/providers/base/algorithms/BaseAesIvEncryptor, dev/whyoleg/cryptography/providers/base/operations/BaseCipher {
-}
-
-public abstract interface class dev/whyoleg/cryptography/providers/base/algorithms/BaseAesIvDecryptor : dev/whyoleg/cryptography/algorithms/AES$IvDecryptor, dev/whyoleg/cryptography/providers/base/operations/BaseDecryptor {
-	public abstract fun createDecryptFunctionWithIv ([B)Ldev/whyoleg/cryptography/providers/base/operations/CipherFunction;
-	public fun decryptWithIvBlocking ([B[B)[B
-	public fun decryptingSinkWithIv ([BLkotlinx/io/RawSink;)Lkotlinx/io/RawSink;
-	public fun decryptingSourceWithIv ([BLkotlinx/io/RawSource;)Lkotlinx/io/RawSource;
-}
-
-public abstract interface class dev/whyoleg/cryptography/providers/base/algorithms/BaseAesIvEncryptor : dev/whyoleg/cryptography/algorithms/AES$IvEncryptor, dev/whyoleg/cryptography/providers/base/operations/BaseEncryptor {
-	public abstract fun createEncryptFunctionWithIv ([B)Ldev/whyoleg/cryptography/providers/base/operations/CipherFunction;
-	public fun encryptWithIvBlocking ([B[B)[B
-	public fun encryptingSinkWithIv ([BLkotlinx/io/RawSink;)Lkotlinx/io/RawSink;
-	public fun encryptingSourceWithIv ([BLkotlinx/io/RawSource;)Lkotlinx/io/RawSource;
-}
-
 public abstract class dev/whyoleg/cryptography/providers/base/algorithms/BaseHkdf : dev/whyoleg/cryptography/algorithms/HKDF {
 	public fun <init> (Ldev/whyoleg/cryptography/CryptographyProvider;)V
 	protected abstract fun digestSize (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;)I
@@ -139,6 +91,54 @@ public abstract interface class dev/whyoleg/cryptography/providers/base/operatio
 	public fun encryptBlocking ([B)[B
 	public fun encryptingSink (Lkotlinx/io/RawSink;)Lkotlinx/io/RawSink;
 	public fun encryptingSource (Lkotlinx/io/RawSource;)Lkotlinx/io/RawSource;
+}
+
+public final class dev/whyoleg/cryptography/providers/base/operations/BaseImplicitIvDecryptFunction : dev/whyoleg/cryptography/providers/base/operations/CipherFunction {
+	public fun <init> (ILkotlin/jvm/functions/Function2;)V
+	public fun transform ([BII)[B
+	public fun transformedSink (Lkotlinx/io/RawSink;)Lkotlinx/io/RawSink;
+	public fun transformedSource (Lkotlinx/io/RawSource;)Lkotlinx/io/RawSource;
+}
+
+public final class dev/whyoleg/cryptography/providers/base/operations/BaseImplicitIvEncryptFunction : dev/whyoleg/cryptography/providers/base/operations/CipherFunction {
+	public fun <init> ([BLdev/whyoleg/cryptography/providers/base/operations/CipherFunction;)V
+	public fun transform ([BII)[B
+	public fun transformedSink (Lkotlinx/io/RawSink;)Lkotlinx/io/RawSink;
+	public fun transformedSource (Lkotlinx/io/RawSource;)Lkotlinx/io/RawSource;
+}
+
+public abstract interface class dev/whyoleg/cryptography/providers/base/operations/BaseIvAuthenticatedCipher : dev/whyoleg/cryptography/operations/IvAuthenticatedCipher, dev/whyoleg/cryptography/providers/base/operations/BaseAuthenticatedCipher, dev/whyoleg/cryptography/providers/base/operations/BaseIvAuthenticatedDecryptor, dev/whyoleg/cryptography/providers/base/operations/BaseIvAuthenticatedEncryptor {
+}
+
+public abstract interface class dev/whyoleg/cryptography/providers/base/operations/BaseIvAuthenticatedDecryptor : dev/whyoleg/cryptography/operations/IvAuthenticatedDecryptor, dev/whyoleg/cryptography/providers/base/operations/BaseAuthenticatedDecryptor {
+	public abstract fun createDecryptFunctionWithIv ([B[B)Ldev/whyoleg/cryptography/providers/base/operations/CipherFunction;
+	public fun decryptWithIvBlocking ([B[B[B)[B
+	public fun decryptingSinkWithIv ([BLkotlinx/io/RawSink;[B)Lkotlinx/io/RawSink;
+	public fun decryptingSourceWithIv ([BLkotlinx/io/RawSource;[B)Lkotlinx/io/RawSource;
+}
+
+public abstract interface class dev/whyoleg/cryptography/providers/base/operations/BaseIvAuthenticatedEncryptor : dev/whyoleg/cryptography/operations/IvAuthenticatedEncryptor, dev/whyoleg/cryptography/providers/base/operations/BaseAuthenticatedEncryptor {
+	public abstract fun createEncryptFunctionWithIv ([B[B)Ldev/whyoleg/cryptography/providers/base/operations/CipherFunction;
+	public fun encryptWithIvBlocking ([B[B[B)[B
+	public fun encryptingSinkWithIv ([BLkotlinx/io/RawSink;[B)Lkotlinx/io/RawSink;
+	public fun encryptingSourceWithIv ([BLkotlinx/io/RawSource;[B)Lkotlinx/io/RawSource;
+}
+
+public abstract interface class dev/whyoleg/cryptography/providers/base/operations/BaseIvCipher : dev/whyoleg/cryptography/operations/IvCipher, dev/whyoleg/cryptography/providers/base/operations/BaseCipher, dev/whyoleg/cryptography/providers/base/operations/BaseIvDecryptor, dev/whyoleg/cryptography/providers/base/operations/BaseIvEncryptor {
+}
+
+public abstract interface class dev/whyoleg/cryptography/providers/base/operations/BaseIvDecryptor : dev/whyoleg/cryptography/operations/IvDecryptor, dev/whyoleg/cryptography/providers/base/operations/BaseDecryptor {
+	public abstract fun createDecryptFunctionWithIv ([B)Ldev/whyoleg/cryptography/providers/base/operations/CipherFunction;
+	public fun decryptWithIvBlocking ([B[B)[B
+	public fun decryptingSinkWithIv ([BLkotlinx/io/RawSink;)Lkotlinx/io/RawSink;
+	public fun decryptingSourceWithIv ([BLkotlinx/io/RawSource;)Lkotlinx/io/RawSource;
+}
+
+public abstract interface class dev/whyoleg/cryptography/providers/base/operations/BaseIvEncryptor : dev/whyoleg/cryptography/operations/IvEncryptor, dev/whyoleg/cryptography/providers/base/operations/BaseEncryptor {
+	public abstract fun createEncryptFunctionWithIv ([B)Ldev/whyoleg/cryptography/providers/base/operations/CipherFunction;
+	public fun encryptWithIvBlocking ([B[B)[B
+	public fun encryptingSinkWithIv ([BLkotlinx/io/RawSink;)Lkotlinx/io/RawSink;
+	public fun encryptingSourceWithIv ([BLkotlinx/io/RawSource;)Lkotlinx/io/RawSource;
 }
 
 public abstract interface class dev/whyoleg/cryptography/providers/base/operations/CipherFunction {
