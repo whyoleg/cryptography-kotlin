@@ -1,13 +1,13 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
+import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.*
-import dev.whyoleg.cryptography.providers.base.algorithms.*
 import dev.whyoleg.cryptography.providers.base.operations.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
@@ -32,7 +32,7 @@ internal object Openssl3AesGcm : AES.GCM, Openssl3Aes<AES.GCM.Key>() {
         @OptIn(ExperimentalNativeApi::class)
         private val cleaner = createCleaner(cipher, ::EVP_CIPHER_free)
 
-        override fun cipher(tagSize: BinarySize): AES.IvAuthenticatedCipher {
+        override fun cipher(tagSize: BinarySize): IvAuthenticatedCipher {
             return Openssl3AesGcmCipher(cipher, key, tagSize.inBytes)
         }
     }
@@ -44,15 +44,15 @@ private class Openssl3AesGcmCipher(
     private val cipher: CPointer<EVP_CIPHER>?,
     private val key: ByteArray,
     private val tagSize: Int,
-) : BaseAesIvAuthenticatedCipher {
+) : BaseIvAuthenticatedCipher {
 
     override fun createEncryptFunction(associatedData: ByteArray?): CipherFunction {
         val iv = CryptographySystem.getDefaultRandom().nextBytes(defaultIvSize)
-        return BaseAesImplicitIvEncryptFunction(iv, createEncryptFunctionWithIv(iv, associatedData))
+        return BaseImplicitIvEncryptFunction(iv, createEncryptFunctionWithIv(iv, associatedData))
     }
 
     override fun createDecryptFunction(associatedData: ByteArray?): CipherFunction {
-        return BaseAesImplicitIvDecryptFunction(defaultIvSize) { iv, startIndex ->
+        return BaseImplicitIvDecryptFunction(defaultIvSize) { iv, startIndex ->
             createDecryptFunctionWithIv(iv, startIndex, defaultIvSize, associatedData)
         }
     }

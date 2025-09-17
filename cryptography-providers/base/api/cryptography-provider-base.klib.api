@@ -8,38 +8,6 @@
 // - Show declarations: true
 
 // Library unique name: <dev.whyoleg.cryptography:cryptography-provider-base>
-abstract interface dev.whyoleg.cryptography.providers.base.algorithms/BaseAesIvAuthenticatedCipher : dev.whyoleg.cryptography.algorithms/AES.IvAuthenticatedCipher, dev.whyoleg.cryptography.providers.base.algorithms/BaseAesIvAuthenticatedDecryptor, dev.whyoleg.cryptography.providers.base.algorithms/BaseAesIvAuthenticatedEncryptor, dev.whyoleg.cryptography.providers.base.operations/BaseAuthenticatedCipher // dev.whyoleg.cryptography.providers.base.algorithms/BaseAesIvAuthenticatedCipher|null[0]
-
-abstract interface dev.whyoleg.cryptography.providers.base.algorithms/BaseAesIvAuthenticatedDecryptor : dev.whyoleg.cryptography.algorithms/AES.IvAuthenticatedDecryptor, dev.whyoleg.cryptography.providers.base.operations/BaseAuthenticatedDecryptor { // dev.whyoleg.cryptography.providers.base.algorithms/BaseAesIvAuthenticatedDecryptor|null[0]
-    abstract fun createDecryptFunctionWithIv(kotlin/ByteArray, kotlin/ByteArray?): dev.whyoleg.cryptography.providers.base.operations/CipherFunction // dev.whyoleg.cryptography.providers.base.algorithms/BaseAesIvAuthenticatedDecryptor.createDecryptFunctionWithIv|createDecryptFunctionWithIv(kotlin.ByteArray;kotlin.ByteArray?){}[0]
-    open fun decryptWithIvBlocking(kotlin/ByteArray, kotlin/ByteArray, kotlin/ByteArray?): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.algorithms/BaseAesIvAuthenticatedDecryptor.decryptWithIvBlocking|decryptWithIvBlocking(kotlin.ByteArray;kotlin.ByteArray;kotlin.ByteArray?){}[0]
-    open fun decryptingSinkWithIv(kotlin/ByteArray, kotlinx.io/RawSink, kotlin/ByteArray?): kotlinx.io/RawSink // dev.whyoleg.cryptography.providers.base.algorithms/BaseAesIvAuthenticatedDecryptor.decryptingSinkWithIv|decryptingSinkWithIv(kotlin.ByteArray;kotlinx.io.RawSink;kotlin.ByteArray?){}[0]
-    open fun decryptingSourceWithIv(kotlin/ByteArray, kotlinx.io/RawSource, kotlin/ByteArray?): kotlinx.io/RawSource // dev.whyoleg.cryptography.providers.base.algorithms/BaseAesIvAuthenticatedDecryptor.decryptingSourceWithIv|decryptingSourceWithIv(kotlin.ByteArray;kotlinx.io.RawSource;kotlin.ByteArray?){}[0]
-}
-
-abstract interface dev.whyoleg.cryptography.providers.base.algorithms/BaseAesIvAuthenticatedEncryptor : dev.whyoleg.cryptography.algorithms/AES.IvAuthenticatedEncryptor, dev.whyoleg.cryptography.providers.base.operations/BaseAuthenticatedEncryptor { // dev.whyoleg.cryptography.providers.base.algorithms/BaseAesIvAuthenticatedEncryptor|null[0]
-    abstract fun createEncryptFunctionWithIv(kotlin/ByteArray, kotlin/ByteArray?): dev.whyoleg.cryptography.providers.base.operations/CipherFunction // dev.whyoleg.cryptography.providers.base.algorithms/BaseAesIvAuthenticatedEncryptor.createEncryptFunctionWithIv|createEncryptFunctionWithIv(kotlin.ByteArray;kotlin.ByteArray?){}[0]
-    open fun encryptWithIvBlocking(kotlin/ByteArray, kotlin/ByteArray, kotlin/ByteArray?): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.algorithms/BaseAesIvAuthenticatedEncryptor.encryptWithIvBlocking|encryptWithIvBlocking(kotlin.ByteArray;kotlin.ByteArray;kotlin.ByteArray?){}[0]
-    open fun encryptingSinkWithIv(kotlin/ByteArray, kotlinx.io/RawSink, kotlin/ByteArray?): kotlinx.io/RawSink // dev.whyoleg.cryptography.providers.base.algorithms/BaseAesIvAuthenticatedEncryptor.encryptingSinkWithIv|encryptingSinkWithIv(kotlin.ByteArray;kotlinx.io.RawSink;kotlin.ByteArray?){}[0]
-    open fun encryptingSourceWithIv(kotlin/ByteArray, kotlinx.io/RawSource, kotlin/ByteArray?): kotlinx.io/RawSource // dev.whyoleg.cryptography.providers.base.algorithms/BaseAesIvAuthenticatedEncryptor.encryptingSourceWithIv|encryptingSourceWithIv(kotlin.ByteArray;kotlinx.io.RawSource;kotlin.ByteArray?){}[0]
-}
-
-abstract interface dev.whyoleg.cryptography.providers.base.algorithms/BaseAesIvCipher : dev.whyoleg.cryptography.algorithms/AES.IvCipher, dev.whyoleg.cryptography.providers.base.algorithms/BaseAesIvDecryptor, dev.whyoleg.cryptography.providers.base.algorithms/BaseAesIvEncryptor, dev.whyoleg.cryptography.providers.base.operations/BaseCipher // dev.whyoleg.cryptography.providers.base.algorithms/BaseAesIvCipher|null[0]
-
-abstract interface dev.whyoleg.cryptography.providers.base.algorithms/BaseAesIvDecryptor : dev.whyoleg.cryptography.algorithms/AES.IvDecryptor, dev.whyoleg.cryptography.providers.base.operations/BaseDecryptor { // dev.whyoleg.cryptography.providers.base.algorithms/BaseAesIvDecryptor|null[0]
-    abstract fun createDecryptFunctionWithIv(kotlin/ByteArray): dev.whyoleg.cryptography.providers.base.operations/CipherFunction // dev.whyoleg.cryptography.providers.base.algorithms/BaseAesIvDecryptor.createDecryptFunctionWithIv|createDecryptFunctionWithIv(kotlin.ByteArray){}[0]
-    open fun decryptWithIvBlocking(kotlin/ByteArray, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.algorithms/BaseAesIvDecryptor.decryptWithIvBlocking|decryptWithIvBlocking(kotlin.ByteArray;kotlin.ByteArray){}[0]
-    open fun decryptingSinkWithIv(kotlin/ByteArray, kotlinx.io/RawSink): kotlinx.io/RawSink // dev.whyoleg.cryptography.providers.base.algorithms/BaseAesIvDecryptor.decryptingSinkWithIv|decryptingSinkWithIv(kotlin.ByteArray;kotlinx.io.RawSink){}[0]
-    open fun decryptingSourceWithIv(kotlin/ByteArray, kotlinx.io/RawSource): kotlinx.io/RawSource // dev.whyoleg.cryptography.providers.base.algorithms/BaseAesIvDecryptor.decryptingSourceWithIv|decryptingSourceWithIv(kotlin.ByteArray;kotlinx.io.RawSource){}[0]
-}
-
-abstract interface dev.whyoleg.cryptography.providers.base.algorithms/BaseAesIvEncryptor : dev.whyoleg.cryptography.algorithms/AES.IvEncryptor, dev.whyoleg.cryptography.providers.base.operations/BaseEncryptor { // dev.whyoleg.cryptography.providers.base.algorithms/BaseAesIvEncryptor|null[0]
-    abstract fun createEncryptFunctionWithIv(kotlin/ByteArray): dev.whyoleg.cryptography.providers.base.operations/CipherFunction // dev.whyoleg.cryptography.providers.base.algorithms/BaseAesIvEncryptor.createEncryptFunctionWithIv|createEncryptFunctionWithIv(kotlin.ByteArray){}[0]
-    open fun encryptWithIvBlocking(kotlin/ByteArray, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.algorithms/BaseAesIvEncryptor.encryptWithIvBlocking|encryptWithIvBlocking(kotlin.ByteArray;kotlin.ByteArray){}[0]
-    open fun encryptingSinkWithIv(kotlin/ByteArray, kotlinx.io/RawSink): kotlinx.io/RawSink // dev.whyoleg.cryptography.providers.base.algorithms/BaseAesIvEncryptor.encryptingSinkWithIv|encryptingSinkWithIv(kotlin.ByteArray;kotlinx.io.RawSink){}[0]
-    open fun encryptingSourceWithIv(kotlin/ByteArray, kotlinx.io/RawSource): kotlinx.io/RawSource // dev.whyoleg.cryptography.providers.base.algorithms/BaseAesIvEncryptor.encryptingSourceWithIv|encryptingSourceWithIv(kotlin.ByteArray;kotlinx.io.RawSource){}[0]
-}
-
 abstract interface dev.whyoleg.cryptography.providers.base.operations/BaseAuthenticatedCipher : dev.whyoleg.cryptography.operations/AuthenticatedCipher, dev.whyoleg.cryptography.providers.base.operations/BaseAuthenticatedDecryptor, dev.whyoleg.cryptography.providers.base.operations/BaseAuthenticatedEncryptor, dev.whyoleg.cryptography.providers.base.operations/BaseCipher // dev.whyoleg.cryptography.providers.base.operations/BaseAuthenticatedCipher|null[0]
 
 abstract interface dev.whyoleg.cryptography.providers.base.operations/BaseAuthenticatedDecryptor : dev.whyoleg.cryptography.operations/AuthenticatedDecryptor, dev.whyoleg.cryptography.providers.base.operations/BaseDecryptor { // dev.whyoleg.cryptography.providers.base.operations/BaseAuthenticatedDecryptor|null[0]
@@ -80,6 +48,38 @@ abstract interface dev.whyoleg.cryptography.providers.base.operations/BaseEncryp
     open fun encryptingSource(kotlinx.io/RawSource): kotlinx.io/RawSource // dev.whyoleg.cryptography.providers.base.operations/BaseEncryptor.encryptingSource|encryptingSource(kotlinx.io.RawSource){}[0]
 }
 
+abstract interface dev.whyoleg.cryptography.providers.base.operations/BaseIvAuthenticatedCipher : dev.whyoleg.cryptography.operations/IvAuthenticatedCipher, dev.whyoleg.cryptography.providers.base.operations/BaseAuthenticatedCipher, dev.whyoleg.cryptography.providers.base.operations/BaseIvAuthenticatedDecryptor, dev.whyoleg.cryptography.providers.base.operations/BaseIvAuthenticatedEncryptor // dev.whyoleg.cryptography.providers.base.operations/BaseIvAuthenticatedCipher|null[0]
+
+abstract interface dev.whyoleg.cryptography.providers.base.operations/BaseIvAuthenticatedDecryptor : dev.whyoleg.cryptography.operations/IvAuthenticatedDecryptor, dev.whyoleg.cryptography.providers.base.operations/BaseAuthenticatedDecryptor { // dev.whyoleg.cryptography.providers.base.operations/BaseIvAuthenticatedDecryptor|null[0]
+    abstract fun createDecryptFunctionWithIv(kotlin/ByteArray, kotlin/ByteArray?): dev.whyoleg.cryptography.providers.base.operations/CipherFunction // dev.whyoleg.cryptography.providers.base.operations/BaseIvAuthenticatedDecryptor.createDecryptFunctionWithIv|createDecryptFunctionWithIv(kotlin.ByteArray;kotlin.ByteArray?){}[0]
+    open fun decryptWithIvBlocking(kotlin/ByteArray, kotlin/ByteArray, kotlin/ByteArray?): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.operations/BaseIvAuthenticatedDecryptor.decryptWithIvBlocking|decryptWithIvBlocking(kotlin.ByteArray;kotlin.ByteArray;kotlin.ByteArray?){}[0]
+    open fun decryptingSinkWithIv(kotlin/ByteArray, kotlinx.io/RawSink, kotlin/ByteArray?): kotlinx.io/RawSink // dev.whyoleg.cryptography.providers.base.operations/BaseIvAuthenticatedDecryptor.decryptingSinkWithIv|decryptingSinkWithIv(kotlin.ByteArray;kotlinx.io.RawSink;kotlin.ByteArray?){}[0]
+    open fun decryptingSourceWithIv(kotlin/ByteArray, kotlinx.io/RawSource, kotlin/ByteArray?): kotlinx.io/RawSource // dev.whyoleg.cryptography.providers.base.operations/BaseIvAuthenticatedDecryptor.decryptingSourceWithIv|decryptingSourceWithIv(kotlin.ByteArray;kotlinx.io.RawSource;kotlin.ByteArray?){}[0]
+}
+
+abstract interface dev.whyoleg.cryptography.providers.base.operations/BaseIvAuthenticatedEncryptor : dev.whyoleg.cryptography.operations/IvAuthenticatedEncryptor, dev.whyoleg.cryptography.providers.base.operations/BaseAuthenticatedEncryptor { // dev.whyoleg.cryptography.providers.base.operations/BaseIvAuthenticatedEncryptor|null[0]
+    abstract fun createEncryptFunctionWithIv(kotlin/ByteArray, kotlin/ByteArray?): dev.whyoleg.cryptography.providers.base.operations/CipherFunction // dev.whyoleg.cryptography.providers.base.operations/BaseIvAuthenticatedEncryptor.createEncryptFunctionWithIv|createEncryptFunctionWithIv(kotlin.ByteArray;kotlin.ByteArray?){}[0]
+    open fun encryptWithIvBlocking(kotlin/ByteArray, kotlin/ByteArray, kotlin/ByteArray?): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.operations/BaseIvAuthenticatedEncryptor.encryptWithIvBlocking|encryptWithIvBlocking(kotlin.ByteArray;kotlin.ByteArray;kotlin.ByteArray?){}[0]
+    open fun encryptingSinkWithIv(kotlin/ByteArray, kotlinx.io/RawSink, kotlin/ByteArray?): kotlinx.io/RawSink // dev.whyoleg.cryptography.providers.base.operations/BaseIvAuthenticatedEncryptor.encryptingSinkWithIv|encryptingSinkWithIv(kotlin.ByteArray;kotlinx.io.RawSink;kotlin.ByteArray?){}[0]
+    open fun encryptingSourceWithIv(kotlin/ByteArray, kotlinx.io/RawSource, kotlin/ByteArray?): kotlinx.io/RawSource // dev.whyoleg.cryptography.providers.base.operations/BaseIvAuthenticatedEncryptor.encryptingSourceWithIv|encryptingSourceWithIv(kotlin.ByteArray;kotlinx.io.RawSource;kotlin.ByteArray?){}[0]
+}
+
+abstract interface dev.whyoleg.cryptography.providers.base.operations/BaseIvCipher : dev.whyoleg.cryptography.operations/IvCipher, dev.whyoleg.cryptography.providers.base.operations/BaseCipher, dev.whyoleg.cryptography.providers.base.operations/BaseIvDecryptor, dev.whyoleg.cryptography.providers.base.operations/BaseIvEncryptor // dev.whyoleg.cryptography.providers.base.operations/BaseIvCipher|null[0]
+
+abstract interface dev.whyoleg.cryptography.providers.base.operations/BaseIvDecryptor : dev.whyoleg.cryptography.operations/IvDecryptor, dev.whyoleg.cryptography.providers.base.operations/BaseDecryptor { // dev.whyoleg.cryptography.providers.base.operations/BaseIvDecryptor|null[0]
+    abstract fun createDecryptFunctionWithIv(kotlin/ByteArray): dev.whyoleg.cryptography.providers.base.operations/CipherFunction // dev.whyoleg.cryptography.providers.base.operations/BaseIvDecryptor.createDecryptFunctionWithIv|createDecryptFunctionWithIv(kotlin.ByteArray){}[0]
+    open fun decryptWithIvBlocking(kotlin/ByteArray, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.operations/BaseIvDecryptor.decryptWithIvBlocking|decryptWithIvBlocking(kotlin.ByteArray;kotlin.ByteArray){}[0]
+    open fun decryptingSinkWithIv(kotlin/ByteArray, kotlinx.io/RawSink): kotlinx.io/RawSink // dev.whyoleg.cryptography.providers.base.operations/BaseIvDecryptor.decryptingSinkWithIv|decryptingSinkWithIv(kotlin.ByteArray;kotlinx.io.RawSink){}[0]
+    open fun decryptingSourceWithIv(kotlin/ByteArray, kotlinx.io/RawSource): kotlinx.io/RawSource // dev.whyoleg.cryptography.providers.base.operations/BaseIvDecryptor.decryptingSourceWithIv|decryptingSourceWithIv(kotlin.ByteArray;kotlinx.io.RawSource){}[0]
+}
+
+abstract interface dev.whyoleg.cryptography.providers.base.operations/BaseIvEncryptor : dev.whyoleg.cryptography.operations/IvEncryptor, dev.whyoleg.cryptography.providers.base.operations/BaseEncryptor { // dev.whyoleg.cryptography.providers.base.operations/BaseIvEncryptor|null[0]
+    abstract fun createEncryptFunctionWithIv(kotlin/ByteArray): dev.whyoleg.cryptography.providers.base.operations/CipherFunction // dev.whyoleg.cryptography.providers.base.operations/BaseIvEncryptor.createEncryptFunctionWithIv|createEncryptFunctionWithIv(kotlin.ByteArray){}[0]
+    open fun encryptWithIvBlocking(kotlin/ByteArray, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.operations/BaseIvEncryptor.encryptWithIvBlocking|encryptWithIvBlocking(kotlin.ByteArray;kotlin.ByteArray){}[0]
+    open fun encryptingSinkWithIv(kotlin/ByteArray, kotlinx.io/RawSink): kotlinx.io/RawSink // dev.whyoleg.cryptography.providers.base.operations/BaseIvEncryptor.encryptingSinkWithIv|encryptingSinkWithIv(kotlin.ByteArray;kotlinx.io.RawSink){}[0]
+    open fun encryptingSourceWithIv(kotlin/ByteArray, kotlinx.io/RawSource): kotlinx.io/RawSource // dev.whyoleg.cryptography.providers.base.operations/BaseIvEncryptor.encryptingSourceWithIv|encryptingSourceWithIv(kotlin.ByteArray;kotlinx.io.RawSource){}[0]
+}
+
 abstract interface dev.whyoleg.cryptography.providers.base.operations/CipherFunction { // dev.whyoleg.cryptography.providers.base.operations/CipherFunction|null[0]
     abstract fun transform(kotlin/ByteArray, kotlin/Int = ..., kotlin/Int = ...): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.operations/CipherFunction.transform|transform(kotlin.ByteArray;kotlin.Int;kotlin.Int){}[0]
     abstract fun transformedSink(kotlinx.io/RawSink): kotlinx.io/RawSink // dev.whyoleg.cryptography.providers.base.operations/CipherFunction.transformedSink|transformedSink(kotlinx.io.RawSink){}[0]
@@ -112,26 +112,26 @@ abstract class dev.whyoleg.cryptography.providers.base.operations/BaseCipherFunc
     open fun transformedSource(kotlinx.io/RawSource): kotlinx.io/RawSource // dev.whyoleg.cryptography.providers.base.operations/BaseCipherFunction.transformedSource|transformedSource(kotlinx.io.RawSource){}[0]
 }
 
-final class dev.whyoleg.cryptography.providers.base.algorithms/BaseAesImplicitIvDecryptFunction : dev.whyoleg.cryptography.providers.base.operations/CipherFunction { // dev.whyoleg.cryptography.providers.base.algorithms/BaseAesImplicitIvDecryptFunction|null[0]
-    constructor <init>(kotlin/Int, kotlin/Function2<kotlin/ByteArray, kotlin/Int, dev.whyoleg.cryptography.providers.base.operations/CipherFunction>) // dev.whyoleg.cryptography.providers.base.algorithms/BaseAesImplicitIvDecryptFunction.<init>|<init>(kotlin.Int;kotlin.Function2<kotlin.ByteArray,kotlin.Int,dev.whyoleg.cryptography.providers.base.operations.CipherFunction>){}[0]
-
-    final fun transform(kotlin/ByteArray, kotlin/Int, kotlin/Int): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.algorithms/BaseAesImplicitIvDecryptFunction.transform|transform(kotlin.ByteArray;kotlin.Int;kotlin.Int){}[0]
-    final fun transformedSink(kotlinx.io/RawSink): kotlinx.io/RawSink // dev.whyoleg.cryptography.providers.base.algorithms/BaseAesImplicitIvDecryptFunction.transformedSink|transformedSink(kotlinx.io.RawSink){}[0]
-    final fun transformedSource(kotlinx.io/RawSource): kotlinx.io/RawSource // dev.whyoleg.cryptography.providers.base.algorithms/BaseAesImplicitIvDecryptFunction.transformedSource|transformedSource(kotlinx.io.RawSource){}[0]
-}
-
-final class dev.whyoleg.cryptography.providers.base.algorithms/BaseAesImplicitIvEncryptFunction : dev.whyoleg.cryptography.providers.base.operations/CipherFunction { // dev.whyoleg.cryptography.providers.base.algorithms/BaseAesImplicitIvEncryptFunction|null[0]
-    constructor <init>(kotlin/ByteArray, dev.whyoleg.cryptography.providers.base.operations/CipherFunction) // dev.whyoleg.cryptography.providers.base.algorithms/BaseAesImplicitIvEncryptFunction.<init>|<init>(kotlin.ByteArray;dev.whyoleg.cryptography.providers.base.operations.CipherFunction){}[0]
-
-    final fun transform(kotlin/ByteArray, kotlin/Int, kotlin/Int): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.algorithms/BaseAesImplicitIvEncryptFunction.transform|transform(kotlin.ByteArray;kotlin.Int;kotlin.Int){}[0]
-    final fun transformedSink(kotlinx.io/RawSink): kotlinx.io/RawSink // dev.whyoleg.cryptography.providers.base.algorithms/BaseAesImplicitIvEncryptFunction.transformedSink|transformedSink(kotlinx.io.RawSink){}[0]
-    final fun transformedSource(kotlinx.io/RawSource): kotlinx.io/RawSource // dev.whyoleg.cryptography.providers.base.algorithms/BaseAesImplicitIvEncryptFunction.transformedSource|transformedSource(kotlinx.io.RawSource){}[0]
-}
-
 final class dev.whyoleg.cryptography.providers.base.operations/AccumulatingCipherFunction : dev.whyoleg.cryptography.providers.base.operations/BaseCipherFunction { // dev.whyoleg.cryptography.providers.base.operations/AccumulatingCipherFunction|null[0]
     constructor <init>(kotlin/Function1<kotlin/ByteArray, kotlin/ByteArray>) // dev.whyoleg.cryptography.providers.base.operations/AccumulatingCipherFunction.<init>|<init>(kotlin.Function1<kotlin.ByteArray,kotlin.ByteArray>){}[0]
 
     final fun close() // dev.whyoleg.cryptography.providers.base.operations/AccumulatingCipherFunction.close|close(){}[0]
+}
+
+final class dev.whyoleg.cryptography.providers.base.operations/BaseImplicitIvDecryptFunction : dev.whyoleg.cryptography.providers.base.operations/CipherFunction { // dev.whyoleg.cryptography.providers.base.operations/BaseImplicitIvDecryptFunction|null[0]
+    constructor <init>(kotlin/Int, kotlin/Function2<kotlin/ByteArray, kotlin/Int, dev.whyoleg.cryptography.providers.base.operations/CipherFunction>) // dev.whyoleg.cryptography.providers.base.operations/BaseImplicitIvDecryptFunction.<init>|<init>(kotlin.Int;kotlin.Function2<kotlin.ByteArray,kotlin.Int,dev.whyoleg.cryptography.providers.base.operations.CipherFunction>){}[0]
+
+    final fun transform(kotlin/ByteArray, kotlin/Int, kotlin/Int): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.operations/BaseImplicitIvDecryptFunction.transform|transform(kotlin.ByteArray;kotlin.Int;kotlin.Int){}[0]
+    final fun transformedSink(kotlinx.io/RawSink): kotlinx.io/RawSink // dev.whyoleg.cryptography.providers.base.operations/BaseImplicitIvDecryptFunction.transformedSink|transformedSink(kotlinx.io.RawSink){}[0]
+    final fun transformedSource(kotlinx.io/RawSource): kotlinx.io/RawSource // dev.whyoleg.cryptography.providers.base.operations/BaseImplicitIvDecryptFunction.transformedSource|transformedSource(kotlinx.io.RawSource){}[0]
+}
+
+final class dev.whyoleg.cryptography.providers.base.operations/BaseImplicitIvEncryptFunction : dev.whyoleg.cryptography.providers.base.operations/CipherFunction { // dev.whyoleg.cryptography.providers.base.operations/BaseImplicitIvEncryptFunction|null[0]
+    constructor <init>(kotlin/ByteArray, dev.whyoleg.cryptography.providers.base.operations/CipherFunction) // dev.whyoleg.cryptography.providers.base.operations/BaseImplicitIvEncryptFunction.<init>|<init>(kotlin.ByteArray;dev.whyoleg.cryptography.providers.base.operations.CipherFunction){}[0]
+
+    final fun transform(kotlin/ByteArray, kotlin/Int, kotlin/Int): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.operations/BaseImplicitIvEncryptFunction.transform|transform(kotlin.ByteArray;kotlin.Int;kotlin.Int){}[0]
+    final fun transformedSink(kotlinx.io/RawSink): kotlinx.io/RawSink // dev.whyoleg.cryptography.providers.base.operations/BaseImplicitIvEncryptFunction.transformedSink|transformedSink(kotlinx.io.RawSink){}[0]
+    final fun transformedSource(kotlinx.io/RawSource): kotlinx.io/RawSource // dev.whyoleg.cryptography.providers.base.operations/BaseImplicitIvEncryptFunction.transformedSource|transformedSource(kotlinx.io.RawSource){}[0]
 }
 
 final val dev.whyoleg.cryptography.providers.base/EmptyByteArray // dev.whyoleg.cryptography.providers.base/EmptyByteArray|{}EmptyByteArray[0]

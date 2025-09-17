@@ -1,22 +1,21 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
-package dev.whyoleg.cryptography.providers.base.algorithms
+package dev.whyoleg.cryptography.providers.base.operations
 
 import dev.whyoleg.cryptography.*
-import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.providers.base.operations.*
+import dev.whyoleg.cryptography.operations.*
 import kotlinx.io.*
 
 @CryptographyProviderApi
-public interface BaseAesIvAuthenticatedCipher : AES.IvAuthenticatedCipher,
+public interface BaseIvAuthenticatedCipher : IvAuthenticatedCipher,
     BaseAuthenticatedCipher,
-    BaseAesIvAuthenticatedEncryptor,
-    BaseAesIvAuthenticatedDecryptor
+    BaseIvAuthenticatedEncryptor,
+    BaseIvAuthenticatedDecryptor
 
 @CryptographyProviderApi
-public interface BaseAesIvAuthenticatedEncryptor : AES.IvAuthenticatedEncryptor, BaseAuthenticatedEncryptor {
+public interface BaseIvAuthenticatedEncryptor : IvAuthenticatedEncryptor, BaseAuthenticatedEncryptor {
 
     public fun createEncryptFunctionWithIv(iv: ByteArray, associatedData: ByteArray?): CipherFunction
 
@@ -37,7 +36,7 @@ public interface BaseAesIvAuthenticatedEncryptor : AES.IvAuthenticatedEncryptor,
 }
 
 @CryptographyProviderApi
-public interface BaseAesIvAuthenticatedDecryptor : AES.IvAuthenticatedDecryptor, BaseAuthenticatedDecryptor {
+public interface BaseIvAuthenticatedDecryptor : IvAuthenticatedDecryptor, BaseAuthenticatedDecryptor {
 
     public fun createDecryptFunctionWithIv(iv: ByteArray, associatedData: ByteArray?): CipherFunction
 

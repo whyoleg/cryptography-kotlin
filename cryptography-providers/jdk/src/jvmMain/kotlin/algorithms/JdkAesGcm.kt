@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.jdk.algorithms
@@ -33,7 +33,7 @@ private class JdkAesGcmKey(
     private val state: JdkCryptographyState,
     private val key: JSecretKey,
 ) : AES.GCM.Key, JdkEncodableKey<AES.Key.Format>(key) {
-    override fun cipher(tagSize: BinarySize): AES.IvAuthenticatedCipher = JdkAesGcmCipher(state, key, tagSize.inBits)
+    override fun cipher(tagSize: BinarySize): IvAuthenticatedCipher = JdkAesGcmCipher(state, key, tagSize.inBits)
 
     override fun encodeToByteArrayBlocking(format: AES.Key.Format): ByteArray = when (format) {
         AES.Key.Format.JWK -> error("$format is not supported")
@@ -47,16 +47,16 @@ private class JdkAesGcmCipher(
     private val state: JdkCryptographyState,
     private val key: JSecretKey,
     private val tagSizeBits: Int,
-) : BaseAesIvAuthenticatedCipher {
+) : BaseIvAuthenticatedCipher {
     private val cipher = state.cipher("AES/GCM/NoPadding")
 
     override fun createEncryptFunction(associatedData: ByteArray?): CipherFunction {
         val iv = ByteArray(defaultIvSize).also(state.secureRandom::nextBytes)
-        return BaseAesImplicitIvEncryptFunction(iv, createEncryptFunctionWithIv(iv, associatedData))
+        return BaseImplicitIvEncryptFunction(iv, createEncryptFunctionWithIv(iv, associatedData))
     }
 
     override fun createDecryptFunction(associatedData: ByteArray?): CipherFunction {
-        return BaseAesImplicitIvDecryptFunction(defaultIvSize) { iv, startIndex ->
+        return BaseImplicitIvDecryptFunction(defaultIvSize) { iv, startIndex ->
             createDecryptFunctionWithIv(iv, startIndex, defaultIvSize, associatedData)
         }
     }
