@@ -12,3 +12,9 @@ import org.gradle.kotlin.dsl.*
 val Project.libsCatalog: VersionCatalog get() = extensions.getByName<VersionCatalogsExtension>("versionCatalogs").named("libs")
 
 fun Project.versionCatalogLib(alias: String): Provider<MinimalExternalModuleDependency> = libsCatalog.findLibrary(alias).get()
+
+fun Project.booleanProperty(name: String, defaultValue: Boolean): Provider<Boolean> =
+    providers.gradleProperty(name).map(String::toBoolean).orElse(defaultValue)
+
+fun Project.stringProperty(name: String, defaultValue: String): Provider<String> =
+    providers.gradleProperty(name).orElse(defaultValue)

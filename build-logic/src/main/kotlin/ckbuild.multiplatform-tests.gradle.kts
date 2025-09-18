@@ -2,6 +2,7 @@
  * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
+import ckbuild.*
 import ckbuild.tests.*
 import com.android.build.gradle.internal.tasks.*
 import org.jetbrains.kotlin.gradle.*
@@ -23,6 +24,8 @@ if (project.name != "cryptography-provider-jdk-android-tests") {
     // as we depend on it in the ` jvmAllTest ` task
     tasks.register("koverVerify")
 }
+
+val skipTestTasks = booleanProperty("ckbuild.skipTestTasks", defaultValue = false)
 
 @OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
@@ -106,6 +109,7 @@ listOf("ios", "watchos", "tvos", "macos").forEach { targetGroup ->
     )
 }
 
-if (providers.gradleProperty("ckbuild.skipTestTasks").map(String::toBoolean).getOrElse(false)) {
-    tasks.matching { it is AbstractTestTask || it is AndroidTestTask || it.name == "koverVerify" }.configureEach { onlyIf { false } }
+tasks.matching { it is AbstractTestTask || it is AndroidTestTask || it.name == "koverVerify" }.configureEach {
+    val skipTestTasks = skipTestTasks // for CC
+    onlyIf { !skipTestTasks.get() }
 }

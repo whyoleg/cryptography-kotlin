@@ -2,6 +2,7 @@
  * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
+import ckbuild.*
 import org.jetbrains.kotlin.gradle.*
 import org.jetbrains.kotlin.gradle.dsl.*
 import org.jetbrains.kotlin.gradle.targets.jvm.*
@@ -11,8 +12,8 @@ plugins {
     kotlin("multiplatform")
 }
 
-// true by default
-val warningsAsErrors = providers.gradleProperty("ckbuild.warningsAsErrors").orNull?.toBoolean() ?: true
+val warningsAsErrors = booleanProperty("ckbuild.warningsAsErrors", defaultValue = true)
+val skipLinkTasks = booleanProperty("ckbuild.skipLinkTasks", defaultValue = false)
 
 @OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
@@ -36,6 +37,7 @@ tasks.register("linkAll") {
     dependsOn(tasks.withType<KotlinNativeLink>())
 }
 
-if (providers.gradleProperty("ckbuild.skipLinkTasks").map(String::toBoolean).getOrElse(false)) {
-    tasks.withType<KotlinNativeLink>().configureEach { onlyIf { false } }
+tasks.withType<KotlinNativeLink>().configureEach {
+    val skipLinkTasks = skipLinkTasks // for CC
+    onlyIf { !skipLinkTasks.get() }
 }
