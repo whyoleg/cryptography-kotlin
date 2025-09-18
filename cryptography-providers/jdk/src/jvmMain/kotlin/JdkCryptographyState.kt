@@ -46,8 +46,8 @@ internal class JdkCryptographyState(private val provider: JProvider?) {
         }
     }
 
-    fun cipher(algorithm: String): Pooled<JCipher> =
-        ciphers.get(algorithm, JCipher::getInstance, JCipher::getInstance)
+    fun cipher(algorithm: String, cached: Boolean = true): Pooled<JCipher> =
+        ciphers.get(algorithm, JCipher::getInstance, JCipher::getInstance, cached)
 
     fun messageDigest(algorithm: String): Pooled<JMessageDigest> =
         messageDigests.get(algorithm, JMessageDigest::getInstance, JMessageDigest::getInstance)
