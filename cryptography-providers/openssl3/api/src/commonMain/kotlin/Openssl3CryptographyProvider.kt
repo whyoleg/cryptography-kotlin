@@ -17,6 +17,10 @@ public val CryptographyProvider.Companion.Openssl3: CryptographyProvider by defa
 internal object Openssl3CryptographyProvider : CryptographyProvider() {
     override val name: String = "OpenSSL3 (${OpenSSL_version(OPENSSL_VERSION_STRING)?.toKString() ?: "unknown"})"
 
+    init {
+        OSSL_PROVIDER_load(null, "legacy")
+    }
+
     @Suppress("UNCHECKED_CAST")
     override fun <A : CryptographyAlgorithm> getOrNull(identifier: CryptographyAlgorithmId<A>): A? = when (identifier) {
         MD4 -> Openssl3Digest("MD4", MD4)

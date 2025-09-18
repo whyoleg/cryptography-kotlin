@@ -5,6 +5,7 @@ headers = openssl/evp.h \
           openssl/err.h \
           openssl/encoder.h \
           openssl/decoder.h \
+          openssl/provider.h \
           openssl/ec.h
 noStringConversion = OSSL_PARAM_construct_double \
                      OSSL_PARAM_construct_int \
