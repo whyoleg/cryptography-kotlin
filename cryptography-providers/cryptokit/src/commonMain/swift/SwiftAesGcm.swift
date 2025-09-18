@@ -8,7 +8,7 @@ import Foundation
         plaintext: NSData,
         authenticatedData: NSData
     ) throws -> Data {
-        var sealedBox = try AES.GCM.seal(
+        let sealedBox = try AES.GCM.seal(
             plaintext as Data,
             using: SymmetricKey(data: key as Data),
             nonce: try AES.GCM.Nonce(data: nonce as Data),
