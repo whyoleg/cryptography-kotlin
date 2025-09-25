@@ -79,6 +79,7 @@ public interface AES<K : AES.Key> : CryptographyAlgorithm {
         public interface Key : AES.Key {
             public fun signatureGenerator(): SignatureGenerator
             public fun signatureVerifier(): SignatureVerifier
+            public fun cipherWithIv(padding: Boolean = true): AesCmacWithIvCipher
         }
     }
 

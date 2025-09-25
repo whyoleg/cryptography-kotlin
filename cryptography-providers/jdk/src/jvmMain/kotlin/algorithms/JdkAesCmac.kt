@@ -31,9 +31,11 @@ private class JdkAesCmacKey(
 ) : AES.CMAC.Key, JdkEncodableKey<AES.Key.Format>(key) {
     private val algorithm = "AESCMAC"
     private val signature = JdkMacSignature(state, key, algorithm)
+    private val ivCipher = JdkAesCmacWithIvCipher(state = state, key = key, ivSize = 16, "AES/CBC/NoPadding")
 
     override fun signatureGenerator(): SignatureGenerator = signature
     override fun signatureVerifier(): SignatureVerifier = signature
+    override fun cipherWithIv(padding: Boolean): AesCmacWithIvCipher = ivCipher
 
     override fun encodeToByteArrayBlocking(format: AES.Key.Format): ByteArray = when (format) {
         AES.Key.Format.JWK -> error("$format is not supported")

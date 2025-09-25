@@ -10,6 +10,8 @@ import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
+import dev.whyoleg.cryptography.operations.AesCmacWithIvCipher
+import dev.whyoleg.cryptography.providers.openssl3.operations.AesCmacWithIvCipherFunction
 import kotlinx.cinterop.*
 import kotlin.experimental.*
 import kotlin.native.ref.*
@@ -34,6 +36,7 @@ internal object Openssl3AesCmac : AES.CMAC, Openssl3Aes<AES.CMAC.Key>() {
         private val signature = AesCmacSignature(algorithm = algorithm, key = key)
         override fun signatureGenerator(): SignatureGenerator = signature
         override fun signatureVerifier(): SignatureVerifier = signature
+        override fun cipherWithIv(padding: Boolean): AesCmacWithIvCipher = AesCmacWithIvCipher(algorithm = algorithm, key = key)
     }
 }
 
@@ -138,5 +141,41 @@ private class AesCmacSignature(
                 }
             }
         }
+    }
+}
+
+@OptIn(ExperimentalStdlibApi::class)
+@ExperimentalNativeApi
+private class AesCmacWithIvCipher(
+    private val algorithm: String,
+    private val key: ByteArray,
+) : AesCmacWithIvCipher {
+
+    private lateinit var cipherFunction: AesCmacWithIvCipherFunction
+
+    override fun initialize() {
+        val cipher = when (algorithm) {
+            "AES-128-CBC" -> EVP_CIPHER_fetch(null, "AES-128-CBC", null)
+            "AES-192-CBC" -> EVP_CIPHER_fetch(null, "AES-192-CBC", null)
+            "AES-256-CBC" -> EVP_CIPHER_fetch(null, "AES-256-CBC", null)
+            else -> error("Unsupported algorithm: $algorithm")
+        }
+
+        cipherFunction = AesCmacWithIvCipherFunction(
+            cipher = cipher,
+            key = key,
+            iv = ByteArray(16), // AES block size
+            ivStartIndex = 0,
+            encrypt = true
+        ) as AesCmacWithIvCipherFunction
+        cipherFunction.initialize()
+    }
+
+    override fun processBlocking(input: ByteArray, iv: ByteArray): ByteArray {
+        return cipherFunction.process(input, iv)
+    }
+
+    override fun encryptWithIvBlocking(iv: ByteArray, plaintext: ByteArray): ByteArray {
+        return cipherFunction.transform(plaintext)
     }
 }
