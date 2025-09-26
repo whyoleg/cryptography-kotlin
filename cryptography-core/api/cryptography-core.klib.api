@@ -57,6 +57,7 @@ abstract interface <#A: dev.whyoleg.cryptography.algorithms/AES.Key> dev.whyoleg
             open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/AES.CMAC> // dev.whyoleg.cryptography.algorithms/AES.CMAC.id.<get-id>|<get-id>(){}[0]
 
         abstract interface Key : dev.whyoleg.cryptography.algorithms/AES.Key { // dev.whyoleg.cryptography.algorithms/AES.CMAC.Key|null[0]
+            abstract fun cipherWithIv(kotlin/Boolean = ...): dev.whyoleg.cryptography.operations/AesCmacWithIvCipher // dev.whyoleg.cryptography.algorithms/AES.CMAC.Key.cipherWithIv|cipherWithIv(kotlin.Boolean){}[0]
             abstract fun signatureGenerator(): dev.whyoleg.cryptography.operations/SignatureGenerator // dev.whyoleg.cryptography.algorithms/AES.CMAC.Key.signatureGenerator|signatureGenerator(){}[0]
             abstract fun signatureVerifier(): dev.whyoleg.cryptography.operations/SignatureVerifier // dev.whyoleg.cryptography.algorithms/AES.CMAC.Key.signatureVerifier|signatureVerifier(){}[0]
         }
@@ -607,6 +608,16 @@ abstract interface dev.whyoleg.cryptography.materials.key/KeyFormat { // dev.why
         abstract fun <get-name>(): kotlin/String // dev.whyoleg.cryptography.materials.key/KeyFormat.name.<get-name>|<get-name>(){}[0]
 
     abstract fun toString(): kotlin/String // dev.whyoleg.cryptography.materials.key/KeyFormat.toString|toString(){}[0]
+}
+
+abstract interface dev.whyoleg.cryptography.operations/AesCmacWithIvCipher : dev.whyoleg.cryptography.operations/AesCmacWithIvEncryptor // dev.whyoleg.cryptography.operations/AesCmacWithIvCipher|null[0]
+
+abstract interface dev.whyoleg.cryptography.operations/AesCmacWithIvEncryptor { // dev.whyoleg.cryptography.operations/AesCmacWithIvEncryptor|null[0]
+    abstract fun encryptWithIvBlocking(kotlin/ByteArray, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.operations/AesCmacWithIvEncryptor.encryptWithIvBlocking|encryptWithIvBlocking(kotlin.ByteArray;kotlin.ByteArray){}[0]
+    abstract fun initialize() // dev.whyoleg.cryptography.operations/AesCmacWithIvEncryptor.initialize|initialize(){}[0]
+    abstract fun processBlocking(kotlin/ByteArray, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.operations/AesCmacWithIvEncryptor.processBlocking|processBlocking(kotlin.ByteArray;kotlin.ByteArray){}[0]
+    open suspend fun encryptWithIv(kotlin/ByteArray, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.operations/AesCmacWithIvEncryptor.encryptWithIv|encryptWithIv(kotlin.ByteArray;kotlin.ByteArray){}[0]
+    open suspend fun process(kotlin/ByteArray, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.operations/AesCmacWithIvEncryptor.process|process(kotlin.ByteArray;kotlin.ByteArray){}[0]
 }
 
 abstract interface dev.whyoleg.cryptography.operations/AuthenticatedCipher : dev.whyoleg.cryptography.operations/AuthenticatedDecryptor, dev.whyoleg.cryptography.operations/AuthenticatedEncryptor, dev.whyoleg.cryptography.operations/Cipher // dev.whyoleg.cryptography.operations/AuthenticatedCipher|null[0]

@@ -84,6 +84,8 @@ abstract interface dev.whyoleg.cryptography.providers.base.operations/CipherFunc
     abstract fun transform(kotlin/ByteArray, kotlin/Int = ..., kotlin/Int = ...): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.operations/CipherFunction.transform|transform(kotlin.ByteArray;kotlin.Int;kotlin.Int){}[0]
     abstract fun transformedSink(kotlinx.io/RawSink): kotlinx.io/RawSink // dev.whyoleg.cryptography.providers.base.operations/CipherFunction.transformedSink|transformedSink(kotlinx.io.RawSink){}[0]
     abstract fun transformedSource(kotlinx.io/RawSource): kotlinx.io/RawSource // dev.whyoleg.cryptography.providers.base.operations/CipherFunction.transformedSource|transformedSource(kotlinx.io.RawSource){}[0]
+    open fun initialize() // dev.whyoleg.cryptography.providers.base.operations/CipherFunction.initialize|initialize(){}[0]
+    open fun process(kotlin/ByteArray, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.operations/CipherFunction.process|process(kotlin.ByteArray;kotlin.ByteArray){}[0]
 }
 
 abstract class dev.whyoleg.cryptography.providers.base.algorithms/BaseHkdf : dev.whyoleg.cryptography.algorithms/HKDF { // dev.whyoleg.cryptography.providers.base.algorithms/BaseHkdf|null[0]

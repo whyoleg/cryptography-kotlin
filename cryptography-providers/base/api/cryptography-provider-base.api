@@ -142,6 +142,8 @@ public abstract interface class dev/whyoleg/cryptography/providers/base/operatio
 }
 
 public abstract interface class dev/whyoleg/cryptography/providers/base/operations/CipherFunction {
+	public fun initialize ()V
+	public fun process ([B[B)[B
 	public abstract fun transform ([BII)[B
 	public static synthetic fun transform$default (Ldev/whyoleg/cryptography/providers/base/operations/CipherFunction;[BIIILjava/lang/Object;)[B
 	public abstract fun transformedSink (Lkotlinx/io/RawSink;)Lkotlinx/io/RawSink;
