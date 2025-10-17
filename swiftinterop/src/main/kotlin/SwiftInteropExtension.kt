@@ -4,21 +4,30 @@
 
 package dev.whyoleg.swiftinterop
 
-import org.gradle.api.model.*
-import org.gradle.api.provider.*
-import javax.inject.*
+import org.gradle.api.*
+import org.jetbrains.kotlin.gradle.plugin.*
+import org.jetbrains.kotlin.gradle.plugin.mpp.*
 
-abstract class SwiftInteropExtension @Inject constructor(objects: ObjectFactory) {
-    val packageName: Property<String> = objects.property(String::class.java)
+abstract class SwiftInteropExtension(project: Project) {
+    val products = project.objects.domainObjectContainer(
+        SwiftInteropProduct::class.java,
+        SwiftInteropProduct.factory(project)
+    )
+}
 
-    val swiftToolsVersion: Property<String> = objects.property(String::class.java).convention("5.10")
+fun KotlinNativeTarget.swiftInterop(
+    productName: String, // required
+    compilationName: String = "main",
+    block: CInteropSettings.() -> Unit = {},
+) {
+    compilations.getByName(compilationName).swiftInterop(productName, block)
+}
 
-    // TODO: make defaults equal to K/N values ?
-    // TODO: rename to min*
-    val iosVersion: Property<String> = objects.property(String::class.java)
-    val macosVersion: Property<String> = objects.property(String::class.java)
-    val tvosVersion: Property<String> = objects.property(String::class.java)
-    val watchosVersion: Property<String> = objects.property(String::class.java)
-
-    internal val swiftinteropModuleName = packageName.map { it.replace(".", "_") }
+fun KotlinNativeCompilation.swiftInterop(
+    productName: String, // required
+    block: CInteropSettings.() -> Unit = {},
+) {
+    project.extensions.getByType(SwiftInteropExtension::class.java)
+        .products.maybeCreate(productName)
+        .setupCInterop(this, block)
 }

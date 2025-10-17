@@ -9,6 +9,7 @@ import org.gradle.api.file.*
 import org.gradle.api.provider.*
 import org.gradle.api.tasks.*
 
+//@CacheableTask
 abstract class GenerateProviderTestsTask : DefaultTask() {
     @get:Input
     abstract val packageName: Property<String>

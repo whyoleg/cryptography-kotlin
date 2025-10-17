@@ -3,23 +3,16 @@
  */
 
 import ckbuild.*
+import dev.whyoleg.swiftinterop.*
+import org.jetbrains.kotlin.gradle.plugin.mpp.*
 
 plugins {
-
     id("ckbuild.multiplatform-library")
     id("ckbuild.multiplatform-provider-tests")
     id("dev.whyoleg.swiftinterop")
 }
 
 description = "cryptography-kotlin Cryptokit provider"
-
-swiftInterop {
-    packageName = "dev.whyoleg.cryptography.providers.cryptokit.internal.swiftinterop"
-    iosVersion = "14"
-    macosVersion = "11"
-    tvosVersion = "14"
-    watchosVersion = "7"
-}
 
 kotlin {
     appleTargets(
@@ -38,6 +31,14 @@ kotlin {
     sourceSets.commonMain.dependencies {
         api(projects.cryptographyCore)
         implementation(projects.cryptographyProviderBase)
+    }
+
+    targets.withType<KotlinNativeTarget>().configureEach {
+        swiftInterop("DwcCryptoKitInterop") {
+            packageName("dev.whyoleg.cryptography.providers.cryptokit.internal.swiftinterop")
+            // TODO: migrate to new package and rename Swift classes to Dwc*
+            // packageName("dev.whyoleg.cryptography.providers.cryptokit.internal.swift.DwcCryptoKitInterop")
+        }
     }
 }
 
