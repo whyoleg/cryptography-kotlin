@@ -1,10 +1,10 @@
 import CryptoKit
 import Foundation
 
-@objc public class SwiftHmacFunction: NSObject {
+@objc public class DwcHmacFunction: NSObject {
     private var wrapper: AnyHmacWrapper
 
-    @objc public init(algorithm: SwiftHashAlgorithm, key: NSData) {
+    @objc public init(algorithm: DwcHashAlgorithm, key: NSData) {
         let secretKey = SymmetricKey(data: key as Data)
         self.wrapper =
             switch algorithm {

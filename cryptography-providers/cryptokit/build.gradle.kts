@@ -35,9 +35,7 @@ kotlin {
 
     targets.withType<KotlinNativeTarget>().configureEach {
         swiftInterop("DwcCryptoKitInterop") {
-            packageName("dev.whyoleg.cryptography.providers.cryptokit.internal.swiftinterop")
-            // TODO: migrate to new package and rename Swift classes to Dwc*
-            // packageName("dev.whyoleg.cryptography.providers.cryptokit.internal.swift.DwcCryptoKitInterop")
+            packageName("dev.whyoleg.cryptography.providers.cryptokit.internal.swift.DwcCryptoKitInterop")
         }
     }
 }

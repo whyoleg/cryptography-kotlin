@@ -12,7 +12,7 @@ import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.base.algorithms.*
 import dev.whyoleg.cryptography.providers.base.operations.*
 import dev.whyoleg.cryptography.providers.cryptokit.internal.*
-import dev.whyoleg.cryptography.providers.cryptokit.internal.swiftinterop.*
+import dev.whyoleg.cryptography.providers.cryptokit.internal.swift.DwcCryptoKitInterop.*
 
 internal object CryptoKitAesGcm : AES.GCM {
     override fun keyDecoder(): KeyDecoder<AES.Key.Format, AES.GCM.Key> = AesKeyDecoder()
@@ -78,7 +78,7 @@ private class AesGcmCipher(
                     key.useNSData { keyData ->
                         (associatedData ?: EmptyByteArray).useNSData { adData ->
                             swiftTry { error ->
-                                SwiftAesGcm.encryptWithKey(
+                                DwcAesGcm.encryptWithKey(
                                     key = keyData,
                                     nonce = ivData,
                                     plaintext = plaintextData,
@@ -111,7 +111,7 @@ private class AesGcmCipher(
                         key.useNSData { keyData ->
                             (associatedData ?: EmptyByteArray).useNSData { adData ->
                                 swiftTry { error ->
-                                    SwiftAesGcm.decryptWithKey(
+                                    DwcAesGcm.decryptWithKey(
                                         key = keyData,
                                         nonce = ivData,
                                         ciphertext = ciphertextData,

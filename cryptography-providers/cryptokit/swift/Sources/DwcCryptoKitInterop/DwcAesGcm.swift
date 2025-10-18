@@ -1,7 +1,7 @@
 import CryptoKit
 import Foundation
 
-@objc public class SwiftAesGcm: NSObject {
+@objc public class DwcAesGcm: NSObject {
     @objc public static func encrypt(
         key: NSData,
         nonce: NSData,

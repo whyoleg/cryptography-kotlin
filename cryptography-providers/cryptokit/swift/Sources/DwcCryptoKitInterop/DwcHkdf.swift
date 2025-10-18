@@ -1,10 +1,10 @@
 import CryptoKit
 import Foundation
 
-@objc public class SwiftHkdf: NSObject {
+@objc public class DwcHkdf: NSObject {
 
     @objc public static func derive(
-        algorithm: SwiftHashAlgorithm,
+        algorithm: DwcHashAlgorithm,
         inputKey: NSData,
         salt: NSData,
         info: NSData,

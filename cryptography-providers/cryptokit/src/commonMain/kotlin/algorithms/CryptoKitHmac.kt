@@ -9,7 +9,7 @@ import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.*
-import dev.whyoleg.cryptography.providers.cryptokit.internal.swiftinterop.*
+import dev.whyoleg.cryptography.providers.cryptokit.internal.swift.DwcCryptoKitInterop.*
 import kotlinx.cinterop.*
 import platform.CoreCrypto.*
 import platform.Foundation.*
@@ -18,22 +18,22 @@ import platform.Foundation.*
 internal object CryptoKitHmac : HMAC {
     override fun keyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<HMAC.Key.Format, HMAC.Key> {
         return when (digest) {
-            MD5    -> HmacKeyDecoder(SwiftHashAlgorithmMd5, CC_MD5_DIGEST_LENGTH)
-            SHA1   -> HmacKeyDecoder(SwiftHashAlgorithmSha1, CC_SHA1_DIGEST_LENGTH)
-            SHA256 -> HmacKeyDecoder(SwiftHashAlgorithmSha256, CC_SHA256_DIGEST_LENGTH)
-            SHA384 -> HmacKeyDecoder(SwiftHashAlgorithmSha384, CC_SHA384_DIGEST_LENGTH)
-            SHA512 -> HmacKeyDecoder(SwiftHashAlgorithmSha512, CC_SHA512_DIGEST_LENGTH)
+            MD5    -> HmacKeyDecoder(DwcHashAlgorithmMd5, CC_MD5_DIGEST_LENGTH)
+            SHA1   -> HmacKeyDecoder(DwcHashAlgorithmSha1, CC_SHA1_DIGEST_LENGTH)
+            SHA256 -> HmacKeyDecoder(DwcHashAlgorithmSha256, CC_SHA256_DIGEST_LENGTH)
+            SHA384 -> HmacKeyDecoder(DwcHashAlgorithmSha384, CC_SHA384_DIGEST_LENGTH)
+            SHA512 -> HmacKeyDecoder(DwcHashAlgorithmSha512, CC_SHA512_DIGEST_LENGTH)
             else   -> throw IllegalStateException("Unsupported hash algorithm: $digest")
         }
     }
 
     override fun keyGenerator(digest: CryptographyAlgorithmId<Digest>): KeyGenerator<HMAC.Key> {
         return when (digest) {
-            MD5    -> HmacKeyGenerator(SwiftHashAlgorithmMd5, CC_MD5_BLOCK_BYTES, CC_MD5_DIGEST_LENGTH)
-            SHA1   -> HmacKeyGenerator(SwiftHashAlgorithmSha1, CC_SHA1_BLOCK_BYTES, CC_SHA1_DIGEST_LENGTH)
-            SHA256 -> HmacKeyGenerator(SwiftHashAlgorithmSha256, CC_SHA256_BLOCK_BYTES, CC_SHA256_DIGEST_LENGTH)
-            SHA384 -> HmacKeyGenerator(SwiftHashAlgorithmSha384, CC_SHA384_BLOCK_BYTES, CC_SHA384_DIGEST_LENGTH)
-            SHA512 -> HmacKeyGenerator(SwiftHashAlgorithmSha512, CC_SHA512_BLOCK_BYTES, CC_SHA512_DIGEST_LENGTH)
+            MD5    -> HmacKeyGenerator(DwcHashAlgorithmMd5, CC_MD5_BLOCK_BYTES, CC_MD5_DIGEST_LENGTH)
+            SHA1   -> HmacKeyGenerator(DwcHashAlgorithmSha1, CC_SHA1_BLOCK_BYTES, CC_SHA1_DIGEST_LENGTH)
+            SHA256 -> HmacKeyGenerator(DwcHashAlgorithmSha256, CC_SHA256_BLOCK_BYTES, CC_SHA256_DIGEST_LENGTH)
+            SHA384 -> HmacKeyGenerator(DwcHashAlgorithmSha384, CC_SHA384_BLOCK_BYTES, CC_SHA384_DIGEST_LENGTH)
+            SHA512 -> HmacKeyGenerator(DwcHashAlgorithmSha512, CC_SHA512_BLOCK_BYTES, CC_SHA512_DIGEST_LENGTH)
             else   -> throw IllegalStateException("Unsupported hash algorithm: $digest")
         }
     }
@@ -41,7 +41,7 @@ internal object CryptoKitHmac : HMAC {
 
 @OptIn(UnsafeNumber::class)
 private class HmacKeyDecoder(
-    private val algorithm: SwiftHashAlgorithm,
+    private val algorithm: DwcHashAlgorithm,
     private val digestSize: Int,
 ) : KeyDecoder<HMAC.Key.Format, HMAC.Key> {
     override fun decodeFromByteArrayBlocking(format: HMAC.Key.Format, bytes: ByteArray): HMAC.Key = when (format) {
@@ -52,7 +52,7 @@ private class HmacKeyDecoder(
 
 @OptIn(UnsafeNumber::class)
 private class HmacKeyGenerator(
-    private val algorithm: SwiftHashAlgorithm,
+    private val algorithm: DwcHashAlgorithm,
     private val blockSize: Int,
     private val digestSize: Int,
 ) : KeyGenerator<HMAC.Key> {
@@ -65,7 +65,7 @@ private class HmacKeyGenerator(
 @OptIn(UnsafeNumber::class)
 private class HmacKey(
     private val key: ByteArray,
-    algorithm: SwiftHashAlgorithm,
+    algorithm: DwcHashAlgorithm,
     digestSize: Int,
 ) : HMAC.Key {
     private val signature = HmacSignature(key.toNSData(), algorithm, digestSize)
@@ -81,7 +81,7 @@ private class HmacKey(
 @OptIn(UnsafeNumber::class)
 private class HmacSignature(
     private val key: NSData,
-    private val algorithm: SwiftHashAlgorithm,
+    private val algorithm: DwcHashAlgorithm,
     private val digestSize: Int,
 ) : SignatureGenerator, SignatureVerifier {
     private fun createFunction() = HmacFunction(
@@ -97,11 +97,11 @@ private class HmacSignature(
 @OptIn(UnsafeNumber::class)
 private class HmacFunction(
     private val key: NSData,
-    private val algorithm: SwiftHashAlgorithm,
+    private val algorithm: DwcHashAlgorithm,
     private val digestSize: Int,
 ) : SignFunction, VerifyFunction {
-    private var _function: SwiftHmacFunction? = SwiftHmacFunction(algorithm, key)
-    private val function: SwiftHmacFunction
+    private var _function: DwcHmacFunction? = DwcHmacFunction(algorithm, key)
+    private val function: DwcHmacFunction
         get() = _function ?: error("Function is closed")
 
     @OptIn(UnsafeNumber::class)
@@ -136,7 +136,7 @@ private class HmacFunction(
 
     override fun reset() {
         checkNotNull(_function) { "Function is closed" }
-        _function = SwiftHmacFunction(algorithm, key)
+        _function = DwcHmacFunction(algorithm, key)
     }
 
     override fun close() {

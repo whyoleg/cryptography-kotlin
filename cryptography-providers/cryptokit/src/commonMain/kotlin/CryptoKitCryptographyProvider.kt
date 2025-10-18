@@ -7,7 +7,7 @@ package dev.whyoleg.cryptography.providers.cryptokit
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.providers.cryptokit.algorithms.*
-import dev.whyoleg.cryptography.providers.cryptokit.internal.swiftinterop.*
+import dev.whyoleg.cryptography.providers.cryptokit.internal.swift.DwcCryptoKitInterop.*
 import kotlinx.cinterop.*
 
 private val defaultProvider = lazy { CryptoKitCryptographyProvider }
@@ -20,11 +20,11 @@ internal object CryptoKitCryptographyProvider : CryptographyProvider() {
 
     @Suppress("UNCHECKED_CAST")
     override fun <A : CryptographyAlgorithm> getOrNull(identifier: CryptographyAlgorithmId<A>): A? = when (identifier) {
-        MD5    -> CryptoKitDigest(MD5, SwiftHashAlgorithmMd5)
-        SHA1   -> CryptoKitDigest(SHA1, SwiftHashAlgorithmSha1)
-        SHA256 -> CryptoKitDigest(SHA256, SwiftHashAlgorithmSha256)
-        SHA384 -> CryptoKitDigest(SHA384, SwiftHashAlgorithmSha384)
-        SHA512 -> CryptoKitDigest(SHA512, SwiftHashAlgorithmSha512)
+        MD5    -> CryptoKitDigest(MD5, DwcHashAlgorithmMd5)
+        SHA1   -> CryptoKitDigest(SHA1, DwcHashAlgorithmSha1)
+        SHA256 -> CryptoKitDigest(SHA256, DwcHashAlgorithmSha256)
+        SHA384 -> CryptoKitDigest(SHA384, DwcHashAlgorithmSha384)
+        SHA512 -> CryptoKitDigest(SHA512, DwcHashAlgorithmSha512)
         HMAC    -> CryptoKitHmac
         HKDF    -> CryptoKitHkdf
         AES.GCM -> CryptoKitAesGcm

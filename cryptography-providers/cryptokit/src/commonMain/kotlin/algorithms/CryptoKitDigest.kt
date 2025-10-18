@@ -8,7 +8,7 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.*
-import dev.whyoleg.cryptography.providers.cryptokit.internal.swiftinterop.*
+import dev.whyoleg.cryptography.providers.cryptokit.internal.swift.DwcCryptoKitInterop.*
 import dev.whyoleg.cryptography.providers.cryptokit.operations.*
 import kotlinx.cinterop.*
 import platform.Foundation.*
@@ -16,7 +16,7 @@ import platform.Foundation.*
 @OptIn(UnsafeNumber::class)
 internal class CryptoKitDigest(
     override val id: CryptographyAlgorithmId<Digest>,
-    private val algorithm: SwiftHashAlgorithm,
+    private val algorithm: DwcHashAlgorithm,
 ) : Digest, Hasher {
     override fun hasher(): Hasher = this
     override fun createHashFunction(): HashFunction = CryptoKitHashFunction(algorithm)
@@ -24,7 +24,7 @@ internal class CryptoKitDigest(
 
 @OptIn(UnsafeNumber::class)
 private class CryptoKitHashFunction(
-    algorithm: SwiftHashAlgorithm,
+    algorithm: DwcHashAlgorithm,
 ) : HashBasedFunction(algorithm), HashFunction {
     private fun hashToNSData(): NSData = function.doFinal().also { reset() }
     override fun hashIntoByteArray(destination: ByteArray, destinationOffset: Int): Int {

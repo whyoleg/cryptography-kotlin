@@ -6,16 +6,16 @@ package dev.whyoleg.cryptography.providers.cryptokit.operations
 
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.*
-import dev.whyoleg.cryptography.providers.cryptokit.internal.swiftinterop.*
+import dev.whyoleg.cryptography.providers.cryptokit.internal.swift.DwcCryptoKitInterop.*
 import kotlinx.cinterop.*
 
 @OptIn(UnsafeNumber::class)
 internal abstract class HashBasedFunction(
-    private val algorithm: SwiftHashAlgorithm,
+    private val algorithm: DwcHashAlgorithm,
 ) : UpdateFunction {
-    private var _function: SwiftHashFunction? = SwiftHashFunction(algorithm)
+    private var _function: DwcHashFunction? = DwcHashFunction(algorithm)
 
-    protected val function: SwiftHashFunction
+    protected val function: DwcHashFunction
         get() = _function ?: error("Hash function is closed")
 
     final override fun update(source: ByteArray, startIndex: Int, endIndex: Int) {
@@ -24,7 +24,7 @@ internal abstract class HashBasedFunction(
 
     final override fun reset() {
         checkNotNull(_function) { "Hash function is closed" }
-        _function = SwiftHashFunction(algorithm)
+        _function = DwcHashFunction(algorithm)
     }
 
     final override fun close() {

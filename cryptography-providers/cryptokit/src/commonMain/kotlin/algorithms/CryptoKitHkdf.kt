@@ -9,7 +9,7 @@ import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.cryptokit.internal.*
-import dev.whyoleg.cryptography.providers.cryptokit.internal.swiftinterop.*
+import dev.whyoleg.cryptography.providers.cryptokit.internal.swift.DwcCryptoKitInterop.*
 import kotlinx.cinterop.*
 
 @OptIn(UnsafeNumber::class)
@@ -29,7 +29,7 @@ internal object CryptoKitHkdf : HKDF {
 
 @OptIn(UnsafeNumber::class)
 private class HkdfSecretDerivation(
-    private val algorithm: SwiftHashAlgorithm,
+    private val algorithm: DwcHashAlgorithm,
     private val outputSize: BinarySize,
     private val salt: ByteArray,
     private val info: ByteArray,
@@ -38,7 +38,7 @@ private class HkdfSecretDerivation(
         return input.useNSData { ikm ->
             salt.useNSData { salt ->
                 info.useNSData { info ->
-                    SwiftHkdf.deriveWithAlgorithm(
+                    DwcHkdf.deriveWithAlgorithm(
                         algorithm = algorithm,
                         inputKey = ikm,
                         salt = salt,

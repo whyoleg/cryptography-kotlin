@@ -1,7 +1,7 @@
 import CryptoKit
 import Foundation
 
-@objc public enum SwiftHashAlgorithm: Int {
+@objc public enum DwcHashAlgorithm: Int {
     case md5
     case sha1
     case sha256
@@ -9,11 +9,11 @@ import Foundation
     case sha512
 }
 
-@objc public class SwiftHashFunction: NSObject {
-    private let algorithm: SwiftHashAlgorithm
+@objc public class DwcHashFunction: NSObject {
+    private let algorithm: DwcHashAlgorithm
     private var function: any HashFunction
 
-    @objc public init(algorithm: SwiftHashAlgorithm) {
+    @objc public init(algorithm: DwcHashAlgorithm) {
         self.algorithm = algorithm
         self.function =
             switch algorithm {
@@ -40,18 +40,18 @@ import Foundation
         }
     }
 
-    @objc public func doFinalDigest() -> SwiftDigest {
+    @objc public func doFinalDigest() -> DwcDigest {
         return switch algorithm {
-        case .md5: SwiftDigest(digest: (function as! Insecure.MD5).finalize())
-        case .sha1: SwiftDigest(digest: (function as! Insecure.SHA1).finalize())
-        case .sha256: SwiftDigest(digest: (function as! SHA256).finalize())
-        case .sha384: SwiftDigest(digest: (function as! SHA384).finalize())
-        case .sha512: SwiftDigest(digest: (function as! SHA512).finalize())
+        case .md5: DwcDigest(digest: (function as! Insecure.MD5).finalize())
+        case .sha1: DwcDigest(digest: (function as! Insecure.SHA1).finalize())
+        case .sha256: DwcDigest(digest: (function as! SHA256).finalize())
+        case .sha384: DwcDigest(digest: (function as! SHA384).finalize())
+        case .sha512: DwcDigest(digest: (function as! SHA512).finalize())
         }
     }
 }
 
-@objc public class SwiftDigest: NSObject {
+@objc public class DwcDigest: NSObject {
     internal let digest: any Digest
     internal init(digest: any Digest) {
         self.digest = digest

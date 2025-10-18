@@ -12,7 +12,7 @@ import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.base.algorithms.*
 import dev.whyoleg.cryptography.providers.base.materials.*
 import dev.whyoleg.cryptography.providers.cryptokit.internal.*
-import dev.whyoleg.cryptography.providers.cryptokit.internal.swiftinterop.*
+import dev.whyoleg.cryptography.providers.cryptokit.internal.swift.DwcCryptoKitInterop.*
 import dev.whyoleg.cryptography.providers.cryptokit.operations.*
 import dev.whyoleg.cryptography.serialization.pem.*
 import kotlinx.cinterop.*
@@ -33,10 +33,10 @@ internal object CryptoKitEcdsa : ECDSA {
     }
 
     private class KeyPairGenerator(
-        private val curve: SwiftEcCurve,
+        private val curve: DwcEcCurve,
     ) : KeyGenerator<ECDSA.KeyPair> {
         override fun generateKeyBlocking(): ECDSA.KeyPair {
-            val privateKey = SwiftEcdsaPrivateKey.generateWithCurve(curve)
+            val privateKey = DwcEcdsaPrivateKey.generateWithCurve(curve)
             return EcdsaKeyPair(
                 privateKey = EcdsaPrivateKey(privateKey),
                 publicKey = EcdsaPublicKey(privateKey.publicKey())
@@ -45,40 +45,46 @@ internal object CryptoKitEcdsa : ECDSA {
     }
 
     private class PublicKeyDecoder(
-        private val curve: SwiftEcCurve,
+        private val curve: DwcEcCurve,
     ) : KeyDecoder<EC.PublicKey.Format, ECDSA.PublicKey> {
         override fun decodeFromByteArrayBlocking(format: EC.PublicKey.Format, bytes: ByteArray): ECDSA.PublicKey {
             return EcdsaPublicKey(swiftTry { error ->
                 when (format) {
                     EC.PublicKey.Format.JWK -> error("JWK is not supported")
-                    EC.PublicKey.Format.RAW -> bytes.useNSData { SwiftEcdsaPublicKey.decodeRawWithCurve(curve, it, error) }
-                    EC.PublicKey.Format.RAW.Compressed -> bytes.useNSData { SwiftEcdsaPublicKey.decodeRawCompressedWithCurve(curve, it, error) }
-                    EC.PublicKey.Format.DER -> bytes.useNSData { SwiftEcdsaPublicKey.decodeDerWithCurve(curve, it, error) }
-                    EC.PublicKey.Format.PEM -> SwiftEcdsaPublicKey.decodePemWithCurve(curve, bytes.decodeToString(), error)
+                    EC.PublicKey.Format.RAW -> bytes.useNSData { DwcEcdsaPublicKey.decodeRawWithCurve(curve, it, error) }
+                    EC.PublicKey.Format.RAW.Compressed -> bytes.useNSData {
+                        DwcEcdsaPublicKey.decodeRawCompressedWithCurve(
+                            curve,
+                            it,
+                            error
+                        )
+                    }
+                    EC.PublicKey.Format.DER -> bytes.useNSData { DwcEcdsaPublicKey.decodeDerWithCurve(curve, it, error) }
+                    EC.PublicKey.Format.PEM -> DwcEcdsaPublicKey.decodePemWithCurve(curve, bytes.decodeToString(), error)
                 }
             })
         }
     }
 
     private class PrivateKeyDecoder(
-        private val curve: SwiftEcCurve,
+        private val curve: DwcEcCurve,
     ) : KeyDecoder<EC.PrivateKey.Format, ECDSA.PrivateKey> {
         override fun decodeFromByteArrayBlocking(format: EC.PrivateKey.Format, bytes: ByteArray): ECDSA.PrivateKey {
             return EcdsaPrivateKey(swiftTry { error ->
                 when (format) {
                     EC.PrivateKey.Format.JWK      -> error("JWK is not supported")
-                    EC.PrivateKey.Format.RAW      -> bytes.useNSData { SwiftEcdsaPrivateKey.decodeRawWithCurve(curve, it, error) }
+                    EC.PrivateKey.Format.RAW -> bytes.useNSData { DwcEcdsaPrivateKey.decodeRawWithCurve(curve, it, error) }
                     EC.PrivateKey.Format.DER      -> decodeFromDer(bytes, error)
                     EC.PrivateKey.Format.DER.SEC1 -> decodeFromDer(convertEcPrivateKeyFromSec1ToPkcs8(bytes), error)
                     EC.PrivateKey.Format.PEM,
                     EC.PrivateKey.Format.PEM.SEC1,
-                                                  -> SwiftEcdsaPrivateKey.decodePemWithCurve(curve, bytes.decodeToString(), error)
+                                             -> DwcEcdsaPrivateKey.decodePemWithCurve(curve, bytes.decodeToString(), error)
                 }
             })
         }
 
-        private fun decodeFromDer(bytes: ByteArray, error: SwiftErrorPointer): SwiftEcdsaPrivateKey? {
-            return bytes.useNSData { SwiftEcdsaPrivateKey.decodeDerWithCurve(curve, it, error) }
+        private fun decodeFromDer(bytes: ByteArray, error: DwcErrorPointer): DwcEcdsaPrivateKey? {
+            return bytes.useNSData { DwcEcdsaPrivateKey.decodeDerWithCurve(curve, it, error) }
         }
     }
 }
@@ -90,7 +96,7 @@ private class EcdsaKeyPair(
 
 @OptIn(UnsafeNumber::class)
 private class EcdsaPublicKey(
-    private val publicKey: SwiftEcdsaPublicKey,
+    private val publicKey: DwcEcdsaPublicKey,
 ) : ECDSA.PublicKey {
     override fun encodeToByteArrayBlocking(format: EC.PublicKey.Format): ByteArray = when (format) {
         EC.PublicKey.Format.JWK -> error("JWK is not supported")
@@ -112,7 +118,7 @@ private class EcdsaPublicKey(
 
 @OptIn(UnsafeNumber::class)
 private class EcdsaPrivateKey(
-    private val privateKey: SwiftEcdsaPrivateKey,
+    private val privateKey: DwcEcdsaPrivateKey,
 ) : ECDSA.PrivateKey {
     override fun encodeToByteArrayBlocking(format: EC.PrivateKey.Format): ByteArray = when (format) {
         EC.PrivateKey.Format.JWK      -> error("JWK is not supported")
@@ -138,8 +144,8 @@ private class EcdsaPrivateKey(
 
 @OptIn(UnsafeNumber::class)
 private class EcdsaSignatureGenerator(
-    private val algorithm: SwiftHashAlgorithm,
-    private val privateKey: SwiftEcdsaPrivateKey,
+    private val algorithm: DwcHashAlgorithm,
+    private val privateKey: DwcEcdsaPrivateKey,
     private val format: ECDSA.SignatureFormat,
 ) : SignatureGenerator {
     override fun createSignFunction(): SignFunction = EcdsaSignFunction(algorithm, privateKey, format)
@@ -147,8 +153,8 @@ private class EcdsaSignatureGenerator(
 
 @OptIn(UnsafeNumber::class)
 private class EcdsaSignatureVerifier(
-    private val algorithm: SwiftHashAlgorithm,
-    private val publicKey: SwiftEcdsaPublicKey,
+    private val algorithm: DwcHashAlgorithm,
+    private val publicKey: DwcEcdsaPublicKey,
     private val format: ECDSA.SignatureFormat,
 ) : SignatureVerifier {
     override fun createVerifyFunction(): VerifyFunction = EcdsaVerifyFunction(algorithm, publicKey, format)
@@ -156,8 +162,8 @@ private class EcdsaSignatureVerifier(
 
 @OptIn(UnsafeNumber::class)
 private class EcdsaSignFunction(
-    algorithm: SwiftHashAlgorithm,
-    private val privateKey: SwiftEcdsaPrivateKey,
+    algorithm: DwcHashAlgorithm,
+    private val privateKey: DwcEcdsaPrivateKey,
     private val format: ECDSA.SignatureFormat,
 ) : HashBasedFunction(algorithm), SignFunction {
     override fun signIntoByteArray(destination: ByteArray, destinationOffset: Int): Int {
@@ -182,8 +188,8 @@ private class EcdsaSignFunction(
 
 @OptIn(UnsafeNumber::class)
 private class EcdsaVerifyFunction(
-    algorithm: SwiftHashAlgorithm,
-    private val publicKey: SwiftEcdsaPublicKey,
+    algorithm: DwcHashAlgorithm,
+    private val publicKey: DwcEcdsaPublicKey,
     private val format: ECDSA.SignatureFormat,
 ) : HashBasedFunction(algorithm), VerifyFunction {
     override fun tryVerify(signature: ByteArray, startIndex: Int, endIndex: Int): Boolean {

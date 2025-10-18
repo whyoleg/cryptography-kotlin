@@ -6,38 +6,38 @@ package dev.whyoleg.cryptography.providers.cryptokit.internal
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.providers.cryptokit.internal.swiftinterop.*
+import dev.whyoleg.cryptography.providers.cryptokit.internal.swift.DwcCryptoKitInterop.*
 import kotlinx.cinterop.*
 import platform.Foundation.*
 
-internal typealias SwiftErrorPointer = CPointer<ObjCObjectVar<NSError?>>
+internal typealias DwcErrorPointer = CPointer<ObjCObjectVar<NSError?>>
 
 @OptIn(BetaInteropApi::class)
 internal fun <T : Any> swiftTry(
-    block: (error: SwiftErrorPointer) -> T?,
+    block: (error: DwcErrorPointer) -> T?,
 ): T = memScoped {
     val errorH = alloc<ObjCObjectVar<NSError?>>()
     when (val result = block(errorH.ptr)) {
-        null -> error("Swift call failed: ${errorH.value?.localizedDescription ?: "unknown error"}")
+        null -> error("Dwc call failed: ${errorH.value?.localizedDescription ?: "unknown error"}")
         else -> result
     }
 }
 
 
 @OptIn(UnsafeNumber::class)
-internal fun CryptographyAlgorithmId<Digest>.swiftHashAlgorithm(): SwiftHashAlgorithm = when (this) {
-    MD5    -> SwiftHashAlgorithmMd5
-    SHA1   -> SwiftHashAlgorithmSha1
-    SHA256 -> SwiftHashAlgorithmSha256
-    SHA384 -> SwiftHashAlgorithmSha384
-    SHA512 -> SwiftHashAlgorithmSha512
+internal fun CryptographyAlgorithmId<Digest>.swiftHashAlgorithm(): DwcHashAlgorithm = when (this) {
+    MD5    -> DwcHashAlgorithmMd5
+    SHA1   -> DwcHashAlgorithmSha1
+    SHA256 -> DwcHashAlgorithmSha256
+    SHA384 -> DwcHashAlgorithmSha384
+    SHA512 -> DwcHashAlgorithmSha512
     else   -> throw IllegalStateException("Unsupported hash algorithm: $this")
 }
 
 @OptIn(UnsafeNumber::class)
-internal fun EC.Curve.swiftEcCurve(): SwiftEcCurve = when (this) {
-    EC.Curve.P256 -> SwiftEcCurveP256
-    EC.Curve.P384 -> SwiftEcCurveP384
-    EC.Curve.P521 -> SwiftEcCurveP521
+internal fun EC.Curve.swiftEcCurve(): DwcEcCurve = when (this) {
+    EC.Curve.P256 -> DwcEcCurveP256
+    EC.Curve.P384 -> DwcEcCurveP384
+    EC.Curve.P521 -> DwcEcCurveP521
     else          -> error("Unsupported EC curve: $this")
 }
