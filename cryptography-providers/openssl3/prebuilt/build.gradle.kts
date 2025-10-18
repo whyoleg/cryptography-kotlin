@@ -57,7 +57,8 @@ kotlin {
                 // those values found experimentally on CI machines...
                 val knownPathsWithZlibDll = setOf(
                     "C:\\Program Files\\Git\\mingw64\\bin",
-                    "C:\\Program Files\\Microsoft Service Fabric\\bin\\Fabric\\Fabric.Code"
+                    "C:\\Program Files\\Microsoft Service Fabric\\bin\\Fabric\\Fabric.Code",
+                    "C:\\Strawberry\\c\\bin"
                 )
                 val currentPath = providers.environmentVariable("PATH").get()
                 val paths = currentPath
