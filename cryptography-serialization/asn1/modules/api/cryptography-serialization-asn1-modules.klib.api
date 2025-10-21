@@ -200,12 +200,12 @@ final class dev.whyoleg.cryptography.serialization.asn1.modules/SubjectPublicKey
 }
 
 final class dev.whyoleg.cryptography.serialization.asn1.modules/UnknownKeyAlgorithmIdentifier : dev.whyoleg.cryptography.serialization.asn1.modules/KeyAlgorithmIdentifier { // dev.whyoleg.cryptography.serialization.asn1.modules/UnknownKeyAlgorithmIdentifier|null[0]
-    constructor <init>(dev.whyoleg.cryptography.serialization.asn1/ObjectIdentifier) // dev.whyoleg.cryptography.serialization.asn1.modules/UnknownKeyAlgorithmIdentifier.<init>|<init>(dev.whyoleg.cryptography.serialization.asn1.ObjectIdentifier){}[0]
+    constructor <init>(dev.whyoleg.cryptography.serialization.asn1/ObjectIdentifier, kotlin/Any?) // dev.whyoleg.cryptography.serialization.asn1.modules/UnknownKeyAlgorithmIdentifier.<init>|<init>(dev.whyoleg.cryptography.serialization.asn1.ObjectIdentifier;kotlin.Any?){}[0]
 
     final val algorithm // dev.whyoleg.cryptography.serialization.asn1.modules/UnknownKeyAlgorithmIdentifier.algorithm|{}algorithm[0]
         final fun <get-algorithm>(): dev.whyoleg.cryptography.serialization.asn1/ObjectIdentifier // dev.whyoleg.cryptography.serialization.asn1.modules/UnknownKeyAlgorithmIdentifier.algorithm.<get-algorithm>|<get-algorithm>(){}[0]
     final val parameters // dev.whyoleg.cryptography.serialization.asn1.modules/UnknownKeyAlgorithmIdentifier.parameters|{}parameters[0]
-        final fun <get-parameters>(): kotlin/Nothing? // dev.whyoleg.cryptography.serialization.asn1.modules/UnknownKeyAlgorithmIdentifier.parameters.<get-parameters>|<get-parameters>(){}[0]
+        final fun <get-parameters>(): kotlin/Any? // dev.whyoleg.cryptography.serialization.asn1.modules/UnknownKeyAlgorithmIdentifier.parameters.<get-parameters>|<get-parameters>(){}[0]
 }
 
 final value class dev.whyoleg.cryptography.serialization.asn1.modules/EcParameters { // dev.whyoleg.cryptography.serialization.asn1.modules/EcParameters|null[0]
