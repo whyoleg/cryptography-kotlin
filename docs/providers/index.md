@@ -92,6 +92,7 @@ For additional limitation please consult provider specific documentation.
 |                                             | RSA-SSA-PSS      |  ✅  |     ✅     |   ✅   | ❌         |    ✅     |
 |                                             | RSA-PKS1-v1_5    |  ✅  |     ✅     |   ✅   | ❌         |    ✅     |
 | **Key Agreement**                           | ECDH             |  ✅  |     ✅     |   ❌   | ✅         |    ✅     |
+|                                             | DH               |  ✅  |     ❌     |   ❌   | ❌         |    ✅     |
 | **PRF/KDF**                                 | PBKDF2           |  ✅  |     ✅     |   ✅   | ❌         |    ✅     |
 |                                             | HKDF             |  ✅  |     ✅     |   ✅   | ✅         |    ✅     |
 

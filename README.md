@@ -19,7 +19,7 @@ cryptography-kotlin provides multiplatform API which consists of multiple compon
 * [Secure random][Secure random] with [kotlin.Random][kotlin.Random] like API which can be used independently of other modules
 * common API to use different cryptography operations,
   like [ciphers][ciphers], [digests][digests], [signatures][signatures], [key derivation][key derivation], [Key agreement][Key agreement]
-* multiple algorithms definitions, like [AES][AES], [RSA][RSA], [ECDSA][ECDSA], [ECDH][ECDH], [SHA][SHA256], [HMAC][HMAC]
+* multiple algorithms definitions, like [AES][AES], [RSA][RSA], [ECDSA][ECDSA], [ECDH][ECDH], [DH][DH], [SHA][SHA256], [HMAC][HMAC]
   and [PBKDF2][PBKDF2]
 * multiple cryptography [providers][providers], like [OpenSSL][OpenSSL], [WebCrypto][WebCrypto], [CryptoKit][CryptoKit] and [JDK][JDK]
 
@@ -74,6 +74,8 @@ Additionally, it's possible to use [BOM][BOM] or [Gradle version catalog][Gradle
 [ECDSA]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-e-c-d-s-a/index.html
 
 [ECDH]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-e-c-d-h/index.html
+
+[DH]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-d-h/index.html
 
 [PBKDF2]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-p-b-k-d-f2/index.html
 
