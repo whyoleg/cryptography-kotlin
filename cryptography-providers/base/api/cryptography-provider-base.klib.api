@@ -134,6 +134,26 @@ final class dev.whyoleg.cryptography.providers.base.operations/AccumulatingCiphe
     final fun close() // dev.whyoleg.cryptography.providers.base.operations/AccumulatingCipherFunction.close|close(){}[0]
 }
 
+final class dev.whyoleg.cryptography.providers.base.operations/AccumulatingSignFunction : dev.whyoleg.cryptography.operations/SignFunction { // dev.whyoleg.cryptography.providers.base.operations/AccumulatingSignFunction|null[0]
+    constructor <init>(kotlin/Function1<kotlin/ByteArray, kotlin/ByteArray>) // dev.whyoleg.cryptography.providers.base.operations/AccumulatingSignFunction.<init>|<init>(kotlin.Function1<kotlin.ByteArray,kotlin.ByteArray>){}[0]
+
+    final fun close() // dev.whyoleg.cryptography.providers.base.operations/AccumulatingSignFunction.close|close(){}[0]
+    final fun reset() // dev.whyoleg.cryptography.providers.base.operations/AccumulatingSignFunction.reset|reset(){}[0]
+    final fun signIntoByteArray(kotlin/ByteArray, kotlin/Int): kotlin/Int // dev.whyoleg.cryptography.providers.base.operations/AccumulatingSignFunction.signIntoByteArray|signIntoByteArray(kotlin.ByteArray;kotlin.Int){}[0]
+    final fun signToByteArray(): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.operations/AccumulatingSignFunction.signToByteArray|signToByteArray(){}[0]
+    final fun update(kotlin/ByteArray, kotlin/Int, kotlin/Int) // dev.whyoleg.cryptography.providers.base.operations/AccumulatingSignFunction.update|update(kotlin.ByteArray;kotlin.Int;kotlin.Int){}[0]
+}
+
+final class dev.whyoleg.cryptography.providers.base.operations/AccumulatingVerifyFunction : dev.whyoleg.cryptography.operations/VerifyFunction { // dev.whyoleg.cryptography.providers.base.operations/AccumulatingVerifyFunction|null[0]
+    constructor <init>(kotlin/Function4<kotlin/ByteArray, kotlin/ByteArray, kotlin/Int, kotlin/Int, kotlin/Boolean>) // dev.whyoleg.cryptography.providers.base.operations/AccumulatingVerifyFunction.<init>|<init>(kotlin.Function4<kotlin.ByteArray,kotlin.ByteArray,kotlin.Int,kotlin.Int,kotlin.Boolean>){}[0]
+
+    final fun close() // dev.whyoleg.cryptography.providers.base.operations/AccumulatingVerifyFunction.close|close(){}[0]
+    final fun reset() // dev.whyoleg.cryptography.providers.base.operations/AccumulatingVerifyFunction.reset|reset(){}[0]
+    final fun tryVerify(kotlin/ByteArray, kotlin/Int, kotlin/Int): kotlin/Boolean // dev.whyoleg.cryptography.providers.base.operations/AccumulatingVerifyFunction.tryVerify|tryVerify(kotlin.ByteArray;kotlin.Int;kotlin.Int){}[0]
+    final fun update(kotlin/ByteArray, kotlin/Int, kotlin/Int) // dev.whyoleg.cryptography.providers.base.operations/AccumulatingVerifyFunction.update|update(kotlin.ByteArray;kotlin.Int;kotlin.Int){}[0]
+    final fun verify(kotlin/ByteArray, kotlin/Int, kotlin/Int) // dev.whyoleg.cryptography.providers.base.operations/AccumulatingVerifyFunction.verify|verify(kotlin.ByteArray;kotlin.Int;kotlin.Int){}[0]
+}
+
 final val dev.whyoleg.cryptography.providers.base/EmptyByteArray // dev.whyoleg.cryptography.providers.base/EmptyByteArray|{}EmptyByteArray[0]
     final fun <get-EmptyByteArray>(): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base/EmptyByteArray.<get-EmptyByteArray>|<get-EmptyByteArray>(){}[0]
 
@@ -143,6 +163,7 @@ final fun dev.whyoleg.cryptography.providers.base.algorithms/convertEcPrivateKey
 final fun dev.whyoleg.cryptography.providers.base.materials/unwrapPem(dev.whyoleg.cryptography.serialization.pem/PemLabel, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.materials/unwrapPem|unwrapPem(dev.whyoleg.cryptography.serialization.pem.PemLabel;kotlin.ByteArray){}[0]
 final fun dev.whyoleg.cryptography.providers.base.materials/unwrapPrivateKeyInfo(dev.whyoleg.cryptography.serialization.asn1/ObjectIdentifier, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.materials/unwrapPrivateKeyInfo|unwrapPrivateKeyInfo(dev.whyoleg.cryptography.serialization.asn1.ObjectIdentifier;kotlin.ByteArray){}[0]
 final fun dev.whyoleg.cryptography.providers.base.materials/unwrapSubjectPublicKeyInfo(dev.whyoleg.cryptography.serialization.asn1/ObjectIdentifier, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.materials/unwrapSubjectPublicKeyInfo|unwrapSubjectPublicKeyInfo(dev.whyoleg.cryptography.serialization.asn1.ObjectIdentifier;kotlin.ByteArray){}[0]
+final fun dev.whyoleg.cryptography.providers.base.materials/unwrapSubjectPublicKeyInfo(kotlin.collections/Set<dev.whyoleg.cryptography.serialization.asn1/ObjectIdentifier>, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.materials/unwrapSubjectPublicKeyInfo|unwrapSubjectPublicKeyInfo(kotlin.collections.Set<dev.whyoleg.cryptography.serialization.asn1.ObjectIdentifier>;kotlin.ByteArray){}[0]
 final fun dev.whyoleg.cryptography.providers.base.materials/wrapPem(dev.whyoleg.cryptography.serialization.pem/PemLabel, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.materials/wrapPem|wrapPem(dev.whyoleg.cryptography.serialization.pem.PemLabel;kotlin.ByteArray){}[0]
 final fun dev.whyoleg.cryptography.providers.base.materials/wrapPrivateKeyInfo(kotlin/Int, dev.whyoleg.cryptography.serialization.asn1.modules/KeyAlgorithmIdentifier, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.materials/wrapPrivateKeyInfo|wrapPrivateKeyInfo(kotlin.Int;dev.whyoleg.cryptography.serialization.asn1.modules.KeyAlgorithmIdentifier;kotlin.ByteArray){}[0]
 final fun dev.whyoleg.cryptography.providers.base.materials/wrapSubjectPublicKeyInfo(dev.whyoleg.cryptography.serialization.asn1.modules/KeyAlgorithmIdentifier, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.materials/wrapSubjectPublicKeyInfo|wrapSubjectPublicKeyInfo(dev.whyoleg.cryptography.serialization.asn1.modules.KeyAlgorithmIdentifier;kotlin.ByteArray){}[0]

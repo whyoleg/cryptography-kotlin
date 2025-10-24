@@ -66,6 +66,7 @@ public final class dev/whyoleg/cryptography/providers/base/algorithms/EcKt {
 public final class dev/whyoleg/cryptography/providers/base/materials/KeysKt {
 	public static final fun unwrapPem-unSj4pc (Ljava/lang/String;[B)[B
 	public static final fun unwrapPrivateKeyInfo-4RESAxk (Ljava/lang/String;[B)[B
+	public static final fun unwrapSubjectPublicKeyInfo (Ljava/util/Set;[B)[B
 	public static final fun unwrapSubjectPublicKeyInfo-4RESAxk (Ljava/lang/String;[B)[B
 	public static final fun wrapPem-unSj4pc (Ljava/lang/String;[B)[B
 	public static final fun wrapPrivateKeyInfo (ILdev/whyoleg/cryptography/serialization/asn1/modules/KeyAlgorithmIdentifier;[B)[B
@@ -75,6 +76,24 @@ public final class dev/whyoleg/cryptography/providers/base/materials/KeysKt {
 public final class dev/whyoleg/cryptography/providers/base/operations/AccumulatingCipherFunction : dev/whyoleg/cryptography/providers/base/operations/BaseCipherFunction {
 	public fun <init> (Lkotlin/jvm/functions/Function1;)V
 	public fun close ()V
+}
+
+public final class dev/whyoleg/cryptography/providers/base/operations/AccumulatingSignFunction : dev/whyoleg/cryptography/operations/SignFunction {
+	public fun <init> (Lkotlin/jvm/functions/Function1;)V
+	public fun close ()V
+	public fun reset ()V
+	public fun signIntoByteArray ([BI)I
+	public fun signToByteArray ()[B
+	public fun update ([BII)V
+}
+
+public final class dev/whyoleg/cryptography/providers/base/operations/AccumulatingVerifyFunction : dev/whyoleg/cryptography/operations/VerifyFunction {
+	public fun <init> (Lkotlin/jvm/functions/Function4;)V
+	public fun close ()V
+	public fun reset ()V
+	public fun tryVerify ([BII)Z
+	public fun update ([BII)V
+	public fun verify ([BII)V
 }
 
 public abstract interface class dev/whyoleg/cryptography/providers/base/operations/BaseAuthenticatedCipher : dev/whyoleg/cryptography/operations/AuthenticatedCipher, dev/whyoleg/cryptography/providers/base/operations/BaseAuthenticatedDecryptor, dev/whyoleg/cryptography/providers/base/operations/BaseAuthenticatedEncryptor, dev/whyoleg/cryptography/providers/base/operations/BaseCipher {
