@@ -3,19 +3,15 @@
  */
 
 import ckbuild.*
-import ckbuild.openssl.*
-import org.jetbrains.kotlin.gradle.*
-import org.jetbrains.kotlin.gradle.plugin.mpp.*
-import org.jetbrains.kotlin.gradle.tasks.*
+import com.ensody.nativebuilds.*
 
 plugins {
     id("ckbuild.multiplatform-library")
-    id("ckbuild.use-openssl")
+    alias(libs.plugins.nativebuilds)
 }
 
 description = "cryptography-kotlin OpenSSL3 provider (API)"
 
-@OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
     nativeTargets()
 
@@ -33,13 +29,7 @@ kotlin {
         implementation(projects.cryptographyProviderBase)
     }
 
-    targets.withType<KotlinNativeTarget>().configureEach {
-        cinterop("declarations", "common")
-    }
-}
-
-tasks.withType<CInteropProcess>().configureEach {
-    uses(openssl.v3_0) {
-        settings.includeDirs(includeDirectory(konanTarget))
+    cinterops(libs.nativebuilds.openssl.headers) {
+        definitionFile.set(file("src/commonMain/cinterop/declarations.def"))
     }
 }

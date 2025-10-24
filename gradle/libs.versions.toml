@@ -22,6 +22,8 @@ maven-publish = "0.34.0"
 # other
 bouncycastle = "1.81"
 logback = "1.5.18"
+nativebuilds = "0.4.0"
+openssl = "3.6.0.1"
 
 [libraries]
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
@@ -42,6 +44,9 @@ kotlinx-serialization-cbor = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 kotlinx-benchmark-runtime = { module = "org.jetbrains.kotlinx:kotlinx-benchmark-runtime", version.ref = "kotlinx-benchmark" }
 
 bouncycastle = { module = "org.bouncycastle:bcprov-jdk18on", version.ref = "bouncycastle" }
+
+nativebuilds-openssl-libcrypto = { module = "com.ensody.nativebuilds:openssl-libcrypto", version.ref = "openssl" }
+nativebuilds-openssl-headers = { module = "com.ensody.nativebuilds:openssl", version.ref = "openssl" }
 
 androidx-test = { module = "androidx.test:runner", version.ref = "androidx-test" }
 
@@ -65,3 +70,4 @@ kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref 
 kotlin-plugin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-dokka = { id = "org.jetbrains.dokka", version.ref = "kotlin-dokka" }
 android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "android" }
+nativebuilds = { id = "com.ensody.nativebuilds", version.ref = "nativebuilds" }
