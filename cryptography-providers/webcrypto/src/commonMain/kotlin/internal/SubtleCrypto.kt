@@ -4,44 +4,43 @@
 
 package dev.whyoleg.cryptography.providers.webcrypto.internal
 
-import org.khronos.webgl.*
-import kotlin.js.Promise
+import kotlin.js.*
 
 internal external interface SubtleCrypto {
-    fun digest(algorithmName: String, data: ByteArray): Promise<ArrayBuffer>
+    fun digest(algorithmName: String, data: Int8Array): Promise<ArrayBuffer>
 
-    fun encrypt(algorithm: Algorithm, key: CryptoKey, data: ByteArray): Promise<ArrayBuffer>
-    fun decrypt(algorithm: Algorithm, key: CryptoKey, data: ByteArray): Promise<ArrayBuffer>
+    fun encrypt(algorithm: Algorithm, key: CryptoKey, data: Int8Array): Promise<ArrayBuffer>
+    fun decrypt(algorithm: Algorithm, key: CryptoKey, data: Int8Array): Promise<ArrayBuffer>
 
-    fun sign(algorithm: Algorithm, key: CryptoKey, data: ByteArray): Promise<ArrayBuffer>
-    fun verify(algorithm: Algorithm, key: CryptoKey, signature: ByteArray, data: ByteArray): Promise<Boolean>
+    fun sign(algorithm: Algorithm, key: CryptoKey, data: Int8Array): Promise<ArrayBuffer>
+    fun verify(algorithm: Algorithm, key: CryptoKey, signature: Int8Array, data: Int8Array): Promise<JsBoolean>
 
     fun deriveBits(algorithm: Algorithm, baseKey: CryptoKey, length: Int): Promise<ArrayBuffer>
 
     fun importKey(
         format: String, /*"raw" | "pkcs8" | "spki"*/
-        keyData: Any, /*JSON if jwk, ArrayBuffer otherwise*/
+        keyData: JsAny, /*JSON if jwk, ArrayBuffer otherwise*/
         algorithm: Algorithm,
         extractable: Boolean,
-        keyUsages: Array<String>,
+        keyUsages: JsArray<JsString>,
     ): Promise<CryptoKey>
 
     fun exportKey(
         format: String, /*"raw" | "pkcs8" | "spki"*/
         key: CryptoKey,
-    ): Promise<Any /*JSON if jwk, ArrayBuffer otherwise*/>
+    ): Promise<JsAny /*JSON if jwk, ArrayBuffer otherwise*/>
 
     fun generateKey(
         algorithm: Algorithm,
         extractable: Boolean,
-        keyUsages: Array<String>,
+        keyUsages: JsArray<JsString>,
     ): Promise<CryptoKey>
 
     @JsName("generateKey")
     fun generateKeyPair(
         algorithm: Algorithm,
         extractable: Boolean,
-        keyUsages: Array<String>,
+        keyUsages: JsArray<JsString>,
     ): Promise<CryptoKeyPair>
 }
 

@@ -4,11 +4,16 @@
 
 package dev.whyoleg.cryptography.providers.webcrypto.internal
 
-internal expect interface CryptoKey
+import kotlin.js.*
 
-internal expect interface CryptoKeyPair {
+internal external interface CryptoKey : JsAny
+
+internal external interface CryptoKeyPair : JsAny {
     val privateKey: CryptoKey
     val publicKey: CryptoKey
 }
 
-internal expect val CryptoKey.algorithm: Algorithm
+internal val CryptoKey.algorithm: Algorithm get() = keyAlgorithm(this)
+
+@Suppress("UNUSED_PARAMETER")
+private fun keyAlgorithm(key: CryptoKey): Algorithm = js("key.algorithm")

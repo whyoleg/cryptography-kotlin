@@ -11,4 +11,5 @@ object OptIns {
 
     const val ExperimentalStdlibApi = "kotlin.ExperimentalStdlibApi"
     const val ExperimentalForeignApi = "kotlinx.cinterop.ExperimentalForeignApi"
+    const val ExperimentalWasmJsInterop = "kotlin.js.ExperimentalWasmJsInterop"
 }

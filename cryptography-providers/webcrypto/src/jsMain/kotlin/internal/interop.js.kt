@@ -1,20 +1,21 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.webcrypto.internal
 
-import org.khronos.webgl.*
 import kotlin.coroutines.*
 import kotlin.js.Promise
 
-internal suspend fun <T> Promise<T>.await() = suspendCoroutine { continuation ->
+internal actual suspend fun <T : JsAny> Promise<T>.await(): T = suspendCoroutine { continuation ->
     then(
         { continuation.resume(it); null },
         { continuation.resumeWithException(it); null }
     )
 }
 
-internal fun ArrayBuffer.toByteArray(): ByteArray = Int8Array(this).unsafeCast<ByteArray>()
+internal actual fun ArrayBuffer.toByteArray(): ByteArray = Int8Array(this).unsafeCast<ByteArray>()
 
-internal fun ByteArray.toInt8Array(): Int8Array = this.unsafeCast<Int8Array>()
+internal actual fun ByteArray.toInt8Array(): Int8Array = this.unsafeCast<Int8Array>()
+
+internal actual fun Int8Array.toByteArray(): ByteArray = this.unsafeCast<ByteArray>()
