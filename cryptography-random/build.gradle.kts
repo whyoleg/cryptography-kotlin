@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 import ckbuild.*
@@ -14,6 +14,10 @@ description = "cryptography-kotlin random API"
 @OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
     allTargets()
+
+    compilerOptions {
+        freeCompilerArgs.add("-Xexpect-actual-classes")
+    }
 
     applyDefaultHierarchyTemplate {
         common {

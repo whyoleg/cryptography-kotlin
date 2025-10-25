@@ -1,10 +1,9 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.random
 
-import kotlin.wasm.*
 import kotlin.wasm.unsafe.*
 
 internal actual fun defaultCryptographyRandom(): CryptographyRandom = WasiPreview1CryptographyRandom
@@ -25,5 +24,6 @@ private object WasiPreview1CryptographyRandom : AbstractRandom() {
     }
 }
 
+@OptIn(kotlin.wasm.ExperimentalWasmInterop::class)
 @WasmImport("wasi_snapshot_preview1", "random_get")
 private external fun wasiRandomGet(address: Int, size: Int): Int

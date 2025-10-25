@@ -4,35 +4,6 @@
 
 package dev.whyoleg.cryptography.random
 
-import org.khronos.webgl.*
-
-internal actual fun defaultCryptographyRandom(): CryptographyRandom = WebCryptoCryptographyRandom
-
-private object WebCryptoCryptographyRandom : AbstractRandom() {
-    private const val MAX_ARRAY_SIZE = 65536
-    private val crypto: Crypto = getCrypto()
-    override fun fillBytes(array: ByteArray) {
-        fillBytes(array.unsafeCast<Int8Array>())
-    }
-
-    private fun fillBytes(jsArray: Int8Array) {
-        val size = jsArray.length
-        if (size <= MAX_ARRAY_SIZE) {
-            crypto.getRandomValues(jsArray)
-        } else {
-            var filled = 0
-            do {
-                val chunkSize = minOf(MAX_ARRAY_SIZE, size - filled)
-                crypto.getRandomValues(jsArray.subarray(filled, filled + chunkSize))
-                filled += chunkSize
-            } while (filled < size)
-        }
-    }
+internal actual inline fun ByteArray.useAsInt8Array(block: (array: Int8Array) -> Unit) {
+    block(this.unsafeCast<Int8Array>())
 }
-
-private external interface Crypto {
-    fun getRandomValues(array: Int8Array)
-}
-
-//language=JavaScript
-private fun getCrypto(): Crypto = js("(globalThis ? globalThis.crypto : (window.crypto || window.msCrypto))")
