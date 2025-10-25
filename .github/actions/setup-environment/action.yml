@@ -55,5 +55,3 @@ runs:
         cache-read-only: ${{ inputs.cache-read-only }}
 
         dependency-graph: ${{ (inputs.submit-dependency-graph == 'true') && 'generate-and-submit' || 'disabled' }}
-    - run: ./gradlew commonizeNativeDistribution
-      shell: bash
