@@ -48,6 +48,26 @@ final class dev.whyoleg.cryptography.serialization.asn1/BitArray { // dev.whyole
     }
 }
 
+final class dev.whyoleg.cryptography.serialization.asn1/Asn1Any { // dev.whyoleg.cryptography.serialization.asn1/Asn1Any|null[0]
+    constructor <init>(kotlin/ByteArray) // dev.whyoleg.cryptography.serialization.asn1/Asn1Any.<init>|<init>(kotlin.ByteArray){}[0]
+
+    final val bytes // dev.whyoleg.cryptography.serialization.asn1/Asn1Any.bytes|{}bytes[0]
+        final fun <get-bytes>(): kotlin/ByteArray // dev.whyoleg.cryptography.serialization.asn1/Asn1Any.bytes.<get-bytes>|<get-bytes>(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<dev.whyoleg.cryptography.serialization.asn1/Asn1Any> { // dev.whyoleg.cryptography.serialization.asn1/Asn1Any.$serializer|null[0]
+        final val descriptor // dev.whyoleg.cryptography.serialization.asn1/Asn1Any.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // dev.whyoleg.cryptography.serialization.asn1/Asn1Any.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // dev.whyoleg.cryptography.serialization.asn1/Asn1Any.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): dev.whyoleg.cryptography.serialization.asn1/Asn1Any // dev.whyoleg.cryptography.serialization.asn1/Asn1Any.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, dev.whyoleg.cryptography.serialization.asn1/Asn1Any) // dev.whyoleg.cryptography.serialization.asn1/Asn1Any.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;dev.whyoleg.cryptography.serialization.asn1.Asn1Any){}[0]
+    }
+
+    final object Companion { // dev.whyoleg.cryptography.serialization.asn1/Asn1Any.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<dev.whyoleg.cryptography.serialization.asn1/Asn1Any> // dev.whyoleg.cryptography.serialization.asn1/Asn1Any.Companion.serializer|serializer(){}[0]
+    }
+
+
 final value class dev.whyoleg.cryptography.serialization.asn1/ObjectIdentifier { // dev.whyoleg.cryptography.serialization.asn1/ObjectIdentifier|null[0]
     constructor <init>(kotlin/String) // dev.whyoleg.cryptography.serialization.asn1/ObjectIdentifier.<init>|<init>(kotlin.String){}[0]
 

@@ -17,8 +17,12 @@ jobs:
     needs: [ build-project ]
     uses: ./.github/workflows/run-tests-default.yml
 
+  asn1-tests:
+    needs: [ build-project ]
+    uses: ./.github/workflows/run-tests-asn1.yml
+
   compatibility-tests:
-    needs: [ default-tests ]
+    needs: [ default-tests, asn1-tests ]
     uses: ./.github/workflows/run-tests-compatibility.yml
 
   slow-tasks:
