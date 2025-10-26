@@ -73,5 +73,12 @@ public value class PemLabel(public val value: String) {
          * as described in [RFC2986, known as PKCS#10](https://datatracker.ietf.org/doc/html/rfc2986)
          */
         public val CertificateRequest: PemLabel = PemLabel("CERTIFICATE REQUEST")
+
+        /**
+         * Represents a label used in PEM documents that contain
+         * DER encoded ASN.1 DH parameters structure
+         * as described in [RFC3279](https://datatracker.ietf.org/doc/html/rfc3279)
+         */
+        public val DHParams: PemLabel = PemLabel("DH PARAMETERS")
     }
 }
