@@ -30,6 +30,8 @@ internal object CryptoKitCryptographyProvider : CryptographyProvider() {
         AES.GCM -> CryptoKitAesGcm
         ECDSA  -> CryptoKitEcdsa
         ECDH   -> CryptoKitEcdh
+        EdDSA  -> CryptoKitEdDSA
+        XDH    -> CryptoKitXDH
         else    -> null
     } as A?
 }
