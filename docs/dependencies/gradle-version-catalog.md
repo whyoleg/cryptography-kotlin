@@ -44,7 +44,7 @@ Use version catalog in any of `build.gradle.kts`:
 
 ```kotlin
 dependencies {
-    implementation(libc.cryptography.core)
+    implementation(libs.cryptography.core)
     implementation(libs.cryptography.provider.optimal)
 }
 ```
