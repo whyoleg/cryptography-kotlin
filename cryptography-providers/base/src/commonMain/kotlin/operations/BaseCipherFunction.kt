@@ -14,6 +14,8 @@ public interface CipherFunction {
     public fun transform(source: ByteArray, startIndex: Int = 0, endIndex: Int = source.size): ByteArray
     public fun transformedSource(source: RawSource): RawSource
     public fun transformedSink(sink: RawSink): RawSink
+    public fun initialize() {}
+    public fun process(input: ByteArray, iv: ByteArray): ByteArray { return byteArrayOf() }
 }
 
 // TODO: test with different input/output sizes
