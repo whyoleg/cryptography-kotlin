@@ -9,6 +9,9 @@ plugins {
 }
 
 kotlin {
+    compilerOptions {
+        allWarningsAsErrors = false // TODO
+    }
     allBenchmarkTargets()
 
     sourceSets {
