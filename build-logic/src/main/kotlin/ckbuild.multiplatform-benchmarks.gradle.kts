@@ -3,7 +3,6 @@
  */
 
 import ckbuild.*
-import kotlinx.benchmark.gradle.*
 import org.jetbrains.kotlin.gradle.plugin.*
 
 plugins {
@@ -26,11 +25,5 @@ kotlin {
         commonMain.dependencies {
             implementation(project.versionCatalogLib("kotlinx-benchmark-runtime"))
         }
-    }
-}
-
-benchmark {
-    targets.configureEach {
-        if (this is JvmBenchmarkTarget) jmhVersion = "1.37"
     }
 }

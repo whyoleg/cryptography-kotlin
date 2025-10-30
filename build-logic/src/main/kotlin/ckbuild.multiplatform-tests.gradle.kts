@@ -15,14 +15,7 @@ import org.jetbrains.kotlin.gradle.targets.native.tasks.*
 
 plugins {
     id("ckbuild.multiplatform-base")
-}
-
-// https://github.com/Kotlin/kotlinx-kover/issues/747
-if (project.name != "cryptography-provider-jdk-android-tests") {
-    plugins.apply("org.jetbrains.kotlinx.kover")
-} else {
-    // as we depend on it in the ` jvmAllTest ` task
-    tasks.register("koverVerify")
+    id("org.jetbrains.kotlinx.kover")
 }
 
 val skipTestTasks = booleanProperty("ckbuild.skipTestTasks", defaultValue = false)
