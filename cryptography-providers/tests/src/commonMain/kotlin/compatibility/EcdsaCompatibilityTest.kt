@@ -50,13 +50,15 @@ abstract class EcdsaCompatibilityTest(
                 curve = curve,
                 keyParametersId = keyParametersId,
                 isStressTest = isStressTest
-            ) { keyPair, keyReference, keyParameters ->
+            ) { keyPair, keyReference, _ ->
                 signatureParametersList.forEach { (signatureParametersId, signatureParameters) ->
                     logger.log { "digest = ${signatureParameters.digestName}, signatureFormat = ${signatureParameters.signatureFormat}" }
                     val signer =
                         keyPair.privateKey.signatureGenerator(signatureParameters.digest, signatureParameters.signatureFormat)
                     val verifier =
                         keyPair.publicKey.signatureVerifier(signatureParameters.digest, signatureParameters.signatureFormat)
+                    val verifier2 =
+                        keyPair.privateKey.getPublicKey().signatureVerifier(signatureParameters.digest, signatureParameters.signatureFormat)
 
                     repeat(signatureIterations) {
                         val dataSize = CryptographyRandom.nextInt(maxDataSize)
@@ -66,6 +68,7 @@ abstract class EcdsaCompatibilityTest(
                         logger.log { "signature.size = ${signature.size}" }
 
                         verifier.assertVerifySignature(data, signature, "Initial Verify")
+                        verifier2.assertVerifySignature(data, signature, "Initial Verify (inferred public key)")
 
                         api.signatures.saveData(signatureParametersId, SignatureData(keyReference, data, signature))
                     }
@@ -83,13 +86,27 @@ abstract class EcdsaCompatibilityTest(
             api.signatures.getData<SignatureData>(parametersId) { (keyReference, data, signature), _, _ ->
                 val (publicKeys, privateKeys) = keyPairs[keyReference] ?: return@getData
                 val verifiers = publicKeys.map { it.signatureVerifier(signatureParameters.digest, signatureParameters.signatureFormat) }
+                val verifiers2 = privateKeys.mapNotNull {
+                    val publicKey = getPublicKey(it)
+                    publicKey?.signatureVerifier(signatureParameters.digest, signatureParameters.signatureFormat)
+                }
                 val generators = privateKeys.map { it.signatureGenerator(signatureParameters.digest, signatureParameters.signatureFormat) }
 
                 verifiers.forEach { verifier ->
                     verifier.assertVerifySignature(data, signature, "Verify")
+                }
 
-                    generators.forEach { generator ->
-                        verifier.assertVerifySignature(data, generator.generateSignature(data), "Sign-Verify")
+                verifiers2.forEach { verifier ->
+                    verifier.assertVerifySignature(data, signature, "Verify (inferred public key)")
+                }
+
+                generators.forEach { generator ->
+                    val signature = generator.generateSignature(data)
+                    verifiers.forEach { verifier ->
+                        verifier.assertVerifySignature(data, signature, "Sign-Verify")
+                    }
+                    verifiers2.forEach { verifier ->
+                        verifier.assertVerifySignature(data, signature, "Sign-Verify (inferred public key)")
                     }
                 }
             }

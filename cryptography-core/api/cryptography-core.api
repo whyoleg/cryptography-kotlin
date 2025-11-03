@@ -314,7 +314,7 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/EC$KeyPair :
 	public abstract fun getPublicKey ()Ldev/whyoleg/cryptography/algorithms/EC$PublicKey;
 }
 
-public abstract interface class dev/whyoleg/cryptography/algorithms/EC$PrivateKey : dev/whyoleg/cryptography/materials/key/EncodableKey {
+public abstract interface class dev/whyoleg/cryptography/algorithms/EC$PrivateKey : dev/whyoleg/cryptography/materials/key/EncodableKey, dev/whyoleg/cryptography/operations/PublicKeyAccessor {
 }
 
 public abstract class dev/whyoleg/cryptography/algorithms/EC$PrivateKey$Format : dev/whyoleg/cryptography/materials/key/KeyFormat {
@@ -582,7 +582,7 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/RSA$PSS$Publ
 	public abstract fun signatureVerifier-6q1zMKY (I)Ldev/whyoleg/cryptography/operations/SignatureVerifier;
 }
 
-public abstract interface class dev/whyoleg/cryptography/algorithms/RSA$PrivateKey : dev/whyoleg/cryptography/materials/key/EncodableKey {
+public abstract interface class dev/whyoleg/cryptography/algorithms/RSA$PrivateKey : dev/whyoleg/cryptography/materials/key/EncodableKey, dev/whyoleg/cryptography/operations/PublicKeyAccessor {
 }
 
 public abstract class dev/whyoleg/cryptography/algorithms/RSA$PrivateKey$Format : dev/whyoleg/cryptography/materials/key/KeyFormat {
@@ -850,6 +850,11 @@ public abstract interface class dev/whyoleg/cryptography/operations/Hasher {
 	public fun hashBlocking (Lkotlinx/io/RawSource;)Lkotlinx/io/bytestring/ByteString;
 	public fun hashBlocking (Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
 	public fun hashBlocking ([B)[B
+}
+
+public abstract interface class dev/whyoleg/cryptography/operations/PublicKeyAccessor {
+	public fun getPublicKey (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getPublicKeyBlocking ()Ldev/whyoleg/cryptography/materials/key/Key;
 }
 
 public abstract interface class dev/whyoleg/cryptography/operations/SecretDerivation {

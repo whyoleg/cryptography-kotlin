@@ -11,7 +11,11 @@ import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.*
 
 @SubclassOptInRequired(CryptographyProviderApi::class)
-public interface RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP : RSA.KeyPair<PublicK, PrivateK>> : CryptographyAlgorithm {
+public interface RSA<
+        PublicK : RSA.PublicKey,
+        PrivateK : RSA.PrivateKey<PublicK>,
+        KP : RSA.KeyPair<PublicK, PrivateK>,
+        > : CryptographyAlgorithm {
     public fun publicKeyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<PublicKey.Format, PublicK>
     public fun privateKeyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<PrivateKey.Format, PrivateK>
 
@@ -22,7 +26,7 @@ public interface RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP : RS
     ): KeyGenerator<KP>
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
-    public interface KeyPair<PublicK : PublicKey, PrivateK : PrivateKey> : Key {
+    public interface KeyPair<PublicK : PublicKey, PrivateK : PrivateKey<PublicK>> : Key {
         public val publicKey: PublicK
         public val privateKey: PrivateK
     }
@@ -61,7 +65,7 @@ public interface RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP : RS
     }
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
-    public interface PrivateKey : EncodableKey<PrivateKey.Format> {
+    public interface PrivateKey<PublicK : PublicKey> : EncodableKey<PrivateKey.Format>, PublicKeyAccessor<PublicK> {
         public sealed class Format : KeyFormat {
             final override fun toString(): String = name
 
@@ -108,7 +112,7 @@ public interface RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP : RS
         }
 
         @SubclassOptInRequired(CryptographyProviderApi::class)
-        public interface PrivateKey : RSA.PrivateKey {
+        public interface PrivateKey : RSA.PrivateKey<PublicKey> {
             public fun decryptor(): AuthenticatedDecryptor
         }
     }
@@ -130,7 +134,7 @@ public interface RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP : RS
         }
 
         @SubclassOptInRequired(CryptographyProviderApi::class)
-        public interface PrivateKey : RSA.PrivateKey {
+        public interface PrivateKey : RSA.PrivateKey<PublicKey> {
             // default salt = digest.outputSize
             public fun signatureGenerator(): SignatureGenerator
             public fun signatureGenerator(saltSize: BinarySize): SignatureGenerator
@@ -156,7 +160,7 @@ public interface RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP : RS
         }
 
         @SubclassOptInRequired(CryptographyProviderApi::class)
-        public interface PrivateKey : RSA.PrivateKey {
+        public interface PrivateKey : RSA.PrivateKey<PublicKey> {
             public fun signatureGenerator(): SignatureGenerator
 
             // digest is not used at all
@@ -182,7 +186,7 @@ public interface RSA<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP : RS
         }
 
         @SubclassOptInRequired(CryptographyProviderApi::class)
-        public interface PrivateKey : RSA.PrivateKey {
+        public interface PrivateKey : RSA.PrivateKey<PublicKey> {
             public fun decryptor(): Decryptor
         }
     }

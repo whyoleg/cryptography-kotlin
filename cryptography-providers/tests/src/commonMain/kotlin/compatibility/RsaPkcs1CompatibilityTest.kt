@@ -25,6 +25,7 @@ abstract class RsaPkcs1CompatibilityTest(provider: CryptographyProvider) :
         generateKeys(isStressTest) { keyPair, keyReference, _ ->
             val signer = keyPair.privateKey.signatureGenerator()
             val verifier = keyPair.publicKey.signatureVerifier()
+            val verifier2 = keyPair.privateKey.getPublicKey().signatureVerifier()
 
             repeat(signatureIterations) {
                 val dataSize = CryptographyRandom.nextInt(maxDataSize)
@@ -34,6 +35,7 @@ abstract class RsaPkcs1CompatibilityTest(provider: CryptographyProvider) :
                 logger.log { "signature.size = ${signature.size}" }
 
                 verifier.assertVerifySignature(data, signature, "Initial Verify")
+                verifier2.assertVerifySignature(data, signature, "Initial Verify (from private key)")
 
                 api.signatures.saveData(signatureParametersId, SignatureData(keyReference, data, signature))
             }
@@ -48,8 +50,17 @@ abstract class RsaPkcs1CompatibilityTest(provider: CryptographyProvider) :
                 val (publicKeys, privateKeys) = keyPairs[keyReference] ?: return@getData
                 val verifiers = publicKeys.map { it.signatureVerifier() }
                 val generators = privateKeys.map { it.signatureGenerator() }
+                val verifiers2 = privateKeys.map { it.getPublicKey().signatureVerifier() }
 
                 verifiers.forEach { verifier ->
+                    verifier.assertVerifySignature(data, signature, "Verify")
+
+                    generators.forEach { generator ->
+                        verifier.assertVerifySignature(data, generator.generateSignature(data), "Sign-Verify")
+                    }
+                }
+
+                verifiers2.forEach { verifier ->
                     verifier.assertVerifySignature(data, signature, "Verify")
 
                     generators.forEach { generator ->

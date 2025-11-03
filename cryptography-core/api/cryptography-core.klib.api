@@ -191,19 +191,19 @@ abstract interface <#A: dev.whyoleg.cryptography.algorithms/AES.Key> dev.whyoleg
     }
 }
 
-abstract interface <#A: dev.whyoleg.cryptography.algorithms/EC.PublicKey, #B: dev.whyoleg.cryptography.algorithms/EC.PrivateKey, #C: dev.whyoleg.cryptography.algorithms/EC.KeyPair<#A, #B>> dev.whyoleg.cryptography.algorithms/EC : dev.whyoleg.cryptography/CryptographyAlgorithm { // dev.whyoleg.cryptography.algorithms/EC|null[0]
+abstract interface <#A: dev.whyoleg.cryptography.algorithms/EC.PublicKey, #B: dev.whyoleg.cryptography.algorithms/EC.PrivateKey<#A>, #C: dev.whyoleg.cryptography.algorithms/EC.KeyPair<#A, #B>> dev.whyoleg.cryptography.algorithms/EC : dev.whyoleg.cryptography/CryptographyAlgorithm { // dev.whyoleg.cryptography.algorithms/EC|null[0]
     abstract fun keyPairGenerator(dev.whyoleg.cryptography.algorithms/EC.Curve): dev.whyoleg.cryptography.materials.key/KeyGenerator<#C> // dev.whyoleg.cryptography.algorithms/EC.keyPairGenerator|keyPairGenerator(dev.whyoleg.cryptography.algorithms.EC.Curve){}[0]
     abstract fun privateKeyDecoder(dev.whyoleg.cryptography.algorithms/EC.Curve): dev.whyoleg.cryptography.materials.key/KeyDecoder<dev.whyoleg.cryptography.algorithms/EC.PrivateKey.Format, #B> // dev.whyoleg.cryptography.algorithms/EC.privateKeyDecoder|privateKeyDecoder(dev.whyoleg.cryptography.algorithms.EC.Curve){}[0]
     abstract fun publicKeyDecoder(dev.whyoleg.cryptography.algorithms/EC.Curve): dev.whyoleg.cryptography.materials.key/KeyDecoder<dev.whyoleg.cryptography.algorithms/EC.PublicKey.Format, #A> // dev.whyoleg.cryptography.algorithms/EC.publicKeyDecoder|publicKeyDecoder(dev.whyoleg.cryptography.algorithms.EC.Curve){}[0]
 
-    abstract interface <#A1: dev.whyoleg.cryptography.algorithms/EC.PublicKey, #B1: dev.whyoleg.cryptography.algorithms/EC.PrivateKey> KeyPair : dev.whyoleg.cryptography.materials.key/Key { // dev.whyoleg.cryptography.algorithms/EC.KeyPair|null[0]
+    abstract interface <#A1: dev.whyoleg.cryptography.algorithms/EC.PublicKey, #B1: dev.whyoleg.cryptography.algorithms/EC.PrivateKey<#A1>> KeyPair : dev.whyoleg.cryptography.materials.key/Key { // dev.whyoleg.cryptography.algorithms/EC.KeyPair|null[0]
         abstract val privateKey // dev.whyoleg.cryptography.algorithms/EC.KeyPair.privateKey|{}privateKey[0]
             abstract fun <get-privateKey>(): #B1 // dev.whyoleg.cryptography.algorithms/EC.KeyPair.privateKey.<get-privateKey>|<get-privateKey>(){}[0]
         abstract val publicKey // dev.whyoleg.cryptography.algorithms/EC.KeyPair.publicKey|{}publicKey[0]
             abstract fun <get-publicKey>(): #A1 // dev.whyoleg.cryptography.algorithms/EC.KeyPair.publicKey.<get-publicKey>|<get-publicKey>(){}[0]
     }
 
-    abstract interface PrivateKey : dev.whyoleg.cryptography.materials.key/EncodableKey<dev.whyoleg.cryptography.algorithms/EC.PrivateKey.Format> { // dev.whyoleg.cryptography.algorithms/EC.PrivateKey|null[0]
+    abstract interface <#A1: dev.whyoleg.cryptography.algorithms/EC.PublicKey> PrivateKey : dev.whyoleg.cryptography.materials.key/EncodableKey<dev.whyoleg.cryptography.algorithms/EC.PrivateKey.Format>, dev.whyoleg.cryptography.operations/PublicKeyAccessor<#A1> { // dev.whyoleg.cryptography.algorithms/EC.PrivateKey|null[0]
         sealed class Format : dev.whyoleg.cryptography.materials.key/KeyFormat { // dev.whyoleg.cryptography.algorithms/EC.PrivateKey.Format|null[0]
             final fun toString(): kotlin/String // dev.whyoleg.cryptography.algorithms/EC.PrivateKey.Format.toString|toString(){}[0]
 
@@ -329,74 +329,19 @@ abstract interface <#A: dev.whyoleg.cryptography.algorithms/EC.PublicKey, #B: de
     }
 }
 
-abstract interface <#A: dev.whyoleg.cryptography.algorithms/RSA.PublicKey, #B: dev.whyoleg.cryptography.algorithms/RSA.PrivateKey, #C: dev.whyoleg.cryptography.algorithms/RSA.KeyPair<#A, #B>> dev.whyoleg.cryptography.algorithms/RSA : dev.whyoleg.cryptography/CryptographyAlgorithm { // dev.whyoleg.cryptography.algorithms/RSA|null[0]
+abstract interface <#A: dev.whyoleg.cryptography.algorithms/RSA.PublicKey, #B: dev.whyoleg.cryptography.algorithms/RSA.PrivateKey<#A>, #C: dev.whyoleg.cryptography.algorithms/RSA.KeyPair<#A, #B>> dev.whyoleg.cryptography.algorithms/RSA : dev.whyoleg.cryptography/CryptographyAlgorithm { // dev.whyoleg.cryptography.algorithms/RSA|null[0]
     abstract fun keyPairGenerator(dev.whyoleg.cryptography/BinarySize = ..., dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest> = ..., dev.whyoleg.cryptography.bigint/BigInt = ...): dev.whyoleg.cryptography.materials.key/KeyGenerator<#C> // dev.whyoleg.cryptography.algorithms/RSA.keyPairGenerator|keyPairGenerator(dev.whyoleg.cryptography.BinarySize;dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>;dev.whyoleg.cryptography.bigint.BigInt){}[0]
     abstract fun privateKeyDecoder(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest>): dev.whyoleg.cryptography.materials.key/KeyDecoder<dev.whyoleg.cryptography.algorithms/RSA.PrivateKey.Format, #B> // dev.whyoleg.cryptography.algorithms/RSA.privateKeyDecoder|privateKeyDecoder(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>){}[0]
     abstract fun publicKeyDecoder(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest>): dev.whyoleg.cryptography.materials.key/KeyDecoder<dev.whyoleg.cryptography.algorithms/RSA.PublicKey.Format, #A> // dev.whyoleg.cryptography.algorithms/RSA.publicKeyDecoder|publicKeyDecoder(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>){}[0]
 
-    abstract interface <#A1: dev.whyoleg.cryptography.algorithms/RSA.PublicKey, #B1: dev.whyoleg.cryptography.algorithms/RSA.PrivateKey> KeyPair : dev.whyoleg.cryptography.materials.key/Key { // dev.whyoleg.cryptography.algorithms/RSA.KeyPair|null[0]
+    abstract interface <#A1: dev.whyoleg.cryptography.algorithms/RSA.PublicKey, #B1: dev.whyoleg.cryptography.algorithms/RSA.PrivateKey<#A1>> KeyPair : dev.whyoleg.cryptography.materials.key/Key { // dev.whyoleg.cryptography.algorithms/RSA.KeyPair|null[0]
         abstract val privateKey // dev.whyoleg.cryptography.algorithms/RSA.KeyPair.privateKey|{}privateKey[0]
             abstract fun <get-privateKey>(): #B1 // dev.whyoleg.cryptography.algorithms/RSA.KeyPair.privateKey.<get-privateKey>|<get-privateKey>(){}[0]
         abstract val publicKey // dev.whyoleg.cryptography.algorithms/RSA.KeyPair.publicKey|{}publicKey[0]
             abstract fun <get-publicKey>(): #A1 // dev.whyoleg.cryptography.algorithms/RSA.KeyPair.publicKey.<get-publicKey>|<get-publicKey>(){}[0]
     }
 
-    abstract interface OAEP : dev.whyoleg.cryptography.algorithms/RSA<dev.whyoleg.cryptography.algorithms/RSA.OAEP.PublicKey, dev.whyoleg.cryptography.algorithms/RSA.OAEP.PrivateKey, dev.whyoleg.cryptography.algorithms/RSA.OAEP.KeyPair> { // dev.whyoleg.cryptography.algorithms/RSA.OAEP|null[0]
-        open val id // dev.whyoleg.cryptography.algorithms/RSA.OAEP.id|{}id[0]
-            open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/RSA.OAEP> // dev.whyoleg.cryptography.algorithms/RSA.OAEP.id.<get-id>|<get-id>(){}[0]
-
-        abstract interface KeyPair : dev.whyoleg.cryptography.algorithms/RSA.KeyPair<dev.whyoleg.cryptography.algorithms/RSA.OAEP.PublicKey, dev.whyoleg.cryptography.algorithms/RSA.OAEP.PrivateKey> // dev.whyoleg.cryptography.algorithms/RSA.OAEP.KeyPair|null[0]
-
-        abstract interface PrivateKey : dev.whyoleg.cryptography.algorithms/RSA.PrivateKey { // dev.whyoleg.cryptography.algorithms/RSA.OAEP.PrivateKey|null[0]
-            abstract fun decryptor(): dev.whyoleg.cryptography.operations/AuthenticatedDecryptor // dev.whyoleg.cryptography.algorithms/RSA.OAEP.PrivateKey.decryptor|decryptor(){}[0]
-        }
-
-        abstract interface PublicKey : dev.whyoleg.cryptography.algorithms/RSA.PublicKey { // dev.whyoleg.cryptography.algorithms/RSA.OAEP.PublicKey|null[0]
-            abstract fun encryptor(): dev.whyoleg.cryptography.operations/AuthenticatedEncryptor // dev.whyoleg.cryptography.algorithms/RSA.OAEP.PublicKey.encryptor|encryptor(){}[0]
-        }
-
-        final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/RSA.OAEP> // dev.whyoleg.cryptography.algorithms/RSA.OAEP.Companion|null[0]
-    }
-
-    abstract interface PKCS1 : dev.whyoleg.cryptography.algorithms/RSA<dev.whyoleg.cryptography.algorithms/RSA.PKCS1.PublicKey, dev.whyoleg.cryptography.algorithms/RSA.PKCS1.PrivateKey, dev.whyoleg.cryptography.algorithms/RSA.PKCS1.KeyPair> { // dev.whyoleg.cryptography.algorithms/RSA.PKCS1|null[0]
-        open val id // dev.whyoleg.cryptography.algorithms/RSA.PKCS1.id|{}id[0]
-            open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/RSA.PKCS1> // dev.whyoleg.cryptography.algorithms/RSA.PKCS1.id.<get-id>|<get-id>(){}[0]
-
-        abstract interface KeyPair : dev.whyoleg.cryptography.algorithms/RSA.KeyPair<dev.whyoleg.cryptography.algorithms/RSA.PKCS1.PublicKey, dev.whyoleg.cryptography.algorithms/RSA.PKCS1.PrivateKey> // dev.whyoleg.cryptography.algorithms/RSA.PKCS1.KeyPair|null[0]
-
-        abstract interface PrivateKey : dev.whyoleg.cryptography.algorithms/RSA.PrivateKey { // dev.whyoleg.cryptography.algorithms/RSA.PKCS1.PrivateKey|null[0]
-            abstract fun decryptor(): dev.whyoleg.cryptography.operations/Decryptor // dev.whyoleg.cryptography.algorithms/RSA.PKCS1.PrivateKey.decryptor|decryptor(){}[0]
-            abstract fun signatureGenerator(): dev.whyoleg.cryptography.operations/SignatureGenerator // dev.whyoleg.cryptography.algorithms/RSA.PKCS1.PrivateKey.signatureGenerator|signatureGenerator(){}[0]
-        }
-
-        abstract interface PublicKey : dev.whyoleg.cryptography.algorithms/RSA.PublicKey { // dev.whyoleg.cryptography.algorithms/RSA.PKCS1.PublicKey|null[0]
-            abstract fun encryptor(): dev.whyoleg.cryptography.operations/Encryptor // dev.whyoleg.cryptography.algorithms/RSA.PKCS1.PublicKey.encryptor|encryptor(){}[0]
-            abstract fun signatureVerifier(): dev.whyoleg.cryptography.operations/SignatureVerifier // dev.whyoleg.cryptography.algorithms/RSA.PKCS1.PublicKey.signatureVerifier|signatureVerifier(){}[0]
-        }
-
-        final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/RSA.PKCS1> // dev.whyoleg.cryptography.algorithms/RSA.PKCS1.Companion|null[0]
-    }
-
-    abstract interface PSS : dev.whyoleg.cryptography.algorithms/RSA<dev.whyoleg.cryptography.algorithms/RSA.PSS.PublicKey, dev.whyoleg.cryptography.algorithms/RSA.PSS.PrivateKey, dev.whyoleg.cryptography.algorithms/RSA.PSS.KeyPair> { // dev.whyoleg.cryptography.algorithms/RSA.PSS|null[0]
-        open val id // dev.whyoleg.cryptography.algorithms/RSA.PSS.id|{}id[0]
-            open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/RSA.PSS> // dev.whyoleg.cryptography.algorithms/RSA.PSS.id.<get-id>|<get-id>(){}[0]
-
-        abstract interface KeyPair : dev.whyoleg.cryptography.algorithms/RSA.KeyPair<dev.whyoleg.cryptography.algorithms/RSA.PSS.PublicKey, dev.whyoleg.cryptography.algorithms/RSA.PSS.PrivateKey> // dev.whyoleg.cryptography.algorithms/RSA.PSS.KeyPair|null[0]
-
-        abstract interface PrivateKey : dev.whyoleg.cryptography.algorithms/RSA.PrivateKey { // dev.whyoleg.cryptography.algorithms/RSA.PSS.PrivateKey|null[0]
-            abstract fun signatureGenerator(): dev.whyoleg.cryptography.operations/SignatureGenerator // dev.whyoleg.cryptography.algorithms/RSA.PSS.PrivateKey.signatureGenerator|signatureGenerator(){}[0]
-            abstract fun signatureGenerator(dev.whyoleg.cryptography/BinarySize): dev.whyoleg.cryptography.operations/SignatureGenerator // dev.whyoleg.cryptography.algorithms/RSA.PSS.PrivateKey.signatureGenerator|signatureGenerator(dev.whyoleg.cryptography.BinarySize){}[0]
-        }
-
-        abstract interface PublicKey : dev.whyoleg.cryptography.algorithms/RSA.PublicKey { // dev.whyoleg.cryptography.algorithms/RSA.PSS.PublicKey|null[0]
-            abstract fun signatureVerifier(): dev.whyoleg.cryptography.operations/SignatureVerifier // dev.whyoleg.cryptography.algorithms/RSA.PSS.PublicKey.signatureVerifier|signatureVerifier(){}[0]
-            abstract fun signatureVerifier(dev.whyoleg.cryptography/BinarySize): dev.whyoleg.cryptography.operations/SignatureVerifier // dev.whyoleg.cryptography.algorithms/RSA.PSS.PublicKey.signatureVerifier|signatureVerifier(dev.whyoleg.cryptography.BinarySize){}[0]
-        }
-
-        final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/RSA.PSS> // dev.whyoleg.cryptography.algorithms/RSA.PSS.Companion|null[0]
-    }
-
-    abstract interface PrivateKey : dev.whyoleg.cryptography.materials.key/EncodableKey<dev.whyoleg.cryptography.algorithms/RSA.PrivateKey.Format> { // dev.whyoleg.cryptography.algorithms/RSA.PrivateKey|null[0]
+    abstract interface <#A1: dev.whyoleg.cryptography.algorithms/RSA.PublicKey> PrivateKey : dev.whyoleg.cryptography.materials.key/EncodableKey<dev.whyoleg.cryptography.algorithms/RSA.PrivateKey.Format>, dev.whyoleg.cryptography.operations/PublicKeyAccessor<#A1> { // dev.whyoleg.cryptography.algorithms/RSA.PrivateKey|null[0]
         sealed class Format : dev.whyoleg.cryptography.materials.key/KeyFormat { // dev.whyoleg.cryptography.algorithms/RSA.PrivateKey.Format|null[0]
             final fun toString(): kotlin/String // dev.whyoleg.cryptography.algorithms/RSA.PrivateKey.Format.toString|toString(){}[0]
 
@@ -438,6 +383,61 @@ abstract interface <#A: dev.whyoleg.cryptography.algorithms/RSA.PublicKey, #B: d
                 final fun hashCode(): kotlin/Int // dev.whyoleg.cryptography.algorithms/RSA.PrivateKey.Format.JWK.hashCode|hashCode(){}[0]
             }
         }
+    }
+
+    abstract interface OAEP : dev.whyoleg.cryptography.algorithms/RSA<dev.whyoleg.cryptography.algorithms/RSA.OAEP.PublicKey, dev.whyoleg.cryptography.algorithms/RSA.OAEP.PrivateKey, dev.whyoleg.cryptography.algorithms/RSA.OAEP.KeyPair> { // dev.whyoleg.cryptography.algorithms/RSA.OAEP|null[0]
+        open val id // dev.whyoleg.cryptography.algorithms/RSA.OAEP.id|{}id[0]
+            open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/RSA.OAEP> // dev.whyoleg.cryptography.algorithms/RSA.OAEP.id.<get-id>|<get-id>(){}[0]
+
+        abstract interface KeyPair : dev.whyoleg.cryptography.algorithms/RSA.KeyPair<dev.whyoleg.cryptography.algorithms/RSA.OAEP.PublicKey, dev.whyoleg.cryptography.algorithms/RSA.OAEP.PrivateKey> // dev.whyoleg.cryptography.algorithms/RSA.OAEP.KeyPair|null[0]
+
+        abstract interface PrivateKey : dev.whyoleg.cryptography.algorithms/RSA.PrivateKey<dev.whyoleg.cryptography.algorithms/RSA.OAEP.PublicKey> { // dev.whyoleg.cryptography.algorithms/RSA.OAEP.PrivateKey|null[0]
+            abstract fun decryptor(): dev.whyoleg.cryptography.operations/AuthenticatedDecryptor // dev.whyoleg.cryptography.algorithms/RSA.OAEP.PrivateKey.decryptor|decryptor(){}[0]
+        }
+
+        abstract interface PublicKey : dev.whyoleg.cryptography.algorithms/RSA.PublicKey { // dev.whyoleg.cryptography.algorithms/RSA.OAEP.PublicKey|null[0]
+            abstract fun encryptor(): dev.whyoleg.cryptography.operations/AuthenticatedEncryptor // dev.whyoleg.cryptography.algorithms/RSA.OAEP.PublicKey.encryptor|encryptor(){}[0]
+        }
+
+        final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/RSA.OAEP> // dev.whyoleg.cryptography.algorithms/RSA.OAEP.Companion|null[0]
+    }
+
+    abstract interface PKCS1 : dev.whyoleg.cryptography.algorithms/RSA<dev.whyoleg.cryptography.algorithms/RSA.PKCS1.PublicKey, dev.whyoleg.cryptography.algorithms/RSA.PKCS1.PrivateKey, dev.whyoleg.cryptography.algorithms/RSA.PKCS1.KeyPair> { // dev.whyoleg.cryptography.algorithms/RSA.PKCS1|null[0]
+        open val id // dev.whyoleg.cryptography.algorithms/RSA.PKCS1.id|{}id[0]
+            open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/RSA.PKCS1> // dev.whyoleg.cryptography.algorithms/RSA.PKCS1.id.<get-id>|<get-id>(){}[0]
+
+        abstract interface KeyPair : dev.whyoleg.cryptography.algorithms/RSA.KeyPair<dev.whyoleg.cryptography.algorithms/RSA.PKCS1.PublicKey, dev.whyoleg.cryptography.algorithms/RSA.PKCS1.PrivateKey> // dev.whyoleg.cryptography.algorithms/RSA.PKCS1.KeyPair|null[0]
+
+        abstract interface PrivateKey : dev.whyoleg.cryptography.algorithms/RSA.PrivateKey<dev.whyoleg.cryptography.algorithms/RSA.PKCS1.PublicKey> { // dev.whyoleg.cryptography.algorithms/RSA.PKCS1.PrivateKey|null[0]
+            abstract fun decryptor(): dev.whyoleg.cryptography.operations/Decryptor // dev.whyoleg.cryptography.algorithms/RSA.PKCS1.PrivateKey.decryptor|decryptor(){}[0]
+            abstract fun signatureGenerator(): dev.whyoleg.cryptography.operations/SignatureGenerator // dev.whyoleg.cryptography.algorithms/RSA.PKCS1.PrivateKey.signatureGenerator|signatureGenerator(){}[0]
+        }
+
+        abstract interface PublicKey : dev.whyoleg.cryptography.algorithms/RSA.PublicKey { // dev.whyoleg.cryptography.algorithms/RSA.PKCS1.PublicKey|null[0]
+            abstract fun encryptor(): dev.whyoleg.cryptography.operations/Encryptor // dev.whyoleg.cryptography.algorithms/RSA.PKCS1.PublicKey.encryptor|encryptor(){}[0]
+            abstract fun signatureVerifier(): dev.whyoleg.cryptography.operations/SignatureVerifier // dev.whyoleg.cryptography.algorithms/RSA.PKCS1.PublicKey.signatureVerifier|signatureVerifier(){}[0]
+        }
+
+        final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/RSA.PKCS1> // dev.whyoleg.cryptography.algorithms/RSA.PKCS1.Companion|null[0]
+    }
+
+    abstract interface PSS : dev.whyoleg.cryptography.algorithms/RSA<dev.whyoleg.cryptography.algorithms/RSA.PSS.PublicKey, dev.whyoleg.cryptography.algorithms/RSA.PSS.PrivateKey, dev.whyoleg.cryptography.algorithms/RSA.PSS.KeyPair> { // dev.whyoleg.cryptography.algorithms/RSA.PSS|null[0]
+        open val id // dev.whyoleg.cryptography.algorithms/RSA.PSS.id|{}id[0]
+            open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/RSA.PSS> // dev.whyoleg.cryptography.algorithms/RSA.PSS.id.<get-id>|<get-id>(){}[0]
+
+        abstract interface KeyPair : dev.whyoleg.cryptography.algorithms/RSA.KeyPair<dev.whyoleg.cryptography.algorithms/RSA.PSS.PublicKey, dev.whyoleg.cryptography.algorithms/RSA.PSS.PrivateKey> // dev.whyoleg.cryptography.algorithms/RSA.PSS.KeyPair|null[0]
+
+        abstract interface PrivateKey : dev.whyoleg.cryptography.algorithms/RSA.PrivateKey<dev.whyoleg.cryptography.algorithms/RSA.PSS.PublicKey> { // dev.whyoleg.cryptography.algorithms/RSA.PSS.PrivateKey|null[0]
+            abstract fun signatureGenerator(): dev.whyoleg.cryptography.operations/SignatureGenerator // dev.whyoleg.cryptography.algorithms/RSA.PSS.PrivateKey.signatureGenerator|signatureGenerator(){}[0]
+            abstract fun signatureGenerator(dev.whyoleg.cryptography/BinarySize): dev.whyoleg.cryptography.operations/SignatureGenerator // dev.whyoleg.cryptography.algorithms/RSA.PSS.PrivateKey.signatureGenerator|signatureGenerator(dev.whyoleg.cryptography.BinarySize){}[0]
+        }
+
+        abstract interface PublicKey : dev.whyoleg.cryptography.algorithms/RSA.PublicKey { // dev.whyoleg.cryptography.algorithms/RSA.PSS.PublicKey|null[0]
+            abstract fun signatureVerifier(): dev.whyoleg.cryptography.operations/SignatureVerifier // dev.whyoleg.cryptography.algorithms/RSA.PSS.PublicKey.signatureVerifier|signatureVerifier(){}[0]
+            abstract fun signatureVerifier(dev.whyoleg.cryptography/BinarySize): dev.whyoleg.cryptography.operations/SignatureVerifier // dev.whyoleg.cryptography.algorithms/RSA.PSS.PublicKey.signatureVerifier|signatureVerifier(dev.whyoleg.cryptography.BinarySize){}[0]
+        }
+
+        final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/RSA.PSS> // dev.whyoleg.cryptography.algorithms/RSA.PSS.Companion|null[0]
     }
 
     abstract interface PublicKey : dev.whyoleg.cryptography.materials.key/EncodableKey<dev.whyoleg.cryptography.algorithms/RSA.PublicKey.Format> { // dev.whyoleg.cryptography.algorithms/RSA.PublicKey|null[0]
@@ -490,7 +490,7 @@ abstract interface <#A: dev.whyoleg.cryptography.algorithms/RSA.PublicKey, #B: d
 
         abstract interface KeyPair : dev.whyoleg.cryptography.algorithms/RSA.KeyPair<dev.whyoleg.cryptography.algorithms/RSA.RAW.PublicKey, dev.whyoleg.cryptography.algorithms/RSA.RAW.PrivateKey> // dev.whyoleg.cryptography.algorithms/RSA.RAW.KeyPair|null[0]
 
-        abstract interface PrivateKey : dev.whyoleg.cryptography.algorithms/RSA.PrivateKey { // dev.whyoleg.cryptography.algorithms/RSA.RAW.PrivateKey|null[0]
+        abstract interface PrivateKey : dev.whyoleg.cryptography.algorithms/RSA.PrivateKey<dev.whyoleg.cryptography.algorithms/RSA.RAW.PublicKey> { // dev.whyoleg.cryptography.algorithms/RSA.RAW.PrivateKey|null[0]
             abstract fun decryptor(): dev.whyoleg.cryptography.operations/Decryptor // dev.whyoleg.cryptography.algorithms/RSA.RAW.PrivateKey.decryptor|decryptor(){}[0]
         }
 
@@ -505,6 +505,11 @@ abstract interface <#A: dev.whyoleg.cryptography.algorithms/RSA.PublicKey, #B: d
 abstract interface <#A: dev.whyoleg.cryptography.materials.key/Key> dev.whyoleg.cryptography.materials.key/KeyGenerator { // dev.whyoleg.cryptography.materials.key/KeyGenerator|null[0]
     abstract fun generateKeyBlocking(): #A // dev.whyoleg.cryptography.materials.key/KeyGenerator.generateKeyBlocking|generateKeyBlocking(){}[0]
     open suspend fun generateKey(): #A // dev.whyoleg.cryptography.materials.key/KeyGenerator.generateKey|generateKey(){}[0]
+}
+
+abstract interface <#A: dev.whyoleg.cryptography.materials.key/Key> dev.whyoleg.cryptography.operations/PublicKeyAccessor { // dev.whyoleg.cryptography.operations/PublicKeyAccessor|null[0]
+    abstract fun getPublicKeyBlocking(): #A // dev.whyoleg.cryptography.operations/PublicKeyAccessor.getPublicKeyBlocking|getPublicKeyBlocking(){}[0]
+    open suspend fun getPublicKey(): #A // dev.whyoleg.cryptography.operations/PublicKeyAccessor.getPublicKey|getPublicKey(){}[0]
 }
 
 abstract interface <#A: dev.whyoleg.cryptography.materials.key/Key> dev.whyoleg.cryptography.operations/SharedSecretGenerator { // dev.whyoleg.cryptography.operations/SharedSecretGenerator|null[0]
@@ -545,7 +550,7 @@ abstract interface dev.whyoleg.cryptography.algorithms/ECDH : dev.whyoleg.crypto
 
     abstract interface KeyPair : dev.whyoleg.cryptography.algorithms/EC.KeyPair<dev.whyoleg.cryptography.algorithms/ECDH.PublicKey, dev.whyoleg.cryptography.algorithms/ECDH.PrivateKey> // dev.whyoleg.cryptography.algorithms/ECDH.KeyPair|null[0]
 
-    abstract interface PrivateKey : dev.whyoleg.cryptography.algorithms/EC.PrivateKey { // dev.whyoleg.cryptography.algorithms/ECDH.PrivateKey|null[0]
+    abstract interface PrivateKey : dev.whyoleg.cryptography.algorithms/EC.PrivateKey<dev.whyoleg.cryptography.algorithms/ECDH.PublicKey> { // dev.whyoleg.cryptography.algorithms/ECDH.PrivateKey|null[0]
         abstract fun sharedSecretGenerator(): dev.whyoleg.cryptography.operations/SharedSecretGenerator<dev.whyoleg.cryptography.algorithms/ECDH.PublicKey> // dev.whyoleg.cryptography.algorithms/ECDH.PrivateKey.sharedSecretGenerator|sharedSecretGenerator(){}[0]
     }
 
@@ -573,7 +578,7 @@ abstract interface dev.whyoleg.cryptography.algorithms/ECDSA : dev.whyoleg.crypt
 
     abstract interface KeyPair : dev.whyoleg.cryptography.algorithms/EC.KeyPair<dev.whyoleg.cryptography.algorithms/ECDSA.PublicKey, dev.whyoleg.cryptography.algorithms/ECDSA.PrivateKey> // dev.whyoleg.cryptography.algorithms/ECDSA.KeyPair|null[0]
 
-    abstract interface PrivateKey : dev.whyoleg.cryptography.algorithms/EC.PrivateKey { // dev.whyoleg.cryptography.algorithms/ECDSA.PrivateKey|null[0]
+    abstract interface PrivateKey : dev.whyoleg.cryptography.algorithms/EC.PrivateKey<dev.whyoleg.cryptography.algorithms/ECDSA.PublicKey> { // dev.whyoleg.cryptography.algorithms/ECDSA.PrivateKey|null[0]
         abstract fun signatureGenerator(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest>, dev.whyoleg.cryptography.algorithms/ECDSA.SignatureFormat): dev.whyoleg.cryptography.operations/SignatureGenerator // dev.whyoleg.cryptography.algorithms/ECDSA.PrivateKey.signatureGenerator|signatureGenerator(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>;dev.whyoleg.cryptography.algorithms.ECDSA.SignatureFormat){}[0]
     }
 

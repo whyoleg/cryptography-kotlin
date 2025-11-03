@@ -46,16 +46,19 @@ suspend fun <KF : KeyFormat> EncodableKey<KF>.encodeTo(
     assertTrue(it.isNotEmpty(), "No supported formats")
 }
 
+inline fun <KF : KeyFormat> Map<String, ByteString>.filterSupportedFormats(
+    formatOf: (String) -> KF,
+    supports: (KF) -> Boolean,
+): Map<KF, ByteString> = mapKeys { (formatName, _) -> formatOf(formatName) }.filterKeys(supports)
+
 suspend inline fun <KF : KeyFormat, K : EncodableKey<KF>> KeyDecoder<KF, K>.decodeFrom(
     formats: Map<String, ByteString>,
     formatOf: (String) -> KF,
     supports: (KF) -> Boolean,
     supportsDecoding: (KF, ByteString) -> Boolean = { _, _ -> true },
-    validate: (key: K, format: KF, bytes: ByteString) -> Unit,
+    validate: suspend (key: K, format: KF, bytes: ByteString) -> Unit,
 ): List<K> {
-    val supportedFormats = formats
-        .mapKeys { (formatName, _) -> formatOf(formatName) }
-        .filterKeys(supports)
+    val supportedFormats = formats.filterSupportedFormats(formatOf, supports)
 
     val keys = supportedFormats.mapNotNull {
         if (supportsDecoding(it.key, it.value)) decodeFromByteString(it.key, it.value) else null

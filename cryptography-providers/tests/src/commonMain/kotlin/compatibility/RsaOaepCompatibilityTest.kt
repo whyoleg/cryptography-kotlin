@@ -32,6 +32,7 @@ abstract class RsaOaepCompatibilityTest(provider: CryptographyProvider) :
             val maxPlaintextSize = keyParameters.keySizeBits.bits.inBytes - 2 - 2 * keyParameters.digestSizeBytes
             logger.log { "maxPlaintextSize.size = $maxPlaintextSize" }
             val encryptor = keyPair.publicKey.encryptor()
+            val encryptor2 = keyPair.privateKey.getPublicKey().encryptor()
             val decryptor = keyPair.privateKey.decryptor()
             repeat(associatedDataIterations) { adIndex ->
                 val associatedDataSize = if (adIndex == 0) null else CryptographyRandom.nextInt(maxAssociatedDataSize)
@@ -44,9 +45,12 @@ abstract class RsaOaepCompatibilityTest(provider: CryptographyProvider) :
                     logger.log { "plaintext.size        = $plaintextSize" }
                     val plaintext = ByteString(CryptographyRandom.nextBytes(plaintextSize))
                     val ciphertext = encryptor.encrypt(plaintext, associatedData)
+                    val ciphertext2 = encryptor2.encrypt(plaintext, associatedData)
                     logger.log { "ciphertext.size       = ${ciphertext.size}" }
+                    logger.log { "ciphertext2.size       = ${ciphertext2.size}" }
 
                     assertContentEquals(plaintext, decryptor.decrypt(ciphertext, associatedData), "Initial Decrypt")
+                    assertContentEquals(plaintext, decryptor.decrypt(ciphertext2, associatedData), "Initial Decrypt")
 
                     api.ciphers.saveData(cipherParametersId, AuthenticatedCipherData(keyReference, associatedData, plaintext, ciphertext))
                 }
@@ -64,6 +68,7 @@ abstract class RsaOaepCompatibilityTest(provider: CryptographyProvider) :
                 val (publicKeys, privateKeys) = keyPairs[keyReference] ?: return@getData
                 val encryptors = publicKeys.map { it.encryptor() }
                 val decryptors = privateKeys.map { it.decryptor() }
+                val encryptors2 = privateKeys.map { it.getPublicKey().encryptor() }
 
                 decryptors.forEach { decryptor ->
                     assertContentEquals(plaintext, decryptor.decrypt(ciphertext, associatedData), "Decrypt")
@@ -73,6 +78,13 @@ abstract class RsaOaepCompatibilityTest(provider: CryptographyProvider) :
                             plaintext,
                             decryptor.decrypt(encryptor.encrypt(plaintext, associatedData), associatedData),
                             "Encrypt-Decrypt"
+                        )
+                    }
+                    encryptors2.forEach { encryptor ->
+                        assertContentEquals(
+                            plaintext,
+                            decryptor.decrypt(encryptor.encrypt(plaintext, associatedData), associatedData),
+                            "Encrypt-Decrypt via PrivateKey.getPublicKey"
                         )
                     }
                 }
