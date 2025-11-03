@@ -14,7 +14,7 @@ import dev.whyoleg.cryptography.serialization.asn1.*
 import dev.whyoleg.cryptography.serialization.asn1.modules.*
 import dev.whyoleg.cryptography.serialization.pem.*
 
-internal sealed class WebCryptoEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP : EC.KeyPair<PublicK, PrivateK>>(
+internal sealed class WebCryptoEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey<PublicK>, KP : EC.KeyPair<PublicK, PrivateK>>(
     protected val algorithmName: String,
     private val publicKeyWrapper: WebCryptoKeyWrapper<PublicK>,
     private val privateKeyWrapper: WebCryptoKeyWrapper<PrivateK>,
@@ -48,10 +48,20 @@ internal sealed class WebCryptoEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateK
         keyProcessor = EcPublicKeyProcessor
     ), EC.PublicKey
 
-    protected abstract class EcPrivateKey(val privateKey: CryptoKey) : WebCryptoEncodableKey<EC.PrivateKey.Format>(
+    protected abstract inner class EcPrivateKey(val privateKey: CryptoKey) : WebCryptoEncodableKey<EC.PrivateKey.Format>(
         key = privateKey,
         keyProcessor = EcPrivateKeyProcessor
-    ), EC.PrivateKey
+    ), EC.PrivateKey<PublicK> {
+        final override suspend fun getPublicKey(): PublicK = publicKeyWrapper.wrap(
+            WebCrypto.reimportPrivateKeyAsPublicKey(
+                privateKey = privateKey,
+                extractable = true,
+                keyUsages = publicKeyWrapper.usages,
+            )
+        )
+
+        final override fun getPublicKeyBlocking(): PublicK = nonBlocking()
+    }
 }
 
 private object EcPublicKeyProcessor : WebCryptoKeyProcessor<EC.PublicKey.Format>() {
@@ -77,7 +87,7 @@ private object EcPublicKeyProcessor : WebCryptoKeyProcessor<EC.PublicKey.Format>
     override fun afterEncoding(format: EC.PublicKey.Format, key: ByteArray): ByteArray = when (format) {
         EC.PublicKey.Format.JWK -> key
         EC.PublicKey.Format.RAW -> key
-        EC.PublicKey.Format.RAW.Compressed
+        EC.PublicKey.Format.RAW.Compressed,
                                 -> compressPublicKey(key)
         EC.PublicKey.Format.DER -> key
         EC.PublicKey.Format.PEM -> wrapPem(PemLabel.PublicKey, key)

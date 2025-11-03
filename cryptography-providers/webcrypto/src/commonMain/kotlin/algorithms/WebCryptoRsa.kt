@@ -15,7 +15,7 @@ import dev.whyoleg.cryptography.serialization.asn1.*
 import dev.whyoleg.cryptography.serialization.asn1.modules.*
 import dev.whyoleg.cryptography.serialization.pem.*
 
-internal abstract class WebCryptoRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP : RSA.KeyPair<PublicK, PrivateK>>(
+internal abstract class WebCryptoRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey<PublicK>, KP : RSA.KeyPair<PublicK, PrivateK>>(
     protected val algorithmName: String,
     private val publicKeyWrapper: WebCryptoKeyWrapper<PublicK>,
     private val privateKeyWrapper: WebCryptoKeyWrapper<PrivateK>,
@@ -62,10 +62,20 @@ internal abstract class WebCryptoRsa<PublicK : RSA.PublicKey, PrivateK : RSA.Pri
         keyProcessor = RsaPublicKeyProcessor
     ), RSA.PublicKey
 
-    protected abstract class RsaPrivateKey(protected val privateKey: CryptoKey) : WebCryptoEncodableKey<RSA.PrivateKey.Format>(
+    protected abstract inner class RsaPrivateKey(protected val privateKey: CryptoKey) : WebCryptoEncodableKey<RSA.PrivateKey.Format>(
         key = privateKey,
         keyProcessor = RsaPrivateKeyProcessor
-    ), RSA.PrivateKey
+    ), RSA.PrivateKey<PublicK> {
+        final override suspend fun getPublicKey(): PublicK = publicKeyWrapper.wrap(
+            WebCrypto.reimportPrivateKeyAsPublicKey(
+                privateKey = privateKey,
+                extractable = true,
+                keyUsages = publicKeyWrapper.usages,
+            )
+        )
+
+        final override fun getPublicKeyBlocking(): PublicK = nonBlocking()
+    }
 }
 
 private object RsaPublicKeyProcessor : WebCryptoKeyProcessor<RSA.PublicKey.Format>() {
