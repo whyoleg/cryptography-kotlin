@@ -5,15 +5,24 @@
 package dev.whyoleg.cryptography.providers.openssl3.materials
 
 import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import kotlinx.cinterop.*
 import platform.posix.*
 import kotlin.experimental.*
 
-internal abstract class Openssl3PrivateKeyEncodable<KF : KeyFormat>(
+internal abstract class Openssl3PrivateKeyEncodable<KF : KeyFormat, PublicK : Key>(
     key: CPointer<EVP_PKEY>,
-) : Openssl3KeyEncodable<KF>(key) {
+    private var publicKey: PublicK?,
+) : Openssl3KeyEncodable<KF>(key), PublicKeyAccessor<PublicK> {
+    protected abstract fun wrapPublicKey(key: CPointer<EVP_PKEY>): PublicK
+
+    final override fun getPublicKeyBlocking(): PublicK {
+        if (publicKey == null) publicKey = wrapPublicKey(key.upRef())
+        return publicKey!!
+    }
+
     override fun selection(format: KF): Int = OSSL_KEYMGMT_SELECT_PRIVATE_KEY
     override fun outputStruct(format: KF): String = "PrivateKeyInfo"
 }

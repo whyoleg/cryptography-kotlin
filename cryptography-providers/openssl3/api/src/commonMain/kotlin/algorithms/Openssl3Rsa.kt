@@ -6,7 +6,6 @@ package dev.whyoleg.cryptography.providers.openssl3.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.algorithms.RSA
 import dev.whyoleg.cryptography.bigint.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
@@ -14,12 +13,11 @@ import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.providers.openssl3.materials.*
 import kotlinx.cinterop.*
 
-internal abstract class Openssl3Rsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP : RSA.KeyPair<PublicK, PrivateK>> :
-    RSA<PublicK, PrivateK, KP> {
-
-    protected abstract fun wrapKeyPair(hashAlgorithm: String, keyPair: CPointer<EVP_PKEY>): KP
-    protected abstract fun wrapPublicKey(hashAlgorithm: String, publicKey: CPointer<EVP_PKEY>): PublicK
-    protected abstract fun wrapPrivateKey(hashAlgorithm: String, privateKey: CPointer<EVP_PKEY>): PrivateK
+internal abstract class Openssl3Rsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey<PublicK>, KP : RSA.KeyPair<PublicK, PrivateK>>(
+    private val wrapPublicKey: (CPointer<EVP_PKEY>, String) -> PublicK,
+    private val wrapPrivateKey: (CPointer<EVP_PKEY>, String, PublicK?) -> PrivateK,
+    private val wrapKeyPair: (PublicK, PrivateK) -> KP,
+) : RSA<PublicK, PrivateK, KP> {
 
     final override fun publicKeyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<RSA.PublicKey.Format, PublicK> =
         RsaPublicKeyDecoder(hashAlgorithm(digest))
@@ -38,7 +36,7 @@ internal abstract class Openssl3Rsa<PublicK : RSA.PublicKey, PrivateK : RSA.Priv
             else -> super.inputStruct(format)
         }
 
-        override fun wrapKey(key: CPointer<EVP_PKEY>): PublicK = wrapPublicKey(hashAlgorithm, key)
+        override fun wrapKey(key: CPointer<EVP_PKEY>): PublicK = wrapPublicKey(key, hashAlgorithm)
     }
 
     final override fun privateKeyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<RSA.PrivateKey.Format, PrivateK> =
@@ -58,7 +56,7 @@ internal abstract class Openssl3Rsa<PublicK : RSA.PublicKey, PrivateK : RSA.Priv
             else -> super.inputStruct(format)
         }
 
-        override fun wrapKey(key: CPointer<EVP_PKEY>): PrivateK = wrapPrivateKey(hashAlgorithm, key)
+        override fun wrapKey(key: CPointer<EVP_PKEY>): PrivateK = wrapPrivateKey(key, hashAlgorithm, null)
     }
 
     final override fun keyPairGenerator(
@@ -81,7 +79,11 @@ internal abstract class Openssl3Rsa<PublicK : RSA.PublicKey, PrivateK : RSA.Priv
             OSSL_PARAM_construct_uint("e".cstr.ptr, alloc(publicExponent).ptr)
         )
 
-        override fun wrapKeyPair(keyPair: CPointer<EVP_PKEY>): KP = wrapKeyPair(hashAlgorithm, keyPair)
+        override fun wrapKeyPair(keyPair: CPointer<EVP_PKEY>): KP {
+            val publicKey = wrapPublicKey(keyPair, hashAlgorithm)
+            val privateKey = wrapPrivateKey(keyPair, hashAlgorithm, publicKey)
+            return wrapKeyPair(publicKey, privateKey)
+        }
     }
 
     protected abstract class RsaPublicKey(
@@ -99,9 +101,13 @@ internal abstract class Openssl3Rsa<PublicK : RSA.PublicKey, PrivateK : RSA.Priv
         }
     }
 
-    protected abstract class RsaPrivateKey(
+    protected abstract inner class RsaPrivateKey(
         key: CPointer<EVP_PKEY>,
-    ) : RSA.PrivateKey, Openssl3PrivateKeyEncodable<RSA.PrivateKey.Format>(key) {
+        protected val hashAlgorithm: String,
+        publicKey: PublicK?,
+    ) : RSA.PrivateKey<PublicK>, Openssl3PrivateKeyEncodable<RSA.PrivateKey.Format, PublicK>(key, publicKey) {
+        final override fun wrapPublicKey(key: CPointer<EVP_PKEY>): PublicK = wrapPublicKey(key, hashAlgorithm)
+
         override fun outputType(format: RSA.PrivateKey.Format): String = when (format) {
             RSA.PrivateKey.Format.DER, RSA.PrivateKey.Format.DER.PKCS1 -> "DER"
             RSA.PrivateKey.Format.PEM, RSA.PrivateKey.Format.PEM.PKCS1 -> "PEM"

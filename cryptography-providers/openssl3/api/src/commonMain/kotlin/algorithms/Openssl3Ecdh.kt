@@ -44,7 +44,7 @@ internal object Openssl3Ecdh : ECDH {
 
         override fun wrapKey(key: CPointer<EVP_PKEY>): ECDH.PrivateKey {
             EC_check_key_group(key, curve)
-            return EcPrivateKey(key)
+            return EcPrivateKey(key, publicKey = null)
         }
     }
 
@@ -81,10 +81,13 @@ internal object Openssl3Ecdh : ECDH {
             OSSL_PARAM_construct_utf8_string("group".cstr.ptr, curve.name.cstr.ptr, 0.convert())
         )
 
-        override fun wrapKeyPair(keyPair: CPointer<EVP_PKEY>): ECDH.KeyPair = EcKeyPair(
-            publicKey = EcPublicKey(keyPair),
-            privateKey = EcPrivateKey(keyPair)
-        )
+        override fun wrapKeyPair(keyPair: CPointer<EVP_PKEY>): ECDH.KeyPair {
+            val publicKey = EcPublicKey(keyPair)
+            return EcKeyPair(
+                publicKey = publicKey,
+                privateKey = EcPrivateKey(keyPair, publicKey)
+            )
+        }
     }
 
     private class EcKeyPair(
@@ -94,7 +97,12 @@ internal object Openssl3Ecdh : ECDH {
 
     private class EcPrivateKey(
         key: CPointer<EVP_PKEY>,
-    ) : ECDH.PrivateKey, Openssl3PrivateKeyEncodable<EC.PrivateKey.Format>(key), SharedSecretGenerator<ECDH.PublicKey> {
+        publicKey: ECDH.PublicKey?,
+    ) : ECDH.PrivateKey,
+        Openssl3PrivateKeyEncodable<EC.PrivateKey.Format, ECDH.PublicKey>(key, publicKey),
+        SharedSecretGenerator<ECDH.PublicKey> {
+        override fun wrapPublicKey(key: CPointer<EVP_PKEY>): ECDH.PublicKey = EcPublicKey(key)
+
         override fun outputType(format: EC.PrivateKey.Format): String = when (format) {
             EC.PrivateKey.Format.DER, EC.PrivateKey.Format.DER.SEC1 -> "DER"
             EC.PrivateKey.Format.PEM, EC.PrivateKey.Format.PEM.SEC1 -> "PEM"

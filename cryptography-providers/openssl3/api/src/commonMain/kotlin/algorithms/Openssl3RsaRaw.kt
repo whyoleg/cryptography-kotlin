@@ -4,7 +4,7 @@
 
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
 
-import dev.whyoleg.cryptography.algorithms.RSA
+import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.operations.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
@@ -13,18 +13,11 @@ import dev.whyoleg.cryptography.providers.openssl3.operations.*
 import kotlinx.cinterop.*
 import kotlin.experimental.*
 
-internal object Openssl3RsaRaw : Openssl3Rsa<RSA.RAW.PublicKey, RSA.RAW.PrivateKey, RSA.RAW.KeyPair>(), RSA.RAW {
-    override fun wrapKeyPair(hashAlgorithm: String, keyPair: CPointer<EVP_PKEY>): RSA.RAW.KeyPair = RsaRawKeyPair(
-        publicKey = RsaRawPublicKey(keyPair),
-        privateKey = RsaRawPrivateKey(keyPair),
-    )
-
-    override fun wrapPublicKey(hashAlgorithm: String, publicKey: CPointer<EVP_PKEY>): RSA.RAW.PublicKey =
-        RsaRawPublicKey(publicKey)
-
-    override fun wrapPrivateKey(hashAlgorithm: String, privateKey: CPointer<EVP_PKEY>): RSA.RAW.PrivateKey =
-        RsaRawPrivateKey(privateKey)
-
+internal object Openssl3RsaRaw : Openssl3Rsa<RSA.RAW.PublicKey, RSA.RAW.PrivateKey, RSA.RAW.KeyPair>(
+    wrapPublicKey = ::RsaRawPublicKey,
+    wrapPrivateKey = ::RsaRawPrivateKey,
+    wrapKeyPair = ::RsaRawKeyPair,
+), RSA.RAW {
     private class RsaRawKeyPair(
         override val publicKey: RSA.RAW.PublicKey,
         override val privateKey: RSA.RAW.PrivateKey,
@@ -32,13 +25,16 @@ internal object Openssl3RsaRaw : Openssl3Rsa<RSA.RAW.PublicKey, RSA.RAW.PrivateK
 
     private class RsaRawPublicKey(
         key: CPointer<EVP_PKEY>,
+        @Suppress("unused") hashAlgorithm: String,
     ) : RsaPublicKey(key), RSA.RAW.PublicKey {
         override fun encryptor(): Encryptor = RsaRawEncryptor(key)
     }
 
     private class RsaRawPrivateKey(
         key: CPointer<EVP_PKEY>,
-    ) : RsaPrivateKey(key), RSA.RAW.PrivateKey {
+        hashAlgorithm: String,
+        publicKey: RSA.RAW.PublicKey?,
+    ) : RsaPrivateKey(key, hashAlgorithm, publicKey), RSA.RAW.PrivateKey {
         override fun decryptor(): Decryptor = RsaRawDecryptor(key)
     }
 }

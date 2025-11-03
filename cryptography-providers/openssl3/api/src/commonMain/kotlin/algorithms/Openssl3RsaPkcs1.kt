@@ -4,7 +4,7 @@
 
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
 
-import dev.whyoleg.cryptography.algorithms.RSA
+import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.operations.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
@@ -13,18 +13,11 @@ import dev.whyoleg.cryptography.providers.openssl3.operations.*
 import kotlinx.cinterop.*
 import kotlin.experimental.*
 
-internal object Openssl3RsaPkcs1 : Openssl3Rsa<RSA.PKCS1.PublicKey, RSA.PKCS1.PrivateKey, RSA.PKCS1.KeyPair>(), RSA.PKCS1 {
-    override fun wrapKeyPair(hashAlgorithm: String, keyPair: CPointer<EVP_PKEY>): RSA.PKCS1.KeyPair = RsaPkcs1KeyPair(
-        publicKey = RsaPkcs1PublicKey(keyPair, hashAlgorithm),
-        privateKey = RsaPkcs1PrivateKey(keyPair, hashAlgorithm),
-    )
-
-    override fun wrapPublicKey(hashAlgorithm: String, publicKey: CPointer<EVP_PKEY>): RSA.PKCS1.PublicKey =
-        RsaPkcs1PublicKey(publicKey, hashAlgorithm)
-
-    override fun wrapPrivateKey(hashAlgorithm: String, privateKey: CPointer<EVP_PKEY>): RSA.PKCS1.PrivateKey =
-        RsaPkcs1PrivateKey(privateKey, hashAlgorithm)
-
+internal object Openssl3RsaPkcs1 : Openssl3Rsa<RSA.PKCS1.PublicKey, RSA.PKCS1.PrivateKey, RSA.PKCS1.KeyPair>(
+    wrapPublicKey = ::RsaPkcs1PublicKey,
+    wrapPrivateKey = ::RsaPkcs1PrivateKey,
+    wrapKeyPair = ::RsaPkcs1KeyPair,
+), RSA.PKCS1 {
     private class RsaPkcs1KeyPair(
         override val publicKey: RSA.PKCS1.PublicKey,
         override val privateKey: RSA.PKCS1.PrivateKey,
@@ -40,8 +33,9 @@ internal object Openssl3RsaPkcs1 : Openssl3Rsa<RSA.PKCS1.PublicKey, RSA.PKCS1.Pr
 
     private class RsaPkcs1PrivateKey(
         key: CPointer<EVP_PKEY>,
-        private val hashAlgorithm: String,
-    ) : RsaPrivateKey(key), RSA.PKCS1.PrivateKey {
+        hashAlgorithm: String,
+        publicKey: RSA.PKCS1.PublicKey?,
+    ) : RsaPrivateKey(key, hashAlgorithm, publicKey), RSA.PKCS1.PrivateKey {
         override fun signatureGenerator(): SignatureGenerator = RsaPkcs1SignatureGenerator(key, hashAlgorithm)
         override fun decryptor(): Decryptor = RsaPkcs1Decryptor(key)
     }

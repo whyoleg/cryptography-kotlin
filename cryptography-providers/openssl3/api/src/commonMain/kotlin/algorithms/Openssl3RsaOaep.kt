@@ -14,18 +14,11 @@ import dev.whyoleg.cryptography.providers.openssl3.operations.*
 import kotlinx.cinterop.*
 import kotlin.experimental.*
 
-internal object Openssl3RsaOaep : Openssl3Rsa<RSA.OAEP.PublicKey, RSA.OAEP.PrivateKey, RSA.OAEP.KeyPair>(), RSA.OAEP {
-    override fun wrapKeyPair(hashAlgorithm: String, keyPair: CPointer<EVP_PKEY>): RSA.OAEP.KeyPair = RsaOaepKeyPair(
-        publicKey = RsaOaepPublicKey(keyPair, hashAlgorithm),
-        privateKey = RsaOaepPrivateKey(keyPair, hashAlgorithm),
-    )
-
-    override fun wrapPublicKey(hashAlgorithm: String, publicKey: CPointer<EVP_PKEY>): RSA.OAEP.PublicKey =
-        RsaOaepPublicKey(publicKey, hashAlgorithm)
-
-    override fun wrapPrivateKey(hashAlgorithm: String, privateKey: CPointer<EVP_PKEY>): RSA.OAEP.PrivateKey =
-        RsaOaepPrivateKey(privateKey, hashAlgorithm)
-
+internal object Openssl3RsaOaep : Openssl3Rsa<RSA.OAEP.PublicKey, RSA.OAEP.PrivateKey, RSA.OAEP.KeyPair>(
+    wrapPublicKey = ::RsaOaepPublicKey,
+    wrapPrivateKey = ::RsaOaepPrivateKey,
+    wrapKeyPair = ::RsaOaepKeyPair,
+), RSA.OAEP {
     private class RsaOaepKeyPair(
         override val publicKey: RSA.OAEP.PublicKey,
         override val privateKey: RSA.OAEP.PrivateKey,
@@ -42,7 +35,8 @@ internal object Openssl3RsaOaep : Openssl3Rsa<RSA.OAEP.PublicKey, RSA.OAEP.Priva
     private class RsaOaepPrivateKey(
         key: CPointer<EVP_PKEY>,
         hashAlgorithm: String,
-    ) : RsaPrivateKey(key), RSA.OAEP.PrivateKey {
+        publicKey: RSA.OAEP.PublicKey?,
+    ) : RsaPrivateKey(key, hashAlgorithm, publicKey), RSA.OAEP.PrivateKey {
         private val decryptor = RsaOaepDecryptor(key, hashAlgorithm)
         override fun decryptor(): AuthenticatedDecryptor = decryptor
     }
