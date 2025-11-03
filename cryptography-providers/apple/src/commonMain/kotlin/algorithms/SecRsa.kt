@@ -18,14 +18,13 @@ import platform.Security.*
 import kotlin.experimental.*
 import kotlin.native.ref.*
 
-internal abstract class SecRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP : RSA.KeyPair<PublicK, PrivateK>> :
-    RSA<PublicK, PrivateK, KP> {
+internal abstract class SecRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey<PublicK>, KP : RSA.KeyPair<PublicK, PrivateK>>(
+    private val wrapPublicKey: (SecKeyRef, SecKeyAlgorithm?) -> PublicK,
+    private val wrapPrivateKey: (SecKeyRef, SecKeyAlgorithm?, PublicK?) -> PrivateK,
+    private val wrapKeyPair: (PublicK, PrivateK) -> KP,
+) : RSA<PublicK, PrivateK, KP> {
 
     protected abstract fun hashAlgorithm(digest: CryptographyAlgorithmId<Digest>): SecKeyAlgorithm?
-
-    protected abstract fun wrapKeyPair(algorithm: SecKeyAlgorithm?, publicKey: SecKeyRef, privateKey: SecKeyRef): KP
-    protected abstract fun wrapPublicKey(algorithm: SecKeyAlgorithm?, key: SecKeyRef): PublicK
-    protected abstract fun wrapPrivateKey(algorithm: SecKeyAlgorithm?, key: SecKeyRef): PrivateK
 
     final override fun publicKeyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<RSA.PublicKey.Format, PublicK> =
         RsaPublicKeyDecoder(hashAlgorithm(digest))
@@ -48,7 +47,7 @@ internal abstract class SecRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKe
                 decodeSecKey(pkcs1DerKey, attributes)
             }
 
-            return wrapPublicKey(algorithm, secKey)
+            return wrapPublicKey(secKey, algorithm)
         }
     }
 
@@ -73,7 +72,7 @@ internal abstract class SecRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKe
                 decodeSecKey(pkcs1DerKey, attributes)
             }
 
-            return wrapPrivateKey(algorithm, secKey)
+            return wrapPrivateKey(secKey, algorithm, null)
         }
     }
 
@@ -92,7 +91,7 @@ internal abstract class SecRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKe
         private val algorithm: SecKeyAlgorithm?,
     ) : KeyGenerator<KP> {
         override fun generateKeyBlocking(): KP {
-            val privateKey = CFMutableDictionary(2) {
+            val secPrivateKey = CFMutableDictionary(2) {
                 add(kSecAttrKeyType, kSecAttrKeyTypeRSA)
                 @Suppress("CAST_NEVER_SUCCEEDS")
                 add(kSecAttrKeySizeInBits, (keySizeBits as NSNumber).retainBridge())
@@ -100,8 +99,9 @@ internal abstract class SecRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKe
                 generateSecKey(attributes)
             }
 
-            val publicKey = SecKeyCopyPublicKey(privateKey)!!
-            return wrapKeyPair(algorithm, publicKey, privateKey)
+            val publicKey = wrapPublicKey(SecKeyCopyPublicKey(secPrivateKey)!!, algorithm)
+            val privateKey = wrapPrivateKey(secPrivateKey, algorithm, publicKey)
+            return wrapKeyPair(publicKey, privateKey)
         }
     }
 
@@ -124,11 +124,20 @@ internal abstract class SecRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKe
         }
     }
 
-    protected abstract class RsaPrivateKey(
+    protected abstract inner class RsaPrivateKey(
         protected val privateKey: SecKeyRef,
-    ) : RSA.PrivateKey {
+        private val algorithm: SecKeyAlgorithm?,
+        private var publicKey: PublicK?,
+    ) : RSA.PrivateKey<PublicK> {
         @OptIn(ExperimentalNativeApi::class)
         private val cleanup = createCleaner(privateKey, SecKeyRef::release)
+
+        final override fun getPublicKeyBlocking(): PublicK {
+            if (publicKey == null) {
+                publicKey = wrapPublicKey(SecKeyCopyPublicKey(privateKey)!!, algorithm)
+            }
+            return publicKey!!
+        }
 
         final override fun encodeToByteArrayBlocking(format: RSA.PrivateKey.Format): ByteArray {
             val pkcs1Key = exportSecKey(privateKey)

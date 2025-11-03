@@ -89,7 +89,7 @@ private class EcdsaPrivateKeyDecoder(
     private val curve: EcCurveData,
 ) : KeyDecoder<EC.PrivateKey.Format, ECDSA.PrivateKey> {
     override fun decodeFromByteArrayBlocking(format: EC.PrivateKey.Format, bytes: ByteArray): ECDSA.PrivateKey {
-        val rawKey = when (format) {
+        val ecPrivateKey = when (format) {
             EC.PrivateKey.Format.JWK      -> error("$format is not supported")
             EC.PrivateKey.Format.RAW      -> error("$format is not supported")
             EC.PrivateKey.Format.DER      -> decodeDerPkcs8(bytes)
@@ -97,6 +97,7 @@ private class EcdsaPrivateKeyDecoder(
             EC.PrivateKey.Format.DER.SEC1 -> decodeDerSec1(bytes)
             EC.PrivateKey.Format.PEM.SEC1 -> decodeDerSec1(unwrapPem(PemLabel.EcPrivateKey, bytes))
         }
+        val rawKey = ecPrivateKey.convertToRawKey()
         check(rawKey.size == curve.orderSize * 3 + 1) {
             "Invalid raw key size: ${rawKey.size}, expected: ${curve.orderSize * 3 + 1}"
         }
@@ -107,20 +108,19 @@ private class EcdsaPrivateKeyDecoder(
         }.use { attributes ->
             decodeSecKey(rawKey, attributes)
         }
-        return EcdsaPrivateKey(secKey, curve)
+        return EcdsaPrivateKey(secKey, curve, publicKey = null)
     }
 
-    private fun decodeDerPkcs8(input: ByteArray): ByteArray {
+    private fun decodeDerPkcs8(input: ByteArray): EcPrivateKey {
         val pki = Der.decodeFromByteArray(PrivateKeyInfo.serializer(), input)
         ensureCurve(pki.privateKeyAlgorithm, curve)
-        val ecPrivateKey = Der.decodeFromByteArray(EcPrivateKey.serializer(), pki.privateKey)
-        return ecPrivateKey.convertToRawKey()
+        return Der.decodeFromByteArray(EcPrivateKey.serializer(), pki.privateKey)
     }
 
-    private fun decodeDerSec1(input: ByteArray): ByteArray {
+    private fun decodeDerSec1(input: ByteArray): EcPrivateKey {
         val ecPrivateKey = Der.decodeFromByteArray(EcPrivateKey.serializer(), input)
         ensureCurve(ecPrivateKey.parameters, curve)
-        return ecPrivateKey.convertToRawKey()
+        return ecPrivateKey
     }
 
     private fun EcPrivateKey.convertToRawKey(): ByteArray {
@@ -146,10 +146,10 @@ private class EcdsaKeyPairGenerator(
             generateSecKey(attributes)
         }
 
-        val publicKey = SecKeyCopyPublicKey(privateKey)!!
+        val publicKey = EcdsaPublicKey(SecKeyCopyPublicKey(privateKey)!!, curve)
         return EcdsaKeyPair(
-            EcdsaPublicKey(publicKey, curve),
-            EcdsaPrivateKey(privateKey, curve)
+            publicKey = publicKey,
+            privateKey = EcdsaPrivateKey(privateKey, curve, publicKey)
         )
     }
 }
@@ -199,9 +199,17 @@ private class EcdsaPublicKey(
 private class EcdsaPrivateKey(
     private val privateKey: SecKeyRef,
     private val curve: EcCurveData,
+    private var publicKey: ECDSA.PublicKey?,
 ) : ECDSA.PrivateKey {
     @OptIn(ExperimentalNativeApi::class)
     private val cleanup = createCleaner(privateKey, SecKeyRef::release)
+
+    override fun getPublicKeyBlocking(): ECDSA.PublicKey {
+        if (publicKey == null) {
+            publicKey = EcdsaPublicKey(SecKeyCopyPublicKey(privateKey)!!, curve)
+        }
+        return publicKey!!
+    }
 
     override fun signatureGenerator(digest: CryptographyAlgorithmId<Digest>, format: ECDSA.SignatureFormat): SignatureGenerator {
         val generator = SecSignatureGenerator(privateKey, digest.ecdsaSecKeyAlgorithm())

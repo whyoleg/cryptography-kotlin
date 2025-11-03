@@ -11,16 +11,12 @@ import dev.whyoleg.cryptography.providers.apple.internal.*
 import dev.whyoleg.cryptography.providers.base.operations.*
 import platform.Security.*
 
-internal object SecRsaOaep : SecRsa<RSA.OAEP.PublicKey, RSA.OAEP.PrivateKey, RSA.OAEP.KeyPair>(), RSA.OAEP {
+internal object SecRsaOaep : SecRsa<RSA.OAEP.PublicKey, RSA.OAEP.PrivateKey, RSA.OAEP.KeyPair>(
+    wrapPublicKey = ::RsaOaepPublicKey,
+    wrapPrivateKey = ::RsaOaepPrivateKey,
+    wrapKeyPair = ::RsaOaepKeyPair,
+), RSA.OAEP {
     override fun hashAlgorithm(digest: CryptographyAlgorithmId<Digest>): SecKeyAlgorithm? = digest.rsaOaepSecKeyAlgorithm()
-
-    override fun wrapKeyPair(algorithm: SecKeyAlgorithm?, publicKey: SecKeyRef, privateKey: SecKeyRef): RSA.OAEP.KeyPair = RsaOaepKeyPair(
-        publicKey = RsaOaepPublicKey(publicKey, algorithm),
-        privateKey = RsaOaepPrivateKey(privateKey, algorithm),
-    )
-
-    override fun wrapPublicKey(algorithm: SecKeyAlgorithm?, key: SecKeyRef): RSA.OAEP.PublicKey = RsaOaepPublicKey(key, algorithm)
-    override fun wrapPrivateKey(algorithm: SecKeyAlgorithm?, key: SecKeyRef): RSA.OAEP.PrivateKey = RsaOaepPrivateKey(key, algorithm)
 
     private class RsaOaepKeyPair(
         override val publicKey: RSA.OAEP.PublicKey,
@@ -37,7 +33,8 @@ internal object SecRsaOaep : SecRsa<RSA.OAEP.PublicKey, RSA.OAEP.PrivateKey, RSA
     private class RsaOaepPrivateKey(
         privateKey: SecKeyRef,
         private val algorithm: SecKeyAlgorithm?,
-    ) : RsaPrivateKey(privateKey), RSA.OAEP.PrivateKey {
+        publicKey: RSA.OAEP.PublicKey?,
+    ) : RsaPrivateKey(privateKey, algorithm, publicKey), RSA.OAEP.PrivateKey {
         override fun decryptor(): AuthenticatedDecryptor = RsaOaepDecryptor(privateKey, algorithm)
     }
 }
