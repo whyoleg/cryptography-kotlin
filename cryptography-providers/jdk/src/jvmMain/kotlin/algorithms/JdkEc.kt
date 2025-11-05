@@ -16,16 +16,16 @@ import java.math.*
 import java.security.interfaces.*
 import java.security.spec.*
 
-internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP : EC.KeyPair<PublicK, PrivateK>>(
+internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey<PublicK>, KP : EC.KeyPair<PublicK, PrivateK>>(
     protected val state: JdkCryptographyState,
 ) : EC<PublicK, PrivateK, KP> {
+    protected abstract val wrapPublicKey: (JPublicKey) -> PublicK
+    protected abstract val wrapPrivateKey: (JPrivateKey, PublicK?) -> PrivateK
+    protected abstract val wrapKeyPair: (PublicK, PrivateK) -> KP
+
     private fun algorithmParameters(spec: AlgorithmParameterSpec): JAlgorithmParameters {
         return state.algorithmParameters("EC").also { it.init(spec) }
     }
-
-    protected abstract fun JPublicKey.convert(): PublicK
-    protected abstract fun JPrivateKey.convert(): PrivateK
-    protected abstract fun JKeyPair.convert(): KP
 
     final override fun publicKeyDecoder(curve: EC.Curve): KeyDecoder<EC.PublicKey.Format, PublicK> {
         return EcPublicKeyDecoder(algorithmParameters(ECGenParameterSpec(curve.jdkName)).curveName())
@@ -54,19 +54,33 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP
             initialize(keyGenParameters, state.secureRandom)
         }
 
-        override fun JKeyPair.convert(): KP = with(this@JdkEc) { convert() }
+        override fun JKeyPair.convert(): KP {
+            val publicKey = wrapPublicKey(public)
+            val privateKey = wrapPrivateKey(private, publicKey)
+            return wrapKeyPair(publicKey, privateKey)
+        }
     }
 
     private inner class EcPublicKeyDecoder(
         private val curveName: String,
     ) : JdkPublicKeyDecoder<EC.PublicKey.Format, PublicK>(state, "EC") {
+
+        fun fromPrivateKey(privateKey: ECPrivateKey): PublicK = decode(
+            BouncyCastleBridge.derivePublicKey(privateKey, curveName) ?: error(
+                "Getting public key from private key for EC is not supported in JDK without BouncyCastle APIs"
+            )
+        )
+
+        fun fromEncodedPrivateKey(bytes: ByteArray): PublicK? =
+            getEcPublicKeyFromPrivateKeyPkcs8(bytes)?.let(::decodeFromRaw)
+
         override fun JPublicKey.convert(): PublicK {
             check(this is ECPublicKey)
 
             val keyCurve = algorithmParameters(params).curveName()
             check(curveName == keyCurve) { "Key curve $keyCurve is not equal to expected curve $curveName" }
 
-            return with(this@JdkEc) { convert() }
+            return wrapPublicKey(this)
         }
 
         override fun decodeFromByteArrayBlocking(format: EC.PublicKey.Format, bytes: ByteArray): PublicK = when (format) {
@@ -77,29 +91,19 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP
             EC.PublicKey.Format.PEM            -> decodeFromDer(unwrapPem(PemLabel.PublicKey, bytes))
         }
 
-        private fun decodeFromRaw(bytes: ByteArray): PublicK = run {
+        private fun decodeFromRaw(bytes: ByteArray): PublicK {
             check(bytes.isNotEmpty()) { "Encoded key is empty!" }
             val parameters = algorithmParameters(ECGenParameterSpec(curveName)).getParameterSpec(ECParameterSpec::class.java)
             val point = parameters.decodePoint(bytes)
 
-            keyFactory.use {
-                it.generatePublic(ECPublicKeySpec(point, parameters))
-            }.convert()
+            return decode(ECPublicKeySpec(point, parameters))
         }
-
     }
 
     private inner class EcPrivateKeyDecoder(
         private val curveName: String,
     ) : JdkPrivateKeyDecoder<EC.PrivateKey.Format, PrivateK>(state, "EC") {
-        override fun JPrivateKey.convert(): PrivateK {
-            check(this is ECPrivateKey)
-
-            val keyCurve = algorithmParameters(params).curveName()
-            check(curveName == keyCurve) { "Key curve $keyCurve is not equal to expected curve $curveName" }
-
-            return with(this@JdkEc) { convert() }
-        }
+        override fun JPrivateKey.convert(): PrivateK = create(this, null)
 
         override fun decodeFromByteArrayBlocking(format: EC.PrivateKey.Format, bytes: ByteArray): PrivateK = when (format) {
             EC.PrivateKey.Format.JWK      -> error("$format is not supported")
@@ -113,10 +117,27 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP
             EC.PrivateKey.Format.DER.SEC1 -> decodeFromDer(convertEcPrivateKeyFromSec1ToPkcs8(bytes))
             EC.PrivateKey.Format.PEM.SEC1 -> decodeFromDer(convertEcPrivateKeyFromSec1ToPkcs8(unwrapPem(PemLabel.EcPrivateKey, bytes)))
         }
+
+        override fun decodeFromDer(input: ByteArray): PrivateK {
+            val privateKey = decodeFromDerRaw(input)
+            return create(
+                privateKey = privateKey,
+                publicKey = EcPublicKeyDecoder(curveName).fromEncodedPrivateKey(input)
+            )
+        }
+
+        private fun create(privateKey: JPrivateKey, publicKey: PublicK?): PrivateK {
+            check(privateKey is ECPrivateKey)
+
+            val keyCurve = algorithmParameters(privateKey.params).curveName()
+            check(curveName == keyCurve) { "Key curve $keyCurve is not equal to expected curve $curveName" }
+
+            return wrapPrivateKey(privateKey, publicKey)
+        }
     }
 
     protected abstract class BaseEcPublicKey(
-        private val key: JPublicKey,
+        val key: JPublicKey,
     ) : EC.PublicKey, JdkEncodableKey<EC.PublicKey.Format>(key) {
         final override fun encodeToByteArrayBlocking(format: EC.PublicKey.Format): ByteArray = when (format) {
             EC.PublicKey.Format.JWK            -> error("$format is not supported")
@@ -150,9 +171,19 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP
 
     }
 
-    protected abstract class BaseEcPrivateKey(
-        private val key: JPrivateKey,
-    ) : EC.PrivateKey, JdkEncodableKey<EC.PrivateKey.Format>(key) {
+    protected abstract inner class BaseEcPrivateKey(
+        val key: JPrivateKey,
+        private var publicKey: PublicK?,
+    ) : EC.PrivateKey<PublicK>, JdkEncodableKey<EC.PrivateKey.Format>(key) {
+        override fun getPublicKeyBlocking(): PublicK {
+            if (publicKey == null) {
+                key as ECPrivateKey
+                val curveName = algorithmParameters(key.params).curveName()
+                publicKey = EcPublicKeyDecoder(curveName).fromPrivateKey(key)
+            }
+            return publicKey!!
+        }
+
         final override fun encodeToByteArrayBlocking(format: EC.PrivateKey.Format): ByteArray = when (format) {
             EC.PrivateKey.Format.JWK      -> error("$format is not supported")
             EC.PrivateKey.Format.DER      -> encodeToDer()

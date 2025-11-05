@@ -43,3 +43,14 @@ public fun convertEcPrivateKeyFromSec1ToPkcs8(input: ByteArray): ByteArray {
     )
     return Der.encodeToByteArray(PrivateKeyInfo.serializer(), privateKeyInfo)
 }
+
+@CryptographyProviderApi
+public fun getEcPublicKeyFromPrivateKeyPkcs8(input: ByteArray): ByteArray? {
+    val privateKeyInfo = Der.decodeFromByteArray(PrivateKeyInfo.serializer(), input)
+    val privateKeyAlgorithm = privateKeyInfo.privateKeyAlgorithm
+    check(privateKeyAlgorithm is EcKeyAlgorithmIdentifier) {
+        "Expected algorithm '${ObjectIdentifier.EC}', received: '${privateKeyAlgorithm.algorithm}'"
+    }
+    val ecPrivateKey = Der.decodeFromByteArray(EcPrivateKey.serializer(), privateKeyInfo.privateKey)
+    return ecPrivateKey.publicKey?.byteArray
+}

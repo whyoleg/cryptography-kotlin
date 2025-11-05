@@ -61,6 +61,7 @@ public abstract class dev/whyoleg/cryptography/providers/base/algorithms/BaseHkd
 public final class dev/whyoleg/cryptography/providers/base/algorithms/EcKt {
 	public static final fun convertEcPrivateKeyFromPkcs8ToSec1 ([B)[B
 	public static final fun convertEcPrivateKeyFromSec1ToPkcs8 ([B)[B
+	public static final fun getEcPublicKeyFromPrivateKeyPkcs8 ([B)[B
 }
 
 public final class dev/whyoleg/cryptography/providers/base/materials/KeysKt {

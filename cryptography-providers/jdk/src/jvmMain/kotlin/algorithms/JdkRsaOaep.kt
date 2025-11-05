@@ -1,98 +1,43 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.jdk.algorithms
 
-import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.bigint.*
-import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.operations.*
 import dev.whyoleg.cryptography.providers.jdk.*
-import dev.whyoleg.cryptography.providers.jdk.materials.*
 import dev.whyoleg.cryptography.providers.jdk.operations.*
 import java.security.spec.*
 import javax.crypto.spec.*
 
 internal class JdkRsaOaep(
-    private val state: JdkCryptographyState,
-) : RSA.OAEP {
-
-    override fun publicKeyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<RSA.PublicKey.Format, RSA.OAEP.PublicKey> =
-        RsaOaepPublicKeyDecoder(state, digest.rsaHashAlgorithmName())
-
-    override fun privateKeyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<RSA.PrivateKey.Format, RSA.OAEP.PrivateKey> =
-        RsaOaepPrivateKeyDecoder(state, digest.rsaHashAlgorithmName())
-
-    override fun keyPairGenerator(
-        keySize: BinarySize,
-        digest: CryptographyAlgorithmId<Digest>,
-        publicExponent: BigInt,
-    ): KeyGenerator<RSA.OAEP.KeyPair> {
-        val rsaParameters = RSAKeyGenParameterSpec(
-            keySize.inBits,
-            publicExponent.toJavaBigInteger(),
-        )
-        return RsaOaepKeyPairGenerator(state, rsaParameters, digest.rsaHashAlgorithmName())
-    }
-}
-
-private class RsaOaepPublicKeyDecoder(
     state: JdkCryptographyState,
-    private val hashAlgorithmName: String,
-) : RsaPublicKeyDecoder<RSA.OAEP.PublicKey>(state) {
-    override fun JPublicKey.convert(): RSA.OAEP.PublicKey {
-        return RsaOaepPublicKey(state, this, hashAlgorithmName)
-    }
-}
+) : JdkRsa<RSA.OAEP.PublicKey, RSA.OAEP.PrivateKey, RSA.OAEP.KeyPair>(state), RSA.OAEP {
+    override val wrapPublicKey: (JPublicKey, String) -> RSA.OAEP.PublicKey = ::RsaOaepPublicKey
+    override val wrapPrivateKey: (JPrivateKey, String, RSA.OAEP.PublicKey?) -> RSA.OAEP.PrivateKey = ::RsaOaepPrivateKey
+    override val wrapKeyPair: (RSA.OAEP.PublicKey, RSA.OAEP.PrivateKey) -> RSA.OAEP.KeyPair = ::RsaOaepKeyPair
 
-private class RsaOaepPrivateKeyDecoder(
-    state: JdkCryptographyState,
-    private val hashAlgorithmName: String,
-) : RsaPrivateKeyDecoder<RSA.OAEP.PrivateKey>(state) {
-    override fun JPrivateKey.convert(): RSA.OAEP.PrivateKey = RsaOaepPrivateKey(state, this, hashAlgorithmName)
-}
+    private class RsaOaepKeyPair(
+        override val publicKey: RSA.OAEP.PublicKey,
+        override val privateKey: RSA.OAEP.PrivateKey,
+    ) : RSA.OAEP.KeyPair
 
-private class RsaOaepKeyPairGenerator(
-    state: JdkCryptographyState,
-    private val keyGenParameters: RSAKeyGenParameterSpec,
-    private val hashAlgorithmName: String,
-) : JdkKeyPairGenerator<RSA.OAEP.KeyPair>(state, "RSA") {
-
-    override fun JKeyPairGenerator.init() {
-        initialize(keyGenParameters, state.secureRandom)
+    private inner class RsaOaepPublicKey(
+        key: JPublicKey,
+        private val hashAlgorithmName: String,
+    ) : RSA.OAEP.PublicKey, RsaPublicEncodableKey(key) {
+        override fun encryptor(): AuthenticatedEncryptor = RsaOaepEncryptor(state, key, hashAlgorithmName)
     }
 
-    override fun JKeyPair.convert(): RSA.OAEP.KeyPair = RsaOaepKeyPair(state, this, hashAlgorithmName)
-}
-
-private class RsaOaepKeyPair(
-    state: JdkCryptographyState,
-    keyPair: JKeyPair,
-    hashAlgorithmName: String,
-) : RSA.OAEP.KeyPair {
-    override val publicKey: RSA.OAEP.PublicKey = RsaOaepPublicKey(state, keyPair.public, hashAlgorithmName)
-    override val privateKey: RSA.OAEP.PrivateKey = RsaOaepPrivateKey(state, keyPair.private, hashAlgorithmName)
-}
-
-private class RsaOaepPublicKey(
-    private val state: JdkCryptographyState,
-    private val key: JPublicKey,
-    hashAlgorithmName: String,
-) : RSA.OAEP.PublicKey, RsaPublicEncodableKey(key) {
-    private val encryptor = RsaOaepEncryptor(state, key, hashAlgorithmName)
-    override fun encryptor(): AuthenticatedEncryptor = encryptor
-}
-
-private class RsaOaepPrivateKey(
-    private val state: JdkCryptographyState,
-    private val key: JPrivateKey,
-    hashAlgorithmName: String,
-) : RSA.OAEP.PrivateKey, RsaPrivateEncodableKey(key) {
-    private val decryptor = RsaOaepDecryptor(state, key, hashAlgorithmName)
-    override fun decryptor(): AuthenticatedDecryptor = decryptor
+    private inner class RsaOaepPrivateKey(
+        key: JPrivateKey,
+        hashAlgorithmName: String,
+        publicKey: RSA.OAEP.PublicKey?,
+    ) : RSA.OAEP.PrivateKey, RsaPrivateEncodableKey(key, hashAlgorithmName, publicKey) {
+        override fun decryptor(): AuthenticatedDecryptor = RsaOaepDecryptor(state, key, hashAlgorithmName)
+    }
 }
 
 private class RsaOaepEncryptor(
