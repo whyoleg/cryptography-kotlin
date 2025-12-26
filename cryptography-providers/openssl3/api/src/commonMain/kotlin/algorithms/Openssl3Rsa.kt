@@ -20,7 +20,7 @@ internal abstract class Openssl3Rsa<PublicK : RSA.PublicKey, PrivateK : RSA.Priv
 ) : RSA<PublicK, PrivateK, KP> {
 
     final override fun publicKeyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<RSA.PublicKey.Format, PublicK> =
-        RsaPublicKeyDecoder(hashAlgorithm(digest))
+        RsaPublicKeyDecoder(hashAlgorithmName(digest))
 
     private inner class RsaPublicKeyDecoder(
         private val hashAlgorithm: String,
@@ -40,7 +40,7 @@ internal abstract class Openssl3Rsa<PublicK : RSA.PublicKey, PrivateK : RSA.Priv
     }
 
     final override fun privateKeyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<RSA.PrivateKey.Format, PrivateK> =
-        RsaPrivateKeyDecoder(hashAlgorithm(digest))
+        RsaPrivateKeyDecoder(hashAlgorithmName(digest))
 
     private inner class RsaPrivateKeyDecoder(
         private val hashAlgorithm: String,
@@ -65,7 +65,7 @@ internal abstract class Openssl3Rsa<PublicK : RSA.PublicKey, PrivateK : RSA.Priv
         publicExponent: BigInt,
     ): KeyGenerator<KP> = RsaKeyGenerator(
         keySizeBits = keySize.inBits.toUInt(),
-        hashAlgorithm = hashAlgorithm(digest),
+        hashAlgorithm = hashAlgorithmName(digest),
         publicExponent = publicExponent.toUInt(),
     )
 

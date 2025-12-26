@@ -19,10 +19,16 @@ abstract class EcdsaCompatibilityTest(
 ) : EcCompatibilityTest<ECDSA.PublicKey, ECDSA.PrivateKey, ECDSA.KeyPair, ECDSA>(ECDSA, provider) {
     @Serializable
     private data class SignatureParameters(
-        val digestName: String,
+        val digestName: String?,
         val signatureFormat: ECDSA.SignatureFormat,
     ) : TestParameters {
-        val digest get() = digest(digestName)
+        val digest: CryptographyAlgorithmId<Digest>? get() {
+            if (digestName == null) {
+                return null
+            }
+
+            return digest(digestName)
+        }
     }
 
     override suspend fun CompatibilityTestScope<ECDSA>.generate(isStressTest: Boolean) {
@@ -33,10 +39,12 @@ abstract class EcdsaCompatibilityTest(
 
         val signatureParametersList = buildList {
             listOf(ECDSA.SignatureFormat.RAW, ECDSA.SignatureFormat.DER).forEach { signatureFormat ->
-                generateDigestsForCompatibility { digest, _ ->
-                    if (!supportsDigest(digest)) return@generateDigestsForCompatibility
+                generateMessagesAndDigestsForCompatibility { digest, _ ->
+                    if (!supportsDigest(digest, mechanism = ECDSA)) {
+                        return@generateMessagesAndDigestsForCompatibility
+                    }
 
-                    val parameters = SignatureParameters(digest.name, signatureFormat)
+                    val parameters = SignatureParameters(digest?.name, signatureFormat)
                     val id = api.signatures.saveParameters(parameters)
                     add(id to parameters)
                 }
@@ -81,7 +89,7 @@ abstract class EcdsaCompatibilityTest(
         val keyPairs = validateKeys()
 
         api.signatures.getParameters<SignatureParameters> { signatureParameters, parametersId, _ ->
-            if (!supportsDigest(signatureParameters.digest)) return@getParameters
+            if (!supportsDigest(signatureParameters.digest, mechanism = ECDSA)) return@getParameters
 
             api.signatures.getData<SignatureData>(parametersId) { (keyReference, data, signature), _, _ ->
                 val (publicKeys, privateKeys) = keyPairs[keyReference] ?: return@getData

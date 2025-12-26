@@ -20,19 +20,29 @@ fun AlgorithmTestScope<*>.supportsFunctions() = supports {
     }
 }
 
-fun AlgorithmTestScope<*>.supportsDigest(digest: CryptographyAlgorithmId<Digest>): Boolean = supports {
+fun AlgorithmTestScope<*>.supportsDigest(
+    digest: CryptographyAlgorithmId<Digest>?,
+    mechanism: CryptographyAlgorithmId<out CryptographyAlgorithm>? = null
+): Boolean = supports {
     val sha3Algorithms = setOf(SHA3_224, SHA3_256, SHA3_384, SHA3_512)
     when {
         (digest == SHA224 || digest in sha3Algorithms) &&
-                (provider.isWebCrypto || provider.isCryptoKit) -> digest.name
+                (provider.isWebCrypto || provider.isCryptoKit) -> digest?.name
+
         digest in sha3Algorithms &&
-                provider.isApple                                      -> digest.name
+                provider.isApple -> digest?.name
+
         digest in sha3Algorithms &&
                 provider.isJdkDefault &&
-                (platform.isJdk { major < 17 } || platform.isAndroid) -> "${digest.name} signatures on old JDK"
+                (platform.isJdk { major < 17 } || platform.isAndroid) -> "${digest?.name} signatures on old JDK"
+
         digest == RIPEMD160 && (provider.isJdkDefault || provider.isApple || provider.isWebCrypto || provider.isCryptoKit)
-                                                                      -> digest.name
-        else                                                          -> null
+            -> digest.name
+
+        digest == null && (mechanism != ECDSA || provider.isJdkDefault || provider.isWebCrypto || provider.isCryptoKit)
+            -> "${mechanism?.let { "Mechanism: $it with " }.orEmpty()} raw message"
+
+        else -> null
     }
 }
 

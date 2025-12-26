@@ -17,6 +17,18 @@ inline fun generateRsaKeySizes(block: (keySize: BinarySize) -> Unit) {
     generate(block, 2048.bits, 3072.bits, 4096.bits)
 }
 
+inline fun generateMessagesAndDigests(block: (digest: CryptographyAlgorithmId<Digest>?, digestSize: Int) -> Unit) {
+    generateDigests(block)
+
+    listOf(
+        null to 20,
+        null to 28,
+        null to 32,
+        null to 48,
+        null to 64,
+    ).forEach { block(it.first, it.second) }
+}
+
 inline fun generateDigests(block: (digest: CryptographyAlgorithmId<Digest>, digestSize: Int) -> Unit) {
     listOf(
         SHA1 to 20,
@@ -31,7 +43,18 @@ inline fun generateDigests(block: (digest: CryptographyAlgorithmId<Digest>, dige
     ).forEach { block(it.first, it.second) }
 }
 
+
 // workaround for now to reduce data for compatibility tests
+inline fun generateMessagesAndDigestsForCompatibility(block: (digest: CryptographyAlgorithmId<Digest>?, digestSize: Int) -> Unit) {
+    generateDigestsForCompatibility(block)
+
+    listOf(
+        null to 20,
+        null to 32,
+        null to 64,
+    ).forEach { block(it.first, it.second) }
+}
+
 inline fun generateDigestsForCompatibility(block: (digest: CryptographyAlgorithmId<Digest>, digestSize: Int) -> Unit) {
     listOf(
         SHA1 to 20,
