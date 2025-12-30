@@ -30,12 +30,15 @@ object Projects {
         "cryptography-provider-cryptokit" to setOf(Tag.PUBLISHED),
         "cryptography-provider-webcrypto" to setOf(Tag.PUBLISHED),
         "cryptography-provider-openssl3-api" to setOf(Tag.PUBLISHED),
+        "cryptography-provider-openssl3-api-nativebuilds" to setOf(Tag.PUBLISHED),
         "cryptography-provider-openssl3-shared" to setOf(Tag.PUBLISHED),
         "cryptography-provider-openssl3-prebuilt" to setOf(Tag.PUBLISHED),
+        "cryptography-provider-openssl3-prebuilt-nativebuilds" to setOf(Tag.PUBLISHED),
         "cryptography-provider-optimal" to setOf(Tag.PUBLISHED),
 
         "cryptography-provider-jdk-android-tests" to setOf(),
         "cryptography-provider-openssl3-test" to setOf(),
+        "cryptography-provider-openssl3-test-nativebuilds" to setOf(),
         "cryptography-provider-tests" to setOf(),
     )
 

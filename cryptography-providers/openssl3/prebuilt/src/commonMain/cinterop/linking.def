@@ -1,0 +1,9 @@
+staticLibraries = libcrypto.a
+# libz.a is taken from mingw toolchain used in K/N
+staticLibraries.mingw = libz.a
+libraryPaths.mingw = src/mingwMain/libs
+
+linkerOpts.mingw = -lws2_32 -lcrypt32
+linkerOpts.linux = -lz
+linkerOpts.android = -lz
+linkerOpts.android_x86 = -latomic

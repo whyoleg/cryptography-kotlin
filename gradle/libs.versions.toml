@@ -22,8 +22,8 @@ maven-publish = "0.34.0"
 # other
 bouncycastle = "1.81"
 logback = "1.5.18"
-nativebuilds = "0.4.0"
-openssl = "3.6.0.1"
+nativebuilds = "0.7.0"
+openssl = "3.6.0.4"
 
 [libraries]
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
@@ -46,7 +46,7 @@ kotlinx-benchmark-runtime = { module = "org.jetbrains.kotlinx:kotlinx-benchmark-
 bouncycastle = { module = "org.bouncycastle:bcprov-jdk18on", version.ref = "bouncycastle" }
 
 nativebuilds-openssl-libcrypto = { module = "com.ensody.nativebuilds:openssl-libcrypto", version.ref = "openssl" }
-nativebuilds-openssl-headers = { module = "com.ensody.nativebuilds:openssl", version.ref = "openssl" }
+nativebuilds-openssl-headers = { module = "com.ensody.nativebuilds:openssl-headers", version.ref = "openssl" }
 
 androidx-test = { module = "androidx.test:runner", version.ref = "androidx-test" }
 
