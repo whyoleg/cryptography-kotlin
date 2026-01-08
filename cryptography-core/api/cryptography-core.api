@@ -105,6 +105,18 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/AES$CBC$Key 
 	public static synthetic fun cipher$default (Ldev/whyoleg/cryptography/algorithms/AES$CBC$Key;ZILjava/lang/Object;)Ldev/whyoleg/cryptography/algorithms/AES$IvCipher;
 }
 
+public abstract interface class dev/whyoleg/cryptography/algorithms/AES$CFB8 : dev/whyoleg/cryptography/algorithms/AES {
+	public static final field Companion Ldev/whyoleg/cryptography/algorithms/AES$CFB8$Companion;
+	public fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/AES$CFB8$Companion : dev/whyoleg/cryptography/CryptographyAlgorithmId {
+}
+
+public abstract interface class dev/whyoleg/cryptography/algorithms/AES$CFB8$Key : dev/whyoleg/cryptography/algorithms/AES$Key {
+	public abstract fun cipher ()Ldev/whyoleg/cryptography/algorithms/AES$IvCipher;
+}
+
 public abstract interface class dev/whyoleg/cryptography/algorithms/AES$CMAC : dev/whyoleg/cryptography/algorithms/AES {
 	public static final field Companion Ldev/whyoleg/cryptography/algorithms/AES$CMAC$Companion;
 	public fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;

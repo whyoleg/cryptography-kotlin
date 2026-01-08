@@ -30,6 +30,17 @@ abstract interface <#A: dev.whyoleg.cryptography.algorithms/AES.Key> dev.whyoleg
         final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/AES.CBC> // dev.whyoleg.cryptography.algorithms/AES.CBC.Companion|null[0]
     }
 
+    abstract interface CFB8 : dev.whyoleg.cryptography.algorithms/AES<dev.whyoleg.cryptography.algorithms/AES.CFB8.Key> { // dev.whyoleg.cryptography.algorithms/AES.CFB8|null[0]
+        open val id // dev.whyoleg.cryptography.algorithms/AES.CFB8.id|{}id[0]
+            open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/AES.CFB8> // dev.whyoleg.cryptography.algorithms/AES.CFB8.id.<get-id>|<get-id>(){}[0]
+
+        abstract interface Key : dev.whyoleg.cryptography.algorithms/AES.Key { // dev.whyoleg.cryptography.algorithms/AES.CFB8.Key|null[0]
+            abstract fun cipher(): dev.whyoleg.cryptography.algorithms/AES.IvCipher // dev.whyoleg.cryptography.algorithms/AES.CFB8.Key.cipher|cipher(){}[0]
+        }
+
+        final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/AES.CFB8> // dev.whyoleg.cryptography.algorithms/AES.CFB8.Companion|null[0]
+    }
+
     abstract interface CMAC : dev.whyoleg.cryptography.algorithms/AES<dev.whyoleg.cryptography.algorithms/AES.CMAC.Key> { // dev.whyoleg.cryptography.algorithms/AES.CMAC|null[0]
         open val id // dev.whyoleg.cryptography.algorithms/AES.CMAC.id|{}id[0]
             open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/AES.CMAC> // dev.whyoleg.cryptography.algorithms/AES.CMAC.id.<get-id>|<get-id>(){}[0]
