@@ -44,7 +44,7 @@ public interface AES<K : AES.Key> : CryptographyAlgorithm {
 
         @SubclassOptInRequired
         public interface Key : AES.Key {
-            public fun cipher(padding: Boolean = true): IvCipher
+            public fun cipher(): IvCipher
         }
     }
 
