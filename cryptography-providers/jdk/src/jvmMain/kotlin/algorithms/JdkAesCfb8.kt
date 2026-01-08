@@ -26,7 +26,7 @@ private class JdkAesCfb8Key(
     private val state: JdkCryptographyState,
     private val key: JSecretKey,
 ) : AES.CFB8.Key, JdkEncodableKey<AES.Key.Format>(key) {
-    override fun cipher(padding: Boolean): AES.IvCipher = JdkAesIvCipher(
+    override fun cipher(): AES.IvCipher = JdkAesIvCipher(
         state = state,
         key = key,
         ivSize = 16,

@@ -11,7 +11,7 @@ internal object CCAesCfb8 : CCAes<AES.CFB8.Key>(), AES.CFB8 {
     override fun wrapKey(key: ByteArray): AES.CFB8.Key = AesCFBKey(key)
 
     private class AesCFBKey(private val key: ByteArray) : AES.CFB8.Key {
-        override fun cipher(padding: Boolean): AES.IvCipher = CCAesIvCipher(
+        override fun cipher(): AES.IvCipher = CCAesIvCipher(
             algorithm = kCCAlgorithmAES,
             mode = kCCModeCFB8,
             padding = ccNoPadding,
