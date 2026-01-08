@@ -4,7 +4,7 @@
 
 package dev.whyoleg.cryptography.providers.tests.default
 
-import dev.whyoleg.cryptography.*
+   import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.providers.tests.*
 import kotlin.test.*
@@ -27,6 +27,7 @@ abstract class SupportedAlgorithmsTest(provider: CryptographyProvider) : Provide
 
         assertSupports(AES.ECB, !context.provider.isWebCrypto && !context.provider.isCryptoKit)
         assertSupports(AES.CBC, !context.provider.isCryptoKit)
+        assertSupports(AES.CFB8, !context.provider.isWebCrypto)
         assertSupports(AES.CMAC, !context.provider.isApple && !context.provider.isWebCrypto && !context.provider.isCryptoKit)
         assertSupports(AES.CTR, !context.provider.isCryptoKit)
         assertSupports(AES.GCM, !context.provider.isApple)
