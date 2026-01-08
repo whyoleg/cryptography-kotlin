@@ -82,6 +82,7 @@ For additional limitation please consult provider specific documentation.
 | **MAC**                                     | HMAC             |  ✅  |     ✅     |   ✅   | ✅         |    ✅     |
 |                                             | CMAC             |  ✅  |     ❌     |   ❌   | ❌         |    ✅     |
 | **Symmetric-key<br/>encryption/decryption** | AES-CBC          |  ✅  |     ✅     |   ✅   | ❌         |    ✅     |
+|                                             | AES-CFB8         |  ✅  |     x     |   ✅   | ❌         |    ✅     |
 |                                             | AES-CTR          |  ✅  |     ✅     |   ✅   | ❌         |    ✅     |
 |                                             | AES-GCM          |  ✅  |     ✅     |   ❌   | ✅         |    ✅     |
 |                                             | ⚠️ AES-ECB       |  ✅  |     ❌     |   ✅   | ❌         |    ✅     |
