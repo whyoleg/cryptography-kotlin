@@ -28,15 +28,9 @@ kotlin {
         )
     }
 
-    sourceSets.commonMain {
-        dependencies {
-            api(projects.cryptographyCore)
-            implementation(projects.cryptographyProviderBase)
-        }
-
-        kotlin {
-            srcDir(file("../api-common"))
-        }
+    sourceSets.commonMain.dependencies {
+        api(projects.cryptographyCore)
+        implementation(projects.cryptographyProviderBase)
     }
 
     targets.withType<KotlinNativeTarget>().configureEach {

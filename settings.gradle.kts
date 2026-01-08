@@ -61,12 +61,10 @@ projects("cryptography-kotlin") {
         module("webcrypto")
         folder("openssl3") {
             module("api")
-            module("api-nativebuilds")
             module("shared")
             module("prebuilt")
             module("prebuilt-nativebuilds")
             module("test")
-            module("test-nativebuilds")
         }
         module("cryptokit")
         module("optimal") // composite provider

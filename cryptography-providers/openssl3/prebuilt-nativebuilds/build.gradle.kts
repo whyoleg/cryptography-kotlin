@@ -23,11 +23,11 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            api(projects.cryptographyProviderOpenssl3ApiNativebuilds)
+            api(projects.cryptographyProviderOpenssl3Api)
             api(libs.nativebuilds.openssl.libcrypto)
         }
         commonTest.dependencies {
-            api(projects.cryptographyProviderOpenssl3TestNativebuilds)
+            api(projects.cryptographyProviderOpenssl3Test)
         }
     }
 }
@@ -35,5 +35,5 @@ kotlin {
 providerTests {
     packageName.set("dev.whyoleg.cryptography.providers.openssl3.prebuiltnativebuilds")
     imports.addAll("dev.whyoleg.cryptography.providers.openssl3.*")
-    providerInitializers.put("OpenSSL3_Prebuilt_NativeBuilds", "CryptographyProvider.Openssl3NativeBuilds")
+    providerInitializers.put("OpenSSL3_Prebuilt_NativeBuilds", "CryptographyProvider.Openssl3")
 }
