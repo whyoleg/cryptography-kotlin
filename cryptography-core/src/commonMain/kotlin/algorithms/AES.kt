@@ -42,7 +42,7 @@ public interface AES<K : AES.Key> : CryptographyAlgorithm {
 
         public companion object : CryptographyAlgorithmId<CFB8>("AES-CFB8")
 
-        @SubclassOptInRequired
+        @SubclassOptInRequired(CryptographyProviderApi::class)
         public interface Key : AES.Key {
             public fun cipher(): IvCipher
         }
