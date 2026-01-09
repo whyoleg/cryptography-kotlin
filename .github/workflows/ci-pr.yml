@@ -5,3 +5,5 @@ on:
 jobs:
   checks:
     uses: ./.github/workflows/run-checks.yml
+    permissions:
+      contents: write

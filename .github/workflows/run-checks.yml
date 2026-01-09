@@ -7,7 +7,7 @@ jobs:
   build-project:
     uses: ./.github/workflows/run-build-project.yml
     permissions:
-      contents: ${{ (github.repository == 'whyoleg/cryptography-kotlin') && write || none }}
+      contents: write
 
   build-website:
     needs: [ build-project ]
