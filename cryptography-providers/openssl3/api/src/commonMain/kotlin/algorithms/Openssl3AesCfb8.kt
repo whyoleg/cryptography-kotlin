@@ -28,9 +28,7 @@ internal object Openssl3AesCfb8 : AES.CFB8, Openssl3Aes<AES.CFB8.Key>() {
         private val cleaner = createCleaner(cipher, ::EVP_CIPHER_free)
 
         override fun cipher(): AES.IvCipher {
-            return Openssl3AesIvCipher(cipher, key, ivSize = 16) { context ->
-                checkError(EVP_CIPHER_CTX_set_padding(context, 0))
-            }
+            return Openssl3AesIvCipher(cipher, key, ivSize = 16)
         }
     }
 }
