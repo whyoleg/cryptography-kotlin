@@ -24,20 +24,20 @@ kotlin {
     }
 
     iosArm64()
-    iosX64()
+    @Suppress("DEPRECATION") iosX64()
     iosSimulatorArm64()
 
-    watchosX64()
+    @Suppress("DEPRECATION") watchosX64()
     watchosArm32()
     watchosArm64()
     watchosDeviceArm64()
     watchosSimulatorArm64()
 
-    tvosX64()
+    @Suppress("DEPRECATION") tvosX64()
     tvosArm64()
     tvosSimulatorArm64()
 
-    macosX64()
+    @Suppress("DEPRECATION") macosX64()
     macosArm64()
 
     linuxX64()
