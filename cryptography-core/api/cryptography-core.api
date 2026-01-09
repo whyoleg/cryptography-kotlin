@@ -105,6 +105,18 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/AES$CBC$Key 
 	public static synthetic fun cipher$default (Ldev/whyoleg/cryptography/algorithms/AES$CBC$Key;ZILjava/lang/Object;)Ldev/whyoleg/cryptography/algorithms/AES$IvCipher;
 }
 
+public abstract interface class dev/whyoleg/cryptography/algorithms/AES$CFB : dev/whyoleg/cryptography/algorithms/AES {
+	public static final field Companion Ldev/whyoleg/cryptography/algorithms/AES$CFB$Companion;
+	public fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/AES$CFB$Companion : dev/whyoleg/cryptography/CryptographyAlgorithmId {
+}
+
+public abstract interface class dev/whyoleg/cryptography/algorithms/AES$CFB$Key : dev/whyoleg/cryptography/algorithms/AES$Key {
+	public abstract fun cipher ()Ldev/whyoleg/cryptography/algorithms/AES$IvCipher;
+}
+
 public abstract interface class dev/whyoleg/cryptography/algorithms/AES$CFB8 : dev/whyoleg/cryptography/algorithms/AES {
 	public static final field Companion Ldev/whyoleg/cryptography/algorithms/AES$CFB8$Companion;
 	public fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
@@ -247,6 +259,18 @@ public final class dev/whyoleg/cryptography/algorithms/AES$Key$Size {
 	public final fun getB128-XsYwlU8 ()I
 	public final fun getB192-XsYwlU8 ()I
 	public final fun getB256-XsYwlU8 ()I
+}
+
+public abstract interface class dev/whyoleg/cryptography/algorithms/AES$OFB : dev/whyoleg/cryptography/algorithms/AES {
+	public static final field Companion Ldev/whyoleg/cryptography/algorithms/AES$OFB$Companion;
+	public fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/AES$OFB$Companion : dev/whyoleg/cryptography/CryptographyAlgorithmId {
+}
+
+public abstract interface class dev/whyoleg/cryptography/algorithms/AES$OFB$Key : dev/whyoleg/cryptography/algorithms/AES$Key {
+	public abstract fun cipher ()Ldev/whyoleg/cryptography/algorithms/AES$IvCipher;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/Digest : dev/whyoleg/cryptography/CryptographyAlgorithm {

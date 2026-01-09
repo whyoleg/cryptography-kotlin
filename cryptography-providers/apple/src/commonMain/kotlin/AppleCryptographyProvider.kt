@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.apple
@@ -26,6 +26,8 @@ internal object AppleCryptographyProvider : CryptographyProvider() {
         HMAC    -> CCHmac
         AES.CBC -> CCAesCbc
         AES.CTR -> CCAesCtr
+        AES.CFB -> CCAesCfb
+        AES.OFB -> CCAesOfb
         AES.ECB  -> CCAesEcb
         AES.CFB8 -> CCAesCfb8
         RSA.PSS  -> SecRsaPss
@@ -34,7 +36,7 @@ internal object AppleCryptographyProvider : CryptographyProvider() {
         RSA.RAW -> SecRsaRaw
         ECDSA   -> SecEcdsa
         PBKDF2  -> CCPbkdf2
-        HKDF -> CCHkdf
+        HKDF    -> CCHkdf
         else      -> null
     } as A?
 }

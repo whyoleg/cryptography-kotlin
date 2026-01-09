@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3
@@ -35,6 +35,8 @@ internal object Openssl3CryptographyProvider : CryptographyProvider() {
         AES.CFB8 -> Openssl3AesCfb8
         AES.CMAC -> Openssl3AesCmac
         AES.CTR -> Openssl3AesCtr
+        AES.CFB -> Openssl3AesCfb
+        AES.OFB -> Openssl3AesOfb
         AES.ECB -> Openssl3AesEcb
         AES.GCM -> Openssl3AesGcm
         ECDSA   -> Openssl3Ecdsa
@@ -44,7 +46,7 @@ internal object Openssl3CryptographyProvider : CryptographyProvider() {
         RSA.OAEP  -> Openssl3RsaOaep
         RSA.RAW -> Openssl3RsaRaw
         PBKDF2  -> Openssl3Pbkdf2
-        HKDF -> Openssl3Hkdf
+        HKDF    -> Openssl3Hkdf
         else      -> null
     } as A?
 }
