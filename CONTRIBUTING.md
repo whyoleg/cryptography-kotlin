@@ -165,7 +165,7 @@ Register in provider's `getOrNull()` method.
 ### 5. Update Public API
 
 ```bash
-./gradlew :cryptography-core:updateLegacyAbi
+./gradlew :cryptography-core:updateKotlinAbi
 ```
 
 ## Build Logic

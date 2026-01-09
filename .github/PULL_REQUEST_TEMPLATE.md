@@ -8,4 +8,4 @@
 
 - [ ] Tests added or updated
 - [ ] Documentation updated (if applicable)
-- [ ] API compatibility verified (`./gradlew :cryptography-core:updateLegacyAbi` if public API changed)
+- [ ] API compatibility verified (`./gradlew :cryptography-core:updateKotlinAbi` if public API changed)
