@@ -129,15 +129,16 @@ internal class JdkCryptographyProvider(provider: Provider?) : CryptographyProvid
             AES.OFB -> JdkAesOfb(state)
             AES.ECB   -> JdkAesEcb(state)
             AES.GCM   -> JdkAesGcm(state)
-            RSA.OAEP  -> JdkRsaOaep(state)
-            RSA.PSS   -> JdkRsaPss(state)
-            RSA.PKCS1 -> JdkRsaPkcs1(state)
-            RSA.RAW   -> JdkRsaRaw(state)
-            ECDSA     -> JdkEcdsa(state)
-            ECDH      -> JdkEcdh(state)
-            PBKDF2    -> JdkPbkdf2(state)
-            HKDF      -> JdkHkdf(state, this)
-            else      -> null
+            ChaCha20Poly1305 -> JdkChaCha20Poly1305(state)
+            RSA.OAEP         -> JdkRsaOaep(state)
+            RSA.PSS          -> JdkRsaPss(state)
+            RSA.PKCS1        -> JdkRsaPkcs1(state)
+            RSA.RAW          -> JdkRsaRaw(state)
+            ECDSA            -> JdkEcdsa(state)
+            ECDH             -> JdkEcdh(state)
+            PBKDF2           -> JdkPbkdf2(state)
+            HKDF             -> JdkHkdf(state, this)
+            else             -> null
         }
     } as A?
 }
