@@ -65,15 +65,15 @@ private class AesCmacSignature(
 
         @OptIn(UnsafeNumber::class)
         override fun update(source: ByteArray, startIndex: Int, endIndex: Int) {
-            // Implementation for updating the CMAC with the provided data
+            // Update CMAC using the requested slice [startIndex, endIndex)
             checkBounds(source.size, startIndex, endIndex)
             val context = context.access()
             source.usePinned {
                 checkError(
                     EVP_MAC_update(
                         ctx = context,
-                        data = it.safeAddressOf(0).reinterpret(),
-                        datalen = source.size.convert()
+                        data = it.safeAddressOf(startIndex).reinterpret(),
+                        datalen = (endIndex - startIndex).convert()
                     )
                 )
             }
@@ -82,7 +82,7 @@ private class AesCmacSignature(
         override fun signIntoByteArray(destination: ByteArray, destinationOffset: Int): Int {
             val signature = signToByteArray()
             checkBounds(destination.size, destinationOffset, destinationOffset + signature.size)
-            signature.copyInto(destination, destinationOffset, destinationOffset)
+            signature.copyInto(destination, destinationOffset, 0, signature.size)
             return signature.size
         }
 

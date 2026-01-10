@@ -51,6 +51,7 @@ private fun awaitURandomReady() {
 
 private fun open(path: String): Int {
     val fd = open(path, O_RDONLY, null)
-    if (fd <= 0) errnoCheck()
+    // According to POSIX, open returns -1 on error; 0 is a valid descriptor
+    if (fd < 0) errnoCheck()
     return fd
 }
