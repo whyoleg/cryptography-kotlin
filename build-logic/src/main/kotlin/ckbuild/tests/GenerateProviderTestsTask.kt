@@ -120,6 +120,10 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
             "EcdsaCompatibilityTest",
             "EcdhCompatibilityTest",
 
+            "EdDsaTest",
+            "EdDsaCompatibilityTest",
+            "XdhCompatibilityTest",
+
             "RsaOaepTest",
             "RsaOaepCompatibilityTest",
             "RsaPkcs1Test",
