@@ -19,35 +19,36 @@ internal object Openssl3CryptographyProvider : CryptographyProvider() {
 
     @Suppress("UNCHECKED_CAST")
     override fun <A : CryptographyAlgorithm> getOrNull(identifier: CryptographyAlgorithmId<A>): A? = when (identifier) {
-        MD5       -> Openssl3Digest("MD5", MD5)
-        SHA1      -> Openssl3Digest("SHA1", SHA1)
-        SHA224    -> Openssl3Digest("SHA224", SHA224)
-        SHA256    -> Openssl3Digest("SHA256", SHA256)
-        SHA384    -> Openssl3Digest("SHA384", SHA384)
-        SHA512    -> Openssl3Digest("SHA512", SHA512)
-        SHA3_224  -> Openssl3Digest("SHA3-224", SHA3_224)
-        SHA3_256  -> Openssl3Digest("SHA3-256", SHA3_256)
-        SHA3_384  -> Openssl3Digest("SHA3-384", SHA3_384)
-        SHA3_512  -> Openssl3Digest("SHA3-512", SHA3_512)
-        RIPEMD160 -> Openssl3Digest("RIPEMD160", RIPEMD160)
-        HMAC    -> Openssl3Hmac
-        AES.CBC  -> Openssl3AesCbc
-        AES.CFB8 -> Openssl3AesCfb8
-        AES.CMAC -> Openssl3AesCmac
-        AES.CTR -> Openssl3AesCtr
-        AES.CFB -> Openssl3AesCfb
-        AES.OFB -> Openssl3AesOfb
-        AES.ECB -> Openssl3AesEcb
-        AES.GCM -> Openssl3AesGcm
-        ECDSA   -> Openssl3Ecdsa
-        ECDH    -> Openssl3Ecdh
-        RSA.PSS   -> Openssl3RsaPss
-        RSA.PKCS1 -> Openssl3RsaPkcs1
-        RSA.OAEP  -> Openssl3RsaOaep
-        RSA.RAW -> Openssl3RsaRaw
-        PBKDF2  -> Openssl3Pbkdf2
-        HKDF    -> Openssl3Hkdf
-        else      -> null
+        MD5              -> Openssl3Digest("MD5", MD5)
+        SHA1             -> Openssl3Digest("SHA1", SHA1)
+        SHA224           -> Openssl3Digest("SHA224", SHA224)
+        SHA256           -> Openssl3Digest("SHA256", SHA256)
+        SHA384           -> Openssl3Digest("SHA384", SHA384)
+        SHA512           -> Openssl3Digest("SHA512", SHA512)
+        SHA3_224         -> Openssl3Digest("SHA3-224", SHA3_224)
+        SHA3_256         -> Openssl3Digest("SHA3-256", SHA3_256)
+        SHA3_384         -> Openssl3Digest("SHA3-384", SHA3_384)
+        SHA3_512         -> Openssl3Digest("SHA3-512", SHA3_512)
+        RIPEMD160        -> Openssl3Digest("RIPEMD160", RIPEMD160)
+        HMAC             -> Openssl3Hmac
+        AES.CBC          -> Openssl3AesCbc
+        AES.CFB8         -> Openssl3AesCfb8
+        AES.CMAC         -> Openssl3AesCmac
+        AES.CTR          -> Openssl3AesCtr
+        AES.CFB          -> Openssl3AesCfb
+        AES.OFB          -> Openssl3AesOfb
+        AES.ECB          -> Openssl3AesEcb
+        AES.GCM          -> Openssl3AesGcm
+        ChaCha20Poly1305 -> Openssl3ChaCha20Poly1305
+        ECDSA            -> Openssl3Ecdsa
+        ECDH             -> Openssl3Ecdh
+        RSA.PSS          -> Openssl3RsaPss
+        RSA.PKCS1        -> Openssl3RsaPkcs1
+        RSA.OAEP         -> Openssl3RsaOaep
+        RSA.RAW          -> Openssl3RsaRaw
+        PBKDF2           -> Openssl3Pbkdf2
+        HKDF             -> Openssl3Hkdf
+        else             -> null
     } as A?
 }
 
