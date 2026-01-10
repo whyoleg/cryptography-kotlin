@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.cryptokit
@@ -20,17 +20,18 @@ internal object CryptoKitCryptographyProvider : CryptographyProvider() {
 
     @Suppress("UNCHECKED_CAST")
     override fun <A : CryptographyAlgorithm> getOrNull(identifier: CryptographyAlgorithmId<A>): A? = when (identifier) {
-        MD5    -> CryptoKitDigest(MD5, DwcHashAlgorithmMd5)
-        SHA1   -> CryptoKitDigest(SHA1, DwcHashAlgorithmSha1)
-        SHA256 -> CryptoKitDigest(SHA256, DwcHashAlgorithmSha256)
-        SHA384 -> CryptoKitDigest(SHA384, DwcHashAlgorithmSha384)
-        SHA512 -> CryptoKitDigest(SHA512, DwcHashAlgorithmSha512)
-        HMAC    -> CryptoKitHmac
-        HKDF    -> CryptoKitHkdf
-        AES.GCM -> CryptoKitAesGcm
-        ECDSA  -> CryptoKitEcdsa
-        ECDH   -> CryptoKitEcdh
-        else    -> null
+        MD5              -> CryptoKitDigest(MD5, DwcHashAlgorithmMd5)
+        SHA1             -> CryptoKitDigest(SHA1, DwcHashAlgorithmSha1)
+        SHA256           -> CryptoKitDigest(SHA256, DwcHashAlgorithmSha256)
+        SHA384           -> CryptoKitDigest(SHA384, DwcHashAlgorithmSha384)
+        SHA512           -> CryptoKitDigest(SHA512, DwcHashAlgorithmSha512)
+        HMAC             -> CryptoKitHmac
+        HKDF             -> CryptoKitHkdf
+        AES.GCM          -> CryptoKitAesGcm
+        ChaCha20Poly1305 -> CryptoKitChaCha20Poly1305
+        ECDSA            -> CryptoKitEcdsa
+        ECDH             -> CryptoKitEcdh
+        else             -> null
     } as A?
 }
 
