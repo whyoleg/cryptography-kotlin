@@ -1,0 +1,30 @@
+name: Run ASN.1 tests
+on:
+  workflow_dispatch:
+  workflow_call:
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  asn1-tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        task:
+          - ':cryptography-serialization-asn1:jvmTest'
+          - ':cryptography-serialization-asn1:jsTest'
+          - ':cryptography-serialization-asn1:wasmJsNodeTest'
+          - ':cryptography-serialization-asn1:linuxX64Test'
+          - ':cryptography-serialization-asn1-modules:jvmTest'
+          - ':cryptography-serialization-asn1-modules:jsTest'
+          - ':cryptography-serialization-asn1-modules:wasmJsNodeTest'
+          - ':cryptography-serialization-asn1-modules:linuxX64Test'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-environment
+      - name: Run ${{ matrix.task }}
+        run: ./gradlew -q ${{ matrix.task }} --continue
+

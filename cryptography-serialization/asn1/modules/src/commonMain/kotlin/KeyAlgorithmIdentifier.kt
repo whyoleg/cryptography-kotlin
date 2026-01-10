@@ -10,7 +10,7 @@ import kotlinx.serialization.*
 @Serializable(KeyAlgorithmIdentifierSerializer::class)
 public interface KeyAlgorithmIdentifier : AlgorithmIdentifier
 
-public class UnknownKeyAlgorithmIdentifier(override val algorithm: ObjectIdentifier) : KeyAlgorithmIdentifier {
-    override val parameters: Nothing? get() = null
-}
-
+public class UnknownKeyAlgorithmIdentifier(
+    override val algorithm: ObjectIdentifier,
+    override val parameters: Any? = null,
+) : KeyAlgorithmIdentifier

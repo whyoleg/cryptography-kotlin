@@ -49,13 +49,14 @@ internal class DerEncoder(
         BitArray.serializer().descriptor         -> output.writeBitString(getAndResetTagOverride(), value as BitArray)
         ObjectIdentifier.serializer().descriptor -> output.writeObjectIdentifier(getAndResetTagOverride(), value as ObjectIdentifier)
         BigInt.serializer().descriptor           -> output.writeInteger(getAndResetTagOverride(), value as BigInt)
+        Asn1Any.serializer().descriptor          -> output.writeAnyRaw((value as Asn1Any).bytes)
         else                                     -> serializer.serialize(this, value)
     }
 
     // structures: SEQUENCE and SEQUENCE OF
     override fun beginStructure(descriptor: SerialDescriptor): CompositeEncoder = when (descriptor.kind) {
-        StructureKind.CLASS, is PolymorphicKind -> DerEncoder(der, ByteArrayOutput(), output)
-        else                                    -> throw SerializationException("This serial kind is not supported as structure: $descriptor")
+        StructureKind.CLASS, is PolymorphicKind, StructureKind.LIST -> DerEncoder(der, ByteArrayOutput(), output)
+        else                                                         -> throw SerializationException("This serial kind is not supported as structure: $descriptor")
     }
 
     override fun endStructure(descriptor: SerialDescriptor) {
