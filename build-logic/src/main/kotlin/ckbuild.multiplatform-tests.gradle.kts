@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 import ckbuild.*
@@ -19,6 +19,7 @@ plugins {
 }
 
 val skipTestTasks = booleanProperty("ckbuild.skipTestTasks", defaultValue = false)
+val skipReleaseLinkTasks = booleanProperty("ckbuild.skipReleaseLinkTasks", defaultValue = false)
 
 @OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
@@ -56,7 +57,12 @@ kotlin {
 
     // setup tests running in RELEASE mode
     targets.withType<KotlinNativeTarget>().configureEach {
-        binaries.test(listOf(NativeBuildType.RELEASE))
+        binaries.test(listOf(NativeBuildType.RELEASE)) {
+            linkTaskProvider.configure {
+                val skipReleaseLinkTasks = skipReleaseLinkTasks // for CC
+                onlyIf { !skipReleaseLinkTasks.get() }
+            }
+        }
     }
     targets.withType<KotlinNativeTargetWithTests<*>>().configureEach {
         testRuns.create("releaseTest") {

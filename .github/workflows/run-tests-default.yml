@@ -32,7 +32,7 @@ jobs:
 
       - name: Run tests
         if: ${{ matrix.target != 'connectedAndroid' }}
-        run: ./gradlew ${{ matrix.target }}Test --continue
+        run: ./gradlew ${{ matrix.target }}Test --continue -Pckbuild.skipReleaseLinkTasks=${{ github.ref_name != 'main' }}
 
       - name: Run tests (android)
         if: ${{ matrix.target == 'connectedAndroid' }}
