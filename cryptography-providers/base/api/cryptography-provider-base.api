@@ -30,6 +30,24 @@ public final class dev/whyoleg/cryptography/providers/base/operations/Accumulati
 	public fun close ()V
 }
 
+public final class dev/whyoleg/cryptography/providers/base/operations/AccumulatingSignFunction : dev/whyoleg/cryptography/operations/SignFunction {
+	public fun <init> (Lkotlin/jvm/functions/Function1;)V
+	public fun close ()V
+	public fun reset ()V
+	public fun signIntoByteArray ([BI)I
+	public fun signToByteArray ()[B
+	public fun update ([BII)V
+}
+
+public final class dev/whyoleg/cryptography/providers/base/operations/AccumulatingVerifyFunction : dev/whyoleg/cryptography/operations/VerifyFunction {
+	public fun <init> (Lkotlin/jvm/functions/Function2;)V
+	public fun close ()V
+	public fun reset ()V
+	public fun tryVerify ([BII)Z
+	public fun update ([BII)V
+	public fun verify ([BII)V
+}
+
 public abstract interface class dev/whyoleg/cryptography/providers/base/operations/BaseAuthenticatedCipher : dev/whyoleg/cryptography/operations/AuthenticatedCipher, dev/whyoleg/cryptography/providers/base/operations/BaseAuthenticatedDecryptor, dev/whyoleg/cryptography/providers/base/operations/BaseAuthenticatedEncryptor, dev/whyoleg/cryptography/providers/base/operations/BaseCipher {
 }
 

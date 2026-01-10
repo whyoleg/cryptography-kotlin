@@ -118,6 +118,26 @@ final class dev.whyoleg.cryptography.providers.base.operations/AccumulatingCiphe
     final fun close() // dev.whyoleg.cryptography.providers.base.operations/AccumulatingCipherFunction.close|close(){}[0]
 }
 
+final class dev.whyoleg.cryptography.providers.base.operations/AccumulatingSignFunction : dev.whyoleg.cryptography.operations/SignFunction { // dev.whyoleg.cryptography.providers.base.operations/AccumulatingSignFunction|null[0]
+    constructor <init>(kotlin/Function1<kotlin/ByteArray, kotlin/ByteArray>) // dev.whyoleg.cryptography.providers.base.operations/AccumulatingSignFunction.<init>|<init>(kotlin.Function1<kotlin.ByteArray,kotlin.ByteArray>){}[0]
+
+    final fun close() // dev.whyoleg.cryptography.providers.base.operations/AccumulatingSignFunction.close|close(){}[0]
+    final fun reset() // dev.whyoleg.cryptography.providers.base.operations/AccumulatingSignFunction.reset|reset(){}[0]
+    final fun signIntoByteArray(kotlin/ByteArray, kotlin/Int): kotlin/Int // dev.whyoleg.cryptography.providers.base.operations/AccumulatingSignFunction.signIntoByteArray|signIntoByteArray(kotlin.ByteArray;kotlin.Int){}[0]
+    final fun signToByteArray(): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.operations/AccumulatingSignFunction.signToByteArray|signToByteArray(){}[0]
+    final fun update(kotlin/ByteArray, kotlin/Int, kotlin/Int) // dev.whyoleg.cryptography.providers.base.operations/AccumulatingSignFunction.update|update(kotlin.ByteArray;kotlin.Int;kotlin.Int){}[0]
+}
+
+final class dev.whyoleg.cryptography.providers.base.operations/AccumulatingVerifyFunction : dev.whyoleg.cryptography.operations/VerifyFunction { // dev.whyoleg.cryptography.providers.base.operations/AccumulatingVerifyFunction|null[0]
+    constructor <init>(kotlin/Function2<kotlin/ByteArray, kotlin/ByteArray, kotlin/String?>) // dev.whyoleg.cryptography.providers.base.operations/AccumulatingVerifyFunction.<init>|<init>(kotlin.Function2<kotlin.ByteArray,kotlin.ByteArray,kotlin.String?>){}[0]
+
+    final fun close() // dev.whyoleg.cryptography.providers.base.operations/AccumulatingVerifyFunction.close|close(){}[0]
+    final fun reset() // dev.whyoleg.cryptography.providers.base.operations/AccumulatingVerifyFunction.reset|reset(){}[0]
+    final fun tryVerify(kotlin/ByteArray, kotlin/Int, kotlin/Int): kotlin/Boolean // dev.whyoleg.cryptography.providers.base.operations/AccumulatingVerifyFunction.tryVerify|tryVerify(kotlin.ByteArray;kotlin.Int;kotlin.Int){}[0]
+    final fun update(kotlin/ByteArray, kotlin/Int, kotlin/Int) // dev.whyoleg.cryptography.providers.base.operations/AccumulatingVerifyFunction.update|update(kotlin.ByteArray;kotlin.Int;kotlin.Int){}[0]
+    final fun verify(kotlin/ByteArray, kotlin/Int, kotlin/Int) // dev.whyoleg.cryptography.providers.base.operations/AccumulatingVerifyFunction.verify|verify(kotlin.ByteArray;kotlin.Int;kotlin.Int){}[0]
+}
+
 final class dev.whyoleg.cryptography.providers.base.operations/BaseImplicitIvDecryptFunction : dev.whyoleg.cryptography.providers.base.operations/CipherFunction { // dev.whyoleg.cryptography.providers.base.operations/BaseImplicitIvDecryptFunction|null[0]
     constructor <init>(kotlin/Int, kotlin/Function2<kotlin/ByteArray, kotlin/Int, dev.whyoleg.cryptography.providers.base.operations/CipherFunction>) // dev.whyoleg.cryptography.providers.base.operations/BaseImplicitIvDecryptFunction.<init>|<init>(kotlin.Int;kotlin.Function2<kotlin.ByteArray,kotlin.Int,dev.whyoleg.cryptography.providers.base.operations.CipherFunction>){}[0]
 
