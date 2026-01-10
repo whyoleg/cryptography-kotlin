@@ -25,7 +25,7 @@ public interface ECDSA : EC<ECDSA.PublicKey, ECDSA.PrivateKey, ECDSA.KeyPair> {
     }
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
-    public interface PrivateKey : EC.PrivateKey {
+    public interface PrivateKey : EC.PrivateKey<PublicKey> {
         public fun signatureGenerator(
             digest: CryptographyAlgorithmId<Digest>,
             format: SignatureFormat,

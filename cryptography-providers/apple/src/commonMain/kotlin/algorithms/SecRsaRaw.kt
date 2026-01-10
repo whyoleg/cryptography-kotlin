@@ -11,27 +11,30 @@ import dev.whyoleg.cryptography.providers.apple.internal.*
 import dev.whyoleg.cryptography.providers.base.operations.*
 import platform.Security.*
 
-internal object SecRsaRaw : SecRsa<RSA.RAW.PublicKey, RSA.RAW.PrivateKey, RSA.RAW.KeyPair>(), RSA.RAW {
+internal object SecRsaRaw : SecRsa<RSA.RAW.PublicKey, RSA.RAW.PrivateKey, RSA.RAW.KeyPair>(
+    wrapPublicKey = ::RsaRawPublicKey,
+    wrapPrivateKey = ::RsaRawPrivateKey,
+    wrapKeyPair = ::RsaRawKeyPair,
+), RSA.RAW {
     override fun hashAlgorithm(digest: CryptographyAlgorithmId<Digest>): SecKeyAlgorithm? = null
-
-    override fun wrapKeyPair(algorithm: SecKeyAlgorithm?, publicKey: SecKeyRef, privateKey: SecKeyRef): RSA.RAW.KeyPair = RsaRawKeyPair(
-        publicKey = RsaRawPublicKey(publicKey),
-        privateKey = RsaRawPrivateKey(privateKey),
-    )
-
-    override fun wrapPublicKey(algorithm: SecKeyAlgorithm?, key: SecKeyRef): RSA.RAW.PublicKey = RsaRawPublicKey(key)
-    override fun wrapPrivateKey(algorithm: SecKeyAlgorithm?, key: SecKeyRef): RSA.RAW.PrivateKey = RsaRawPrivateKey(key)
 
     private class RsaRawKeyPair(
         override val publicKey: RSA.RAW.PublicKey,
         override val privateKey: RSA.RAW.PrivateKey,
     ) : RSA.RAW.KeyPair
 
-    private class RsaRawPublicKey(publicKey: SecKeyRef) : RsaPublicKey(publicKey), RSA.RAW.PublicKey {
+    private class RsaRawPublicKey(
+        publicKey: SecKeyRef,
+        @Suppress("unused") algorithm: SecKeyAlgorithm?,
+    ) : RsaPublicKey(publicKey), RSA.RAW.PublicKey {
         override fun encryptor(): Encryptor = RsaRawEncryptor(publicKey)
     }
 
-    private class RsaRawPrivateKey(privateKey: SecKeyRef) : RsaPrivateKey(privateKey), RSA.RAW.PrivateKey {
+    private class RsaRawPrivateKey(
+        privateKey: SecKeyRef,
+        @Suppress("unused") algorithm: SecKeyAlgorithm?,
+        publicKey: RSA.RAW.PublicKey?,
+    ) : RsaPrivateKey(privateKey, algorithm, publicKey), RSA.RAW.PrivateKey {
         override fun decryptor(): Decryptor = RsaRawDecryptor(privateKey)
     }
 }

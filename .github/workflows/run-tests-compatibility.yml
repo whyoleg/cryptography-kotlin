@@ -35,7 +35,7 @@ jobs:
           ${{ matrix.target }}ProviderTest
           --continue
           -Pckbuild.providerTests.step=compatibility.generate
-          -Pckbuild.testtool.instanceId=${{ matrix.os }}-${{ matrix.target }}
+          -Pckbuild.testtool.enabled=true
 
       - name: Run tests (android)
         if: ${{ matrix.target == 'connectedAndroid' }}
@@ -47,7 +47,7 @@ jobs:
             ${{ matrix.target }}ProviderTest
             --continue
             -Pckbuild.providerTests.step=compatibility.generate
-            -Pckbuild.testtool.instanceId=${{ matrix.os }}-${{ matrix.target }}
+            -Pckbuild.testtool.enabled=true
 
       - name: Dump testtool server-storage
         run: tar -cf ${{ matrix.os }}-${{ matrix.target }}.tar build/testtool/server-storage
@@ -92,7 +92,7 @@ jobs:
           ${{ matrix.target }}ProviderTest
           --continue
           -Pckbuild.providerTests.step=compatibility.validate
-          -Pckbuild.testtool.instanceId=${{ matrix.os }}-${{ matrix.target }}
+          -Pckbuild.testtool.enabled=true
 
       - name: Run tests (android)
         if: ${{ matrix.target == 'connectedAndroid' }}
@@ -104,4 +104,4 @@ jobs:
             ${{ matrix.target }}ProviderTest
             --continue
             -Pckbuild.providerTests.step=compatibility.validate
-            -Pckbuild.testtool.instanceId=${{ matrix.os }}-${{ matrix.target }}
+            -Pckbuild.testtool.enabled=true

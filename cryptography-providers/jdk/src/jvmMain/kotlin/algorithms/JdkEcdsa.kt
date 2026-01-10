@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.jdk.algorithms
@@ -17,18 +17,17 @@ import dev.whyoleg.cryptography.serialization.asn1.modules.*
 import java.security.interfaces.*
 
 internal class JdkEcdsa(state: JdkCryptographyState) : JdkEc<ECDSA.PublicKey, ECDSA.PrivateKey, ECDSA.KeyPair>(state), ECDSA {
-    override fun JPublicKey.convert(): ECDSA.PublicKey = EcdsaPublicKey(state, this)
-    override fun JPrivateKey.convert(): ECDSA.PrivateKey = EcdsaPrivateKey(state, this)
-    override fun JKeyPair.convert(): ECDSA.KeyPair = EcdsaKeyPair(public.convert(), private.convert())
+    override val wrapPublicKey: (JPublicKey) -> ECDSA.PublicKey = ::EcdsaPublicKey
+    override val wrapPrivateKey: (JPrivateKey, ECDSA.PublicKey?) -> ECDSA.PrivateKey = ::EcdsaPrivateKey
+    override val wrapKeyPair: (ECDSA.PublicKey, ECDSA.PrivateKey) -> ECDSA.KeyPair = ::EcdsaKeyPair
 
     private class EcdsaKeyPair(
         override val publicKey: ECDSA.PublicKey,
         override val privateKey: ECDSA.PrivateKey,
     ) : ECDSA.KeyPair
 
-    private class EcdsaPublicKey(
-        private val state: JdkCryptographyState,
-        private val key: JPublicKey,
+    private inner class EcdsaPublicKey(
+        key: JPublicKey,
     ) : ECDSA.PublicKey, BaseEcPublicKey(key) {
         override fun signatureVerifier(digest: CryptographyAlgorithmId<Digest>, format: ECDSA.SignatureFormat): SignatureVerifier {
             val verifier = JdkSignatureVerifier(state, key, digest.hashAlgorithmName() + "withECDSA", null)
@@ -39,10 +38,10 @@ internal class JdkEcdsa(state: JdkCryptographyState) : JdkEc<ECDSA.PublicKey, EC
         }
     }
 
-    private class EcdsaPrivateKey(
-        private val state: JdkCryptographyState,
-        private val key: JPrivateKey,
-    ) : ECDSA.PrivateKey, BaseEcPrivateKey(key) {
+    private inner class EcdsaPrivateKey(
+        key: JPrivateKey,
+        publicKey: ECDSA.PublicKey?,
+    ) : ECDSA.PrivateKey, BaseEcPrivateKey(key, publicKey) {
         override fun signatureGenerator(digest: CryptographyAlgorithmId<Digest>, format: ECDSA.SignatureFormat): SignatureGenerator {
             val generator = JdkSignatureGenerator(state, key, digest.hashAlgorithmName() + "withECDSA", null)
             return when (format) {

@@ -9,6 +9,7 @@ import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.providers.tests.*
 import dev.whyoleg.cryptography.providers.tests.compatibility.api.*
 import dev.whyoleg.cryptography.serialization.pem.*
+import kotlinx.io.bytestring.*
 import kotlinx.serialization.*
 import kotlin.test.*
 
@@ -28,7 +29,7 @@ private val privateKeyFormats = listOf(
     RSA.PrivateKey.Format.PEM.PKCS1,
 ).associateBy { it.name }
 
-abstract class RsaBasedCompatibilityTest<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey, KP : RSA.KeyPair<PublicK, PrivateK>, A : RSA<PublicK, PrivateK, KP>>(
+abstract class RsaBasedCompatibilityTest<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey<PublicK>, KP : RSA.KeyPair<PublicK, PrivateK>, A : RSA<PublicK, PrivateK, KP>>(
     algorithmId: CryptographyAlgorithmId<A>,
     provider: CryptographyProvider,
 ) : CompatibilityTest<A>(algorithmId, provider) {
@@ -65,15 +66,46 @@ abstract class RsaBasedCompatibilityTest<PublicK : RSA.PublicKey, PrivateK : RSA
                 val keyParameters = KeyParameters(keySize.inBits, digest.name, digestSize)
                 val keyParametersId = api.keyPairs.saveParameters(keyParameters)
                 algorithm.keyPairGenerator(keySize, digest).generateKeys(keyIterations) { keyPair ->
-                    val keyReference = api.keyPairs.saveData(
-                        keyParametersId, KeyPairData(
-                            public = KeyData(keyPair.publicKey.encodeTo(publicKeyFormats.values, ::supportsKeyFormat)),
-                            private = KeyData(keyPair.privateKey.encodeTo(privateKeyFormats.values, ::supportsKeyFormat))
-                        )
+                    val publicKeyData = KeyData(keyPair.publicKey.encodeTo(publicKeyFormats.values, ::supportsKeyFormat))
+                    val privateKeyData = KeyData(keyPair.privateKey.encodeTo(privateKeyFormats.values, ::supportsKeyFormat))
+
+                    assertEquals(
+                        publicKeyData.formats,
+                        keyPair.privateKey.getPublicKey().encodeTo(publicKeyFormats.values, ::supportsKeyFormat)
                     )
+
+                    val keyReference = api.keyPairs.saveData(keyParametersId, KeyPairData(publicKeyData, privateKeyData))
                     block(keyPair, keyReference, keyParameters)
                 }
             }
+        }
+    }
+
+    private suspend fun verifyPublicKey(
+        publicKey: PublicK,
+        format: RSA.PublicKey.Format,
+        expected: ByteString,
+    ) {
+        when (format) {
+            RSA.PublicKey.Format.DER, RSA.PublicKey.Format.DER.PKCS1 -> {
+                assertContentEquals(expected, publicKey.encodeToByteString(format), "Public Key $format encoding")
+            }
+            RSA.PublicKey.Format.PEM, RSA.PublicKey.Format.PEM.PKCS1 -> {
+                val expected = PemDocument.decode(expected)
+                val actual = PemDocument.decode(publicKey.encodeToByteString(format))
+
+                val expectedLabel = when (format) {
+                    RSA.PublicKey.Format.PEM       -> PemLabel.PublicKey
+                    RSA.PublicKey.Format.PEM.PKCS1 -> PemLabel.RsaPublicKey
+                    else                           -> {}
+                }
+
+                assertEquals(expected.label, actual.label)
+                assertEquals(expectedLabel, actual.label)
+
+                assertContentEquals(expected.content, actual.content, "Public Key $format content encoding")
+            }
+            RSA.PublicKey.Format.JWK                                 -> {}
         }
     }
 
@@ -88,36 +120,24 @@ abstract class RsaBasedCompatibilityTest<PublicK : RSA.PublicKey, PrivateK : RSA
                 val publicKeys = publicKeyDecoder.decodeFrom(
                     formats = public.formats,
                     formatOf = publicKeyFormats::getValue,
-                    supports = ::supportsKeyFormat
-                ) { key, format, bytes ->
-                    when (format) {
-                        RSA.PublicKey.Format.DER, RSA.PublicKey.Format.DER.PKCS1 -> {
-                            assertContentEquals(bytes, key.encodeToByteString(format), "Public Key $format encoding")
-                        }
-                        RSA.PublicKey.Format.PEM, RSA.PublicKey.Format.PEM.PKCS1 -> {
-                            val expected = PemDocument.decode(bytes)
-                            val actual = PemDocument.decode(key.encodeToByteString(format))
-
-                            val expectedLabel = when (format) {
-                                RSA.PublicKey.Format.PEM       -> PemLabel.PublicKey
-                                RSA.PublicKey.Format.PEM.PKCS1 -> PemLabel.RsaPublicKey
-                                else                           -> {}
-                            }
-
-                            assertEquals(expected.label, actual.label)
-                            assertEquals(expectedLabel, actual.label)
-
-                            assertContentEquals(expected.content, actual.content, "Public Key $format content encoding")
-                        }
-                        RSA.PublicKey.Format.JWK                                 -> {}
-
-                    }
-                }
+                    supports = ::supportsKeyFormat,
+                    validate = ::verifyPublicKey
+                )
                 val privateKeys = privateKeyDecoder.decodeFrom(
                     formats = private.formats,
                     formatOf = privateKeyFormats::getValue,
                     supports = ::supportsKeyFormat
                 ) { key, format, bytes ->
+
+                    key.getPublicKey().let { publicKey ->
+                        public.formats.filterSupportedFormats(
+                            formatOf = publicKeyFormats::getValue,
+                            supports = ::supportsKeyFormat,
+                        ).forEach { (format, bytes) ->
+                            verifyPublicKey(publicKey, format, bytes)
+                        }
+                    }
+
                     when (format) {
                         RSA.PrivateKey.Format.DER, RSA.PrivateKey.Format.DER.PKCS1 -> {
                             assertContentEquals(bytes, key.encodeToByteString(format), "Private Key $format encoding")

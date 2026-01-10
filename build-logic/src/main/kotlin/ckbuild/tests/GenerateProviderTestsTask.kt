@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package ckbuild.tests
@@ -94,11 +94,17 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
 
             "AesCbcTest",
             "AesCbcCompatibilityTest",
+            "AesCfb8Test",
+            "AesCfb8CompatibilityTest",
             "AesCmacTest",
             "AesCmacCompatibilityTest",
             "AesCmacTestvectorsTest",
             "AesCtrTest",
             "AesCtrCompatibilityTest",
+            "AesCfbTest",
+            "AesCfbCompatibilityTest",
+            "AesOfbTest",
+            "AesOfbCompatibilityTest",
             "AesEcbCompatibilityTest",
             "AesGcmTest",
             "AesGcmCompatibilityTest",

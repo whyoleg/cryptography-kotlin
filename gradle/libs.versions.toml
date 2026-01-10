@@ -1,27 +1,27 @@
 [versions]
 
-kotlin = "2.2.21"
+kotlin = "2.3.0"
 
 # kotlin/kotlinx
-kotlin-dokka = "2.0.0"
-kotlinx-io = "0.8.0"
+kotlin-dokka = "2.1.0"
+kotlinx-io = "0.8.2"
 kotlinx-serialization = "1.9.0"
 kotlinx-coroutines = "1.10.2"
-kotlinx-benchmark = "0.4.14"
-kotlinx-kover = "0.9.1"
-ktor = "3.2.3"
+kotlinx-benchmark = "0.4.15"
+kotlinx-kover = "0.9.4"
+ktor = "3.3.3"
 
 # android
-android = "8.12.0"
+android = "8.13.2"
 androidx-test = "1.7.0"
 
 # gradle/build
 apache-commons-compress = "1.28.0"
-maven-publish = "0.34.0"
+maven-publish = "0.35.0"
 
 # other
-bouncycastle = "1.81"
-logback = "1.5.18"
+bouncycastle = "1.83"
+logback = "1.5.24"
 nativebuilds = "0.7.1"
 openssl = "3.6.0.4"
 

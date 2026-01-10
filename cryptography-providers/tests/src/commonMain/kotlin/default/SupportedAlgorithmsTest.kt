@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.tests.default
@@ -25,8 +25,11 @@ abstract class SupportedAlgorithmsTest(provider: CryptographyProvider) : Provide
     @Test
     fun testSupported() = testWithProvider {
 
+        assertSupports(AES.OFB, !context.provider.isWebCrypto && !context.provider.isCryptoKit)
+        assertSupports(AES.CFB, !context.provider.isWebCrypto && !context.provider.isCryptoKit)
         assertSupports(AES.ECB, !context.provider.isWebCrypto && !context.provider.isCryptoKit)
         assertSupports(AES.CBC, !context.provider.isCryptoKit)
+        assertSupports(AES.CFB8, !context.provider.isWebCrypto && !context.provider.isCryptoKit)
         assertSupports(AES.CMAC, !context.provider.isApple && !context.provider.isWebCrypto && !context.provider.isCryptoKit)
         assertSupports(AES.CTR, !context.provider.isCryptoKit)
         assertSupports(AES.GCM, !context.provider.isApple)

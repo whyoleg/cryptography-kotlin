@@ -20,10 +20,7 @@ import java.io.*
 import java.nio.file.*
 import kotlin.io.path.*
 
-fun startTesttoolServer(
-    instanceId: String,
-    storagePath: Path,
-): Closeable {
+fun startTesttoolServer(storagePath: Path): Closeable {
     println("TesttoolServer: starting...")
     val server = startServer(storagePath)
     println("TesttoolServer: started")

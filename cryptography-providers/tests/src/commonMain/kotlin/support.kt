@@ -104,6 +104,15 @@ fun AlgorithmTestScope<out EC<*, *, *>>.supportsCurve(curve: EC.Curve): Boolean 
     }
 }
 
+fun AlgorithmTestScope<out EC<*, *, *>>.supportsPublicKeyAccess(error: Throwable): Boolean = supports {
+    when {
+        provider.isJdkDefault &&
+                error.message == "Getting public key from private key for EC is not supported in JDK without BouncyCastle APIs"
+             -> error.message!!
+        else -> null
+    }
+}
+
 fun AlgorithmTestScope<out EC<*, *, *>>.supportsPrivateKeyDecoding(
     format: EC.PrivateKey.Format,
     key: ByteString,

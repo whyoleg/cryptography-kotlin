@@ -6,25 +6,18 @@ package dev.whyoleg.cryptography.providers.openssl3.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.BinarySize.Companion.bytes
-import dev.whyoleg.cryptography.algorithms.RSA
+import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.providers.openssl3.operations.*
 import kotlinx.cinterop.*
 
-internal object Openssl3RsaPss : Openssl3Rsa<RSA.PSS.PublicKey, RSA.PSS.PrivateKey, RSA.PSS.KeyPair>(), RSA.PSS {
-    override fun wrapKeyPair(hashAlgorithm: String, keyPair: CPointer<EVP_PKEY>): RSA.PSS.KeyPair = RsaPssKeyPair(
-        publicKey = RsaPssPublicKey(keyPair, hashAlgorithm),
-        privateKey = RsaPssPrivateKey(keyPair, hashAlgorithm),
-    )
-
-    override fun wrapPublicKey(hashAlgorithm: String, publicKey: CPointer<EVP_PKEY>): RSA.PSS.PublicKey =
-        RsaPssPublicKey(publicKey, hashAlgorithm)
-
-    override fun wrapPrivateKey(hashAlgorithm: String, privateKey: CPointer<EVP_PKEY>): RSA.PSS.PrivateKey =
-        RsaPssPrivateKey(privateKey, hashAlgorithm)
-
+internal object Openssl3RsaPss : Openssl3Rsa<RSA.PSS.PublicKey, RSA.PSS.PrivateKey, RSA.PSS.KeyPair>(
+    wrapPublicKey = ::RsaPssPublicKey,
+    wrapPrivateKey = ::RsaPssPrivateKey,
+    wrapKeyPair = ::RsaPssKeyPair,
+), RSA.PSS {
     private class RsaPssKeyPair(
         override val publicKey: RSA.PSS.PublicKey,
         override val privateKey: RSA.PSS.PrivateKey,
@@ -47,8 +40,9 @@ internal object Openssl3RsaPss : Openssl3Rsa<RSA.PSS.PublicKey, RSA.PSS.PrivateK
 
     private class RsaPssPrivateKey(
         key: CPointer<EVP_PKEY>,
-        private val hashAlgorithm: String,
-    ) : RsaPrivateKey(key), RSA.PSS.PrivateKey {
+        hashAlgorithm: String,
+        publicKey: RSA.PSS.PublicKey?,
+    ) : RsaPrivateKey(key, hashAlgorithm, publicKey), RSA.PSS.PrivateKey {
         override fun signatureGenerator(): SignatureGenerator {
             val md = EVP_MD_fetch(null, hashAlgorithm, null)
             val digestSize = EVP_MD_get_size(md)

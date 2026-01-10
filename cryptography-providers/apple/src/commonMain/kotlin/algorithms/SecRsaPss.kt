@@ -10,16 +10,12 @@ import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.apple.internal.*
 import platform.Security.*
 
-internal object SecRsaPss : SecRsa<RSA.PSS.PublicKey, RSA.PSS.PrivateKey, RSA.PSS.KeyPair>(), RSA.PSS {
+internal object SecRsaPss : SecRsa<RSA.PSS.PublicKey, RSA.PSS.PrivateKey, RSA.PSS.KeyPair>(
+    wrapPublicKey = ::RsaPssPublicKey,
+    wrapPrivateKey = ::RsaPssPrivateKey,
+    wrapKeyPair = ::RsaPssKeyPair,
+), RSA.PSS {
     override fun hashAlgorithm(digest: CryptographyAlgorithmId<Digest>): SecKeyAlgorithm? = digest.rsaPssSecKeyAlgorithm()
-
-    override fun wrapKeyPair(algorithm: SecKeyAlgorithm?, publicKey: SecKeyRef, privateKey: SecKeyRef): RSA.PSS.KeyPair = RsaPssKeyPair(
-        publicKey = RsaPssPublicKey(publicKey, algorithm),
-        privateKey = RsaPssPrivateKey(privateKey, algorithm),
-    )
-
-    override fun wrapPublicKey(algorithm: SecKeyAlgorithm?, key: SecKeyRef): RSA.PSS.PublicKey = RsaPssPublicKey(key, algorithm)
-    override fun wrapPrivateKey(algorithm: SecKeyAlgorithm?, key: SecKeyRef): RSA.PSS.PrivateKey = RsaPssPrivateKey(key, algorithm)
 
     private class RsaPssKeyPair(
         override val publicKey: RSA.PSS.PublicKey,
@@ -37,7 +33,8 @@ internal object SecRsaPss : SecRsa<RSA.PSS.PublicKey, RSA.PSS.PrivateKey, RSA.PS
     private class RsaPssPrivateKey(
         privateKey: SecKeyRef,
         private val algorithm: SecKeyAlgorithm?,
-    ) : RsaPrivateKey(privateKey), RSA.PSS.PrivateKey {
+        publicKey: RSA.PSS.PublicKey?,
+    ) : RsaPrivateKey(privateKey, algorithm, publicKey), RSA.PSS.PrivateKey {
         override fun signatureGenerator(): SignatureGenerator = SecSignatureGenerator(privateKey, algorithm)
         override fun signatureGenerator(saltSize: BinarySize): SignatureGenerator = error("custom saltLength is not supported")
     }

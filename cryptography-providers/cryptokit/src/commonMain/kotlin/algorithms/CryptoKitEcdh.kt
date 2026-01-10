@@ -115,6 +115,8 @@ private class EcdhPublicKey(
 private class EcdhPrivateKey(
     val privateKey: DwcEcdhPrivateKey,
 ) : ECDH.PrivateKey, SharedSecretGenerator<ECDH.PublicKey> {
+    override fun getPublicKeyBlocking(): ECDH.PublicKey = EcdhPublicKey(privateKey.publicKey())
+
     override fun encodeToByteArrayBlocking(format: EC.PrivateKey.Format): ByteArray = when (format) {
         EC.PrivateKey.Format.JWK      -> error("JWK is not supported")
         EC.PrivateKey.Format.RAW      -> privateKey.rawRepresentation().toByteArray()

@@ -22,7 +22,7 @@ public interface ECDH : EC<ECDH.PublicKey, ECDH.PrivateKey, ECDH.KeyPair> {
     }
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
-    public interface PrivateKey : EC.PrivateKey {
+    public interface PrivateKey : EC.PrivateKey<PublicKey> {
         public fun sharedSecretGenerator(): SharedSecretGenerator<PublicKey>
     }
 }

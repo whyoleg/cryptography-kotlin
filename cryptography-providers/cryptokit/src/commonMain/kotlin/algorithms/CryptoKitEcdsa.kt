@@ -120,6 +120,8 @@ private class EcdsaPublicKey(
 private class EcdsaPrivateKey(
     private val privateKey: DwcEcdsaPrivateKey,
 ) : ECDSA.PrivateKey {
+    override fun getPublicKeyBlocking(): ECDSA.PublicKey = EcdsaPublicKey(privateKey.publicKey())
+
     override fun encodeToByteArrayBlocking(format: EC.PrivateKey.Format): ByteArray = when (format) {
         EC.PrivateKey.Format.JWK      -> error("JWK is not supported")
         EC.PrivateKey.Format.RAW      -> privateKey.rawRepresentation().toByteArray()

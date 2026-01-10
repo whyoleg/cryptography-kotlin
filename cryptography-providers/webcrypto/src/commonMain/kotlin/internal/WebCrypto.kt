@@ -58,6 +58,20 @@ internal object WebCrypto {
         }
     }
 
+    // for private -> public key conversion
+    suspend fun reimportPrivateKeyAsPublicKey(
+        privateKey: CryptoKey,
+        extractable: Boolean,
+        keyUsages: Array<String>,
+    ): CryptoKey {
+        val jwkKey = subtle.exportKey("jwk", privateKey).await()
+        // `d` contains secret value, by which, WebCrypto decides, if it's public or private key
+        deleteObjectField(jwkKey, "d")
+        // jwk `key_ops` = WebCrypto `keyUsages`
+        setObjectField(jwkKey, "key_ops", keyUsages.toJsArray())
+        return subtle.importKey("jwk", jwkKey, privateKey.algorithm, extractable, keyUsages.toJsArray()).await()
+    }
+
     suspend fun generateKey(algorithm: Algorithm, extractable: Boolean, keyUsages: Array<String>): CryptoKey {
         return subtle.generateKey(algorithm, extractable, keyUsages.toJsArray()).await()
     }
@@ -69,3 +83,5 @@ internal object WebCrypto {
 
 private fun jsonParse(string: String): JsAny = js("JSON.parse(string)")
 private fun jsonStringify(any: JsAny): String = js("JSON.stringify(any)")
+private fun deleteObjectField(obj: JsAny, key: String): Unit = js("delete obj[key]")
+private fun setObjectField(obj: JsAny, key: String, value: JsArray<JsString>): Unit = js("obj[key] = value")

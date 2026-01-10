@@ -105,6 +105,30 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/AES$CBC$Key 
 	public static synthetic fun cipher$default (Ldev/whyoleg/cryptography/algorithms/AES$CBC$Key;ZILjava/lang/Object;)Ldev/whyoleg/cryptography/algorithms/AES$IvCipher;
 }
 
+public abstract interface class dev/whyoleg/cryptography/algorithms/AES$CFB : dev/whyoleg/cryptography/algorithms/AES {
+	public static final field Companion Ldev/whyoleg/cryptography/algorithms/AES$CFB$Companion;
+	public fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/AES$CFB$Companion : dev/whyoleg/cryptography/CryptographyAlgorithmId {
+}
+
+public abstract interface class dev/whyoleg/cryptography/algorithms/AES$CFB$Key : dev/whyoleg/cryptography/algorithms/AES$Key {
+	public abstract fun cipher ()Ldev/whyoleg/cryptography/algorithms/AES$IvCipher;
+}
+
+public abstract interface class dev/whyoleg/cryptography/algorithms/AES$CFB8 : dev/whyoleg/cryptography/algorithms/AES {
+	public static final field Companion Ldev/whyoleg/cryptography/algorithms/AES$CFB8$Companion;
+	public fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/AES$CFB8$Companion : dev/whyoleg/cryptography/CryptographyAlgorithmId {
+}
+
+public abstract interface class dev/whyoleg/cryptography/algorithms/AES$CFB8$Key : dev/whyoleg/cryptography/algorithms/AES$Key {
+	public abstract fun cipher ()Ldev/whyoleg/cryptography/algorithms/AES$IvCipher;
+}
+
 public abstract interface class dev/whyoleg/cryptography/algorithms/AES$CMAC : dev/whyoleg/cryptography/algorithms/AES {
 	public static final field Companion Ldev/whyoleg/cryptography/algorithms/AES$CMAC$Companion;
 	public fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
@@ -237,6 +261,18 @@ public final class dev/whyoleg/cryptography/algorithms/AES$Key$Size {
 	public final fun getB256-XsYwlU8 ()I
 }
 
+public abstract interface class dev/whyoleg/cryptography/algorithms/AES$OFB : dev/whyoleg/cryptography/algorithms/AES {
+	public static final field Companion Ldev/whyoleg/cryptography/algorithms/AES$OFB$Companion;
+	public fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/AES$OFB$Companion : dev/whyoleg/cryptography/CryptographyAlgorithmId {
+}
+
+public abstract interface class dev/whyoleg/cryptography/algorithms/AES$OFB$Key : dev/whyoleg/cryptography/algorithms/AES$Key {
+	public abstract fun cipher ()Ldev/whyoleg/cryptography/algorithms/AES$IvCipher;
+}
+
 public abstract interface class dev/whyoleg/cryptography/algorithms/Digest : dev/whyoleg/cryptography/CryptographyAlgorithm {
 	public abstract fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
 	public abstract fun hasher ()Ldev/whyoleg/cryptography/operations/Hasher;
@@ -278,7 +314,7 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/EC$KeyPair :
 	public abstract fun getPublicKey ()Ldev/whyoleg/cryptography/algorithms/EC$PublicKey;
 }
 
-public abstract interface class dev/whyoleg/cryptography/algorithms/EC$PrivateKey : dev/whyoleg/cryptography/materials/key/EncodableKey {
+public abstract interface class dev/whyoleg/cryptography/algorithms/EC$PrivateKey : dev/whyoleg/cryptography/materials/key/EncodableKey, dev/whyoleg/cryptography/operations/PublicKeyAccessor {
 }
 
 public abstract class dev/whyoleg/cryptography/algorithms/EC$PrivateKey$Format : dev/whyoleg/cryptography/materials/key/KeyFormat {
@@ -546,7 +582,7 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/RSA$PSS$Publ
 	public abstract fun signatureVerifier-6q1zMKY (I)Ldev/whyoleg/cryptography/operations/SignatureVerifier;
 }
 
-public abstract interface class dev/whyoleg/cryptography/algorithms/RSA$PrivateKey : dev/whyoleg/cryptography/materials/key/EncodableKey {
+public abstract interface class dev/whyoleg/cryptography/algorithms/RSA$PrivateKey : dev/whyoleg/cryptography/materials/key/EncodableKey, dev/whyoleg/cryptography/operations/PublicKeyAccessor {
 }
 
 public abstract class dev/whyoleg/cryptography/algorithms/RSA$PrivateKey$Format : dev/whyoleg/cryptography/materials/key/KeyFormat {
@@ -814,6 +850,11 @@ public abstract interface class dev/whyoleg/cryptography/operations/Hasher {
 	public fun hashBlocking (Lkotlinx/io/RawSource;)Lkotlinx/io/bytestring/ByteString;
 	public fun hashBlocking (Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
 	public fun hashBlocking ([B)[B
+}
+
+public abstract interface class dev/whyoleg/cryptography/operations/PublicKeyAccessor {
+	public fun getPublicKey (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getPublicKeyBlocking ()Ldev/whyoleg/cryptography/materials/key/Key;
 }
 
 public abstract interface class dev/whyoleg/cryptography/operations/SecretDerivation {

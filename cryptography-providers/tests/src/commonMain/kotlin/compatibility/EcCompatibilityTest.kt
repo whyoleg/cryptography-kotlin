@@ -11,6 +11,7 @@ import dev.whyoleg.cryptography.providers.tests.compatibility.api.*
 import dev.whyoleg.cryptography.serialization.asn1.*
 import dev.whyoleg.cryptography.serialization.asn1.modules.*
 import dev.whyoleg.cryptography.serialization.pem.*
+import kotlinx.io.bytestring.*
 import kotlinx.serialization.*
 import kotlin.test.*
 
@@ -32,7 +33,7 @@ private val privateKeyFormats = listOf(
 ).associateBy { it.name }
 
 
-abstract class EcCompatibilityTest<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP : EC.KeyPair<PublicK, PrivateK>, A : EC<PublicK, PrivateK, KP>>(
+abstract class EcCompatibilityTest<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey<PublicK>, KP : EC.KeyPair<PublicK, PrivateK>, A : EC<PublicK, PrivateK, KP>>(
     algorithmId: CryptographyAlgorithmId<A>,
     provider: CryptographyProvider,
 ) : CompatibilityTest<A>(algorithmId, provider) {
@@ -62,15 +63,41 @@ abstract class EcCompatibilityTest<PublicK : EC.PublicKey, PrivateK : EC.Private
         }
 
         algorithm.keyPairGenerator(curve).generateKeys(keyIterations) { keyPair ->
-            val keyReference = api.keyPairs.saveData(
-                keyParametersId,
-                KeyPairData(
-                    public = KeyData(keyPair.publicKey.encodeTo(publicKeyFormats.values, ::supportsKeyFormat)),
-                    private = KeyData(keyPair.privateKey.encodeTo(privateKeyFormats.values, ::supportsKeyFormat))
-                )
+            val publicKeyData = KeyData(keyPair.publicKey.encodeTo(publicKeyFormats.values, ::supportsKeyFormat))
+            val privateKeyData = KeyData(keyPair.privateKey.encodeTo(privateKeyFormats.values, ::supportsKeyFormat))
+
+            assertEquals(
+                publicKeyData.formats,
+                keyPair.privateKey.getPublicKey().encodeTo(publicKeyFormats.values, ::supportsKeyFormat),
             )
 
+            val keyReference = api.keyPairs.saveData(keyParametersId, KeyPairData(publicKeyData, privateKeyData))
+
             block(keyPair, keyReference, KeyParameters(curve.name))
+        }
+    }
+
+    private suspend fun verifyPublicKey(
+        publicKey: PublicK,
+        format: EC.PublicKey.Format,
+        expected: ByteString,
+    ) {
+        when (format) {
+            EC.PublicKey.Format.JWK -> {}
+            EC.PublicKey.Format.RAW,
+            EC.PublicKey.Format.RAW.Compressed,
+            EC.PublicKey.Format.DER,
+                                    -> {
+                assertContentEquals(expected, publicKey.encodeToByteString(format), "Public Key $format encoding")
+            }
+            EC.PublicKey.Format.PEM -> {
+                val expected = PemDocument.decode(expected)
+                val actual = PemDocument.decode(publicKey.encodeToByteString(format))
+
+                assertEquals(expected.label, actual.label)
+                assertEquals(PemLabel.PublicKey, actual.label)
+                assertContentEquals(expected.content, actual.content, "Public Key $format content encoding")
+            }
         }
     }
 
@@ -85,32 +112,25 @@ abstract class EcCompatibilityTest<PublicK : EC.PublicKey, PrivateK : EC.Private
                 val publicKeys = publicKeyDecoder.decodeFrom(
                     formats = public.formats,
                     formatOf = publicKeyFormats::getValue,
-                    supports = ::supportsKeyFormat
-                ) { key, format, bytes ->
-                    when (format) {
-                        EC.PublicKey.Format.JWK -> {}
-                        EC.PublicKey.Format.RAW,
-                        EC.PublicKey.Format.RAW.Compressed,
-                        EC.PublicKey.Format.DER,
-                                                -> {
-                            assertContentEquals(bytes, key.encodeToByteString(format), "Public Key $format encoding")
-                        }
-                        EC.PublicKey.Format.PEM -> {
-                            val expected = PemDocument.decode(bytes)
-                            val actual = PemDocument.decode(key.encodeToByteString(format))
-
-                            assertEquals(expected.label, actual.label)
-                            assertEquals(PemLabel.PublicKey, actual.label)
-                            assertContentEquals(expected.content, actual.content, "Public Key $format content encoding")
-                        }
-                    }
-                }
+                    supports = ::supportsKeyFormat,
+                    validate = ::verifyPublicKey
+                )
                 val privateKeys = privateKeyDecoder.decodeFrom(
                     formats = private.formats,
                     formatOf = privateKeyFormats::getValue,
                     supports = ::supportsKeyFormat,
                     supportsDecoding = { f, b -> supportsPrivateKeyDecoding(f, b, otherContext) }
                 ) { key, format, byteString ->
+
+                    getPublicKey(key)?.let { publicKey ->
+                        public.formats.filterSupportedFormats(
+                            formatOf = publicKeyFormats::getValue,
+                            supports = ::supportsKeyFormat,
+                        ).forEach { (format, bytes) ->
+                            verifyPublicKey(publicKey, format, bytes)
+                        }
+                    }
+
                     when (format) {
                         EC.PrivateKey.Format.JWK -> {}
                         EC.PrivateKey.Format.RAW -> {
@@ -145,6 +165,15 @@ abstract class EcCompatibilityTest<PublicK : EC.PublicKey, PrivateK : EC.Private
                 put(keyReference, publicKeys to privateKeys)
             }
         }
+    }
+
+    protected suspend fun <PublicK : EC.PublicKey> AlgorithmTestScope<out EC<*, *, *>>.getPublicKey(
+        privateKey: EC.PrivateKey<PublicK>,
+    ): PublicK? = try {
+        privateKey.getPublicKey()
+    } catch (cause: Throwable) {
+        if (!supportsPublicKeyAccess(cause)) null
+        else throw cause
     }
 }
 

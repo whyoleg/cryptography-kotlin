@@ -11,16 +11,12 @@ import dev.whyoleg.cryptography.providers.apple.internal.*
 import dev.whyoleg.cryptography.providers.base.operations.*
 import platform.Security.*
 
-internal object SecRsaPkcs1 : SecRsa<RSA.PKCS1.PublicKey, RSA.PKCS1.PrivateKey, RSA.PKCS1.KeyPair>(), RSA.PKCS1 {
+internal object SecRsaPkcs1 : SecRsa<RSA.PKCS1.PublicKey, RSA.PKCS1.PrivateKey, RSA.PKCS1.KeyPair>(
+    wrapPublicKey = ::RsaPkcs1PublicKey,
+    wrapPrivateKey = ::RsaPkcs1PrivateKey,
+    wrapKeyPair = ::RsaPkcs1KeyPair,
+), RSA.PKCS1 {
     override fun hashAlgorithm(digest: CryptographyAlgorithmId<Digest>): SecKeyAlgorithm? = digest.rsaPkcs1SecKeyAlgorithm()
-
-    override fun wrapKeyPair(algorithm: SecKeyAlgorithm?, publicKey: SecKeyRef, privateKey: SecKeyRef): RSA.PKCS1.KeyPair = RsaPkcs1KeyPair(
-        publicKey = RsaPkcs1PublicKey(publicKey, algorithm),
-        privateKey = RsaPkcs1PrivateKey(privateKey, algorithm),
-    )
-
-    override fun wrapPublicKey(algorithm: SecKeyAlgorithm?, key: SecKeyRef): RSA.PKCS1.PublicKey = RsaPkcs1PublicKey(key, algorithm)
-    override fun wrapPrivateKey(algorithm: SecKeyAlgorithm?, key: SecKeyRef): RSA.PKCS1.PrivateKey = RsaPkcs1PrivateKey(key, algorithm)
 
     private class RsaPkcs1KeyPair(
         override val publicKey: RSA.PKCS1.PublicKey,
@@ -38,7 +34,8 @@ internal object SecRsaPkcs1 : SecRsa<RSA.PKCS1.PublicKey, RSA.PKCS1.PrivateKey, 
     private class RsaPkcs1PrivateKey(
         privateKey: SecKeyRef,
         private val algorithm: SecKeyAlgorithm?,
-    ) : RsaPrivateKey(privateKey), RSA.PKCS1.PrivateKey {
+        publicKey: RSA.PKCS1.PublicKey?,
+    ) : RsaPrivateKey(privateKey, algorithm, publicKey), RSA.PKCS1.PrivateKey {
         override fun signatureGenerator(): SignatureGenerator = SecSignatureGenerator(privateKey, algorithm)
         override fun decryptor(): Decryptor = RsaPkcs1Decryptor(privateKey)
     }

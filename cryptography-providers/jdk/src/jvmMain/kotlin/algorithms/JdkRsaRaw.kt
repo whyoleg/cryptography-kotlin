@@ -1,89 +1,43 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.jdk.algorithms
 
-import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.BinarySize.Companion.bits
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.bigint.*
-import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.operations.*
 import dev.whyoleg.cryptography.providers.jdk.*
-import dev.whyoleg.cryptography.providers.jdk.materials.*
 import dev.whyoleg.cryptography.providers.jdk.operations.*
 import java.security.interfaces.*
-import java.security.spec.*
 
 internal class JdkRsaRaw(
-    private val state: JdkCryptographyState,
-) : RSA.RAW {
-
-    override fun publicKeyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<RSA.PublicKey.Format, RSA.RAW.PublicKey> =
-        RsaRawPublicKeyDecoder(state)
-
-    override fun privateKeyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<RSA.PrivateKey.Format, RSA.RAW.PrivateKey> =
-        RsaRawPrivateKeyDecoder(state)
-
-    override fun keyPairGenerator(
-        keySize: BinarySize,
-        digest: CryptographyAlgorithmId<Digest>,
-        publicExponent: BigInt,
-    ): KeyGenerator<RSA.RAW.KeyPair> {
-        val rsaParameters = RSAKeyGenParameterSpec(
-            keySize.inBits,
-            publicExponent.toJavaBigInteger(),
-        )
-        return RsaRawKeyPairGenerator(state, rsaParameters)
-    }
-}
-
-private class RsaRawPublicKeyDecoder(
     state: JdkCryptographyState,
-) : RsaPublicKeyDecoder<RSA.RAW.PublicKey>(state) {
-    override fun JPublicKey.convert(): RSA.RAW.PublicKey = RsaRawPublicKey(state, this)
-}
+) : JdkRsa<RSA.RAW.PublicKey, RSA.RAW.PrivateKey, RSA.RAW.KeyPair>(state), RSA.RAW {
+    override val wrapPublicKey: (JPublicKey, String) -> RSA.RAW.PublicKey = ::RsaRawPublicKey
+    override val wrapPrivateKey: (JPrivateKey, String, RSA.RAW.PublicKey?) -> RSA.RAW.PrivateKey = ::RsaRawPrivateKey
+    override val wrapKeyPair: (RSA.RAW.PublicKey, RSA.RAW.PrivateKey) -> RSA.RAW.KeyPair = ::RsaRawKeyPair
 
-private class RsaRawPrivateKeyDecoder(
-    state: JdkCryptographyState,
-) : RsaPrivateKeyDecoder<RSA.RAW.PrivateKey>(state) {
-    override fun JPrivateKey.convert(): RSA.RAW.PrivateKey = RsaRawPrivateKey(state, this)
-}
+    private class RsaRawKeyPair(
+        override val publicKey: RSA.RAW.PublicKey,
+        override val privateKey: RSA.RAW.PrivateKey,
+    ) : RSA.RAW.KeyPair
 
-private class RsaRawKeyPairGenerator(
-    state: JdkCryptographyState,
-    private val keyGenParameters: RSAKeyGenParameterSpec,
-) : JdkKeyPairGenerator<RSA.RAW.KeyPair>(state, "RSA") {
-
-    override fun JKeyPairGenerator.init() {
-        initialize(keyGenParameters, state.secureRandom)
+    private inner class RsaRawPublicKey(
+        key: JPublicKey,
+        @Suppress("unused") hashAlgorithmName: String,
+    ) : RSA.RAW.PublicKey, RsaPublicEncodableKey(key) {
+        override fun encryptor(): Encryptor = RsaRawEncryptor(state, key)
     }
 
-    override fun JKeyPair.convert(): RSA.RAW.KeyPair = RsaRawKeyPair(state, this)
-}
-
-private class RsaRawKeyPair(
-    state: JdkCryptographyState,
-    keyPair: JKeyPair,
-) : RSA.RAW.KeyPair {
-    override val publicKey: RSA.RAW.PublicKey = RsaRawPublicKey(state, keyPair.public)
-    override val privateKey: RSA.RAW.PrivateKey = RsaRawPrivateKey(state, keyPair.private)
-}
-
-private class RsaRawPublicKey(
-    private val state: JdkCryptographyState,
-    private val key: JPublicKey,
-) : RSA.RAW.PublicKey, RsaPublicEncodableKey(key) {
-    override fun encryptor(): Encryptor = RsaRawEncryptor(state, key)
-}
-
-private class RsaRawPrivateKey(
-    private val state: JdkCryptographyState,
-    private val key: JPrivateKey,
-) : RSA.RAW.PrivateKey, RsaPrivateEncodableKey(key) {
-    override fun decryptor(): Decryptor = RsaRawDecryptor(state, key)
+    private inner class RsaRawPrivateKey(
+        key: JPrivateKey,
+        hashAlgorithmName: String,
+        publicKey: RSA.RAW.PublicKey?,
+    ) : RSA.RAW.PrivateKey, RsaPrivateEncodableKey(key, hashAlgorithmName, publicKey) {
+        override fun decryptor(): Decryptor = RsaRawDecryptor(state, key)
+    }
 }
 
 private class RsaRawEncryptor(

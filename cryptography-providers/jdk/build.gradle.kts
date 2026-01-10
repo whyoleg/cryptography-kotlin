@@ -27,6 +27,9 @@ kotlin {
         jvmMain.dependencies {
             api(projects.cryptographyCore)
             implementation(projects.cryptographyProviderBase)
+
+            // should be used carefully, for specific cases
+            compileOnly(libs.bouncycastle)
         }
     }
 }

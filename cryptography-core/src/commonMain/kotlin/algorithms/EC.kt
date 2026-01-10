@@ -6,10 +6,15 @@ package dev.whyoleg.cryptography.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.operations.*
 import kotlin.jvm.*
 
 @SubclassOptInRequired(CryptographyProviderApi::class)
-public interface EC<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP : EC.KeyPair<PublicK, PrivateK>> : CryptographyAlgorithm {
+public interface EC<
+        PublicK : EC.PublicKey,
+        PrivateK : EC.PrivateKey<PublicK>,
+        KP : EC.KeyPair<PublicK, PrivateK>,
+        > : CryptographyAlgorithm {
     public fun publicKeyDecoder(curve: Curve): KeyDecoder<PublicKey.Format, PublicK>
     public fun privateKeyDecoder(curve: Curve): KeyDecoder<PrivateKey.Format, PrivateK>
     public fun keyPairGenerator(curve: Curve): KeyGenerator<KP>
@@ -31,7 +36,7 @@ public interface EC<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP : EC.Ke
     }
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
-    public interface KeyPair<PublicK : PublicKey, PrivateK : PrivateKey> : Key {
+    public interface KeyPair<PublicK : PublicKey, PrivateK : PrivateKey<PublicK>> : Key {
         public val publicKey: PublicK
         public val privateKey: PrivateK
     }
@@ -72,7 +77,7 @@ public interface EC<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey, KP : EC.Ke
     }
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
-    public interface PrivateKey : EncodableKey<PrivateKey.Format> {
+    public interface PrivateKey<PublicK : PublicKey> : EncodableKey<PrivateKey.Format>, PublicKeyAccessor<PublicK> {
         public sealed class Format : KeyFormat {
             final override fun toString(): String = name
 
