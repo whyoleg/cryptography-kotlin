@@ -18,6 +18,9 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
     abstract val imports: ListProperty<String>
 
     @get:Input
+    abstract val testClasses: ListProperty<String>
+
+    @get:Input
     abstract val providerInitializers: MapProperty<String, String>
 
     @get:OutputDirectory
@@ -30,11 +33,13 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
         check(outputDirectory.deleteRecursively()) { "Failed to cleanup files" }
         check(outputDirectory.mkdirs()) { "Failed to create directories" }
 
+        val classes = testClasses.get()
         providerInitializers.get().forEach { (classifier, providerInitialization) ->
             outputDirectory.resolve("${classifier}_tests.kt").writeText(
                 testsFileContent(
                     packageName = packageName.get(),
                     imports = imports.get(),
+                    testClasses = classes,
                     providerClassifier = classifier,
                     providerInitialization = providerInitialization
                 )
@@ -45,6 +50,7 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
     private fun testsFileContent(
         packageName: String,
         imports: List<String>,
+        testClasses: List<String>,
         providerClassifier: String,
         providerInitialization: String,
     ): String = buildString {
@@ -116,6 +122,12 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
             "EcdsaTest",
             "EcdsaCompatibilityTest",
             "EcdhCompatibilityTest",
+
+            // Edwards-family
+            "EdDsaTest",
+            "EdDsaCompatibilityTest",
+            "XdhTest",
+            "XdhCompatibilityTest",
 
             "RsaOaepTest",
             "RsaOaepCompatibilityTest",
