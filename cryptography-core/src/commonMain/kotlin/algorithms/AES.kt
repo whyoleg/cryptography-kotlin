@@ -37,6 +37,19 @@ public interface AES<K : AES.Key> : CryptographyAlgorithm {
 
     @DelicateCryptographyApi
     @SubclassOptInRequired(CryptographyProviderApi::class)
+    public interface CFB8 : AES<CFB8.Key> {
+        override val id: CryptographyAlgorithmId<CFB8> get() = Companion
+
+        public companion object : CryptographyAlgorithmId<CFB8>("AES-CFB8")
+
+        @SubclassOptInRequired(CryptographyProviderApi::class)
+        public interface Key : AES.Key {
+            public fun cipher(): IvCipher
+        }
+    }
+
+    @DelicateCryptographyApi
+    @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface ECB : AES<ECB.Key> {
         override val id: CryptographyAlgorithmId<ECB> get() = Companion
 

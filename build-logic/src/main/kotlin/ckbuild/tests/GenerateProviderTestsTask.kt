@@ -94,6 +94,8 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
 
             "AesCbcTest",
             "AesCbcCompatibilityTest",
+            "AesCfb8Test",
+            "AesCfb8CompatibilityTest",
             "AesCmacTest",
             "AesCmacCompatibilityTest",
             "AesCmacTestvectorsTest",

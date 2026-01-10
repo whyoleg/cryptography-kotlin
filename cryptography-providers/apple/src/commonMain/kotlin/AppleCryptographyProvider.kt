@@ -26,8 +26,9 @@ internal object AppleCryptographyProvider : CryptographyProvider() {
         HMAC    -> CCHmac
         AES.CBC -> CCAesCbc
         AES.CTR -> CCAesCtr
-        AES.ECB -> CCAesEcb
-        RSA.PSS -> SecRsaPss
+        AES.ECB  -> CCAesEcb
+        AES.CFB8 -> CCAesCfb8
+        RSA.PSS  -> SecRsaPss
         RSA.PKCS1 -> SecRsaPkcs1
         RSA.OAEP  -> SecRsaOaep
         RSA.RAW -> SecRsaRaw
