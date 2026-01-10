@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.serialization.asn1.modules
@@ -13,6 +13,7 @@ import kotlinx.serialization.encoding.*
 public abstract class AlgorithmIdentifierSerializer<AI : AlgorithmIdentifier> : KSerializer<AI> {
     protected abstract fun CompositeEncoder.encodeParameters(value: AI)
     protected abstract fun CompositeDecoder.decodeParameters(algorithm: ObjectIdentifier): AI
+    protected abstract fun CompositeDecoder.decodeAbsentParameters(algorithm: ObjectIdentifier): AI
 
     protected fun <P : Any> CompositeEncoder.encodeParameters(serializer: KSerializer<P>, value: P?) {
         encodeNullableSerializableElement(descriptor, 1, serializer, value)
@@ -45,9 +46,18 @@ public abstract class AlgorithmIdentifierSerializer<AI : AlgorithmIdentifier> : 
             index = 0,
             deserializer = ObjectIdentifier.serializer()
         )
-        check(decodeElementIndex(descriptor) == 1)
-        val parameters = decodeParameters(algorithm)
-        check(decodeElementIndex(descriptor) == CompositeDecoder.DECODE_DONE)
-        parameters
+        when (val index = decodeElementIndex(descriptor)) {
+            1                            -> {
+                val parameters = decodeParameters(algorithm)
+                check(decodeElementIndex(descriptor) == CompositeDecoder.DECODE_DONE)
+                parameters
+            }
+
+            CompositeDecoder.DECODE_DONE -> {
+                // Some algorithms may omit parameters at all
+                decodeAbsentParameters(algorithm)
+            }
+            else                         -> error("Unexpected element index: $index")
+        }
     }
 }

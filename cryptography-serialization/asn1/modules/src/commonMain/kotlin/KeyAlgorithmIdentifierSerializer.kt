@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.serialization.asn1.modules
@@ -29,5 +29,9 @@ internal object KeyAlgorithmIdentifierSerializer : AlgorithmIdentifierSerializer
             // TODO: somehow we should ignore parameters here
             UnknownKeyAlgorithmIdentifier(algorithm)
         }
+    }
+
+    override fun CompositeDecoder.decodeAbsentParameters(algorithm: ObjectIdentifier): KeyAlgorithmIdentifier {
+        return UnknownKeyAlgorithmIdentifier(algorithm)
     }
 }
