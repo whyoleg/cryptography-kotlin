@@ -36,7 +36,8 @@ internal fun CryptographyAlgorithmId<Digest>.rsaOaepSecKeyAlgorithm(): SecKeyAlg
     else -> throw IllegalStateException("Unsupported hash algorithm: $this")
 }
 
-internal fun CryptographyAlgorithmId<Digest>.ecdsaSecKeyAlgorithm(): SecKeyAlgorithm? = when (this) {
+internal fun CryptographyAlgorithmId<Digest>?.ecdsaSecKeyAlgorithm(): SecKeyAlgorithm? = when (this) {
+    null   -> kSecKeyAlgorithmECDSASignatureDigestX962
     SHA1   -> kSecKeyAlgorithmECDSASignatureMessageX962SHA1
     SHA224 -> kSecKeyAlgorithmECDSASignatureMessageX962SHA224
     SHA256 -> kSecKeyAlgorithmECDSASignatureMessageX962SHA256

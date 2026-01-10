@@ -19,7 +19,7 @@ public interface ECDSA : EC<ECDSA.PublicKey, ECDSA.PrivateKey, ECDSA.KeyPair> {
     @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface PublicKey : EC.PublicKey {
         public fun signatureVerifier(
-            digest: CryptographyAlgorithmId<Digest>,
+            digest: CryptographyAlgorithmId<Digest>?,
             format: SignatureFormat,
         ): SignatureVerifier
     }
@@ -27,7 +27,7 @@ public interface ECDSA : EC<ECDSA.PublicKey, ECDSA.PrivateKey, ECDSA.KeyPair> {
     @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface PrivateKey : EC.PrivateKey<PublicKey> {
         public fun signatureGenerator(
-            digest: CryptographyAlgorithmId<Digest>,
+            digest: CryptographyAlgorithmId<Digest>?,
             format: SignatureFormat,
         ): SignatureGenerator
     }

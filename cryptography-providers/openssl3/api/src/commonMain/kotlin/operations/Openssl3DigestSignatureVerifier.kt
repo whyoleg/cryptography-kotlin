@@ -13,7 +13,7 @@ import kotlin.experimental.*
 
 internal abstract class Openssl3DigestSignatureVerifier(
     private val publicKey: CPointer<EVP_PKEY>,
-    private val hashAlgorithm: String,
+    private val hashAlgorithm: String?,
 ) : SignatureVerifier {
     @OptIn(ExperimentalNativeApi::class)
     private val cleaner = publicKey.upRef().cleaner()

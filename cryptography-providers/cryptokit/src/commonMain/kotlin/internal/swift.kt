@@ -25,7 +25,7 @@ internal fun <T : Any> swiftTry(
 
 
 @OptIn(UnsafeNumber::class)
-internal fun CryptographyAlgorithmId<Digest>.swiftHashAlgorithm(): DwcHashAlgorithm = when (this) {
+internal fun CryptographyAlgorithmId<Digest>?.swiftHashAlgorithm(): DwcHashAlgorithm = when (this) {
     MD5    -> DwcHashAlgorithmMd5
     SHA1   -> DwcHashAlgorithmSha1
     SHA256 -> DwcHashAlgorithmSha256

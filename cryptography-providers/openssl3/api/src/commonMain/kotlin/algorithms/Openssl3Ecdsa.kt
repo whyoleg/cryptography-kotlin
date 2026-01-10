@@ -119,8 +119,8 @@ internal object Openssl3Ecdsa : ECDSA {
             else                     -> super.encodeToByteArrayBlocking(format)
         }
 
-        override fun signatureGenerator(digest: CryptographyAlgorithmId<Digest>, format: ECDSA.SignatureFormat): SignatureGenerator {
-            val derSignatureGenerator = EcdsaDerSignatureGenerator(key, hashAlgorithm(digest))
+        override fun signatureGenerator(digest: CryptographyAlgorithmId<Digest>?, format: ECDSA.SignatureFormat): SignatureGenerator {
+            val derSignatureGenerator = EcdsaDerSignatureGenerator(key, hashECAlgorithmName(digest))
             return when (format) {
                 ECDSA.SignatureFormat.DER -> derSignatureGenerator
                 ECDSA.SignatureFormat.RAW -> EcdsaRawSignatureGenerator(derSignatureGenerator, EC_order_size(key))
@@ -146,8 +146,8 @@ internal object Openssl3Ecdsa : ECDSA {
             else                               -> super.encodeToByteArrayBlocking(format)
         }
 
-        override fun signatureVerifier(digest: CryptographyAlgorithmId<Digest>, format: ECDSA.SignatureFormat): SignatureVerifier {
-            val derSignatureVerifier = EcdsaDerSignatureVerifier(key, hashAlgorithm(digest))
+        override fun signatureVerifier(digest: CryptographyAlgorithmId<Digest>?, format: ECDSA.SignatureFormat): SignatureVerifier {
+            val derSignatureVerifier = EcdsaDerSignatureVerifier(key, hashECAlgorithmName(digest))
             return when (format) {
                 ECDSA.SignatureFormat.DER -> derSignatureVerifier
                 ECDSA.SignatureFormat.RAW -> EcdsaRawSignatureVerifier(derSignatureVerifier, EC_order_size(key))
@@ -158,7 +158,7 @@ internal object Openssl3Ecdsa : ECDSA {
 
 private class EcdsaDerSignatureGenerator(
     privateKey: CPointer<EVP_PKEY>,
-    hashAlgorithm: String,
+    hashAlgorithm: String?,
 ) : Openssl3DigestSignatureGenerator(privateKey, hashAlgorithm) {
     override fun MemScope.createParams(): CValuesRef<OSSL_PARAM>? = null
 }
@@ -215,7 +215,7 @@ private class EcdsaRawSignatureGenerator(
 
 private class EcdsaDerSignatureVerifier(
     publicKey: CPointer<EVP_PKEY>,
-    hashAlgorithm: String,
+    hashAlgorithm: String?,
 ) : Openssl3DigestSignatureVerifier(publicKey, hashAlgorithm) {
     override fun MemScope.createParams(): CValuesRef<OSSL_PARAM>? = null
 }

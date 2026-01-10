@@ -8,7 +8,13 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 
-internal fun hashAlgorithm(digest: CryptographyAlgorithmId<Digest>): String = when (digest) {
+
+internal fun hashECAlgorithmName(digest: CryptographyAlgorithmId<Digest>?): String? = when (digest) {
+    null -> null
+    else -> hashAlgorithmName(digest)
+}
+
+internal fun hashAlgorithmName(digest: CryptographyAlgorithmId<Digest>): String = when (digest) {
     SHA1     -> "SHA1"
     SHA224   -> "SHA224"
     SHA256   -> "SHA256"

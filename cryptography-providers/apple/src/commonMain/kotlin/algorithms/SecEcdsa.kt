@@ -57,6 +57,7 @@ internal object SecEcdsa : ECDSA {
 private class EcdsaPublicKeyDecoder(
     private val curve: EcCurveData,
 ) : KeyDecoder<EC.PublicKey.Format, ECDSA.PublicKey> {
+
     override fun decodeFromByteArrayBlocking(format: EC.PublicKey.Format, bytes: ByteArray): ECDSA.PublicKey {
         val rawKey = when (format) {
             EC.PublicKey.Format.JWK            -> error("$format is not supported")
@@ -166,7 +167,7 @@ private class EcdsaPublicKey(
     @OptIn(ExperimentalNativeApi::class)
     private val cleanup = createCleaner(publicKey, SecKeyRef::release)
 
-    override fun signatureVerifier(digest: CryptographyAlgorithmId<Digest>, format: ECDSA.SignatureFormat): SignatureVerifier {
+    override fun signatureVerifier(digest: CryptographyAlgorithmId<Digest>?, format: ECDSA.SignatureFormat): SignatureVerifier {
         val verifier = SecSignatureVerifier(publicKey, digest.ecdsaSecKeyAlgorithm())
         return when (format) {
             ECDSA.SignatureFormat.DER -> verifier
@@ -211,7 +212,7 @@ private class EcdsaPrivateKey(
         return publicKey!!
     }
 
-    override fun signatureGenerator(digest: CryptographyAlgorithmId<Digest>, format: ECDSA.SignatureFormat): SignatureGenerator {
+    override fun signatureGenerator(digest: CryptographyAlgorithmId<Digest>?, format: ECDSA.SignatureFormat): SignatureGenerator {
         val generator = SecSignatureGenerator(privateKey, digest.ecdsaSecKeyAlgorithm())
         return when (format) {
             ECDSA.SignatureFormat.DER -> generator

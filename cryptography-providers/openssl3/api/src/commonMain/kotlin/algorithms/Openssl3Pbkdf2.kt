@@ -21,7 +21,7 @@ internal object Openssl3Pbkdf2 : PBKDF2 {
         outputSize: BinarySize,
         salt: ByteArray,
     ): SecretDerivation = Openssl3Pbkdf2SecretDerivation(
-        hashAlgorithm = hashAlgorithm(digest),
+        hashAlgorithm = hashAlgorithmName(digest),
         salt = salt,
         iterations = iterations,
         outputSize = outputSize,

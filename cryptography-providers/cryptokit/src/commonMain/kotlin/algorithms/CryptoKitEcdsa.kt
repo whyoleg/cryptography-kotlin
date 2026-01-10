@@ -107,7 +107,7 @@ private class EcdsaPublicKey(
     }
 
     override fun signatureVerifier(
-        digest: CryptographyAlgorithmId<Digest>,
+        digest: CryptographyAlgorithmId<Digest>?,
         format: ECDSA.SignatureFormat,
     ): SignatureVerifier = EcdsaSignatureVerifier(
         algorithm = digest.swiftHashAlgorithm(),
@@ -135,7 +135,7 @@ private class EcdsaPrivateKey(
     }
 
     override fun signatureGenerator(
-        digest: CryptographyAlgorithmId<Digest>,
+        digest: CryptographyAlgorithmId<Digest>?,
         format: ECDSA.SignatureFormat,
     ): SignatureGenerator = EcdsaSignatureGenerator(
         algorithm = digest.swiftHashAlgorithm(),
