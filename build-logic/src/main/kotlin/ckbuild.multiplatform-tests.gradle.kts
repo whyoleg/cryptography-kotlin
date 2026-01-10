@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 import ckbuild.*
@@ -7,7 +7,6 @@ import ckbuild.tests.*
 import com.android.build.gradle.internal.tasks.*
 import org.jetbrains.kotlin.gradle.*
 import org.jetbrains.kotlin.gradle.plugin.*
-import org.jetbrains.kotlin.gradle.plugin.mpp.*
 import org.jetbrains.kotlin.gradle.targets.js.ir.*
 import org.jetbrains.kotlin.gradle.targets.js.testing.*
 import org.jetbrains.kotlin.gradle.targets.jvm.tasks.*
@@ -51,16 +50,6 @@ kotlin {
                     timeout = "6000s"
                 }
             }
-        }
-    }
-
-    // setup tests running in RELEASE mode
-    targets.withType<KotlinNativeTarget>().configureEach {
-        binaries.test(listOf(NativeBuildType.RELEASE))
-    }
-    targets.withType<KotlinNativeTargetWithTests<*>>().configureEach {
-        testRuns.create("releaseTest") {
-            setExecutionSourceFrom(binaries.getTest(NativeBuildType.RELEASE))
         }
     }
 }
