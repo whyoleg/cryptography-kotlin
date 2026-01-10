@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.base.operations
@@ -19,6 +19,8 @@ public interface CipherFunction {
 // TODO: test with different input/output sizes
 @CryptographyProviderApi
 public abstract class BaseCipherFunction : CipherFunction, AutoCloseable {
+    // block size can be 0/-1 -> stream cipher
+    // in case of JDK, `CipherSpi` says it returns `0` in this case, but BC returns `-1` ...
     protected abstract val blockSize: Int
 
     // returns -1 if it's not known
@@ -33,7 +35,7 @@ public abstract class BaseCipherFunction : CipherFunction, AutoCloseable {
         if (maxOutputSize(initialMaxInputSize) <= expectedMaxOutputSize) return initialMaxInputSize
         if (maxOutputSize(0) > expectedMaxOutputSize) return -1
 
-        val stepSize = if (blockSize != 0) blockSize else 16
+        val stepSize = if (blockSize > 0) blockSize else 16
         var inputSize = initialMaxInputSize - stepSize
         while (inputSize > 0) {
             val outputSize = maxOutputSize(inputSize)
