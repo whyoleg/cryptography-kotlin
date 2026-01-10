@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.tests
@@ -178,9 +178,10 @@ fun AlgorithmTestScope<out EC<*, *, *>>.supportsPrivateKeyDecoding(
 
 fun ProviderTestScope.supports(algorithmId: CryptographyAlgorithmId<*>): Boolean = validate {
     when (algorithmId) {
-        AES.CMAC if provider.isJdkDefault                      -> "Default JDK provider doesn't support AES-CMAC, only supported with BouncyCastle"
-        RSA.PSS if provider.isJdkDefault && platform.isAndroid -> "JDK provider on Android doesn't support RSASSA-PSS"
-        else                                                   -> null
+        AES.CMAC if provider.isJdkDefault                                          -> "Default JDK provider doesn't support AES-CMAC, only supported with BouncyCastle"
+        RSA.PSS if provider.isJdkDefault && platform.isAndroid                     -> "JDK provider on Android doesn't support RSASSA-PSS"
+        ChaCha20Poly1305 if provider.isJdkDefault && platform.isJdk { major < 11 } -> "Default JDK provider supports ChaCha20-Poly1305 from JDK 11"
+        else                                                                       -> null
     }
 }
 
