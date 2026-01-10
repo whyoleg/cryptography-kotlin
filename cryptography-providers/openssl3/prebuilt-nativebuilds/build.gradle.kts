@@ -27,7 +27,7 @@ kotlin {
             api(libs.nativebuilds.openssl.libcrypto)
         }
         commonTest.dependencies {
-            api(projects.cryptographyProviderOpenssl3Test)
+            implementation(projects.cryptographyProviderOpenssl3Test)
         }
     }
 }
