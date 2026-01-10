@@ -17,4 +17,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-environment
-      - run: ./gradlew linkAll --continue
+      - run: ./gradlew linkAll --continue -Pckbuild.skipReleaseLinkTasks=${{ github.ref_name != 'main' }}

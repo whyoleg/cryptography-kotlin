@@ -36,6 +36,7 @@ jobs:
           --continue
           -Pckbuild.providerTests.step=compatibility.generate
           -Pckbuild.testtool.enabled=true
+          -Pckbuild.skipReleaseLinkTasks=${{ github.ref_name != 'main' }}
 
       - name: Run tests (android)
         if: ${{ matrix.target == 'connectedAndroid' }}
@@ -93,6 +94,7 @@ jobs:
           --continue
           -Pckbuild.providerTests.step=compatibility.validate
           -Pckbuild.testtool.enabled=true
+          -Pckbuild.skipReleaseLinkTasks=${{ github.ref_name != 'main' }}
 
       - name: Run tests (android)
         if: ${{ matrix.target == 'connectedAndroid' }}
