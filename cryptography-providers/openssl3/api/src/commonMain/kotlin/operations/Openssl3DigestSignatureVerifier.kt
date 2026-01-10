@@ -8,24 +8,59 @@ import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
+import dev.whyoleg.cryptography.providers.base.operations.*
 import kotlinx.cinterop.*
 import kotlin.experimental.*
 
 internal abstract class Openssl3DigestSignatureVerifier(
     private val publicKey: CPointer<EVP_PKEY>,
-    private val hashAlgorithm: String,
+    // when null, performs one-shot verification (e.g., EdDSA)
+    private val hashAlgorithm: String?,
 ) : SignatureVerifier {
     @OptIn(ExperimentalNativeApi::class)
     private val cleaner = publicKey.upRef().cleaner()
 
     protected abstract fun MemScope.createParams(): CValuesRef<OSSL_PARAM>?
 
-    override fun createVerifyFunction(): VerifyFunction {
-        return Openssl3DigestVerifyFunction(Resource(checkError(EVP_MD_CTX_new()), ::EVP_MD_CTX_free))
+    override fun createVerifyFunction(): VerifyFunction = when (hashAlgorithm) {
+        null -> AccumulatingVerifyFunction { data, signature, startIndex, endIndex ->
+            memScoped {
+                val ctx = checkError(EVP_MD_CTX_new())
+                try {
+                    checkError(
+                        EVP_DigestVerifyInit_ex(
+                            ctx = ctx,
+                            pctx = null,
+                            mdname = null, // one-shot mode
+                            libctx = null,
+                            props = null,
+                            pkey = publicKey,
+                            params = createParams()
+                        )
+                    )
+                    val result = signature.usePinned { sigPin ->
+                        data.usePinned { dataPin ->
+                            EVP_DigestVerify(
+                                ctx,
+                                sigPin.safeAddressOfU(startIndex),
+                                (endIndex - startIndex).convert(),
+                                dataPin.safeAddressOfU(0),
+                                data.size.convert()
+                            )
+                        }
+                    }
+                    if (result != 0) checkError(result)
+                    result == 1
+                } finally {
+                    EVP_MD_CTX_free(ctx)
+                }
+            }
+        }
+        else -> StreamingVerifyFunction(Resource(checkError(EVP_MD_CTX_new()), ::EVP_MD_CTX_free))
     }
 
     // inner class to have a reference to class with cleaner
-    private inner class Openssl3DigestVerifyFunction(
+    private inner class StreamingVerifyFunction(
         private val context: Resource<CPointer<EVP_MD_CTX>>,
     ) : VerifyFunction, SafeCloseable(SafeCloseAction(context, AutoCloseable::close)) {
         init {
@@ -67,7 +102,7 @@ internal abstract class Openssl3DigestSignatureVerifier(
                 EVP_DigestVerifyInit_ex(
                     ctx = context,
                     pctx = null,
-                    mdname = hashAlgorithm,
+                    mdname = hashAlgorithm!!,
                     libctx = null,
                     props = null,
                     pkey = publicKey,
@@ -76,4 +111,6 @@ internal abstract class Openssl3DigestSignatureVerifier(
             )
         }
     }
+
+    // One-shot path now handled by AccumulatingVerifyFunction in createVerifyFunction
 }
