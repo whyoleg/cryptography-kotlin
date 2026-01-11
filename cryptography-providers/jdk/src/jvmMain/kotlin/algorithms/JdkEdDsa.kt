@@ -17,62 +17,67 @@ import dev.whyoleg.cryptography.serialization.asn1.modules.*
 import dev.whyoleg.cryptography.serialization.pem.*
 
 internal class JdkEdDsa(private val state: JdkCryptographyState) : EdDSA {
-    private fun curveName(curve: EdDSA.Curve): String = when (curve) {
-        EdDSA.Curve.Ed25519 -> "Ed25519"
-        EdDSA.Curve.Ed448   -> "Ed448"
+    private val EdDSA.Curve.oid: ObjectIdentifier
+        get() = when (this) {
+            EdDSA.Curve.Ed25519 -> ObjectIdentifier.Ed25519
+            EdDSA.Curve.Ed448   -> ObjectIdentifier.Ed448
+        }
+
+    override fun publicKeyDecoder(curve: EdDSA.Curve): KeyDecoder<EdDSA.PublicKey.Format, EdDSA.PublicKey> = PublicKeyDecoder(curve)
+
+    override fun privateKeyDecoder(curve: EdDSA.Curve): KeyDecoder<EdDSA.PrivateKey.Format, EdDSA.PrivateKey> = PrivateKeyDecoder(curve)
+
+    override fun keyPairGenerator(curve: EdDSA.Curve): KeyGenerator<EdDSA.KeyPair> = KeyPairGenerator(curve)
+
+    private inner class PublicKeyDecoder(
+        private val curve: EdDSA.Curve,
+    ) : JdkPublicKeyDecoder<EdDSA.PublicKey.Format, EdDSA.PublicKey>(state, curve.name) {
+        override fun JPublicKey.convert(): EdDSA.PublicKey = EdDsaPublicKey(state, this)
+
+        override fun decodeFromByteArrayBlocking(format: EdDSA.PublicKey.Format, bytes: ByteArray): EdDSA.PublicKey = when (format) {
+            EdDSA.PublicKey.Format.JWK -> error("JWK is not supported")
+            EdDSA.PublicKey.Format.RAW -> decodeFromDer(
+                wrapSubjectPublicKeyInfo(UnknownKeyAlgorithmIdentifier(curve.oid), bytes)
+            )
+            EdDSA.PublicKey.Format.DER -> decodeFromDer(bytes)
+            EdDSA.PublicKey.Format.PEM -> decodeFromDer(unwrapPem(PemLabel.PublicKey, bytes))
+        }
     }
 
-    private fun oid(curve: EdDSA.Curve): ObjectIdentifier = when (curve) {
-        EdDSA.Curve.Ed25519 -> ObjectIdentifier.Ed25519
-        EdDSA.Curve.Ed448   -> ObjectIdentifier.Ed448
+    private inner class PrivateKeyDecoder(
+        private val curve: EdDSA.Curve,
+    ) : JdkPrivateKeyDecoder<EdDSA.PrivateKey.Format, EdDSA.PrivateKey>(state, curve.name) {
+        override fun JPrivateKey.convert(): EdDSA.PrivateKey = EdDsaPrivateKey(state, this, null)
+
+        override fun decodeFromByteArrayBlocking(format: EdDSA.PrivateKey.Format, bytes: ByteArray): EdDSA.PrivateKey = when (format) {
+            EdDSA.PrivateKey.Format.JWK -> error("JWK is not supported")
+            EdDSA.PrivateKey.Format.RAW -> decodeFromDer(
+                wrapPrivateKeyInfo(
+                    0,
+                    UnknownKeyAlgorithmIdentifier(curve.oid),
+                    bytes
+                )
+            )
+            EdDSA.PrivateKey.Format.DER -> decodeFromDer(bytes)
+            EdDSA.PrivateKey.Format.PEM -> decodeFromDer(unwrapPem(PemLabel.PrivateKey, bytes))
+        }
     }
 
-    override fun publicKeyDecoder(curve: EdDSA.Curve): KeyDecoder<EdDSA.PublicKey.Format, EdDSA.PublicKey> =
-        object : JdkPublicKeyDecoder<EdDSA.PublicKey.Format, EdDSA.PublicKey>(state, curveName(curve)) {
-            override fun JPublicKey.convert(): EdDSA.PublicKey = EdDsaPublicKey(state, this)
-
-            override fun decodeFromByteArrayBlocking(format: EdDSA.PublicKey.Format, bytes: ByteArray): EdDSA.PublicKey = when (format) {
-                EdDSA.PublicKey.Format.JWK -> error("JWK is not supported")
-                EdDSA.PublicKey.Format.RAW -> decodeFromDer(
-                    wrapSubjectPublicKeyInfo(UnknownKeyAlgorithmIdentifier(oid(curve)), bytes)
-                )
-                EdDSA.PublicKey.Format.DER -> decodeFromDer(bytes)
-                EdDSA.PublicKey.Format.PEM -> decodeFromDer(unwrapPem(PemLabel.PublicKey, bytes))
-            }
+    private inner class KeyPairGenerator(
+        private val curve: EdDSA.Curve,
+    ) : JdkKeyPairGenerator<EdDSA.KeyPair>(state, curve.name) {
+        override fun JKeyPairGenerator.init() {
+            // no additional init required
         }
 
-    override fun privateKeyDecoder(curve: EdDSA.Curve): KeyDecoder<EdDSA.PrivateKey.Format, EdDSA.PrivateKey> =
-        object : JdkPrivateKeyDecoder<EdDSA.PrivateKey.Format, EdDSA.PrivateKey>(state, curveName(curve)) {
-            override fun JPrivateKey.convert(): EdDSA.PrivateKey = EdDsaPrivateKey(state, this, null)
-
-            override fun decodeFromByteArrayBlocking(format: EdDSA.PrivateKey.Format, bytes: ByteArray): EdDSA.PrivateKey = when (format) {
-                EdDSA.PrivateKey.Format.JWK -> error("JWK is not supported")
-                EdDSA.PrivateKey.Format.RAW -> decodeFromDer(
-                    wrapPrivateKeyInfo(
-                        0,
-                        UnknownKeyAlgorithmIdentifier(oid(curve)),
-                        bytes
-                    )
-                )
-                EdDSA.PrivateKey.Format.DER -> decodeFromDer(bytes)
-                EdDSA.PrivateKey.Format.PEM -> decodeFromDer(unwrapPem(PemLabel.PrivateKey, bytes))
-            }
+        override fun JKeyPair.convert(): EdDSA.KeyPair {
+            val publicKey = EdDsaPublicKey(state, public)
+            return EdDsaKeyPair(
+                publicKey,
+                EdDsaPrivateKey(state, private, publicKey),
+            )
         }
-
-    override fun keyPairGenerator(curve: EdDSA.Curve): KeyGenerator<EdDSA.KeyPair> =
-        object : JdkKeyPairGenerator<EdDSA.KeyPair>(state, curveName(curve)) {
-            override fun JKeyPairGenerator.init() {
-                // no additional init required
-            }
-
-            override fun JKeyPair.convert(): EdDSA.KeyPair {
-                val publicKey = EdDsaPublicKey(state, public)
-                return EdDsaKeyPair(
-                    publicKey,
-                    EdDsaPrivateKey(state, private, publicKey),
-                )
-            }
-        }
+    }
 
     private class EdDsaKeyPair(
         override val publicKey: EdDSA.PublicKey,
