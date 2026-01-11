@@ -40,7 +40,7 @@ fun AlgorithmTestScope<*>.supportsDigest(
             -> digest.name
 
         digest == null && (mechanism != ECDSA || provider.isJdkDefault || provider.isWebCrypto || provider.isCryptoKit)
-            -> "${mechanism?.let { "Mechanism: $it with " }.orEmpty()} raw message"
+            -> "${mechanism?.let { "Mechanism: $it with " }.orEmpty()} without digest"
 
         else -> null
     }

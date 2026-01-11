@@ -22,13 +22,7 @@ abstract class EcdsaCompatibilityTest(
         val digestName: String?,
         val signatureFormat: ECDSA.SignatureFormat,
     ) : TestParameters {
-        val digest: CryptographyAlgorithmId<Digest>? get() {
-            if (digestName == null) {
-                return null
-            }
-
-            return digest(digestName)
-        }
+        val digest get() = digestName?.let(::digest)
     }
 
     override suspend fun CompatibilityTestScope<ECDSA>.generate(isStressTest: Boolean) {

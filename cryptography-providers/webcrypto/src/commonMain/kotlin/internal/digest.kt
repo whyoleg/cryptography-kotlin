@@ -20,7 +20,8 @@ internal fun CryptographyAlgorithmId<Digest>?.hashAlgorithmName(): String = when
     SHA256 -> "SHA-256"
     SHA384 -> "SHA-384"
     SHA512 -> "SHA-512"
-    else -> throw IllegalStateException("Unsupported hash algorithm: ${this?.name ?: "Message"}")
+    null   -> throw IllegalStateException("Operation without digest is unsupported!")
+    else   -> throw IllegalStateException("Unsupported hash algorithm: ${this.name}")
 }
 
 internal fun CryptographyAlgorithmId<Digest>.digestSize(): Int = when (this) {
