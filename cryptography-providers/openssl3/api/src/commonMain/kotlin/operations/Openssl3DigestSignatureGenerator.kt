@@ -1,11 +1,12 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.operations
 
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.*
+import dev.whyoleg.cryptography.providers.base.operations.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import kotlinx.cinterop.*
@@ -15,14 +16,49 @@ import kotlin.experimental.*
 internal abstract class Openssl3DigestSignatureGenerator(
     private val privateKey: CPointer<EVP_PKEY>,
     private val hashAlgorithm: String?,
+    private val accumulating: Boolean = false,
 ) : SignatureGenerator {
     @OptIn(ExperimentalNativeApi::class)
     private val cleaner = privateKey.upRef().cleaner()
 
     protected abstract fun MemScope.createParams(): CValuesRef<OSSL_PARAM>?
 
-    override fun createSignFunction(): SignFunction {
-        return Openssl3DigestSignFunction(Resource(checkError(EVP_MD_CTX_new()), ::EVP_MD_CTX_free))
+    override fun createSignFunction(): SignFunction = if (accumulating) {
+        AccumulatingSignFunction(::sign)
+    } else {
+        Openssl3DigestSignFunction(Resource(checkError(EVP_MD_CTX_new()), ::EVP_MD_CTX_free))
+    }
+
+    // one shot
+    private fun sign(data: ByteArray): ByteArray = memScoped {
+        val context = checkError(EVP_MD_CTX_new())
+        try {
+            init(context)
+
+            data.usePinned {
+                val siglen = alloc<size_tVar>()
+                checkError(EVP_DigestSign(context, null, siglen.ptr, it.safeAddressOfU(0), data.size.convert()))
+                val signature = ByteArray(siglen.value.convert())
+                checkError(EVP_DigestSign(context, signature.refToU(0), siglen.ptr, it.safeAddressOfU(0), data.size.convert()))
+                signature.ensureSizeExactly(siglen.value.convert())
+            }
+        } finally {
+            EVP_MD_CTX_free(context)
+        }
+    }
+
+    private fun MemScope.init(context: CPointer<EVP_MD_CTX>) {
+        checkError(
+            EVP_DigestSignInit_ex(
+                ctx = context,
+                pctx = null,
+                mdname = hashAlgorithm,
+                libctx = null,
+                props = null,
+                pkey = privateKey,
+                params = createParams()
+            )
+        )
     }
 
     // inner class to have a reference to class with cleaner
@@ -61,18 +97,7 @@ internal abstract class Openssl3DigestSignatureGenerator(
         }
 
         override fun reset(): Unit = memScoped {
-            val context = context.access()
-            checkError(
-                EVP_DigestSignInit_ex(
-                    ctx = context,
-                    pctx = null,
-                    mdname = hashAlgorithm,
-                    libctx = null,
-                    props = null,
-                    pkey = privateKey,
-                    params = createParams()
-                )
-            )
+            init(context.access())
         }
     }
 }

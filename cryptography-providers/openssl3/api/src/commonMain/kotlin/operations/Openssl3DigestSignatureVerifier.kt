@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.operations
@@ -14,6 +14,7 @@ import kotlin.experimental.*
 internal abstract class Openssl3DigestSignatureVerifier(
     private val publicKey: CPointer<EVP_PKEY>,
     private val hashAlgorithm: String?,
+    private val accumulating: Boolean = false,
 ) : SignatureVerifier {
     @OptIn(ExperimentalNativeApi::class)
     private val cleaner = publicKey.upRef().cleaner()
