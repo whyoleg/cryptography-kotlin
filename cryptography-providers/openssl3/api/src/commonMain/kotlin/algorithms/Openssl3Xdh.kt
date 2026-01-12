@@ -41,10 +41,17 @@ internal object Openssl3Xdh : XDH {
             }
 
             override fun decodeFromByteArrayBlocking(format: XDH.PublicKey.Format, bytes: ByteArray): XDH.PublicKey = when (format) {
-                XDH.PublicKey.Format.RAW -> super.decodeFromByteArrayBlocking(
-                    XDH.PublicKey.Format.DER,
-                    wrapSubjectPublicKeyInfo(UnknownKeyAlgorithmIdentifier(oid(curve)), bytes)
-                )
+                XDH.PublicKey.Format.RAW -> {
+                    val key = checkError(
+                        EVP_PKEY_new_raw_public_key(
+                            EVP_PKEY_X25519.takeIf { curve == XDH.Curve.X25519 } ?: EVP_PKEY_X448,
+                            null,
+                            bytes.refToU(0),
+                            bytes.size.convert()
+                        )
+                    )
+                    XdhPublicKey(key, curve)
+                }
                 else                     -> super.decodeFromByteArrayBlocking(format, bytes)
             }
 
@@ -62,10 +69,17 @@ internal object Openssl3Xdh : XDH {
             }
 
             override fun decodeFromByteArrayBlocking(format: XDH.PrivateKey.Format, bytes: ByteArray): XDH.PrivateKey = when (format) {
-                XDH.PrivateKey.Format.RAW -> super.decodeFromByteArrayBlocking(
-                    XDH.PrivateKey.Format.DER,
-                    wrapPrivateKeyInfo(0, UnknownKeyAlgorithmIdentifier(oid(curve)), bytes)
-                )
+                XDH.PrivateKey.Format.RAW -> {
+                    val key = checkError(
+                        EVP_PKEY_new_raw_private_key(
+                            EVP_PKEY_X25519.takeIf { curve == XDH.Curve.X25519 } ?: EVP_PKEY_X448,
+                            null,
+                            bytes.refToU(0),
+                            bytes.size.convert()
+                        )
+                    )
+                    XdhPrivateKey(key, curve)
+                }
                 else                      -> super.decodeFromByteArrayBlocking(format, bytes)
             }
 
@@ -75,10 +89,13 @@ internal object Openssl3Xdh : XDH {
     override fun keyPairGenerator(curve: XDH.Curve): KeyGenerator<XDH.KeyPair> =
         object : Openssl3KeyPairGenerator<XDH.KeyPair>(algorithmName(curve)) {
             override fun MemScope.createParams(): CValuesRef<OSSL_PARAM>? = null
-            override fun wrapKeyPair(keyPair: CPointer<EVP_PKEY>): XDH.KeyPair = XdhKeyPair(
-                publicKey = XdhPublicKey(keyPair, curve),
-                privateKey = XdhPrivateKey(keyPair, curve)
-            )
+            override fun wrapKeyPair(keyPair: CPointer<EVP_PKEY>): XDH.KeyPair {
+                val publicKey = XdhPublicKey(keyPair, curve)
+                return XdhKeyPair(
+                    publicKey = publicKey,
+                    privateKey = XdhPrivateKey(keyPair, curve, publicKey)
+                )
+            }
         }
 
     private class XdhKeyPair(
@@ -99,7 +116,13 @@ internal object Openssl3Xdh : XDH {
         }
 
         override fun encodeToByteArrayBlocking(format: XDH.PublicKey.Format): ByteArray = when (format) {
-            XDH.PublicKey.Format.RAW -> unwrapSubjectPublicKeyInfo(oid(curve), super.encodeToByteArrayBlocking(XDH.PublicKey.Format.DER))
+            XDH.PublicKey.Format.RAW -> memScoped {
+                val lenVar = alloc<size_tVar>()
+                checkError(EVP_PKEY_get_raw_public_key(key, null, lenVar.ptr))
+                val result = ByteArray(lenVar.value.convert())
+                checkError(EVP_PKEY_get_raw_public_key(key, result.refToU(0), lenVar.ptr))
+                result
+            }
             else                     -> super.encodeToByteArrayBlocking(format)
         }
 
@@ -113,7 +136,11 @@ internal object Openssl3Xdh : XDH {
     private class XdhPrivateKey(
         key: CPointer<EVP_PKEY>,
         private val curve: XDH.Curve,
-    ) : XDH.PrivateKey, Openssl3PrivateKeyEncodable<XDH.PrivateKey.Format>(key), SharedSecretGenerator<XDH.PublicKey> {
+        publicKey: XDH.PublicKey? = null,
+    ) : XDH.PrivateKey, Openssl3PrivateKeyEncodable<XDH.PrivateKey.Format, XDH.PublicKey>(key, publicKey),
+        SharedSecretGenerator<XDH.PublicKey> {
+        override fun wrapPublicKey(key: CPointer<EVP_PKEY>): XDH.PublicKey = XdhPublicKey(key, curve)
+
         override fun outputType(format: XDH.PrivateKey.Format): String = when (format) {
             XDH.PrivateKey.Format.DER -> "DER"
             XDH.PrivateKey.Format.PEM -> "PEM"
@@ -123,7 +150,13 @@ internal object Openssl3Xdh : XDH {
         }
 
         override fun encodeToByteArrayBlocking(format: XDH.PrivateKey.Format): ByteArray = when (format) {
-            XDH.PrivateKey.Format.RAW -> unwrapPrivateKeyInfo(oid(curve), super.encodeToByteArrayBlocking(XDH.PrivateKey.Format.DER))
+            XDH.PrivateKey.Format.RAW -> memScoped {
+                val lenVar = alloc<size_tVar>()
+                checkError(EVP_PKEY_get_raw_private_key(key, null, lenVar.ptr))
+                val result = ByteArray(lenVar.value.convert())
+                checkError(EVP_PKEY_get_raw_private_key(key, result.refToU(0), lenVar.ptr))
+                result
+            }
             else                      -> super.encodeToByteArrayBlocking(format)
         }
 

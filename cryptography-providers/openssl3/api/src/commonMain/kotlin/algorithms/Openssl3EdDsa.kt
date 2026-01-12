@@ -41,10 +41,17 @@ internal object Openssl3EdDsa : EdDSA {
         }
 
         override fun decodeFromByteArrayBlocking(format: EdDSA.PublicKey.Format, bytes: ByteArray): EdDSA.PublicKey = when (format) {
-            EdDSA.PublicKey.Format.RAW -> super.decodeFromByteArrayBlocking(
-                EdDSA.PublicKey.Format.DER,
-                wrapSubjectPublicKeyInfo(UnknownKeyAlgorithmIdentifier(oid(curve)), bytes)
-            )
+            EdDSA.PublicKey.Format.RAW -> {
+                val key = checkError(
+                    EVP_PKEY_new_raw_public_key(
+                        EVP_PKEY_ED25519.takeIf { curve == EdDSA.Curve.Ed25519 } ?: EVP_PKEY_ED448,
+                        null,
+                        bytes.refToU(0),
+                        bytes.size.convert()
+                    )
+                )
+                EdDsaPublicKey(key, curve)
+            }
             else                       -> super.decodeFromByteArrayBlocking(format, bytes)
         }
 
@@ -63,10 +70,17 @@ internal object Openssl3EdDsa : EdDSA {
         }
 
         override fun decodeFromByteArrayBlocking(format: EdDSA.PrivateKey.Format, bytes: ByteArray): EdDSA.PrivateKey = when (format) {
-            EdDSA.PrivateKey.Format.RAW -> super.decodeFromByteArrayBlocking(
-                EdDSA.PrivateKey.Format.DER,
-                wrapPrivateKeyInfo(0, UnknownKeyAlgorithmIdentifier(oid(curve)), bytes)
-            )
+            EdDSA.PrivateKey.Format.RAW -> {
+                val key = checkError(
+                    EVP_PKEY_new_raw_private_key(
+                        EVP_PKEY_ED25519.takeIf { curve == EdDSA.Curve.Ed25519 } ?: EVP_PKEY_ED448,
+                        null,
+                        bytes.refToU(0),
+                        bytes.size.convert()
+                    )
+                )
+                EdDsaPrivateKey(key, curve)
+            }
             else                        -> super.decodeFromByteArrayBlocking(format, bytes)
         }
 
@@ -78,10 +92,13 @@ internal object Openssl3EdDsa : EdDSA {
         private val curve: EdDSA.Curve,
     ) : Openssl3KeyPairGenerator<EdDSA.KeyPair>(curve.name) {
         override fun MemScope.createParams(): CValuesRef<OSSL_PARAM>? = null
-        override fun wrapKeyPair(keyPair: CPointer<EVP_PKEY>): EdDSA.KeyPair = EdDsaKeyPair(
-            publicKey = EdDsaPublicKey(keyPair, curve),
-            privateKey = EdDsaPrivateKey(keyPair, curve)
-        )
+        override fun wrapKeyPair(keyPair: CPointer<EVP_PKEY>): EdDSA.KeyPair {
+            val publicKey = EdDsaPublicKey(keyPair, curve)
+            return EdDsaKeyPair(
+                publicKey = publicKey,
+                privateKey = EdDsaPrivateKey(keyPair, curve, publicKey)
+            )
+        }
     }
 
     private class EdDsaKeyPair(
@@ -102,10 +119,13 @@ internal object Openssl3EdDsa : EdDSA {
         }
 
         override fun encodeToByteArrayBlocking(format: EdDSA.PublicKey.Format): ByteArray = when (format) {
-            EdDSA.PublicKey.Format.RAW -> unwrapSubjectPublicKeyInfo(
-                oid(curve),
-                super.encodeToByteArrayBlocking(EdDSA.PublicKey.Format.DER)
-            )
+            EdDSA.PublicKey.Format.RAW -> memScoped {
+                val lenVar = alloc<size_tVar>()
+                checkError(EVP_PKEY_get_raw_public_key(key, null, lenVar.ptr))
+                val result = ByteArray(lenVar.value.convert())
+                checkError(EVP_PKEY_get_raw_public_key(key, result.refToU(0), lenVar.ptr))
+                result
+            }
             else                       -> super.encodeToByteArrayBlocking(format)
         }
 
@@ -115,7 +135,10 @@ internal object Openssl3EdDsa : EdDSA {
     private class EdDsaPrivateKey(
         key: CPointer<EVP_PKEY>,
         private val curve: EdDSA.Curve,
-    ) : EdDSA.PrivateKey, Openssl3PrivateKeyEncodable<EdDSA.PrivateKey.Format>(key) {
+        publicKey: EdDSA.PublicKey? = null,
+    ) : EdDSA.PrivateKey, Openssl3PrivateKeyEncodable<EdDSA.PrivateKey.Format, EdDSA.PublicKey>(key, publicKey) {
+        override fun wrapPublicKey(key: CPointer<EVP_PKEY>): EdDSA.PublicKey = EdDsaPublicKey(key, curve)
+
         override fun outputType(format: EdDSA.PrivateKey.Format): String = when (format) {
             EdDSA.PrivateKey.Format.DER -> "DER"
             EdDSA.PrivateKey.Format.PEM -> "PEM"
@@ -125,10 +148,13 @@ internal object Openssl3EdDsa : EdDSA {
         }
 
         override fun encodeToByteArrayBlocking(format: EdDSA.PrivateKey.Format): ByteArray = when (format) {
-            EdDSA.PrivateKey.Format.RAW -> unwrapPrivateKeyInfo(
-                oid(curve),
-                super.encodeToByteArrayBlocking(EdDSA.PrivateKey.Format.DER)
-            )
+            EdDSA.PrivateKey.Format.RAW -> memScoped {
+                val lenVar = alloc<size_tVar>()
+                checkError(EVP_PKEY_get_raw_private_key(key, null, lenVar.ptr))
+                val result = ByteArray(lenVar.value.convert())
+                checkError(EVP_PKEY_get_raw_private_key(key, result.refToU(0), lenVar.ptr))
+                result
+            }
             else                        -> super.encodeToByteArrayBlocking(format)
         }
 
