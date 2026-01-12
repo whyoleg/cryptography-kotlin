@@ -15,6 +15,7 @@ import dev.whyoleg.cryptography.providers.jdk.operations.*
 import dev.whyoleg.cryptography.serialization.asn1.*
 import dev.whyoleg.cryptography.serialization.asn1.modules.*
 import dev.whyoleg.cryptography.serialization.pem.*
+import kotlinx.serialization.builtins.*
 
 internal class JdkEdDsa(private val state: JdkCryptographyState) : EdDSA {
     private val EdDSA.Curve.oid: ObjectIdentifier
@@ -32,7 +33,7 @@ internal class JdkEdDsa(private val state: JdkCryptographyState) : EdDSA {
     private inner class PublicKeyDecoder(
         private val curve: EdDSA.Curve,
     ) : JdkPublicKeyDecoder<EdDSA.PublicKey.Format, EdDSA.PublicKey>(state, curve.name) {
-        override fun JPublicKey.convert(): EdDSA.PublicKey = EdDsaPublicKey(state, this)
+        override fun JPublicKey.convert(): EdDSA.PublicKey = EdDsaPublicKey(state, this, curve)
 
         override fun decodeFromByteArrayBlocking(format: EdDSA.PublicKey.Format, bytes: ByteArray): EdDSA.PublicKey = when (format) {
             EdDSA.PublicKey.Format.JWK -> error("JWK is not supported")
@@ -47,17 +48,17 @@ internal class JdkEdDsa(private val state: JdkCryptographyState) : EdDSA {
     private inner class PrivateKeyDecoder(
         private val curve: EdDSA.Curve,
     ) : JdkPrivateKeyDecoder<EdDSA.PrivateKey.Format, EdDSA.PrivateKey>(state, curve.name) {
-        override fun JPrivateKey.convert(): EdDSA.PrivateKey = EdDsaPrivateKey(state, this, null)
+        override fun JPrivateKey.convert(): EdDSA.PrivateKey = EdDsaPrivateKey(state, this, null, curve)
 
         override fun decodeFromByteArrayBlocking(format: EdDSA.PrivateKey.Format, bytes: ByteArray): EdDSA.PrivateKey = when (format) {
             EdDSA.PrivateKey.Format.JWK -> error("JWK is not supported")
-            EdDSA.PrivateKey.Format.RAW -> decodeFromDer(
-                wrapPrivateKeyInfo(
-                    0,
-                    UnknownKeyAlgorithmIdentifier(curve.oid),
-                    bytes
+            EdDSA.PrivateKey.Format.RAW -> {
+                // EdDSA/XDH RAW private keys need to be wrapped in OCTET STRING for PKCS#8
+                val wrappedKey = Der.encodeToByteArray(ByteArraySerializer(), bytes)
+                decodeFromDer(
+                    wrapPrivateKeyInfo(0, UnknownKeyAlgorithmIdentifier(curve.oid), wrappedKey)
                 )
-            )
+            }
             EdDSA.PrivateKey.Format.DER -> decodeFromDer(bytes)
             EdDSA.PrivateKey.Format.PEM -> decodeFromDer(unwrapPem(PemLabel.PrivateKey, bytes))
         }
@@ -71,10 +72,10 @@ internal class JdkEdDsa(private val state: JdkCryptographyState) : EdDSA {
         }
 
         override fun JKeyPair.convert(): EdDSA.KeyPair {
-            val publicKey = EdDsaPublicKey(state, public)
+            val publicKey = EdDsaPublicKey(state, public, curve)
             return EdDsaKeyPair(
                 publicKey,
-                EdDsaPrivateKey(state, private, publicKey),
+                EdDsaPrivateKey(state, private, publicKey, curve),
             )
         }
     }
@@ -84,9 +85,10 @@ internal class JdkEdDsa(private val state: JdkCryptographyState) : EdDSA {
         override val privateKey: EdDSA.PrivateKey,
     ) : EdDSA.KeyPair
 
-    private class EdDsaPublicKey(
+    private inner class EdDsaPublicKey(
         private val state: JdkCryptographyState,
         private val key: JPublicKey,
+        private val curve: EdDSA.Curve,
     ) : EdDSA.PublicKey, JdkEncodableKey<EdDSA.PublicKey.Format>(key) {
         override fun signatureVerifier(): SignatureVerifier {
             return JdkSignatureVerifier(state, key, "EdDSA", null)
@@ -96,18 +98,19 @@ internal class JdkEdDsa(private val state: JdkCryptographyState) : EdDSA {
             EdDSA.PublicKey.Format.JWK -> error("JWK is not supported")
             EdDSA.PublicKey.Format.RAW -> {
                 val der = encodeToDer()
-                unwrapSubjectPublicKeyInfo(setOf(ObjectIdentifier.Ed25519, ObjectIdentifier.Ed448), der)
+                unwrapSubjectPublicKeyInfo(curve.oid, der)
             }
             EdDSA.PublicKey.Format.DER -> encodeToDer()
             EdDSA.PublicKey.Format.PEM -> wrapPem(PemLabel.PublicKey, encodeToDer())
         }
     }
 
-    private class EdDsaPrivateKey(
+    private inner class EdDsaPrivateKey(
         private val state: JdkCryptographyState,
         private val key: JPrivateKey,
         @Volatile
         private var publicKey: EdDSA.PublicKey?,
+        private val curve: EdDSA.Curve,
     ) : EdDSA.PrivateKey, JdkEncodableKey<EdDSA.PrivateKey.Format>(key) {
         override fun signatureGenerator(): SignatureGenerator {
             return JdkSignatureGenerator(state, key, "EdDSA", null)
@@ -117,7 +120,7 @@ internal class JdkEdDsa(private val state: JdkCryptographyState) : EdDSA {
             publicKey?.let { return it }
             val spec = BouncyCastleBridge.deriveEdDSAPublicKeySpec(key)
                 ?: error("Getting public key from private key for EdDSA is not supported in JDK without BouncyCastle APIs")
-            val publicKey = EdDsaPublicKey(state, state.keyFactory("EdDSA").use { it.generatePublic(spec) })
+            val publicKey = EdDsaPublicKey(state, state.keyFactory("EdDSA").use { it.generatePublic(spec) }, curve)
             this.publicKey = publicKey
             return publicKey
         }
@@ -126,7 +129,7 @@ internal class JdkEdDsa(private val state: JdkCryptographyState) : EdDSA {
             EdDSA.PrivateKey.Format.JWK -> error("JWK is not supported")
             EdDSA.PrivateKey.Format.RAW -> {
                 val der = encodeToDer()
-                KeyInfoUnwrap.unwrapPkcs8ForOids(der, listOf(ObjectIdentifier.Ed25519, ObjectIdentifier.Ed448))
+                unwrapPrivateKeyInfoForEdDsaXdh(curve.oid, der)
             }
             EdDSA.PrivateKey.Format.DER -> encodeToDer()
             EdDSA.PrivateKey.Format.PEM -> wrapPem(PemLabel.PrivateKey, encodeToDer())

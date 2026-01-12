@@ -14,6 +14,7 @@ import dev.whyoleg.cryptography.providers.cryptokit.internal.swift.DwcCryptoKitI
 import dev.whyoleg.cryptography.serialization.asn1.*
 import dev.whyoleg.cryptography.serialization.asn1.modules.*
 import dev.whyoleg.cryptography.serialization.pem.*
+import kotlinx.serialization.builtins.*
 
 internal object CryptoKitXdh : XDH {
     override fun publicKeyDecoder(curve: XDH.Curve): KeyDecoder<XDH.PublicKey.Format, XDH.PublicKey> {
@@ -65,12 +66,12 @@ internal object CryptoKitXdh : XDH {
                 swiftTry { error -> bytes.useNSData { SwiftXdhPrivateKey.decodeRawWithRawRepresentation(it, error) } }
             )
             XDH.PrivateKey.Format.DER -> {
-                val raw = KeyInfoUnwrap.unwrapPkcs8ForOids(bytes, listOf(ObjectIdentifier.X25519))
+                val raw = unwrapPrivateKeyInfoForEdDsaXdh(ObjectIdentifier.X25519, bytes)
                 XdhPrivateKey(swiftTry { error -> raw.useNSData { SwiftXdhPrivateKey.decodeRawWithRawRepresentation(it, error) } })
             }
             XDH.PrivateKey.Format.PEM -> {
                 val der = unwrapPem(PemLabel.PrivateKey, bytes)
-                val raw = KeyInfoUnwrap.unwrapPkcs8ForOids(der, listOf(ObjectIdentifier.X25519))
+                val raw = unwrapPrivateKeyInfoForEdDsaXdh(ObjectIdentifier.X25519, der)
                 XdhPrivateKey(swiftTry { error -> raw.useNSData { SwiftXdhPrivateKey.decodeRawWithRawRepresentation(it, error) } })
             }
             else                      -> error("$format is not supported by CryptoKit XDH")
@@ -109,11 +110,12 @@ internal object CryptoKitXdh : XDH {
 
         override fun encodeToByteArrayBlocking(format: XDH.PrivateKey.Format): ByteArray = when (format) {
             XDH.PrivateKey.Format.RAW -> key.rawRepresentation().toByteArray()
-            XDH.PrivateKey.Format.DER -> wrapPrivateKeyInfo(
-                0,
-                UnknownKeyAlgorithmIdentifier(ObjectIdentifier.X25519),
-                key.rawRepresentation().toByteArray()
-            )
+            XDH.PrivateKey.Format.DER -> {
+                // EdDSA/XDH private keys in PKCS#8 need to be wrapped in OCTET STRING
+                val rawKey = key.rawRepresentation().toByteArray()
+                val wrappedKey = Der.encodeToByteArray(ByteArraySerializer(), rawKey)
+                wrapPrivateKeyInfo(0, UnknownKeyAlgorithmIdentifier(ObjectIdentifier.X25519), wrappedKey)
+            }
             XDH.PrivateKey.Format.PEM -> wrapPem(PemLabel.PrivateKey, encodeToByteArrayBlocking(XDH.PrivateKey.Format.DER))
             else                      -> error("$format is not supported by CryptoKit XDH")
         }

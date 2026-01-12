@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2025-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.base.materials
@@ -9,6 +9,7 @@ import dev.whyoleg.cryptography.serialization.asn1.*
 import dev.whyoleg.cryptography.serialization.asn1.modules.*
 import dev.whyoleg.cryptography.serialization.pem.*
 import kotlinx.io.bytestring.unsafe.*
+import kotlinx.serialization.builtins.*
 
 @OptIn(UnsafeByteStringApi::class)
 @CryptographyProviderApi
@@ -45,6 +46,19 @@ public fun unwrapPrivateKeyInfo(algorithm: ObjectIdentifier, key: ByteArray): By
     return Der.decodeFromByteArray(PrivateKeyInfo.serializer(), key).also {
         check(it.privateKeyAlgorithm.algorithm == algorithm) { "Expected algorithm '${algorithm.value}', received: '${it.privateKeyAlgorithm.algorithm}'" }
     }.privateKey
+}
+
+@CryptographyProviderApi
+public fun unwrapPrivateKeyInfoForEdDsaXdh(algorithm: ObjectIdentifier, key: ByteArray): ByteArray {
+    val info = Der.decodeFromByteArray(PrivateKeyInfo.serializer(), key)
+    check(info.privateKeyAlgorithm.algorithm == algorithm) {
+        "Expected algorithm '${algorithm.value}', received: '${info.privateKeyAlgorithm.algorithm}'"
+    }
+
+    // https://datatracker.ietf.org/doc/html/rfc8410#section-7
+    // For EdDSA/XDH, the private key is wrapped in an OCTET STRING within PKCS#8
+    // We need to decode it to get the raw private key bytes
+    return Der.decodeFromByteArray(ByteArraySerializer(), info.privateKey)
 }
 
 @CryptographyProviderApi

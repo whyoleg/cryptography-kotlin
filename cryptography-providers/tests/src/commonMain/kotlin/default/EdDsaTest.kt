@@ -26,22 +26,21 @@ abstract class EdDsaTest(provider: CryptographyProvider) : AlgorithmTest<EdDSA>(
     @Test
     fun testSizes() = testWithAlgorithm {
         listOf(
-            // NIST curves
             EdDsaSize(
                 curve = EdDSA.Curve.Ed25519,
                 signatureSize = 64,
-                rawPublicKeySize = 33,
-                derPublicKeySize = 91,
+                rawPublicKeySize = 32,
+                derPublicKeySize = 44,
                 rawPrivateKeySize = 32,
-                derPrivateKeySize = 64
+                derPrivateKeySize = 48
             ),
             EdDsaSize(
                 curve = EdDSA.Curve.Ed448,
-                signatureSize = 96,
-                rawPublicKeySize = 49,
-                derPublicKeySize = 120,
-                rawPrivateKeySize = 48,
-                derPrivateKeySize = 23
+                signatureSize = 114,
+                rawPublicKeySize = 57,
+                derPublicKeySize = 69,
+                rawPrivateKeySize = 57,
+                derPrivateKeySize = 73
             )
         ).forEach {
             val (

@@ -66,12 +66,12 @@ internal object CryptoKitEdDsa : EdDSA {
                 swiftTry { error -> bytes.useNSData { SwiftEdDsaPrivateKey.decodeRawWithRawRepresentation(it, error) } }
             )
             EdDSA.PrivateKey.Format.DER -> {
-                val raw = KeyInfoUnwrap.unwrapPkcs8ForOids(bytes, listOf(ObjectIdentifier.Ed25519))
+                val raw = unwrapPrivateKeyInfoForEdDsaXdh(ObjectIdentifier.Ed25519, bytes)
                 EdPrivateKey(swiftTry { error -> raw.useNSData { SwiftEdDsaPrivateKey.decodeRawWithRawRepresentation(it, error) } })
             }
             EdDSA.PrivateKey.Format.PEM -> {
                 val der = unwrapPem(PemLabel.PrivateKey, bytes)
-                val raw = KeyInfoUnwrap.unwrapPkcs8ForOids(der, listOf(ObjectIdentifier.Ed25519))
+                val raw = unwrapPrivateKeyInfoForEdDsaXdh(ObjectIdentifier.Ed25519, der)
                 EdPrivateKey(swiftTry { error -> raw.useNSData { SwiftEdDsaPrivateKey.decodeRawWithRawRepresentation(it, error) } })
             }
             else                        -> error("$format is not supported by CryptoKit EdDSA")
@@ -115,11 +115,12 @@ internal object CryptoKitEdDsa : EdDSA {
 
         override fun encodeToByteArrayBlocking(format: EdDSA.PrivateKey.Format): ByteArray = when (format) {
             EdDSA.PrivateKey.Format.RAW -> key.rawRepresentation().toByteArray()
-            EdDSA.PrivateKey.Format.DER -> wrapPrivateKeyInfo(
-                0,
-                UnknownKeyAlgorithmIdentifier(ObjectIdentifier.Ed25519),
-                key.rawRepresentation().toByteArray()
-            )
+            EdDSA.PrivateKey.Format.DER -> {
+                // EdDSA/XDH private keys in PKCS#8 need to be wrapped in OCTET STRING
+                val rawKey = key.rawRepresentation().toByteArray()
+                val wrappedKey = Der.encodeToByteArray(ByteArraySerializer(), rawKey)
+                wrapPrivateKeyInfo(0, UnknownKeyAlgorithmIdentifier(ObjectIdentifier.Ed25519), wrappedKey)
+            }
             EdDSA.PrivateKey.Format.PEM -> wrapPem(PemLabel.PrivateKey, encodeToByteArrayBlocking(EdDSA.PrivateKey.Format.DER))
             else                        -> error("$format is not supported by CryptoKit EdDSA")
         }

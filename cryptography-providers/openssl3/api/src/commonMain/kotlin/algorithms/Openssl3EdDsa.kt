@@ -24,6 +24,11 @@ internal object Openssl3EdDsa : EdDSA {
     override fun privateKeyDecoder(curve: EdDSA.Curve): KeyDecoder<EdDSA.PrivateKey.Format, EdDSA.PrivateKey> = PrivateKeyDecoder(curve)
     override fun keyPairGenerator(curve: EdDSA.Curve): KeyGenerator<EdDSA.KeyPair> = KeyPairGenerator(curve)
 
+    private fun oid(curve: EdDSA.Curve): ObjectIdentifier = when (curve) {
+        EdDSA.Curve.Ed25519 -> ObjectIdentifier.Ed25519
+        EdDSA.Curve.Ed448   -> ObjectIdentifier.Ed448
+    }
+
     private class PublicKeyDecoder(
         private val curve: EdDSA.Curve,
     ) : Openssl3PublicKeyDecoder<EdDSA.PublicKey.Format, EdDSA.PublicKey>(curve.name) {
