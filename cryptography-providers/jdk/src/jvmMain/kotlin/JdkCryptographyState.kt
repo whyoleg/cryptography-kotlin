@@ -81,6 +81,11 @@ internal class JdkCryptographyState(private val provider: JProvider?) {
 
 }
 
+internal fun CryptographyAlgorithmId<Digest>?.hashECAlgorithmName(): String = when (this) {
+    null     -> "NONE"
+    else -> hashAlgorithmName()
+}
+
 internal fun CryptographyAlgorithmId<Digest>.hashAlgorithmName(): String = when (this) {
     SHA1     -> "SHA1"
     SHA224   -> "SHA224"

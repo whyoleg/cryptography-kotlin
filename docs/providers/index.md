@@ -91,7 +91,8 @@ For additional limitation please consult provider specific documentation.
 | **Public-key<br/>encryption/decryption**    | RSA-OAEP         |  ✅  |     ✅     |   ✅   | ❌         |    ✅     |
 |                                             | ⚠️ RSA-PKS1-v1_5 |  ✅  |     ❌     |   ✅   | ❌         |    ✅     |
 |                                             | ⚠️ RSA-RAW       |  ✅  |     ❌     |   ✅   | ❌         |    ✅     |
-| **Digital Signatures**                      | ECDSA            |  ✅  |     ✅     |   ✅   | ✅         |    ✅     |
+| **Digital Signatures**                      | ECDSA (Message)  |  ✅  |     ✅     |   ✅   | ✅         |    ✅     |
+|                                             | ECDSA (Digest)   |  ✅  |     ❌     |   ✅   | ❌         |    ✅     |
 |                                             | RSA-SSA-PSS      |  ✅  |     ✅     |   ✅   | ❌         |    ✅     |
 |                                             | RSA-PKS1-v1_5    |  ✅  |     ✅     |   ✅   | ❌         |    ✅     |
 | **Key Agreement**                           | ECDH             |  ✅  |     ✅     |   ❌   | ✅         |    ✅     |
