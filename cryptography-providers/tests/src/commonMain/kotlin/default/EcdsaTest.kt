@@ -33,6 +33,8 @@ abstract class EcdsaTest(provider: CryptographyProvider) : AlgorithmTest<ECDSA>(
         val derPrivateKeySizes: IntArray,
     )
 
+    private val ecdsaDigests = CommonDigests + listOf(null)
+
     @Test
     fun testSizes() = testWithAlgorithm {
         listOf(
@@ -153,10 +155,10 @@ abstract class EcdsaTest(provider: CryptographyProvider) : AlgorithmTest<ECDSA>(
             assertPrivateKeySize(EC.PrivateKey.Format.RAW, intArrayOf(rawPrivateKeySize))
             assertPrivateKeySize(EC.PrivateKey.Format.DER, rawPrivateKeySizes)
 
-            generateMessagesAndDigests { digest, _ ->
-                if (!supportsDigest(digest, mechanism = ECDSA)) {
+            ecdsaDigests.forEach { digest ->
+                if (!supportsDigestEcdsa(digest)) {
                     logger.log { "Skipping digest $digest for curve ${curve.name}" }
-                    return@generateMessagesAndDigests
+                    return@forEach
                 }
 
                 // RAW signature
@@ -244,9 +246,9 @@ abstract class EcdsaTest(provider: CryptographyProvider) : AlgorithmTest<ECDSA>(
 
             val keyPair = algorithm.keyPairGenerator(curve).generateKey()
 
-            generateMessagesAndDigests { digest, _ ->
-                if (!supportsDigest(digest)) {
-                    return@generateMessagesAndDigests
+            ecdsaDigests.forEach { digest->
+                if (!supportsDigestEcdsa(digest)) {
+                    return@forEach
                 }
 
                 ECDSA.SignatureFormat.entries.forEach { format ->

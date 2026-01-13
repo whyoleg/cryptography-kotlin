@@ -17,17 +17,17 @@ inline fun generateRsaKeySizes(block: (keySize: BinarySize) -> Unit) {
     generate(block, 2048.bits, 3072.bits, 4096.bits)
 }
 
-inline fun generateMessagesAndDigests(block: (digest: CryptographyAlgorithmId<Digest>?, digestSize: Int) -> Unit) {
-    generateDigests(block)
-
-    listOf(
-        null to 20,
-        null to 28,
-        null to 32,
-        null to 48,
-        null to 64,
-    ).forEach { block(it.first, it.second) }
-}
+val CommonDigests = listOf(
+    SHA1,
+    SHA224,
+    SHA256,
+    SHA384,
+    SHA512,
+    SHA3_224,
+    SHA3_256,
+    SHA3_384,
+    SHA3_512,
+)
 
 inline fun generateDigests(block: (digest: CryptographyAlgorithmId<Digest>, digestSize: Int) -> Unit) {
     listOf(
@@ -43,17 +43,13 @@ inline fun generateDigests(block: (digest: CryptographyAlgorithmId<Digest>, dige
     ).forEach { block(it.first, it.second) }
 }
 
-
-// workaround for now to reduce data for compatibility tests
-inline fun generateMessagesAndDigestsForCompatibility(block: (digest: CryptographyAlgorithmId<Digest>?, digestSize: Int) -> Unit) {
-    generateDigestsForCompatibility(block)
-
-    listOf(
-        null to 20,
-        null to 32,
-        null to 64,
-    ).forEach { block(it.first, it.second) }
-}
+val DigestsForCompatibility = listOf(
+    SHA1,
+    SHA256,
+    SHA512,
+    SHA3_256,
+    SHA3_512,
+)
 
 inline fun generateDigestsForCompatibility(block: (digest: CryptographyAlgorithmId<Digest>, digestSize: Int) -> Unit) {
     listOf(
