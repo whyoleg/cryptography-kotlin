@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.tests.default
@@ -156,7 +156,7 @@ abstract class EcdsaTest(provider: CryptographyProvider) : AlgorithmTest<ECDSA>(
             assertPrivateKeySize(EC.PrivateKey.Format.DER, rawPrivateKeySizes)
 
             ecdsaDigests.forEach { digest ->
-                if (!supportsDigestEcdsa(digest)) {
+                if (!supportsSignatureDigest(digest)) {
                     logger.log { "Skipping digest $digest for curve ${curve.name}" }
                     return@forEach
                 }
@@ -247,7 +247,7 @@ abstract class EcdsaTest(provider: CryptographyProvider) : AlgorithmTest<ECDSA>(
             val keyPair = algorithm.keyPairGenerator(curve).generateKey()
 
             ecdsaDigests.forEach { digest->
-                if (!supportsDigestEcdsa(digest)) {
+                if (!supportsSignatureDigest(digest)) {
                     return@forEach
                 }
 
