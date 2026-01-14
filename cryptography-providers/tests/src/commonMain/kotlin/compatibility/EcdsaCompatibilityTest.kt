@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.tests.compatibility
@@ -35,9 +35,7 @@ abstract class EcdsaCompatibilityTest(
         val signatureParametersList = buildList {
             listOf(ECDSA.SignatureFormat.RAW, ECDSA.SignatureFormat.DER).forEach { signatureFormat ->
                 (DigestsForCompatibility + listOf(null)).forEach { digest ->
-                    if (!supportsDigestEcdsa(digest)) {
-                        return@forEach
-                    }
+                    if (!supportsSignatureDigest(digest)) return@forEach
 
                     val parameters = SignatureParameters(digest?.name, signatureFormat)
                     val id = api.signatures.saveParameters(parameters)
@@ -84,7 +82,7 @@ abstract class EcdsaCompatibilityTest(
         val keyPairs = validateKeys()
 
         api.signatures.getParameters<SignatureParameters> { signatureParameters, parametersId, _ ->
-            if (!supportsDigestEcdsa(signatureParameters.digest)) return@getParameters
+            if (!supportsSignatureDigest(signatureParameters.digest)) return@getParameters
 
             api.signatures.getData<SignatureData>(parametersId) { (keyReference, data, signature), _, _ ->
                 val (publicKeys, privateKeys) = keyPairs[keyReference] ?: return@getData

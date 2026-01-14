@@ -20,32 +20,17 @@ fun AlgorithmTestScope<*>.supportsFunctions() = supports {
     }
 }
 
-fun AlgorithmTestScope<ECDSA>.supportsDigestEcdsa(
-    digest: CryptographyAlgorithmId<Digest>?,
-): Boolean {
-    val isEcdsaSupport = supports {
+fun AlgorithmTestScope<ECDSA>.supportsSignatureDigest(digest: CryptographyAlgorithmId<Digest>?): Boolean = when (digest) {
+    null -> supports {
         when {
-            digest == null && (algorithm != ECDSA || provider.isJdkDefault || provider.isWebCrypto || provider.isCryptoKit)
-                 -> "ECDSA without digest"
-            else -> null
+            provider.isJdkDefault || provider.isWebCrypto || provider.isCryptoKit -> "ECDSA without digest"
+            else                                                                  -> null
         }
     }
-
-    if (!isEcdsaSupport) {
-        return false
-    }
-
-    val isCommonSupport = when (digest) {
-        null -> true
-        else -> supportsDigest(digest)
-    }
-
-    return isCommonSupport
+    else -> supportsDigest(digest)
 }
 
-fun AlgorithmTestScope<*>.supportsDigest(
-    digest: CryptographyAlgorithmId<Digest>
-): Boolean = supports {
+fun AlgorithmTestScope<*>.supportsDigest(digest: CryptographyAlgorithmId<Digest>): Boolean = supports {
     val sha3Algorithms = setOf(SHA3_224, SHA3_256, SHA3_384, SHA3_512)
 
     when {
@@ -53,16 +38,16 @@ fun AlgorithmTestScope<*>.supportsDigest(
                 (provider.isWebCrypto || provider.isCryptoKit) -> digest.name
 
         digest in sha3Algorithms &&
-                provider.isApple -> digest.name
+                provider.isApple                               -> digest.name
 
         digest in sha3Algorithms &&
                 provider.isJdkDefault &&
                 (platform.isJdk { major < 17 } || platform.isAndroid) -> "${digest.name} signatures on old JDK"
 
         digest == RIPEMD160 && (provider.isJdkDefault || provider.isApple || provider.isWebCrypto || provider.isCryptoKit)
-            -> digest.name
+                                                               -> digest.name
 
-        else -> null
+        else                                                   -> null
     }
 }
 
