@@ -1,0 +1,17 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, macosArm64, macosX64, tvosArm64, tvosSimulatorArm64, tvosX64, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <dev.whyoleg.cryptography:cryptography-provider-apple-keychain>
+final object dev.whyoleg.cryptography.providers.apple.keychain/AppleKeyStore : dev.whyoleg.cryptography.storage/KeyStore { // dev.whyoleg.cryptography.providers.apple.keychain/AppleKeyStore|null[0]
+    final fun aesCbc(dev.whyoleg.cryptography/BinarySize): dev.whyoleg.cryptography.storage/SymmetricStore<dev.whyoleg.cryptography.algorithms/AES.CBC.Key> // dev.whyoleg.cryptography.providers.apple.keychain/AppleKeyStore.aesCbc|aesCbc(dev.whyoleg.cryptography.BinarySize){}[0]
+    final fun aesCtr(dev.whyoleg.cryptography/BinarySize): dev.whyoleg.cryptography.storage/SymmetricStore<dev.whyoleg.cryptography.algorithms/AES.CTR.Key> // dev.whyoleg.cryptography.providers.apple.keychain/AppleKeyStore.aesCtr|aesCtr(dev.whyoleg.cryptography.BinarySize){}[0]
+    final fun aesGcm(dev.whyoleg.cryptography/BinarySize): dev.whyoleg.cryptography.storage/SymmetricStore<dev.whyoleg.cryptography.algorithms/AES.GCM.Key> // dev.whyoleg.cryptography.providers.apple.keychain/AppleKeyStore.aesGcm|aesGcm(dev.whyoleg.cryptography.BinarySize){}[0]
+    final fun ecdsa(dev.whyoleg.cryptography.algorithms/EC.Curve): dev.whyoleg.cryptography.storage/AsymmetricStore<dev.whyoleg.cryptography.algorithms/ECDSA.PublicKey, dev.whyoleg.cryptography.algorithms/ECDSA.PrivateKey> // dev.whyoleg.cryptography.providers.apple.keychain/AppleKeyStore.ecdsa|ecdsa(dev.whyoleg.cryptography.algorithms.EC.Curve){}[0]
+    final fun rsaOaep(dev.whyoleg.cryptography/BinarySize, dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest>): dev.whyoleg.cryptography.storage/AsymmetricStore<dev.whyoleg.cryptography.algorithms/RSA.OAEP.PublicKey, dev.whyoleg.cryptography.algorithms/RSA.OAEP.PrivateKey> // dev.whyoleg.cryptography.providers.apple.keychain/AppleKeyStore.rsaOaep|rsaOaep(dev.whyoleg.cryptography.BinarySize;dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>){}[0]
+    final fun rsaPkcs1(dev.whyoleg.cryptography/BinarySize, dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest>): dev.whyoleg.cryptography.storage/AsymmetricStore<dev.whyoleg.cryptography.algorithms/RSA.PKCS1.PublicKey, dev.whyoleg.cryptography.algorithms/RSA.PKCS1.PrivateKey> // dev.whyoleg.cryptography.providers.apple.keychain/AppleKeyStore.rsaPkcs1|rsaPkcs1(dev.whyoleg.cryptography.BinarySize;dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>){}[0]
+    final fun rsaPss(dev.whyoleg.cryptography/BinarySize, dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest>): dev.whyoleg.cryptography.storage/AsymmetricStore<dev.whyoleg.cryptography.algorithms/RSA.PSS.PublicKey, dev.whyoleg.cryptography.algorithms/RSA.PSS.PrivateKey> // dev.whyoleg.cryptography.providers.apple.keychain/AppleKeyStore.rsaPss|rsaPss(dev.whyoleg.cryptography.BinarySize;dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>){}[0]
+}
