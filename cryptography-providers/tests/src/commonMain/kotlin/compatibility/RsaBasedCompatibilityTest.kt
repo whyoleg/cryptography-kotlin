@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.tests.compatibility
@@ -56,14 +56,14 @@ abstract class RsaBasedCompatibilityTest<PublicK : RSA.PublicKey, PrivateK : RSA
             isStressTest -> 5
             else         -> 2
         }
-        generateRsaKeySizes { keySize ->
-            generateDigestsForCompatibility { digest, digestSize ->
+        RsaKeySizes.forEach { keySize ->
+            DigestsForCompatibility.forEach { digest ->
                 // hack for RSA RAW and RSA PKCS1 encryption:
                 // there is no need to run for every digest as it's not used
-                if (singleDigest != null && singleDigest != digest) return@generateDigestsForCompatibility
-                if (!supportsDigest(digest)) return@generateDigestsForCompatibility
+                if (singleDigest != null && singleDigest != digest) return@forEach
+                if (!supportsDigest(digest)) return@forEach
 
-                val keyParameters = KeyParameters(keySize.inBits, digest.name, digestSize)
+                val keyParameters = KeyParameters(keySize.inBits, digest.name, digest.digestSize())
                 val keyParametersId = api.keyPairs.saveParameters(keyParameters)
                 algorithm.keyPairGenerator(keySize, digest).generateKeys(keyIterations) { keyPair ->
                     val publicKeyData = KeyData(keyPair.publicKey.encodeTo(publicKeyFormats.values, ::supportsKeyFormat))

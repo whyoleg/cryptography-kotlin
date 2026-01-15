@@ -1,11 +1,8 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.tests
-
-import dev.whyoleg.cryptography.*
-import dev.whyoleg.cryptography.algorithms.*
 
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.*
@@ -73,18 +70,8 @@ suspend inline fun <KF : KeyFormat, K : EncodableKey<KF>> KeyDecoder<KF, K>.deco
     return keys
 }
 
-fun digest(name: String): CryptographyAlgorithmId<Digest> = when (name) {
-    MD5.name      -> MD5
-    SHA1.name     -> SHA1
-    SHA224.name   -> SHA224
-    SHA256.name   -> SHA256
-    SHA384.name   -> SHA384
-    SHA512.name   -> SHA512
-    SHA3_224.name -> SHA3_224
-    SHA3_256.name -> SHA3_256
-    SHA3_384.name -> SHA3_384
-    SHA3_512.name -> SHA3_512
-    else          -> error("Unknown digest: $name")
+suspend inline fun <K : Key> KeyGenerator<K>.generateKeys(count: Int, block: (key: K) -> Unit) {
+    repeat(count) { block(generateKey()) }
 }
 
 fun Buffer(bytes: ByteString): Buffer = Buffer().apply { write(bytes) }

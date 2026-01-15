@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.tests.compatibility
@@ -14,8 +14,8 @@ abstract class EcdhCompatibilityTest(
 ) : EcCompatibilityTest<ECDH.PublicKey, ECDH.PrivateKey, ECDH.KeyPair, ECDH>(ECDH, provider) {
     override suspend fun CompatibilityTestScope<ECDH>.generate(isStressTest: Boolean) {
         val parametersId = api.sharedSecrets.saveParameters(TestParameters.Empty)
-        generateCurves { curve ->
-            if (!supportsCurve(curve)) return@generateCurves
+        EcCurves.forEach { curve ->
+            if (!supportsCurve(curve)) return@forEach
 
             val keyParametersId = api.keyPairs.saveParameters(KeyParameters(curve.name))
             generateKeys(

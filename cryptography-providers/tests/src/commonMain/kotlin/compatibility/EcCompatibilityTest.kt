@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.tests.compatibility
@@ -32,6 +32,11 @@ private val privateKeyFormats = listOf(
     EC.PrivateKey.Format.PEM.SEC1,
 ).associateBy { it.name }
 
+val EcCurves = listOf(
+    EC.Curve.P256, EC.Curve.P384, EC.Curve.P521,
+    EC.Curve.secp256k1,
+    EC.Curve.brainpoolP256r1, EC.Curve.brainpoolP384r1, EC.Curve.brainpoolP512r1,
+)
 
 abstract class EcCompatibilityTest<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey<PublicK>, KP : EC.KeyPair<PublicK, PrivateK>, A : EC<PublicK, PrivateK, KP>>(
     algorithmId: CryptographyAlgorithmId<A>,
@@ -40,15 +45,6 @@ abstract class EcCompatibilityTest<PublicK : EC.PublicKey, PrivateK : EC.Private
     @Serializable
     protected data class KeyParameters(val curveName: String) : TestParameters {
         val curve get() = EC.Curve(curveName)
-    }
-
-    protected inline fun generateCurves(block: (curve: EC.Curve) -> Unit) {
-        generate(
-            block,
-            EC.Curve.P256, EC.Curve.P384, EC.Curve.P521,
-            EC.Curve.secp256k1,
-            EC.Curve.brainpoolP256r1, EC.Curve.brainpoolP384r1, EC.Curve.brainpoolP512r1,
-        )
     }
 
     protected suspend fun CompatibilityTestScope<A>.generateKeys(

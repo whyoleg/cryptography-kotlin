@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.tests.default
@@ -29,9 +29,9 @@ abstract class RsaOaepTest(provider: CryptographyProvider) : AlgorithmTest<RSA.O
 
     @Test
     fun testSizes() = testWithAlgorithm {
-        generateRsaKeySizes { keySize ->
-            generateDigests { digest, digestSize ->
-                if (!supportsDigest(digest)) return@generateDigests
+        RsaKeySizes.forEach { keySize ->
+            Digests.forEach { digest ->
+                if (!supportsDigest(digest)) return@forEach
 
                 val keyPair = algorithm.keyPairGenerator(keySize, digest).generateKey()
 
@@ -39,7 +39,7 @@ abstract class RsaOaepTest(provider: CryptographyProvider) : AlgorithmTest<RSA.O
                     assertEquals(keySize.inBytes + 38, keyPair.publicKey.encodeToByteString(RSA.PublicKey.Format.DER).size)
                 }
 
-                val maxSize = keySize.inBytes - 2 - 2 * digestSize
+                val maxSize = keySize.inBytes - 2 - 2 * digest.digestSize()
 
                 encryptAndDecrypt(keyPair, keySize.inBytes, ByteArray(0), null)
                 encryptAndDecrypt(keyPair, keySize.inBytes, ByteArray(0), ByteArray(0))

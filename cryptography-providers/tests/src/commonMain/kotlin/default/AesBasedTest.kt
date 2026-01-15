@@ -22,8 +22,8 @@ abstract class AesBasedTest<A : AES<*>>(
     ) : AlgorithmTestScope<A>(logger, context, provider, algorithm)
 
     protected fun runTestForEachKeySize(block: suspend AesTestScope.() -> Unit) = testWithAlgorithm {
-        generateSymmetricKeySize { keySize ->
-            if (!supportsKeySize(keySize.inBits)) return@generateSymmetricKeySize
+        AesKeySizes.forEach { keySize ->
+            if (!supportsKeySize(keySize.inBits)) return@forEach
 
             block(AesTestScope(logger, context, provider, algorithm, keySize))
         }

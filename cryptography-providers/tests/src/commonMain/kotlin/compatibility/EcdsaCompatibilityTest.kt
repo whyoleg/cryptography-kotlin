@@ -43,8 +43,8 @@ abstract class EcdsaCompatibilityTest(
                 }
             }
         }
-        generateCurves { curve ->
-            if (!supportsCurve(curve)) return@generateCurves
+        EcCurves.forEach { curve ->
+            if (!supportsCurve(curve)) return@forEach
 
             val keyParametersId = api.keyPairs.saveParameters(KeyParameters(curve.name))
             generateKeys(
