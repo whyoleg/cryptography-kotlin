@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.tests.compatibility
@@ -32,7 +32,7 @@ abstract class AesEcbCompatibilityTest(provider: CryptographyProvider) :
         }
 
         val parametersList = buildList {
-            generateBoolean { padding ->
+            listOf(true, false).forEach { padding ->
                 val parameters = CipherParameters(padding)
                 val id = api.ciphers.saveParameters(parameters)
                 add(id to parameters)

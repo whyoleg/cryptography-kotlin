@@ -33,7 +33,7 @@ abstract class EcdsaTest(provider: CryptographyProvider) : AlgorithmTest<ECDSA>(
         val derPrivateKeySizes: IntArray,
     )
 
-    private val ecdsaDigests = CommonDigests + listOf(null)
+    private val ecdsaDigests = Digests + listOf(null)
 
     @Test
     fun testSizes() = testWithAlgorithm {
