@@ -6,6 +6,7 @@ package dev.whyoleg.cryptography.providers.openssl3
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
+import dev.whyoleg.cryptography.algorithms.DH
 import dev.whyoleg.cryptography.providers.openssl3.algorithms.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import kotlinx.cinterop.*
@@ -42,6 +43,7 @@ internal object Openssl3CryptographyProvider : CryptographyProvider() {
         ChaCha20Poly1305 -> Openssl3ChaCha20Poly1305
         ECDSA            -> Openssl3Ecdsa
         ECDH             -> Openssl3Ecdh
+        DH -> Openssl3Dh
         RSA.PSS          -> Openssl3RsaPss
         RSA.PKCS1        -> Openssl3RsaPkcs1
         RSA.OAEP         -> Openssl3RsaOaep
