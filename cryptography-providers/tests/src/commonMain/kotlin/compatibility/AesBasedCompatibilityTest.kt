@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.tests.compatibility
@@ -27,8 +27,8 @@ abstract class AesBasedCompatibilityTest<K : AES.Key, A : AES<K>>(
             else         -> 5
         }
 
-        generateSymmetricKeySize { keySize ->
-            if (!supportsKeySize(keySize.inBits)) return@generateSymmetricKeySize
+        AesKeySizes.forEach { keySize ->
+            if (!supportsKeySize(keySize.inBits)) return@forEach
 
             val keyParameters = KeyParameters(keySize.inBits)
             val keyParametersId = api.keys.saveParameters(keyParameters)

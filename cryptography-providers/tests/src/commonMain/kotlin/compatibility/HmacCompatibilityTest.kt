@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.tests.compatibility
@@ -32,8 +32,8 @@ abstract class HmacCompatibilityTest(provider: CryptographyProvider) : Compatibi
         }
 
         val signatureParametersId = api.signatures.saveParameters(TestParameters.Empty)
-        generateDigests { digest, _ ->
-            if (!supportsDigest(digest)) return@generateDigests
+        DigestsForCompatibility.forEach { digest ->
+            if (!supportsDigest(digest)) return@forEach
 
             val keyParametersId = api.keys.saveParameters(KeyParameters(digest.name))
             algorithm.keyGenerator(digest).generateKeys(keyIterations) { key ->

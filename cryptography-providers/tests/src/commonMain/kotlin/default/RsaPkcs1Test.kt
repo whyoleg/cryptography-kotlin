@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.tests.default
@@ -16,9 +16,9 @@ abstract class RsaPkcs1Test(provider: CryptographyProvider) : AlgorithmTest<RSA.
 
     @Test
     fun testSizes() = testWithAlgorithm {
-        generateRsaKeySizes { keySize ->
-            generateDigests { digest, _ ->
-                if (!supportsDigest(digest)) return@generateDigests
+        RsaKeySizes.forEach { keySize ->
+            Digests.forEach { digest ->
+                if (!supportsDigest(digest)) return@forEach
 
                 val keyPair = algorithm.keyPairGenerator(keySize, digest).generateKey()
 
@@ -74,9 +74,9 @@ abstract class RsaPkcs1Test(provider: CryptographyProvider) : AlgorithmTest<RSA.
     fun testSignatureFunctions() = testWithAlgorithm {
         if (!supportsFunctions()) return@testWithAlgorithm
 
-        generateRsaKeySizes { keySize ->
-            generateDigests { digest, _ ->
-                if (!supportsDigest(digest)) return@generateDigests
+        RsaKeySizes.forEach { keySize ->
+            Digests.forEach { digest ->
+                if (!supportsDigest(digest)) return@forEach
 
                 val keyPair = algorithm.keyPairGenerator(keySize, digest).generateKey()
                 val signatureGenerator = keyPair.privateKey.signatureGenerator()

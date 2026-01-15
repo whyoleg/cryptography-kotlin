@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.tests.compatibility
@@ -48,8 +48,8 @@ abstract class HkdfCompatibilityTest(provider: CryptographyProvider) : Compatibi
             else         -> 5
         }
 
-        generateDigestsForCompatibility { digest, _ ->
-            if (!supportsDigest(digest)) return@generateDigestsForCompatibility
+        DigestsForCompatibility.forEach { digest ->
+            if (!supportsDigest(digest)) return@forEach
 
             repeat(saltIterations) { _ ->
                 val saltSize = CryptographyRandom.nextInt(0, maxSaltSize)
