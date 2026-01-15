@@ -31,12 +31,22 @@ Not all algorithms are supported by all providers. Use `provider.getOrNull(algor
 ## Build Commands
 
 ```bash
+# Build specific modules (recommended - faster than building everything)
+./gradlew :cryptography-provider-jdk:build -Pckbuild.skipTestTasks=true -Pckbuild.skipLinkTasks=true
+./gradlew :cryptography-provider-openssl3-api:build -Pckbuild.skipTestTasks=true -Pckbuild.skipLinkTasks=true
+
+# Build multiple specific modules at once
+./gradlew :cryptography-provider-jdk:build :cryptography-provider-openssl3-api:build -Pckbuild.skipTestTasks=true -Pckbuild.skipLinkTasks=true
+
 # Build all modules (skip tests and native linking for faster builds)
 ./gradlew build -Pckbuild.skipTestTasks=true -Pckbuild.skipLinkTasks=true
 
 # Link all native binaries
 ./gradlew linkAll
 ```
+
+**Note:** For native targets on macOS ARM machines, only `macosArm64` tests can be run locally. Other native targets (linuxX64, mingwX64,
+etc.) require their respective platforms.
 
 ## Running Tests
 
