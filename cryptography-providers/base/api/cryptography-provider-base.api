@@ -25,6 +25,13 @@ public final class dev/whyoleg/cryptography/providers/base/materials/KeysKt {
 	public static final fun wrapSubjectPublicKeyInfo (Ldev/whyoleg/cryptography/serialization/asn1/modules/KeyAlgorithmIdentifier;[B)[B
 }
 
+public final class dev/whyoleg/cryptography/providers/base/materials/ParametersKt {
+	public static final fun decodeDhParametersFromDer ([B)Lkotlin/Pair;
+	public static final fun encodeDhParametersToDer (Ldev/whyoleg/cryptography/bigint/BigInt;Ldev/whyoleg/cryptography/bigint/BigInt;)[B
+	public static final fun unwrapDhParametersPem ([B)[B
+	public static final fun wrapDhParametersPem ([B)[B
+}
+
 public final class dev/whyoleg/cryptography/providers/base/operations/AccumulatingCipherFunction : dev/whyoleg/cryptography/providers/base/operations/BaseCipherFunction {
 	public fun <init> (Lkotlin/jvm/functions/Function1;)V
 	public fun close ()V

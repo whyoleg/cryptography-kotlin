@@ -73,11 +73,6 @@ fun AlgorithmTestScope<*>.supportsKeyFormat(format: KeyFormat): Boolean = suppor
              -> "JWK key format"
         format == EC.PublicKey.Format.RAW.Compressed && provider.isApple
              -> "compressed key format"
-        // OpenSSL 3.x EVP_PKEY_fromdata has issues with DH public/private key RAW format import
-        format == DH.PublicKey.Format.RAW && provider.isOpenssl3
-            -> "DH RAW key format (OpenSSL EVP_PKEY_fromdata limitation)"
-        format == DH.PrivateKey.Format.RAW && provider.isOpenssl3
-            -> "DH RAW key format (OpenSSL EVP_PKEY_fromdata limitation)"
         else -> null
     }
 }

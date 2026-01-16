@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.serialization.asn1.modules
@@ -14,6 +14,7 @@ internal object KeyAlgorithmIdentifierSerializer : AlgorithmIdentifierSerializer
     override fun CompositeEncoder.encodeParameters(value: KeyAlgorithmIdentifier): Unit = when (value) {
         is RsaKeyAlgorithmIdentifier     -> encodeParameters(NothingSerializer(), RsaKeyAlgorithmIdentifier.parameters)
         is EcKeyAlgorithmIdentifier -> encodeParameters(EcParameters.serializer(), value.parameters)
+        is DhKeyAlgorithmIdentifier -> encodeParameters(DhParameters.serializer(), value.parameters)
         is UnknownKeyAlgorithmIdentifier -> encodeParameters(NothingSerializer(), value.parameters)
         else                             -> encodeParameters(NothingSerializer(), null)
     }
@@ -25,6 +26,7 @@ internal object KeyAlgorithmIdentifierSerializer : AlgorithmIdentifierSerializer
             RsaKeyAlgorithmIdentifier
         }
         ObjectIdentifier.EC  -> EcKeyAlgorithmIdentifier(decodeParameters(EcParameters.serializer()))
+        ObjectIdentifier.DH -> DhKeyAlgorithmIdentifier(decodeParameters(DhParameters.serializer()))
         else                 -> {
             // TODO: somehow we should ignore parameters here
             UnknownKeyAlgorithmIdentifier(algorithm)

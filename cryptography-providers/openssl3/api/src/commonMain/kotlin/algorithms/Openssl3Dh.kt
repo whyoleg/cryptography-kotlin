@@ -4,11 +4,14 @@
 
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
 
+import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.DH
 import dev.whyoleg.cryptography.bigint.*
 import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.materials.parameters.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.*
+import dev.whyoleg.cryptography.providers.base.materials.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.providers.openssl3.materials.*
@@ -16,54 +19,39 @@ import kotlinx.cinterop.*
 import platform.posix.*
 
 internal object Openssl3Dh : DH {
-    override fun publicKeyDecoder(parameters: DH.Parameters): KeyDecoder<DH.PublicKey.Format, DH.PublicKey> =
-        DhPublicKeyDecoder(parameters)
+    override fun publicKeyDecoder(): KeyDecoder<DH.PublicKey.Format, DH.PublicKey> =
+        DhPublicKeyDecoder()
 
-    override fun privateKeyDecoder(parameters: DH.Parameters): KeyDecoder<DH.PrivateKey.Format, DH.PrivateKey> =
-        DhPrivateKeyDecoder(parameters)
+    override fun privateKeyDecoder(): KeyDecoder<DH.PrivateKey.Format, DH.PrivateKey> =
+        DhPrivateKeyDecoder()
 
-    override fun keyPairGenerator(parameters: DH.Parameters): KeyGenerator<DH.KeyPair> =
-        DhKeyGenerator(parameters)
+    override fun parametersDecoder(): ParameterDecoder<DH.Parameters.Format, DH.Parameters> =
+        DhParametersDecoder()
 
-    private class DhPrivateKeyDecoder(
-        private val parameters: DH.Parameters,
-    ) : Openssl3PrivateKeyDecoder<DH.PrivateKey.Format, DH.PrivateKey>("DH") {
+    override fun parametersGenerator(primeSize: BinarySize): ParameterGenerator<DH.Parameters> =
+        DhParametersGenerator(primeSize)
+
+    private class DhPrivateKeyDecoder :
+        Openssl3PrivateKeyDecoder<DH.PrivateKey.Format, DH.PrivateKey>("DH") {
         override fun inputType(format: DH.PrivateKey.Format): String = when (format) {
             DH.PrivateKey.Format.DER -> "DER"
             DH.PrivateKey.Format.PEM -> "PEM"
-            DH.PrivateKey.Format.RAW -> "DER" // with custom processing
-        }
-
-        override fun decodeFromByteArrayBlocking(format: DH.PrivateKey.Format, bytes: ByteArray): DH.PrivateKey = when (format) {
-            DH.PrivateKey.Format.RAW -> wrapKey(decodeDhPrivateRawKey(parameters, bytes))
-            else                     -> super.decodeFromByteArrayBlocking(format, bytes)
         }
 
         override fun wrapKey(key: CPointer<EVP_PKEY>): DH.PrivateKey {
-            // Note: Parameter validation is skipped as incorrect parameters
-            // will cause key derivation to fail with incompatible shared secrets
-            return DhPrivateKey(key, publicKey = null)
+            return DhPrivateKey(key, publicKey = null, extractParametersFromKey(key))
         }
     }
 
-    private class DhPublicKeyDecoder(
-        private val parameters: DH.Parameters,
-    ) : Openssl3PublicKeyDecoder<DH.PublicKey.Format, DH.PublicKey>("DH") {
+    private class DhPublicKeyDecoder :
+        Openssl3PublicKeyDecoder<DH.PublicKey.Format, DH.PublicKey>("DH") {
         override fun inputType(format: DH.PublicKey.Format): String = when (format) {
             DH.PublicKey.Format.DER -> "DER"
             DH.PublicKey.Format.PEM -> "PEM"
-            DH.PublicKey.Format.RAW -> error("should not be called: handled explicitly in decodeFromBlocking")
-        }
-
-        override fun decodeFromByteArrayBlocking(format: DH.PublicKey.Format, bytes: ByteArray): DH.PublicKey = when (format) {
-            DH.PublicKey.Format.RAW -> wrapKey(decodeDhPublicRawKey(parameters, bytes))
-            else                    -> super.decodeFromByteArrayBlocking(format, bytes)
         }
 
         override fun wrapKey(key: CPointer<EVP_PKEY>): DH.PublicKey {
-            // Note: Parameter validation is skipped as incorrect parameters
-            // will cause key derivation to fail with incompatible shared secrets
-            return DhPublicKey(key)
+            return DhPublicKey(key, extractParametersFromKey(key))
         }
     }
 
@@ -105,10 +93,10 @@ internal object Openssl3Dh : DH {
                 val pkeyVar = alloc<CPointerVar<EVP_PKEY>>()
                 checkError(EVP_PKEY_generate(keygenContext, pkeyVar.ptr))
                 val pkey = checkError(pkeyVar.value)
-                val publicKey = DhPublicKey(pkey.upRef())
+                val publicKey = DhPublicKey(pkey.upRef(), parameters)
                 DhKeyPair(
                     publicKey = publicKey,
-                    privateKey = DhPrivateKey(pkey, publicKey)
+                    privateKey = DhPrivateKey(pkey, publicKey, parameters)
                 )
             } finally {
                 EVP_PKEY_CTX_free(keygenContext)
@@ -125,20 +113,17 @@ internal object Openssl3Dh : DH {
     private class DhPrivateKey(
         key: CPointer<EVP_PKEY>,
         publicKey: DH.PublicKey?,
+        override val parameters: DH.Parameters,
     ) : DH.PrivateKey,
         Openssl3PrivateKeyEncodable<DH.PrivateKey.Format, DH.PublicKey>(key, publicKey),
         SharedSecretGenerator<DH.PublicKey> {
-        override fun wrapPublicKey(key: CPointer<EVP_PKEY>): DH.PublicKey = DhPublicKey(key)
+        override fun wrapPublicKey(key: CPointer<EVP_PKEY>): DH.PublicKey = DhPublicKey(key, parameters)
+
+        override val x: BigInt get() = extractBigNumFromKey(key, "priv")
 
         override fun outputType(format: DH.PrivateKey.Format): String = when (format) {
             DH.PrivateKey.Format.DER -> "DER"
             DH.PrivateKey.Format.PEM -> "PEM"
-            DH.PrivateKey.Format.RAW -> error("should not be called: handled explicitly in encodeToBlocking")
-        }
-
-        override fun encodeToByteArrayBlocking(format: DH.PrivateKey.Format): ByteArray = when (format) {
-            DH.PrivateKey.Format.RAW -> encodeDhPrivateRawKey(key)
-            else                     -> super.encodeToByteArrayBlocking(format)
         }
 
         override fun sharedSecretGenerator(): SharedSecretGenerator<DH.PublicKey> = this
@@ -152,16 +137,13 @@ internal object Openssl3Dh : DH {
 
     private class DhPublicKey(
         key: CPointer<EVP_PKEY>,
+        override val parameters: DH.Parameters,
     ) : DH.PublicKey, Openssl3PublicKeyEncodable<DH.PublicKey.Format>(key), SharedSecretGenerator<DH.PrivateKey> {
+        override val y: BigInt get() = extractBigNumFromKey(key, "pub")
+
         override fun outputType(format: DH.PublicKey.Format): String = when (format) {
             DH.PublicKey.Format.DER -> "DER"
             DH.PublicKey.Format.PEM -> "PEM"
-            DH.PublicKey.Format.RAW -> error("should not be called: handled explicitly in encodeToBlocking")
-        }
-
-        override fun encodeToByteArrayBlocking(format: DH.PublicKey.Format): ByteArray = when (format) {
-            DH.PublicKey.Format.RAW -> encodeDhPublicRawKey(key)
-            else                    -> super.encodeToByteArrayBlocking(format)
         }
 
         override fun sharedSecretGenerator(): SharedSecretGenerator<DH.PrivateKey> = this
@@ -171,6 +153,92 @@ internal object Openssl3Dh : DH {
 
             return deriveDhSharedSecret(publicKey = key, privateKey = other.key)
         }
+    }
+
+    private class DhParametersDecoder : ParameterDecoder<DH.Parameters.Format, DH.Parameters> {
+        override fun decodeFromByteArrayBlocking(format: DH.Parameters.Format, bytes: ByteArray): DH.Parameters {
+            val derBytes = when (format) {
+                DH.Parameters.Format.DER -> bytes
+                DH.Parameters.Format.PEM -> unwrapDhParametersPem(bytes)
+            }
+            val (prime, base) = decodeDhParametersFromDer(derBytes)
+            return Openssl3DhParameters(prime, base)
+        }
+    }
+
+    private class DhParametersGenerator(
+        private val primeSize: BinarySize,
+    ) : ParameterGenerator<DH.Parameters> {
+        @OptIn(UnsafeNumber::class)
+        override fun generateParametersBlocking(): DH.Parameters = memScoped {
+            val context = checkError(EVP_PKEY_CTX_new_from_name(null, "DH", null))
+            try {
+                checkError(EVP_PKEY_paramgen_init(context))
+
+                // Set the prime bit length
+                val primeBits = alloc<UIntVar>()
+                primeBits.value = primeSize.inBits.toUInt()
+                checkError(
+                    EVP_PKEY_CTX_set_params(
+                        context,
+                        OSSL_PARAM_array(
+                            OSSL_PARAM_construct_uint("pbits".cstr.ptr, primeBits.ptr)
+                        )
+                    )
+                )
+
+                // Generate parameters
+                val paramsKeyVar = alloc<CPointerVar<EVP_PKEY>>()
+                checkError(EVP_PKEY_generate(context, paramsKeyVar.ptr))
+                val paramsKey = checkError(paramsKeyVar.value)
+
+                try {
+                    // Extract p and g
+                    val p = extractBigNumFromKey(paramsKey, "p")
+                    val g = extractBigNumFromKey(paramsKey, "g")
+
+                    Openssl3DhParameters(p, g)
+                } finally {
+                    EVP_PKEY_free(paramsKey)
+                }
+            } finally {
+                EVP_PKEY_CTX_free(context)
+            }
+        }
+    }
+
+    private class Openssl3DhParameters(
+        override val p: BigInt,
+        override val g: BigInt,
+    ) : DH.Parameters {
+        override fun keyPairGenerator(): KeyGenerator<DH.KeyPair> = DhKeyGenerator(this)
+
+        override fun encodeToByteArrayBlocking(format: DH.Parameters.Format): ByteArray = when (format) {
+            DH.Parameters.Format.DER -> encodeDhParametersToDer(p, g)
+            DH.Parameters.Format.PEM -> wrapDhParametersPem(encodeDhParametersToDer(p, g))
+        }
+    }
+
+    private fun extractParametersFromKey(key: CPointer<EVP_PKEY>): DH.Parameters {
+        val p = extractBigNumFromKey(key, "p")
+        val g = extractBigNumFromKey(key, "g")
+        return Openssl3DhParameters(p, g)
+    }
+}
+
+@OptIn(UnsafeNumber::class)
+private fun extractBigNumFromKey(key: CPointer<EVP_PKEY>, paramName: String): BigInt = memScoped {
+    val bnVar = alloc<CPointerVar<BIGNUM>>()
+    checkError(EVP_PKEY_get_bn_param(key, paramName, bnVar.ptr))
+    val bn = checkError(bnVar.value)
+
+    try {
+        val size = (checkError(BN_num_bits(bn)) + 7) / 8
+        val bytes = ByteArray(size)
+        checkError(BN_bn2bin(bn, bytes.refToU(0)))
+        bytes.decodeToBigInt()
+    } finally {
+        BN_free(bn)
     }
 }
 
@@ -190,101 +258,6 @@ private fun deriveDhSharedSecret(
         secret
     } finally {
         EVP_PKEY_CTX_free(context)
-    }
-}
-
-private fun decodeDhPublicRawKey(
-    parameters: DH.Parameters,
-    input: ByteArray,
-): CPointer<EVP_PKEY> {
-    // OpenSSL 3.x EVP_PKEY_fromdata has issues with DH public key RAW format import.
-    // The workaround would be to construct a DER-encoded SubjectPublicKeyInfo structure,
-    // but this requires additional ASN.1 module support for DH.
-    // For now, RAW format is not supported for DH public keys on OpenSSL.
-    error("DH public key RAW format is not supported in OpenSSL provider due to EVP_PKEY_fromdata limitations")
-}
-
-private fun decodeDhPrivateRawKey(
-    parameters: DH.Parameters,
-    input: ByteArray,
-): CPointer<EVP_PKEY> {
-    // OpenSSL 3.x EVP_PKEY_fromdata has issues with DH private key RAW format import.
-    // The workaround would be to construct a DER-encoded PrivateKeyInfo structure,
-    // but this requires additional ASN.1 module support for DH.
-    // For now, RAW format is not supported for DH private keys on OpenSSL.
-    error("DH private key RAW format is not supported in OpenSSL provider due to EVP_PKEY_fromdata limitations")
-}
-
-@OptIn(UnsafeNumber::class)
-private fun encodeDhPublicRawKey(key: CPointer<EVP_PKEY>): ByteArray = memScoped {
-    // Get p to determine the output size (pad to p's byte size for consistency with JDK)
-    val pVar = alloc<CPointerVar<BIGNUM>>()
-    checkError(EVP_PKEY_get_bn_param(key, "p", pVar.ptr))
-    val p = checkError(pVar.value)
-    val pSize = (checkError(BN_num_bits(p)) + 7) / 8
-    BN_free(p)
-
-    val pubVar = alloc<CPointerVar<BIGNUM>>()
-    checkError(EVP_PKEY_get_bn_param(key, "pub", pubVar.ptr))
-    val pub = checkError(pubVar.value)
-    val output = ByteArray(pSize)
-    try {
-        // BN_bn2binpad writes the value with padding to exact size
-        checkError(BN_bn2binpad(pub, output.refToU(0), pSize))
-    } finally {
-        BN_free(pub)
-    }
-    output
-}
-
-@OptIn(UnsafeNumber::class)
-private fun encodeDhPrivateRawKey(key: CPointer<EVP_PKEY>): ByteArray = memScoped {
-    // Get p to determine the output size (pad to p's byte size for consistency with JDK)
-    val pVar = alloc<CPointerVar<BIGNUM>>()
-    checkError(EVP_PKEY_get_bn_param(key, "p", pVar.ptr))
-    val p = checkError(pVar.value)
-    val pSize = (checkError(BN_num_bits(p)) + 7) / 8
-    BN_free(p)
-
-    val privVar = alloc<CPointerVar<BIGNUM>>()
-    checkError(EVP_PKEY_get_bn_param(key, "priv", privVar.ptr))
-    val priv = checkError(privVar.value)
-    val output = ByteArray(pSize)
-    try {
-        // BN_bn2binpad writes the value with padding to exact size
-        checkError(BN_bn2binpad(priv, output.refToU(0), pSize))
-    } finally {
-        BN_free(priv)
-    }
-    output
-}
-
-@OptIn(UnsafeNumber::class)
-private fun checkDhKeyParameters(key: CPointer<EVP_PKEY>, expectedParameters: DH.Parameters) = memScoped {
-    val pVar = alloc<CPointerVar<BIGNUM>>()
-    val gVar = alloc<CPointerVar<BIGNUM>>()
-    checkError(EVP_PKEY_get_bn_param(key, "p", pVar.ptr))
-    checkError(EVP_PKEY_get_bn_param(key, "g", gVar.ptr))
-    val p = checkError(pVar.value)
-    val g = checkError(gVar.value)
-    try {
-        val expectedPBytes = expectedParameters.p.encodeToByteArray().dropLeadingZeros()
-        val expectedGBytes = expectedParameters.g.encodeToByteArray().dropLeadingZeros()
-
-        val pSize = (checkError(BN_num_bits(p)) + 7) / 8
-        val gSize = (checkError(BN_num_bits(g)) + 7) / 8
-
-        val pBytes = ByteArray(pSize)
-        val gBytes = ByteArray(gSize)
-
-        checkError(BN_bn2bin(p, pBytes.refToU(0)))
-        checkError(BN_bn2bin(g, gBytes.refToU(0)))
-
-        check(pBytes.contentEquals(expectedPBytes)) { "Key parameter p does not match expected parameter" }
-        check(gBytes.contentEquals(expectedGBytes)) { "Key parameter g does not match expected parameter" }
-    } finally {
-        BN_free(p)
-        BN_free(g)
     }
 }
 

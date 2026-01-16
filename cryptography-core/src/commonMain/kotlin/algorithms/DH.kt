@@ -7,6 +7,7 @@ package dev.whyoleg.cryptography.algorithms
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.bigint.*
 import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.materials.parameters.*
 import dev.whyoleg.cryptography.operations.*
 
 @SubclassOptInRequired(CryptographyProviderApi::class)
@@ -15,14 +16,34 @@ public interface DH : CryptographyAlgorithm {
 
     public companion object : CryptographyAlgorithmId<DH>("DH")
 
-    public fun publicKeyDecoder(parameters: Parameters): KeyDecoder<PublicKey.Format, PublicKey>
-    public fun privateKeyDecoder(parameters: Parameters): KeyDecoder<PrivateKey.Format, PrivateKey>
-    public fun keyPairGenerator(parameters: Parameters): KeyGenerator<KeyPair>
+    // Key decoders - parameters are extracted from the DER/PEM encoding
+    public fun publicKeyDecoder(): KeyDecoder<PublicKey.Format, PublicKey>
+    public fun privateKeyDecoder(): KeyDecoder<PrivateKey.Format, PrivateKey>
 
-    public class Parameters(
-        public val p: BigInt,
-        public val g: BigInt,
-    )
+    public fun parametersDecoder(): ParameterDecoder<Parameters.Format, Parameters>
+    public fun parametersGenerator(primeSize: BinarySize): ParameterGenerator<Parameters>
+
+    @SubclassOptInRequired(CryptographyProviderApi::class)
+    public interface Parameters : EncodableParameters<Parameters.Format> {
+        public val p: BigInt
+        public val g: BigInt
+
+        public fun keyPairGenerator(): KeyGenerator<KeyPair>
+
+        public sealed class Format : ParameterFormat {
+            final override fun toString(): String = name
+
+            // DER encoding of DHParameter ASN.1 structure (RFC 3279)
+            public data object DER : Format() {
+                override val name: String get() = "DER"
+            }
+
+            // PEM encoding with "DH PARAMETERS" label
+            public data object PEM : Format() {
+                override val name: String get() = "PEM"
+            }
+        }
+    }
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface KeyPair : Key {
@@ -32,15 +53,12 @@ public interface DH : CryptographyAlgorithm {
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface PublicKey : EncodableKey<PublicKey.Format> {
+        public val parameters: Parameters
+        public val y: BigInt  // public key value (y = g^x mod p)
         public fun sharedSecretGenerator(): SharedSecretGenerator<PrivateKey>
 
         public sealed class Format : KeyFormat {
             final override fun toString(): String = name
-
-            // raw public key value (y = g^x mod p) as unsigned big-endian bytes
-            public data object RAW : Format() {
-                override val name: String get() = "RAW"
-            }
 
             // SPKI = SubjectPublicKeyInfo
             public data object DER : Format() {
@@ -56,15 +74,12 @@ public interface DH : CryptographyAlgorithm {
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface PrivateKey : EncodableKey<PrivateKey.Format> {
+        public val parameters: Parameters
+        public val x: BigInt  // private key value
         public fun sharedSecretGenerator(): SharedSecretGenerator<PublicKey>
 
         public sealed class Format : KeyFormat {
             final override fun toString(): String = name
-
-            // raw private key value (x) as unsigned big-endian bytes
-            public data object RAW : Format() {
-                override val name: String get() = "RAW"
-            }
 
             // via PrivateKeyInfo from PKCS8
             public data object DER : Format() {

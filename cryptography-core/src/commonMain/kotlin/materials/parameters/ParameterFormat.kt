@@ -1,0 +1,13 @@
+/*
+ * Copyright (c) 2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ */
+
+package dev.whyoleg.cryptography.materials.parameters
+
+import dev.whyoleg.cryptography.*
+
+@SubclassOptInRequired(CryptographyProviderApi::class)
+public interface ParameterFormat {
+    public val name: String
+    override fun toString(): String
+}
