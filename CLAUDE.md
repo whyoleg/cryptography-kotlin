@@ -23,7 +23,7 @@ underlying provider.
 | Digests           | MD5, SHA1, SHA224, SHA256, SHA384, SHA512, SHA3-224/256/384/512, RIPEMD160        |
 | MACs              | HMAC, AES-CMAC                                                                    |
 | Symmetric Ciphers | AES-GCM, AES-CBC, AES-CTR, AES-CFB, AES-CFB8, AES-OFB, AES-ECB, ChaCha20-Poly1305 |
-| Asymmetric        | RSA-OAEP, RSA-PKCS1 (sign/encrypt), RSA-PSS, RSA-RAW, ECDSA, ECDH                 |
+| Asymmetric        | RSA-OAEP, RSA-PKCS1 (sign/encrypt), RSA-PSS, RSA-RAW, ECDSA, ECDH, DH             |
 | Key Derivation    | PBKDF2, HKDF                                                                      |
 
 Not all algorithms are supported by all providers. Use `provider.getOrNull(algorithmId)` to check availability.
@@ -288,3 +288,259 @@ Use `cryptography-serialization-asn1-modules` for standard structures:
 -Pckbuild.providerTests.step=...  # compatibility.loop|generate|validate
 -Pckbuild.testtool.enabled=true   # Enable testtool server for compatibility tests
 ```
+
+## ABI Management
+
+When adding new public APIs (interfaces, classes, functions), the build will fail with ABI validation errors. Update ABI declarations:
+
+```bash
+# Update ABI for a specific module
+./gradlew :cryptography-core:updateLegacyAbi
+./gradlew :cryptography-provider-base:updateLegacyAbi
+./gradlew :cryptography-serialization-asn1-modules:updateLegacyAbi
+./gradlew :cryptography-serialization-pem:updateLegacyAbi
+```
+
+## Key Encoding Patterns
+
+### Format Types
+
+- **RAW**: Raw bytes of the key value only. Requires external context (algorithm parameters, curve) to interpret.
+- **DER**: ASN.1 DER encoding. Self-describing - contains algorithm identifier and parameters.
+- **PEM**: Base64-encoded DER with header/footer labels (e.g., `-----BEGIN PUBLIC KEY-----`).
+- **JWK**: JSON Web Key format.
+
+### Key Decoder Patterns
+
+For algorithms with parameters (EC curves, DH parameters), there are typically two decoder variants:
+
+```kotlin
+// With explicit parameters - supports all formats including RAW
+fun publicKeyDecoder(parameters: Parameters): KeyDecoder<PublicKey.Format, PublicKey>
+
+// Without parameters - only supports DER/PEM (extracts parameters from encoding)
+fun publicKeyDecoder(): KeyDecoder<PublicKey.Format, PublicKey>
+```
+
+The parameterless variant extracts parameters from the AlgorithmIdentifier in DER/PEM encodings.
+
+## Algorithm Parameters
+
+### Interface Pattern
+
+Algorithm parameters (like DH p,g or EC curves) follow this pattern:
+
+```kotlin
+@SubclassOptInRequired(CryptographyProviderApi::class)
+public interface Parameters : EncodableParameters<Parameters.Format> {
+    public val p: BigInt
+    public val g: BigInt
+
+    public sealed class Format : ParameterFormat {
+        public data object DER : Format()
+        public data object PEM : Format()
+    }
+}
+```
+
+### Parameter Operations
+
+```kotlin
+// Decode parameters from PEM/DER
+fun parametersDecoder(): ParameterDecoder<Parameters.Format, Parameters>
+
+// Generate new parameters (can be slow for DH)
+fun parametersGenerator(primeSize: BinarySize): ParameterGenerator<Parameters>
+```
+
+### Keys Expose Parameters
+
+Keys decoded or generated should expose their parameters:
+
+```kotlin
+public interface PublicKey : EncodableKey<PublicKey.Format> {
+    public val parameters: Parameters
+}
+```
+
+## Provider Implementation Patterns
+
+### JDK Provider
+
+Uses object pooling for JCA objects (KeyFactory, Cipher, etc.):
+
+```kotlin
+// Get pooled instance, use it, return to pool
+private val keyFactory = state.keyFactory("DH")
+keyFactory.use { factory -> factory.generatePublic(spec) }
+
+// Available pooled resources
+state.keyFactory(algorithm)
+state.keyPairGenerator(algorithm)
+state.keyAgreement(algorithm)
+state.algorithmParameterGenerator(algorithm)
+state.cipher(transformation)
+state.signature(algorithm)
+state.messageDigest(algorithm)
+state.mac(algorithm)
+state.secureRandom  // shared instance
+```
+
+Key decoder base classes:
+
+- `JdkPublicKeyDecoder<KF, K>` - handles DER via X509EncodedKeySpec
+- `JdkPrivateKeyDecoder<KF, K>` - handles DER via PKCS8EncodedKeySpec
+- `JdkEncodableKey<KF>` - handles encoding via key.encoded
+
+### OpenSSL Provider
+
+Uses OpenSSL 3.x EVP API with manual memory management:
+
+```kotlin
+// Key operations use EVP_PKEY
+private class MyPublicKey(
+    key: CPointer<EVP_PKEY>,
+) : Openssl3PublicKeyEncodable<Format>(key) {
+    override fun outputType(format: Format): String = when (format) {
+        Format.DER -> "DER"
+        Format.PEM -> "PEM"
+        Format.RAW -> error("handled explicitly")
+    }
+}
+
+// Memory management pattern
+memScoped {
+    val ctx = checkError(EVP_PKEY_CTX_new_from_name(null, "DH", null))
+    try {
+        // use ctx
+    } finally {
+        EVP_PKEY_CTX_free(ctx)
+    }
+}
+
+// Reference counting for EVP_PKEY
+key.upRef()  // increment reference count
+EVP_PKEY_free(key)  // decrement reference count
+```
+
+Key decoder base classes:
+
+- `Openssl3PublicKeyDecoder<KF, K>` - uses OSSL_DECODER for DER/PEM
+- `Openssl3PrivateKeyDecoder<KF, K>` - uses OSSL_DECODER for DER/PEM
+- `Openssl3PublicKeyEncodable<KF>` - uses OSSL_ENCODER for DER/PEM
+- `Openssl3PrivateKeyEncodable<KF, PubK>` - uses OSSL_ENCODER for DER/PEM
+
+### BigInt Handling
+
+```kotlin
+// Convert BigInt to bytes (for OpenSSL/JDK BigInteger)
+val bytes = bigInt.encodeToByteArray()
+
+// Convert bytes to BigInt
+val bigInt = bytes.decodeToBigInt()
+
+// Strip leading zeros for unsigned representation
+private fun ByteArray.trimLeadingZeros(): ByteArray {
+    val firstNonZero = indexOfFirst { it != 0.toByte() }
+    return when {
+        firstNonZero < 0  -> byteArrayOf(0)
+        firstNonZero == 0 -> this
+        else              -> copyOfRange(firstNonZero, size)
+    }
+}
+```
+
+## ASN.1 Module Patterns
+
+### Adding New ASN.1 Structures
+
+1. Define structures in `cryptography-serialization-asn1-modules`:
+
+```kotlin
+// Object Identifier
+public val ObjectIdentifier.Companion.DH: ObjectIdentifier
+get() = ObjectIdentifier("1.2.840.113549.1.3.1")
+
+// Algorithm Identifier for keys
+public class DhKeyAlgorithmIdentifier(
+    override val parameters: DhParameters?,
+) : KeyAlgorithmIdentifier {
+    override val algorithm: ObjectIdentifier get() = ObjectIdentifier.DH
+}
+
+// Parameter structure
+@Serializable
+public class DhParameters(
+    public val prime: BigInt,
+    public val base: BigInt,
+    public val privateValueLength: Int? = null,
+)
+```
+
+2. Register in `KeyAlgorithmIdentifierSerializer.kt`:
+
+```kotlin
+// Encoding
+is DhKeyAlgorithmIdentifier -> encodeParameters(DhParameters.serializer(), value.parameters)
+
+// Decoding
+ObjectIdentifier.DH -> DhKeyAlgorithmIdentifier(decodeParameters(DhParameters.serializer()))
+```
+
+3. Add PEM label in `PemLabel.kt` if needed:
+
+```kotlin
+public val DhParameters: PemLabel = PemLabel("DH PARAMETERS")
+```
+
+4. Add helper functions in `cryptography-provider-base/materials/`:
+
+```kotlin
+public fun decodeDhParametersFromDer(bytes: ByteArray): Pair<BigInt, BigInt>
+public fun encodeDhParametersToDer(prime: BigInt, base: BigInt): ByteArray
+public fun unwrapDhParametersPem(bytes: ByteArray): ByteArray
+public fun wrapDhParametersPem(derBytes: ByteArray): ByteArray
+```
+
+## Platform-Specific Limitations
+
+| Feature      | JDK        | OpenSSL | WebCrypto | CryptoKit |
+|--------------|------------|---------|-----------|-----------|
+| Classical DH | ✓          | ✓       | ✗         | ✗         |
+| ECDH         | ✓          | ✓       | ✓         | ✓         |
+| RSA-RAW      | ✓          | ✓       | ✗         | ✗         |
+| AES-ECB      | ✓          | ✓       | ✗         | ✗         |
+| SHA3         | ✓ (JDK 9+) | ✓       | ✗         | ✗         |
+| RIPEMD160    | ✗          | ✓       | ✗         | ✗         |
+
+When implementing algorithms, check platform support first. Use `supportsXxx()` functions in tests to skip unsupported combinations.
+
+## Testing Patterns
+
+### Test Helper Functions
+
+For algorithms with interface-based parameters, create test helpers:
+
+```kotlin
+private fun dhParameters(p: BigInt, g: BigInt): DH.Parameters = object : DH.Parameters {
+    override val p: BigInt = p
+    override val g: BigInt = g
+    override fun encodeToByteArrayBlocking(format: DH.Parameters.Format): ByteArray {
+        error("Test parameters do not support encoding")
+    }
+}
+```
+
+### Checking Format Support
+
+```kotlin
+@Test
+fun testKeyEncodingRaw() = testWithAlgorithm {
+        if (!supportsKeyFormat(MyAlgorithm.PublicKey.Format.RAW)) return@testWithAlgorithm
+        // test RAW format
+    }
+```
+
+### Standard Test Parameters
+
+Use well-known test vectors (e.g., RFC 3526 MODP groups for DH) rather than generating parameters in tests - generation can be slow.
