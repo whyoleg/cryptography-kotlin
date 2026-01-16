@@ -138,11 +138,31 @@ fun AlgorithmTestScope<out EC<*, *, *>>.supportsCurve(curve: EC.Curve): Boolean 
 }
 
 fun AlgorithmTestScope<EdDSA>.supportsCurve(curve: EdDSA.Curve): Boolean = supports {
-    null
+    when {
+        // CryptoKit only supports Ed25519, not Ed448
+        curve == EdDSA.Curve.Ed448 && provider.isCryptoKit
+             -> "EdDSA ${curve.name}"
+
+        // WebCrypto in browsers typically doesn't support Ed448, only Node.js does
+        curve == EdDSA.Curve.Ed448 && provider.isWebCrypto && platform.isBrowser
+             -> "EdDSA ${curve.name} in browser"
+
+        else -> null
+    }
 }
 
 fun AlgorithmTestScope<XDH>.supportsCurve(curve: XDH.Curve): Boolean = supports {
-    null
+    when {
+        // CryptoKit only supports X25519, not X448
+        curve == XDH.Curve.X448 && provider.isCryptoKit
+             -> "XDH ${curve.name}"
+
+        // WebCrypto in browsers typically doesn't support X448, only Node.js does
+        curve == XDH.Curve.X448 && provider.isWebCrypto && platform.isBrowser
+             -> "XDH ${curve.name} in browser"
+
+        else -> null
+    }
 }
 
 fun AlgorithmTestScope<*>.supportsPublicKeyAccess(error: Throwable): Boolean = supports {

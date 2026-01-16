@@ -15,6 +15,7 @@ import dev.whyoleg.cryptography.providers.cryptokit.internal.swift.DwcCryptoKitI
 import dev.whyoleg.cryptography.serialization.asn1.*
 import dev.whyoleg.cryptography.serialization.asn1.modules.*
 import dev.whyoleg.cryptography.serialization.pem.*
+import kotlinx.serialization.builtins.*
 
 internal object CryptoKitEdDsa : EdDSA {
     override fun publicKeyDecoder(curve: EdDSA.Curve): KeyDecoder<EdDSA.PublicKey.Format, EdDSA.PublicKey> {
@@ -99,11 +100,12 @@ internal object CryptoKitEdDsa : EdDSA {
         override fun signatureVerifier(): SignatureVerifier = object : SignatureVerifier {
             override fun createVerifyFunction(): VerifyFunction =
                 AccumulatingVerifyFunction { data, signature ->
-                    data.useNSData { dataNs ->
+                    val isValid = data.useNSData { dataNs ->
                         signature.useNSData { sigNs ->
                             key.verifyWithSignature(sigNs, message = dataNs)
                         }
                     }
+                    if (isValid) null else "Signature verification failed"
                 }
         }
     }

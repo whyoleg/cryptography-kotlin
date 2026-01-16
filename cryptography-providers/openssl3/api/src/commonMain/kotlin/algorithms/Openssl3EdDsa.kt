@@ -8,7 +8,6 @@ import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.*
-import dev.whyoleg.cryptography.providers.base.materials.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.providers.openssl3.materials.*
@@ -17,7 +16,6 @@ import dev.whyoleg.cryptography.serialization.asn1.*
 import dev.whyoleg.cryptography.serialization.asn1.modules.*
 import kotlinx.cinterop.*
 import platform.posix.*
-import kotlin.experimental.*
 
 internal object Openssl3EdDsa : EdDSA {
     override fun publicKeyDecoder(curve: EdDSA.Curve): KeyDecoder<EdDSA.PublicKey.Format, EdDSA.PublicKey> = PublicKeyDecoder(curve)
@@ -40,6 +38,7 @@ internal object Openssl3EdDsa : EdDSA {
                                        -> error("should not be called: handled explicitly in decodeFromBlocking")
         }
 
+        @OptIn(UnsafeNumber::class)
         override fun decodeFromByteArrayBlocking(format: EdDSA.PublicKey.Format, bytes: ByteArray): EdDSA.PublicKey = when (format) {
             EdDSA.PublicKey.Format.RAW -> {
                 val key = checkError(
@@ -69,6 +68,7 @@ internal object Openssl3EdDsa : EdDSA {
                                         -> error("should not be called: handled explicitly in decodeFromBlocking")
         }
 
+        @OptIn(UnsafeNumber::class)
         override fun decodeFromByteArrayBlocking(format: EdDSA.PrivateKey.Format, bytes: ByteArray): EdDSA.PrivateKey = when (format) {
             EdDSA.PrivateKey.Format.RAW -> {
                 val key = checkError(
@@ -118,6 +118,7 @@ internal object Openssl3EdDsa : EdDSA {
                                        -> error("should not be called: handled explicitly in encodeToBlocking")
         }
 
+        @OptIn(UnsafeNumber::class)
         override fun encodeToByteArrayBlocking(format: EdDSA.PublicKey.Format): ByteArray = when (format) {
             EdDSA.PublicKey.Format.RAW -> memScoped {
                 val lenVar = alloc<size_tVar>()
@@ -147,6 +148,7 @@ internal object Openssl3EdDsa : EdDSA {
                                         -> error("should not be called: handled explicitly in encodeToBlocking")
         }
 
+        @OptIn(UnsafeNumber::class)
         override fun encodeToByteArrayBlocking(format: EdDSA.PrivateKey.Format): ByteArray = when (format) {
             EdDSA.PrivateKey.Format.RAW -> memScoped {
                 val lenVar = alloc<size_tVar>()

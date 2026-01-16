@@ -58,6 +58,11 @@ internal val Algorithm.ecKeyAlgorithmNamedCurve: String get() = ecKeyAlgorithmNa
 @Suppress("UNUSED_PARAMETER")
 private fun ecKeyAlgorithmNamedCurve(algorithm: Algorithm): String = js("algorithm.namedCurve")
 
+internal val Algorithm.algorithmName: String get() = algorithmName(this)
+
+@Suppress("UNUSED_PARAMETER")
+private fun algorithmName(algorithm: Algorithm): String = js("algorithm.name")
+
 internal fun EcdsaSignatureAlgorithm(hash: String): Algorithm =
     js("({ name: 'ECDSA', hash: hash })")
 

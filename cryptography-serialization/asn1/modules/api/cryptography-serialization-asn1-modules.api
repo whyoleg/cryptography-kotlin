@@ -5,6 +5,7 @@ public abstract interface class dev/whyoleg/cryptography/serialization/asn1/modu
 
 public abstract class dev/whyoleg/cryptography/serialization/asn1/modules/AlgorithmIdentifierSerializer : kotlinx/serialization/KSerializer {
 	public fun <init> ()V
+	protected abstract fun decodeAbsentParameters-IHeWLgs (Lkotlinx/serialization/encoding/CompositeDecoder;Ljava/lang/String;)Ldev/whyoleg/cryptography/serialization/asn1/modules/AlgorithmIdentifier;
 	protected final fun decodeParameters (Lkotlinx/serialization/encoding/CompositeDecoder;Lkotlinx/serialization/KSerializer;)Ljava/lang/Object;
 	protected abstract fun decodeParameters-IHeWLgs (Lkotlinx/serialization/encoding/CompositeDecoder;Ljava/lang/String;)Ldev/whyoleg/cryptography/serialization/asn1/modules/AlgorithmIdentifier;
 	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/whyoleg/cryptography/serialization/asn1/modules/AlgorithmIdentifier;
@@ -131,6 +132,13 @@ public final synthetic class dev/whyoleg/cryptography/serialization/asn1/modules
 
 public final class dev/whyoleg/cryptography/serialization/asn1/modules/EcdsaSignatureValue$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/modules/EdKt {
+	public static final fun getEd25519 (Ldev/whyoleg/cryptography/serialization/asn1/ObjectIdentifier$Companion;)Ljava/lang/String;
+	public static final fun getEd448 (Ldev/whyoleg/cryptography/serialization/asn1/ObjectIdentifier$Companion;)Ljava/lang/String;
+	public static final fun getX25519 (Ldev/whyoleg/cryptography/serialization/asn1/ObjectIdentifier$Companion;)Ljava/lang/String;
+	public static final fun getX448 (Ldev/whyoleg/cryptography/serialization/asn1/ObjectIdentifier$Companion;)Ljava/lang/String;
 }
 
 public abstract interface class dev/whyoleg/cryptography/serialization/asn1/modules/KeyAlgorithmIdentifier : dev/whyoleg/cryptography/serialization/asn1/modules/AlgorithmIdentifier {

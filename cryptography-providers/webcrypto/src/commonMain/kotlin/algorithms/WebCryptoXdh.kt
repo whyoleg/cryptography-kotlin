@@ -49,7 +49,7 @@ internal object WebCryptoXdh : XDH {
         SharedSecretGenerator<XDH.PrivateKey> {
         override fun sharedSecretGenerator(): SharedSecretGenerator<XDH.PrivateKey> = this
 
-        private fun deriveLengthBits(): Int = when (val name = publicKey.algorithm.unsafeCast<Algorithm>().name) {
+        private fun deriveLengthBits(): Int = when (val name = publicKey.algorithm.algorithmName) {
             "X25519" -> 32 * 8
             "X448"   -> 56 * 8
             else     -> error("Unknown XDH algorithm: $name")
@@ -57,7 +57,7 @@ internal object WebCryptoXdh : XDH {
 
         override suspend fun generateSharedSecretToByteArray(other: XDH.PrivateKey): ByteArray {
             check(other is XdhPrivateKey)
-            val name = publicKey.algorithm.unsafeCast<Algorithm>().name
+            val name = publicKey.algorithm.algorithmName
             return WebCrypto.deriveBits(
                 algorithm = EcKeyDeriveAlgorithm(name, publicKey),
                 baseKey = other.privateKey,
@@ -75,7 +75,7 @@ internal object WebCryptoXdh : XDH {
         SharedSecretGenerator<XDH.PublicKey> {
         override fun sharedSecretGenerator(): SharedSecretGenerator<XDH.PublicKey> = this
 
-        private fun deriveLengthBits(): Int = when (val name = privateKey.algorithm.unsafeCast<Algorithm>().name) {
+        private fun deriveLengthBits(): Int = when (val name = privateKey.algorithm.algorithmName) {
             "X25519" -> 32 * 8
             "X448"   -> 56 * 8
             else     -> error("Unknown XDH algorithm: $name")
@@ -93,7 +93,7 @@ internal object WebCryptoXdh : XDH {
 
         override suspend fun generateSharedSecretToByteArray(other: XDH.PublicKey): ByteArray {
             check(other is XdhPublicKey)
-            val name = privateKey.algorithm.unsafeCast<Algorithm>().name
+            val name = privateKey.algorithm.algorithmName
             return WebCrypto.deriveBits(
                 algorithm = EcKeyDeriveAlgorithm(name, other.publicKey),
                 baseKey = privateKey,

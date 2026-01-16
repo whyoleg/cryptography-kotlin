@@ -8,7 +8,6 @@ import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.*
-import dev.whyoleg.cryptography.providers.base.materials.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.providers.openssl3.materials.*
@@ -17,7 +16,6 @@ import dev.whyoleg.cryptography.serialization.asn1.*
 import dev.whyoleg.cryptography.serialization.asn1.modules.*
 import kotlinx.cinterop.*
 import platform.posix.*
-import kotlin.experimental.*
 
 internal object Openssl3Xdh : XDH {
     private fun algorithmName(curve: XDH.Curve): String = when (curve) {
@@ -40,6 +38,7 @@ internal object Openssl3Xdh : XDH {
                     -> error("should not be called: handled explicitly in decodeFromBlocking")
             }
 
+            @OptIn(UnsafeNumber::class)
             override fun decodeFromByteArrayBlocking(format: XDH.PublicKey.Format, bytes: ByteArray): XDH.PublicKey = when (format) {
                 XDH.PublicKey.Format.RAW -> {
                     val key = checkError(
@@ -68,6 +67,7 @@ internal object Openssl3Xdh : XDH {
                     -> error("should not be called: handled explicitly in decodeFromBlocking")
             }
 
+            @OptIn(UnsafeNumber::class)
             override fun decodeFromByteArrayBlocking(format: XDH.PrivateKey.Format, bytes: ByteArray): XDH.PrivateKey = when (format) {
                 XDH.PrivateKey.Format.RAW -> {
                     val key = checkError(
@@ -115,6 +115,7 @@ internal object Openssl3Xdh : XDH {
                 -> error("should not be called: handled explicitly in encodeToBlocking")
         }
 
+        @OptIn(UnsafeNumber::class)
         override fun encodeToByteArrayBlocking(format: XDH.PublicKey.Format): ByteArray = when (format) {
             XDH.PublicKey.Format.RAW -> memScoped {
                 val lenVar = alloc<size_tVar>()
@@ -149,6 +150,7 @@ internal object Openssl3Xdh : XDH {
                 -> error("should not be called: handled explicitly in encodeToBlocking")
         }
 
+        @OptIn(UnsafeNumber::class)
         override fun encodeToByteArrayBlocking(format: XDH.PrivateKey.Format): ByteArray = when (format) {
             XDH.PrivateKey.Format.RAW -> memScoped {
                 val lenVar = alloc<size_tVar>()

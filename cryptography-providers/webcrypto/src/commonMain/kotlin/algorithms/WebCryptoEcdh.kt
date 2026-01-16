@@ -28,7 +28,7 @@ internal object WebCryptoEcdh : WebCryptoEc<ECDH.PublicKey, ECDH.PrivateKey, ECD
         override suspend fun generateSharedSecretToByteArray(other: ECDH.PrivateKey): ByteArray {
             check(other is EcdhPrivateKey)
             return WebCrypto.deriveBits(
-                algorithm = EcKeyDeriveAlgorithm(publicKey),
+                algorithm = EcKeyDeriveAlgorithm("ECDH", publicKey),
                 baseKey = other.privateKey,
                 length = curveOrderSize(publicKey.algorithm.ecKeyAlgorithmNamedCurve).inBits
             )
@@ -45,7 +45,7 @@ internal object WebCryptoEcdh : WebCryptoEc<ECDH.PublicKey, ECDH.PrivateKey, ECD
         override suspend fun generateSharedSecretToByteArray(other: ECDH.PublicKey): ByteArray {
             check(other is EcdhPublicKey)
             return WebCrypto.deriveBits(
-                algorithm = EcKeyDeriveAlgorithm(other.publicKey),
+                algorithm = EcKeyDeriveAlgorithm("ECDH", other.publicKey),
                 baseKey = privateKey,
                 length = curveOrderSize(privateKey.algorithm.ecKeyAlgorithmNamedCurve).inBits
             )
