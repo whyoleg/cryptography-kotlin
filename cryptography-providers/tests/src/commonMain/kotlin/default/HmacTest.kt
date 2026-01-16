@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.tests.default
@@ -45,7 +45,7 @@ abstract class HmacTest(provider: CryptographyProvider) : AlgorithmTest<HMAC>(HM
 
     @Test
     fun testSizes() = runTestForEachDigest {
-        val key = algorithm.keyGenerator(digest).generateKey()
+        val key = algorithm.keyGenerator(digest).generate()
         assertEquals(digestBlockSize, key.encodeToByteString(HMAC.Key.Format.RAW).size)
         val signatureGenerator = key.signatureGenerator()
 
@@ -59,7 +59,7 @@ abstract class HmacTest(provider: CryptographyProvider) : AlgorithmTest<HMAC>(HM
 
     @Test
     fun verifyNoFail() = runTestForEachDigest {
-        val key = algorithm.keyGenerator(digest).generateKey()
+        val key = algorithm.keyGenerator(digest).generate()
         assertFalse(key.signatureVerifier().tryVerifySignature(ByteArray(0), ByteArray(0)))
         assertFalse(key.signatureVerifier().tryVerifySignature(ByteArray(10), ByteArray(0)))
         assertFalse(key.signatureVerifier().tryVerifySignature(ByteArray(10), ByteArray(10)))
@@ -67,7 +67,7 @@ abstract class HmacTest(provider: CryptographyProvider) : AlgorithmTest<HMAC>(HM
 
     @Test
     fun verifyResult() = runTestForEachDigest {
-        val key = algorithm.keyGenerator(digest).generateKey()
+        val key = algorithm.keyGenerator(digest).generate()
         val data = CryptographyRandom.nextBytes(100)
         val signature = key.signatureGenerator().generateSignature(data)
         assertTrue(key.signatureVerifier().tryVerifySignature(data, signature))
@@ -76,8 +76,8 @@ abstract class HmacTest(provider: CryptographyProvider) : AlgorithmTest<HMAC>(HM
     @Test
     fun verifyResultWrongKey() = runTestForEachDigest {
         val keyGenerator = algorithm.keyGenerator(digest)
-        val key = keyGenerator.generateKey()
-        val wrongKey = keyGenerator.generateKey()
+        val key = keyGenerator.generate()
+        val wrongKey = keyGenerator.generate()
         val data = CryptographyRandom.nextBytes(100)
         val signature = key.signatureGenerator().generateSignature(data)
         assertFalse(wrongKey.signatureVerifier().tryVerifySignature(data, signature))
@@ -87,7 +87,7 @@ abstract class HmacTest(provider: CryptographyProvider) : AlgorithmTest<HMAC>(HM
     fun testFunctions() = runTestForEachDigest {
         if (!supportsFunctions()) return@runTestForEachDigest
 
-        val key = algorithm.keyGenerator(digest).generateKey()
+        val key = algorithm.keyGenerator(digest).generate()
         val signatureGenerator = key.signatureGenerator()
         val signatureVerifier = key.signatureVerifier()
 

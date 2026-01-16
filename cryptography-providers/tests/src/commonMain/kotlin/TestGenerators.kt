@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.tests
@@ -62,7 +62,7 @@ inline fun generateDigestsForCompatibility(block: (digest: CryptographyAlgorithm
 }
 
 suspend inline fun <K : Key> KeyGenerator<K>.generateKeys(count: Int, block: (key: K) -> Unit) {
-    repeat(count) { block(generateKey()) }
+    repeat(count) { block(generate()) }
 }
 
 inline fun <T> generate(block: (value: T) -> Unit, vararg values: T) {

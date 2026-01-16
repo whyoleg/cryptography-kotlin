@@ -33,9 +33,9 @@ val keyGenerator = hmac.keyGenerator(SHA512)
 
 // generating HMAC key
 //  types here and below are not required, and just needed to hint reader
-val key1: HMAC.Key = keyGenerator.generateKey()
+val key1: HMAC.Key = keyGenerator.generate()
 // will generate different key
-val key2: HMAC.Key = keyGenerator.generateKey()
+val key2: HMAC.Key = keyGenerator.generate()
 
 // generating signature
 val signature1: ByteArray = key1.signatureGenerator().generateSignature("text1".encodeToByteArray())
@@ -100,7 +100,7 @@ val keyGenerator = aesGcm.keyGenerator(keySize =  Key.Size.B256)
 
 // generating an AES key
 //  types here and below are not required, and just needed to hint reader
-val key: AES.GCM.Key = keyGenerator.generateKey()
+val key: AES.GCM.Key = keyGenerator.generate()
 
 // encrypting data
 //  for simplicity of example, we will use default parameters
@@ -135,7 +135,7 @@ val keyPairGenerator = ecdsa.keyPairGenerator(EC.Curve.P521)
 
 // generating ECDSA key pair
 //  types here and below are not required, and just needed to hint reader
-val keyPair: ECDSA.KeyPair = keyPairGenerator.generateKey()
+val keyPair: ECDSA.KeyPair = keyPairGenerator.generate()
 
 // generating signature using privateKey
 val signature: ByteArray =

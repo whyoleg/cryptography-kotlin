@@ -59,7 +59,7 @@ abstract class DhCompatibilityTest(
         }
 
         repeat(keyIterations) {
-            val keyPair = parameters.keyPairGenerator().generateKey()
+            val keyPair = parameters.keyPairGenerator().generate()
 
             val publicKeyData = KeyData(keyPair.publicKey.encodeTo(publicKeyFormats.values, ::supportsKeyFormat))
             val privateKeyData = KeyData(keyPair.privateKey.encodeTo(privateKeyFormats.values, ::supportsKeyFormat))
@@ -67,7 +67,7 @@ abstract class DhCompatibilityTest(
             val keyReference = api.keyPairs.saveData(keyParametersId, KeyPairData(publicKeyData, privateKeyData))
 
             repeat(keyIterations) {
-                val otherKeyPair = parameters.keyPairGenerator().generateKey()
+                val otherKeyPair = parameters.keyPairGenerator().generate()
 
                 val otherPublicKeyData = KeyData(otherKeyPair.publicKey.encodeTo(publicKeyFormats.values, ::supportsKeyFormat))
                 val otherPrivateKeyData = KeyData(otherKeyPair.privateKey.encodeTo(privateKeyFormats.values, ::supportsKeyFormat))

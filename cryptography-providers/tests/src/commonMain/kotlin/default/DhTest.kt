@@ -34,7 +34,7 @@ abstract class DhTest(provider: CryptographyProvider) : AlgorithmTest<DH>(DH, pr
     @Test
     fun testKeyGeneration() = testWithAlgorithm {
         val parameters = testParameters()
-        val keyPair = parameters.keyPairGenerator().generateKey()
+        val keyPair = parameters.keyPairGenerator().generate()
         assertNotNull(keyPair.publicKey)
         assertNotNull(keyPair.privateKey)
     }
@@ -42,8 +42,8 @@ abstract class DhTest(provider: CryptographyProvider) : AlgorithmTest<DH>(DH, pr
     @Test
     fun testSharedSecretGeneration() = testWithAlgorithm {
         val parameters = testParameters()
-        val keyPair1 = parameters.keyPairGenerator().generateKey()
-        val keyPair2 = parameters.keyPairGenerator().generateKey()
+        val keyPair1 = parameters.keyPairGenerator().generate()
+        val keyPair2 = parameters.keyPairGenerator().generate()
 
         // Both parties should derive the same shared secret
         val secret1 = keyPair1.privateKey.sharedSecretGenerator().generateSharedSecretToByteArray(keyPair2.publicKey)
@@ -62,7 +62,7 @@ abstract class DhTest(provider: CryptographyProvider) : AlgorithmTest<DH>(DH, pr
     @Test
     fun testKeyEncodingDer() = testWithAlgorithm {
         val parameters = testParameters()
-        val keyPair = parameters.keyPairGenerator().generateKey()
+        val keyPair = parameters.keyPairGenerator().generate()
 
         // Test public key DER encoding roundtrip
         val publicDer = keyPair.publicKey.encodeToByteArray(DH.PublicKey.Format.DER)
@@ -81,7 +81,7 @@ abstract class DhTest(provider: CryptographyProvider) : AlgorithmTest<DH>(DH, pr
     @Test
     fun testKeyEncodingPem() = testWithAlgorithm {
         val parameters = testParameters()
-        val keyPair = parameters.keyPairGenerator().generateKey()
+        val keyPair = parameters.keyPairGenerator().generate()
 
         // Test public key PEM encoding roundtrip
         val publicPem = keyPair.publicKey.encodeToByteArray(DH.PublicKey.Format.PEM)
@@ -110,7 +110,7 @@ abstract class DhTest(provider: CryptographyProvider) : AlgorithmTest<DH>(DH, pr
         assertEquals(parameters.g, decoded.g, "g should match")
 
         // Verify key generation works with decoded parameters
-        val keyPair = decoded.keyPairGenerator().generateKey()
+        val keyPair = decoded.keyPairGenerator().generate()
         assertNotNull(keyPair.publicKey)
         assertNotNull(keyPair.privateKey)
     }
@@ -128,7 +128,7 @@ abstract class DhTest(provider: CryptographyProvider) : AlgorithmTest<DH>(DH, pr
         assertEquals(parameters.g, decoded.g, "g should match")
 
         // Verify key generation works with decoded parameters
-        val keyPair = decoded.keyPairGenerator().generateKey()
+        val keyPair = decoded.keyPairGenerator().generate()
         assertNotNull(keyPair.publicKey)
         assertNotNull(keyPair.privateKey)
     }
@@ -136,7 +136,7 @@ abstract class DhTest(provider: CryptographyProvider) : AlgorithmTest<DH>(DH, pr
     @Test
     fun testKeyPropertiesXY() = testWithAlgorithm {
         val parameters = testParameters()
-        val keyPair = parameters.keyPairGenerator().generateKey()
+        val keyPair = parameters.keyPairGenerator().generate()
 
         // Test that x and y properties are accessible
         val x = keyPair.privateKey.x

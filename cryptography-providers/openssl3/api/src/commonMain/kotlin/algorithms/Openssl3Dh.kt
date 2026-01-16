@@ -59,7 +59,7 @@ internal object Openssl3Dh : DH {
         private val parameters: DH.Parameters,
     ) : KeyGenerator<DH.KeyPair> {
         @OptIn(UnsafeNumber::class)
-        override fun generateKeyBlocking(): DH.KeyPair = memScoped {
+        override fun generateBlocking(): DH.KeyPair = memScoped {
             // Strip leading zeros to get proper unsigned big-endian representation for OpenSSL
             val pBytes = parameters.p.encodeToByteArray().dropLeadingZeros()
             val gBytes = parameters.g.encodeToByteArray().dropLeadingZeros()

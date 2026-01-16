@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.tests.default
@@ -18,7 +18,7 @@ abstract class AesCtrTest(provider: CryptographyProvider) : AesBasedTest<AES.CTR
     fun testFunctions() = runTestForEachKeySize {
         if (!supportsFunctions()) return@runTestForEachKeySize
 
-        val key = algorithm.keyGenerator(keySize).generateKey()
+        val key = algorithm.keyGenerator(keySize).generate()
         val cipher = key.cipher()
         repeat(100) {
             val size = CryptographyRandom.nextInt(20000)
@@ -31,7 +31,7 @@ abstract class AesCtrTest(provider: CryptographyProvider) : AesBasedTest<AES.CTR
     fun testFunctionsWithIv() = runTestForEachKeySize {
         if (!supportsFunctions()) return@runTestForEachKeySize
 
-        val key = algorithm.keyGenerator(keySize).generateKey()
+        val key = algorithm.keyGenerator(keySize).generate()
         val cipher = key.cipher()
         repeat(100) {
             val size = CryptographyRandom.nextInt(20000)

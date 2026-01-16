@@ -9,9 +9,17 @@ import dev.whyoleg.cryptography.materials.*
 
 @SubclassOptInRequired(CryptographyProviderApi::class)
 public interface KeyGenerator<K : Key> : MaterialGenerator<K> {
-    public suspend fun generateKey(): K = generateKeyBlocking()
-    public fun generateKeyBlocking(): K
+    @Deprecated(
+        "Renamed to generate",
+        ReplaceWith("generate()"),
+        level = DeprecationLevel.ERROR,
+    )
+    public suspend fun generateKey(): K = generate()
 
-    override suspend fun generate(): K = generateKey()
-    override fun generateBlocking(): K = generateKeyBlocking()
+    @Deprecated(
+        "Renamed to generateBlocking",
+        ReplaceWith("generateBlocking()"),
+        level = DeprecationLevel.ERROR,
+    )
+    public fun generateKeyBlocking(): K = generateBlocking()
 }

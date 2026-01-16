@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.tests.default
@@ -130,7 +130,7 @@ abstract class EcdsaTest(provider: CryptographyProvider) : AlgorithmTest<ECDSA>(
             if (!supportsCurve(curve)) return@forEach
 
             logger.log { "Running size test for curve: ${curve.name}" }
-            val keyPair = algorithm.keyPairGenerator(curve).generateKey()
+            val keyPair = algorithm.keyPairGenerator(curve).generate()
 
             suspend fun assertPublicKeySize(format: EC.PublicKey.Format, expectedSize: Int) {
                 if (supportsKeyFormat(format)) assertEquals(
@@ -244,7 +244,7 @@ abstract class EcdsaTest(provider: CryptographyProvider) : AlgorithmTest<ECDSA>(
 
             logger.log { "Running function test for curve: ${curve.name}" }
 
-            val keyPair = algorithm.keyPairGenerator(curve).generateKey()
+            val keyPair = algorithm.keyPairGenerator(curve).generate()
 
             ecdsaDigests.forEach { digest->
                 if (!supportsDigestEcdsa(digest)) {

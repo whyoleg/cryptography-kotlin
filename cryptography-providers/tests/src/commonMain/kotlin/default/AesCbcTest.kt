@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.tests.default
@@ -17,7 +17,7 @@ private const val ivSize = 16
 abstract class AesCbcTest(provider: CryptographyProvider) : AesBasedTest<AES.CBC>(AES.CBC, provider) {
     @Test
     fun testSizes() = runTestForEachKeySize {
-        val key = algorithm.keyGenerator(keySize).generateKey()
+        val key = algorithm.keyGenerator(keySize).generate()
         assertEquals(keySize.inBytes, key.encodeToByteString(AES.Key.Format.RAW).size)
 
         key.cipher(padding = true).run {
@@ -62,7 +62,7 @@ abstract class AesCbcTest(provider: CryptographyProvider) : AesBasedTest<AES.CBC
     fun decryption() = runTestForEachKeySize {
         val data = CryptographyRandom.nextBytes(100)
 
-        val key = algorithm.keyGenerator(keySize).generateKey()
+        val key = algorithm.keyGenerator(keySize).generate()
 
         val ciphertext = key.cipher(padding = true).encrypt(data)
         val plaintext = key.cipher(padding = true).decrypt(ciphertext)
@@ -74,8 +74,8 @@ abstract class AesCbcTest(provider: CryptographyProvider) : AesBasedTest<AES.CBC
     fun decryptionWrongKey() = runTestForEachKeySize {
         val data = CryptographyRandom.nextBytes(100)
 
-        val key = algorithm.keyGenerator(keySize).generateKey()
-        val wrongKey = algorithm.keyGenerator(keySize).generateKey()
+        val key = algorithm.keyGenerator(keySize).generate()
+        val wrongKey = algorithm.keyGenerator(keySize).generate()
 
         val ciphertext = key.cipher(padding = true).encrypt(data)
 
@@ -96,7 +96,7 @@ abstract class AesCbcTest(provider: CryptographyProvider) : AesBasedTest<AES.CBC
     fun testFunctions() = runTestForEachKeySize {
         if (!supportsFunctions()) return@runTestForEachKeySize
 
-        val key = algorithm.keyGenerator(keySize).generateKey()
+        val key = algorithm.keyGenerator(keySize).generate()
         val cipher = key.cipher()
         repeat(100) {
             val size = CryptographyRandom.nextInt(20000)
@@ -109,7 +109,7 @@ abstract class AesCbcTest(provider: CryptographyProvider) : AesBasedTest<AES.CBC
     fun testFunctionsWithIv() = runTestForEachKeySize {
         if (!supportsFunctions()) return@runTestForEachKeySize
 
-        val key = algorithm.keyGenerator(keySize).generateKey()
+        val key = algorithm.keyGenerator(keySize).generate()
         val cipher = key.cipher()
         repeat(100) {
             val size = CryptographyRandom.nextInt(20000)

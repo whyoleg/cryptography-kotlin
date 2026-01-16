@@ -443,9 +443,7 @@ abstract interface <#A: dev.whyoleg.cryptography.algorithms/RSA.PublicKey, #B: d
 }
 
 abstract interface <#A: dev.whyoleg.cryptography.materials.key/Key> dev.whyoleg.cryptography.materials.key/KeyGenerator : dev.whyoleg.cryptography.materials/MaterialGenerator<#A> { // dev.whyoleg.cryptography.materials.key/KeyGenerator|null[0]
-    abstract fun generateKeyBlocking(): #A // dev.whyoleg.cryptography.materials.key/KeyGenerator.generateKeyBlocking|generateKeyBlocking(){}[0]
-    open fun generateBlocking(): #A // dev.whyoleg.cryptography.materials.key/KeyGenerator.generateBlocking|generateBlocking(){}[0]
-    open suspend fun generate(): #A // dev.whyoleg.cryptography.materials.key/KeyGenerator.generate|generate(){}[0]
+    open fun generateKeyBlocking(): #A // dev.whyoleg.cryptography.materials.key/KeyGenerator.generateKeyBlocking|generateKeyBlocking(){}[0]
     open suspend fun generateKey(): #A // dev.whyoleg.cryptography.materials.key/KeyGenerator.generateKey|generateKey(){}[0]
 }
 

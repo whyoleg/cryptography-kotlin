@@ -12,7 +12,6 @@ import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.base.operations.*
 import dev.whyoleg.cryptography.providers.cryptokit.internal.*
 import dev.whyoleg.cryptography.providers.cryptokit.internal.swift.DwcCryptoKitInterop.*
-import platform.Foundation.*
 
 private const val keySize = 32
 private const val nonceSize: Int = 12
@@ -34,7 +33,7 @@ private class ChaCha20Poly1305KeyDecoder : KeyDecoder<ChaCha20Poly1305.Key.Forma
 }
 
 private class ChaCha20Poly1305KeyGenerator : KeyGenerator<ChaCha20Poly1305.Key> {
-    override fun generateKeyBlocking(): ChaCha20Poly1305.Key {
+    override fun generateBlocking(): ChaCha20Poly1305.Key {
         val key = CryptographySystem.getDefaultRandom().nextBytes(keySize)
         return ChaCha20Poly1305Key(key)
     }

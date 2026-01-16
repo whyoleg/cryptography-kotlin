@@ -18,7 +18,7 @@ abstract class ChaCha20Poly1305Test(provider: CryptographyProvider) : AlgorithmT
     CipherTest {
     @Test
     fun testSizes() = testWithAlgorithm {
-        val key = algorithm.keyGenerator().generateKey()
+        val key = algorithm.keyGenerator().generate()
         assertEquals(32, key.encodeToByteString(ChaCha20Poly1305.Key.Format.RAW).size)
 
         key.cipher().run {
@@ -34,7 +34,7 @@ abstract class ChaCha20Poly1305Test(provider: CryptographyProvider) : AlgorithmT
     fun decryption() = testWithAlgorithm {
         val data = CryptographyRandom.nextBytes(100)
 
-        val key = algorithm.keyGenerator().generateKey()
+        val key = algorithm.keyGenerator().generate()
 
         val ciphertext = key.cipher().encrypt(data)
         key.cipher().encrypt(ByteString()) // reset nonce ...
@@ -47,8 +47,8 @@ abstract class ChaCha20Poly1305Test(provider: CryptographyProvider) : AlgorithmT
     fun decryptionWrongKey() = testWithAlgorithm {
         val data = CryptographyRandom.nextBytes(100)
 
-        val key = algorithm.keyGenerator().generateKey()
-        val wrongKey = algorithm.keyGenerator().generateKey()
+        val key = algorithm.keyGenerator().generate()
+        val wrongKey = algorithm.keyGenerator().generate()
 
         val ciphertext = key.cipher().encrypt(data)
 
@@ -59,7 +59,7 @@ abstract class ChaCha20Poly1305Test(provider: CryptographyProvider) : AlgorithmT
     fun testFunctions() = testWithAlgorithm {
         if (!supportsFunctions()) return@testWithAlgorithm
 
-        val key = algorithm.keyGenerator().generateKey()
+        val key = algorithm.keyGenerator().generate()
         val cipher = key.cipher()
         repeat(100) {
             val size = CryptographyRandom.nextInt(20000)
@@ -72,7 +72,7 @@ abstract class ChaCha20Poly1305Test(provider: CryptographyProvider) : AlgorithmT
     fun testFunctionsWithIv() = testWithAlgorithm {
         if (!supportsFunctions()) return@testWithAlgorithm
 
-        val key = algorithm.keyGenerator().generateKey()
+        val key = algorithm.keyGenerator().generate()
         val cipher = key.cipher()
         repeat(100) {
             val size = CryptographyRandom.nextInt(20000)

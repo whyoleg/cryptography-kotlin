@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.apple.algorithms
@@ -52,7 +52,7 @@ private class HmacKeyGenerator(
     private val blockSize: Int,
     private val digestSize: Int,
 ) : KeyGenerator<HMAC.Key> {
-    override fun generateKeyBlocking(): HMAC.Key {
+    override fun generateBlocking(): HMAC.Key {
         val key = CryptographySystem.getDefaultRandom().nextBytes(blockSize)
         return wrapKey(hmacAlgorithm, key, digestSize)
     }

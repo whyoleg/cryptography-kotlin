@@ -18,7 +18,7 @@ abstract class AesCfbTest(provider: CryptographyProvider) : AesBasedTest<AES.CFB
     fun testFunctions() = runTestForEachKeySize {
         if (!supportsFunctions()) return@runTestForEachKeySize
 
-        val key = algorithm.keyGenerator(keySize).generateKey()
+        val key = algorithm.keyGenerator(keySize).generate()
         val cipher = key.cipher()
         repeat(100) {
             val size = CryptographyRandom.nextInt(20000)
@@ -31,7 +31,7 @@ abstract class AesCfbTest(provider: CryptographyProvider) : AesBasedTest<AES.CFB
     fun testFunctionsWithIv() = runTestForEachKeySize {
         if (!supportsFunctions()) return@runTestForEachKeySize
 
-        val key = algorithm.keyGenerator(keySize).generateKey()
+        val key = algorithm.keyGenerator(keySize).generate()
         val cipher = key.cipher()
         repeat(100) {
             val size = CryptographyRandom.nextInt(20000)

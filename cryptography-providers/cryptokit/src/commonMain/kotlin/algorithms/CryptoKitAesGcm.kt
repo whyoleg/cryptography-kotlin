@@ -33,7 +33,7 @@ private class AesKeyDecoder : KeyDecoder<AES.Key.Format, AES.GCM.Key> {
 }
 
 private class AesGcmKeyGenerator(private val keySizeBytes: Int) : KeyGenerator<AES.GCM.Key> {
-    override fun generateKeyBlocking(): AES.GCM.Key {
+    override fun generateBlocking(): AES.GCM.Key {
         val key = CryptographySystem.getDefaultRandom().nextBytes(keySizeBytes)
         return AesGcmKey(key)
     }

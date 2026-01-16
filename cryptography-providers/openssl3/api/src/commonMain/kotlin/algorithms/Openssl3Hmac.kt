@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
@@ -46,7 +46,7 @@ private class HmacKeyGenerator(
     private val hashAlgorithm: String,
     private val blockSize: Int,
 ) : KeyGenerator<HMAC.Key> {
-    override fun generateKeyBlocking(): HMAC.Key {
+    override fun generateBlocking(): HMAC.Key {
         val key = CryptographySystem.getDefaultRandom().nextBytes(blockSize)
         return HmacKey(hashAlgorithm, key)
     }

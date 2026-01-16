@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2025-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.cryptokit.algorithms
@@ -32,7 +32,7 @@ internal object CryptoKitEcdh : ECDH {
     private class KeyPairGenerator(
         private val curve: DwcEcCurve,
     ) : KeyGenerator<ECDH.KeyPair> {
-        override fun generateKeyBlocking(): ECDH.KeyPair {
+        override fun generateBlocking(): ECDH.KeyPair {
             val privateKey = DwcEcdhPrivateKey.generateWithCurve(curve)
             return EcdhKeyPair(
                 privateKey = EcdhPrivateKey(privateKey),

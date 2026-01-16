@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.webcrypto.materials
@@ -12,9 +12,9 @@ internal class WebCryptoAsymmetricKeyGenerator<K : Key>(
     private val keyUsages: Array<String>,
     private val keyPairWrapper: (CryptoKeyPair) -> K,
 ) : KeyGenerator<K> {
-    override suspend fun generateKey(): K {
+    override suspend fun generate(): K {
         return keyPairWrapper(WebCrypto.generateKeyPair(algorithm, true, keyUsages))
     }
 
-    override fun generateKeyBlocking(): K = nonBlocking()
+    override fun generateBlocking(): K = nonBlocking()
 }

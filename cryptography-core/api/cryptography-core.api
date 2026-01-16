@@ -837,11 +837,8 @@ public abstract interface class dev/whyoleg/cryptography/materials/key/KeyFormat
 }
 
 public abstract interface class dev/whyoleg/cryptography/materials/key/KeyGenerator : dev/whyoleg/cryptography/materials/MaterialGenerator {
-	public fun generate (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun generateBlocking ()Ldev/whyoleg/cryptography/materials/key/Key;
-	public synthetic fun generateBlocking ()Ljava/lang/Object;
 	public fun generateKey (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun generateKeyBlocking ()Ldev/whyoleg/cryptography/materials/key/Key;
+	public fun generateKeyBlocking ()Ldev/whyoleg/cryptography/materials/key/Key;
 }
 
 public abstract interface class dev/whyoleg/cryptography/operations/AuthenticatedCipher : dev/whyoleg/cryptography/operations/AuthenticatedDecryptor, dev/whyoleg/cryptography/operations/AuthenticatedEncryptor, dev/whyoleg/cryptography/operations/Cipher {

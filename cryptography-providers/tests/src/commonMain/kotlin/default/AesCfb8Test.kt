@@ -16,7 +16,7 @@ private const val ivSize = 16
 abstract class AesCfb8Test(provider: CryptographyProvider) : AesBasedTest<AES.CFB8>(AES.CFB8, provider) {
     @Test
     fun testSizes() = runTestForEachKeySize {
-        val key = algorithm.keyGenerator(keySize).generateKey()
+        val key = algorithm.keyGenerator(keySize).generate()
         assertEquals(keySize.inBytes, key.encodeToByteString(AES.Key.Format.RAW).size)
 
         key.cipher().run {
@@ -40,7 +40,7 @@ abstract class AesCfb8Test(provider: CryptographyProvider) : AesBasedTest<AES.CF
     fun decryption() = runTestForEachKeySize {
         val data = CryptographyRandom.nextBytes(100)
 
-        val key = algorithm.keyGenerator(keySize).generateKey()
+        val key = algorithm.keyGenerator(keySize).generate()
 
         val ciphertext = key.cipher().encrypt(data)
         val plaintext = key.cipher().decrypt(ciphertext)
@@ -52,8 +52,8 @@ abstract class AesCfb8Test(provider: CryptographyProvider) : AesBasedTest<AES.CF
     fun decryptionWrongKey() = runTestForEachKeySize {
         val data = CryptographyRandom.nextBytes(100)
 
-        val key = algorithm.keyGenerator(keySize).generateKey()
-        val wrongKey = algorithm.keyGenerator(keySize).generateKey()
+        val key = algorithm.keyGenerator(keySize).generate()
+        val wrongKey = algorithm.keyGenerator(keySize).generate()
 
         val ciphertext = key.cipher().encrypt(data)
 
@@ -74,7 +74,7 @@ abstract class AesCfb8Test(provider: CryptographyProvider) : AesBasedTest<AES.CF
     fun testFunctions() = runTestForEachKeySize {
         if (!supportsFunctions()) return@runTestForEachKeySize
 
-        val key = algorithm.keyGenerator(keySize).generateKey()
+        val key = algorithm.keyGenerator(keySize).generate()
         val cipher = key.cipher()
         repeat(100) {
             val size = CryptographyRandom.nextInt(20000)
@@ -87,7 +87,7 @@ abstract class AesCfb8Test(provider: CryptographyProvider) : AesBasedTest<AES.CF
     fun testFunctionsWithIv() = runTestForEachKeySize {
         if (!supportsFunctions()) return@runTestForEachKeySize
 
-        val key = algorithm.keyGenerator(keySize).generateKey()
+        val key = algorithm.keyGenerator(keySize).generate()
         val cipher = key.cipher()
         repeat(100) {
             val size = CryptographyRandom.nextInt(20000)

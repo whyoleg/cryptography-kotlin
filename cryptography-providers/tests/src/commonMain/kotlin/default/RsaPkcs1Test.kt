@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.tests.default
@@ -20,7 +20,7 @@ abstract class RsaPkcs1Test(provider: CryptographyProvider) : AlgorithmTest<RSA.
             generateDigests { digest, _ ->
                 if (!supportsDigest(digest)) return@generateDigests
 
-                val keyPair = algorithm.keyPairGenerator(keySize, digest).generateKey()
+                val keyPair = algorithm.keyPairGenerator(keySize, digest).generate()
 
                 if (supportsKeyFormat(RSA.PublicKey.Format.DER)) {
                     assertEquals(keySize.inBytes + 38, keyPair.publicKey.encodeToByteString(RSA.PublicKey.Format.DER).size)
@@ -41,7 +41,7 @@ abstract class RsaPkcs1Test(provider: CryptographyProvider) : AlgorithmTest<RSA.
 
             if (supportsEncryption()) {
                 // digest is not used for encryption
-                val keyPair = algorithm.keyPairGenerator(keySize, SHA1).generateKey()
+                val keyPair = algorithm.keyPairGenerator(keySize, SHA1).generate()
 
                 val maxSize = keySize.inBytes - 11 // PKCS1 padding
 
@@ -78,7 +78,7 @@ abstract class RsaPkcs1Test(provider: CryptographyProvider) : AlgorithmTest<RSA.
             generateDigests { digest, _ ->
                 if (!supportsDigest(digest)) return@generateDigests
 
-                val keyPair = algorithm.keyPairGenerator(keySize, digest).generateKey()
+                val keyPair = algorithm.keyPairGenerator(keySize, digest).generate()
                 val signatureGenerator = keyPair.privateKey.signatureGenerator()
                 val signatureVerifier = keyPair.publicKey.signatureVerifier()
 

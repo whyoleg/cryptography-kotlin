@@ -37,7 +37,7 @@ internal object Openssl3ChaCha20Poly1305 : ChaCha20Poly1305 {
     }
 
     private class ChaCha20Poly1305KeyGenerator : KeyGenerator<ChaCha20Poly1305.Key> {
-        override fun generateKeyBlocking(): ChaCha20Poly1305.Key {
+        override fun generateBlocking(): ChaCha20Poly1305.Key {
             val key = CryptographySystem.getDefaultRandom().nextBytes(keySize)
             return ChaCha20Poly1305Key(key)
         }

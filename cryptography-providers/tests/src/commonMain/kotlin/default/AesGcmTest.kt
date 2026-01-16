@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.tests.default
@@ -17,7 +17,7 @@ private const val defaultIvSize = 12
 abstract class AesGcmTest(provider: CryptographyProvider) : AesBasedTest<AES.GCM>(AES.GCM, provider) {
     @Test
     fun testSizes() = runTestForEachKeySize {
-        val key = algorithm.keyGenerator(keySize).generateKey()
+        val key = algorithm.keyGenerator(keySize).generate()
         assertEquals(keySize.inBytes, key.encodeToByteString(AES.Key.Format.RAW).size)
 
         listOf(96, 104, 112, 120, 128).forEach { tagSizeBits ->
@@ -37,7 +37,7 @@ abstract class AesGcmTest(provider: CryptographyProvider) : AesBasedTest<AES.GCM
 
     @Test
     fun testCustomIvSize() = runTestForEachKeySize {
-        val key = algorithm.keyGenerator(keySize).generateKey()
+        val key = algorithm.keyGenerator(keySize).generate()
         assertEquals(keySize.inBytes, key.encodeToByteString(AES.Key.Format.RAW).size)
 
         listOf(12, 14, 16).forEach { ivSizeBytes ->
@@ -58,7 +58,7 @@ abstract class AesGcmTest(provider: CryptographyProvider) : AesBasedTest<AES.GCM
     fun decryption() = runTestForEachKeySize {
         val data = CryptographyRandom.nextBytes(100)
 
-        val key = algorithm.keyGenerator(keySize).generateKey()
+        val key = algorithm.keyGenerator(keySize).generate()
 
         val ciphertext = key.cipher().encrypt(data)
         val plaintext = key.cipher().decrypt(ciphertext)
@@ -70,8 +70,8 @@ abstract class AesGcmTest(provider: CryptographyProvider) : AesBasedTest<AES.GCM
     fun decryptionWrongKey() = runTestForEachKeySize {
         val data = CryptographyRandom.nextBytes(100)
 
-        val key = algorithm.keyGenerator(keySize).generateKey()
-        val wrongKey = algorithm.keyGenerator(keySize).generateKey()
+        val key = algorithm.keyGenerator(keySize).generate()
+        val wrongKey = algorithm.keyGenerator(keySize).generate()
 
         val ciphertext = key.cipher().encrypt(data)
 
@@ -82,7 +82,7 @@ abstract class AesGcmTest(provider: CryptographyProvider) : AesBasedTest<AES.GCM
     fun testFunctions() = runTestForEachKeySize {
         if (!supportsFunctions()) return@runTestForEachKeySize
 
-        val key = algorithm.keyGenerator(keySize).generateKey()
+        val key = algorithm.keyGenerator(keySize).generate()
         listOf(96, 104, 112, 120, 128).forEach { tagSizeBits ->
             if (!supportsTagSize(tagSizeBits.bits)) return@forEach
             val cipher = key.cipher(tagSizeBits.bits)
@@ -98,7 +98,7 @@ abstract class AesGcmTest(provider: CryptographyProvider) : AesBasedTest<AES.GCM
     fun testFunctionsWithIv() = runTestForEachKeySize {
         if (!supportsFunctions()) return@runTestForEachKeySize
 
-        val key = algorithm.keyGenerator(keySize).generateKey()
+        val key = algorithm.keyGenerator(keySize).generate()
         listOf(96, 104, 112, 120, 128).forEach { tagSizeBits ->
             if (!supportsTagSize(tagSizeBits.bits)) return@forEach
             val cipher = key.cipher(tagSizeBits.bits)

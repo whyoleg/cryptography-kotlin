@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.jdk.materials
 
-import dev.whyoleg.cryptography.providers.jdk.*
 import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.providers.jdk.*
 
 internal class JdkSecretKeyGenerator<K : Key>(
     state: JdkCryptographyState,
@@ -14,7 +14,7 @@ internal class JdkSecretKeyGenerator<K : Key>(
     private val keyGeneratorInit: JKeyGenerator.() -> Unit,
 ) : KeyGenerator<K> {
     private val keyGenerator = state.keyGenerator(algorithm)
-    override fun generateKeyBlocking(): K = keyWrapper(keyGenerator.use {
+    override fun generateBlocking(): K = keyWrapper(keyGenerator.use {
         it.keyGeneratorInit()
         it.generateKey()
     })

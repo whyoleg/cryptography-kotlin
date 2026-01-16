@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.tests.default
@@ -33,7 +33,7 @@ abstract class RsaOaepTest(provider: CryptographyProvider) : AlgorithmTest<RSA.O
             generateDigests { digest, digestSize ->
                 if (!supportsDigest(digest)) return@generateDigests
 
-                val keyPair = algorithm.keyPairGenerator(keySize, digest).generateKey()
+                val keyPair = algorithm.keyPairGenerator(keySize, digest).generate()
 
                 if (supportsKeyFormat(RSA.PublicKey.Format.DER)) {
                     assertEquals(keySize.inBytes + 38, keyPair.publicKey.encodeToByteString(RSA.PublicKey.Format.DER).size)
