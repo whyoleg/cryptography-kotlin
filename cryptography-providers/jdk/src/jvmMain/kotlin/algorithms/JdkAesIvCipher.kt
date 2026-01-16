@@ -1,10 +1,9 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.jdk.algorithms
 
-import dev.whyoleg.cryptography.providers.base.algorithms.*
 import dev.whyoleg.cryptography.providers.base.operations.*
 import dev.whyoleg.cryptography.providers.jdk.*
 import dev.whyoleg.cryptography.providers.jdk.operations.*
@@ -15,16 +14,16 @@ internal class JdkAesIvCipher(
     private val key: JSecretKey,
     private val ivSize: Int,
     algorithm: String,
-) : BaseAesIvCipher {
+) : BaseIvCipher {
     private val cipher = state.cipher(algorithm)
 
     override fun createEncryptFunction(): CipherFunction {
         val iv = ByteArray(ivSize).also(state.secureRandom::nextBytes)
-        return BaseAesImplicitIvEncryptFunction(iv, createEncryptFunctionWithIv(iv))
+        return BaseImplicitIvEncryptFunction(iv, createEncryptFunctionWithIv(iv))
     }
 
     override fun createDecryptFunction(): CipherFunction {
-        return BaseAesImplicitIvDecryptFunction(ivSize, ::createDecryptFunctionWithIv)
+        return BaseImplicitIvDecryptFunction(ivSize, ::createDecryptFunctionWithIv)
     }
 
     override fun createEncryptFunctionWithIv(iv: ByteArray): CipherFunction {

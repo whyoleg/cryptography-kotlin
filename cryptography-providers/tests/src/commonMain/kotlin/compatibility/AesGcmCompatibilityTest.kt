@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.tests.compatibility
@@ -7,6 +7,7 @@ package dev.whyoleg.cryptography.providers.tests.compatibility
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.BinarySize.Companion.bits
 import dev.whyoleg.cryptography.algorithms.*
+import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.tests.*
 import dev.whyoleg.cryptography.providers.tests.compatibility.api.*
 import dev.whyoleg.cryptography.random.*
@@ -134,7 +135,7 @@ abstract class AesGcmCompatibilityTest(provider: CryptographyProvider) :
 
 // GCM mode on JDK has a check which tries to prevent reuse of the same IV with the same key.
 // we need to set random IV first to be able to reuse IV for different plaintext for the same key
-private suspend fun AES.IvAuthenticatedCipher.resetIv(context: TestContext): AES.IvAuthenticatedCipher {
+private suspend fun IvAuthenticatedCipher.resetIv(context: TestContext): IvAuthenticatedCipher {
     if (context.provider.isJdk) encrypt(ByteString())
     return this
 }

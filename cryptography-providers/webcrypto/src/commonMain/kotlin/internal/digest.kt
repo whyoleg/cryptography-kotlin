@@ -15,12 +15,13 @@ internal fun CryptographyAlgorithmId<Digest>.blockSizeBits(): Int = when (this) 
     else -> throw IllegalStateException("Unsupported hash algorithm: $name")
 } * 8
 
-internal fun CryptographyAlgorithmId<Digest>.hashAlgorithmName(): String = when (this) {
+internal fun CryptographyAlgorithmId<Digest>?.hashAlgorithmName(): String = when (this) {
     SHA1   -> "SHA-1"
     SHA256 -> "SHA-256"
     SHA384 -> "SHA-384"
     SHA512 -> "SHA-512"
-    else -> throw IllegalStateException("Unsupported hash algorithm: $name")
+    null   -> throw IllegalStateException("Operation without digest is unsupported!")
+    else   -> throw IllegalStateException("Unsupported hash algorithm: ${this.name}")
 }
 
 internal fun CryptographyAlgorithmId<Digest>.digestSize(): Int = when (this) {

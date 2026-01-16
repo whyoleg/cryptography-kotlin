@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.tests
@@ -20,19 +20,49 @@ fun AlgorithmTestScope<*>.supportsFunctions() = supports {
     }
 }
 
-fun AlgorithmTestScope<*>.supportsDigest(digest: CryptographyAlgorithmId<Digest>): Boolean = supports {
+fun AlgorithmTestScope<ECDSA>.supportsDigestEcdsa(
+    digest: CryptographyAlgorithmId<Digest>?,
+): Boolean {
+    val isEcdsaSupport = supports {
+        when {
+            digest == null && (algorithm != ECDSA || provider.isJdkDefault || provider.isWebCrypto || provider.isCryptoKit)
+                 -> "ECDSA without digest"
+            else -> null
+        }
+    }
+
+    if (!isEcdsaSupport) {
+        return false
+    }
+
+    val isCommonSupport = when (digest) {
+        null -> true
+        else -> supportsDigest(digest)
+    }
+
+    return isCommonSupport
+}
+
+fun AlgorithmTestScope<*>.supportsDigest(
+    digest: CryptographyAlgorithmId<Digest>
+): Boolean = supports {
     val sha3Algorithms = setOf(SHA3_224, SHA3_256, SHA3_384, SHA3_512)
+
     when {
         (digest == SHA224 || digest in sha3Algorithms) &&
                 (provider.isWebCrypto || provider.isCryptoKit) -> digest.name
+
         digest in sha3Algorithms &&
-                provider.isApple                                      -> digest.name
+                provider.isApple -> digest.name
+
         digest in sha3Algorithms &&
                 provider.isJdkDefault &&
                 (platform.isJdk { major < 17 } || platform.isAndroid) -> "${digest.name} signatures on old JDK"
+
         digest == RIPEMD160 && (provider.isJdkDefault || provider.isApple || provider.isWebCrypto || provider.isCryptoKit)
-                                                                      -> digest.name
-        else                                                          -> null
+            -> digest.name
+
+        else -> null
     }
 }
 
@@ -148,9 +178,10 @@ fun AlgorithmTestScope<out EC<*, *, *>>.supportsPrivateKeyDecoding(
 
 fun ProviderTestScope.supports(algorithmId: CryptographyAlgorithmId<*>): Boolean = validate {
     when (algorithmId) {
-        AES.CMAC if provider.isJdkDefault                      -> "Default JDK provider doesn't support AES-CMAC, only supported with BouncyCastle"
-        RSA.PSS if provider.isJdkDefault && platform.isAndroid -> "JDK provider on Android doesn't support RSASSA-PSS"
-        else                                                   -> null
+        AES.CMAC if provider.isJdkDefault                                          -> "Default JDK provider doesn't support AES-CMAC, only supported with BouncyCastle"
+        RSA.PSS if provider.isJdkDefault && platform.isAndroid                     -> "JDK provider on Android doesn't support RSASSA-PSS"
+        ChaCha20Poly1305 if provider.isJdkDefault && platform.isJdk { major < 11 } -> "Default JDK provider supports ChaCha20-Poly1305 from JDK 11"
+        else                                                                       -> null
     }
 }
 

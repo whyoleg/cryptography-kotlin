@@ -23,14 +23,14 @@ internal fun <T : Any> swiftTry(
     }
 }
 
-
 @OptIn(UnsafeNumber::class)
-internal fun CryptographyAlgorithmId<Digest>.swiftHashAlgorithm(): DwcHashAlgorithm = when (this) {
+internal fun CryptographyAlgorithmId<Digest>?.swiftHashAlgorithm(): DwcHashAlgorithm = when (this) {
     MD5    -> DwcHashAlgorithmMd5
     SHA1   -> DwcHashAlgorithmSha1
     SHA256 -> DwcHashAlgorithmSha256
     SHA384 -> DwcHashAlgorithmSha384
     SHA512 -> DwcHashAlgorithmSha512
+    null   -> throw IllegalStateException("Operation without digest is unsupported!")
     else   -> throw IllegalStateException("Unsupported hash algorithm: $this")
 }
 

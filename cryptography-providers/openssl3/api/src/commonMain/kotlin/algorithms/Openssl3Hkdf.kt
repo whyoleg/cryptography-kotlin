@@ -21,7 +21,7 @@ internal object Openssl3Hkdf : HKDF {
         salt: ByteArray?,
         info: ByteArray?,
     ): SecretDerivation {
-        val hashAlgorithm = hashAlgorithm(digest)
+        val hashAlgorithm = hashAlgorithmName(digest)
         return Openssl3HkdfSecretDerivation(
             hashAlgorithm = hashAlgorithm,
             outputSize = outputSize,

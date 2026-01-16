@@ -23,12 +23,12 @@ internal object Openssl3Hmac : HMAC {
     private val cleaner = createCleaner(mac, ::EVP_MAC_free)
 
     override fun keyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<HMAC.Key.Format, HMAC.Key> {
-        val hashAlgorithm = hashAlgorithm(digest)
+        val hashAlgorithm = hashAlgorithmName(digest)
         return HmacKeyDecoder(hashAlgorithm)
     }
 
     override fun keyGenerator(digest: CryptographyAlgorithmId<Digest>): KeyGenerator<HMAC.Key> {
-        val hashAlgorithm = hashAlgorithm(digest)
+        val hashAlgorithm = hashAlgorithmName(digest)
         return HmacKeyGenerator(hashAlgorithm, blockSize(hashAlgorithm))
     }
 }

@@ -1,11 +1,10 @@
 /*
- * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.cryptokit.algorithms
 
 import dev.whyoleg.cryptography.*
-import dev.whyoleg.cryptography.BinarySize.Companion.bytes
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.*
@@ -13,64 +12,61 @@ import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.base.operations.*
 import dev.whyoleg.cryptography.providers.cryptokit.internal.*
 import dev.whyoleg.cryptography.providers.cryptokit.internal.swift.DwcCryptoKitInterop.*
+import platform.Foundation.*
 
-internal object CryptoKitAesGcm : AES.GCM {
-    override fun keyDecoder(): KeyDecoder<AES.Key.Format, AES.GCM.Key> = AesKeyDecoder()
+private const val keySize = 32
+private const val nonceSize: Int = 12
+private const val tagSize: Int = 16
 
-    override fun keyGenerator(keySize: BinarySize): KeyGenerator<AES.GCM.Key> = AesGcmKeyGenerator(keySize.inBytes)
+internal object CryptoKitChaCha20Poly1305 : ChaCha20Poly1305 {
+    override fun keyDecoder(): KeyDecoder<ChaCha20Poly1305.Key.Format, ChaCha20Poly1305.Key> = ChaCha20Poly1305KeyDecoder()
+    override fun keyGenerator(): KeyGenerator<ChaCha20Poly1305.Key> = ChaCha20Poly1305KeyGenerator()
 }
 
-private class AesKeyDecoder : KeyDecoder<AES.Key.Format, AES.GCM.Key> {
-    override fun decodeFromByteArrayBlocking(format: AES.Key.Format, bytes: ByteArray): AES.GCM.Key = when (format) {
-        AES.Key.Format.RAW -> {
-            require(bytes.size == 16 || bytes.size == 24 || bytes.size == 32) {
-                "AES key size must be 128, 192 or 256 bits"
-            }
-            AesGcmKey(bytes.copyOf())
+private class ChaCha20Poly1305KeyDecoder : KeyDecoder<ChaCha20Poly1305.Key.Format, ChaCha20Poly1305.Key> {
+    override fun decodeFromByteArrayBlocking(format: ChaCha20Poly1305.Key.Format, bytes: ByteArray): ChaCha20Poly1305.Key = when (format) {
+        ChaCha20Poly1305.Key.Format.RAW -> {
+            require(bytes.size == keySize) { "ChaCha20-Poly1305 key size must be 256 bits" }
+            ChaCha20Poly1305Key(bytes.copyOf())
         }
-        AES.Key.Format.JWK -> error("JWK is not supported")
+        ChaCha20Poly1305.Key.Format.JWK -> error("JWK is not supported")
     }
 }
 
-private class AesGcmKeyGenerator(private val keySizeBytes: Int) : KeyGenerator<AES.GCM.Key> {
-    override fun generateKeyBlocking(): AES.GCM.Key {
-        val key = CryptographySystem.getDefaultRandom().nextBytes(keySizeBytes)
-        return AesGcmKey(key)
+private class ChaCha20Poly1305KeyGenerator : KeyGenerator<ChaCha20Poly1305.Key> {
+    override fun generateKeyBlocking(): ChaCha20Poly1305.Key {
+        val key = CryptographySystem.getDefaultRandom().nextBytes(keySize)
+        return ChaCha20Poly1305Key(key)
     }
 }
 
-private class AesGcmKey(private val key: ByteArray) : AES.GCM.Key {
-    override fun cipher(tagSize: BinarySize): IvAuthenticatedCipher {
-        require(tagSize == 16.bytes) { "GCM tag size must be 16 bytes, but was $tagSize" }
-        return AesGcmCipher(key, tagSize.inBytes)
-    }
+private class ChaCha20Poly1305Key(private val key: ByteArray) : ChaCha20Poly1305.Key {
+    override fun cipher(): IvAuthenticatedCipher = ChaCha20Poly1305Cipher(key)
 
-    override fun encodeToByteArrayBlocking(format: AES.Key.Format): ByteArray = when (format) {
-        AES.Key.Format.RAW -> key.copyOf()
-        AES.Key.Format.JWK -> error("JWK is not supported")
+    override fun encodeToByteArrayBlocking(format: ChaCha20Poly1305.Key.Format): ByteArray = when (format) {
+        ChaCha20Poly1305.Key.Format.RAW -> key.copyOf()
+        ChaCha20Poly1305.Key.Format.JWK -> error("JWK is not supported")
     }
 }
 
-private const val defaultIvSize: Int = 12
 
-private class AesGcmCipher(
+private class ChaCha20Poly1305Cipher(
     private val key: ByteArray,
-    private val tagSize: Int,
 ) : BaseIvAuthenticatedCipher {
 
     override fun createEncryptFunction(associatedData: ByteArray?): CipherFunction {
-        val iv = CryptographySystem.getDefaultRandom().nextBytes(defaultIvSize)
+        val iv = CryptographySystem.getDefaultRandom().nextBytes(nonceSize)
         return BaseImplicitIvEncryptFunction(iv, createEncryptFunctionWithIv(iv, associatedData))
     }
 
     override fun createDecryptFunction(associatedData: ByteArray?): CipherFunction {
-        return BaseImplicitIvDecryptFunction(defaultIvSize) { iv, startIndex ->
-            createDecryptFunctionWithIv(iv, startIndex, defaultIvSize, associatedData)
+        return BaseImplicitIvDecryptFunction(nonceSize) { iv, startIndex ->
+            createDecryptFunctionWithIv(iv, startIndex, nonceSize, associatedData)
         }
     }
 
     override fun createEncryptFunctionWithIv(iv: ByteArray, associatedData: ByteArray?): CipherFunction {
-        require(iv.size >= defaultIvSize) { "IV size is wrong" }
+        require(iv.size >= nonceSize) { "IV size is wrong" }
 
         return AccumulatingCipherFunction { plaintext ->
             plaintext.useNSData { plaintextData ->
@@ -78,7 +74,7 @@ private class AesGcmCipher(
                     key.useNSData { keyData ->
                         (associatedData ?: EmptyByteArray).useNSData { adData ->
                             swiftTry { error ->
-                                DwcAesGcm.encryptWithKey(
+                                DwcChaCha20Poly1305.encryptWithKey(
                                     key = keyData,
                                     nonce = ivData,
                                     plaintext = plaintextData,
@@ -101,7 +97,7 @@ private class AesGcmCipher(
         ivSize: Int,
         associatedData: ByteArray?,
     ): CipherFunction {
-        require(ivSize >= defaultIvSize) { "IV size is wrong" }
+        require(ivSize >= nonceSize) { "IV size is wrong" }
         require(iv.size - startIndex >= ivSize) { "IV size is wrong" }
 
         return AccumulatingCipherFunction { ciphertext ->
@@ -111,7 +107,7 @@ private class AesGcmCipher(
                         key.useNSData { keyData ->
                             (associatedData ?: EmptyByteArray).useNSData { adData ->
                                 swiftTry { error ->
-                                    DwcAesGcm.decryptWithKey(
+                                    DwcChaCha20Poly1305.decryptWithKey(
                                         key = keyData,
                                         nonce = ivData,
                                         ciphertext = ciphertextData,

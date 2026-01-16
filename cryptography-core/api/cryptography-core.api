@@ -101,8 +101,8 @@ public final class dev/whyoleg/cryptography/algorithms/AES$CBC$Companion : dev/w
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/AES$CBC$Key : dev/whyoleg/cryptography/algorithms/AES$Key {
-	public abstract fun cipher (Z)Ldev/whyoleg/cryptography/algorithms/AES$IvCipher;
-	public static synthetic fun cipher$default (Ldev/whyoleg/cryptography/algorithms/AES$CBC$Key;ZILjava/lang/Object;)Ldev/whyoleg/cryptography/algorithms/AES$IvCipher;
+	public abstract fun cipher (Z)Ldev/whyoleg/cryptography/operations/IvCipher;
+	public static synthetic fun cipher$default (Ldev/whyoleg/cryptography/algorithms/AES$CBC$Key;ZILjava/lang/Object;)Ldev/whyoleg/cryptography/operations/IvCipher;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/AES$CFB : dev/whyoleg/cryptography/algorithms/AES {
@@ -114,7 +114,7 @@ public final class dev/whyoleg/cryptography/algorithms/AES$CFB$Companion : dev/w
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/AES$CFB$Key : dev/whyoleg/cryptography/algorithms/AES$Key {
-	public abstract fun cipher ()Ldev/whyoleg/cryptography/algorithms/AES$IvCipher;
+	public abstract fun cipher ()Ldev/whyoleg/cryptography/operations/IvCipher;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/AES$CFB8 : dev/whyoleg/cryptography/algorithms/AES {
@@ -126,7 +126,7 @@ public final class dev/whyoleg/cryptography/algorithms/AES$CFB8$Companion : dev/
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/AES$CFB8$Key : dev/whyoleg/cryptography/algorithms/AES$Key {
-	public abstract fun cipher ()Ldev/whyoleg/cryptography/algorithms/AES$IvCipher;
+	public abstract fun cipher ()Ldev/whyoleg/cryptography/operations/IvCipher;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/AES$CMAC : dev/whyoleg/cryptography/algorithms/AES {
@@ -151,7 +151,7 @@ public final class dev/whyoleg/cryptography/algorithms/AES$CTR$Companion : dev/w
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/AES$CTR$Key : dev/whyoleg/cryptography/algorithms/AES$Key {
-	public abstract fun cipher ()Ldev/whyoleg/cryptography/algorithms/AES$IvCipher;
+	public abstract fun cipher ()Ldev/whyoleg/cryptography/operations/IvCipher;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/AES$ECB : dev/whyoleg/cryptography/algorithms/AES {
@@ -176,70 +176,8 @@ public final class dev/whyoleg/cryptography/algorithms/AES$GCM$Companion : dev/w
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/AES$GCM$Key : dev/whyoleg/cryptography/algorithms/AES$Key {
-	public abstract fun cipher-6q1zMKY (I)Ldev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedCipher;
-	public static synthetic fun cipher-6q1zMKY$default (Ldev/whyoleg/cryptography/algorithms/AES$GCM$Key;IILjava/lang/Object;)Ldev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedCipher;
-}
-
-public abstract interface class dev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedCipher : dev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedDecryptor, dev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedEncryptor, dev/whyoleg/cryptography/algorithms/AES$IvCipher, dev/whyoleg/cryptography/operations/AuthenticatedCipher {
-}
-
-public abstract interface class dev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedDecryptor : dev/whyoleg/cryptography/algorithms/AES$IvDecryptor, dev/whyoleg/cryptography/operations/AuthenticatedDecryptor {
-	public fun decryptWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun decryptWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun decryptWithIv ([B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun decryptWithIv ([B[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun decryptWithIvBlocking (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
-	public fun decryptWithIvBlocking (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
-	public fun decryptWithIvBlocking ([B[B)[B
-	public abstract fun decryptWithIvBlocking ([B[B[B)[B
-	public fun decryptingSinkWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/RawSink;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/RawSink;
-	public fun decryptingSinkWithIv ([BLkotlinx/io/RawSink;)Lkotlinx/io/RawSink;
-	public abstract fun decryptingSinkWithIv ([BLkotlinx/io/RawSink;[B)Lkotlinx/io/RawSink;
-	public fun decryptingSourceWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/RawSource;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/RawSource;
-	public fun decryptingSourceWithIv ([BLkotlinx/io/RawSource;)Lkotlinx/io/RawSource;
-	public abstract fun decryptingSourceWithIv ([BLkotlinx/io/RawSource;[B)Lkotlinx/io/RawSource;
-}
-
-public abstract interface class dev/whyoleg/cryptography/algorithms/AES$IvAuthenticatedEncryptor : dev/whyoleg/cryptography/algorithms/AES$IvEncryptor, dev/whyoleg/cryptography/operations/AuthenticatedEncryptor {
-	public fun encryptWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun encryptWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun encryptWithIv ([B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun encryptWithIv ([B[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun encryptWithIvBlocking (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
-	public fun encryptWithIvBlocking (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
-	public fun encryptWithIvBlocking ([B[B)[B
-	public abstract fun encryptWithIvBlocking ([B[B[B)[B
-	public fun encryptingSinkWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/RawSink;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/RawSink;
-	public fun encryptingSinkWithIv ([BLkotlinx/io/RawSink;)Lkotlinx/io/RawSink;
-	public abstract fun encryptingSinkWithIv ([BLkotlinx/io/RawSink;[B)Lkotlinx/io/RawSink;
-	public fun encryptingSourceWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/RawSource;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/RawSource;
-	public fun encryptingSourceWithIv ([BLkotlinx/io/RawSource;)Lkotlinx/io/RawSource;
-	public abstract fun encryptingSourceWithIv ([BLkotlinx/io/RawSource;[B)Lkotlinx/io/RawSource;
-}
-
-public abstract interface class dev/whyoleg/cryptography/algorithms/AES$IvCipher : dev/whyoleg/cryptography/algorithms/AES$IvDecryptor, dev/whyoleg/cryptography/algorithms/AES$IvEncryptor, dev/whyoleg/cryptography/operations/Cipher {
-}
-
-public abstract interface class dev/whyoleg/cryptography/algorithms/AES$IvDecryptor : dev/whyoleg/cryptography/operations/Decryptor {
-	public fun decryptWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun decryptWithIv ([B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun decryptWithIvBlocking (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
-	public abstract fun decryptWithIvBlocking ([B[B)[B
-	public fun decryptingSinkWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/RawSink;)Lkotlinx/io/RawSink;
-	public abstract fun decryptingSinkWithIv ([BLkotlinx/io/RawSink;)Lkotlinx/io/RawSink;
-	public fun decryptingSourceWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/RawSource;)Lkotlinx/io/RawSource;
-	public abstract fun decryptingSourceWithIv ([BLkotlinx/io/RawSource;)Lkotlinx/io/RawSource;
-}
-
-public abstract interface class dev/whyoleg/cryptography/algorithms/AES$IvEncryptor : dev/whyoleg/cryptography/operations/Encryptor {
-	public fun encryptWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun encryptWithIv ([B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun encryptWithIvBlocking (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
-	public abstract fun encryptWithIvBlocking ([B[B)[B
-	public fun encryptingSinkWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/RawSink;)Lkotlinx/io/RawSink;
-	public abstract fun encryptingSinkWithIv ([BLkotlinx/io/RawSink;)Lkotlinx/io/RawSink;
-	public fun encryptingSourceWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/RawSource;)Lkotlinx/io/RawSource;
-	public abstract fun encryptingSourceWithIv ([BLkotlinx/io/RawSource;)Lkotlinx/io/RawSource;
+	public abstract fun cipher-6q1zMKY (I)Ldev/whyoleg/cryptography/operations/IvAuthenticatedCipher;
+	public static synthetic fun cipher-6q1zMKY$default (Ldev/whyoleg/cryptography/algorithms/AES$GCM$Key;IILjava/lang/Object;)Ldev/whyoleg/cryptography/operations/IvAuthenticatedCipher;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/AES$Key : dev/whyoleg/cryptography/materials/key/EncodableKey {
@@ -270,7 +208,30 @@ public final class dev/whyoleg/cryptography/algorithms/AES$OFB$Companion : dev/w
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/AES$OFB$Key : dev/whyoleg/cryptography/algorithms/AES$Key {
-	public abstract fun cipher ()Ldev/whyoleg/cryptography/algorithms/AES$IvCipher;
+	public abstract fun cipher ()Ldev/whyoleg/cryptography/operations/IvCipher;
+}
+
+public abstract interface class dev/whyoleg/cryptography/algorithms/ChaCha20Poly1305 : dev/whyoleg/cryptography/CryptographyAlgorithm {
+	public static final field Companion Ldev/whyoleg/cryptography/algorithms/ChaCha20Poly1305$Companion;
+	public fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
+	public abstract fun keyDecoder ()Ldev/whyoleg/cryptography/materials/key/KeyDecoder;
+	public abstract fun keyGenerator ()Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/ChaCha20Poly1305$Companion : dev/whyoleg/cryptography/CryptographyAlgorithmId {
+}
+
+public abstract interface class dev/whyoleg/cryptography/algorithms/ChaCha20Poly1305$Key : dev/whyoleg/cryptography/materials/key/EncodableKey {
+	public abstract fun cipher ()Ldev/whyoleg/cryptography/operations/IvAuthenticatedCipher;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/ChaCha20Poly1305$Key$Format : java/lang/Enum, dev/whyoleg/cryptography/materials/key/KeyFormat {
+	public static final field JWK Ldev/whyoleg/cryptography/algorithms/ChaCha20Poly1305$Key$Format;
+	public static final field RAW Ldev/whyoleg/cryptography/algorithms/ChaCha20Poly1305$Key$Format;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public synthetic fun getName ()Ljava/lang/String;
+	public static fun valueOf (Ljava/lang/String;)Ldev/whyoleg/cryptography/algorithms/ChaCha20Poly1305$Key$Format;
+	public static fun values ()[Ldev/whyoleg/cryptography/algorithms/ChaCha20Poly1305$Key$Format;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/Digest : dev/whyoleg/cryptography/CryptographyAlgorithm {
@@ -850,6 +811,68 @@ public abstract interface class dev/whyoleg/cryptography/operations/Hasher {
 	public fun hashBlocking (Lkotlinx/io/RawSource;)Lkotlinx/io/bytestring/ByteString;
 	public fun hashBlocking (Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
 	public fun hashBlocking ([B)[B
+}
+
+public abstract interface class dev/whyoleg/cryptography/operations/IvAuthenticatedCipher : dev/whyoleg/cryptography/operations/AuthenticatedCipher, dev/whyoleg/cryptography/operations/IvAuthenticatedDecryptor, dev/whyoleg/cryptography/operations/IvAuthenticatedEncryptor, dev/whyoleg/cryptography/operations/IvCipher {
+}
+
+public abstract interface class dev/whyoleg/cryptography/operations/IvAuthenticatedDecryptor : dev/whyoleg/cryptography/operations/AuthenticatedDecryptor, dev/whyoleg/cryptography/operations/IvDecryptor {
+	public fun decryptWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun decryptWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun decryptWithIv ([B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun decryptWithIv ([B[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun decryptWithIvBlocking (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
+	public fun decryptWithIvBlocking (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
+	public fun decryptWithIvBlocking ([B[B)[B
+	public abstract fun decryptWithIvBlocking ([B[B[B)[B
+	public fun decryptingSinkWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/RawSink;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/RawSink;
+	public fun decryptingSinkWithIv ([BLkotlinx/io/RawSink;)Lkotlinx/io/RawSink;
+	public abstract fun decryptingSinkWithIv ([BLkotlinx/io/RawSink;[B)Lkotlinx/io/RawSink;
+	public fun decryptingSourceWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/RawSource;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/RawSource;
+	public fun decryptingSourceWithIv ([BLkotlinx/io/RawSource;)Lkotlinx/io/RawSource;
+	public abstract fun decryptingSourceWithIv ([BLkotlinx/io/RawSource;[B)Lkotlinx/io/RawSource;
+}
+
+public abstract interface class dev/whyoleg/cryptography/operations/IvAuthenticatedEncryptor : dev/whyoleg/cryptography/operations/AuthenticatedEncryptor, dev/whyoleg/cryptography/operations/IvEncryptor {
+	public fun encryptWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun encryptWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun encryptWithIv ([B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun encryptWithIv ([B[B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun encryptWithIvBlocking (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
+	public fun encryptWithIvBlocking (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
+	public fun encryptWithIvBlocking ([B[B)[B
+	public abstract fun encryptWithIvBlocking ([B[B[B)[B
+	public fun encryptingSinkWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/RawSink;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/RawSink;
+	public fun encryptingSinkWithIv ([BLkotlinx/io/RawSink;)Lkotlinx/io/RawSink;
+	public abstract fun encryptingSinkWithIv ([BLkotlinx/io/RawSink;[B)Lkotlinx/io/RawSink;
+	public fun encryptingSourceWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/RawSource;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/RawSource;
+	public fun encryptingSourceWithIv ([BLkotlinx/io/RawSource;)Lkotlinx/io/RawSource;
+	public abstract fun encryptingSourceWithIv ([BLkotlinx/io/RawSource;[B)Lkotlinx/io/RawSource;
+}
+
+public abstract interface class dev/whyoleg/cryptography/operations/IvCipher : dev/whyoleg/cryptography/operations/Cipher, dev/whyoleg/cryptography/operations/IvDecryptor, dev/whyoleg/cryptography/operations/IvEncryptor {
+}
+
+public abstract interface class dev/whyoleg/cryptography/operations/IvDecryptor : dev/whyoleg/cryptography/operations/Decryptor {
+	public fun decryptWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun decryptWithIv ([B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun decryptWithIvBlocking (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
+	public abstract fun decryptWithIvBlocking ([B[B)[B
+	public fun decryptingSinkWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/RawSink;)Lkotlinx/io/RawSink;
+	public abstract fun decryptingSinkWithIv ([BLkotlinx/io/RawSink;)Lkotlinx/io/RawSink;
+	public fun decryptingSourceWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/RawSource;)Lkotlinx/io/RawSource;
+	public abstract fun decryptingSourceWithIv ([BLkotlinx/io/RawSource;)Lkotlinx/io/RawSource;
+}
+
+public abstract interface class dev/whyoleg/cryptography/operations/IvEncryptor : dev/whyoleg/cryptography/operations/Encryptor {
+	public fun encryptWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun encryptWithIv ([B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun encryptWithIvBlocking (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/bytestring/ByteString;)Lkotlinx/io/bytestring/ByteString;
+	public abstract fun encryptWithIvBlocking ([B[B)[B
+	public fun encryptingSinkWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/RawSink;)Lkotlinx/io/RawSink;
+	public abstract fun encryptingSinkWithIv ([BLkotlinx/io/RawSink;)Lkotlinx/io/RawSink;
+	public fun encryptingSourceWithIv (Lkotlinx/io/bytestring/ByteString;Lkotlinx/io/RawSource;)Lkotlinx/io/RawSource;
+	public abstract fun encryptingSourceWithIv ([BLkotlinx/io/RawSource;)Lkotlinx/io/RawSource;
 }
 
 public abstract interface class dev/whyoleg/cryptography/operations/PublicKeyAccessor {
