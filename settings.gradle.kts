@@ -63,6 +63,7 @@ projects("cryptography-kotlin") {
             module("api")
             module("shared")
             module("prebuilt")
+            module("prebuilt-nativebuilds")
             module("test")
         }
         module("cryptokit")
