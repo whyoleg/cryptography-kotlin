@@ -275,7 +275,7 @@ public final class dev/whyoleg/cryptography/algorithms/DH$Parameters$Format$PEM 
 	public fun hashCode ()I
 }
 
-public abstract interface class dev/whyoleg/cryptography/algorithms/DH$PrivateKey : dev/whyoleg/cryptography/materials/key/EncodableKey {
+public abstract interface class dev/whyoleg/cryptography/algorithms/DH$PrivateKey : dev/whyoleg/cryptography/materials/key/EncodableKey, dev/whyoleg/cryptography/operations/PublicKeyAccessor {
 	public abstract fun getParameters ()Ldev/whyoleg/cryptography/algorithms/DH$Parameters;
 	public abstract fun getX ()Ldev/whyoleg/cryptography/bigint/BigInt;
 	public abstract fun sharedSecretGenerator ()Ldev/whyoleg/cryptography/operations/SharedSecretGenerator;

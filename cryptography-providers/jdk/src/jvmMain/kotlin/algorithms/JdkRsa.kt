@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.jdk.algorithms
@@ -70,9 +70,9 @@ internal sealed class JdkRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey<
                 RSA.PublicKey.Format.JWK       -> error("$format is not supported")
                 RSA.PublicKey.Format.DER       -> bytes
                 RSA.PublicKey.Format.PEM       -> unwrapPem(PemLabel.PublicKey, bytes)
-                RSA.PublicKey.Format.DER.PKCS1 -> wrapSubjectPublicKeyInfo(RsaKeyAlgorithmIdentifier, bytes)
+                RSA.PublicKey.Format.DER.PKCS1 -> wrapSubjectPublicKeyInfo(RsaAlgorithmIdentifier, bytes)
                 RSA.PublicKey.Format.PEM.PKCS1 -> wrapSubjectPublicKeyInfo(
-                    RsaKeyAlgorithmIdentifier,
+                    RsaAlgorithmIdentifier,
                     unwrapPem(PemLabel.RsaPublicKey, bytes)
                 )
             }
@@ -89,10 +89,10 @@ internal sealed class JdkRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey<
                 RSA.PrivateKey.Format.JWK       -> error("$format is not supported")
                 RSA.PrivateKey.Format.DER       -> bytes
                 RSA.PrivateKey.Format.PEM       -> unwrapPem(PemLabel.PrivateKey, bytes)
-                RSA.PrivateKey.Format.DER.PKCS1 -> wrapPrivateKeyInfo(0, RsaKeyAlgorithmIdentifier, bytes)
+                RSA.PrivateKey.Format.DER.PKCS1 -> wrapPrivateKeyInfo(0, RsaAlgorithmIdentifier, bytes)
                 RSA.PrivateKey.Format.PEM.PKCS1 -> wrapPrivateKeyInfo(
                     0,
-                    RsaKeyAlgorithmIdentifier,
+                    RsaAlgorithmIdentifier,
                     unwrapPem(PemLabel.RsaPrivateKey, bytes)
                 )
             }

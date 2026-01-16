@@ -15,11 +15,11 @@ import kotlinx.serialization.*
 public val ObjectIdentifier.Companion.DH: ObjectIdentifier get() = ObjectIdentifier("1.2.840.113549.1.3.1")
 
 /**
- * DH AlgorithmIdentifier for use in SubjectPublicKeyInfo/PrivateKeyInfo
+ * Algorithm identifier for DH keys in SubjectPublicKeyInfo/PrivateKeyInfo.
  */
-public class DhKeyAlgorithmIdentifier(
+public class DhAlgorithmIdentifier(
     override val parameters: DhParameters?,
-) : KeyAlgorithmIdentifier {
+) : AlgorithmIdentifier {
     override val algorithm: ObjectIdentifier get() = ObjectIdentifier.DH
 }
 

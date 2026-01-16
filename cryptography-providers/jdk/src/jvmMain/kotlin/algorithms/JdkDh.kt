@@ -15,7 +15,6 @@ import dev.whyoleg.cryptography.providers.jdk.*
 import dev.whyoleg.cryptography.providers.jdk.materials.*
 import dev.whyoleg.cryptography.providers.jdk.operations.*
 import dev.whyoleg.cryptography.serialization.pem.*
-import java.math.*
 import javax.crypto.interfaces.*
 import javax.crypto.spec.*
 
@@ -30,12 +29,6 @@ internal class JdkDh(
 
     override fun parametersGenerator(primeSize: BinarySize): MaterialGenerator<DH.Parameters> =
         DhParametersGenerator(primeSize)
-
-    private fun DHParameterSpec.toParameters(): DH.Parameters {
-        val pBytes = p.toByteArray().trimLeadingZeros()
-        val gBytes = g.toByteArray().trimLeadingZeros()
-        return JdkDhParameters(pBytes.decodeToBigInt(), gBytes.decodeToBigInt())
-    }
 
     private inner class DhKeyPairGenerator(
         private val dhParameters: DHParameterSpec,
@@ -55,7 +48,7 @@ internal class JdkDh(
         JdkPublicKeyDecoder<DH.PublicKey.Format, DH.PublicKey>(state, "DH") {
         override fun JPublicKey.convert(): DH.PublicKey {
             check(this is DHPublicKey)
-            return DhPublicKey(this, params.toParameters())
+            return DhPublicKey(this, JdkDhParameters(params))
         }
 
         override fun decodeFromByteArrayBlocking(format: DH.PublicKey.Format, bytes: ByteArray): DH.PublicKey = when (format) {
@@ -68,7 +61,7 @@ internal class JdkDh(
         JdkPrivateKeyDecoder<DH.PrivateKey.Format, DH.PrivateKey>(state, "DH") {
         override fun JPrivateKey.convert(): DH.PrivateKey {
             check(this is DHPrivateKey)
-            return DhPrivateKey(this, null, params.toParameters())
+            return DhPrivateKey(this, null, JdkDhParameters(params))
         }
 
         override fun decodeFromByteArrayBlocking(format: DH.PrivateKey.Format, bytes: ByteArray): DH.PrivateKey = when (format) {
@@ -88,7 +81,7 @@ internal class JdkDh(
     ) : DH.PublicKey, JdkEncodableKey<DH.PublicKey.Format>(key), SharedSecretGenerator<DH.PrivateKey> {
         private val keyAgreement = state.keyAgreement("DH")
 
-        override val y: BigInt get() = key.y.toByteArray().trimLeadingZeros().decodeToBigInt()
+        override val y: BigInt get() = key.y.toKotlinBigInt()
 
         override fun sharedSecretGenerator(): SharedSecretGenerator<DH.PrivateKey> = this
 
@@ -109,8 +102,21 @@ internal class JdkDh(
         override val parameters: DH.Parameters,
     ) : DH.PrivateKey, JdkEncodableKey<DH.PrivateKey.Format>(key), SharedSecretGenerator<DH.PublicKey> {
         private val keyAgreement = state.keyAgreement("DH")
+        private val keyFactory = state.keyFactory("DH")
 
-        override val x: BigInt get() = key.x.toByteArray().trimLeadingZeros().decodeToBigInt()
+        override val x: BigInt get() = key.x.toKotlinBigInt()
+
+        override fun getPublicKeyBlocking(): DH.PublicKey {
+            if (publicKey == null) {
+                val dhParams = key.params
+                val y = dhParams.g.modPow(key.x, dhParams.p)
+                val spec = DHPublicKeySpec(y, dhParams.p, dhParams.g)
+                publicKey = keyFactory.use { factory ->
+                    DhPublicKey(factory.generatePublic(spec) as DHPublicKey, parameters)
+                }
+            }
+            return publicKey!!
+        }
 
         override fun sharedSecretGenerator(): SharedSecretGenerator<DH.PublicKey> = this
 
@@ -132,7 +138,7 @@ internal class JdkDh(
                 DH.Parameters.Format.PEM -> unwrapDhParametersPem(bytes)
             }
             val (prime, base) = decodeDhParametersFromDer(derBytes)
-            return JdkDhParameters(prime, base)
+            return JdkDhParameters(DHParameterSpec(prime.toJavaBigInteger(), base.toJavaBigInteger()))
         }
     }
 
@@ -145,23 +151,17 @@ internal class JdkDh(
             paramGen.init(primeSize.inBits, state.secureRandom)
             val algorithmParameters = paramGen.generateParameters()
             val params = algorithmParameters.getParameterSpec(DHParameterSpec::class.java)
-
-            val p = params.p.toByteArray().trimLeadingZeros().decodeToBigInt()
-            val g = params.g.toByteArray().trimLeadingZeros().decodeToBigInt()
-
-            JdkDhParameters(p, g)
+            JdkDhParameters(params)
         }
     }
 
     private inner class JdkDhParameters(
-        override val p: BigInt,
-        override val g: BigInt,
+        private val spec: DHParameterSpec,
     ) : DH.Parameters {
+        override val p: BigInt get() = spec.p.toKotlinBigInt()
+        override val g: BigInt get() = spec.g.toKotlinBigInt()
+
         override fun keyPairGenerator(): KeyGenerator<DH.KeyPair> {
-            val spec = DHParameterSpec(
-                p.encodeToByteArray().let { BigInteger(1, it) },
-                g.encodeToByteArray().let { BigInteger(1, it) }
-            )
             return DhKeyPairGenerator(spec, this)
         }
 
@@ -169,14 +169,5 @@ internal class JdkDh(
             DH.Parameters.Format.DER -> encodeDhParametersToDer(p, g)
             DH.Parameters.Format.PEM -> wrapDhParametersPem(encodeDhParametersToDer(p, g))
         }
-    }
-}
-
-private fun ByteArray.trimLeadingZeros(): ByteArray {
-    val firstNonZero = indexOfFirst { it != 0.toByte() }
-    return when {
-        firstNonZero < 0 -> byteArrayOf(0)
-        firstNonZero == 0 -> this
-        else -> copyOfRange(firstNonZero, size)
     }
 }

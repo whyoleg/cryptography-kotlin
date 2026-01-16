@@ -16,7 +16,6 @@ import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.providers.openssl3.materials.*
 import kotlinx.cinterop.*
-import platform.posix.*
 
 internal object Openssl3Dh : DH {
     override fun publicKeyDecoder(): KeyDecoder<DH.PublicKey.Format, DH.PublicKey> =
@@ -131,7 +130,7 @@ internal object Openssl3Dh : DH {
         override fun generateSharedSecretToByteArrayBlocking(other: DH.PublicKey): ByteArray {
             check(other is DhPublicKey)
 
-            return deriveDhSharedSecret(publicKey = other.key, privateKey = key)
+            return deriveSharedSecret(publicKey = other.key, privateKey = key)
         }
     }
 
@@ -151,7 +150,7 @@ internal object Openssl3Dh : DH {
         override fun generateSharedSecretToByteArrayBlocking(other: DH.PrivateKey): ByteArray {
             check(other is DhPrivateKey)
 
-            return deriveDhSharedSecret(publicKey = key, privateKey = other.key)
+            return deriveSharedSecret(publicKey = key, privateKey = other.key)
         }
     }
 
@@ -235,29 +234,10 @@ private fun extractBigNumFromKey(key: CPointer<EVP_PKEY>, paramName: String): Bi
     try {
         val size = (checkError(BN_num_bits(bn)) + 7) / 8
         val bytes = ByteArray(size)
-        checkError(BN_bn2bin(bn, bytes.refToU(0)))
+        checkError(BN_bn2binpad(bn, bytes.refToU(0), size))
         bytes.decodeToBigInt()
     } finally {
         BN_free(bn)
-    }
-}
-
-@OptIn(UnsafeNumber::class)
-private fun deriveDhSharedSecret(
-    publicKey: CPointer<EVP_PKEY>,
-    privateKey: CPointer<EVP_PKEY>,
-): ByteArray = memScoped {
-    val context = checkError(EVP_PKEY_CTX_new_from_pkey(null, privateKey, null))
-    try {
-        checkError(EVP_PKEY_derive_init(context))
-        checkError(EVP_PKEY_derive_set_peer(context, publicKey))
-        val secretSize = alloc<size_tVar>()
-        checkError(EVP_PKEY_derive(context, null, secretSize.ptr))
-        val secret = ByteArray(secretSize.value.toInt())
-        checkError(EVP_PKEY_derive(context, secret.refToU(0), secretSize.ptr))
-        secret
-    } finally {
-        EVP_PKEY_CTX_free(context)
     }
 }
 

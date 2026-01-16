@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.webcrypto.algorithms
@@ -92,8 +92,8 @@ private object RsaPublicKeyProcessor : WebCryptoKeyProcessor<RSA.PublicKey.Forma
         RSA.PublicKey.Format.JWK       -> key
         RSA.PublicKey.Format.DER       -> key
         RSA.PublicKey.Format.PEM       -> unwrapPem(PemLabel.PublicKey, key)
-        RSA.PublicKey.Format.DER.PKCS1 -> wrapSubjectPublicKeyInfo(RsaKeyAlgorithmIdentifier, key)
-        RSA.PublicKey.Format.PEM.PKCS1 -> wrapSubjectPublicKeyInfo(RsaKeyAlgorithmIdentifier, unwrapPem(PemLabel.RsaPublicKey, key))
+        RSA.PublicKey.Format.DER.PKCS1 -> wrapSubjectPublicKeyInfo(RsaAlgorithmIdentifier, key)
+        RSA.PublicKey.Format.PEM.PKCS1 -> wrapSubjectPublicKeyInfo(RsaAlgorithmIdentifier, unwrapPem(PemLabel.RsaPublicKey, key))
     }
 
     override fun afterEncoding(format: RSA.PublicKey.Format, key: ByteArray): ByteArray = when (format) {
@@ -119,8 +119,8 @@ private object RsaPrivateKeyProcessor : WebCryptoKeyProcessor<RSA.PrivateKey.For
         RSA.PrivateKey.Format.JWK       -> key
         RSA.PrivateKey.Format.DER       -> key
         RSA.PrivateKey.Format.PEM       -> unwrapPem(PemLabel.PrivateKey, key)
-        RSA.PrivateKey.Format.DER.PKCS1 -> wrapPrivateKeyInfo(0, RsaKeyAlgorithmIdentifier, key)
-        RSA.PrivateKey.Format.PEM.PKCS1 -> wrapPrivateKeyInfo(0, RsaKeyAlgorithmIdentifier, unwrapPem(PemLabel.RsaPrivateKey, key))
+        RSA.PrivateKey.Format.DER.PKCS1 -> wrapPrivateKeyInfo(0, RsaAlgorithmIdentifier, key)
+        RSA.PrivateKey.Format.PEM.PKCS1 -> wrapPrivateKeyInfo(0, RsaAlgorithmIdentifier, unwrapPem(PemLabel.RsaPrivateKey, key))
     }
 
     override fun afterEncoding(format: RSA.PrivateKey.Format, key: ByteArray): ByteArray = when (format) {

@@ -161,4 +161,29 @@ abstract class DhTest(provider: CryptographyProvider) : AlgorithmTest<DH>(DH, pr
         )
         assertEquals(x, decodedPrivate.x, "x should match after decode")
     }
+
+    @Test
+    fun testGetPublicKeyFromPrivateKey() = testWithAlgorithm {
+        val parameters = testParameters()
+        val keyPair = parameters.keyPairGenerator().generate()
+
+        // Get public key from private key
+        val derivedPublicKey = keyPair.privateKey.getPublicKey()
+
+        // Verify the derived public key has the same y value as the original
+        assertEquals(keyPair.publicKey.y, derivedPublicKey.y, "Derived public key y should match original")
+
+        // Verify shared secret generation works with the derived public key
+        val anotherKeyPair = parameters.keyPairGenerator().generate()
+        val secretWithOriginal = anotherKeyPair.privateKey.sharedSecretGenerator()
+            .generateSharedSecretToByteArray(keyPair.publicKey)
+        val secretWithDerived = anotherKeyPair.privateKey.sharedSecretGenerator()
+            .generateSharedSecretToByteArray(derivedPublicKey)
+
+        assertContentEquals(secretWithOriginal, secretWithDerived, "Shared secret should be the same with derived public key")
+
+        // Verify getPublicKey returns the same cached instance
+        val derivedPublicKey2 = keyPair.privateKey.getPublicKey()
+        assertSame(derivedPublicKey, derivedPublicKey2, "getPublicKey should return cached instance")
+    }
 }

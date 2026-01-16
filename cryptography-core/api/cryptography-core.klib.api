@@ -558,7 +558,7 @@ abstract interface dev.whyoleg.cryptography.algorithms/DH : dev.whyoleg.cryptogr
         }
     }
 
-    abstract interface PrivateKey : dev.whyoleg.cryptography.materials.key/EncodableKey<dev.whyoleg.cryptography.algorithms/DH.PrivateKey.Format> { // dev.whyoleg.cryptography.algorithms/DH.PrivateKey|null[0]
+    abstract interface PrivateKey : dev.whyoleg.cryptography.materials.key/EncodableKey<dev.whyoleg.cryptography.algorithms/DH.PrivateKey.Format>, dev.whyoleg.cryptography.operations/PublicKeyAccessor<dev.whyoleg.cryptography.algorithms/DH.PublicKey> { // dev.whyoleg.cryptography.algorithms/DH.PrivateKey|null[0]
         abstract val parameters // dev.whyoleg.cryptography.algorithms/DH.PrivateKey.parameters|{}parameters[0]
             abstract fun <get-parameters>(): dev.whyoleg.cryptography.algorithms/DH.Parameters // dev.whyoleg.cryptography.algorithms/DH.PrivateKey.parameters.<get-parameters>|<get-parameters>(){}[0]
         abstract val x // dev.whyoleg.cryptography.algorithms/DH.PrivateKey.x|{}x[0]

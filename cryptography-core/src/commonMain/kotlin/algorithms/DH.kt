@@ -16,7 +16,6 @@ public interface DH : CryptographyAlgorithm {
 
     public companion object : CryptographyAlgorithmId<DH>("DH")
 
-    // Key decoders - parameters are extracted from the DER/PEM encoding
     public fun publicKeyDecoder(): KeyDecoder<PublicKey.Format, PublicKey>
     public fun privateKeyDecoder(): KeyDecoder<PrivateKey.Format, PrivateKey>
 
@@ -53,8 +52,9 @@ public interface DH : CryptographyAlgorithm {
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface PublicKey : EncodableKey<PublicKey.Format> {
-        public val parameters: Parameters
         public val y: BigInt  // public key value (y = g^x mod p)
+        public val parameters: Parameters
+
         public fun sharedSecretGenerator(): SharedSecretGenerator<PrivateKey>
 
         public sealed class Format : KeyFormat {
@@ -73,9 +73,10 @@ public interface DH : CryptographyAlgorithm {
     }
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
-    public interface PrivateKey : EncodableKey<PrivateKey.Format> {
-        public val parameters: Parameters
+    public interface PrivateKey : EncodableKey<PrivateKey.Format>, PublicKeyAccessor<PublicKey> {
         public val x: BigInt  // private key value
+        public val parameters: Parameters
+
         public fun sharedSecretGenerator(): SharedSecretGenerator<PublicKey>
 
         public sealed class Format : KeyFormat {
