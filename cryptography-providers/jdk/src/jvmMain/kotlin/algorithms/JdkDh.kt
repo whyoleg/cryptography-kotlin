@@ -7,8 +7,8 @@ package dev.whyoleg.cryptography.providers.jdk.algorithms
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.bigint.*
+import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.materials.key.*
-import dev.whyoleg.cryptography.materials.parameters.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.materials.*
 import dev.whyoleg.cryptography.providers.jdk.*
@@ -26,9 +26,9 @@ internal class JdkDh(
 
     override fun privateKeyDecoder(): KeyDecoder<DH.PrivateKey.Format, DH.PrivateKey> = DhPrivateKeyDecoder()
 
-    override fun parametersDecoder(): ParameterDecoder<DH.Parameters.Format, DH.Parameters> = DhParametersDecoder()
+    override fun parametersDecoder(): MaterialDecoder<DH.Parameters.Format, DH.Parameters> = DhParametersDecoder()
 
-    override fun parametersGenerator(primeSize: BinarySize): ParameterGenerator<DH.Parameters> =
+    override fun parametersGenerator(primeSize: BinarySize): MaterialGenerator<DH.Parameters> =
         DhParametersGenerator(primeSize)
 
     private fun DHParameterSpec.toParameters(): DH.Parameters {
@@ -125,7 +125,7 @@ internal class JdkDh(
         }
     }
 
-    private inner class DhParametersDecoder : ParameterDecoder<DH.Parameters.Format, DH.Parameters> {
+    private inner class DhParametersDecoder : MaterialDecoder<DH.Parameters.Format, DH.Parameters> {
         override fun decodeFromByteArrayBlocking(format: DH.Parameters.Format, bytes: ByteArray): DH.Parameters {
             val derBytes = when (format) {
                 DH.Parameters.Format.DER -> bytes
@@ -138,10 +138,10 @@ internal class JdkDh(
 
     private inner class DhParametersGenerator(
         private val primeSize: BinarySize,
-    ) : ParameterGenerator<DH.Parameters> {
+    ) : MaterialGenerator<DH.Parameters> {
         private val algorithmParameterGenerator = state.algorithmParameterGenerator("DH")
 
-        override fun generateParametersBlocking(): DH.Parameters = algorithmParameterGenerator.use { paramGen ->
+        override fun generateBlocking(): DH.Parameters = algorithmParameterGenerator.use { paramGen ->
             paramGen.init(primeSize.inBits, state.secureRandom)
             val algorithmParameters = paramGen.generateParameters()
             val params = algorithmParameters.getParameterSpec(DHParameterSpec::class.java)

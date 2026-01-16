@@ -7,8 +7,8 @@ package dev.whyoleg.cryptography.providers.openssl3.algorithms
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.DH
 import dev.whyoleg.cryptography.bigint.*
+import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.materials.key.*
-import dev.whyoleg.cryptography.materials.parameters.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.base.materials.*
@@ -25,10 +25,10 @@ internal object Openssl3Dh : DH {
     override fun privateKeyDecoder(): KeyDecoder<DH.PrivateKey.Format, DH.PrivateKey> =
         DhPrivateKeyDecoder()
 
-    override fun parametersDecoder(): ParameterDecoder<DH.Parameters.Format, DH.Parameters> =
+    override fun parametersDecoder(): MaterialDecoder<DH.Parameters.Format, DH.Parameters> =
         DhParametersDecoder()
 
-    override fun parametersGenerator(primeSize: BinarySize): ParameterGenerator<DH.Parameters> =
+    override fun parametersGenerator(primeSize: BinarySize): MaterialGenerator<DH.Parameters> =
         DhParametersGenerator(primeSize)
 
     private class DhPrivateKeyDecoder :
@@ -155,7 +155,7 @@ internal object Openssl3Dh : DH {
         }
     }
 
-    private class DhParametersDecoder : ParameterDecoder<DH.Parameters.Format, DH.Parameters> {
+    private class DhParametersDecoder : MaterialDecoder<DH.Parameters.Format, DH.Parameters> {
         override fun decodeFromByteArrayBlocking(format: DH.Parameters.Format, bytes: ByteArray): DH.Parameters {
             val derBytes = when (format) {
                 DH.Parameters.Format.DER -> bytes
@@ -168,9 +168,9 @@ internal object Openssl3Dh : DH {
 
     private class DhParametersGenerator(
         private val primeSize: BinarySize,
-    ) : ParameterGenerator<DH.Parameters> {
+    ) : MaterialGenerator<DH.Parameters> {
         @OptIn(UnsafeNumber::class)
-        override fun generateParametersBlocking(): DH.Parameters = memScoped {
+        override fun generateBlocking(): DH.Parameters = memScoped {
             val context = checkError(EVP_PKEY_CTX_new_from_name(null, "DH", null))
             try {
                 checkError(EVP_PKEY_paramgen_init(context))

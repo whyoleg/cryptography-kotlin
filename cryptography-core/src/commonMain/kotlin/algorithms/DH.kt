@@ -6,8 +6,8 @@ package dev.whyoleg.cryptography.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.bigint.*
+import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.materials.key.*
-import dev.whyoleg.cryptography.materials.parameters.*
 import dev.whyoleg.cryptography.operations.*
 
 @SubclassOptInRequired(CryptographyProviderApi::class)
@@ -20,17 +20,17 @@ public interface DH : CryptographyAlgorithm {
     public fun publicKeyDecoder(): KeyDecoder<PublicKey.Format, PublicKey>
     public fun privateKeyDecoder(): KeyDecoder<PrivateKey.Format, PrivateKey>
 
-    public fun parametersDecoder(): ParameterDecoder<Parameters.Format, Parameters>
-    public fun parametersGenerator(primeSize: BinarySize): ParameterGenerator<Parameters>
+    public fun parametersDecoder(): MaterialDecoder<Parameters.Format, Parameters>
+    public fun parametersGenerator(primeSize: BinarySize): MaterialGenerator<Parameters>
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
-    public interface Parameters : EncodableParameters<Parameters.Format> {
+    public interface Parameters : EncodableMaterial<Parameters.Format> {
         public val p: BigInt
         public val g: BigInt
 
         public fun keyPairGenerator(): KeyGenerator<KeyPair>
 
-        public sealed class Format : ParameterFormat {
+        public sealed class Format : MaterialFormat {
             final override fun toString(): String = name
 
             // DER encoding of DHParameter ASN.1 structure (RFC 3279)

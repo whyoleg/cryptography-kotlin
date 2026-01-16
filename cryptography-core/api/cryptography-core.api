@@ -237,8 +237,8 @@ public final class dev/whyoleg/cryptography/algorithms/ChaCha20Poly1305$Key$Form
 public abstract interface class dev/whyoleg/cryptography/algorithms/DH : dev/whyoleg/cryptography/CryptographyAlgorithm {
 	public static final field Companion Ldev/whyoleg/cryptography/algorithms/DH$Companion;
 	public fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
-	public abstract fun parametersDecoder ()Ldev/whyoleg/cryptography/materials/parameters/ParameterDecoder;
-	public abstract fun parametersGenerator-6q1zMKY (I)Ldev/whyoleg/cryptography/materials/parameters/ParameterGenerator;
+	public abstract fun parametersDecoder ()Ldev/whyoleg/cryptography/materials/MaterialDecoder;
+	public abstract fun parametersGenerator-6q1zMKY (I)Ldev/whyoleg/cryptography/materials/MaterialGenerator;
 	public abstract fun privateKeyDecoder ()Ldev/whyoleg/cryptography/materials/key/KeyDecoder;
 	public abstract fun publicKeyDecoder ()Ldev/whyoleg/cryptography/materials/key/KeyDecoder;
 }
@@ -251,13 +251,13 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/DH$KeyPair :
 	public abstract fun getPublicKey ()Ldev/whyoleg/cryptography/algorithms/DH$PublicKey;
 }
 
-public abstract interface class dev/whyoleg/cryptography/algorithms/DH$Parameters : dev/whyoleg/cryptography/materials/parameters/EncodableParameters {
+public abstract interface class dev/whyoleg/cryptography/algorithms/DH$Parameters : dev/whyoleg/cryptography/materials/EncodableMaterial {
 	public abstract fun getG ()Ldev/whyoleg/cryptography/bigint/BigInt;
 	public abstract fun getP ()Ldev/whyoleg/cryptography/bigint/BigInt;
 	public abstract fun keyPairGenerator ()Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
 }
 
-public abstract class dev/whyoleg/cryptography/algorithms/DH$Parameters$Format : dev/whyoleg/cryptography/materials/parameters/ParameterFormat {
+public abstract class dev/whyoleg/cryptography/algorithms/DH$Parameters$Format : dev/whyoleg/cryptography/materials/MaterialFormat {
 	public final fun toString ()Ljava/lang/String;
 }
 
@@ -796,59 +796,52 @@ public final class dev/whyoleg/cryptography/algorithms/symmetric/SymmetricKeySiz
 	public final fun getB256-5xWg6fk ()I
 }
 
-public abstract interface class dev/whyoleg/cryptography/materials/key/EncodableKey : dev/whyoleg/cryptography/materials/key/Key {
+public abstract interface class dev/whyoleg/cryptography/materials/EncodableMaterial {
+	public fun encodeToByteArray (Ldev/whyoleg/cryptography/materials/MaterialFormat;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun encodeToByteArrayBlocking (Ldev/whyoleg/cryptography/materials/MaterialFormat;)[B
+	public fun encodeToByteString (Ldev/whyoleg/cryptography/materials/MaterialFormat;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun encodeToByteStringBlocking (Ldev/whyoleg/cryptography/materials/MaterialFormat;)Lkotlinx/io/bytestring/ByteString;
+}
+
+public abstract interface class dev/whyoleg/cryptography/materials/MaterialDecoder {
+	public fun decodeFromByteArray (Ldev/whyoleg/cryptography/materials/MaterialFormat;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun decodeFromByteArrayBlocking (Ldev/whyoleg/cryptography/materials/MaterialFormat;[B)Ljava/lang/Object;
+	public fun decodeFromByteString (Ldev/whyoleg/cryptography/materials/MaterialFormat;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun decodeFromByteStringBlocking (Ldev/whyoleg/cryptography/materials/MaterialFormat;Lkotlinx/io/bytestring/ByteString;)Ljava/lang/Object;
+}
+
+public abstract interface class dev/whyoleg/cryptography/materials/MaterialFormat {
+	public abstract fun getName ()Ljava/lang/String;
+	public abstract fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class dev/whyoleg/cryptography/materials/MaterialGenerator {
+	public fun generate (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun generateBlocking ()Ljava/lang/Object;
+}
+
+public abstract interface class dev/whyoleg/cryptography/materials/key/EncodableKey : dev/whyoleg/cryptography/materials/EncodableMaterial, dev/whyoleg/cryptography/materials/key/Key {
 	public fun encodeTo (Ldev/whyoleg/cryptography/materials/key/KeyFormat;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun encodeToBlocking (Ldev/whyoleg/cryptography/materials/key/KeyFormat;)[B
-	public fun encodeToByteArray (Ldev/whyoleg/cryptography/materials/key/KeyFormat;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun encodeToByteArrayBlocking (Ldev/whyoleg/cryptography/materials/key/KeyFormat;)[B
-	public fun encodeToByteString (Ldev/whyoleg/cryptography/materials/key/KeyFormat;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun encodeToByteStringBlocking (Ldev/whyoleg/cryptography/materials/key/KeyFormat;)Lkotlinx/io/bytestring/ByteString;
 }
 
 public abstract interface class dev/whyoleg/cryptography/materials/key/Key {
 }
 
-public abstract interface class dev/whyoleg/cryptography/materials/key/KeyDecoder {
+public abstract interface class dev/whyoleg/cryptography/materials/key/KeyDecoder : dev/whyoleg/cryptography/materials/MaterialDecoder {
 	public fun decodeFrom (Ldev/whyoleg/cryptography/materials/key/KeyFormat;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun decodeFromBlocking (Ldev/whyoleg/cryptography/materials/key/KeyFormat;[B)Ldev/whyoleg/cryptography/materials/key/Key;
-	public fun decodeFromByteArray (Ldev/whyoleg/cryptography/materials/key/KeyFormat;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun decodeFromByteArrayBlocking (Ldev/whyoleg/cryptography/materials/key/KeyFormat;[B)Ldev/whyoleg/cryptography/materials/key/Key;
-	public fun decodeFromByteString (Ldev/whyoleg/cryptography/materials/key/KeyFormat;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun decodeFromByteStringBlocking (Ldev/whyoleg/cryptography/materials/key/KeyFormat;Lkotlinx/io/bytestring/ByteString;)Ldev/whyoleg/cryptography/materials/key/Key;
 }
 
-public abstract interface class dev/whyoleg/cryptography/materials/key/KeyFormat {
-	public abstract fun getName ()Ljava/lang/String;
-	public abstract fun toString ()Ljava/lang/String;
+public abstract interface class dev/whyoleg/cryptography/materials/key/KeyFormat : dev/whyoleg/cryptography/materials/MaterialFormat {
 }
 
-public abstract interface class dev/whyoleg/cryptography/materials/key/KeyGenerator {
+public abstract interface class dev/whyoleg/cryptography/materials/key/KeyGenerator : dev/whyoleg/cryptography/materials/MaterialGenerator {
+	public fun generate (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun generateBlocking ()Ldev/whyoleg/cryptography/materials/key/Key;
+	public synthetic fun generateBlocking ()Ljava/lang/Object;
 	public fun generateKey (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun generateKeyBlocking ()Ldev/whyoleg/cryptography/materials/key/Key;
-}
-
-public abstract interface class dev/whyoleg/cryptography/materials/parameters/EncodableParameters {
-	public fun encodeToByteArray (Ldev/whyoleg/cryptography/materials/parameters/ParameterFormat;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun encodeToByteArrayBlocking (Ldev/whyoleg/cryptography/materials/parameters/ParameterFormat;)[B
-	public fun encodeToByteString (Ldev/whyoleg/cryptography/materials/parameters/ParameterFormat;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun encodeToByteStringBlocking (Ldev/whyoleg/cryptography/materials/parameters/ParameterFormat;)Lkotlinx/io/bytestring/ByteString;
-}
-
-public abstract interface class dev/whyoleg/cryptography/materials/parameters/ParameterDecoder {
-	public fun decodeFromByteArray (Ldev/whyoleg/cryptography/materials/parameters/ParameterFormat;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun decodeFromByteArrayBlocking (Ldev/whyoleg/cryptography/materials/parameters/ParameterFormat;[B)Ljava/lang/Object;
-	public fun decodeFromByteString (Ldev/whyoleg/cryptography/materials/parameters/ParameterFormat;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun decodeFromByteStringBlocking (Ldev/whyoleg/cryptography/materials/parameters/ParameterFormat;Lkotlinx/io/bytestring/ByteString;)Ljava/lang/Object;
-}
-
-public abstract interface class dev/whyoleg/cryptography/materials/parameters/ParameterFormat {
-	public abstract fun getName ()Ljava/lang/String;
-	public abstract fun toString ()Ljava/lang/String;
-}
-
-public abstract interface class dev/whyoleg/cryptography/materials/parameters/ParameterGenerator {
-	public fun generateParameters (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun generateParametersBlocking ()Ljava/lang/Object;
 }
 
 public abstract interface class dev/whyoleg/cryptography/operations/AuthenticatedCipher : dev/whyoleg/cryptography/operations/AuthenticatedDecryptor, dev/whyoleg/cryptography/operations/AuthenticatedEncryptor, dev/whyoleg/cryptography/operations/Cipher {
