@@ -59,9 +59,9 @@ internal object Openssl3Dh : DH {
     ) : KeyGenerator<DH.KeyPair> {
         @OptIn(UnsafeNumber::class)
         override fun generateBlocking(): DH.KeyPair = memScoped {
-            // Strip leading zeros to get proper unsigned big-endian representation for OpenSSL
-            val pBytes = parameters.p.encodeToByteArray()
-            val gBytes = parameters.g.encodeToByteArray()
+            // Strip leading sign byte (0x00) to get proper unsigned big-endian representation for OpenSSL
+            val pBytes = parameters.p.encodeToByteArray().dropLeadingZero()
+            val gBytes = parameters.g.encodeToByteArray().dropLeadingZero()
 
             // First, create domain parameters from p and g
             val fromDataContext = checkError(EVP_PKEY_CTX_new_from_name(null, "DH", null))
@@ -235,8 +235,26 @@ private fun extractBigNumFromKey(key: CPointer<EVP_PKEY>, paramName: String): Bi
         val size = (checkError(BN_num_bits(bn)) + 7) / 8
         val bytes = ByteArray(size)
         checkError(BN_bn2binpad(bn, bytes.refToU(0), size))
-        bytes.decodeToBigInt()
+        // BN_bn2binpad returns unsigned big-endian bytes.
+        // If MSB is set, prepend 0x00 to ensure positive interpretation in two's complement.
+        if (bytes.isNotEmpty() && bytes[0] < 0) {
+            val signedBytes = ByteArray(size + 1)
+            bytes.copyInto(signedBytes, 1)
+            signedBytes.decodeToBigInt()
+        } else {
+            bytes.decodeToBigInt()
+        }
     } finally {
         BN_free(bn)
+    }
+}
+
+// Drops a leading zero byte if it's just a sign byte for a positive number
+// (used when converting from signed two's complement to unsigned big-endian for OpenSSL)
+private fun ByteArray.dropLeadingZero(): ByteArray {
+    return if (size > 1 && this[0] == 0.toByte() && this[1] < 0) {
+        copyOfRange(1, size)
+    } else {
+        this
     }
 }
