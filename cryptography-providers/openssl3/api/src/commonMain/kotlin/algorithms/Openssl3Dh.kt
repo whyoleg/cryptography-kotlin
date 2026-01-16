@@ -60,8 +60,8 @@ internal object Openssl3Dh : DH {
         @OptIn(UnsafeNumber::class)
         override fun generateBlocking(): DH.KeyPair = memScoped {
             // Strip leading zeros to get proper unsigned big-endian representation for OpenSSL
-            val pBytes = parameters.p.encodeToByteArray().dropLeadingZeros()
-            val gBytes = parameters.g.encodeToByteArray().dropLeadingZeros()
+            val pBytes = parameters.p.encodeToByteArray()
+            val gBytes = parameters.g.encodeToByteArray()
 
             // First, create domain parameters from p and g
             val fromDataContext = checkError(EVP_PKEY_CTX_new_from_name(null, "DH", null))
@@ -238,15 +238,5 @@ private fun extractBigNumFromKey(key: CPointer<EVP_PKEY>, paramName: String): Bi
         bytes.decodeToBigInt()
     } finally {
         BN_free(bn)
-    }
-}
-
-// Drops leading zero bytes but keeps at least one byte (returns [0] for all-zero input)
-private fun ByteArray.dropLeadingZeros(): ByteArray {
-    val firstNonZero = indexOfFirst { it != 0.toByte() }
-    return when {
-        firstNonZero == -1 -> byteArrayOf(0)  // all zeros
-        firstNonZero == 0  -> this              // no leading zeros
-        else               -> copyOfRange(firstNonZero, size)
     }
 }
