@@ -11,7 +11,10 @@ import dev.whyoleg.cryptography.providers.base.materials.*
 import dev.whyoleg.cryptography.providers.webcrypto.internal.*
 import dev.whyoleg.cryptography.providers.webcrypto.materials.*
 import dev.whyoleg.cryptography.providers.webcrypto.operations.*
+import dev.whyoleg.cryptography.serialization.asn1.*
+import dev.whyoleg.cryptography.serialization.asn1.modules.*
 import dev.whyoleg.cryptography.serialization.pem.*
+import kotlinx.serialization.builtins.*
 
 internal object WebCryptoEdDsa : EdDSA {
     private fun curveName(curve: EdDSA.Curve): String = when (curve) {
@@ -99,21 +102,35 @@ private object EdPublicKeyProcessor : WebCryptoKeyProcessor<EdDSA.PublicKey.Form
 private object EdPrivateKeyProcessor : WebCryptoKeyProcessor<EdDSA.PrivateKey.Format>() {
     override fun stringFormat(format: EdDSA.PrivateKey.Format): String = when (format) {
         EdDSA.PrivateKey.Format.JWK -> "jwk"
-        EdDSA.PrivateKey.Format.RAW -> "raw"
+        // WebCrypto doesn't support RAW for EdDSA private keys, convert to PKCS#8
+        EdDSA.PrivateKey.Format.RAW -> "pkcs8"
         EdDSA.PrivateKey.Format.DER -> "pkcs8"
         EdDSA.PrivateKey.Format.PEM -> "pkcs8"
     }
 
     override fun beforeDecoding(algorithm: Algorithm, format: EdDSA.PrivateKey.Format, key: ByteArray): ByteArray = when (format) {
         EdDSA.PrivateKey.Format.JWK -> key
-        EdDSA.PrivateKey.Format.RAW -> key
+        EdDSA.PrivateKey.Format.RAW -> {
+            // WebCrypto doesn't support RAW for EdDSA private keys, wrap in PKCS#8
+            val oid = when (algorithm.algorithmName) {
+                "Ed25519" -> ObjectIdentifier.Ed25519
+                "Ed448"   -> ObjectIdentifier.Ed448
+                else      -> error("Unknown EdDSA algorithm: ${algorithm.algorithmName}")
+            }
+            val wrappedKey = Der.encodeToByteArray(ByteArraySerializer(), key)
+            wrapPrivateKeyInfo(0, UnknownKeyAlgorithmIdentifier(oid), wrappedKey)
+        }
         EdDSA.PrivateKey.Format.DER -> key
         EdDSA.PrivateKey.Format.PEM -> unwrapPem(PemLabel.PrivateKey, key)
     }
 
     override fun afterEncoding(format: EdDSA.PrivateKey.Format, key: ByteArray): ByteArray = when (format) {
         EdDSA.PrivateKey.Format.JWK -> key
-        EdDSA.PrivateKey.Format.RAW -> key
+        EdDSA.PrivateKey.Format.RAW -> {
+            // WebCrypto exports as PKCS#8, unwrap to RAW
+            val oid = Der.decodeFromByteArray(PrivateKeyInfo.serializer(), key).privateKeyAlgorithm.algorithm
+            unwrapPrivateKeyInfoForEdDsaXdh(oid, key)
+        }
         EdDSA.PrivateKey.Format.DER -> key
         EdDSA.PrivateKey.Format.PEM -> wrapPem(PemLabel.PrivateKey, key)
     }

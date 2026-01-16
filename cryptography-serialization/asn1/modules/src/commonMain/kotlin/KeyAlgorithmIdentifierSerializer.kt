@@ -13,9 +13,11 @@ import kotlinx.serialization.encoding.*
 internal object KeyAlgorithmIdentifierSerializer : AlgorithmIdentifierSerializer<KeyAlgorithmIdentifier>() {
     override fun CompositeEncoder.encodeParameters(value: KeyAlgorithmIdentifier): Unit = when (value) {
         is RsaKeyAlgorithmIdentifier     -> encodeParameters(NothingSerializer(), RsaKeyAlgorithmIdentifier.parameters)
-        is EcKeyAlgorithmIdentifier -> encodeParameters(EcParameters.serializer(), value.parameters)
-        is UnknownKeyAlgorithmIdentifier -> encodeParameters(NothingSerializer(), value.parameters)
-        else                             -> encodeParameters(NothingSerializer(), null)
+        is EcKeyAlgorithmIdentifier      -> encodeParameters(EcParameters.serializer(), value.parameters)
+        // For EdDSA, XDH, and other algorithms using UnknownKeyAlgorithmIdentifier,
+        // parameters MUST be absent (RFC 8410), not NULL
+        is UnknownKeyAlgorithmIdentifier -> {} // Don't encode - parameters absent
+        else                             -> {} // Don't encode - parameters absent
     }
 
     override fun CompositeDecoder.decodeParameters(algorithm: ObjectIdentifier): KeyAlgorithmIdentifier = when (algorithm) {

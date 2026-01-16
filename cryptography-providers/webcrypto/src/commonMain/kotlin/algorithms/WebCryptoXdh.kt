@@ -10,7 +10,10 @@ import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.materials.*
 import dev.whyoleg.cryptography.providers.webcrypto.internal.*
 import dev.whyoleg.cryptography.providers.webcrypto.materials.*
+import dev.whyoleg.cryptography.serialization.asn1.*
+import dev.whyoleg.cryptography.serialization.asn1.modules.*
 import dev.whyoleg.cryptography.serialization.pem.*
+import kotlinx.serialization.builtins.*
 
 internal object WebCryptoXdh : XDH {
     private fun curveName(curve: XDH.Curve): String = when (curve) {
@@ -132,21 +135,35 @@ private object XdhPublicKeyProcessor : WebCryptoKeyProcessor<XDH.PublicKey.Forma
 private object XdhPrivateKeyProcessor : WebCryptoKeyProcessor<XDH.PrivateKey.Format>() {
     override fun stringFormat(format: XDH.PrivateKey.Format): String = when (format) {
         XDH.PrivateKey.Format.JWK -> "jwk"
-        XDH.PrivateKey.Format.RAW -> "raw"
+        // WebCrypto doesn't support RAW for XDH private keys, convert to PKCS#8
+        XDH.PrivateKey.Format.RAW -> "pkcs8"
         XDH.PrivateKey.Format.DER -> "pkcs8"
         XDH.PrivateKey.Format.PEM -> "pkcs8"
     }
 
     override fun beforeDecoding(algorithm: Algorithm, format: XDH.PrivateKey.Format, key: ByteArray): ByteArray = when (format) {
         XDH.PrivateKey.Format.JWK -> key
-        XDH.PrivateKey.Format.RAW -> key
+        XDH.PrivateKey.Format.RAW -> {
+            // WebCrypto doesn't support RAW for XDH private keys, wrap in PKCS#8
+            val oid = when (algorithm.algorithmName) {
+                "X25519" -> ObjectIdentifier.X25519
+                "X448"   -> ObjectIdentifier.X448
+                else     -> error("Unknown XDH algorithm: ${algorithm.algorithmName}")
+            }
+            val wrappedKey = Der.encodeToByteArray(ByteArraySerializer(), key)
+            wrapPrivateKeyInfo(0, UnknownKeyAlgorithmIdentifier(oid), wrappedKey)
+        }
         XDH.PrivateKey.Format.DER -> key
         XDH.PrivateKey.Format.PEM -> unwrapPem(PemLabel.PrivateKey, key)
     }
 
     override fun afterEncoding(format: XDH.PrivateKey.Format, key: ByteArray): ByteArray = when (format) {
         XDH.PrivateKey.Format.JWK -> key
-        XDH.PrivateKey.Format.RAW -> key
+        XDH.PrivateKey.Format.RAW -> {
+            // WebCrypto exports as PKCS#8, unwrap to RAW
+            val oid = Der.decodeFromByteArray(PrivateKeyInfo.serializer(), key).privateKeyAlgorithm.algorithm
+            unwrapPrivateKeyInfoForEdDsaXdh(oid, key)
+        }
         XDH.PrivateKey.Format.DER -> key
         XDH.PrivateKey.Format.PEM -> wrapPem(PemLabel.PrivateKey, key)
     }

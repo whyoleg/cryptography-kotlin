@@ -30,6 +30,7 @@ internal abstract class Openssl3DigestSignatureGenerator(
     }
 
     // one shot
+    @OptIn(UnsafeNumber::class)
     private fun sign(data: ByteArray): ByteArray = memScoped {
         val context = checkError(EVP_MD_CTX_new())
         try {

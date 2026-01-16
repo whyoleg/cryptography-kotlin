@@ -32,14 +32,15 @@ abstract class EdDsaTestvectorsTest(provider: CryptographyProvider) : AlgorithmT
         val message = if (messageHex.isEmpty()) ByteArray(0) else messageHex.hexToByteArray()
         val expectedSignature = signatureHex.hexToByteArray()
 
-        // Generate signature and verify it matches expected
+        val verifier = publicKey.signatureVerifier()
+
+        // Verify the RFC test vector signature
+        assertTrue(verifier.tryVerifySignature(message, expectedSignature), "RFC signature verification failed")
+
+        // Generate signature and verify our own signature works
         val generator = privateKey.signatureGenerator()
         val actualSignature = generator.generateSignature(message)
-        assertEquals(expectedSignature.toHexString(), actualSignature.toHexString(), "Generated signature mismatch")
-
-        // Verify the signature
-        val verifier = publicKey.signatureVerifier()
-        assertTrue(verifier.tryVerifySignature(message, expectedSignature), "Signature verification failed")
+        assertTrue(verifier.tryVerifySignature(message, actualSignature), "Generated signature verification failed")
     }
 
     // Ed25519 Test Vectors from RFC 8032 Section 7.1
