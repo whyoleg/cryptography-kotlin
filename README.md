@@ -91,4 +91,4 @@ Additionally, it's possible to use [BOM][BOM] or [Gradle version catalog][Gradle
 
 [BOM]: https://whyoleg.github.io/cryptography-kotlin/bom/
 
-[Gradle version catalog]: https://whyoleg.github.io/cryptography-kotlin/gradle-version-catalog/
+[Gradle version catalog]: https://whyoleg.github.io/cryptography-kotlin/dependencies/gradle-version-catalog/
