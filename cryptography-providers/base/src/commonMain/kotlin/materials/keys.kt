@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2025-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.base.materials
@@ -33,7 +33,7 @@ public fun unwrapSubjectPublicKeyInfo(algorithm: ObjectIdentifier, key: ByteArra
 }
 
 @CryptographyProviderApi
-public fun wrapSubjectPublicKeyInfo(identifier: KeyAlgorithmIdentifier, key: ByteArray): ByteArray {
+public fun wrapSubjectPublicKeyInfo(identifier: AlgorithmIdentifier, key: ByteArray): ByteArray {
     return Der.encodeToByteArray(
         SubjectPublicKeyInfo.serializer(),
         SubjectPublicKeyInfo(identifier, BitArray(0, key))
@@ -48,7 +48,7 @@ public fun unwrapPrivateKeyInfo(algorithm: ObjectIdentifier, key: ByteArray): By
 }
 
 @CryptographyProviderApi
-public fun wrapPrivateKeyInfo(version: Int, identifier: KeyAlgorithmIdentifier, key: ByteArray): ByteArray {
+public fun wrapPrivateKeyInfo(version: Int, identifier: AlgorithmIdentifier, key: ByteArray): ByteArray {
     return Der.encodeToByteArray(
         PrivateKeyInfo.serializer(),
         PrivateKeyInfo(version, identifier, key)

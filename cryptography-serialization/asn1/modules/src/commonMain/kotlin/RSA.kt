@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.serialization.asn1.modules
@@ -10,10 +10,17 @@ import kotlinx.serialization.*
 
 public val ObjectIdentifier.Companion.RSA: ObjectIdentifier get() = ObjectIdentifier("1.2.840.113549.1.1.1")
 
-public object RsaKeyAlgorithmIdentifier : KeyAlgorithmIdentifier {
+public object RsaAlgorithmIdentifier : AlgorithmIdentifier {
     override val algorithm: ObjectIdentifier get() = ObjectIdentifier.RSA
     override val parameters: Nothing? get() = null
 }
+
+@Deprecated(
+    message = "Use RsaAlgorithmIdentifier instead",
+    replaceWith = ReplaceWith("RsaAlgorithmIdentifier", "dev.whyoleg.cryptography.serialization.asn1.modules.RsaAlgorithmIdentifier"),
+    level = DeprecationLevel.ERROR
+)
+public typealias RsaKeyAlgorithmIdentifier = RsaAlgorithmIdentifier
 
 /**
  * ```

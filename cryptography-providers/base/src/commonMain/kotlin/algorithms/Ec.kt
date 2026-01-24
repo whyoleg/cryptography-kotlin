@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2025-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.base.algorithms
@@ -13,7 +13,7 @@ public fun convertEcPrivateKeyFromPkcs8ToSec1(input: ByteArray): ByteArray {
     val privateKeyInfo = Der.decodeFromByteArray(PrivateKeyInfo.serializer(), input)
 
     val privateKeyAlgorithm = privateKeyInfo.privateKeyAlgorithm
-    check(privateKeyAlgorithm is EcKeyAlgorithmIdentifier) {
+    check(privateKeyAlgorithm is EcAlgorithmIdentifier) {
         "Expected algorithm '${ObjectIdentifier.EC}', received: '${privateKeyAlgorithm.algorithm}'"
     }
     // the produced key could not contain parameters in underlying EcPrivateKey,
@@ -38,7 +38,7 @@ public fun convertEcPrivateKeyFromSec1ToPkcs8(input: ByteArray): ByteArray {
 
     val privateKeyInfo = PrivateKeyInfo(
         version = 0,
-        privateKeyAlgorithm = EcKeyAlgorithmIdentifier(ecPrivateKey.parameters),
+        privateKeyAlgorithm = EcAlgorithmIdentifier(ecPrivateKey.parameters),
         privateKey = input
     )
     return Der.encodeToByteArray(PrivateKeyInfo.serializer(), privateKeyInfo)
@@ -48,7 +48,7 @@ public fun convertEcPrivateKeyFromSec1ToPkcs8(input: ByteArray): ByteArray {
 public fun getEcPublicKeyFromPrivateKeyPkcs8(input: ByteArray): ByteArray? {
     val privateKeyInfo = Der.decodeFromByteArray(PrivateKeyInfo.serializer(), input)
     val privateKeyAlgorithm = privateKeyInfo.privateKeyAlgorithm
-    check(privateKeyAlgorithm is EcKeyAlgorithmIdentifier) {
+    check(privateKeyAlgorithm is EcAlgorithmIdentifier) {
         "Expected algorithm '${ObjectIdentifier.EC}', received: '${privateKeyAlgorithm.algorithm}'"
     }
     val ecPrivateKey = Der.decodeFromByteArray(EcPrivateKey.serializer(), privateKeyInfo.privateKey)

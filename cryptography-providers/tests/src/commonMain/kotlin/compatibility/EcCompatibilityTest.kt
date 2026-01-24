@@ -203,8 +203,8 @@ private fun assertPkcs8EcPrivateKeyEquals(expectedBytes: ByteArray, actualBytes:
     val actual = Der.decodeFromByteArray(PrivateKeyInfo.serializer(), actualBytes)
 
     assertEquals(expected.version, actual.version, "PrivateKeyInfo.version")
-    val expectedAlgorithm = assertIs<EcKeyAlgorithmIdentifier>(expected.privateKeyAlgorithm)
-    val actualAlgorithm = assertIs<EcKeyAlgorithmIdentifier>(actual.privateKeyAlgorithm)
+    val expectedAlgorithm = assertIs<EcAlgorithmIdentifier>(expected.privateKeyAlgorithm)
+    val actualAlgorithm = assertIs<EcAlgorithmIdentifier>(actual.privateKeyAlgorithm)
     assertEquals(expectedAlgorithm.parameters, actualAlgorithm.parameters, "PrivateKeyInfo.parameters")
 
     assertEcPrivateKeyEquals(

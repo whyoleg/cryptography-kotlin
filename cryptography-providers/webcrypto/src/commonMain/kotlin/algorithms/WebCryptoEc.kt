@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.webcrypto.algorithms
@@ -123,7 +123,7 @@ private object EcPrivateKeyProcessor : WebCryptoKeyProcessor<EC.PrivateKey.Forma
             }
             wrapPrivateKeyInfo(
                 version = 0,
-                identifier = EcKeyAlgorithmIdentifier(EcParameters(curveId)),
+                identifier = EcAlgorithmIdentifier(EcParameters(curveId)),
                 key = Der.encodeToByteArray(EcPrivateKey.serializer(), EcPrivateKey(version = 1, key))
             )
         }
