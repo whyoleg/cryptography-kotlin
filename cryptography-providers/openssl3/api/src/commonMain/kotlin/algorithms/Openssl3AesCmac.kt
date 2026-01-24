@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2025-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
@@ -82,7 +82,7 @@ private class AesCmacSignature(
         override fun signIntoByteArray(destination: ByteArray, destinationOffset: Int): Int {
             val signature = signToByteArray()
             checkBounds(destination.size, destinationOffset, destinationOffset + signature.size)
-            signature.copyInto(destination, destinationOffset, destinationOffset)
+            signature.copyInto(destination, destinationOffset)
             return signature.size
         }
 

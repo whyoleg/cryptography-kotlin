@@ -29,7 +29,7 @@ public class AccumulatingSignFunction(
     override fun signIntoByteArray(destination: ByteArray, destinationOffset: Int): Int {
         val signature = signToByteArray()
         checkBounds(destination.size, destinationOffset, destinationOffset + signature.size)
-        signature.copyInto(destination, destinationOffset, destinationOffset)
+        signature.copyInto(destination, destinationOffset)
         return signature.size
     }
 
