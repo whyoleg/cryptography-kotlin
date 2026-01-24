@@ -29,32 +29,7 @@ internal class DerDecoder(
         return tag
     }
 
-    override fun decodeElementIndex(descriptor: SerialDescriptor): Int {
-        if (input.eof) return CompositeDecoder.DECODE_DONE
-
-        val tag = input.peakTag()
-
-        while (true) {
-            val index = currentIndex
-            tagOverride = descriptor.getElementContextSpecificTag(index)
-
-            if (descriptor.isElementOptional(index)) {
-                val requiredTag = checkNotNull(tagOverride) {
-                    "Optional element $descriptor[$index] must have context specific tag"
-                }
-
-                // if the tag is different,
-                // then an optional element is absent,
-                // and so we need to increment the index
-                if (tag != requiredTag.tag) {
-                    currentIndex++
-                    continue
-                }
-            }
-
-            return currentIndex++
-        }
-    }
+    
 
     override fun decodeNotNullMark(): Boolean = input.isNotNull()
     override fun decodeNull(): Nothing? = input.readNull()
@@ -69,17 +44,46 @@ internal class DerDecoder(
         BitArray.serializer().descriptor         -> input.readBitString(getAndResetTagOverride()) as T
         ObjectIdentifier.serializer().descriptor -> input.readObjectIdentifier(getAndResetTagOverride()) as T
         BigInt.serializer().descriptor           -> input.readInteger(getAndResetTagOverride()) as T
+        Asn1Any.serializer().descriptor          -> Asn1Any(input.readAnyElement(getAndResetTagOverride())) as T
         else                                     -> deserializer.deserialize(this)
     }
 
     // structures: SEQUENCE and SEQUENCE OF
     override fun beginStructure(descriptor: SerialDescriptor): CompositeDecoder = when (descriptor.kind) {
-        StructureKind.CLASS, is PolymorphicKind -> DerDecoder(der, input.readSequence(getAndResetTagOverride()))
-        else                                    -> throw SerializationException("This serial kind is not supported as structure: $descriptor")
+        StructureKind.CLASS, is PolymorphicKind, StructureKind.LIST -> DerDecoder(der, input.readSequence(getAndResetTagOverride()))
+        else                                                         -> throw SerializationException("This serial kind is not supported as structure: $descriptor")
     }
 
     override fun decodeInline(descriptor: SerialDescriptor): Decoder = this
     override fun decodeInlineElement(descriptor: SerialDescriptor, index: Int): Decoder = this
+
+    override fun decodeElementIndex(descriptor: SerialDescriptor): Int {
+        if (descriptor.kind == StructureKind.LIST) {
+            return if (input.eof) CompositeDecoder.DECODE_DONE else currentIndex++
+        }
+        if (input.eof) return CompositeDecoder.DECODE_DONE
+
+        val tag = input.peakTag()
+
+        while (true) {
+            val index = currentIndex
+            if (index >= descriptor.elementsCount) return CompositeDecoder.DECODE_DONE
+            tagOverride = descriptor.getElementContextSpecificTag(index)
+
+            if (descriptor.isElementOptional(index)) {
+                val requiredTag = checkNotNull(tagOverride) {
+                    "Optional element $descriptor[$index] must have context specific tag"
+                }
+
+                if (tag != requiredTag.tag) {
+                    currentIndex++
+                    continue
+                }
+            }
+
+            return currentIndex++
+        }
+    }
 
     // could be supported, but later when it will be needed
     override fun decodeEnum(enumDescriptor: SerialDescriptor): Int = error("Enum decoding is not supported")
