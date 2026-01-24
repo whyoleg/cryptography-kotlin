@@ -17,12 +17,13 @@ private const val maxDataSize = 10000
 abstract class EcdsaCompatibilityTest(
     provider: CryptographyProvider,
 ) : EcCompatibilityTest<ECDSA.PublicKey, ECDSA.PrivateKey, ECDSA.KeyPair, ECDSA>(ECDSA, provider) {
+
     @Serializable
     private data class SignatureParameters(
-        val digestName: String,
+        val digestName: String?,
         val signatureFormat: ECDSA.SignatureFormat,
     ) : TestParameters {
-        val digest get() = digest(digestName)
+        val digest get() = digestName?.let(::digest)
     }
 
     override suspend fun CompatibilityTestScope<ECDSA>.generate(isStressTest: Boolean) {
@@ -33,10 +34,12 @@ abstract class EcdsaCompatibilityTest(
 
         val signatureParametersList = buildList {
             listOf(ECDSA.SignatureFormat.RAW, ECDSA.SignatureFormat.DER).forEach { signatureFormat ->
-                generateDigestsForCompatibility { digest, _ ->
-                    if (!supportsDigest(digest)) return@generateDigestsForCompatibility
+                (DigestsForCompatibility + listOf(null)).forEach { digest ->
+                    if (!supportsDigestEcdsa(digest)) {
+                        return@forEach
+                    }
 
-                    val parameters = SignatureParameters(digest.name, signatureFormat)
+                    val parameters = SignatureParameters(digest?.name, signatureFormat)
                     val id = api.signatures.saveParameters(parameters)
                     add(id to parameters)
                 }
@@ -81,7 +84,7 @@ abstract class EcdsaCompatibilityTest(
         val keyPairs = validateKeys()
 
         api.signatures.getParameters<SignatureParameters> { signatureParameters, parametersId, _ ->
-            if (!supportsDigest(signatureParameters.digest)) return@getParameters
+            if (!supportsDigestEcdsa(signatureParameters.digest)) return@getParameters
 
             api.signatures.getData<SignatureData>(parametersId) { (keyReference, data, signature), _, _ ->
                 val (publicKeys, privateKeys) = keyPairs[keyReference] ?: return@getData

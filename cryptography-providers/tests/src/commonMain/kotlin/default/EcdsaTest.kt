@@ -33,6 +33,8 @@ abstract class EcdsaTest(provider: CryptographyProvider) : AlgorithmTest<ECDSA>(
         val derPrivateKeySizes: IntArray,
     )
 
+    private val ecdsaDigests = CommonDigests + listOf(null)
+
     @Test
     fun testSizes() = testWithAlgorithm {
         listOf(
@@ -153,10 +155,10 @@ abstract class EcdsaTest(provider: CryptographyProvider) : AlgorithmTest<ECDSA>(
             assertPrivateKeySize(EC.PrivateKey.Format.RAW, intArrayOf(rawPrivateKeySize))
             assertPrivateKeySize(EC.PrivateKey.Format.DER, rawPrivateKeySizes)
 
-            generateDigests { digest, _ ->
-                if (!supportsDigest(digest)) {
+            ecdsaDigests.forEach { digest ->
+                if (!supportsDigestEcdsa(digest)) {
                     logger.log { "Skipping digest $digest for curve ${curve.name}" }
-                    return@generateDigests
+                    return@forEach
                 }
 
                 // RAW signature
@@ -167,11 +169,11 @@ abstract class EcdsaTest(provider: CryptographyProvider) : AlgorithmTest<ECDSA>(
                         assertEquals(
                             rawSignatureSize,
                             sigEmpty.size,
-                            "RAW signature size mismatch for empty data on ${curve.name} / ${digest.name}"
+                            "RAW signature size mismatch for empty data on ${curve.name} / ${digest.safeName}"
                         )
                         assertTrue(
                             verifier.tryVerifySignature(ByteArray(0), sigEmpty),
-                            "RAW signature verification failed for empty data on ${curve.name} / ${digest.name}"
+                            "RAW signature verification failed for empty data on ${curve.name} / ${digest.safeName}"
                         )
 
                         repeat(8) { n ->
@@ -181,11 +183,11 @@ abstract class EcdsaTest(provider: CryptographyProvider) : AlgorithmTest<ECDSA>(
                             assertEquals(
                                 rawSignatureSize,
                                 signature.size,
-                                "RAW signature size mismatch for data size $size on ${curve.name} / ${digest.name}"
+                                "RAW signature size mismatch for data size $size on ${curve.name} / ${digest.safeName}"
                             )
                             assertTrue(
                                 verifier.tryVerifySignature(data, signature),
-                                "RAW signature verification failed for data size $size on ${curve.name} / ${digest.name}"
+                                "RAW signature verification failed for data size $size on ${curve.name} / ${digest.safeName}"
                             )
                         }
                     }
@@ -199,7 +201,7 @@ abstract class EcdsaTest(provider: CryptographyProvider) : AlgorithmTest<ECDSA>(
                             // enhance a message with Base64 encoded signature
 
                             assertContains(
-                                derSignatureSizes, signature.size, "DER signature size mismatch on ${curve.name} / ${digest.name}. " +
+                                derSignatureSizes, signature.size, "DER signature size mismatch on ${curve.name} / ${digest.safeName}. " +
                                         "Expected one of $derSignatureSizes, got ${signature.size}. " +
                                         "Signature (Base64): ${Base64.encode(signature)}"
                             )
@@ -213,7 +215,7 @@ abstract class EcdsaTest(provider: CryptographyProvider) : AlgorithmTest<ECDSA>(
                             assertSignatureSize(signature)
                             assertTrue(
                                 verifier.tryVerifySignature(data, signature),
-                                "DER signature verification failed for data size $size on ${curve.name} / ${digest.name}"
+                                "DER signature verification failed for data size $size on ${curve.name} / ${digest.safeName}"
                             )
                         }
                     }
@@ -244,11 +246,13 @@ abstract class EcdsaTest(provider: CryptographyProvider) : AlgorithmTest<ECDSA>(
 
             val keyPair = algorithm.keyPairGenerator(curve).generateKey()
 
-            generateDigests { digest, _ ->
-                if (!supportsDigest(digest)) return@generateDigests
+            ecdsaDigests.forEach { digest->
+                if (!supportsDigestEcdsa(digest)) {
+                    return@forEach
+                }
 
                 ECDSA.SignatureFormat.entries.forEach { format ->
-                    logger.log { "Testing format $format for ${curve.name} / ${digest.name}" }
+                    logger.log { "Testing format $format for ${curve.name} / ${digest.safeName}" }
                     val signatureGenerator = keyPair.privateKey.signatureGenerator(digest, format)
                     val signatureVerifier = keyPair.publicKey.signatureVerifier(digest, format)
 
@@ -259,6 +263,13 @@ abstract class EcdsaTest(provider: CryptographyProvider) : AlgorithmTest<ECDSA>(
                     }
                 }
             }
+        }
+    }
+
+    private val CryptographyAlgorithmId<Digest>?.safeName: String get() {
+        return when (this) {
+            null -> "Message"
+            else -> name
         }
     }
 }

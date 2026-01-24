@@ -1,17 +1,18 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.apple.algorithms
 
 import dev.whyoleg.cryptography.algorithms.*
+import dev.whyoleg.cryptography.operations.*
 import platform.CoreCrypto.*
 
 internal object CCAesCbc : CCAes<AES.CBC.Key>(), AES.CBC {
     override fun wrapKey(key: ByteArray): AES.CBC.Key = AesCbcKey(key)
 
     private class AesCbcKey(private val key: ByteArray) : AES.CBC.Key {
-        override fun cipher(padding: Boolean): AES.IvCipher = CCAesIvCipher(
+        override fun cipher(padding: Boolean): IvCipher = CCAesIvCipher(
             algorithm = kCCAlgorithmAES,
             mode = kCCModeCBC,
             padding = if (padding) ccPKCS7Padding else ccNoPadding,

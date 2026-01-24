@@ -1,19 +1,18 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
-package dev.whyoleg.cryptography.providers.base.algorithms
+package dev.whyoleg.cryptography.providers.base.operations
 
 import dev.whyoleg.cryptography.*
-import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.providers.base.operations.*
+import dev.whyoleg.cryptography.operations.*
 import kotlinx.io.*
 
 @CryptographyProviderApi
-public interface BaseAesIvCipher : AES.IvCipher, BaseCipher, BaseAesIvEncryptor, BaseAesIvDecryptor
+public interface BaseIvCipher : IvCipher, BaseCipher, BaseIvEncryptor, BaseIvDecryptor
 
 @CryptographyProviderApi
-public interface BaseAesIvEncryptor : AES.IvEncryptor, BaseEncryptor {
+public interface BaseIvEncryptor : IvEncryptor, BaseEncryptor {
 
     public fun createEncryptFunctionWithIv(iv: ByteArray): CipherFunction
 
@@ -34,7 +33,7 @@ public interface BaseAesIvEncryptor : AES.IvEncryptor, BaseEncryptor {
 }
 
 @CryptographyProviderApi
-public interface BaseAesIvDecryptor : AES.IvDecryptor, BaseDecryptor {
+public interface BaseIvDecryptor : IvDecryptor, BaseDecryptor {
 
     public fun createDecryptFunctionWithIv(iv: ByteArray): CipherFunction
 

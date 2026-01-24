@@ -1,16 +1,15 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
-package dev.whyoleg.cryptography.providers.base.algorithms
+package dev.whyoleg.cryptography.providers.base.operations
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.providers.base.*
-import dev.whyoleg.cryptography.providers.base.operations.*
 import kotlinx.io.*
 
 @CryptographyProviderApi
-public class BaseAesImplicitIvEncryptFunction(
+public class BaseImplicitIvEncryptFunction(
     private val iv: ByteArray,
     private val cipherFunction: CipherFunction,
 ) : CipherFunction {
@@ -98,7 +97,7 @@ public class BaseAesImplicitIvEncryptFunction(
 }
 
 @CryptographyProviderApi
-public class BaseAesImplicitIvDecryptFunction(
+public class BaseImplicitIvDecryptFunction(
     private val ivSize: Int,
     private val initialize: (iv: ByteArray, startIndex: Int) -> CipherFunction,
 ) : CipherFunction {

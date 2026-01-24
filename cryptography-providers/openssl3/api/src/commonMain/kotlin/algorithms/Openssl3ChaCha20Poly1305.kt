@@ -1,11 +1,12 @@
 /*
- * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
+import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.base.operations.*
@@ -16,51 +17,67 @@ import kotlinx.cinterop.*
 import kotlin.experimental.*
 import kotlin.native.ref.*
 
-internal object Openssl3AesGcm : AES.GCM, Openssl3Aes<AES.GCM.Key>() {
-    override fun wrapKey(keySize: BinarySize, key: ByteArray): AES.GCM.Key = AesGcmKey(keySize, key)
+private const val keySize: Int = 32
+private const val nonceSize: Int = 12
+private const val tagSize: Int = 16
 
-    private class AesGcmKey(keySize: BinarySize, key: ByteArray) : AES.GCM.Key, AesKey(key) {
-        private val algorithm = when (keySize) {
-            AES.Key.Size.B128 -> "AES-128-GCM"
-            AES.Key.Size.B192 -> "AES-192-GCM"
-            AES.Key.Size.B256 -> "AES-256-GCM"
-            else              -> error("Unsupported key size")
+internal object Openssl3ChaCha20Poly1305 : ChaCha20Poly1305 {
+    override fun keyDecoder(): KeyDecoder<ChaCha20Poly1305.Key.Format, ChaCha20Poly1305.Key> = ChaCha20Poly1305KeyDecoder()
+    override fun keyGenerator(): KeyGenerator<ChaCha20Poly1305.Key> = ChaCha20Poly1305KeyGenerator()
+
+    private class ChaCha20Poly1305KeyDecoder : KeyDecoder<ChaCha20Poly1305.Key.Format, ChaCha20Poly1305.Key> {
+        override fun decodeFromByteArrayBlocking(format: ChaCha20Poly1305.Key.Format, bytes: ByteArray): ChaCha20Poly1305.Key =
+            when (format) {
+                ChaCha20Poly1305.Key.Format.RAW -> {
+                    require(bytes.size == keySize) { "ChaCha20-Poly1305 key size must be 256 bits" }
+                    ChaCha20Poly1305Key(bytes.copyOf())
+                }
+                ChaCha20Poly1305.Key.Format.JWK -> error("JWK is not supported")
+            }
+    }
+
+    private class ChaCha20Poly1305KeyGenerator : KeyGenerator<ChaCha20Poly1305.Key> {
+        override fun generateKeyBlocking(): ChaCha20Poly1305.Key {
+            val key = CryptographySystem.getDefaultRandom().nextBytes(keySize)
+            return ChaCha20Poly1305Key(key)
         }
+    }
 
-        private val cipher = EVP_CIPHER_fetch(null, algorithm, null)
+    private class ChaCha20Poly1305Key(private val key: ByteArray) : ChaCha20Poly1305.Key {
+        private val cipher = EVP_CIPHER_fetch(null, "ChaCha20-Poly1305", null)
 
         @OptIn(ExperimentalNativeApi::class)
         private val cleaner = createCleaner(cipher, ::EVP_CIPHER_free)
 
-        override fun cipher(tagSize: BinarySize): IvAuthenticatedCipher {
-            return Openssl3AesGcmCipher(cipher, key, tagSize.inBytes)
+        override fun cipher(): IvAuthenticatedCipher = Openssl3ChaCha20Poly1305Cipher(cipher, key)
+
+        override fun encodeToByteArrayBlocking(format: ChaCha20Poly1305.Key.Format): ByteArray = when (format) {
+            ChaCha20Poly1305.Key.Format.RAW -> key.copyOf()
+            ChaCha20Poly1305.Key.Format.JWK -> error("JWK is not supported")
         }
     }
 }
 
-private const val defaultIvSize: Int = 12
-
-private class Openssl3AesGcmCipher(
+private class Openssl3ChaCha20Poly1305Cipher(
     private val cipher: CPointer<EVP_CIPHER>?,
     private val key: ByteArray,
-    private val tagSize: Int,
 ) : BaseIvAuthenticatedCipher {
 
     override fun createEncryptFunction(associatedData: ByteArray?): CipherFunction {
-        val iv = CryptographySystem.getDefaultRandom().nextBytes(defaultIvSize)
+        val iv = CryptographySystem.getDefaultRandom().nextBytes(nonceSize)
         return BaseImplicitIvEncryptFunction(iv, createEncryptFunctionWithIv(iv, associatedData))
     }
 
     override fun createDecryptFunction(associatedData: ByteArray?): CipherFunction {
-        return BaseImplicitIvDecryptFunction(defaultIvSize) { iv, startIndex ->
-            createDecryptFunctionWithIv(iv, startIndex, defaultIvSize, associatedData)
+        return BaseImplicitIvDecryptFunction(nonceSize) { iv, startIndex ->
+            createDecryptFunctionWithIv(iv, startIndex, nonceSize, associatedData)
         }
     }
 
     override fun createEncryptFunctionWithIv(iv: ByteArray, associatedData: ByteArray?): CipherFunction {
-        require(iv.size >= defaultIvSize) { "IV size is wrong" }
+        require(iv.size >= nonceSize) { "IV size is wrong" }
 
-        return AesGcmEncryptFunction(createContext(iv, 0, iv.size, encrypt = true, associatedData), tagSize)
+        return ChaCha20Poly1305EncryptFunction(createContext(iv, 0, iv.size, encrypt = true, associatedData))
     }
 
     private fun createDecryptFunctionWithIv(
@@ -69,12 +86,11 @@ private class Openssl3AesGcmCipher(
         ivSize: Int,
         associatedData: ByteArray?,
     ): CipherFunction {
-        require(ivSize >= defaultIvSize) { "IV size is wrong" }
+        require(ivSize == nonceSize) { "IV size is wrong" }
         require(iv.size - startIndex >= ivSize) { "IV size is wrong" }
 
-        // GCM should validate data at the end, so it's not really streaming
         return AccumulatingCipherFunction { input ->
-            AesGcmDecryptFunction(createContext(iv, startIndex, ivSize, encrypt = false, associatedData), tagSize)
+            ChaCha20Poly1305DecryptFunction(createContext(iv, startIndex, ivSize, encrypt = false, associatedData))
                 .use { it.decrypt(input) }
         }
     }
@@ -110,9 +126,8 @@ private class Openssl3AesGcmCipher(
         }
     }
 
-    private class AesGcmEncryptFunction(
+    private class ChaCha20Poly1305EncryptFunction(
         context: Resource<CPointer<EVP_CIPHER_CTX>?>,
-        private val tagSize: Int,
     ) : EvpCipherFunction(context) {
         override fun maxOutputSize(inputSize: Int): Int {
             return inputSize + tagSize
@@ -142,9 +157,8 @@ private class Openssl3AesGcmCipher(
         }
     }
 
-    private class AesGcmDecryptFunction(
+    private class ChaCha20Poly1305DecryptFunction(
         context: Resource<CPointer<EVP_CIPHER_CTX>?>,
-        private val tagSize: Int,
     ) : EvpCipherFunction(context) {
         fun decrypt(input: ByteArray): ByteArray {
             val transformed = transformToByteArray(input, endIndex = input.size - tagSize)

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.jdk
@@ -46,8 +46,8 @@ internal class JdkCryptographyState(private val provider: JProvider?) {
         }
     }
 
-    fun cipher(algorithm: String): Pooled<JCipher> =
-        ciphers.get(algorithm, JCipher::getInstance, JCipher::getInstance)
+    fun cipher(algorithm: String, cached: Boolean = true): Pooled<JCipher> =
+        ciphers.get(algorithm, JCipher::getInstance, JCipher::getInstance, cached)
 
     fun messageDigest(algorithm: String): Pooled<JMessageDigest> =
         messageDigests.get(algorithm, JMessageDigest::getInstance, JMessageDigest::getInstance)
@@ -79,6 +79,11 @@ internal class JdkCryptographyState(private val provider: JProvider?) {
     fun keyAgreement(algorithm: String): Pooled<JKeyAgreement> =
         keyAgreements.get(algorithm, JKeyAgreement::getInstance, JKeyAgreement::getInstance)
 
+}
+
+internal fun CryptographyAlgorithmId<Digest>?.hashECAlgorithmName(): String = when (this) {
+    null     -> "NONE"
+    else -> hashAlgorithmName()
 }
 
 internal fun CryptographyAlgorithmId<Digest>.hashAlgorithmName(): String = when (this) {

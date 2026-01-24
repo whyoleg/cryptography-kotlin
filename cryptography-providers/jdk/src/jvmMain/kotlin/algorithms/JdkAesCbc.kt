@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.jdk.algorithms
@@ -7,6 +7,7 @@ package dev.whyoleg.cryptography.providers.jdk.algorithms
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.jdk.*
 import dev.whyoleg.cryptography.providers.jdk.materials.*
 
@@ -26,7 +27,7 @@ private class JdkAesCbcKey(
     private val state: JdkCryptographyState,
     private val key: JSecretKey,
 ) : AES.CBC.Key, JdkEncodableKey<AES.Key.Format>(key) {
-    override fun cipher(padding: Boolean): AES.IvCipher = JdkAesIvCipher(
+    override fun cipher(padding: Boolean): IvCipher = JdkAesIvCipher(
         state = state,
         key = key,
         ivSize = 16,
