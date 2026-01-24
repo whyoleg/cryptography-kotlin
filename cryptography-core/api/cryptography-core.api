@@ -138,6 +138,8 @@ public final class dev/whyoleg/cryptography/algorithms/AES$CMAC$Companion : dev/
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/AES$CMAC$Key : dev/whyoleg/cryptography/algorithms/AES$Key {
+	public abstract fun cipherWithIv (Z)Ldev/whyoleg/cryptography/operations/AesCmacWithIvCipher;
+	public static synthetic fun cipherWithIv$default (Ldev/whyoleg/cryptography/algorithms/AES$CMAC$Key;ZILjava/lang/Object;)Ldev/whyoleg/cryptography/operations/AesCmacWithIvCipher;
 	public abstract fun signatureGenerator ()Ldev/whyoleg/cryptography/operations/SignatureGenerator;
 	public abstract fun signatureVerifier ()Ldev/whyoleg/cryptography/operations/SignatureVerifier;
 }
@@ -736,6 +738,17 @@ public abstract interface class dev/whyoleg/cryptography/materials/key/KeyFormat
 public abstract interface class dev/whyoleg/cryptography/materials/key/KeyGenerator {
 	public fun generateKey (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun generateKeyBlocking ()Ldev/whyoleg/cryptography/materials/key/Key;
+}
+
+public abstract interface class dev/whyoleg/cryptography/operations/AesCmacWithIvCipher : dev/whyoleg/cryptography/operations/AesCmacWithIvEncryptor {
+}
+
+public abstract interface class dev/whyoleg/cryptography/operations/AesCmacWithIvEncryptor {
+	public fun encryptWithIv ([B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun encryptWithIvBlocking ([B[B)[B
+	public abstract fun initialize ()V
+	public fun process ([B[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun processBlocking ([B[B)[B
 }
 
 public abstract interface class dev/whyoleg/cryptography/operations/AuthenticatedCipher : dev/whyoleg/cryptography/operations/AuthenticatedDecryptor, dev/whyoleg/cryptography/operations/AuthenticatedEncryptor, dev/whyoleg/cryptography/operations/Cipher {
