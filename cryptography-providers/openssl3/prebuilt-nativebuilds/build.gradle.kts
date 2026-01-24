@@ -7,7 +7,6 @@ import ckbuild.*
 plugins {
     id("ckbuild.multiplatform-library")
     id("ckbuild.multiplatform-provider-tests")
-    alias(libs.plugins.nativebuilds)
 }
 
 description = "cryptography-kotlin OpenSSL3 provider (prebuilt) based on NativeBuilds"
