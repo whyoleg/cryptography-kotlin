@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.apple.algorithms
@@ -118,8 +118,8 @@ internal abstract class SecRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKe
                 RSA.PublicKey.Format.JWK -> error("$format is not supported")
                 RSA.PublicKey.Format.DER.PKCS1 -> pkcs1Key
                 RSA.PublicKey.Format.PEM.PKCS1 -> wrapPem(PemLabel.RsaPublicKey, pkcs1Key)
-                RSA.PublicKey.Format.DER -> wrapSubjectPublicKeyInfo(RsaKeyAlgorithmIdentifier, pkcs1Key)
-                RSA.PublicKey.Format.PEM -> wrapPem(PemLabel.PublicKey, wrapSubjectPublicKeyInfo(RsaKeyAlgorithmIdentifier, pkcs1Key))
+                RSA.PublicKey.Format.DER -> wrapSubjectPublicKeyInfo(RsaAlgorithmIdentifier, pkcs1Key)
+                RSA.PublicKey.Format.PEM -> wrapPem(PemLabel.PublicKey, wrapSubjectPublicKeyInfo(RsaAlgorithmIdentifier, pkcs1Key))
             }
         }
     }
@@ -146,8 +146,8 @@ internal abstract class SecRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKe
                 RSA.PrivateKey.Format.JWK -> error("$format is not supported")
                 RSA.PrivateKey.Format.DER.PKCS1 -> pkcs1Key
                 RSA.PrivateKey.Format.PEM.PKCS1 -> wrapPem(PemLabel.RsaPrivateKey, pkcs1Key)
-                RSA.PrivateKey.Format.DER -> wrapPrivateKeyInfo(0, RsaKeyAlgorithmIdentifier, pkcs1Key)
-                RSA.PrivateKey.Format.PEM -> wrapPem(PemLabel.PrivateKey, wrapPrivateKeyInfo(0, RsaKeyAlgorithmIdentifier, pkcs1Key))
+                RSA.PrivateKey.Format.DER -> wrapPrivateKeyInfo(0, RsaAlgorithmIdentifier, pkcs1Key)
+                RSA.PrivateKey.Format.PEM -> wrapPem(PemLabel.PrivateKey, wrapPrivateKeyInfo(0, RsaAlgorithmIdentifier, pkcs1Key))
             }
         }
     }

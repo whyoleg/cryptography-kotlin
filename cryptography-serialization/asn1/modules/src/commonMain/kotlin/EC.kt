@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.serialization.asn1.modules
@@ -12,11 +12,21 @@ import kotlin.jvm.*
 
 public val ObjectIdentifier.Companion.EC: ObjectIdentifier get() = ObjectIdentifier("1.2.840.10045.2.1")
 
-public class EcKeyAlgorithmIdentifier(
+public class EcAlgorithmIdentifier(
     override val parameters: EcParameters?,
-) : KeyAlgorithmIdentifier {
+) : AlgorithmIdentifier {
     override val algorithm: ObjectIdentifier get() = ObjectIdentifier.EC
 }
+
+@Deprecated(
+    message = "Use EcAlgorithmIdentifier instead",
+    replaceWith = ReplaceWith(
+        "EcAlgorithmIdentifier",
+        "dev.whyoleg.cryptography.serialization.asn1.modules.EcAlgorithmIdentifier"
+    ),
+    level = DeprecationLevel.ERROR
+)
+public typealias EcKeyAlgorithmIdentifier = EcAlgorithmIdentifier
 
 /**
  * ```

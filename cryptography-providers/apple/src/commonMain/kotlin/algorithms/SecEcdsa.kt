@@ -189,7 +189,7 @@ private class EcdsaPublicKey(
 
     private fun encodeDer(rawKey: ByteArray): ByteArray {
         val spki = SubjectPublicKeyInfo(
-            algorithm = EcKeyAlgorithmIdentifier(EcParameters(curve.curve)),
+            algorithm = EcAlgorithmIdentifier(EcParameters(curve.curve)),
             subjectPublicKey = rawKey.toBitArray(),
         )
 
@@ -235,7 +235,7 @@ private class EcdsaPrivateKey(
     private fun encodeDerPkcs8(rawKey: ByteArray): ByteArray {
         val pki = PrivateKeyInfo(
             version = 0,
-            privateKeyAlgorithm = EcKeyAlgorithmIdentifier(EcParameters(curve.curve)),
+            privateKeyAlgorithm = EcAlgorithmIdentifier(EcParameters(curve.curve)),
             privateKey = encodeDerEcPrivateKey(rawKey)
         )
         return Der.encodeToByteArray(PrivateKeyInfo.serializer(), pki)
@@ -357,7 +357,7 @@ private fun ByteArray.trimLeadingZeros(): ByteArray {
 }
 
 private fun ensureCurve(identifier: AlgorithmIdentifier, curve: EcCurveData) {
-    check(identifier is EcKeyAlgorithmIdentifier) {
+    check(identifier is EcAlgorithmIdentifier) {
         "Expected algorithm `${ObjectIdentifier.EC}`, but was ${identifier.algorithm}"
     }
     ensureCurve(identifier.parameters, curve)

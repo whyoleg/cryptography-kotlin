@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.serialization.asn1.modules
@@ -18,7 +18,7 @@ import kotlinx.serialization.*
 @Serializable
 public class SubjectPublicKeyInfo(
     @Contextual
-    public val algorithm: KeyAlgorithmIdentifier,
+    public val algorithm: AlgorithmIdentifier,
     public val subjectPublicKey: BitArray,
 )
 
@@ -50,6 +50,6 @@ public class SubjectPublicKeyInfo(
 public class PrivateKeyInfo(
     public val version: Int,
     @Contextual
-    public val privateKeyAlgorithm: KeyAlgorithmIdentifier,
+    public val privateKeyAlgorithm: AlgorithmIdentifier,
     public val privateKey: ByteArray,
 )
