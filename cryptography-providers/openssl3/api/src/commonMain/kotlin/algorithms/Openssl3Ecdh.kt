@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
@@ -7,12 +7,11 @@ package dev.whyoleg.cryptography.providers.openssl3.algorithms
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.materials.key.*
 import dev.whyoleg.cryptography.operations.*
-import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.providers.openssl3.materials.*
+import dev.whyoleg.cryptography.providers.openssl3.operations.*
 import kotlinx.cinterop.*
-import platform.posix.*
 
 internal object Openssl3Ecdh : ECDH {
     override fun publicKeyDecoder(curve: EC.Curve): KeyDecoder<EC.PublicKey.Format, ECDH.PublicKey> = EcPublicKeyDecoder(curve)
@@ -154,24 +153,5 @@ internal object Openssl3Ecdh : ECDH {
 
             return deriveSharedSecret(publicKey = key, privateKey = other.key)
         }
-    }
-}
-
-@OptIn(UnsafeNumber::class)
-private fun deriveSharedSecret(
-    publicKey: CPointer<EVP_PKEY>,
-    privateKey: CPointer<EVP_PKEY>,
-): ByteArray = memScoped {
-    val context = checkError(EVP_PKEY_CTX_new_from_pkey(null, privateKey, null))
-    try {
-        checkError(EVP_PKEY_derive_init(context))
-        checkError(EVP_PKEY_derive_set_peer(context, publicKey))
-        val secretSize = alloc<size_tVar>()
-        checkError(EVP_PKEY_derive(context, null, secretSize.ptr))
-        val secret = ByteArray(secretSize.value.toInt())
-        checkError(EVP_PKEY_derive(context, secret.refToU(0), secretSize.ptr))
-        secret
-    } finally {
-        EVP_PKEY_CTX_free(context)
     }
 }
