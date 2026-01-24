@@ -7,9 +7,9 @@ package dev.whyoleg.cryptography.providers.openssl3.algorithms
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.operations.*
-import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
+import dev.whyoleg.cryptography.providers.openssl3.operations.*
 import kotlinx.cinterop.*
 import kotlin.experimental.*
 import kotlin.native.ref.*
@@ -37,106 +37,12 @@ internal object Openssl3AesCmac : AES.CMAC, Openssl3Aes<AES.CMAC.Key>() {
     }
 }
 
-@OptIn(UnsafeNumber::class)
-@ExperimentalNativeApi
 private class AesCmacSignature(
     private val algorithm: String,
     private val key: ByteArray,
-) : SignatureGenerator, SignatureVerifier {
-
-    private fun createFunction() = AesCmacFunction(
-        key = key,
-        algorithm = algorithm,
-        context = Resource(checkError(EVP_MAC_CTX_new(Openssl3AesCmac.mac)), ::EVP_MAC_CTX_free)
+) : EvpMac(Openssl3AesCmac.mac, key) {
+    @OptIn(UnsafeNumber::class)
+    override fun MemScope.createParams(): CValuesRef<OSSL_PARAM> = OSSL_PARAM_array(
+        OSSL_PARAM_construct_utf8_string("cipher".cstr.ptr, algorithm.cstr.ptr, 0.convert())
     )
-
-    override fun createSignFunction(): SignFunction = createFunction()
-    override fun createVerifyFunction(): VerifyFunction = createFunction()
-
-    private class AesCmacFunction(
-        private val key: ByteArray,
-        private val algorithm: String,
-        private val context: Resource<CPointer<EVP_MAC_CTX>>,
-    ) : SignFunction, VerifyFunction, SafeCloseable(SafeCloseAction(context, AutoCloseable::close)) {
-
-        init {
-            reset()
-        }
-
-        @OptIn(UnsafeNumber::class)
-        override fun update(source: ByteArray, startIndex: Int, endIndex: Int) {
-            // Implementation for updating the CMAC with the provided data
-            checkBounds(source.size, startIndex, endIndex)
-            val context = context.access()
-            source.usePinned {
-                checkError(
-                    EVP_MAC_update(
-                        ctx = context,
-                        data = it.safeAddressOf(0).reinterpret(),
-                        datalen = source.size.convert()
-                    )
-                )
-            }
-        }
-
-        override fun signIntoByteArray(destination: ByteArray, destinationOffset: Int): Int {
-            val signature = signToByteArray()
-            checkBounds(destination.size, destinationOffset, destinationOffset + signature.size)
-            signature.copyInto(destination, destinationOffset)
-            return signature.size
-        }
-
-        @OptIn(UnsafeNumber::class)
-        override fun signToByteArray(): ByteArray {
-            val context = context.access()
-            val macSize = EVP_MAC_CTX_get_mac_size(context).convert<Int>()
-            val out = ByteArray(macSize)
-            out.usePinned {
-                checkError(
-                    EVP_MAC_final(
-                        ctx = context,
-                        out = it.safeAddressOf(0).reinterpret(),
-                        outl = null,
-                        outsize = macSize.convert()
-                    )
-                )
-            }
-            return out
-        }
-
-
-        @OptIn(UnsafeNumber::class)
-        override fun tryVerify(signature: ByteArray, startIndex: Int, endIndex: Int): Boolean {
-            checkBounds(signature.size, startIndex, endIndex)
-            return signToByteArray().contentEquals(signature.copyOfRange(startIndex, endIndex))
-        }
-
-        override fun verify(signature: ByteArray, startIndex: Int, endIndex: Int) {
-            check(tryVerify(signature, startIndex, endIndex)) { "Invalid signature" }
-        }
-
-        @OptIn(UnsafeNumber::class)
-        override fun reset() {
-            val context = context.access()
-            memScoped {
-                val params = OSSL_PARAM_array(
-                    OSSL_PARAM_construct_utf8_string(
-                        "cipher".cstr.ptr,
-                        algorithm.cstr.ptr,
-                        0.convert()
-                    )
-                )
-                key.usePinned {
-                    checkError(
-                        EVP_MAC_init(
-                            ctx = context,
-                            key = it.addressOf(0).reinterpret(),
-                            keylen = key.size.convert(),
-                            params = params
-                        )
-                    )
-                }
-            }
-        }
-    }
 }
