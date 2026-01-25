@@ -9,19 +9,43 @@ import kotlinx.serialization.*
 import kotlinx.serialization.builtins.*
 import kotlinx.serialization.descriptors.*
 import kotlinx.serialization.encoding.*
+import kotlin.reflect.*
 
 @ExperimentalSerializationApi
 public abstract class AlgorithmIdentifierSerializer : KSerializer<AlgorithmIdentifier> {
-    protected abstract fun CompositeEncoder.encodeParameters(value: AlgorithmIdentifier)
-    protected abstract fun CompositeDecoder.decodeParameters(algorithm: ObjectIdentifier): AlgorithmIdentifier
+    private val byClass = mutableMapOf<KClass<*>, AlgorithmEntry>()
+    private val byOid = mutableMapOf<ObjectIdentifier, AlgorithmEntry>()
 
-    protected fun <P : Any> CompositeEncoder.encodeParameters(serializer: KSerializer<P>, value: P?) {
-        encodeNullableSerializableElement(descriptor, 1, serializer, value)
+    private fun algorithm(oid: ObjectIdentifier, cls: KClass<*>, entry: AlgorithmEntry) {
+        byClass[cls] = entry
+        byOid[oid] = entry
     }
 
-    protected fun <P : Any> CompositeDecoder.decodeParameters(serializer: KSerializer<P>): P? {
-        return decodeNullableSerializableElement(descriptor, 1, serializer)
-    }
+    @Suppress("UNCHECKED_CAST")
+    protected fun <P : Any, T : AlgorithmIdentifier> algorithm(
+        oid: ObjectIdentifier,
+        cls: KClass<T>,
+        parametersSerializer: KSerializer<P>,
+        factory: (P?) -> T,
+    ): Unit = algorithm(oid, cls, AlgorithmEntry(parametersSerializer, factory as (Any?) -> AlgorithmIdentifier))
+
+    protected fun <T : AlgorithmIdentifier> algorithm(
+        oid: ObjectIdentifier,
+        cls: KClass<T>,
+        instance: T,
+    ): Unit = algorithm(oid, cls, NothingSerializer()) { instance }
+
+    protected inline fun <reified T : AlgorithmIdentifier> algorithm(
+        oid: ObjectIdentifier,
+        instance: T,
+    ): Unit = algorithm(oid, T::class, instance)
+
+    protected inline fun <reified P : Any, reified T : AlgorithmIdentifier> algorithm(
+        oid: ObjectIdentifier,
+        noinline factory: (P?) -> T,
+    ): Unit = algorithm(oid, T::class, serializer<P>(), factory)
+
+    // impl details
 
     @OptIn(InternalSerializationApi::class)
     final override val descriptor: SerialDescriptor = buildSerialDescriptor("AlgorithmIdentifier", PolymorphicKind.OPEN) {
@@ -36,7 +60,14 @@ public abstract class AlgorithmIdentifierSerializer : KSerializer<AlgorithmIdent
             serializer = ObjectIdentifier.serializer(),
             value = value.algorithm
         )
-        encodeParameters(value)
+
+        @Suppress("UNCHECKED_CAST")
+        encodeNullableSerializableElement(
+            descriptor = descriptor,
+            index = 1,
+            serializer = byClass[value::class]?.serializer as? KSerializer<Any?> ?: error("No serializer for ${value::class}"),
+            value = value.parameters
+        )
     }
 
     final override fun deserialize(decoder: Decoder): AlgorithmIdentifier = decoder.decodeStructure(descriptor) {
@@ -46,32 +77,36 @@ public abstract class AlgorithmIdentifierSerializer : KSerializer<AlgorithmIdent
             index = 0,
             deserializer = ObjectIdentifier.serializer()
         )
-        check(decodeElementIndex(descriptor) == 1)
-        val parameters = decodeParameters(algorithm)
-        check(decodeElementIndex(descriptor) == CompositeDecoder.DECODE_DONE)
-        parameters
+
+        val entry = byOid[algorithm] ?: error("Unknown algorithm: $algorithm")
+
+        val parameters = when (val index = decodeElementIndex(descriptor)) {
+            1                            -> {
+                val parameters = decodeNullableSerializableElement(
+                    descriptor = descriptor,
+                    index = 1,
+                    deserializer = entry.serializer
+                )
+                check(decodeElementIndex(descriptor) == CompositeDecoder.DECODE_DONE)
+                parameters
+            }
+            CompositeDecoder.DECODE_DONE -> null // no parameters
+            else                         -> error("Unexpected element index: $index")
+        }
+
+        entry.factory.invoke(parameters)
     }
+
+    private class AlgorithmEntry(
+        val serializer: KSerializer<out Any>,
+        val factory: (Any?) -> AlgorithmIdentifier,
+    )
 }
 
 @OptIn(ExperimentalSerializationApi::class)
 internal object DefaultAlgorithmIdentifierSerializer : AlgorithmIdentifierSerializer() {
-    override fun CompositeEncoder.encodeParameters(value: AlgorithmIdentifier): Unit = when (value) {
-        is RsaAlgorithmIdentifier     -> encodeParameters(NothingSerializer(), RsaAlgorithmIdentifier.parameters)
-        is EcAlgorithmIdentifier      -> encodeParameters(EcParameters.serializer(), value.parameters)
-        is UnknownAlgorithmIdentifier -> encodeParameters(NothingSerializer(), value.parameters)
-        else                          -> encodeParameters(NothingSerializer(), null)
-    }
-
-    override fun CompositeDecoder.decodeParameters(algorithm: ObjectIdentifier): AlgorithmIdentifier = when (algorithm) {
-        ObjectIdentifier.RSA -> {
-            // null parameters
-            decodeParameters(NothingSerializer())
-            RsaAlgorithmIdentifier
-        }
-        ObjectIdentifier.EC  -> EcAlgorithmIdentifier(decodeParameters(EcParameters.serializer()))
-        else                 -> {
-            // TODO: somehow we should ignore parameters here
-            UnknownAlgorithmIdentifier(algorithm)
-        }
+    init {
+        algorithm(ObjectIdentifier.RSA, RsaAlgorithmIdentifier)
+        algorithm(ObjectIdentifier.EC, ::EcAlgorithmIdentifier)
     }
 }
