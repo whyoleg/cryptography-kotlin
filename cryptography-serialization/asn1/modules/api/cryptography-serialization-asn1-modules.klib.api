@@ -92,12 +92,14 @@ final class dev.whyoleg.cryptography.serialization.asn1.modules/EcdsaSignatureVa
 }
 
 final class dev.whyoleg.cryptography.serialization.asn1.modules/PrivateKeyInfo { // dev.whyoleg.cryptography.serialization.asn1.modules/PrivateKeyInfo|null[0]
-    constructor <init>(kotlin/Int, dev.whyoleg.cryptography.serialization.asn1.modules/AlgorithmIdentifier, kotlin/ByteArray) // dev.whyoleg.cryptography.serialization.asn1.modules/PrivateKeyInfo.<init>|<init>(kotlin.Int;dev.whyoleg.cryptography.serialization.asn1.modules.AlgorithmIdentifier;kotlin.ByteArray){}[0]
+    constructor <init>(kotlin/Int, dev.whyoleg.cryptography.serialization.asn1.modules/AlgorithmIdentifier, kotlin/ByteArray, dev.whyoleg.cryptography.serialization.asn1/BitArray? = ...) // dev.whyoleg.cryptography.serialization.asn1.modules/PrivateKeyInfo.<init>|<init>(kotlin.Int;dev.whyoleg.cryptography.serialization.asn1.modules.AlgorithmIdentifier;kotlin.ByteArray;dev.whyoleg.cryptography.serialization.asn1.BitArray?){}[0]
 
     final val privateKey // dev.whyoleg.cryptography.serialization.asn1.modules/PrivateKeyInfo.privateKey|{}privateKey[0]
         final fun <get-privateKey>(): kotlin/ByteArray // dev.whyoleg.cryptography.serialization.asn1.modules/PrivateKeyInfo.privateKey.<get-privateKey>|<get-privateKey>(){}[0]
     final val privateKeyAlgorithm // dev.whyoleg.cryptography.serialization.asn1.modules/PrivateKeyInfo.privateKeyAlgorithm|{}privateKeyAlgorithm[0]
         final fun <get-privateKeyAlgorithm>(): dev.whyoleg.cryptography.serialization.asn1.modules/AlgorithmIdentifier // dev.whyoleg.cryptography.serialization.asn1.modules/PrivateKeyInfo.privateKeyAlgorithm.<get-privateKeyAlgorithm>|<get-privateKeyAlgorithm>(){}[0]
+    final val publicKey // dev.whyoleg.cryptography.serialization.asn1.modules/PrivateKeyInfo.publicKey|{}publicKey[0]
+        final fun <get-publicKey>(): dev.whyoleg.cryptography.serialization.asn1/BitArray? // dev.whyoleg.cryptography.serialization.asn1.modules/PrivateKeyInfo.publicKey.<get-publicKey>|<get-publicKey>(){}[0]
     final val version // dev.whyoleg.cryptography.serialization.asn1.modules/PrivateKeyInfo.version|{}version[0]
         final fun <get-version>(): kotlin/Int // dev.whyoleg.cryptography.serialization.asn1.modules/PrivateKeyInfo.version.<get-version>|<get-version>(){}[0]
 

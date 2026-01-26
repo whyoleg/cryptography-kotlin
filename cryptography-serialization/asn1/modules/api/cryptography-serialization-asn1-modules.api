@@ -141,9 +141,11 @@ public abstract interface class dev/whyoleg/cryptography/serialization/asn1/modu
 
 public final class dev/whyoleg/cryptography/serialization/asn1/modules/PrivateKeyInfo {
 	public static final field Companion Ldev/whyoleg/cryptography/serialization/asn1/modules/PrivateKeyInfo$Companion;
-	public fun <init> (ILdev/whyoleg/cryptography/serialization/asn1/modules/AlgorithmIdentifier;[B)V
+	public fun <init> (ILdev/whyoleg/cryptography/serialization/asn1/modules/AlgorithmIdentifier;[BLdev/whyoleg/cryptography/serialization/asn1/BitArray;)V
+	public synthetic fun <init> (ILdev/whyoleg/cryptography/serialization/asn1/modules/AlgorithmIdentifier;[BLdev/whyoleg/cryptography/serialization/asn1/BitArray;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getPrivateKey ()[B
 	public final fun getPrivateKeyAlgorithm ()Ldev/whyoleg/cryptography/serialization/asn1/modules/AlgorithmIdentifier;
+	public final fun getPublicKey ()Ldev/whyoleg/cryptography/serialization/asn1/BitArray;
 	public final fun getVersion ()I
 }
 
