@@ -20,4 +20,3 @@ public interface AlgorithmIdentifier {
     public val algorithm: ObjectIdentifier
     public val parameters: Any?
 }
-

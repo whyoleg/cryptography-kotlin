@@ -9,7 +9,7 @@ import dev.whyoleg.cryptography.serialization.asn1.*
 @Deprecated(
     message = "KeyAlgorithmIdentifier is deprecated. Use AlgorithmIdentifier",
     replaceWith = ReplaceWith("AlgorithmIdentifier", "dev.whyoleg.cryptography.serialization.asn1.modules.AlgorithmIdentifier"),
-    level = DeprecationLevel.WARNING
+    level = DeprecationLevel.ERROR
 )
 public interface KeyAlgorithmIdentifier : AlgorithmIdentifier
 

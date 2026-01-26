@@ -73,7 +73,7 @@ class AlgorithmIdentifierSerializerTest {
     fun testCustomSerializerWithExplicitParameterSerializer() {
         val customSerializer = object : AlgorithmIdentifierSerializer() {
             init {
-                algorithm(ObjectIdentifier.RSA, RsaAlgorithmIdentifier)
+                algorithm(ObjectIdentifier.RSA, RsaAlgorithmIdentifier, encodeNull = true)
                 algorithm(ObjectIdentifier.EC, ::EcAlgorithmIdentifier)
             }
         }
@@ -90,7 +90,7 @@ class AlgorithmIdentifierSerializerTest {
     fun testCustomSerializerWithFunctionReference() {
         val customSerializer = object : AlgorithmIdentifierSerializer() {
             init {
-                algorithm(ObjectIdentifier.RSA, RsaAlgorithmIdentifier)
+                algorithm(ObjectIdentifier.RSA, RsaAlgorithmIdentifier, encodeNull = true)
                 algorithm(ObjectIdentifier.EC, ::EcAlgorithmIdentifier)
             }
         }

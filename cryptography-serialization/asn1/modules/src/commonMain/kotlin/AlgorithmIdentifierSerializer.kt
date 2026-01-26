@@ -22,7 +22,7 @@ public abstract class AlgorithmIdentifierSerializer : KSerializer<AlgorithmIdent
     }
 
     @Suppress("UNCHECKED_CAST")
-    protected fun <P : Any, T : AlgorithmIdentifier> algorithm(
+    protected fun <P, T : AlgorithmIdentifier> algorithm(
         oid: ObjectIdentifier,
         cls: KClass<T>,
         parametersSerializer: KSerializer<P>,
@@ -33,14 +33,16 @@ public abstract class AlgorithmIdentifierSerializer : KSerializer<AlgorithmIdent
         oid: ObjectIdentifier,
         cls: KClass<T>,
         instance: T,
-    ): Unit = algorithm(oid, cls, NothingSerializer()) { instance }
+        encodeNull: Boolean,
+    ): Unit = algorithm(oid, cls, if (encodeNull) NothingSerializer() else AbsentNothingSerializer) { instance }
 
     protected inline fun <reified T : AlgorithmIdentifier> algorithm(
         oid: ObjectIdentifier,
         instance: T,
-    ): Unit = algorithm(oid, T::class, instance)
+        encodeNull: Boolean,
+    ): Unit = algorithm(oid, T::class, instance, encodeNull)
 
-    protected inline fun <reified P : Any, reified T : AlgorithmIdentifier> algorithm(
+    protected inline fun <reified P, reified T : AlgorithmIdentifier> algorithm(
         oid: ObjectIdentifier,
         noinline factory: (P?) -> T,
     ): Unit = algorithm(oid, T::class, serializer<P>(), factory)
@@ -98,7 +100,7 @@ public abstract class AlgorithmIdentifierSerializer : KSerializer<AlgorithmIdent
     }
 
     private class AlgorithmEntry(
-        val serializer: KSerializer<out Any>,
+        val serializer: KSerializer<out Any?>,
         val factory: (Any?) -> AlgorithmIdentifier,
     )
 }
@@ -106,7 +108,28 @@ public abstract class AlgorithmIdentifierSerializer : KSerializer<AlgorithmIdent
 @OptIn(ExperimentalSerializationApi::class)
 internal object DefaultAlgorithmIdentifierSerializer : AlgorithmIdentifierSerializer() {
     init {
-        algorithm(ObjectIdentifier.RSA, RsaAlgorithmIdentifier)
+        algorithm(ObjectIdentifier.RSA, RsaAlgorithmIdentifier, encodeNull = true)
         algorithm(ObjectIdentifier.EC, ::EcAlgorithmIdentifier)
+
+        // in edvard curves algorithms, we don't need to encode parameters at all, not even `null`
+
+        algorithm(ObjectIdentifier.X25519, X25519AlgorithmIdentifier, encodeNull = false)
+        algorithm(ObjectIdentifier.X448, X448AlgorithmIdentifier, encodeNull = false)
+
+        algorithm(ObjectIdentifier.Ed25519, Ed25519AlgorithmIdentifier, encodeNull = false)
+        algorithm(ObjectIdentifier.Ed448, Ed448AlgorithmIdentifier, encodeNull = false)
+    }
+}
+
+@OptIn(ExperimentalSerializationApi::class)
+private object AbsentNothingSerializer : KSerializer<Nothing?> {
+    override val descriptor: SerialDescriptor = NothingSerializer().descriptor.nullable
+
+    override fun serialize(encoder: Encoder, value: Nothing?) {
+        // do nothing
+    }
+
+    override fun deserialize(decoder: Decoder): Nothing? {
+        return null
     }
 }
