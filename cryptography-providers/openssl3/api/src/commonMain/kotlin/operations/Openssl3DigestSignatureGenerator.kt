@@ -14,7 +14,7 @@ import kotlin.experimental.*
 
 internal abstract class Openssl3DigestSignatureGenerator(
     private val privateKey: CPointer<EVP_PKEY>,
-    private val hashAlgorithm: String?,
+    private val hashAlgorithm: String,
 ) : SignatureGenerator {
     @OptIn(ExperimentalNativeApi::class)
     private val cleaner = privateKey.upRef().cleaner()
