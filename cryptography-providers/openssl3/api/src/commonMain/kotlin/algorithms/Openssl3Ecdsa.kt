@@ -120,7 +120,10 @@ internal object Openssl3Ecdsa : ECDSA {
         }
 
         override fun signatureGenerator(digest: CryptographyAlgorithmId<Digest>?, format: ECDSA.SignatureFormat): SignatureGenerator {
-            val derSignatureGenerator = EcdsaDerSignatureGenerator(key, hashECAlgorithmName(digest))
+            val derSignatureGenerator = when (digest) {
+                null -> EcdsaPhSignatureGenerator(key)
+                else -> EcdsaDigestSignatureGenerator(key, hashAlgorithmName(digest))
+            }
             return when (format) {
                 ECDSA.SignatureFormat.DER -> derSignatureGenerator
                 ECDSA.SignatureFormat.RAW -> EcdsaRawSignatureGenerator(derSignatureGenerator, EC_order_size(key))
@@ -147,7 +150,10 @@ internal object Openssl3Ecdsa : ECDSA {
         }
 
         override fun signatureVerifier(digest: CryptographyAlgorithmId<Digest>?, format: ECDSA.SignatureFormat): SignatureVerifier {
-            val derSignatureVerifier = EcdsaDerSignatureVerifier(key, hashECAlgorithmName(digest))
+            val derSignatureVerifier = when (digest) {
+                null -> EcdsaPhSignatureVerifier(key)
+                else -> EcdsaDigestSignatureVerifier(key, hashAlgorithmName(digest))
+            }
             return when (format) {
                 ECDSA.SignatureFormat.DER -> derSignatureVerifier
                 ECDSA.SignatureFormat.RAW -> EcdsaRawSignatureVerifier(derSignatureVerifier, EC_order_size(key))
@@ -156,9 +162,15 @@ internal object Openssl3Ecdsa : ECDSA {
     }
 }
 
-private class EcdsaDerSignatureGenerator(
+private class EcdsaPhSignatureGenerator(
     privateKey: CPointer<EVP_PKEY>,
-    hashAlgorithm: String?,
+) : Openssl3PhSignatureGenerator(privateKey) {
+    override fun MemScope.createParams(): CValuesRef<OSSL_PARAM>? = null
+}
+
+private class EcdsaDigestSignatureGenerator(
+    privateKey: CPointer<EVP_PKEY>,
+    hashAlgorithm: String,
 ) : Openssl3DigestSignatureGenerator(privateKey, hashAlgorithm) {
     override fun MemScope.createParams(): CValuesRef<OSSL_PARAM>? = null
 }
@@ -213,9 +225,15 @@ private class EcdsaRawSignatureGenerator(
     }
 }
 
-private class EcdsaDerSignatureVerifier(
+private class EcdsaPhSignatureVerifier(
     publicKey: CPointer<EVP_PKEY>,
-    hashAlgorithm: String?,
+) : Openssl3PhSignatureVerifier(publicKey) {
+    override fun MemScope.createParams(): CValuesRef<OSSL_PARAM>? = null
+}
+
+private class EcdsaDigestSignatureVerifier(
+    publicKey: CPointer<EVP_PKEY>,
+    hashAlgorithm: String,
 ) : Openssl3DigestSignatureVerifier(publicKey, hashAlgorithm) {
     override fun MemScope.createParams(): CValuesRef<OSSL_PARAM>? = null
 }
