@@ -11,7 +11,7 @@ At the current moment, the following providers are available out of the box:
 * [CryptoKit](cryptokit.md) - via
   [CryptoKit](https://developer.apple.com/documentation/cryptokit/)
 * [OpenSSL3](openssl3.md) - via [OpenSSL 3.x](https://www.openssl.org),
-  statically linked to prebuilt OpenSSL 3.3.2 or dynamically linked (experimental)
+  statically linked to prebuilt OpenSSL 3.5.0 or dynamically linked (experimental)
 
 ## Optimal provider
 

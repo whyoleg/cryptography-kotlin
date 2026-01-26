@@ -34,7 +34,7 @@ Core primitives are:
 
 ## Using in your projects
 
-Make sure that you use Kotlin 2.2.0+. Using an earlier Kotlin version could still work, but not tested.
+Make sure that you use Kotlin 2.3.0+. Using an earlier Kotlin version could still work, but not tested.
 The library is published to Maven Central, so make sure that it’s added to repositories.
 
 ```kotlin
