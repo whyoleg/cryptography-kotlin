@@ -14,7 +14,8 @@ import dev.whyoleg.cryptography.serialization.asn1.*
 public interface KeyAlgorithmIdentifier : AlgorithmIdentifier
 
 @Deprecated(
-    message = "Deprecated without replacement.",
+    message = "UnknownKeyAlgorithmIdentifier is deprecated. Use SimpleAlgorithmIdentifier",
+    replaceWith = ReplaceWith("SimpleAlgorithmIdentifier", "dev.whyoleg.cryptography.serialization.asn1.modules.SimpleAlgorithmIdentifier"),
     level = DeprecationLevel.ERROR
 )
 public class UnknownKeyAlgorithmIdentifier(override val algorithm: ObjectIdentifier) : AlgorithmIdentifier {

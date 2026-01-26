@@ -10,7 +10,7 @@ public final class dev/whyoleg/cryptography/serialization/asn1/modules/Algorithm
 
 public abstract class dev/whyoleg/cryptography/serialization/asn1/modules/AlgorithmIdentifierSerializer : kotlinx/serialization/KSerializer {
 	public fun <init> ()V
-	protected final fun algorithm-MkjCZII (Ljava/lang/String;Lkotlin/reflect/KClass;Ldev/whyoleg/cryptography/serialization/asn1/modules/AlgorithmIdentifier;)V
+	protected final fun algorithm-kjyjcj8 (Ljava/lang/String;Lkotlin/reflect/KClass;Ldev/whyoleg/cryptography/serialization/asn1/modules/AlgorithmIdentifier;Z)V
 	protected final fun algorithm-kjyjcj8 (Ljava/lang/String;Lkotlin/reflect/KClass;Lkotlinx/serialization/KSerializer;Lkotlin/jvm/functions/Function1;)V
 	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/whyoleg/cryptography/serialization/asn1/modules/AlgorithmIdentifier;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -136,6 +136,27 @@ public final class dev/whyoleg/cryptography/serialization/asn1/modules/EcdsaSign
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
+public final class dev/whyoleg/cryptography/serialization/asn1/modules/Ed25519AlgorithmIdentifier : dev/whyoleg/cryptography/serialization/asn1/modules/AlgorithmIdentifier {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/serialization/asn1/modules/Ed25519AlgorithmIdentifier;
+	public fun getAlgorithm-STa95mE ()Ljava/lang/String;
+	public synthetic fun getParameters ()Ljava/lang/Object;
+	public fun getParameters ()Ljava/lang/Void;
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/modules/Ed448AlgorithmIdentifier : dev/whyoleg/cryptography/serialization/asn1/modules/AlgorithmIdentifier {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/serialization/asn1/modules/Ed448AlgorithmIdentifier;
+	public fun getAlgorithm-STa95mE ()Ljava/lang/String;
+	public synthetic fun getParameters ()Ljava/lang/Object;
+	public fun getParameters ()Ljava/lang/Void;
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/modules/EdKt {
+	public static final fun getEd25519 (Ldev/whyoleg/cryptography/serialization/asn1/ObjectIdentifier$Companion;)Ljava/lang/String;
+	public static final fun getEd448 (Ldev/whyoleg/cryptography/serialization/asn1/ObjectIdentifier$Companion;)Ljava/lang/String;
+	public static final fun getX25519 (Ldev/whyoleg/cryptography/serialization/asn1/ObjectIdentifier$Companion;)Ljava/lang/String;
+	public static final fun getX448 (Ldev/whyoleg/cryptography/serialization/asn1/ObjectIdentifier$Companion;)Ljava/lang/String;
+}
+
 public abstract interface class dev/whyoleg/cryptography/serialization/asn1/modules/KeyAlgorithmIdentifier : dev/whyoleg/cryptography/serialization/asn1/modules/AlgorithmIdentifier {
 }
 
@@ -246,6 +267,20 @@ public final class dev/whyoleg/cryptography/serialization/asn1/modules/SubjectPu
 
 public final class dev/whyoleg/cryptography/serialization/asn1/modules/UnknownKeyAlgorithmIdentifier : dev/whyoleg/cryptography/serialization/asn1/modules/AlgorithmIdentifier {
 	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getAlgorithm-STa95mE ()Ljava/lang/String;
+	public synthetic fun getParameters ()Ljava/lang/Object;
+	public fun getParameters ()Ljava/lang/Void;
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/modules/X25519AlgorithmIdentifier : dev/whyoleg/cryptography/serialization/asn1/modules/AlgorithmIdentifier {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/serialization/asn1/modules/X25519AlgorithmIdentifier;
+	public fun getAlgorithm-STa95mE ()Ljava/lang/String;
+	public synthetic fun getParameters ()Ljava/lang/Object;
+	public fun getParameters ()Ljava/lang/Void;
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/modules/X448AlgorithmIdentifier : dev/whyoleg/cryptography/serialization/asn1/modules/AlgorithmIdentifier {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/serialization/asn1/modules/X448AlgorithmIdentifier;
 	public fun getAlgorithm-STa95mE ()Ljava/lang/String;
 	public synthetic fun getParameters ()Ljava/lang/Object;
 	public fun getParameters ()Ljava/lang/Void;
