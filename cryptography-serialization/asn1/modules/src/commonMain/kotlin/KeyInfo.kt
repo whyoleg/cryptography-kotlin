@@ -5,6 +5,7 @@
 package dev.whyoleg.cryptography.serialization.asn1.modules
 
 import dev.whyoleg.cryptography.serialization.asn1.*
+import dev.whyoleg.cryptography.serialization.asn1.ContextSpecificTag.*
 import kotlinx.serialization.*
 
 /**
@@ -23,17 +24,20 @@ public class SubjectPublicKeyInfo(
 )
 
 /**
+ * OneAsymmetricKey as defined in RFC 5958 (extends PKCS#8 PrivateKeyInfo):
  * ```
- * PrivateKeyInfo ::= SEQUENCE {
+ * OneAsymmetricKey ::= SEQUENCE {
  *   version                            Version,
  *   privateKeyAlgorithm                PrivateKeyAlgorithmIdentifier,
  *   privateKey                         PrivateKey,
- *   attributes           [0] IMPLICIT  Attributes OPTIONAL
+ *   attributes           [0] IMPLICIT  Attributes OPTIONAL,
+ *   publicKey            [1] IMPLICIT  PublicKey OPTIONAL
  * }
  *
- * Version ::= INTEGER
+ * Version ::= INTEGER { v1(0), v2(1) }
  * PrivateKeyAlgorithmIdentifier ::= AlgorithmIdentifier
  * PrivateKey ::= OCTET STRING
+ * PublicKey ::= BIT STRING
  * ```
  *
  * `Attributes` is not yet supported:
@@ -52,4 +56,6 @@ public class PrivateKeyInfo(
     @Contextual
     public val privateKeyAlgorithm: AlgorithmIdentifier,
     public val privateKey: ByteArray,
+    @ContextSpecificTag(1, TagType.IMPLICIT)
+    public val publicKey: BitArray? = null,
 )
