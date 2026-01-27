@@ -1,0 +1,96 @@
+name: Bug Report
+description: Report a bug or unexpected behavior
+labels: [ "bug" ]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug!
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear description of the bug
+      placeholder: What happened? What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Code snippet or steps to reproduce the issue
+      placeholder: |
+        ```kotlin
+        val provider = CryptographyProvider.Default
+        // ...
+        ```
+    validations:
+      required: true
+
+  - type: dropdown
+    id: provider
+    attributes:
+      label: Provider
+      description: Which cryptography provider are you using?
+      options:
+        - JDK
+        - JDK with BouncyCastle
+        - OpenSSL3 (prebuilt)
+        - OpenSSL3 (shared)
+        - WebCrypto
+        - CryptoKit
+        - Apple
+        - Optimal
+        - Multiple / Not sure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform / Target
+      description: Which platform or Kotlin target?
+      options:
+        - JVM
+        - Android
+        - JS (Browser)
+        - JS (Node.js)
+        - WasmJS (Browser)
+        - WasmJS (Node.js)
+        - macOS (x64)
+        - macOS (arm64)
+        - iOS
+        - watchOS
+        - tvOS
+        - Linux (x64)
+        - Linux (arm64)
+        - MinGW (x64)
+        - Android Native
+        - Multiple / Other
+    validations:
+      required: true
+
+  - type: input
+    id: library-version
+    attributes:
+      label: Library Version
+      description: Which version of cryptography-kotlin?
+      placeholder: "0.5.0"
+    validations:
+      required: true
+
+  - type: input
+    id: kotlin-version
+    attributes:
+      label: Kotlin Version
+      placeholder: "2.3.0"
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Any other relevant information (stack traces, related issues, etc.)

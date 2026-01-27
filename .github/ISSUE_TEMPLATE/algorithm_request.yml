@@ -1,0 +1,69 @@
+name: Algorithm Request
+description: Request support for a new cryptographic algorithm
+labels: [ "enhancement", "algorithm" ]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a new algorithm!
+
+  - type: input
+    id: algorithm-name
+    attributes:
+      label: Algorithm Name
+      description: The name of the algorithm
+      placeholder: "e.g., AES-SIV, Argon2, Ed448"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: algorithm-category
+    attributes:
+      label: Category
+      options:
+        - Digest (hash function)
+        - MAC (message authentication)
+        - Symmetric Cipher (encryption)
+        - Asymmetric Cipher (public-key encryption)
+        - Digital Signature
+        - Key Agreement
+        - Key Derivation (KDF)
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use Case
+      description: Why do you need this algorithm? What's your use case?
+    validations:
+      required: true
+
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: Links to specifications, RFCs, or documentation
+      placeholder: |
+        - RFC XXXX: https://...
+        - Wikipedia: https://...
+
+  - type: checkboxes
+    id: provider-support
+    attributes:
+      label: Provider Support
+      description: Which providers support this algorithm? (if known)
+      options:
+        - label: OpenSSL 3.x
+        - label: JDK / JCA
+        - label: BouncyCastle
+        - label: WebCrypto
+        - label: CryptoKit
+        - label: Apple CommonCrypto
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Any other relevant information
