@@ -108,5 +108,6 @@ internal object DefaultAlgorithmIdentifierSerializer : AlgorithmIdentifierSerial
     init {
         algorithm(ObjectIdentifier.RSA, RsaAlgorithmIdentifier)
         algorithm(ObjectIdentifier.EC, ::EcAlgorithmIdentifier)
+        algorithm(ObjectIdentifier.Ed25519, Ed25519AlgorithmIdentifier)
     }
 }

@@ -119,6 +119,40 @@ val decodedKeyCipher = decodedKey.cipher()
 println(decodedKeyCipher.decrypt(ciphertext = ciphertext).decodeToString())
 ```
 
+## ED25519
+
+An example shows how to generate keys and use them to sign and verify data using ED25519.
+ED25519 is simpler than ECDSA - it has a fixed curve (Curve25519) and built-in hash (SHA-512).
+
+```kotlin
+// getting default provider
+val provider = CryptographyProvider.Default
+// getting ED25519 algorithm
+val ed25519 = provider.get(ED25519)
+
+// generating ED25519 key pair
+//  types here and below are not required, and just needed to hint reader
+val keyPair: ED25519.KeyPair = ed25519.keyPairGenerator().generateKey()
+
+// generating signature using privateKey
+val signature: ByteArray = keyPair.privateKey.signatureGenerator().generateSignature("text1".encodeToByteArray())
+
+// verifying signature with publicKey
+val verificationResult: Boolean = keyPair.publicKey.signatureVerifier().tryVerifySignature("text1".encodeToByteArray(), signature)
+
+// will print true
+println(verificationResult)
+
+// key also can be encoded and decoded
+val encodedPublicKey: ByteArray = keyPair.publicKey.encodeToByteArray(ED25519.PublicKey.Format.RAW)
+val decodedPublicKey: ED25519.PublicKey = ed25519.publicKeyDecoder().decodeFromByteArray(ED25519.PublicKey.Format.RAW, encodedPublicKey)
+
+val decodedKeyVerificationResult: Boolean = decodedPublicKey.signatureVerifier().tryVerifySignature("text1".encodeToByteArray(), signature)
+
+// will print true
+println(decodedKeyVerificationResult)
+```
+
 ## ECDSA
 
 An example shows how to generate, encode and decode keys
