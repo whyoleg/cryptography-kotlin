@@ -61,13 +61,17 @@ public abstract class AlgorithmIdentifierSerializer : KSerializer<AlgorithmIdent
             value = value.algorithm
         )
 
-        @Suppress("UNCHECKED_CAST")
-        encodeNullableSerializableElement(
-            descriptor = descriptor,
-            index = 1,
-            serializer = byClass[value::class]?.serializer as? KSerializer<Any?> ?: error("No serializer for ${value::class}"),
-            value = value.parameters
-        )
+        // RFC 8410: For Ed25519 and similar algorithms, parameters MUST be absent (not NULL)
+        // https://datatracker.ietf.org/doc/html/rfc8410
+        value.parameters?.let { parameters ->
+            @Suppress("UNCHECKED_CAST")
+            encodeSerializableElement(
+                descriptor = descriptor,
+                index = 1,
+                serializer = byClass[value::class]?.serializer as? KSerializer<Any> ?: error("No serializer for ${value::class}"),
+                value = parameters
+            )
+        }
     }
 
     final override fun deserialize(decoder: Decoder): AlgorithmIdentifier = decoder.decodeStructure(descriptor) {
@@ -108,5 +112,7 @@ internal object DefaultAlgorithmIdentifierSerializer : AlgorithmIdentifierSerial
     init {
         algorithm(ObjectIdentifier.RSA, RsaAlgorithmIdentifier)
         algorithm(ObjectIdentifier.EC, ::EcAlgorithmIdentifier)
+        algorithm(ObjectIdentifier.Ed25519, Ed25519AlgorithmIdentifier)
+        algorithm(ObjectIdentifier.X25519, X25519AlgorithmIdentifier)
     }
 }

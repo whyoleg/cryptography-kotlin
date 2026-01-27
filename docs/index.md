@@ -12,8 +12,8 @@ cryptography-kotlin provides multiplatform API which consists of multiple compon
 * [Secure random][Secure random] with [kotlin.Random][kotlin.Random] like API which can be used independently of other modules
 * common API to use different cryptography operations,
   like [ciphers][ciphers], [digests][digests], [signatures][signatures], [key derivation][key derivation], [Key agreement][Key agreement]
-* multiple algorithms definitions, like [AES][AES], [RSA][RSA], [ECDSA][ECDSA], [ECDH][ECDH], [SHA][SHA256], [HMAC][HMAC]
-  and [PBKDF2][PBKDF2]
+* multiple algorithms definitions, like [AES][AES], [RSA][RSA], [ECDSA][ECDSA], [ECDH][ECDH], [ED25519][ED25519], [X25519][X25519],
+  [ChaCha20-Poly1305][ChaCha20Poly1305], [SHA][SHA256], [HMAC][HMAC], [PBKDF2][PBKDF2] and [HKDF][HKDF]
 * multiple cryptography [providers][providers], like [OpenSSL][OpenSSL], [WebCrypto][WebCrypto], [CryptoKit][CryptoKit] and [JDK][JDK]
 
 The library doesn't implement any cryptography algorithm on its own, but wraps well-known future-proof solutions
@@ -75,6 +75,12 @@ Additionally, it's possible to use [BOM][BOM] or [Gradle version catalog][Gradle
 [ECDSA]: api/cryptography-core/dev.whyoleg.cryptography.algorithms/-e-c-d-s-a/index.html
 
 [ECDH]: api/cryptography-core/dev.whyoleg.cryptography.algorithms/-e-c-d-h/index.html
+
+[ED25519]: api/cryptography-core/dev.whyoleg.cryptography.algorithms/-e-d25519/index.html
+
+[X25519]: api/cryptography-core/dev.whyoleg.cryptography.algorithms/-x25519/index.html
+
+[ChaCha20Poly1305]: api/cryptography-core/dev.whyoleg.cryptography.algorithms/-cha-cha20-poly1305/index.html
 
 [PBKDF2]: api/cryptography-core/dev.whyoleg.cryptography.algorithms/-p-b-k-d-f2/index.html
 

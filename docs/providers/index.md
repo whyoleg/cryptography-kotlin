@@ -85,6 +85,7 @@ For additional limitation please consult provider specific documentation.
 |                                             | AES-CTR           |  ✅  |     ✅     |   ✅   | ❌         |    ✅     |
 |                                             | AES-GCM           |  ✅  |     ✅     |   ❌   | ✅         |    ✅     |
 |                                             | ChaCha20-Poly1305 |  ✅  |     ❌     |   ❌   | ✅         |    ✅     |
+|                                             | ChaCha20 ¹        |  ✅  |     ❌     |   ❌   | ❌         |    ✅     |
 |                                             | ⚠️ AES-ECB        |  ✅  |     ❌     |   ✅   | ❌         |    ✅     |
 |                                             | ⚠️ AES-OFB        |  ✅  |     ❌     |   ✅   | ❌         |    ✅     |
 |                                             | ⚠️ AES-CFB        |  ✅  |     ❌     |   ✅   | ❌         |    ✅     |
@@ -94,9 +95,11 @@ For additional limitation please consult provider specific documentation.
 |                                             | ⚠️ RSA-RAW        |  ✅  |     ❌     |   ✅   | ❌         |    ✅     |
 | **Digital Signatures**                      | ECDSA (Message)   |  ✅  |     ✅     |   ✅   | ✅         |    ✅     |
 |                                             | ECDSA (Digest)    |  ✅  |     ❌     |   ✅   | ❌         |    ✅     |
+|                                             | ED25519           |  ✅  |     ❌     |   ❌   | ✅         |    ✅     |
 |                                             | RSA-SSA-PSS       |  ✅  |     ✅     |   ✅   | ❌         |    ✅     |
 |                                             | RSA-PKS1-v1_5     |  ✅  |     ✅     |   ✅   | ❌         |    ✅     |
 | **Key Agreement**                           | ECDH              |  ✅  |     ✅     |   ❌   | ✅         |    ✅     |
+|                                             | X25519            |  ✅  |     ❌     |   ❌   | ✅         |    ✅     |
 | **PRF/KDF**                                 | PBKDF2            |  ✅  |     ✅     |   ✅   | ❌         |    ✅     |
 |                                             | HKDF              |  ✅  |     ✅     |   ✅   | ✅         |    ✅     |
 
@@ -105,3 +108,5 @@ For additional limitation please consult provider specific documentation.
 > ✅ : supported
 >
 > ❌ : not supported (yet?)
+>
+> ¹ OpenSSL ChaCha20 uses 64-bit counter + 64-bit nonce (not RFC 7539 compliant which uses 32-bit counter + 96-bit nonce)

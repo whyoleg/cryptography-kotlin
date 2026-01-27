@@ -7,6 +7,7 @@ For supported targets and algorithms, please consult [Supported primitives secti
 ## Limitations
 
 * KeyFormat: doesn't support `JWK` key format yet
+* ED25519: requires JDK 15 or later
 * EC.PrivateKey: getting public key via `privateKey.getPublicKey()` is not always possible, because of no support in JDK APIs.
   It's still possible to get public key in case:
     * When the key pair was generated via the library
