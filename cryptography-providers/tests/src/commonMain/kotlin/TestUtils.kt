@@ -5,34 +5,9 @@
 package dev.whyoleg.cryptography.providers.tests
 
 import dev.whyoleg.cryptography.materials.key.*
-import dev.whyoleg.cryptography.operations.*
 import kotlinx.io.*
 import kotlinx.io.bytestring.*
-import kotlin.io.encoding.*
 import kotlin.test.*
-
-// base64 is used to have better messages
-fun assertContentEquals(expected: ByteString?, actual: ByteString?, message: String? = null) {
-    assertEquals(expected?.let(Base64::encode), actual?.let(Base64::encode), message)
-}
-
-suspend fun SignatureVerifier.assertVerifySignature(
-    data: ByteArray,
-    signature: ByteArray,
-    message: String = "Invalid signature",
-) {
-    verifySignature(data, signature)
-    assertTrue(tryVerifySignature(data, signature), message)
-}
-
-suspend fun SignatureVerifier.assertVerifySignature(
-    data: ByteString,
-    signature: ByteString,
-    message: String = "Invalid signature",
-) {
-    verifySignature(data, signature)
-    assertTrue(tryVerifySignature(data, signature), message)
-}
 
 suspend fun <KF : KeyFormat> EncodableKey<KF>.encodeTo(
     formats: Collection<KF>,
