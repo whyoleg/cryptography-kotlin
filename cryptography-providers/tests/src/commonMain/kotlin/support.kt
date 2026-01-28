@@ -111,18 +111,47 @@ fun AlgorithmTestScope<RSA.PKCS1>.supportsEncryption(): Boolean = supports {
 fun AlgorithmTestScope<out EC<*, *, *>>.supportsCurve(curve: EC.Curve): Boolean = supports {
     when {
         // JDK default, WebCrypto and Apple don't support secp256k1 or brainpool
-        curve in listOf(EC.Curve.secp256k1, EC.Curve.brainpoolP256r1, EC.Curve.brainpoolP384r1, EC.Curve.brainpoolP512r1) && (
-                provider.isJdkDefault || provider.isWebCrypto || provider.isApple || provider.isCryptoKit
-                ) -> "ECDSA ${curve.name}"
+        curve in listOf(
+            EC.Curve.secp256k1,
+            EC.Curve.brainpoolP256r1,
+            EC.Curve.brainpoolP384r1,
+            EC.Curve.brainpoolP512r1,
+        ) && (provider.isJdkDefault || provider.isWebCrypto || provider.isApple || provider.isCryptoKit) -> "ECDSA ${curve.name}"
 
-        else      -> null
+        else                                                                                             -> null
     }
 }
 
-fun AlgorithmTestScope<out EC<*, *, *>>.supportsPublicKeyAccess(error: Throwable): Boolean = supports {
+fun AlgorithmTestScope<EdDSA>.supportsCurve(curve: EdDSA.Curve): Boolean = supports {
     when {
-        provider.isJdkDefault &&
-                error.message == "Getting public key from private key for EC is not supported in JDK without BouncyCastle APIs"
+        curve == EdDSA.Curve.Ed448 && (
+                provider.isCryptoKit ||
+                        (provider.isWebCrypto && platform.isBrowser) ||
+                        (provider.isJdkDefault && platform.isAndroid))
+            -> "EdDSA ${curve.name}"
+        else -> null
+    }
+}
+
+fun AlgorithmTestScope<XDH>.supportsCurve(curve: XDH.Curve): Boolean = supports {
+    when {
+        curve == XDH.Curve.X448 && (
+                provider.isCryptoKit ||
+                        (provider.isWebCrypto && platform.isBrowser) ||
+                        (provider.isJdkDefault && platform.isAndroid))
+            -> "XDH ${curve.name}"
+        else -> null
+    }
+}
+
+// TODO: we should have better tests for this...
+fun AlgorithmTestScope<*>.supportsPublicKeyAccess(error: Throwable): Boolean = supports {
+    when {
+        // TODO: skip for now
+        provider.isJdk && (
+                (algorithm is EC<*, *, *> && error.message == "Getting public key from private key for EC is not supported in JDK without BouncyCastle APIs") ||
+                        (algorithm is XDH && error.message == "Getting public key from private key for XDH is not supported in JDK without BouncyCastle APIs") ||
+                        (algorithm is EdDSA && error.message == "Getting public key from private key for EdDSA is not supported in JDK without BouncyCastle APIs"))
              -> error.message!!
         else -> null
     }
@@ -163,10 +192,13 @@ fun AlgorithmTestScope<out EC<*, *, *>>.supportsPrivateKeyDecoding(
 
 fun ProviderTestScope.supports(algorithmId: CryptographyAlgorithmId<*>): Boolean = validate {
     when (algorithmId) {
-        AES.CMAC if provider.isJdkDefault                                          -> "Default JDK provider doesn't support AES-CMAC, only supported with BouncyCastle"
-        RSA.PSS if provider.isJdkDefault && platform.isAndroid                     -> "JDK provider on Android doesn't support RSASSA-PSS"
-        ChaCha20Poly1305 if provider.isJdkDefault && platform.isJdk { major < 11 } -> "Default JDK provider supports ChaCha20-Poly1305 from JDK 11"
-        else                                                                       -> null
+        AES.CMAC if provider.isJdkDefault                                                       -> "Default JDK provider doesn't support AES-CMAC, only supported with BouncyCastle"
+        RSA.PSS if provider.isJdkDefault && platform.isAndroid                                  -> "JDK provider on Android doesn't support RSASSA-PSS"
+        ChaCha20Poly1305 if provider.isJdkDefault && platform.isJdk { major < 11 }              -> "Default JDK provider supports ChaCha20-Poly1305 from JDK 11"
+        EdDSA if provider.isJdkDefault && (platform.isJdk { major < 15 } || platform.isAndroid) -> "Default JDK may not support EdDSA before JDK 15"
+        // it's supported from JDK 11, but has wrong encoding because of https://bugs.openjdk.org/browse/JDK-8213363
+        XDH if provider.isJdkDefault && platform.isJdk { major < 12 }                           -> "Default JDK may not support XDH before JDK 11"
+        else                                                                                    -> null
     }
 }
 
