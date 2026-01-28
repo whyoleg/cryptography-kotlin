@@ -9,6 +9,7 @@ import dev.whyoleg.cryptography.serialization.asn1.*
 import dev.whyoleg.cryptography.serialization.asn1.modules.*
 import dev.whyoleg.cryptography.serialization.pem.*
 import kotlinx.io.bytestring.unsafe.*
+import kotlinx.serialization.builtins.*
 
 @OptIn(UnsafeByteStringApi::class)
 @CryptographyProviderApi
@@ -53,4 +54,18 @@ public fun wrapPrivateKeyInfo(version: Int, identifier: AlgorithmIdentifier, key
         PrivateKeyInfo.serializer(),
         PrivateKeyInfo(version, identifier, key)
     )
+}
+
+// https://datatracker.ietf.org/doc/html/rfc8410#section-7
+// For EdDSA/XDH, the private key is wrapped in an OCTET STRING within PKCS#8 (`CurvePrivateKey ::= OCTET STRING`)
+@CryptographyProviderApi
+public fun unwrapCurvePrivateKeyInfo(algorithm: ObjectIdentifier, key: ByteArray): ByteArray {
+    val curvePrivateKey = unwrapPrivateKeyInfo(algorithm, key)
+    return Der.decodeFromByteArray(ByteArraySerializer(), curvePrivateKey)
+}
+
+@CryptographyProviderApi
+public fun wrapCurvePrivateKeyInfo(version: Int, identifier: AlgorithmIdentifier, key: ByteArray): ByteArray {
+    val curvePrivateKey = Der.encodeToByteArray(ByteArraySerializer(), key)
+    return wrapPrivateKeyInfo(version, identifier, curvePrivateKey)
 }

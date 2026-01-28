@@ -17,9 +17,11 @@ public final class dev/whyoleg/cryptography/providers/base/algorithms/EcKt {
 }
 
 public final class dev/whyoleg/cryptography/providers/base/materials/KeysKt {
+	public static final fun unwrapCurvePrivateKeyInfo-4RESAxk (Ljava/lang/String;[B)[B
 	public static final fun unwrapPem-unSj4pc (Ljava/lang/String;[B)[B
 	public static final fun unwrapPrivateKeyInfo-4RESAxk (Ljava/lang/String;[B)[B
 	public static final fun unwrapSubjectPublicKeyInfo-4RESAxk (Ljava/lang/String;[B)[B
+	public static final fun wrapCurvePrivateKeyInfo (ILdev/whyoleg/cryptography/serialization/asn1/modules/AlgorithmIdentifier;[B)[B
 	public static final fun wrapPem-unSj4pc (Ljava/lang/String;[B)[B
 	public static final fun wrapPrivateKeyInfo (ILdev/whyoleg/cryptography/serialization/asn1/modules/AlgorithmIdentifier;[B)[B
 	public static final fun wrapSubjectPublicKeyInfo (Ldev/whyoleg/cryptography/serialization/asn1/modules/AlgorithmIdentifier;[B)[B
