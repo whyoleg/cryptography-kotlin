@@ -94,9 +94,11 @@ For additional limitation please consult provider specific documentation.
 |                                             | ⚠️ RSA-RAW        |  ✅  |     ❌     |   ✅   | ❌         |    ✅     |
 | **Digital Signatures**                      | ECDSA (Message)   |  ✅  |     ✅     |   ✅   | ✅         |    ✅     |
 |                                             | ECDSA (Digest)    |  ✅  |     ❌     |   ✅   | ❌         |    ✅     |
+|                                             | EdDSA             |  ✅  |     ✅     |   ❌   | ✅         |    ✅     |
 |                                             | RSA-SSA-PSS       |  ✅  |     ✅     |   ✅   | ❌         |    ✅     |
 |                                             | RSA-PKS1-v1_5     |  ✅  |     ✅     |   ✅   | ❌         |    ✅     |
 | **Key Agreement**                           | ECDH              |  ✅  |     ✅     |   ❌   | ✅         |    ✅     |
+|                                             | XDH               |  ✅  |     ✅     |   ❌   | ✅         |    ✅     |
 | **PRF/KDF**                                 | PBKDF2            |  ✅  |     ✅     |   ✅   | ❌         |    ✅     |
 |                                             | HKDF              |  ✅  |     ✅     |   ✅   | ✅         |    ✅     |
 

@@ -7,11 +7,12 @@ For supported targets and algorithms, please consult [Supported primitives secti
 ## Limitations
 
 * KeyFormat: doesn't support `JWK` key format yet
-* EC.PrivateKey: getting public key via `privateKey.getPublicKey()` is not always possible, because of no support in JDK APIs.
+* EC/EdDSA/XDH PrivateKey: getting public key via `privateKey.getPublicKey()` is not always possible, because of no support in JDK APIs.
   It's still possible to get public key in case:
     * When the key pair was generated via the library
-    * When the private key was decoded from the format, which contains public key (e.g. PEM/DEM with publicKey in parameters)
+  * When the private key was decoded from the format, which contains public key (e.g. PEM/DER with publicKey in parameters)
     * When [BouncyCastle](https://www.bouncycastle.org) is on the classpath
+* EdDSA/XDH: private key decoding may fail for DER/PEM formats that contain embedded public key
 
 ## Example
 
