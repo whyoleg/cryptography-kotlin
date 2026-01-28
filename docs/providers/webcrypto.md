@@ -9,6 +9,9 @@ For supported targets and algorithms, please consult [Supported primitives secti
 * only `suspend` functions are supported, because `WebCrypto` API is async by default
 * AES.* (browser only): may not support `192 bit` keys
 * AES.CBC: only `padding=true` is supported
+* EdDSA/XDH:
+    * supports only Ed25519 and X25519
+    * algorithms were added later to WebCrypto and might not be available in all browsers (https://github.com/w3c/webcrypto/pull/362)
 
 ## Example
 
