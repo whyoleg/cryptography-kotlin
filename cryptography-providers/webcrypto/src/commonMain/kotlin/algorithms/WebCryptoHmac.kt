@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.webcrypto.algorithms
@@ -42,5 +42,5 @@ private object HmacKeyProcessor : WebCryptoKeyProcessor<HMAC.Key.Format>() {
     }
 
     override fun beforeDecoding(algorithm: Algorithm, format: HMAC.Key.Format, key: ByteArray): ByteArray = key
-    override fun afterEncoding(format: HMAC.Key.Format, key: ByteArray): ByteArray = key
+    override fun afterEncoding(algorithm: Algorithm, format: HMAC.Key.Format, key: ByteArray): ByteArray = key
 }

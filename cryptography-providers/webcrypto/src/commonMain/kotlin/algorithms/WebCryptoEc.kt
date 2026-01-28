@@ -84,7 +84,7 @@ private object EcPublicKeyProcessor : WebCryptoKeyProcessor<EC.PublicKey.Format>
         EC.PublicKey.Format.PEM -> unwrapPem(PemLabel.PublicKey, key)
     }
 
-    override fun afterEncoding(format: EC.PublicKey.Format, key: ByteArray): ByteArray = when (format) {
+    override fun afterEncoding(algorithm: Algorithm, format: EC.PublicKey.Format, key: ByteArray): ByteArray = when (format) {
         EC.PublicKey.Format.JWK -> key
         EC.PublicKey.Format.RAW -> key
         EC.PublicKey.Format.RAW.Compressed,
@@ -133,7 +133,7 @@ private object EcPrivateKeyProcessor : WebCryptoKeyProcessor<EC.PrivateKey.Forma
         EC.PrivateKey.Format.PEM.SEC1 -> convertEcPrivateKeyFromSec1ToPkcs8(unwrapPem(PemLabel.EcPrivateKey, key))
     }
 
-    override fun afterEncoding(format: EC.PrivateKey.Format, key: ByteArray): ByteArray = when (format) {
+    override fun afterEncoding(algorithm: Algorithm, format: EC.PrivateKey.Format, key: ByteArray): ByteArray = when (format) {
         EC.PrivateKey.Format.JWK      -> key
         EC.PrivateKey.Format.RAW      -> {
             Der.decodeFromByteArray(
