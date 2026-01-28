@@ -6,6 +6,7 @@ package dev.whyoleg.cryptography.providers.openssl3.operations
 
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.*
+import dev.whyoleg.cryptography.providers.base.operations.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import kotlinx.cinterop.*
@@ -13,15 +14,66 @@ import kotlin.experimental.*
 
 internal abstract class Openssl3DigestSignatureVerifier(
     private val publicKey: CPointer<EVP_PKEY>,
-    private val hashAlgorithm: String,
+    private val hashAlgorithm: String?,
 ) : SignatureVerifier {
     @OptIn(ExperimentalNativeApi::class)
     private val cleaner = publicKey.upRef().cleaner()
 
     protected abstract fun MemScope.createParams(): CValuesRef<OSSL_PARAM>?
 
-    override fun createVerifyFunction(): VerifyFunction {
-        return Openssl3DigestVerifyFunction(Resource(checkError(EVP_MD_CTX_new()), ::EVP_MD_CTX_free))
+    // in case of no digest, streaming is not supported
+    override fun createVerifyFunction(): VerifyFunction = if (hashAlgorithm == null) {
+        AccumulatingVerifyFunction(::verify)
+    } else {
+        Openssl3DigestVerifyFunction(Resource(checkError(EVP_MD_CTX_new()), ::EVP_MD_CTX_free))
+    }
+
+    // one shot
+    @OptIn(UnsafeNumber::class)
+    private fun verify(data: ByteArray, signature: ByteArray): String? = memScoped {
+        val context = checkError(EVP_MD_CTX_new())
+        try {
+            init(context)
+
+            data.usePinned { dataPin ->
+                signature.usePinned { sigPin ->
+                    val result = EVP_DigestVerify(
+                        context,
+                        sigPin.safeAddressOfU(0),
+                        signature.size.convert(),
+                        dataPin.safeAddressOfU(0),
+                        data.size.convert()
+                    )
+                    // 0     - means verification failed
+                    // 1     - means verification succeeded
+                    // other - means error
+                    when {
+                        result == 1 -> null // success
+                        result == 0 -> "Signature verification failed" // verification failed
+                        else        -> {
+                            checkError(result) // will throw
+                            null // unreachable
+                        }
+                    }
+                }
+            }
+        } finally {
+            EVP_MD_CTX_free(context)
+        }
+    }
+
+    private fun MemScope.init(context: CPointer<EVP_MD_CTX>) {
+        checkError(
+            EVP_DigestVerifyInit_ex(
+                ctx = context,
+                pctx = null,
+                mdname = hashAlgorithm,
+                libctx = null,
+                props = null,
+                pkey = publicKey,
+                params = createParams()
+            )
+        )
     }
 
     // inner class to have a reference to class with cleaner
@@ -62,18 +114,7 @@ internal abstract class Openssl3DigestSignatureVerifier(
         }
 
         override fun reset(): Unit = memScoped {
-            val context = context.access()
-            checkError(
-                EVP_DigestVerifyInit_ex(
-                    ctx = context,
-                    pctx = null,
-                    mdname = hashAlgorithm,
-                    libctx = null,
-                    props = null,
-                    pkey = publicKey,
-                    params = createParams()
-                )
-            )
+            init(context.access())
         }
     }
 }
