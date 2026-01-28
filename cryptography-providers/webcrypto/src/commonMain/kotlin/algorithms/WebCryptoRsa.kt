@@ -96,7 +96,7 @@ private object RsaPublicKeyProcessor : WebCryptoKeyProcessor<RSA.PublicKey.Forma
         RSA.PublicKey.Format.PEM.PKCS1 -> wrapSubjectPublicKeyInfo(RsaAlgorithmIdentifier, unwrapPem(PemLabel.RsaPublicKey, key))
     }
 
-    override fun afterEncoding(format: RSA.PublicKey.Format, key: ByteArray): ByteArray = when (format) {
+    override fun afterEncoding(algorithm: Algorithm, format: RSA.PublicKey.Format, key: ByteArray): ByteArray = when (format) {
         RSA.PublicKey.Format.JWK       -> key
         RSA.PublicKey.Format.DER       -> key
         RSA.PublicKey.Format.PEM       -> wrapPem(PemLabel.PublicKey, key)
@@ -123,7 +123,7 @@ private object RsaPrivateKeyProcessor : WebCryptoKeyProcessor<RSA.PrivateKey.For
         RSA.PrivateKey.Format.PEM.PKCS1 -> wrapPrivateKeyInfo(0, RsaAlgorithmIdentifier, unwrapPem(PemLabel.RsaPrivateKey, key))
     }
 
-    override fun afterEncoding(format: RSA.PrivateKey.Format, key: ByteArray): ByteArray = when (format) {
+    override fun afterEncoding(algorithm: Algorithm, format: RSA.PrivateKey.Format, key: ByteArray): ByteArray = when (format) {
         RSA.PrivateKey.Format.JWK       -> key
         RSA.PrivateKey.Format.DER       -> key
         RSA.PrivateKey.Format.PEM       -> wrapPem(PemLabel.PrivateKey, key)

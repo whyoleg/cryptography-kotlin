@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 @file:Suppress("FunctionName")
@@ -58,11 +58,16 @@ internal val Algorithm.ecKeyAlgorithmNamedCurve: String get() = ecKeyAlgorithmNa
 @Suppress("UNUSED_PARAMETER")
 private fun ecKeyAlgorithmNamedCurve(algorithm: Algorithm): String = js("algorithm.namedCurve")
 
+internal val Algorithm.algorithmName: String get() = algorithmName(this)
+
+@Suppress("UNUSED_PARAMETER")
+private fun algorithmName(algorithm: Algorithm): String = js("algorithm.name")
+
 internal fun EcdsaSignatureAlgorithm(hash: String): Algorithm =
     js("({ name: 'ECDSA', hash: hash })")
 
-internal fun EcdhKeyDeriveAlgorithm(publicKey: CryptoKey): Algorithm =
-    js("({ name: 'ECDH', public: publicKey })")
+internal fun KeyDeriveAlgorithm(name: String, publicKey: CryptoKey): Algorithm =
+    js("({ name: name, public: publicKey })")
 
 internal fun Pbkdf2DeriveAlgorithm(hash: String, iterations: Int, salt: ByteArray): Algorithm =
     jsPbkdf2DeriveAlgorithm(hash, iterations, salt.toInt8Array())

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.webcrypto
@@ -29,7 +29,9 @@ internal object WebCryptoCryptographyProvider : CryptographyProvider() {
         RSA.PSS   -> WebCryptoRsaPss
         RSA.PKCS1 -> WebCryptoRsaPkcs1
         ECDSA     -> WebCryptoEcdsa
+        EdDSA -> WebCryptoEdDsa
         ECDH   -> WebCryptoEcdh
+        XDH   -> WebCryptoXdh
         PBKDF2 -> WebCryptoPbkdf2
         HKDF   -> WebCryptoHkdf
         else      -> null
