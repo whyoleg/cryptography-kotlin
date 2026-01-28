@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.jdk.algorithms
@@ -66,7 +66,7 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey<Pub
     ) : JdkPublicKeyDecoder<EC.PublicKey.Format, PublicK>(state, "EC") {
 
         fun fromPrivateKey(privateKey: ECPrivateKey): PublicK = decode(
-            BouncyCastleBridge.derivePublicKey(privateKey, curveName) ?: error(
+            BouncyCastleBridge.deriveEcPublicKey(privateKey, curveName) ?: error(
                 "Getting public key from private key for EC is not supported in JDK without BouncyCastle APIs"
             )
         )
