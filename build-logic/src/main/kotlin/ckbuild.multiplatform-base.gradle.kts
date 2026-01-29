@@ -1,10 +1,11 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 import ckbuild.*
 import org.jetbrains.kotlin.gradle.*
 import org.jetbrains.kotlin.gradle.dsl.*
+import org.jetbrains.kotlin.gradle.plugin.mpp.*
 import org.jetbrains.kotlin.gradle.targets.jvm.*
 import org.jetbrains.kotlin.gradle.tasks.*
 
@@ -29,6 +30,13 @@ kotlin {
     targets.withType<KotlinJvmTarget>().configureEach {
         compilerOptions {
             jvmDefault = JvmDefaultMode.NO_COMPATIBILITY
+        }
+    }
+    targets.withType<KotlinNativeTarget>().configureEach {
+        compilations.configureEach {
+            cinterops.configureEach {
+                extraOpts += listOf("-Xccall-mode", "direct")
+            }
         }
     }
 }
