@@ -128,6 +128,15 @@ fun AlgorithmTestScope<out EC<*, *, *>>.supportsPublicKeyAccess(error: Throwable
     }
 }
 
+fun AlgorithmTestScope<X25519>.supportsX25519PublicKeyDerivation(error: Throwable): Boolean = supports {
+    when {
+        provider.isJdkDefault &&
+                error.message?.contains("Cannot derive public key from X25519 private key") == true
+             -> error.message!!
+        else -> null
+    }
+}
+
 fun AlgorithmTestScope<out EC<*, *, *>>.supportsPrivateKeyDecoding(
     format: EC.PrivateKey.Format,
     key: ByteString,
@@ -166,6 +175,20 @@ fun ProviderTestScope.supports(algorithmId: CryptographyAlgorithmId<*>): Boolean
         AES.CMAC if provider.isJdkDefault                                          -> "Default JDK provider doesn't support AES-CMAC, only supported with BouncyCastle"
         RSA.PSS if provider.isJdkDefault && platform.isAndroid                     -> "JDK provider on Android doesn't support RSASSA-PSS"
         ChaCha20Poly1305 if provider.isJdkDefault && platform.isJdk { major < 11 } -> "Default JDK provider supports ChaCha20-Poly1305 from JDK 11"
+        ED25519 if provider.isJdkDefault && platform.isJdk { major < 15 }          -> "Default JDK provider supports ED25519 from JDK 15"
+        ED25519 if provider.isJdkDefault && platform.isAndroid                     -> "JDK provider on Android doesn't support ED25519"
+        ED25519 if provider.isWebCrypto                                            -> "WebCrypto doesn't support ED25519"
+        ED25519 if provider.isApple                                                -> "Apple provider doesn't support ED25519 yet"
+        X25519 if provider.isJdkDefault && platform.isJdk { major < 11 }           -> "Default JDK provider supports X25519 from JDK 11"
+        X25519 if provider.isJdkDefault && platform.isAndroid                      -> "JDK provider on Android doesn't support X25519"
+        X25519 if provider.isWebCrypto                                             -> "WebCrypto doesn't support X25519"
+        X25519 if provider.isApple                                                 -> "Apple provider doesn't support X25519 yet"
+        ChaCha20 if provider.isJdkDefault && platform.isJdk { major < 11 }         -> "Default JDK provider supports ChaCha20 from JDK 11"
+        ChaCha20 if provider.isJdkDefault && platform.isAndroid                    -> "JDK provider on Android doesn't support ChaCha20"
+        ChaCha20 if provider.isWebCrypto                                           -> "WebCrypto doesn't support ChaCha20"
+        ChaCha20 if provider.isApple                                               -> "Apple provider doesn't support ChaCha20 yet"
+        Poly1305 if provider.isWebCrypto                                           -> "WebCrypto doesn't support Poly1305"
+        Poly1305 if provider.isApple                                               -> "Apple provider doesn't support Poly1305 yet"
         else                                                                       -> null
     }
 }

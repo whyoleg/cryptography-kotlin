@@ -31,6 +31,8 @@ internal object CryptoKitCryptographyProvider : CryptographyProvider() {
         ChaCha20Poly1305 -> CryptoKitChaCha20Poly1305
         ECDSA            -> CryptoKitEcdsa
         ECDH             -> CryptoKitEcdh
+        ED25519          -> CryptoKitEd25519
+        X25519           -> CryptoKitX25519
         else             -> null
     } as A?
 }

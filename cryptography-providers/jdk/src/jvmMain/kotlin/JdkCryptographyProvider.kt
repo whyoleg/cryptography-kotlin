@@ -6,6 +6,7 @@ package dev.whyoleg.cryptography.providers.jdk
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
+import dev.whyoleg.cryptography.providers.base.algorithms.*
 import dev.whyoleg.cryptography.providers.jdk.algorithms.*
 import dev.whyoleg.cryptography.random.*
 import java.security.*
@@ -129,13 +130,17 @@ internal class JdkCryptographyProvider(provider: Provider?) : CryptographyProvid
             AES.OFB -> JdkAesOfb(state)
             AES.ECB   -> JdkAesEcb(state)
             AES.GCM   -> JdkAesGcm(state)
+            ChaCha20         -> JdkChaCha20(state)
             ChaCha20Poly1305 -> JdkChaCha20Poly1305(state)
+            Poly1305         -> BasePoly1305
             RSA.OAEP         -> JdkRsaOaep(state)
             RSA.PSS          -> JdkRsaPss(state)
             RSA.PKCS1        -> JdkRsaPkcs1(state)
             RSA.RAW          -> JdkRsaRaw(state)
             ECDSA            -> JdkEcdsa(state)
             ECDH             -> JdkEcdh(state)
+            ED25519          -> JdkEd25519(state)
+            X25519           -> JdkX25519(state)
             PBKDF2           -> JdkPbkdf2(state)
             HKDF             -> JdkHkdf(state, this)
             else             -> null
