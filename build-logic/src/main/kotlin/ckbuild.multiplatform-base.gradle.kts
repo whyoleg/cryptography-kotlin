@@ -3,6 +3,9 @@
  */
 
 import ckbuild.*
+import org.jetbrains.kotlin.gradle.dsl.*
+import org.jetbrains.kotlin.gradle.plugin.mpp.*
+import org.jetbrains.kotlin.gradle.targets.jvm.*
 import org.jetbrains.kotlin.gradle.tasks.*
 
 plugins {
@@ -18,6 +21,19 @@ kotlin {
         allWarningsAsErrors.set(warningsAsErrors)
         progressiveMode.set(true)
         freeCompilerArgs.add("-Xrender-internal-diagnostic-names")
+    }
+
+    targets.withType<KotlinJvmTarget>().configureEach {
+        compilerOptions {
+            jvmDefault = JvmDefaultMode.NO_COMPATIBILITY
+        }
+    }
+    targets.withType<KotlinNativeTarget>().configureEach {
+        compilations.configureEach {
+            cinterops.configureEach {
+                extraOpts += listOf("-Xccall-mode", "direct")
+            }
+        }
     }
 }
 
