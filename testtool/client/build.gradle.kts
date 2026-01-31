@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 import org.jetbrains.kotlin.gradle.*
@@ -24,20 +24,15 @@ kotlin {
     }
 
     iosArm64()
-    @Suppress("DEPRECATION") iosX64()
     iosSimulatorArm64()
 
-    @Suppress("DEPRECATION") watchosX64()
-    watchosArm32()
     watchosArm64()
     watchosDeviceArm64()
     watchosSimulatorArm64()
 
-    @Suppress("DEPRECATION") tvosX64()
     tvosArm64()
     tvosSimulatorArm64()
 
-    @Suppress("DEPRECATION") macosX64()
     macosArm64()
 
     linuxX64()

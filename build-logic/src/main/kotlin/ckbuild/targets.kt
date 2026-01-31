@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 @file:Suppress("UnstableApiUsage")
@@ -31,20 +31,15 @@ fun KotlinMultiplatformExtension.appleTargets(
     // not supported by Swift anymore -> not supported by CryptoKit
     supportsWatchosArm32: Boolean = true,
 ) {
-    @Suppress("DEPRECATION") macosX64()
     macosArm64()
 
     iosArm64()
-    @Suppress("DEPRECATION") iosX64()
     iosSimulatorArm64()
 
-    @Suppress("DEPRECATION") watchosX64()
-    if (supportsWatchosArm32) watchosArm32()
     watchosArm64()
     watchosSimulatorArm64()
     watchosDeviceArm64()
 
-    @Suppress("DEPRECATION") tvosX64()
     tvosArm64()
     tvosSimulatorArm64()
 }
@@ -55,7 +50,6 @@ fun KotlinMultiplatformExtension.desktopTargets() {
 
     mingwX64()
 
-    @Suppress("DEPRECATION") macosX64()
     macosArm64()
 }
 
