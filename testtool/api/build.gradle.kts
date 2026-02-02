@@ -1,8 +1,9 @@
 /*
- * Copyright (c) 2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2025-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 import org.jetbrains.kotlin.gradle.*
+import org.jetbrains.kotlin.gradle.dsl.*
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -11,9 +12,12 @@ plugins {
 
 @OptIn(ExperimentalWasmDsl::class)
 kotlin {
-    jvmToolchain(8)
-
-    jvm()
+    jvm {
+        compilerOptions {
+            freeCompilerArgs.add("-Xjdk-release=8")
+            jvmTarget = JvmTarget.JVM_1_8
+        }
+    }
     js(IR) {
         nodejs()
         browser()

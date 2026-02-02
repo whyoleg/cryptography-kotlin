@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 @file:Suppress("UnstableApiUsage")
@@ -103,9 +103,17 @@ fun KotlinMultiplatformExtension.webTargets(
 }
 
 fun KotlinMultiplatformExtension.jvmTarget(
-    jdkAdditionalTestVersions: Set<Int> = setOf(11, 17, 21),
+    jdkAdditionalTestVersions: Set<Int> = setOf(8, 11, 17),
+    useJdkRelease8: Boolean = true,
 ) {
     jvm {
+        compilerOptions {
+            if (useJdkRelease8) freeCompilerArgs.add("-Xjdk-release=8")
+
+            jvmTarget = JvmTarget.JVM_1_8
+            jvmDefault = JvmDefaultMode.NO_COMPATIBILITY
+        }
+
         val javaToolchains = project.extensions.getByName<JavaToolchainService>("javaToolchains")
 
         jdkAdditionalTestVersions.forEach { jdkTestVersion ->
