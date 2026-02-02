@@ -5,7 +5,6 @@
 import ckbuild.*
 import ckbuild.tests.*
 import com.android.build.gradle.internal.tasks.*
-import org.jetbrains.kotlin.gradle.*
 import org.jetbrains.kotlin.gradle.plugin.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.*
 import org.jetbrains.kotlin.gradle.targets.js.ir.*
@@ -21,7 +20,6 @@ plugins {
 val skipTestTasks = booleanProperty("ckbuild.skipTestTasks", defaultValue = false)
 val skipReleaseLinkTasks = booleanProperty("ckbuild.skipReleaseLinkTasks", defaultValue = false)
 
-@OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
     // just applying `kotlin-test` doesn't work for JVM if there are multiple test tasks (like when we test on different JDKs)
     sourceSets.configureEach {

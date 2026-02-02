@@ -1,10 +1,9 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 import ckbuild.*
 import ckbuild.openssl.*
-import org.jetbrains.kotlin.gradle.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.*
 import org.jetbrains.kotlin.gradle.tasks.*
 
@@ -15,7 +14,6 @@ plugins {
 
 description = "cryptography-kotlin OpenSSL3 provider (API)"
 
-@OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
     nativeTargets()
 
