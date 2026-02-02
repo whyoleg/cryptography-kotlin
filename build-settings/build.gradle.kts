@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 plugins {
@@ -7,7 +7,7 @@ plugins {
 }
 
 dependencies {
-    implementation("com.gradle:develocity-gradle-plugin:4.3")
+    implementation("com.gradle:develocity-gradle-plugin:4.3.2")
     implementation("com.gradle:common-custom-user-data-gradle-plugin:2.4.0")
     implementation("org.gradle.toolchains:foojay-resolver:1.0.0")
 }
