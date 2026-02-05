@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.internal
@@ -11,7 +11,7 @@ internal fun NativePlacement.OSSL_PARAM_array(vararg values: CValue<OSSL_PARAM>)
     return allocArrayOf(*values, OSSL_PARAM_construct_end())
 }
 
-internal fun NativePlacement.OSSL_PARAM_arrayNotNull(vararg values: CValue<OSSL_PARAM>?): CArrayPointer<OSSL_PARAM> {
+internal fun NativePlacement.OSSL_PARAM_array(vararg values: CValue<OSSL_PARAM>?): CArrayPointer<OSSL_PARAM> {
     return allocArrayOf(*values.filterNotNull().toTypedArray(), OSSL_PARAM_construct_end())
 }
 

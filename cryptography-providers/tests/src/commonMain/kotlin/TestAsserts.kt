@@ -43,18 +43,29 @@ suspend fun SignatureVerifier.assertVerifySignature(
 fun assertPrivateKeyInfoEquals(
     expectedBytes: ByteString,
     actualBytes: ByteString,
+    assertPrivateKeyAlgorithm: (expected: AlgorithmIdentifier, actual: AlgorithmIdentifier) -> Unit = { expected, actual ->
+        assertEquals(expected, actual, "PrivateKeyInfo.privateKeyAlgorithm")
+    },
 ) {
     val expected = Der.decodeFromByteArray(PrivateKeyInfo.serializer(), expectedBytes.toByteArray())
     val actual = Der.decodeFromByteArray(PrivateKeyInfo.serializer(), actualBytes.toByteArray())
 
     // we can't really assert the version here, as it might be different depending on the availability of the public key
     // assertEquals(expected.version, actual.version, "PrivateKeyInfo.version")
-    assertEquals(expected.privateKeyAlgorithm, actual.privateKeyAlgorithm, "PrivateKeyInfo.privateKeyAlgorithm")
+    assertPrivateKeyAlgorithm(expected.privateKeyAlgorithm, actual.privateKeyAlgorithm)
     assertContentEquals(expected.privateKey, actual.privateKey, "PrivateKeyInfo.privateKey")
 
     // public key is an optional field, so it might be not available in some providers
     if (expected.publicKey != null && actual.publicKey != null) {
-        assertEquals(expected.publicKey?.unusedBits, actual.publicKey?.unusedBits, "PrivateKeyInfo.publicKey.unusedBits")
-        assertContentEquals(expected.publicKey?.byteArray, actual.publicKey?.byteArray, "PrivateKeyInfo.publicKey.byteArray")
+        assertBitArrayEquals(expected.publicKey, actual.publicKey, "PrivateKeyInfo.publicKey")
     }
+}
+
+fun assertBitArrayEquals(
+    expected: BitArray?,
+    actual: BitArray?,
+    message: String = "BitArray",
+) {
+    assertEquals(expected?.unusedBits, actual?.unusedBits, "$message.unusedBits")
+    assertContentEquals(expected?.byteArray, actual?.byteArray, "$message.byteArray")
 }

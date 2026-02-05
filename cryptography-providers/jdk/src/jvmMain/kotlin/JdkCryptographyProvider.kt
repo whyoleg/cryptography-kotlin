@@ -138,6 +138,7 @@ internal class JdkCryptographyProvider(provider: Provider?) : CryptographyProvid
             EdDSA -> JdkEdDsa(state)
             ECDH             -> JdkEcdh(state)
             XDH   -> JdkXdh(state)
+            DH -> JdkDh(state)
             PBKDF2           -> JdkPbkdf2(state)
             HKDF             -> JdkHkdf(state, this)
             else             -> null

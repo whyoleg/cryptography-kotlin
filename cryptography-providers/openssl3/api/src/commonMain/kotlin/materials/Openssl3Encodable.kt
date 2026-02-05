@@ -12,10 +12,10 @@ import kotlinx.cinterop.*
 import platform.posix.*
 import kotlin.experimental.*
 
-internal abstract class Openssl3PrivateKeyEncodable<KF : EncodingFormat, PublicK>(
+internal abstract class Openssl3PrivateKeyEncodable<F : EncodingFormat, PublicK>(
     key: CPointer<EVP_PKEY>,
     private var publicKey: PublicK?,
-) : Openssl3KeyEncodable<KF>(key), PublicKeyAccessor<PublicK> {
+) : Openssl3Encodable<F>(key), PublicKeyAccessor<PublicK> {
     protected abstract fun wrapPublicKey(key: CPointer<EVP_PKEY>): PublicK
 
     final override fun getPublicKeyBlocking(): PublicK {
@@ -23,34 +23,41 @@ internal abstract class Openssl3PrivateKeyEncodable<KF : EncodingFormat, PublicK
         return publicKey!!
     }
 
-    override fun selection(format: KF): Int = OSSL_KEYMGMT_SELECT_PRIVATE_KEY
-    override fun outputStruct(format: KF): String = "PrivateKeyInfo"
+    override fun selection(format: F): Int = OSSL_KEYMGMT_SELECT_PRIVATE_KEY
+    override fun outputStruct(format: F): String = "PrivateKeyInfo"
 }
 
-internal abstract class Openssl3PublicKeyEncodable<KF : EncodingFormat>(
+internal abstract class Openssl3PublicKeyEncodable<F : EncodingFormat>(
     key: CPointer<EVP_PKEY>,
-) : Openssl3KeyEncodable<KF>(key) {
-    override fun selection(format: KF): Int = OSSL_KEYMGMT_SELECT_PUBLIC_KEY
-    override fun outputStruct(format: KF): String = "SubjectPublicKeyInfo"
+) : Openssl3Encodable<F>(key) {
+    override fun selection(format: F): Int = OSSL_KEYMGMT_SELECT_PUBLIC_KEY
+    override fun outputStruct(format: F): String = "SubjectPublicKeyInfo"
 }
 
-internal abstract class Openssl3KeyEncodable<KF : EncodingFormat>(
+internal abstract class Openssl3ParametersEncodable<F : EncodingFormat>(
+    key: CPointer<EVP_PKEY>,
+) : Openssl3Encodable<F>(key) {
+    override fun selection(format: F): Int = EVP_PKEY_KEY_PARAMETERS
+    override fun outputStruct(format: F): String? = null
+}
+
+internal abstract class Openssl3Encodable<F : EncodingFormat>(
     val key: CPointer<EVP_PKEY>,
-) : Encodable<KF> {
+) : Encodable<F> {
     @OptIn(ExperimentalNativeApi::class)
     private val cleaner = key.cleaner()
 
-    protected abstract fun selection(format: KF): Int
-    protected abstract fun outputType(format: KF): String
-    protected abstract fun outputStruct(format: KF): String
+    protected abstract fun selection(format: F): Int
+    protected abstract fun outputType(format: F): String
+    protected abstract fun outputStruct(format: F): String?
 
-    override fun encodeToByteArrayBlocking(format: KF): ByteArray = memScoped {
+    override fun encodeToByteArrayBlocking(format: F): ByteArray = memScoped {
         val context = checkError(
             OSSL_ENCODER_CTX_new_for_pkey(
                 pkey = key,
                 selection = selection(format),
                 output_type = outputType(format).cstr.ptr,
-                output_struct = outputStruct(format).cstr.ptr,
+                output_struct = outputStruct(format)?.cstr?.ptr,
                 propquery = null
             )
         )

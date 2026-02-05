@@ -234,6 +234,95 @@ public final class dev/whyoleg/cryptography/algorithms/ChaCha20Poly1305$Key$Form
 	public static fun values ()[Ldev/whyoleg/cryptography/algorithms/ChaCha20Poly1305$Key$Format;
 }
 
+public abstract interface class dev/whyoleg/cryptography/algorithms/DH : dev/whyoleg/cryptography/CryptographyAlgorithm {
+	public static final field Companion Ldev/whyoleg/cryptography/algorithms/DH$Companion;
+	public fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
+	public abstract fun parametersDecoder ()Ldev/whyoleg/cryptography/materials/Decoder;
+	public abstract fun parametersGenerator-EFf-y7U (ILdev/whyoleg/cryptography/BinarySize;)Ldev/whyoleg/cryptography/algorithms/DH$ParametersGenerator;
+	public static synthetic fun parametersGenerator-EFf-y7U$default (Ldev/whyoleg/cryptography/algorithms/DH;ILdev/whyoleg/cryptography/BinarySize;ILjava/lang/Object;)Ldev/whyoleg/cryptography/algorithms/DH$ParametersGenerator;
+	public abstract fun privateKeyDecoder ()Ldev/whyoleg/cryptography/materials/Decoder;
+	public abstract fun publicKeyDecoder ()Ldev/whyoleg/cryptography/materials/Decoder;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/DH$Companion : dev/whyoleg/cryptography/CryptographyAlgorithmId {
+}
+
+public abstract interface class dev/whyoleg/cryptography/algorithms/DH$KeyPair {
+	public abstract fun getPrivateKey ()Ldev/whyoleg/cryptography/algorithms/DH$PrivateKey;
+	public abstract fun getPublicKey ()Ldev/whyoleg/cryptography/algorithms/DH$PublicKey;
+}
+
+public abstract interface class dev/whyoleg/cryptography/algorithms/DH$Parameters : dev/whyoleg/cryptography/materials/Encodable {
+	public abstract fun keyPairGenerator ()Ldev/whyoleg/cryptography/operations/KeyGenerator;
+}
+
+public abstract class dev/whyoleg/cryptography/algorithms/DH$Parameters$Format : dev/whyoleg/cryptography/materials/EncodingFormat {
+	public final fun toString ()Ljava/lang/String;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/DH$Parameters$Format$DER : dev/whyoleg/cryptography/algorithms/DH$Parameters$Format {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/DH$Parameters$Format$DER;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+}
+
+public final class dev/whyoleg/cryptography/algorithms/DH$Parameters$Format$PEM : dev/whyoleg/cryptography/algorithms/DH$Parameters$Format {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/DH$Parameters$Format$PEM;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+}
+
+public abstract interface class dev/whyoleg/cryptography/algorithms/DH$ParametersGenerator {
+	public fun generateParameters (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun generateParametersBlocking ()Ldev/whyoleg/cryptography/algorithms/DH$Parameters;
+}
+
+public abstract interface class dev/whyoleg/cryptography/algorithms/DH$PrivateKey : dev/whyoleg/cryptography/materials/Encodable, dev/whyoleg/cryptography/operations/PublicKeyAccessor {
+	public abstract fun sharedSecretGenerator ()Ldev/whyoleg/cryptography/operations/SharedSecretGenerator;
+}
+
+public abstract class dev/whyoleg/cryptography/algorithms/DH$PrivateKey$Format : dev/whyoleg/cryptography/materials/EncodingFormat {
+	public final fun toString ()Ljava/lang/String;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/DH$PrivateKey$Format$DER : dev/whyoleg/cryptography/algorithms/DH$PrivateKey$Format {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/DH$PrivateKey$Format$DER;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+}
+
+public final class dev/whyoleg/cryptography/algorithms/DH$PrivateKey$Format$PEM : dev/whyoleg/cryptography/algorithms/DH$PrivateKey$Format {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/DH$PrivateKey$Format$PEM;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+}
+
+public abstract interface class dev/whyoleg/cryptography/algorithms/DH$PublicKey : dev/whyoleg/cryptography/materials/Encodable {
+	public abstract fun sharedSecretGenerator ()Ldev/whyoleg/cryptography/operations/SharedSecretGenerator;
+}
+
+public abstract class dev/whyoleg/cryptography/algorithms/DH$PublicKey$Format : dev/whyoleg/cryptography/materials/EncodingFormat {
+	public final fun toString ()Ljava/lang/String;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/DH$PublicKey$Format$DER : dev/whyoleg/cryptography/algorithms/DH$PublicKey$Format {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/DH$PublicKey$Format$DER;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+}
+
+public final class dev/whyoleg/cryptography/algorithms/DH$PublicKey$Format$PEM : dev/whyoleg/cryptography/algorithms/DH$PublicKey$Format {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/DH$PublicKey$Format$PEM;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+}
+
 public abstract interface class dev/whyoleg/cryptography/algorithms/Digest : dev/whyoleg/cryptography/CryptographyAlgorithm {
 	public abstract fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
 	public abstract fun hasher ()Ldev/whyoleg/cryptography/operations/Hasher;
