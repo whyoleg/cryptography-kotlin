@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.serialization.pem
@@ -73,5 +73,12 @@ public value class PemLabel(public val value: String) {
          * as described in [RFC2986, known as PKCS#10](https://datatracker.ietf.org/doc/html/rfc2986)
          */
         public val CertificateRequest: PemLabel = PemLabel("CERTIFICATE REQUEST")
+
+        /**
+         * Represents a label used in PEM documents that contain
+         * DER encoded ASN.1 `DHParameter` structure
+         * as described in [RFC2631](https://datatracker.ietf.org/doc/html/rfc2631) and PKCS#3
+         */
+        public val DhParameters: PemLabel = PemLabel("DH PARAMETERS")
     }
 }
