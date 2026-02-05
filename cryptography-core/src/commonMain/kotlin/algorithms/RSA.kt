@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.algorithms
@@ -7,7 +7,7 @@ package dev.whyoleg.cryptography.algorithms
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.BinarySize.Companion.bits
 import dev.whyoleg.cryptography.bigint.*
-import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
 
 @SubclassOptInRequired(CryptographyProviderApi::class)
@@ -16,8 +16,8 @@ public interface RSA<
         PrivateK : RSA.PrivateKey<PublicK>,
         KP : RSA.KeyPair<PublicK, PrivateK>,
         > : CryptographyAlgorithm {
-    public fun publicKeyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<PublicKey.Format, PublicK>
-    public fun privateKeyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<PrivateKey.Format, PrivateK>
+    public fun publicKeyDecoder(digest: CryptographyAlgorithmId<Digest>): Decoder<PublicKey.Format, PublicK>
+    public fun privateKeyDecoder(digest: CryptographyAlgorithmId<Digest>): Decoder<PrivateKey.Format, PrivateK>
 
     public fun keyPairGenerator(
         keySize: BinarySize = 4096.bits,
@@ -26,14 +26,14 @@ public interface RSA<
     ): KeyGenerator<KP>
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
-    public interface KeyPair<PublicK : PublicKey, PrivateK : PrivateKey<PublicK>> : Key {
+    public interface KeyPair<PublicK : PublicKey, PrivateK : PrivateKey<PublicK>> {
         public val publicKey: PublicK
         public val privateKey: PrivateK
     }
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
-    public interface PublicKey : EncodableKey<PublicKey.Format> {
-        public sealed class Format : KeyFormat {
+    public interface PublicKey : Encodable<PublicKey.Format> {
+        public sealed class Format : EncodingFormat {
             final override fun toString(): String = name
 
             public data object JWK : Format() {
@@ -65,8 +65,8 @@ public interface RSA<
     }
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
-    public interface PrivateKey<PublicK : PublicKey> : EncodableKey<PrivateKey.Format>, PublicKeyAccessor<PublicK> {
-        public sealed class Format : KeyFormat {
+    public interface PrivateKey<PublicK : PublicKey> : Encodable<PrivateKey.Format>, PublicKeyAccessor<PublicK> {
+        public sealed class Format : EncodingFormat {
             final override fun toString(): String = name
 
             public data object JWK : Format() {

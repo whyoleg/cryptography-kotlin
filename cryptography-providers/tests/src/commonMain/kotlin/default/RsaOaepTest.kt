@@ -35,7 +35,7 @@ abstract class RsaOaepTest(provider: CryptographyProvider) : AlgorithmTest<RSA.O
 
                 val keyPair = algorithm.keyPairGenerator(keySize, digest).generateKey()
 
-                if (supportsKeyFormat(RSA.PublicKey.Format.DER)) {
+                if (supportsFormat(RSA.PublicKey.Format.DER)) {
                     assertEquals(keySize.inBytes + 38, keyPair.publicKey.encodeToByteString(RSA.PublicKey.Format.DER).size)
                 }
 

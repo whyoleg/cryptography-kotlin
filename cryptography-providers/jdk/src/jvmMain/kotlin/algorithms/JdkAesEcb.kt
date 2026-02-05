@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.jdk.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.operations.*
 import dev.whyoleg.cryptography.providers.jdk.*
@@ -20,7 +20,7 @@ internal class JdkAesEcb(
     private val keyWrapper: (JSecretKey) -> AES.ECB.Key = { key -> JdkAesEcbKey(state, key) }
     private val keyDecoder = JdkSecretKeyDecoder<AES.Key.Format, _>("AES", keyWrapper)
 
-    override fun keyDecoder(): KeyDecoder<AES.Key.Format, AES.ECB.Key> = keyDecoder
+    override fun keyDecoder(): Decoder<AES.Key.Format, AES.ECB.Key> = keyDecoder
     override fun keyGenerator(keySize: BinarySize): KeyGenerator<AES.ECB.Key> = JdkSecretKeyGenerator(state, "AES", keyWrapper) {
         init(keySize.inBits, state.secureRandom)
     }

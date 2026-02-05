@@ -7,7 +7,7 @@ package dev.whyoleg.cryptography.providers.tests
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.BinarySize.Companion.bytes
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.serialization.asn1.*
 import dev.whyoleg.cryptography.serialization.asn1.modules.*
 import dev.whyoleg.cryptography.serialization.pem.*
@@ -51,7 +51,7 @@ fun AlgorithmTestScope<*>.supportsDigest(digest: CryptographyAlgorithmId<Digest>
     }
 }
 
-fun AlgorithmTestScope<*>.supportsKeyFormat(format: KeyFormat): Boolean = supports {
+fun AlgorithmTestScope<*>.supportsFormat(format: EncodingFormat): Boolean = supports {
     when {
         // only WebCrypto supports JWK for now
         format.name == "JWK" && !provider.isWebCrypto

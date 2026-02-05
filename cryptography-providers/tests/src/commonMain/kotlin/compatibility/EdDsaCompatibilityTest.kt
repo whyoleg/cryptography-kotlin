@@ -121,12 +121,12 @@ abstract class EdDsaCompatibilityTest(
         }
 
         algorithm.keyPairGenerator(curve).generateKeys(keyIterations) { keyPair ->
-            val publicKeyData = KeyData(keyPair.publicKey.encodeTo(publicKeyFormats.values, ::supportsKeyFormat))
-            val privateKeyData = KeyData(keyPair.privateKey.encodeTo(privateKeyFormats.values, ::supportsKeyFormat))
+            val publicKeyData = KeyData(keyPair.publicKey.encodeTo(publicKeyFormats.values, ::supportsFormat))
+            val privateKeyData = KeyData(keyPair.privateKey.encodeTo(privateKeyFormats.values, ::supportsFormat))
 
             assertEquals(
                 publicKeyData.formats,
-                keyPair.privateKey.getPublicKey().encodeTo(publicKeyFormats.values, ::supportsKeyFormat),
+                keyPair.privateKey.getPublicKey().encodeTo(publicKeyFormats.values, ::supportsFormat),
             )
 
             val keyReference = api.keyPairs.saveData(keyParametersId, KeyPairData(publicKeyData, privateKeyData))
@@ -170,20 +170,20 @@ abstract class EdDsaCompatibilityTest(
                 val publicKeys = publicKeyDecoder.decodeFrom(
                     formats = public.formats,
                     formatOf = publicKeyFormats::getValue,
-                    supports = ::supportsKeyFormat,
+                    supports = ::supportsFormat,
                     validate = ::verifyPublicKey
                 )
                 val privateKeys = privateKeyDecoder.decodeFrom(
                     formats = private.formats,
                     formatOf = privateKeyFormats::getValue,
-                    supports = ::supportsKeyFormat,
+                    supports = ::supportsFormat,
                     supportsDecoding = { f, b -> supportsPrivateKeyDecoding(f, b, otherContext) }
                 ) { key, format, byteString ->
 
                     getPublicKey(key)?.let { publicKey ->
                         public.formats.filterSupportedFormats(
                             formatOf = publicKeyFormats::getValue,
-                            supports = ::supportsKeyFormat,
+                            supports = ::supportsFormat,
                         ).forEach { (format, bytes) ->
                             verifyPublicKey(publicKey, format, bytes)
                         }

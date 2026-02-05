@@ -5,7 +5,7 @@
 package dev.whyoleg.cryptography.providers.webcrypto.algorithms
 
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.materials.*
 import dev.whyoleg.cryptography.providers.webcrypto.internal.*
@@ -21,13 +21,13 @@ internal object WebCryptoEdDsa : EdDSA {
     private val keyPairWrapper: (CryptoKeyPair) -> EdDSA.KeyPair =
         { EdDsaKeyPair(EdDsaPublicKey(it.publicKey), EdDsaPrivateKey(it.privateKey)) }
 
-    override fun publicKeyDecoder(curve: EdDSA.Curve): KeyDecoder<EdDSA.PublicKey.Format, EdDSA.PublicKey> = WebCryptoKeyDecoder(
+    override fun publicKeyDecoder(curve: EdDSA.Curve): Decoder<EdDSA.PublicKey.Format, EdDSA.PublicKey> = WebCryptoKeyDecoder(
         algorithm = Algorithm(curve.name),
         keyProcessor = EdPublicKeyProcessor,
         keyWrapper = publicKeyWrapper,
     )
 
-    override fun privateKeyDecoder(curve: EdDSA.Curve): KeyDecoder<EdDSA.PrivateKey.Format, EdDSA.PrivateKey> = WebCryptoKeyDecoder(
+    override fun privateKeyDecoder(curve: EdDSA.Curve): Decoder<EdDSA.PrivateKey.Format, EdDSA.PrivateKey> = WebCryptoKeyDecoder(
         algorithm = Algorithm(curve.name),
         keyProcessor = EdPrivateKeyProcessor,
         keyWrapper = privateKeyWrapper,

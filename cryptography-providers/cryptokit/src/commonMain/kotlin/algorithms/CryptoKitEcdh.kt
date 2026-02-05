@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2025-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.cryptokit.algorithms
 
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.base.algorithms.*
@@ -17,11 +17,11 @@ import kotlinx.cinterop.*
 
 @OptIn(UnsafeNumber::class)
 internal object CryptoKitEcdh : ECDH {
-    override fun publicKeyDecoder(curve: EC.Curve): KeyDecoder<EC.PublicKey.Format, ECDH.PublicKey> {
+    override fun publicKeyDecoder(curve: EC.Curve): Decoder<EC.PublicKey.Format, ECDH.PublicKey> {
         return PublicKeyDecoder(curve.swiftEcCurve())
     }
 
-    override fun privateKeyDecoder(curve: EC.Curve): KeyDecoder<EC.PrivateKey.Format, ECDH.PrivateKey> {
+    override fun privateKeyDecoder(curve: EC.Curve): Decoder<EC.PrivateKey.Format, ECDH.PrivateKey> {
         return PrivateKeyDecoder(curve.swiftEcCurve())
     }
 
@@ -43,7 +43,7 @@ internal object CryptoKitEcdh : ECDH {
 
     private class PublicKeyDecoder(
         private val curve: DwcEcCurve,
-    ) : KeyDecoder<EC.PublicKey.Format, ECDH.PublicKey> {
+    ) : Decoder<EC.PublicKey.Format, ECDH.PublicKey> {
         override fun decodeFromByteArrayBlocking(format: EC.PublicKey.Format, bytes: ByteArray): ECDH.PublicKey {
             return EcdhPublicKey(swiftTry { error ->
                 when (format) {
@@ -65,7 +65,7 @@ internal object CryptoKitEcdh : ECDH {
 
     private class PrivateKeyDecoder(
         private val curve: DwcEcCurve,
-    ) : KeyDecoder<EC.PrivateKey.Format, ECDH.PrivateKey> {
+    ) : Decoder<EC.PrivateKey.Format, ECDH.PrivateKey> {
         override fun decodeFromByteArrayBlocking(format: EC.PrivateKey.Format, bytes: ByteArray): ECDH.PrivateKey {
             return EcdhPrivateKey(swiftTry { error ->
                 when (format) {

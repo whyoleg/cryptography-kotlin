@@ -6,7 +6,8 @@ package dev.whyoleg.cryptography.providers.webcrypto.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.materials.*
+import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.webcrypto.internal.*
 import dev.whyoleg.cryptography.providers.webcrypto.materials.*
 
@@ -14,7 +15,7 @@ internal abstract class WebCryptoAes<K : AES.Key>(
     private val algorithmName: String,
     private val keyWrapper: WebCryptoKeyWrapper<K>,
 ) : AES<K> {
-    final override fun keyDecoder(): KeyDecoder<AES.Key.Format, K> = WebCryptoKeyDecoder(
+    final override fun keyDecoder(): Decoder<AES.Key.Format, K> = WebCryptoKeyDecoder(
         algorithm = Algorithm(algorithmName),
         keyProcessor = AesKeyProcessor,
         keyWrapper = keyWrapper

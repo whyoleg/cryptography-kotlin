@@ -1,13 +1,14 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.materials.key
 
-import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.materials.*
 
-@SubclassOptInRequired(CryptographyProviderApi::class)
-public interface KeyFormat {
-    public val name: String
-    override fun toString(): String
-}
+@Deprecated(
+    "Replaced by EncodingFormat",
+    ReplaceWith("EncodingFormat", "dev.whyoleg.cryptography.materials.EncodingFormat"),
+    level = DeprecationLevel.ERROR,
+)
+public typealias KeyFormat = EncodingFormat

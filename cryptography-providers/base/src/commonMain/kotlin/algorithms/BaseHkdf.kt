@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.base.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.*
 import kotlin.math.*
@@ -34,7 +34,7 @@ public abstract class BaseHkdf(provider: CryptographyProvider) : HKDF {
     protected abstract fun digestSize(digest: CryptographyAlgorithmId<Digest>): Int
 
     private class HkdfSecretDerivation(
-        private val decoder: KeyDecoder<HMAC.Key.Format, HMAC.Key>,
+        private val decoder: Decoder<HMAC.Key.Format, HMAC.Key>,
         private val digestSize: Int,
         private val outputSize: BinarySize,
         private val salt: ByteArray,

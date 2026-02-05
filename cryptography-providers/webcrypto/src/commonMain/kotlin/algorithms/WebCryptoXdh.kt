@@ -5,7 +5,7 @@
 package dev.whyoleg.cryptography.providers.webcrypto.algorithms
 
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.materials.*
 import dev.whyoleg.cryptography.providers.webcrypto.internal.*
@@ -19,13 +19,13 @@ internal object WebCryptoXdh : XDH {
     private val keyPairUsages = publicKeyWrapper.usages + privateKeyWrapper.usages
     private val keyPairWrapper: (CryptoKeyPair) -> XDH.KeyPair = { XdhKeyPair(XdhPublicKey(it.publicKey), XdhPrivateKey(it.privateKey)) }
 
-    override fun publicKeyDecoder(curve: XDH.Curve): KeyDecoder<XDH.PublicKey.Format, XDH.PublicKey> = WebCryptoKeyDecoder(
+    override fun publicKeyDecoder(curve: XDH.Curve): Decoder<XDH.PublicKey.Format, XDH.PublicKey> = WebCryptoKeyDecoder(
         algorithm = Algorithm(curve.name),
         keyProcessor = XdhPublicKeyProcessor,
         keyWrapper = publicKeyWrapper,
     )
 
-    override fun privateKeyDecoder(curve: XDH.Curve): KeyDecoder<XDH.PrivateKey.Format, XDH.PrivateKey> = WebCryptoKeyDecoder(
+    override fun privateKeyDecoder(curve: XDH.Curve): Decoder<XDH.PrivateKey.Format, XDH.PrivateKey> = WebCryptoKeyDecoder(
         algorithm = Algorithm(curve.name),
         keyProcessor = XdhPrivateKeyProcessor,
         keyWrapper = privateKeyWrapper,

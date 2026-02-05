@@ -1,15 +1,14 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.operations
 
 import dev.whyoleg.cryptography.*
-import dev.whyoleg.cryptography.materials.key.*
 import kotlinx.io.bytestring.*
 
 @SubclassOptInRequired(CryptographyProviderApi::class)
-public interface SharedSecretGenerator<K : Key> {
+public interface SharedSecretGenerator<K> {
     public suspend fun generateSharedSecretToByteArray(other: K): ByteArray {
         return generateSharedSecretToByteArrayBlocking(other)
     }

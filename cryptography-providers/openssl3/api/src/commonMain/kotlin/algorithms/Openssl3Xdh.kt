@@ -5,7 +5,7 @@
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
 
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.providers.openssl3.materials.*
@@ -13,8 +13,8 @@ import dev.whyoleg.cryptography.providers.openssl3.operations.*
 import kotlinx.cinterop.*
 
 internal object Openssl3Xdh : XDH {
-    override fun publicKeyDecoder(curve: XDH.Curve): KeyDecoder<XDH.PublicKey.Format, XDH.PublicKey> = PublicKeyDecoder(curve)
-    override fun privateKeyDecoder(curve: XDH.Curve): KeyDecoder<XDH.PrivateKey.Format, XDH.PrivateKey> = PrivateKeyDecoder(curve)
+    override fun publicKeyDecoder(curve: XDH.Curve): Decoder<XDH.PublicKey.Format, XDH.PublicKey> = PublicKeyDecoder(curve)
+    override fun privateKeyDecoder(curve: XDH.Curve): Decoder<XDH.PrivateKey.Format, XDH.PrivateKey> = PrivateKeyDecoder(curve)
     override fun keyPairGenerator(curve: XDH.Curve): KeyGenerator<XDH.KeyPair> = KeyPairGenerator(curve)
 
     private class PublicKeyDecoder(

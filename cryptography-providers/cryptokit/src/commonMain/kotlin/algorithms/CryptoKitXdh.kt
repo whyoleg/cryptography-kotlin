@@ -5,7 +5,7 @@
 package dev.whyoleg.cryptography.providers.cryptokit.algorithms
 
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.base.materials.*
@@ -16,12 +16,12 @@ import dev.whyoleg.cryptography.serialization.asn1.modules.*
 import dev.whyoleg.cryptography.serialization.pem.*
 
 internal object CryptoKitXdh : XDH {
-    override fun publicKeyDecoder(curve: XDH.Curve): KeyDecoder<XDH.PublicKey.Format, XDH.PublicKey> {
+    override fun publicKeyDecoder(curve: XDH.Curve): Decoder<XDH.PublicKey.Format, XDH.PublicKey> {
         check(curve == XDH.Curve.X25519) { "CryptoKit supports X25519 only" }
         return PublicKeyDecoder
     }
 
-    override fun privateKeyDecoder(curve: XDH.Curve): KeyDecoder<XDH.PrivateKey.Format, XDH.PrivateKey> {
+    override fun privateKeyDecoder(curve: XDH.Curve): Decoder<XDH.PrivateKey.Format, XDH.PrivateKey> {
         check(curve == XDH.Curve.X25519) { "CryptoKit supports X25519 only" }
         return PrivateKeyDecoder
     }
@@ -41,7 +41,7 @@ internal object CryptoKitXdh : XDH {
         }
     }
 
-    private object PublicKeyDecoder : KeyDecoder<XDH.PublicKey.Format, XDH.PublicKey> {
+    private object PublicKeyDecoder : Decoder<XDH.PublicKey.Format, XDH.PublicKey> {
         override fun decodeFromByteArrayBlocking(format: XDH.PublicKey.Format, bytes: ByteArray): XDH.PublicKey {
             val raw = when (format) {
                 XDH.PublicKey.Format.RAW -> bytes
@@ -53,7 +53,7 @@ internal object CryptoKitXdh : XDH {
         }
     }
 
-    private object PrivateKeyDecoder : KeyDecoder<XDH.PrivateKey.Format, XDH.PrivateKey> {
+    private object PrivateKeyDecoder : Decoder<XDH.PrivateKey.Format, XDH.PrivateKey> {
         override fun decodeFromByteArrayBlocking(format: XDH.PrivateKey.Format, bytes: ByteArray): XDH.PrivateKey {
             val raw = when (format) {
                 XDH.PrivateKey.Format.RAW -> bytes

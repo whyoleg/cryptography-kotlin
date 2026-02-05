@@ -1,18 +1,18 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.webcrypto.materials
 
-import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.providers.webcrypto.internal.*
 
-internal class WebCryptoKeyDecoder<KF : KeyFormat, K : Key>(
+internal class WebCryptoKeyDecoder<F : EncodingFormat, K>(
     private val algorithm: Algorithm,
-    private val keyProcessor: WebCryptoKeyProcessor<KF>,
+    private val keyProcessor: WebCryptoKeyProcessor<F>,
     private val keyWrapper: WebCryptoKeyWrapper<K>,
-) : KeyDecoder<KF, K> {
-    override suspend fun decodeFromByteArray(format: KF, bytes: ByteArray): K = keyWrapper.wrap(
+) : Decoder<F, K> {
+    override suspend fun decodeFromByteArray(format: F, bytes: ByteArray): K = keyWrapper.wrap(
         WebCrypto.importKey(
             format = keyProcessor.stringFormat(format),
             keyData = keyProcessor.beforeDecoding(algorithm, format, bytes),
@@ -22,5 +22,5 @@ internal class WebCryptoKeyDecoder<KF : KeyFormat, K : Key>(
         )
     )
 
-    override fun decodeFromByteArrayBlocking(format: KF, bytes: ByteArray): K = nonBlocking()
+    override fun decodeFromByteArrayBlocking(format: F, bytes: ByteArray): K = nonBlocking()
 }

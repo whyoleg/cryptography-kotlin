@@ -6,24 +6,23 @@ package dev.whyoleg.cryptography.providers.cryptokit.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.base.operations.*
 import dev.whyoleg.cryptography.providers.cryptokit.internal.*
 import dev.whyoleg.cryptography.providers.cryptokit.internal.swift.DwcCryptoKitInterop.*
-import platform.Foundation.*
 
 private const val keySize = 32
 private const val nonceSize: Int = 12
 private const val tagSize: Int = 16
 
 internal object CryptoKitChaCha20Poly1305 : ChaCha20Poly1305 {
-    override fun keyDecoder(): KeyDecoder<ChaCha20Poly1305.Key.Format, ChaCha20Poly1305.Key> = ChaCha20Poly1305KeyDecoder()
+    override fun keyDecoder(): Decoder<ChaCha20Poly1305.Key.Format, ChaCha20Poly1305.Key> = ChaCha20Poly1305KeyDecoder()
     override fun keyGenerator(): KeyGenerator<ChaCha20Poly1305.Key> = ChaCha20Poly1305KeyGenerator()
 }
 
-private class ChaCha20Poly1305KeyDecoder : KeyDecoder<ChaCha20Poly1305.Key.Format, ChaCha20Poly1305.Key> {
+private class ChaCha20Poly1305KeyDecoder : Decoder<ChaCha20Poly1305.Key.Format, ChaCha20Poly1305.Key> {
     override fun decodeFromByteArrayBlocking(format: ChaCha20Poly1305.Key.Format, bytes: ByteArray): ChaCha20Poly1305.Key = when (format) {
         ChaCha20Poly1305.Key.Format.RAW -> {
             require(bytes.size == keySize) { "ChaCha20-Poly1305 key size must be 256 bits" }

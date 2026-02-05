@@ -5,7 +5,7 @@
 package dev.whyoleg.cryptography.algorithms
 
 import dev.whyoleg.cryptography.*
-import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
 
 @SubclassOptInRequired(CryptographyProviderApi::class)
@@ -16,21 +16,21 @@ public interface EdDSA : CryptographyAlgorithm {
 
     public enum class Curve { Ed25519, Ed448 }
 
-    public fun publicKeyDecoder(curve: Curve): KeyDecoder<PublicKey.Format, PublicKey>
-    public fun privateKeyDecoder(curve: Curve): KeyDecoder<PrivateKey.Format, PrivateKey>
+    public fun publicKeyDecoder(curve: Curve): Decoder<PublicKey.Format, PublicKey>
+    public fun privateKeyDecoder(curve: Curve): Decoder<PrivateKey.Format, PrivateKey>
     public fun keyPairGenerator(curve: Curve): KeyGenerator<KeyPair>
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
-    public interface KeyPair : Key {
+    public interface KeyPair {
         public val publicKey: PublicKey
         public val privateKey: PrivateKey
     }
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
-    public interface PublicKey : EncodableKey<PublicKey.Format> {
+    public interface PublicKey : Encodable<PublicKey.Format> {
         public fun signatureVerifier(): SignatureVerifier
 
-        public sealed class Format : KeyFormat {
+        public sealed class Format : EncodingFormat {
             final override fun toString(): String = name
 
             public data object JWK : Format() {
@@ -52,10 +52,10 @@ public interface EdDSA : CryptographyAlgorithm {
     }
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
-    public interface PrivateKey : EncodableKey<PrivateKey.Format>, PublicKeyAccessor<PublicKey> {
+    public interface PrivateKey : Encodable<PrivateKey.Format>, PublicKeyAccessor<PublicKey> {
         public fun signatureGenerator(): SignatureGenerator
 
-        public sealed class Format : KeyFormat {
+        public sealed class Format : EncodingFormat {
             final override fun toString(): String = name
 
             public data object JWK : Format() {

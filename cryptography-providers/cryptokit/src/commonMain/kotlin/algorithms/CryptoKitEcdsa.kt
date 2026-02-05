@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2025-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.cryptokit.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.base.algorithms.*
@@ -20,11 +20,11 @@ import platform.Foundation.*
 
 @OptIn(UnsafeNumber::class)
 internal object CryptoKitEcdsa : ECDSA {
-    override fun publicKeyDecoder(curve: EC.Curve): KeyDecoder<EC.PublicKey.Format, ECDSA.PublicKey> {
+    override fun publicKeyDecoder(curve: EC.Curve): Decoder<EC.PublicKey.Format, ECDSA.PublicKey> {
         return PublicKeyDecoder(curve.swiftEcCurve())
     }
 
-    override fun privateKeyDecoder(curve: EC.Curve): KeyDecoder<EC.PrivateKey.Format, ECDSA.PrivateKey> {
+    override fun privateKeyDecoder(curve: EC.Curve): Decoder<EC.PrivateKey.Format, ECDSA.PrivateKey> {
         return PrivateKeyDecoder(curve.swiftEcCurve())
     }
 
@@ -46,7 +46,7 @@ internal object CryptoKitEcdsa : ECDSA {
 
     private class PublicKeyDecoder(
         private val curve: DwcEcCurve,
-    ) : KeyDecoder<EC.PublicKey.Format, ECDSA.PublicKey> {
+    ) : Decoder<EC.PublicKey.Format, ECDSA.PublicKey> {
         override fun decodeFromByteArrayBlocking(format: EC.PublicKey.Format, bytes: ByteArray): ECDSA.PublicKey {
             return EcdsaPublicKey(swiftTry { error ->
                 when (format) {
@@ -68,7 +68,7 @@ internal object CryptoKitEcdsa : ECDSA {
 
     private class PrivateKeyDecoder(
         private val curve: DwcEcCurve,
-    ) : KeyDecoder<EC.PrivateKey.Format, ECDSA.PrivateKey> {
+    ) : Decoder<EC.PrivateKey.Format, ECDSA.PrivateKey> {
         override fun decodeFromByteArrayBlocking(format: EC.PrivateKey.Format, bytes: ByteArray): ECDSA.PrivateKey {
             return EcdsaPrivateKey(swiftTry { error ->
                 when (format) {

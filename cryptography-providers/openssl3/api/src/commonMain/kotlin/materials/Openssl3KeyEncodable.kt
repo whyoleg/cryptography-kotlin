@@ -1,10 +1,10 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.materials
 
-import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
@@ -12,7 +12,7 @@ import kotlinx.cinterop.*
 import platform.posix.*
 import kotlin.experimental.*
 
-internal abstract class Openssl3PrivateKeyEncodable<KF : KeyFormat, PublicK : Key>(
+internal abstract class Openssl3PrivateKeyEncodable<KF : EncodingFormat, PublicK>(
     key: CPointer<EVP_PKEY>,
     private var publicKey: PublicK?,
 ) : Openssl3KeyEncodable<KF>(key), PublicKeyAccessor<PublicK> {
@@ -27,16 +27,16 @@ internal abstract class Openssl3PrivateKeyEncodable<KF : KeyFormat, PublicK : Ke
     override fun outputStruct(format: KF): String = "PrivateKeyInfo"
 }
 
-internal abstract class Openssl3PublicKeyEncodable<KF : KeyFormat>(
+internal abstract class Openssl3PublicKeyEncodable<KF : EncodingFormat>(
     key: CPointer<EVP_PKEY>,
 ) : Openssl3KeyEncodable<KF>(key) {
     override fun selection(format: KF): Int = OSSL_KEYMGMT_SELECT_PUBLIC_KEY
     override fun outputStruct(format: KF): String = "SubjectPublicKeyInfo"
 }
 
-internal abstract class Openssl3KeyEncodable<KF : KeyFormat>(
+internal abstract class Openssl3KeyEncodable<KF : EncodingFormat>(
     val key: CPointer<EVP_PKEY>,
-) : EncodableKey<KF> {
+) : Encodable<KF> {
     @OptIn(ExperimentalNativeApi::class)
     private val cleaner = key.cleaner()
 

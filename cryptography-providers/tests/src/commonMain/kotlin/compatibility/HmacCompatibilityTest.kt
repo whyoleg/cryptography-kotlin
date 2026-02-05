@@ -39,7 +39,7 @@ abstract class HmacCompatibilityTest(provider: CryptographyProvider) : Compatibi
             algorithm.keyGenerator(digest).generateKeys(keyIterations) { key ->
                 val keyReference = api.keys.saveData(
                     keyParametersId,
-                    KeyData(key.encodeTo(HMAC.Key.Format.entries, ::supportsKeyFormat))
+                    KeyData(key.encodeTo(HMAC.Key.Format.entries, ::supportsFormat))
                 )
 
                 val signatureGenerator = key.signatureGenerator()
@@ -69,7 +69,7 @@ abstract class HmacCompatibilityTest(provider: CryptographyProvider) : Compatibi
                     val keys = keyDecoder.decodeFrom(
                         formats = formats,
                         formatOf = HMAC.Key.Format::valueOf,
-                        supports = ::supportsKeyFormat
+                        supports = ::supportsFormat
                     ) { key, format, bytes ->
                         when (format) {
                             HMAC.Key.Format.RAW -> assertContentEquals(bytes, key.encodeToByteString(format), "Key $format encoding")

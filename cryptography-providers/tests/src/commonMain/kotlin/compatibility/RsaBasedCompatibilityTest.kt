@@ -66,12 +66,12 @@ abstract class RsaBasedCompatibilityTest<PublicK : RSA.PublicKey, PrivateK : RSA
                 val keyParameters = KeyParameters(keySize.inBits, digest.name, digest.digestSize())
                 val keyParametersId = api.keyPairs.saveParameters(keyParameters)
                 algorithm.keyPairGenerator(keySize, digest).generateKeys(keyIterations) { keyPair ->
-                    val publicKeyData = KeyData(keyPair.publicKey.encodeTo(publicKeyFormats.values, ::supportsKeyFormat))
-                    val privateKeyData = KeyData(keyPair.privateKey.encodeTo(privateKeyFormats.values, ::supportsKeyFormat))
+                    val publicKeyData = KeyData(keyPair.publicKey.encodeTo(publicKeyFormats.values, ::supportsFormat))
+                    val privateKeyData = KeyData(keyPair.privateKey.encodeTo(privateKeyFormats.values, ::supportsFormat))
 
                     assertEquals(
                         publicKeyData.formats,
-                        keyPair.privateKey.getPublicKey().encodeTo(publicKeyFormats.values, ::supportsKeyFormat)
+                        keyPair.privateKey.getPublicKey().encodeTo(publicKeyFormats.values, ::supportsFormat)
                     )
 
                     val keyReference = api.keyPairs.saveData(keyParametersId, KeyPairData(publicKeyData, privateKeyData))
@@ -120,19 +120,19 @@ abstract class RsaBasedCompatibilityTest<PublicK : RSA.PublicKey, PrivateK : RSA
                 val publicKeys = publicKeyDecoder.decodeFrom(
                     formats = public.formats,
                     formatOf = publicKeyFormats::getValue,
-                    supports = ::supportsKeyFormat,
+                    supports = ::supportsFormat,
                     validate = ::verifyPublicKey
                 )
                 val privateKeys = privateKeyDecoder.decodeFrom(
                     formats = private.formats,
                     formatOf = privateKeyFormats::getValue,
-                    supports = ::supportsKeyFormat
+                    supports = ::supportsFormat
                 ) { key, format, bytes ->
 
                     key.getPublicKey().let { publicKey ->
                         public.formats.filterSupportedFormats(
                             formatOf = publicKeyFormats::getValue,
-                            supports = ::supportsKeyFormat,
+                            supports = ::supportsFormat,
                         ).forEach { (format, bytes) ->
                             verifyPublicKey(publicKey, format, bytes)
                         }

@@ -62,7 +62,7 @@ abstract class EdDsaTest(provider: CryptographyProvider) : AlgorithmTest<EdDSA>(
             val keyPair = algorithm.keyPairGenerator(curve).generateKey()
 
             suspend fun assertPublicKeySize(format: EdDSA.PublicKey.Format, expectedSize: Int) {
-                if (supportsKeyFormat(format)) assertEquals(
+                if (supportsFormat(format)) assertEquals(
                     expected = expectedSize,
                     actual = keyPair.publicKey.encodeToByteString(format).size,
                     message = "Public key ($format) size mismatch for ${curve.name}"
@@ -70,7 +70,7 @@ abstract class EdDsaTest(provider: CryptographyProvider) : AlgorithmTest<EdDSA>(
             }
 
             suspend fun assertPrivateKeySize(format: EdDSA.PrivateKey.Format, expectedSize: Int) {
-                if (supportsKeyFormat(format)) assertEquals(
+                if (supportsFormat(format)) assertEquals(
                     expected = expectedSize,
                     actual = keyPair.privateKey.encodeToByteString(format).size,
                     message = "Private key ($format) size mismatch for ${curve.name}"
@@ -78,7 +78,7 @@ abstract class EdDsaTest(provider: CryptographyProvider) : AlgorithmTest<EdDSA>(
             }
 
             suspend fun assertPrivateKeySizeOneOf(format: EdDSA.PrivateKey.Format, expectedSizes: IntArray) {
-                if (supportsKeyFormat(format)) assertContains(
+                if (supportsFormat(format)) assertContains(
                     array = expectedSizes,
                     element = keyPair.privateKey.encodeToByteString(format).size,
                     message = "Private key ($format) size mismatch for ${curve.name}"

@@ -5,7 +5,8 @@
 package dev.whyoleg.cryptography.providers.webcrypto.algorithms
 
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.materials.*
+import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.algorithms.*
 import dev.whyoleg.cryptography.providers.base.materials.*
 import dev.whyoleg.cryptography.providers.webcrypto.internal.*
@@ -25,13 +26,13 @@ internal sealed class WebCryptoEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateK
         keyPairWrapper(publicKeyWrapper.wrap(it.publicKey), privateKeyWrapper.wrap(it.privateKey))
     }
 
-    final override fun publicKeyDecoder(curve: EC.Curve): KeyDecoder<EC.PublicKey.Format, PublicK> = WebCryptoKeyDecoder(
+    final override fun publicKeyDecoder(curve: EC.Curve): Decoder<EC.PublicKey.Format, PublicK> = WebCryptoKeyDecoder(
         algorithm = EcKeyAlgorithm(algorithmName, curve.name),
         keyProcessor = EcPublicKeyProcessor,
         keyWrapper = publicKeyWrapper,
     )
 
-    final override fun privateKeyDecoder(curve: EC.Curve): KeyDecoder<EC.PrivateKey.Format, PrivateK> = WebCryptoKeyDecoder(
+    final override fun privateKeyDecoder(curve: EC.Curve): Decoder<EC.PrivateKey.Format, PrivateK> = WebCryptoKeyDecoder(
         algorithm = EcKeyAlgorithm(algorithmName, curve.name),
         keyProcessor = EcPrivateKeyProcessor,
         keyWrapper = privateKeyWrapper,

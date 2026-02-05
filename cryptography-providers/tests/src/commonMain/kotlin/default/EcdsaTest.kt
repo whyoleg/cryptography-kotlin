@@ -133,7 +133,7 @@ abstract class EcdsaTest(provider: CryptographyProvider) : AlgorithmTest<ECDSA>(
             val keyPair = algorithm.keyPairGenerator(curve).generateKey()
 
             suspend fun assertPublicKeySize(format: EC.PublicKey.Format, expectedSize: Int) {
-                if (supportsKeyFormat(format)) assertEquals(
+                if (supportsFormat(format)) assertEquals(
                     expected = expectedSize,
                     actual = keyPair.publicKey.encodeToByteString(format).size,
                     message = "Public key ($format) size mismatch for ${curve.name}"
@@ -141,7 +141,7 @@ abstract class EcdsaTest(provider: CryptographyProvider) : AlgorithmTest<ECDSA>(
             }
 
             suspend fun assertPrivateKeySize(format: EC.PrivateKey.Format, expectedSizes: IntArray) {
-                if (supportsKeyFormat(format)) assertContains(
+                if (supportsFormat(format)) assertContains(
                     array = expectedSizes,
                     element = keyPair.privateKey.encodeToByteString(format).size,
                     message = "Private key ($format) size mismatch for ${curve.name}"

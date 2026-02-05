@@ -6,7 +6,7 @@ package dev.whyoleg.cryptography.providers.jdk.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.algorithms.*
 import dev.whyoleg.cryptography.providers.base.operations.*
@@ -21,7 +21,7 @@ internal class JdkChaCha20Poly1305(
     private val keyWrapper: (JSecretKey) -> ChaCha20Poly1305.Key = { key -> JdkChaCha20Poly1305Key(state, key) }
     private val keyDecoder = JdkSecretKeyDecoder<ChaCha20Poly1305.Key.Format, _>("ChaCha20", keyWrapper)
 
-    override fun keyDecoder(): KeyDecoder<ChaCha20Poly1305.Key.Format, ChaCha20Poly1305.Key> = keyDecoder
+    override fun keyDecoder(): Decoder<ChaCha20Poly1305.Key.Format, ChaCha20Poly1305.Key> = keyDecoder
     override fun keyGenerator(): KeyGenerator<ChaCha20Poly1305.Key> =
         JdkSecretKeyGenerator(state, "ChaCha20", keyWrapper) {
             init(state.secureRandom)

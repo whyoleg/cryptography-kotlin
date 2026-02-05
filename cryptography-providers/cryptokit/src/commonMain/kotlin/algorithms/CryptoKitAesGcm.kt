@@ -7,7 +7,7 @@ package dev.whyoleg.cryptography.providers.cryptokit.algorithms
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.BinarySize.Companion.bytes
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.base.operations.*
@@ -15,12 +15,12 @@ import dev.whyoleg.cryptography.providers.cryptokit.internal.*
 import dev.whyoleg.cryptography.providers.cryptokit.internal.swift.DwcCryptoKitInterop.*
 
 internal object CryptoKitAesGcm : AES.GCM {
-    override fun keyDecoder(): KeyDecoder<AES.Key.Format, AES.GCM.Key> = AesKeyDecoder()
+    override fun keyDecoder(): Decoder<AES.Key.Format, AES.GCM.Key> = AesKeyDecoder()
 
     override fun keyGenerator(keySize: BinarySize): KeyGenerator<AES.GCM.Key> = AesGcmKeyGenerator(keySize.inBytes)
 }
 
-private class AesKeyDecoder : KeyDecoder<AES.Key.Format, AES.GCM.Key> {
+private class AesKeyDecoder : Decoder<AES.Key.Format, AES.GCM.Key> {
     override fun decodeFromByteArrayBlocking(format: AES.Key.Format, bytes: ByteArray): AES.GCM.Key = when (format) {
         AES.Key.Format.RAW -> {
             require(bytes.size == 16 || bytes.size == 24 || bytes.size == 32) {

@@ -6,7 +6,7 @@ package dev.whyoleg.cryptography.providers.openssl3.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
@@ -22,7 +22,7 @@ internal object Openssl3Hmac : HMAC {
     @OptIn(ExperimentalNativeApi::class)
     private val cleaner = createCleaner(mac, ::EVP_MAC_free)
 
-    override fun keyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<HMAC.Key.Format, HMAC.Key> {
+    override fun keyDecoder(digest: CryptographyAlgorithmId<Digest>): Decoder<HMAC.Key.Format, HMAC.Key> {
         val hashAlgorithm = hashAlgorithmName(digest)
         return HmacKeyDecoder(hashAlgorithm)
     }
@@ -35,7 +35,7 @@ internal object Openssl3Hmac : HMAC {
 
 private class HmacKeyDecoder(
     private val hashAlgorithm: String,
-) : KeyDecoder<HMAC.Key.Format, HMAC.Key> {
+) : Decoder<HMAC.Key.Format, HMAC.Key> {
     override fun decodeFromByteArrayBlocking(format: HMAC.Key.Format, bytes: ByteArray): HMAC.Key = when (format) {
         HMAC.Key.Format.RAW -> HmacKey(hashAlgorithm, bytes.copyOf())
         HMAC.Key.Format.JWK -> error("JWK is not supported")

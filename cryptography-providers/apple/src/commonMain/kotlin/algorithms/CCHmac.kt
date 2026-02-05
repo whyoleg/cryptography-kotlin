@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.apple.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.apple.internal.*
 import dev.whyoleg.cryptography.providers.base.*
@@ -14,7 +14,7 @@ import kotlinx.cinterop.*
 import platform.CoreCrypto.*
 
 internal object CCHmac : HMAC {
-    override fun keyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<HMAC.Key.Format, HMAC.Key> {
+    override fun keyDecoder(digest: CryptographyAlgorithmId<Digest>): Decoder<HMAC.Key.Format, HMAC.Key> {
         return when (digest) {
             SHA1   -> HmacKeyDecoder(kCCHmacAlgSHA1, CC_SHA1_DIGEST_LENGTH)
             SHA224 -> HmacKeyDecoder(kCCHmacAlgSHA224, CC_SHA224_DIGEST_LENGTH)
@@ -40,7 +40,7 @@ internal object CCHmac : HMAC {
 private class HmacKeyDecoder(
     private val hmacAlgorithm: CCHmacAlgorithm,
     private val digestSize: Int,
-) : KeyDecoder<HMAC.Key.Format, HMAC.Key> {
+) : Decoder<HMAC.Key.Format, HMAC.Key> {
     override fun decodeFromByteArrayBlocking(format: HMAC.Key.Format, bytes: ByteArray): HMAC.Key = when (format) {
         HMAC.Key.Format.RAW -> wrapKey(hmacAlgorithm, bytes.copyOf(), digestSize)
         HMAC.Key.Format.JWK -> error("JWK is not supported")

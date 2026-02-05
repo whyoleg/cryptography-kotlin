@@ -5,7 +5,7 @@
 package dev.whyoleg.cryptography.providers.cryptokit.algorithms
 
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.base.materials.*
@@ -17,12 +17,12 @@ import dev.whyoleg.cryptography.serialization.asn1.modules.*
 import dev.whyoleg.cryptography.serialization.pem.*
 
 internal object CryptoKitEdDsa : EdDSA {
-    override fun publicKeyDecoder(curve: EdDSA.Curve): KeyDecoder<EdDSA.PublicKey.Format, EdDSA.PublicKey> {
+    override fun publicKeyDecoder(curve: EdDSA.Curve): Decoder<EdDSA.PublicKey.Format, EdDSA.PublicKey> {
         check(curve == EdDSA.Curve.Ed25519) { "CryptoKit supports Ed25519 only" }
         return PublicKeyDecoder
     }
 
-    override fun privateKeyDecoder(curve: EdDSA.Curve): KeyDecoder<EdDSA.PrivateKey.Format, EdDSA.PrivateKey> {
+    override fun privateKeyDecoder(curve: EdDSA.Curve): Decoder<EdDSA.PrivateKey.Format, EdDSA.PrivateKey> {
         check(curve == EdDSA.Curve.Ed25519) { "CryptoKit supports Ed25519 only" }
         return PrivateKeyDecoder
     }
@@ -42,7 +42,7 @@ internal object CryptoKitEdDsa : EdDSA {
         }
     }
 
-    private object PublicKeyDecoder : KeyDecoder<EdDSA.PublicKey.Format, EdDSA.PublicKey> {
+    private object PublicKeyDecoder : Decoder<EdDSA.PublicKey.Format, EdDSA.PublicKey> {
         override fun decodeFromByteArrayBlocking(format: EdDSA.PublicKey.Format, bytes: ByteArray): EdDSA.PublicKey {
             val raw = when (format) {
                 EdDSA.PublicKey.Format.RAW -> bytes
@@ -54,7 +54,7 @@ internal object CryptoKitEdDsa : EdDSA {
         }
     }
 
-    private object PrivateKeyDecoder : KeyDecoder<EdDSA.PrivateKey.Format, EdDSA.PrivateKey> {
+    private object PrivateKeyDecoder : Decoder<EdDSA.PrivateKey.Format, EdDSA.PrivateKey> {
         override fun decodeFromByteArrayBlocking(format: EdDSA.PrivateKey.Format, bytes: ByteArray): EdDSA.PrivateKey {
             val raw = when (format) {
                 EdDSA.PrivateKey.Format.RAW -> bytes

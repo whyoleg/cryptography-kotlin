@@ -141,7 +141,7 @@ abstract class ChaCha20Poly1305CompatibilityTest(provider: CryptographyProvider)
         algorithm.keyGenerator().generateKeys(keyIterations) { key ->
             val keyReference = api.keys.saveData(
                 keyParametersId,
-                KeyData(key.encodeTo(ChaCha20Poly1305.Key.Format.entries, ::supportsKeyFormat))
+                KeyData(key.encodeTo(ChaCha20Poly1305.Key.Format.entries, ::supportsFormat))
             )
             block(key, keyReference)
         }
@@ -154,7 +154,7 @@ abstract class ChaCha20Poly1305CompatibilityTest(provider: CryptographyProvider)
                     val keys = keyDecoder.decodeFrom(
                         formats = formats,
                         formatOf = ChaCha20Poly1305.Key.Format::valueOf,
-                        supports = ::supportsKeyFormat
+                        supports = ::supportsFormat
                     ) { key, format, bytes ->
                         when (format) {
                             ChaCha20Poly1305.Key.Format.RAW -> assertContentEquals(
