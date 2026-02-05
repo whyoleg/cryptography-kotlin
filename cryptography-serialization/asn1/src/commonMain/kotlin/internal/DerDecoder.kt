@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.serialization.asn1.internal
@@ -38,18 +38,13 @@ internal class DerDecoder(
             val index = currentIndex
             tagOverride = descriptor.getElementContextSpecificTag(index)
 
-            if (descriptor.isElementOptional(index)) {
-                val requiredTag = checkNotNull(tagOverride) {
-                    "Optional element $descriptor[$index] must have context specific tag"
-                }
-
-                // if the tag is different,
-                // then an optional element is absent,
-                // and so we need to increment the index
-                if (tag != requiredTag.tag) {
-                    currentIndex++
-                    continue
-                }
+            // if the tag is different,
+            // then an optional element is absent,
+            // and so we need to increment the index
+            // if there is no tag override -> we need to read current element, even if it's optional
+            if (tagOverride != null && descriptor.isElementOptional(index) && tag != tagOverride?.tag) {
+                currentIndex++
+                continue
             }
 
             return currentIndex++

@@ -34,6 +34,39 @@ abstract class dev.whyoleg.cryptography.serialization.asn1.modules/AlgorithmIden
     final inline fun <#A1: reified kotlin/Any?, #B1: reified dev.whyoleg.cryptography.serialization.asn1.modules/AlgorithmIdentifier> algorithm(dev.whyoleg.cryptography.serialization.asn1/ObjectIdentifier, noinline kotlin/Function1<#A1?, #B1>) // dev.whyoleg.cryptography.serialization.asn1.modules/AlgorithmIdentifierSerializer.algorithm|algorithm(dev.whyoleg.cryptography.serialization.asn1.ObjectIdentifier;kotlin.Function1<0:0?,0:1>){0§<kotlin.Any?>;1§<dev.whyoleg.cryptography.serialization.asn1.modules.AlgorithmIdentifier>}[0]
 }
 
+final class dev.whyoleg.cryptography.serialization.asn1.modules/DhAlgorithmIdentifier : dev.whyoleg.cryptography.serialization.asn1.modules/AlgorithmIdentifier { // dev.whyoleg.cryptography.serialization.asn1.modules/DhAlgorithmIdentifier|null[0]
+    constructor <init>(dev.whyoleg.cryptography.serialization.asn1.modules/DhParameters?) // dev.whyoleg.cryptography.serialization.asn1.modules/DhAlgorithmIdentifier.<init>|<init>(dev.whyoleg.cryptography.serialization.asn1.modules.DhParameters?){}[0]
+
+    final val algorithm // dev.whyoleg.cryptography.serialization.asn1.modules/DhAlgorithmIdentifier.algorithm|{}algorithm[0]
+        final fun <get-algorithm>(): dev.whyoleg.cryptography.serialization.asn1/ObjectIdentifier // dev.whyoleg.cryptography.serialization.asn1.modules/DhAlgorithmIdentifier.algorithm.<get-algorithm>|<get-algorithm>(){}[0]
+    final val parameters // dev.whyoleg.cryptography.serialization.asn1.modules/DhAlgorithmIdentifier.parameters|{}parameters[0]
+        final fun <get-parameters>(): dev.whyoleg.cryptography.serialization.asn1.modules/DhParameters? // dev.whyoleg.cryptography.serialization.asn1.modules/DhAlgorithmIdentifier.parameters.<get-parameters>|<get-parameters>(){}[0]
+}
+
+final class dev.whyoleg.cryptography.serialization.asn1.modules/DhParameters { // dev.whyoleg.cryptography.serialization.asn1.modules/DhParameters|null[0]
+    constructor <init>(dev.whyoleg.cryptography.bigint/BigInt, dev.whyoleg.cryptography.bigint/BigInt, kotlin/Int? = ...) // dev.whyoleg.cryptography.serialization.asn1.modules/DhParameters.<init>|<init>(dev.whyoleg.cryptography.bigint.BigInt;dev.whyoleg.cryptography.bigint.BigInt;kotlin.Int?){}[0]
+
+    final val base // dev.whyoleg.cryptography.serialization.asn1.modules/DhParameters.base|{}base[0]
+        final fun <get-base>(): dev.whyoleg.cryptography.bigint/BigInt // dev.whyoleg.cryptography.serialization.asn1.modules/DhParameters.base.<get-base>|<get-base>(){}[0]
+    final val prime // dev.whyoleg.cryptography.serialization.asn1.modules/DhParameters.prime|{}prime[0]
+        final fun <get-prime>(): dev.whyoleg.cryptography.bigint/BigInt // dev.whyoleg.cryptography.serialization.asn1.modules/DhParameters.prime.<get-prime>|<get-prime>(){}[0]
+    final val privateValueLength // dev.whyoleg.cryptography.serialization.asn1.modules/DhParameters.privateValueLength|{}privateValueLength[0]
+        final fun <get-privateValueLength>(): kotlin/Int? // dev.whyoleg.cryptography.serialization.asn1.modules/DhParameters.privateValueLength.<get-privateValueLength>|<get-privateValueLength>(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<dev.whyoleg.cryptography.serialization.asn1.modules/DhParameters> { // dev.whyoleg.cryptography.serialization.asn1.modules/DhParameters.$serializer|null[0]
+        final val descriptor // dev.whyoleg.cryptography.serialization.asn1.modules/DhParameters.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // dev.whyoleg.cryptography.serialization.asn1.modules/DhParameters.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // dev.whyoleg.cryptography.serialization.asn1.modules/DhParameters.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): dev.whyoleg.cryptography.serialization.asn1.modules/DhParameters // dev.whyoleg.cryptography.serialization.asn1.modules/DhParameters.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, dev.whyoleg.cryptography.serialization.asn1.modules/DhParameters) // dev.whyoleg.cryptography.serialization.asn1.modules/DhParameters.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;dev.whyoleg.cryptography.serialization.asn1.modules.DhParameters){}[0]
+    }
+
+    final object Companion { // dev.whyoleg.cryptography.serialization.asn1.modules/DhParameters.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<dev.whyoleg.cryptography.serialization.asn1.modules/DhParameters> // dev.whyoleg.cryptography.serialization.asn1.modules/DhParameters.Companion.serializer|serializer(){}[0]
+    }
+}
+
 final class dev.whyoleg.cryptography.serialization.asn1.modules/EcAlgorithmIdentifier : dev.whyoleg.cryptography.serialization.asn1.modules/AlgorithmIdentifier { // dev.whyoleg.cryptography.serialization.asn1.modules/EcAlgorithmIdentifier|null[0]
     constructor <init>(dev.whyoleg.cryptography.serialization.asn1.modules/EcParameters?) // dev.whyoleg.cryptography.serialization.asn1.modules/EcAlgorithmIdentifier.<init>|<init>(dev.whyoleg.cryptography.serialization.asn1.modules.EcParameters?){}[0]
 
@@ -293,6 +326,8 @@ final object dev.whyoleg.cryptography.serialization.asn1.modules/X448AlgorithmId
         final fun <get-parameters>(): kotlin/Nothing? // dev.whyoleg.cryptography.serialization.asn1.modules/X448AlgorithmIdentifier.parameters.<get-parameters>|<get-parameters>(){}[0]
 }
 
+final val dev.whyoleg.cryptography.serialization.asn1.modules/DH // dev.whyoleg.cryptography.serialization.asn1.modules/DH|@dev.whyoleg.cryptography.serialization.asn1.ObjectIdentifier.Companion{}DH[0]
+    final fun (dev.whyoleg.cryptography.serialization.asn1/ObjectIdentifier.Companion).<get-DH>(): dev.whyoleg.cryptography.serialization.asn1/ObjectIdentifier // dev.whyoleg.cryptography.serialization.asn1.modules/DH.<get-DH>|<get-DH>@dev.whyoleg.cryptography.serialization.asn1.ObjectIdentifier.Companion(){}[0]
 final val dev.whyoleg.cryptography.serialization.asn1.modules/EC // dev.whyoleg.cryptography.serialization.asn1.modules/EC|@dev.whyoleg.cryptography.serialization.asn1.ObjectIdentifier.Companion{}EC[0]
     final fun (dev.whyoleg.cryptography.serialization.asn1/ObjectIdentifier.Companion).<get-EC>(): dev.whyoleg.cryptography.serialization.asn1/ObjectIdentifier // dev.whyoleg.cryptography.serialization.asn1.modules/EC.<get-EC>|<get-EC>@dev.whyoleg.cryptography.serialization.asn1.ObjectIdentifier.Companion(){}[0]
 final val dev.whyoleg.cryptography.serialization.asn1.modules/Ed25519 // dev.whyoleg.cryptography.serialization.asn1.modules/Ed25519|@dev.whyoleg.cryptography.serialization.asn1.ObjectIdentifier.Companion{}Ed25519[0]

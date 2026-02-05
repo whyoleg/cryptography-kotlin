@@ -110,6 +110,7 @@ internal object DefaultAlgorithmIdentifierSerializer : AlgorithmIdentifierSerial
     init {
         algorithm(ObjectIdentifier.RSA, RsaAlgorithmIdentifier, encodeNull = true)
         algorithm(ObjectIdentifier.EC, ::EcAlgorithmIdentifier)
+        algorithm(ObjectIdentifier.DH, ::DhAlgorithmIdentifier)
 
         // in edvard curves algorithms, we don't need to encode parameters at all, not even `null`
 
