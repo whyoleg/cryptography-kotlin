@@ -6,7 +6,7 @@ package dev.whyoleg.cryptography.providers.webcrypto.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.webcrypto.internal.*
 import dev.whyoleg.cryptography.providers.webcrypto.materials.*
@@ -14,7 +14,7 @@ import dev.whyoleg.cryptography.providers.webcrypto.operations.*
 
 internal object WebCryptoHmac : HMAC {
     private val keyWrapper: WebCryptoKeyWrapper<HMAC.Key> = WebCryptoKeyWrapper(arrayOf("sign", "verify"), ::HmacKey)
-    override fun keyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<HMAC.Key.Format, HMAC.Key> = WebCryptoKeyDecoder(
+    override fun keyDecoder(digest: CryptographyAlgorithmId<Digest>): Decoder<HMAC.Key.Format, HMAC.Key> = WebCryptoKeyDecoder(
         algorithm = HmacKeyAlgorithm(digest.hashAlgorithmName(), null),
         keyProcessor = HmacKeyProcessor,
         keyWrapper = keyWrapper,

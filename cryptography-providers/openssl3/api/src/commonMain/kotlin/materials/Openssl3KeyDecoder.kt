@@ -1,32 +1,32 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.materials
 
-import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import kotlinx.cinterop.*
 import platform.posix.*
 
-internal abstract class Openssl3PrivateKeyDecoder<KF : KeyFormat, K : Key>(
+internal abstract class Openssl3PrivateKeyDecoder<KF : EncodingFormat, K>(
     algorithm: String,
 ) : Openssl3KeyDecoder<KF, K>(algorithm) {
     override fun selection(format: KF): Int = OSSL_KEYMGMT_SELECT_PRIVATE_KEY
     override fun inputStruct(format: KF): String = "PrivateKeyInfo"
 }
 
-internal abstract class Openssl3PublicKeyDecoder<KF : KeyFormat, K : Key>(
+internal abstract class Openssl3PublicKeyDecoder<KF : EncodingFormat, K>(
     algorithm: String,
 ) : Openssl3KeyDecoder<KF, K>(algorithm) {
     override fun selection(format: KF): Int = OSSL_KEYMGMT_SELECT_PUBLIC_KEY
     override fun inputStruct(format: KF): String = "SubjectPublicKeyInfo"
 }
 
-internal abstract class Openssl3KeyDecoder<KF : KeyFormat, K : Key>(
+internal abstract class Openssl3KeyDecoder<KF : EncodingFormat, K>(
     private val algorithm: String,
-) : KeyDecoder<KF, K> {
+) : Decoder<KF, K> {
     protected abstract fun wrapKey(key: CPointer<EVP_PKEY>): K
 
     protected abstract fun selection(format: KF): Int

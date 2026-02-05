@@ -1,15 +1,15 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.jdk.materials
 
-import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.providers.jdk.*
 
-internal abstract class JdkEncodableKey<KF : KeyFormat>(
+internal abstract class JdkEncodableKey<F : EncodingFormat>(
     private val key: JKey,
-) : EncodableKey<KF> {
+) : Encodable<F> {
 
     protected fun encodeToRaw(): ByteArray {
         check(key.format == "RAW") { "Wrong JDK Key format, expected `RAW` got `${key.format}`" }

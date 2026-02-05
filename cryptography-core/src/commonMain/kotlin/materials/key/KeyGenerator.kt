@@ -1,13 +1,14 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.materials.key
 
-import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.operations.KeyGenerator as NewKeyGenerator
 
-@SubclassOptInRequired(CryptographyProviderApi::class)
-public interface KeyGenerator<K : Key> {
-    public suspend fun generateKey(): K = generateKeyBlocking()
-    public fun generateKeyBlocking(): K
-}
+@Deprecated(
+    "Moved to operations package",
+    ReplaceWith("KeyGenerator<K>", "dev.whyoleg.cryptography.operations.KeyGenerator"),
+    level = DeprecationLevel.ERROR,
+)
+public typealias KeyGenerator<K> = NewKeyGenerator<K>

@@ -7,7 +7,7 @@ package dev.whyoleg.cryptography.providers.apple.algorithms
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.bigint.*
-import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.apple.internal.*
 import dev.whyoleg.cryptography.providers.base.*
@@ -41,11 +41,11 @@ private class EcCurveData private constructor(
 }
 
 internal object SecEcdsa : ECDSA {
-    override fun publicKeyDecoder(curve: EC.Curve): KeyDecoder<EC.PublicKey.Format, ECDSA.PublicKey> {
+    override fun publicKeyDecoder(curve: EC.Curve): Decoder<EC.PublicKey.Format, ECDSA.PublicKey> {
         return EcdsaPublicKeyDecoder(EcCurveData(curve))
     }
 
-    override fun privateKeyDecoder(curve: EC.Curve): KeyDecoder<EC.PrivateKey.Format, ECDSA.PrivateKey> {
+    override fun privateKeyDecoder(curve: EC.Curve): Decoder<EC.PrivateKey.Format, ECDSA.PrivateKey> {
         return EcdsaPrivateKeyDecoder(EcCurveData(curve))
     }
 
@@ -56,7 +56,7 @@ internal object SecEcdsa : ECDSA {
 
 private class EcdsaPublicKeyDecoder(
     private val curve: EcCurveData,
-) : KeyDecoder<EC.PublicKey.Format, ECDSA.PublicKey> {
+) : Decoder<EC.PublicKey.Format, ECDSA.PublicKey> {
 
     override fun decodeFromByteArrayBlocking(format: EC.PublicKey.Format, bytes: ByteArray): ECDSA.PublicKey {
         val rawKey = when (format) {
@@ -88,7 +88,7 @@ private class EcdsaPublicKeyDecoder(
 
 private class EcdsaPrivateKeyDecoder(
     private val curve: EcCurveData,
-) : KeyDecoder<EC.PrivateKey.Format, ECDSA.PrivateKey> {
+) : Decoder<EC.PrivateKey.Format, ECDSA.PrivateKey> {
     override fun decodeFromByteArrayBlocking(format: EC.PrivateKey.Format, bytes: ByteArray): ECDSA.PrivateKey {
         val ecPrivateKey = when (format) {
             EC.PrivateKey.Format.JWK      -> error("$format is not supported")

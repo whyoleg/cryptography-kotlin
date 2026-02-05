@@ -5,7 +5,7 @@
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
 
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
@@ -14,9 +14,9 @@ import dev.whyoleg.cryptography.providers.openssl3.operations.*
 import kotlinx.cinterop.*
 
 internal object Openssl3Ecdh : ECDH {
-    override fun publicKeyDecoder(curve: EC.Curve): KeyDecoder<EC.PublicKey.Format, ECDH.PublicKey> = EcPublicKeyDecoder(curve)
+    override fun publicKeyDecoder(curve: EC.Curve): Decoder<EC.PublicKey.Format, ECDH.PublicKey> = EcPublicKeyDecoder(curve)
 
-    override fun privateKeyDecoder(curve: EC.Curve): KeyDecoder<EC.PrivateKey.Format, ECDH.PrivateKey> = EcPrivateKeyDecoder(curve)
+    override fun privateKeyDecoder(curve: EC.Curve): Decoder<EC.PrivateKey.Format, ECDH.PrivateKey> = EcPrivateKeyDecoder(curve)
 
     override fun keyPairGenerator(curve: EC.Curve): KeyGenerator<ECDH.KeyPair> = EcKeyGenerator(curve)
 

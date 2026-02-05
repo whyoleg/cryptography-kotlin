@@ -7,7 +7,8 @@ package dev.whyoleg.cryptography.providers.apple.algorithms
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.bigint.*
-import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.materials.*
+import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.apple.internal.*
 import dev.whyoleg.cryptography.providers.base.materials.*
 import dev.whyoleg.cryptography.serialization.asn1.*
@@ -26,10 +27,10 @@ internal abstract class SecRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKe
 
     protected abstract fun hashAlgorithm(digest: CryptographyAlgorithmId<Digest>): SecKeyAlgorithm?
 
-    final override fun publicKeyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<RSA.PublicKey.Format, PublicK> =
+    final override fun publicKeyDecoder(digest: CryptographyAlgorithmId<Digest>): Decoder<RSA.PublicKey.Format, PublicK> =
         RsaPublicKeyDecoder(hashAlgorithm(digest))
 
-    private inner class RsaPublicKeyDecoder(private val algorithm: SecKeyAlgorithm?) : KeyDecoder<RSA.PublicKey.Format, PublicK> {
+    private inner class RsaPublicKeyDecoder(private val algorithm: SecKeyAlgorithm?) : Decoder<RSA.PublicKey.Format, PublicK> {
 
         override fun decodeFromByteArrayBlocking(format: RSA.PublicKey.Format, bytes: ByteArray): PublicK {
             val pkcs1DerKey = when (format) {
@@ -51,10 +52,10 @@ internal abstract class SecRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKe
         }
     }
 
-    final override fun privateKeyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<RSA.PrivateKey.Format, PrivateK> =
+    final override fun privateKeyDecoder(digest: CryptographyAlgorithmId<Digest>): Decoder<RSA.PrivateKey.Format, PrivateK> =
         RsaPrivateKeyDecoder(hashAlgorithm(digest))
 
-    private inner class RsaPrivateKeyDecoder(private val algorithm: SecKeyAlgorithm?) : KeyDecoder<RSA.PrivateKey.Format, PrivateK> {
+    private inner class RsaPrivateKeyDecoder(private val algorithm: SecKeyAlgorithm?) : Decoder<RSA.PrivateKey.Format, PrivateK> {
 
         override fun decodeFromByteArrayBlocking(format: RSA.PrivateKey.Format, bytes: ByteArray): PrivateK {
             val pkcs1DerKey = when (format) {

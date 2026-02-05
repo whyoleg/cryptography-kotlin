@@ -6,7 +6,7 @@ package dev.whyoleg.cryptography.providers.jdk.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.algorithms.*
 import dev.whyoleg.cryptography.providers.base.operations.*
@@ -22,7 +22,7 @@ internal class JdkAesGcm(
     private val keyWrapper: (JSecretKey) -> AES.GCM.Key = { key -> JdkAesGcmKey(state, key) }
     private val keyDecoder = JdkSecretKeyDecoder<AES.Key.Format, _>("AES", keyWrapper)
 
-    override fun keyDecoder(): KeyDecoder<AES.Key.Format, AES.GCM.Key> = keyDecoder
+    override fun keyDecoder(): Decoder<AES.Key.Format, AES.GCM.Key> = keyDecoder
 
     override fun keyGenerator(keySize: BinarySize): KeyGenerator<AES.GCM.Key> = JdkSecretKeyGenerator(state, "AES", keyWrapper) {
         init(keySize.inBits, state.secureRandom)

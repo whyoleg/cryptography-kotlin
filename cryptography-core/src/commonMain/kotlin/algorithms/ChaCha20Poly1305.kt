@@ -5,7 +5,7 @@
 package dev.whyoleg.cryptography.algorithms
 
 import dev.whyoleg.cryptography.*
-import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
 
 @SubclassOptInRequired(CryptographyProviderApi::class)
@@ -14,13 +14,13 @@ public interface ChaCha20Poly1305 : CryptographyAlgorithm {
 
     public companion object : CryptographyAlgorithmId<ChaCha20Poly1305>("ChaCha20-Poly1305")
 
-    public fun keyDecoder(): KeyDecoder<Key.Format, Key>
+    public fun keyDecoder(): Decoder<Key.Format, Key>
     public fun keyGenerator(): KeyGenerator<Key>
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
-    public interface Key : EncodableKey<Key.Format> {
+    public interface Key : Encodable<Key.Format> {
         public fun cipher(): IvAuthenticatedCipher
 
-        public enum class Format : KeyFormat { RAW, JWK }
+        public enum class Format : EncodingFormat { RAW, JWK }
     }
 }

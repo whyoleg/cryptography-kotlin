@@ -4,31 +4,32 @@
 
 package dev.whyoleg.cryptography.providers.tests
 
-import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.materials.*
+import dev.whyoleg.cryptography.operations.*
 import kotlinx.io.*
 import kotlinx.io.bytestring.*
 import kotlin.test.*
 
-suspend fun <KF : KeyFormat> EncodableKey<KF>.encodeTo(
-    formats: Collection<KF>,
-    supports: (KF) -> Boolean,
+suspend fun <F : EncodingFormat> Encodable<F>.encodeTo(
+    formats: Collection<F>,
+    supports: (F) -> Boolean,
 ): Map<String, ByteString> = formats.filter(supports).associate {
     it.name to encodeToByteString(it)
 }.also {
     assertTrue(it.isNotEmpty(), "No supported formats")
 }
 
-inline fun <KF : KeyFormat> Map<String, ByteString>.filterSupportedFormats(
-    formatOf: (String) -> KF,
-    supports: (KF) -> Boolean,
-): Map<KF, ByteString> = mapKeys { (formatName, _) -> formatOf(formatName) }.filterKeys(supports)
+inline fun <F : EncodingFormat> Map<String, ByteString>.filterSupportedFormats(
+    formatOf: (String) -> F,
+    supports: (F) -> Boolean,
+): Map<F, ByteString> = mapKeys { (formatName, _) -> formatOf(formatName) }.filterKeys(supports)
 
-suspend inline fun <KF : KeyFormat, K : EncodableKey<KF>> KeyDecoder<KF, K>.decodeFrom(
+suspend inline fun <F : EncodingFormat, K : Encodable<F>> Decoder<F, K>.decodeFrom(
     formats: Map<String, ByteString>,
-    formatOf: (String) -> KF,
-    supports: (KF) -> Boolean,
-    supportsDecoding: (KF, ByteString) -> Boolean = { _, _ -> true },
-    validate: suspend (key: K, format: KF, bytes: ByteString) -> Unit,
+    formatOf: (String) -> F,
+    supports: (F) -> Boolean,
+    supportsDecoding: (F, ByteString) -> Boolean = { _, _ -> true },
+    validate: suspend (key: K, format: F, bytes: ByteString) -> Unit,
 ): List<K> {
     val supportedFormats = formats.filterSupportedFormats(formatOf, supports)
 
@@ -45,7 +46,7 @@ suspend inline fun <KF : KeyFormat, K : EncodableKey<KF>> KeyDecoder<KF, K>.deco
     return keys
 }
 
-suspend inline fun <K : Key> KeyGenerator<K>.generateKeys(count: Int, block: (key: K) -> Unit) {
+suspend inline fun <K> KeyGenerator<K>.generateKeys(count: Int, block: (key: K) -> Unit) {
     repeat(count) { block(generateKey()) }
 }
 

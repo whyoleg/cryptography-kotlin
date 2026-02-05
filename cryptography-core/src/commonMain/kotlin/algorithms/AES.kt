@@ -7,12 +7,12 @@ package dev.whyoleg.cryptography.algorithms
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.BinarySize.Companion.bits
 import dev.whyoleg.cryptography.algorithms.symmetric.*
-import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
 
 @SubclassOptInRequired(CryptographyProviderApi::class)
 public interface AES<K : AES.Key> : CryptographyAlgorithm {
-    public fun keyDecoder(): KeyDecoder<Key.Format, K>
+    public fun keyDecoder(): Decoder<Key.Format, K>
     public fun keyGenerator(keySize: BinarySize = Key.Size.B256): KeyGenerator<K>
 
     @Suppress("DEPRECATION_ERROR")
@@ -24,8 +24,8 @@ public interface AES<K : AES.Key> : CryptographyAlgorithm {
     public fun keyGenerator(keySize: SymmetricKeySize): KeyGenerator<K> = keyGenerator(keySize.value)
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
-    public interface Key : EncodableKey<Key.Format> {
-        public enum class Format : KeyFormat { RAW, JWK }
+    public interface Key : Encodable<Key.Format> {
+        public enum class Format : EncodingFormat { RAW, JWK }
         public object Size {
             public val B128: BinarySize get() = 128.bits
             public val B192: BinarySize get() = 192.bits

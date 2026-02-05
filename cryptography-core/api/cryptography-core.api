@@ -86,10 +86,10 @@ public abstract interface annotation class dev/whyoleg/cryptography/DelicateCryp
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/AES : dev/whyoleg/cryptography/CryptographyAlgorithm {
-	public abstract fun keyDecoder ()Ldev/whyoleg/cryptography/materials/key/KeyDecoder;
-	public abstract fun keyGenerator-6q1zMKY (I)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
-	public static synthetic fun keyGenerator-6q1zMKY$default (Ldev/whyoleg/cryptography/algorithms/AES;IILjava/lang/Object;)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
-	public fun keyGenerator-__FLmac (I)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
+	public abstract fun keyDecoder ()Ldev/whyoleg/cryptography/materials/Decoder;
+	public abstract fun keyGenerator-6q1zMKY (I)Ldev/whyoleg/cryptography/operations/KeyGenerator;
+	public static synthetic fun keyGenerator-6q1zMKY$default (Ldev/whyoleg/cryptography/algorithms/AES;IILjava/lang/Object;)Ldev/whyoleg/cryptography/operations/KeyGenerator;
+	public fun keyGenerator-__FLmac (I)Ldev/whyoleg/cryptography/operations/KeyGenerator;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/AES$CBC : dev/whyoleg/cryptography/algorithms/AES {
@@ -180,10 +180,10 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/AES$GCM$Key 
 	public static synthetic fun cipher-6q1zMKY$default (Ldev/whyoleg/cryptography/algorithms/AES$GCM$Key;IILjava/lang/Object;)Ldev/whyoleg/cryptography/operations/IvAuthenticatedCipher;
 }
 
-public abstract interface class dev/whyoleg/cryptography/algorithms/AES$Key : dev/whyoleg/cryptography/materials/key/EncodableKey {
+public abstract interface class dev/whyoleg/cryptography/algorithms/AES$Key : dev/whyoleg/cryptography/materials/Encodable {
 }
 
-public final class dev/whyoleg/cryptography/algorithms/AES$Key$Format : java/lang/Enum, dev/whyoleg/cryptography/materials/key/KeyFormat {
+public final class dev/whyoleg/cryptography/algorithms/AES$Key$Format : java/lang/Enum, dev/whyoleg/cryptography/materials/EncodingFormat {
 	public static final field JWK Ldev/whyoleg/cryptography/algorithms/AES$Key$Format;
 	public static final field RAW Ldev/whyoleg/cryptography/algorithms/AES$Key$Format;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
@@ -214,18 +214,18 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/AES$OFB$Key 
 public abstract interface class dev/whyoleg/cryptography/algorithms/ChaCha20Poly1305 : dev/whyoleg/cryptography/CryptographyAlgorithm {
 	public static final field Companion Ldev/whyoleg/cryptography/algorithms/ChaCha20Poly1305$Companion;
 	public fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
-	public abstract fun keyDecoder ()Ldev/whyoleg/cryptography/materials/key/KeyDecoder;
-	public abstract fun keyGenerator ()Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
+	public abstract fun keyDecoder ()Ldev/whyoleg/cryptography/materials/Decoder;
+	public abstract fun keyGenerator ()Ldev/whyoleg/cryptography/operations/KeyGenerator;
 }
 
 public final class dev/whyoleg/cryptography/algorithms/ChaCha20Poly1305$Companion : dev/whyoleg/cryptography/CryptographyAlgorithmId {
 }
 
-public abstract interface class dev/whyoleg/cryptography/algorithms/ChaCha20Poly1305$Key : dev/whyoleg/cryptography/materials/key/EncodableKey {
+public abstract interface class dev/whyoleg/cryptography/algorithms/ChaCha20Poly1305$Key : dev/whyoleg/cryptography/materials/Encodable {
 	public abstract fun cipher ()Ldev/whyoleg/cryptography/operations/IvAuthenticatedCipher;
 }
 
-public final class dev/whyoleg/cryptography/algorithms/ChaCha20Poly1305$Key$Format : java/lang/Enum, dev/whyoleg/cryptography/materials/key/KeyFormat {
+public final class dev/whyoleg/cryptography/algorithms/ChaCha20Poly1305$Key$Format : java/lang/Enum, dev/whyoleg/cryptography/materials/EncodingFormat {
 	public static final field JWK Ldev/whyoleg/cryptography/algorithms/ChaCha20Poly1305$Key$Format;
 	public static final field RAW Ldev/whyoleg/cryptography/algorithms/ChaCha20Poly1305$Key$Format;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
@@ -240,9 +240,9 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/Digest : dev
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/EC : dev/whyoleg/cryptography/CryptographyAlgorithm {
-	public abstract fun keyPairGenerator-yfdS0HE (Ljava/lang/String;)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
-	public abstract fun privateKeyDecoder-yfdS0HE (Ljava/lang/String;)Ldev/whyoleg/cryptography/materials/key/KeyDecoder;
-	public abstract fun publicKeyDecoder-yfdS0HE (Ljava/lang/String;)Ldev/whyoleg/cryptography/materials/key/KeyDecoder;
+	public abstract fun keyPairGenerator-yfdS0HE (Ljava/lang/String;)Ldev/whyoleg/cryptography/operations/KeyGenerator;
+	public abstract fun privateKeyDecoder-yfdS0HE (Ljava/lang/String;)Ldev/whyoleg/cryptography/materials/Decoder;
+	public abstract fun publicKeyDecoder-yfdS0HE (Ljava/lang/String;)Ldev/whyoleg/cryptography/materials/Decoder;
 }
 
 public final class dev/whyoleg/cryptography/algorithms/EC$Curve {
@@ -270,15 +270,15 @@ public final class dev/whyoleg/cryptography/algorithms/EC$Curve$Companion {
 	public final fun getSecp256k1-pVITJAk ()Ljava/lang/String;
 }
 
-public abstract interface class dev/whyoleg/cryptography/algorithms/EC$KeyPair : dev/whyoleg/cryptography/materials/key/Key {
+public abstract interface class dev/whyoleg/cryptography/algorithms/EC$KeyPair {
 	public abstract fun getPrivateKey ()Ldev/whyoleg/cryptography/algorithms/EC$PrivateKey;
 	public abstract fun getPublicKey ()Ldev/whyoleg/cryptography/algorithms/EC$PublicKey;
 }
 
-public abstract interface class dev/whyoleg/cryptography/algorithms/EC$PrivateKey : dev/whyoleg/cryptography/materials/key/EncodableKey, dev/whyoleg/cryptography/operations/PublicKeyAccessor {
+public abstract interface class dev/whyoleg/cryptography/algorithms/EC$PrivateKey : dev/whyoleg/cryptography/materials/Encodable, dev/whyoleg/cryptography/operations/PublicKeyAccessor {
 }
 
-public abstract class dev/whyoleg/cryptography/algorithms/EC$PrivateKey$Format : dev/whyoleg/cryptography/materials/key/KeyFormat {
+public abstract class dev/whyoleg/cryptography/algorithms/EC$PrivateKey$Format : dev/whyoleg/cryptography/materials/EncodingFormat {
 	public final fun toString ()Ljava/lang/String;
 }
 
@@ -326,10 +326,10 @@ public final class dev/whyoleg/cryptography/algorithms/EC$PrivateKey$Format$RAW 
 	public fun hashCode ()I
 }
 
-public abstract interface class dev/whyoleg/cryptography/algorithms/EC$PublicKey : dev/whyoleg/cryptography/materials/key/EncodableKey {
+public abstract interface class dev/whyoleg/cryptography/algorithms/EC$PublicKey : dev/whyoleg/cryptography/materials/Encodable {
 }
 
-public abstract class dev/whyoleg/cryptography/algorithms/EC$PublicKey$Format : dev/whyoleg/cryptography/materials/key/KeyFormat {
+public abstract class dev/whyoleg/cryptography/algorithms/EC$PublicKey$Format : dev/whyoleg/cryptography/materials/EncodingFormat {
 	public final fun toString ()Ljava/lang/String;
 }
 
@@ -418,9 +418,9 @@ public final class dev/whyoleg/cryptography/algorithms/ECDSA$SignatureFormat : j
 public abstract interface class dev/whyoleg/cryptography/algorithms/EdDSA : dev/whyoleg/cryptography/CryptographyAlgorithm {
 	public static final field Companion Ldev/whyoleg/cryptography/algorithms/EdDSA$Companion;
 	public fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
-	public abstract fun keyPairGenerator (Ldev/whyoleg/cryptography/algorithms/EdDSA$Curve;)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
-	public abstract fun privateKeyDecoder (Ldev/whyoleg/cryptography/algorithms/EdDSA$Curve;)Ldev/whyoleg/cryptography/materials/key/KeyDecoder;
-	public abstract fun publicKeyDecoder (Ldev/whyoleg/cryptography/algorithms/EdDSA$Curve;)Ldev/whyoleg/cryptography/materials/key/KeyDecoder;
+	public abstract fun keyPairGenerator (Ldev/whyoleg/cryptography/algorithms/EdDSA$Curve;)Ldev/whyoleg/cryptography/operations/KeyGenerator;
+	public abstract fun privateKeyDecoder (Ldev/whyoleg/cryptography/algorithms/EdDSA$Curve;)Ldev/whyoleg/cryptography/materials/Decoder;
+	public abstract fun publicKeyDecoder (Ldev/whyoleg/cryptography/algorithms/EdDSA$Curve;)Ldev/whyoleg/cryptography/materials/Decoder;
 }
 
 public final class dev/whyoleg/cryptography/algorithms/EdDSA$Companion : dev/whyoleg/cryptography/CryptographyAlgorithmId {
@@ -434,16 +434,16 @@ public final class dev/whyoleg/cryptography/algorithms/EdDSA$Curve : java/lang/E
 	public static fun values ()[Ldev/whyoleg/cryptography/algorithms/EdDSA$Curve;
 }
 
-public abstract interface class dev/whyoleg/cryptography/algorithms/EdDSA$KeyPair : dev/whyoleg/cryptography/materials/key/Key {
+public abstract interface class dev/whyoleg/cryptography/algorithms/EdDSA$KeyPair {
 	public abstract fun getPrivateKey ()Ldev/whyoleg/cryptography/algorithms/EdDSA$PrivateKey;
 	public abstract fun getPublicKey ()Ldev/whyoleg/cryptography/algorithms/EdDSA$PublicKey;
 }
 
-public abstract interface class dev/whyoleg/cryptography/algorithms/EdDSA$PrivateKey : dev/whyoleg/cryptography/materials/key/EncodableKey, dev/whyoleg/cryptography/operations/PublicKeyAccessor {
+public abstract interface class dev/whyoleg/cryptography/algorithms/EdDSA$PrivateKey : dev/whyoleg/cryptography/materials/Encodable, dev/whyoleg/cryptography/operations/PublicKeyAccessor {
 	public abstract fun signatureGenerator ()Ldev/whyoleg/cryptography/operations/SignatureGenerator;
 }
 
-public abstract class dev/whyoleg/cryptography/algorithms/EdDSA$PrivateKey$Format : dev/whyoleg/cryptography/materials/key/KeyFormat {
+public abstract class dev/whyoleg/cryptography/algorithms/EdDSA$PrivateKey$Format : dev/whyoleg/cryptography/materials/EncodingFormat {
 	public final fun toString ()Ljava/lang/String;
 }
 
@@ -475,11 +475,11 @@ public final class dev/whyoleg/cryptography/algorithms/EdDSA$PrivateKey$Format$R
 	public fun hashCode ()I
 }
 
-public abstract interface class dev/whyoleg/cryptography/algorithms/EdDSA$PublicKey : dev/whyoleg/cryptography/materials/key/EncodableKey {
+public abstract interface class dev/whyoleg/cryptography/algorithms/EdDSA$PublicKey : dev/whyoleg/cryptography/materials/Encodable {
 	public abstract fun signatureVerifier ()Ldev/whyoleg/cryptography/operations/SignatureVerifier;
 }
 
-public abstract class dev/whyoleg/cryptography/algorithms/EdDSA$PublicKey$Format : dev/whyoleg/cryptography/materials/key/KeyFormat {
+public abstract class dev/whyoleg/cryptography/algorithms/EdDSA$PublicKey$Format : dev/whyoleg/cryptography/materials/EncodingFormat {
 	public final fun toString ()Ljava/lang/String;
 }
 
@@ -526,20 +526,20 @@ public final class dev/whyoleg/cryptography/algorithms/HKDF$Companion : dev/whyo
 public abstract interface class dev/whyoleg/cryptography/algorithms/HMAC : dev/whyoleg/cryptography/CryptographyAlgorithm {
 	public static final field Companion Ldev/whyoleg/cryptography/algorithms/HMAC$Companion;
 	public fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
-	public abstract fun keyDecoder (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;)Ldev/whyoleg/cryptography/materials/key/KeyDecoder;
-	public abstract fun keyGenerator (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
-	public static synthetic fun keyGenerator$default (Ldev/whyoleg/cryptography/algorithms/HMAC;Ldev/whyoleg/cryptography/CryptographyAlgorithmId;ILjava/lang/Object;)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
+	public abstract fun keyDecoder (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;)Ldev/whyoleg/cryptography/materials/Decoder;
+	public abstract fun keyGenerator (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;)Ldev/whyoleg/cryptography/operations/KeyGenerator;
+	public static synthetic fun keyGenerator$default (Ldev/whyoleg/cryptography/algorithms/HMAC;Ldev/whyoleg/cryptography/CryptographyAlgorithmId;ILjava/lang/Object;)Ldev/whyoleg/cryptography/operations/KeyGenerator;
 }
 
 public final class dev/whyoleg/cryptography/algorithms/HMAC$Companion : dev/whyoleg/cryptography/CryptographyAlgorithmId {
 }
 
-public abstract interface class dev/whyoleg/cryptography/algorithms/HMAC$Key : dev/whyoleg/cryptography/materials/key/EncodableKey {
+public abstract interface class dev/whyoleg/cryptography/algorithms/HMAC$Key : dev/whyoleg/cryptography/materials/Encodable {
 	public abstract fun signatureGenerator ()Ldev/whyoleg/cryptography/operations/SignatureGenerator;
 	public abstract fun signatureVerifier ()Ldev/whyoleg/cryptography/operations/SignatureVerifier;
 }
 
-public final class dev/whyoleg/cryptography/algorithms/HMAC$Key$Format : java/lang/Enum, dev/whyoleg/cryptography/materials/key/KeyFormat {
+public final class dev/whyoleg/cryptography/algorithms/HMAC$Key$Format : java/lang/Enum, dev/whyoleg/cryptography/materials/EncodingFormat {
 	public static final field JWK Ldev/whyoleg/cryptography/algorithms/HMAC$Key$Format;
 	public static final field RAW Ldev/whyoleg/cryptography/algorithms/HMAC$Key$Format;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
@@ -567,13 +567,13 @@ public final class dev/whyoleg/cryptography/algorithms/RIPEMD160 : dev/whyoleg/c
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/RSA : dev/whyoleg/cryptography/CryptographyAlgorithm {
-	public abstract fun keyPairGenerator-imL9hLU (ILdev/whyoleg/cryptography/CryptographyAlgorithmId;Ldev/whyoleg/cryptography/bigint/BigInt;)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
-	public static synthetic fun keyPairGenerator-imL9hLU$default (Ldev/whyoleg/cryptography/algorithms/RSA;ILdev/whyoleg/cryptography/CryptographyAlgorithmId;Ldev/whyoleg/cryptography/bigint/BigInt;ILjava/lang/Object;)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
-	public abstract fun privateKeyDecoder (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;)Ldev/whyoleg/cryptography/materials/key/KeyDecoder;
-	public abstract fun publicKeyDecoder (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;)Ldev/whyoleg/cryptography/materials/key/KeyDecoder;
+	public abstract fun keyPairGenerator-imL9hLU (ILdev/whyoleg/cryptography/CryptographyAlgorithmId;Ldev/whyoleg/cryptography/bigint/BigInt;)Ldev/whyoleg/cryptography/operations/KeyGenerator;
+	public static synthetic fun keyPairGenerator-imL9hLU$default (Ldev/whyoleg/cryptography/algorithms/RSA;ILdev/whyoleg/cryptography/CryptographyAlgorithmId;Ldev/whyoleg/cryptography/bigint/BigInt;ILjava/lang/Object;)Ldev/whyoleg/cryptography/operations/KeyGenerator;
+	public abstract fun privateKeyDecoder (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;)Ldev/whyoleg/cryptography/materials/Decoder;
+	public abstract fun publicKeyDecoder (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;)Ldev/whyoleg/cryptography/materials/Decoder;
 }
 
-public abstract interface class dev/whyoleg/cryptography/algorithms/RSA$KeyPair : dev/whyoleg/cryptography/materials/key/Key {
+public abstract interface class dev/whyoleg/cryptography/algorithms/RSA$KeyPair {
 	public abstract fun getPrivateKey ()Ldev/whyoleg/cryptography/algorithms/RSA$PrivateKey;
 	public abstract fun getPublicKey ()Ldev/whyoleg/cryptography/algorithms/RSA$PublicKey;
 }
@@ -639,10 +639,10 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/RSA$PSS$Publ
 	public abstract fun signatureVerifier-6q1zMKY (I)Ldev/whyoleg/cryptography/operations/SignatureVerifier;
 }
 
-public abstract interface class dev/whyoleg/cryptography/algorithms/RSA$PrivateKey : dev/whyoleg/cryptography/materials/key/EncodableKey, dev/whyoleg/cryptography/operations/PublicKeyAccessor {
+public abstract interface class dev/whyoleg/cryptography/algorithms/RSA$PrivateKey : dev/whyoleg/cryptography/materials/Encodable, dev/whyoleg/cryptography/operations/PublicKeyAccessor {
 }
 
-public abstract class dev/whyoleg/cryptography/algorithms/RSA$PrivateKey$Format : dev/whyoleg/cryptography/materials/key/KeyFormat {
+public abstract class dev/whyoleg/cryptography/algorithms/RSA$PrivateKey$Format : dev/whyoleg/cryptography/materials/EncodingFormat {
 	public final fun toString ()Ljava/lang/String;
 }
 
@@ -683,10 +683,10 @@ public final class dev/whyoleg/cryptography/algorithms/RSA$PrivateKey$Format$PEM
 	public fun hashCode ()I
 }
 
-public abstract interface class dev/whyoleg/cryptography/algorithms/RSA$PublicKey : dev/whyoleg/cryptography/materials/key/EncodableKey {
+public abstract interface class dev/whyoleg/cryptography/algorithms/RSA$PublicKey : dev/whyoleg/cryptography/materials/Encodable {
 }
 
-public abstract class dev/whyoleg/cryptography/algorithms/RSA$PublicKey$Format : dev/whyoleg/cryptography/materials/key/KeyFormat {
+public abstract class dev/whyoleg/cryptography/algorithms/RSA$PublicKey$Format : dev/whyoleg/cryptography/materials/EncodingFormat {
 	public final fun toString ()Ljava/lang/String;
 }
 
@@ -785,9 +785,9 @@ public final class dev/whyoleg/cryptography/algorithms/SHA512 : dev/whyoleg/cryp
 public abstract interface class dev/whyoleg/cryptography/algorithms/XDH : dev/whyoleg/cryptography/CryptographyAlgorithm {
 	public static final field Companion Ldev/whyoleg/cryptography/algorithms/XDH$Companion;
 	public fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
-	public abstract fun keyPairGenerator (Ldev/whyoleg/cryptography/algorithms/XDH$Curve;)Ldev/whyoleg/cryptography/materials/key/KeyGenerator;
-	public abstract fun privateKeyDecoder (Ldev/whyoleg/cryptography/algorithms/XDH$Curve;)Ldev/whyoleg/cryptography/materials/key/KeyDecoder;
-	public abstract fun publicKeyDecoder (Ldev/whyoleg/cryptography/algorithms/XDH$Curve;)Ldev/whyoleg/cryptography/materials/key/KeyDecoder;
+	public abstract fun keyPairGenerator (Ldev/whyoleg/cryptography/algorithms/XDH$Curve;)Ldev/whyoleg/cryptography/operations/KeyGenerator;
+	public abstract fun privateKeyDecoder (Ldev/whyoleg/cryptography/algorithms/XDH$Curve;)Ldev/whyoleg/cryptography/materials/Decoder;
+	public abstract fun publicKeyDecoder (Ldev/whyoleg/cryptography/algorithms/XDH$Curve;)Ldev/whyoleg/cryptography/materials/Decoder;
 }
 
 public final class dev/whyoleg/cryptography/algorithms/XDH$Companion : dev/whyoleg/cryptography/CryptographyAlgorithmId {
@@ -801,16 +801,16 @@ public final class dev/whyoleg/cryptography/algorithms/XDH$Curve : java/lang/Enu
 	public static fun values ()[Ldev/whyoleg/cryptography/algorithms/XDH$Curve;
 }
 
-public abstract interface class dev/whyoleg/cryptography/algorithms/XDH$KeyPair : dev/whyoleg/cryptography/materials/key/Key {
+public abstract interface class dev/whyoleg/cryptography/algorithms/XDH$KeyPair {
 	public abstract fun getPrivateKey ()Ldev/whyoleg/cryptography/algorithms/XDH$PrivateKey;
 	public abstract fun getPublicKey ()Ldev/whyoleg/cryptography/algorithms/XDH$PublicKey;
 }
 
-public abstract interface class dev/whyoleg/cryptography/algorithms/XDH$PrivateKey : dev/whyoleg/cryptography/materials/key/EncodableKey, dev/whyoleg/cryptography/operations/PublicKeyAccessor {
+public abstract interface class dev/whyoleg/cryptography/algorithms/XDH$PrivateKey : dev/whyoleg/cryptography/materials/Encodable, dev/whyoleg/cryptography/operations/PublicKeyAccessor {
 	public abstract fun sharedSecretGenerator ()Ldev/whyoleg/cryptography/operations/SharedSecretGenerator;
 }
 
-public abstract class dev/whyoleg/cryptography/algorithms/XDH$PrivateKey$Format : dev/whyoleg/cryptography/materials/key/KeyFormat {
+public abstract class dev/whyoleg/cryptography/algorithms/XDH$PrivateKey$Format : dev/whyoleg/cryptography/materials/EncodingFormat {
 	public final fun toString ()Ljava/lang/String;
 }
 
@@ -842,11 +842,11 @@ public final class dev/whyoleg/cryptography/algorithms/XDH$PrivateKey$Format$RAW
 	public fun hashCode ()I
 }
 
-public abstract interface class dev/whyoleg/cryptography/algorithms/XDH$PublicKey : dev/whyoleg/cryptography/materials/key/EncodableKey {
+public abstract interface class dev/whyoleg/cryptography/algorithms/XDH$PublicKey : dev/whyoleg/cryptography/materials/Encodable {
 	public abstract fun sharedSecretGenerator ()Ldev/whyoleg/cryptography/operations/SharedSecretGenerator;
 }
 
-public abstract class dev/whyoleg/cryptography/algorithms/XDH$PublicKey$Format : dev/whyoleg/cryptography/materials/key/KeyFormat {
+public abstract class dev/whyoleg/cryptography/algorithms/XDH$PublicKey$Format : dev/whyoleg/cryptography/materials/EncodingFormat {
 	public final fun toString ()Ljava/lang/String;
 }
 
@@ -899,35 +899,26 @@ public final class dev/whyoleg/cryptography/algorithms/symmetric/SymmetricKeySiz
 	public final fun getB256-5xWg6fk ()I
 }
 
-public abstract interface class dev/whyoleg/cryptography/materials/key/EncodableKey : dev/whyoleg/cryptography/materials/key/Key {
-	public fun encodeTo (Ldev/whyoleg/cryptography/materials/key/KeyFormat;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun encodeToBlocking (Ldev/whyoleg/cryptography/materials/key/KeyFormat;)[B
-	public fun encodeToByteArray (Ldev/whyoleg/cryptography/materials/key/KeyFormat;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun encodeToByteArrayBlocking (Ldev/whyoleg/cryptography/materials/key/KeyFormat;)[B
-	public fun encodeToByteString (Ldev/whyoleg/cryptography/materials/key/KeyFormat;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun encodeToByteStringBlocking (Ldev/whyoleg/cryptography/materials/key/KeyFormat;)Lkotlinx/io/bytestring/ByteString;
+public abstract interface class dev/whyoleg/cryptography/materials/Decoder {
+	public fun decodeFromByteArray (Ldev/whyoleg/cryptography/materials/EncodingFormat;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun decodeFromByteArrayBlocking (Ldev/whyoleg/cryptography/materials/EncodingFormat;[B)Ljava/lang/Object;
+	public fun decodeFromByteString (Ldev/whyoleg/cryptography/materials/EncodingFormat;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun decodeFromByteStringBlocking (Ldev/whyoleg/cryptography/materials/EncodingFormat;Lkotlinx/io/bytestring/ByteString;)Ljava/lang/Object;
 }
 
-public abstract interface class dev/whyoleg/cryptography/materials/key/Key {
+public abstract interface class dev/whyoleg/cryptography/materials/Encodable {
+	public fun encodeToByteArray (Ldev/whyoleg/cryptography/materials/EncodingFormat;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun encodeToByteArrayBlocking (Ldev/whyoleg/cryptography/materials/EncodingFormat;)[B
+	public fun encodeToByteString (Ldev/whyoleg/cryptography/materials/EncodingFormat;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun encodeToByteStringBlocking (Ldev/whyoleg/cryptography/materials/EncodingFormat;)Lkotlinx/io/bytestring/ByteString;
 }
 
-public abstract interface class dev/whyoleg/cryptography/materials/key/KeyDecoder {
-	public fun decodeFrom (Ldev/whyoleg/cryptography/materials/key/KeyFormat;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun decodeFromBlocking (Ldev/whyoleg/cryptography/materials/key/KeyFormat;[B)Ldev/whyoleg/cryptography/materials/key/Key;
-	public fun decodeFromByteArray (Ldev/whyoleg/cryptography/materials/key/KeyFormat;[BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun decodeFromByteArrayBlocking (Ldev/whyoleg/cryptography/materials/key/KeyFormat;[B)Ldev/whyoleg/cryptography/materials/key/Key;
-	public fun decodeFromByteString (Ldev/whyoleg/cryptography/materials/key/KeyFormat;Lkotlinx/io/bytestring/ByteString;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun decodeFromByteStringBlocking (Ldev/whyoleg/cryptography/materials/key/KeyFormat;Lkotlinx/io/bytestring/ByteString;)Ldev/whyoleg/cryptography/materials/key/Key;
-}
-
-public abstract interface class dev/whyoleg/cryptography/materials/key/KeyFormat {
+public abstract interface class dev/whyoleg/cryptography/materials/EncodingFormat {
 	public abstract fun getName ()Ljava/lang/String;
 	public abstract fun toString ()Ljava/lang/String;
 }
 
-public abstract interface class dev/whyoleg/cryptography/materials/key/KeyGenerator {
-	public fun generateKey (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun generateKeyBlocking ()Ldev/whyoleg/cryptography/materials/key/Key;
+public abstract interface class dev/whyoleg/cryptography/materials/key/Key {
 }
 
 public abstract interface class dev/whyoleg/cryptography/operations/AuthenticatedCipher : dev/whyoleg/cryptography/operations/AuthenticatedDecryptor, dev/whyoleg/cryptography/operations/AuthenticatedEncryptor, dev/whyoleg/cryptography/operations/Cipher {
@@ -1067,9 +1058,14 @@ public abstract interface class dev/whyoleg/cryptography/operations/IvEncryptor 
 	public abstract fun encryptingSourceWithIv ([BLkotlinx/io/RawSource;)Lkotlinx/io/RawSource;
 }
 
+public abstract interface class dev/whyoleg/cryptography/operations/KeyGenerator {
+	public fun generateKey (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun generateKeyBlocking ()Ljava/lang/Object;
+}
+
 public abstract interface class dev/whyoleg/cryptography/operations/PublicKeyAccessor {
 	public fun getPublicKey (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun getPublicKeyBlocking ()Ldev/whyoleg/cryptography/materials/key/Key;
+	public abstract fun getPublicKeyBlocking ()Ljava/lang/Object;
 }
 
 public abstract interface class dev/whyoleg/cryptography/operations/SecretDerivation {
@@ -1084,10 +1080,10 @@ public abstract interface class dev/whyoleg/cryptography/operations/SecretDeriva
 }
 
 public abstract interface class dev/whyoleg/cryptography/operations/SharedSecretGenerator {
-	public fun generateSharedSecret (Ldev/whyoleg/cryptography/materials/key/Key;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun generateSharedSecretBlocking (Ldev/whyoleg/cryptography/materials/key/Key;)Lkotlinx/io/bytestring/ByteString;
-	public fun generateSharedSecretToByteArray (Ldev/whyoleg/cryptography/materials/key/Key;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun generateSharedSecretToByteArrayBlocking (Ldev/whyoleg/cryptography/materials/key/Key;)[B
+	public fun generateSharedSecret (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun generateSharedSecretBlocking (Ljava/lang/Object;)Lkotlinx/io/bytestring/ByteString;
+	public fun generateSharedSecretToByteArray (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun generateSharedSecretToByteArrayBlocking (Ljava/lang/Object;)[B
 }
 
 public abstract interface class dev/whyoleg/cryptography/operations/SignFunction : dev/whyoleg/cryptography/operations/UpdateFunction {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
@@ -7,14 +7,15 @@ package dev.whyoleg.cryptography.providers.openssl3.algorithms
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.BinarySize.Companion.bytes
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.materials.*
+import dev.whyoleg.cryptography.operations.*
 
 internal abstract class Openssl3Aes<K : AES.Key> : AES<K> {
 
     protected abstract fun wrapKey(keySize: BinarySize, key: ByteArray): K
 
     private val keyDecoder = AesKeyDecoder()
-    final override fun keyDecoder(): KeyDecoder<AES.Key.Format, K> = keyDecoder
+    final override fun keyDecoder(): Decoder<AES.Key.Format, K> = keyDecoder
     final override fun keyGenerator(keySize: BinarySize): KeyGenerator<K> = AesKeyGenerator(keySize)
 
     private fun requireAesKeySize(keySize: BinarySize) {
@@ -23,7 +24,7 @@ internal abstract class Openssl3Aes<K : AES.Key> : AES<K> {
         }
     }
 
-    private inner class AesKeyDecoder : KeyDecoder<AES.Key.Format, K> {
+    private inner class AesKeyDecoder : Decoder<AES.Key.Format, K> {
         override fun decodeFromByteArrayBlocking(format: AES.Key.Format, bytes: ByteArray): K = when (format) {
             AES.Key.Format.RAW -> {
                 val keySize = bytes.size.bytes

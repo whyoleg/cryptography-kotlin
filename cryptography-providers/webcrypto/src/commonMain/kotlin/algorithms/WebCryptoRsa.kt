@@ -7,7 +7,8 @@ package dev.whyoleg.cryptography.providers.webcrypto.algorithms
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.bigint.*
-import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.materials.*
+import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.materials.*
 import dev.whyoleg.cryptography.providers.webcrypto.internal.*
 import dev.whyoleg.cryptography.providers.webcrypto.materials.*
@@ -28,7 +29,7 @@ internal abstract class WebCryptoRsa<PublicK : RSA.PublicKey, PrivateK : RSA.Pri
 
     final override fun publicKeyDecoder(
         digest: CryptographyAlgorithmId<Digest>,
-    ): KeyDecoder<RSA.PublicKey.Format, PublicK> = WebCryptoKeyDecoder(
+    ): Decoder<RSA.PublicKey.Format, PublicK> = WebCryptoKeyDecoder(
         algorithm = RsaKeyImportAlgorithm(algorithmName, digest.hashAlgorithmName()),
         keyProcessor = RsaPublicKeyProcessor,
         keyWrapper = publicKeyWrapper
@@ -36,7 +37,7 @@ internal abstract class WebCryptoRsa<PublicK : RSA.PublicKey, PrivateK : RSA.Pri
 
     final override fun privateKeyDecoder(
         digest: CryptographyAlgorithmId<Digest>,
-    ): KeyDecoder<RSA.PrivateKey.Format, PrivateK> = WebCryptoKeyDecoder(
+    ): Decoder<RSA.PrivateKey.Format, PrivateK> = WebCryptoKeyDecoder(
         algorithm = RsaKeyImportAlgorithm(algorithmName, digest.hashAlgorithmName()),
         keyProcessor = RsaPrivateKeyProcessor,
         keyWrapper = privateKeyWrapper,

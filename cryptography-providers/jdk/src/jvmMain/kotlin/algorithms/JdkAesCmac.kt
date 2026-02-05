@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2025-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.jdk.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.jdk.*
 import dev.whyoleg.cryptography.providers.jdk.materials.*
@@ -19,7 +19,7 @@ internal class JdkAesCmac(
     private val keyWrapper: (JSecretKey) -> AES.CMAC.Key = { key -> JdkAesCmacKey(state, key) }
     private val keyDecoder = JdkSecretKeyDecoder<AES.Key.Format, _>(algorithm, keyWrapper)
 
-    override fun keyDecoder(): KeyDecoder<AES.Key.Format, AES.CMAC.Key> = keyDecoder
+    override fun keyDecoder(): Decoder<AES.Key.Format, AES.CMAC.Key> = keyDecoder
     override fun keyGenerator(keySize: BinarySize): KeyGenerator<AES.CMAC.Key> = JdkSecretKeyGenerator(state, "AES", keyWrapper) {
         init(keySize.inBits, state.secureRandom)
     }

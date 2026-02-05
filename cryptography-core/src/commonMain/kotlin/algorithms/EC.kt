@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.algorithms
 
 import dev.whyoleg.cryptography.*
-import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
 import kotlin.jvm.*
 
@@ -15,8 +15,8 @@ public interface EC<
         PrivateK : EC.PrivateKey<PublicK>,
         KP : EC.KeyPair<PublicK, PrivateK>,
         > : CryptographyAlgorithm {
-    public fun publicKeyDecoder(curve: Curve): KeyDecoder<PublicKey.Format, PublicK>
-    public fun privateKeyDecoder(curve: Curve): KeyDecoder<PrivateKey.Format, PrivateK>
+    public fun publicKeyDecoder(curve: Curve): Decoder<PublicKey.Format, PublicK>
+    public fun privateKeyDecoder(curve: Curve): Decoder<PrivateKey.Format, PrivateK>
     public fun keyPairGenerator(curve: Curve): KeyGenerator<KP>
 
     @JvmInline
@@ -36,14 +36,14 @@ public interface EC<
     }
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
-    public interface KeyPair<PublicK : PublicKey, PrivateK : PrivateKey<PublicK>> : Key {
+    public interface KeyPair<PublicK : PublicKey, PrivateK : PrivateKey<PublicK>> {
         public val publicKey: PublicK
         public val privateKey: PrivateK
     }
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
-    public interface PublicKey : EncodableKey<PublicKey.Format> {
-        public sealed class Format : KeyFormat {
+    public interface PublicKey : Encodable<PublicKey.Format> {
+        public sealed class Format : EncodingFormat {
             final override fun toString(): String = name
 
             public data object JWK : Format() {
@@ -77,8 +77,8 @@ public interface EC<
     }
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
-    public interface PrivateKey<PublicK : PublicKey> : EncodableKey<PrivateKey.Format>, PublicKeyAccessor<PublicK> {
-        public sealed class Format : KeyFormat {
+    public interface PrivateKey<PublicK : PublicKey> : Encodable<PrivateKey.Format>, PublicKeyAccessor<PublicK> {
+        public sealed class Format : EncodingFormat {
             final override fun toString(): String = name
 
             public data object JWK : Format() {

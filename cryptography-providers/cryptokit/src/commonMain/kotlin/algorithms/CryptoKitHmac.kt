@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.cryptokit.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.materials.key.*
+import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.cryptokit.internal.swift.DwcCryptoKitInterop.*
@@ -16,7 +16,7 @@ import platform.Foundation.*
 
 @OptIn(UnsafeNumber::class)
 internal object CryptoKitHmac : HMAC {
-    override fun keyDecoder(digest: CryptographyAlgorithmId<Digest>): KeyDecoder<HMAC.Key.Format, HMAC.Key> {
+    override fun keyDecoder(digest: CryptographyAlgorithmId<Digest>): Decoder<HMAC.Key.Format, HMAC.Key> {
         return when (digest) {
             MD5    -> HmacKeyDecoder(DwcHashAlgorithmMd5, CC_MD5_DIGEST_LENGTH)
             SHA1   -> HmacKeyDecoder(DwcHashAlgorithmSha1, CC_SHA1_DIGEST_LENGTH)
@@ -43,7 +43,7 @@ internal object CryptoKitHmac : HMAC {
 private class HmacKeyDecoder(
     private val algorithm: DwcHashAlgorithm,
     private val digestSize: Int,
-) : KeyDecoder<HMAC.Key.Format, HMAC.Key> {
+) : Decoder<HMAC.Key.Format, HMAC.Key> {
     override fun decodeFromByteArrayBlocking(format: HMAC.Key.Format, bytes: ByteArray): HMAC.Key = when (format) {
         HMAC.Key.Format.RAW -> HmacKey(bytes.copyOf(), algorithm, digestSize)
         HMAC.Key.Format.JWK -> error("JWK is not supported")

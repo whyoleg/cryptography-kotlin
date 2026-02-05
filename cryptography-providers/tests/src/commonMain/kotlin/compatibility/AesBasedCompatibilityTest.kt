@@ -35,7 +35,7 @@ abstract class AesBasedCompatibilityTest<K : AES.Key, A : AES<K>>(
             algorithm.keyGenerator(keySize).generateKeys(keyIterations) { key ->
                 val keyReference = api.keys.saveData(
                     keyParametersId,
-                    KeyData(key.encodeTo(AES.Key.Format.entries, ::supportsKeyFormat))
+                    KeyData(key.encodeTo(AES.Key.Format.entries, ::supportsFormat))
                 )
                 block(key, keyReference, keyParameters)
             }
@@ -51,7 +51,7 @@ abstract class AesBasedCompatibilityTest<K : AES.Key, A : AES<K>>(
                     val keys = keyDecoder.decodeFrom(
                         formats = formats,
                         formatOf = AES.Key.Format::valueOf,
-                        supports = ::supportsKeyFormat
+                        supports = ::supportsFormat
                     ) { key, format, bytes ->
                         when (format) {
                             AES.Key.Format.RAW -> assertContentEquals(bytes, key.encodeToByteString(format), "Key $format encoding")
