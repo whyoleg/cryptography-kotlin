@@ -14,10 +14,12 @@ import platform.posix.*
 internal fun deriveSharedSecret(
     publicKey: CPointer<EVP_PKEY>,
     privateKey: CPointer<EVP_PKEY>,
+    createParams: MemScope.() -> CValuesRef<OSSL_PARAM>? = { null },
 ): ByteArray = memScoped {
     val context = checkError(EVP_PKEY_CTX_new_from_pkey(null, privateKey, null))
     try {
         checkError(EVP_PKEY_derive_init(context))
+        createParams()?.let { checkError(EVP_PKEY_CTX_set_params(context, it)) }
         checkError(EVP_PKEY_derive_set_peer(context, publicKey))
         val secretSize = alloc<size_tVar>()
         checkError(EVP_PKEY_derive(context, null, secretSize.ptr))

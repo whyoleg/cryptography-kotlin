@@ -9,14 +9,23 @@ import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import kotlinx.cinterop.*
 
-internal abstract class Openssl3KeyPairGenerator<K>(
-    private val algorithm: String,
+internal abstract class Openssl3KeyPairGenerator<K> private constructor(
+    private val algorithm: String?,
+    private val key: CPointer<EVP_PKEY>?,
 ) : KeyGenerator<K> {
+    constructor(algorithm: String) : this(algorithm, null)
+    constructor(key: CPointer<EVP_PKEY>) : this(null, key)
+
     protected abstract fun MemScope.createParams(): CValuesRef<OSSL_PARAM>?
     protected abstract fun wrapKeyPair(keyPair: CPointer<EVP_PKEY>): K
 
     final override fun generateKeyBlocking(): K = memScoped {
-        val context = checkError(EVP_PKEY_CTX_new_from_name(null, algorithm, null))
+        val context = checkError(
+            when {
+                algorithm != null -> EVP_PKEY_CTX_new_from_name(null, algorithm, null)
+                else              -> EVP_PKEY_CTX_new_from_pkey(null, key, null)
+            }
+        )
         try {
             checkError(EVP_PKEY_keygen_init(context))
             checkError(EVP_PKEY_CTX_set_params(context, createParams()))

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
@@ -52,7 +52,7 @@ private class Openssl3HkdfSecretDerivation(
                     ctx = context,
                     key = output.refToU(0),
                     keylen = output.size.convert(),
-                    params = OSSL_PARAM_arrayNotNull(
+                    params = OSSL_PARAM_array(
                         OSSL_PARAM_construct_utf8_string("digest".cstr.ptr, hashAlgorithm.cstr.ptr, 0.convert()),
                         OSSL_PARAM_construct_octet_string("salt".cstr.ptr, salt.safeRefTo(0), salt.size.convert()),
                         info?.let { OSSL_PARAM_construct_octet_string("info".cstr.ptr, it.safeRefTo(0), it.size.convert()) },

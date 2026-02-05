@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
@@ -70,7 +70,7 @@ private class RsaPkcs1Encryptor(
     @OptIn(UnsafeNumber::class)
     override fun createEncryptFunction(): CipherFunction {
         return EvpPKeyCipherFunction(publicKey, encrypt = true) {
-            OSSL_PARAM_arrayNotNull(
+            OSSL_PARAM_array(
                 OSSL_PARAM_construct_utf8_string("pad-mode".cstr.ptr, "pkcs1".cstr.ptr, 0.convert()),
             )
         }
@@ -86,7 +86,7 @@ private class RsaPkcs1Decryptor(
     @OptIn(UnsafeNumber::class)
     override fun createDecryptFunction(): CipherFunction {
         return EvpPKeyCipherFunction(privateKey, encrypt = false) {
-            OSSL_PARAM_arrayNotNull(
+            OSSL_PARAM_array(
                 OSSL_PARAM_construct_utf8_string("pad-mode".cstr.ptr, "pkcs1".cstr.ptr, 0.convert()),
             )
         }

@@ -189,8 +189,7 @@ private fun assertEcPrivateKeyEquals(
     }
 
     if (expected.publicKey != null && actual.publicKey != null) {
-        assertEquals(expected.publicKey?.unusedBits, actual.publicKey?.unusedBits, "EcPrivateKey.publicKey.unusedBits")
-        assertContentEquals(expected.publicKey?.byteArray, actual.publicKey?.byteArray, "EcPrivateKey.publicKey.byteArray")
+        assertBitArrayEquals(expected.publicKey, actual.publicKey, "EcPrivateKey.publicKey")
     }
 }
 

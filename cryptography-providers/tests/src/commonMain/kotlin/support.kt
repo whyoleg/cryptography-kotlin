@@ -240,6 +240,14 @@ fun AlgorithmTestScope<XDH>.supportsPrivateKeyDecoding(
     }
 }
 
+fun AlgorithmTestScope<DH>.supportsParameterGeneration(): Boolean = supports {
+    when {
+        provider.isBouncyCastle -> "DH parameter generation is very slow with BouncyCastle"
+        platform.isAndroid -> "DH parameter generation is very slow on Android"
+        else                    -> null
+    }
+}
+
 fun ProviderTestScope.supports(algorithmId: CryptographyAlgorithmId<*>): Boolean = validate {
     when (algorithmId) {
         AES.CMAC if provider.isJdkDefault                                                       -> "Default JDK provider doesn't support AES-CMAC, only supported with BouncyCastle"

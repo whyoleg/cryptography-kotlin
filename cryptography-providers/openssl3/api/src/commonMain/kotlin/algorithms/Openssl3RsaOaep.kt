@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
@@ -52,7 +52,7 @@ private class RsaOaepEncryptor(
     @OptIn(UnsafeNumber::class)
     override fun createEncryptFunction(associatedData: ByteArray?): CipherFunction {
         return EvpPKeyCipherFunction(publicKey, encrypt = true) {
-            OSSL_PARAM_arrayNotNull(
+            OSSL_PARAM_array(
                 OSSL_PARAM_construct_utf8_string("pad-mode".cstr.ptr, "oaep".cstr.ptr, 0.convert()),
                 OSSL_PARAM_construct_utf8_string("digest".cstr.ptr, hashAlgorithm.cstr.ptr, 0.convert()),
                 associatedData?.let { OSSL_PARAM_construct_octet_string("oaep-label".cstr.ptr, it.safeRefTo(0), it.size.convert()) }
@@ -71,7 +71,7 @@ private class RsaOaepDecryptor(
     @OptIn(UnsafeNumber::class)
     override fun createDecryptFunction(associatedData: ByteArray?): CipherFunction {
         return EvpPKeyCipherFunction(privateKey, encrypt = false) {
-            OSSL_PARAM_arrayNotNull(
+            OSSL_PARAM_array(
                 OSSL_PARAM_construct_utf8_string("pad-mode".cstr.ptr, "oaep".cstr.ptr, 0.convert()),
                 OSSL_PARAM_construct_utf8_string("digest".cstr.ptr, hashAlgorithm.cstr.ptr, 0.convert()),
                 associatedData?.let { OSSL_PARAM_construct_octet_string("oaep-label".cstr.ptr, it.safeRefTo(0), it.size.convert()) }

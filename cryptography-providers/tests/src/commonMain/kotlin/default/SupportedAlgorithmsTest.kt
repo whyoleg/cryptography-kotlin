@@ -54,6 +54,7 @@ abstract class SupportedAlgorithmsTest(provider: CryptographyProvider) : Provide
 
         assertSupports(ECDSA)
         assertSupports(ECDH, !context.provider.isApple)
+        assertSupports(DH, !context.provider.isWebCrypto && !context.provider.isApple && !context.provider.isCryptoKit)
 
         assertSupports(EdDSA, !context.provider.isApple)
         assertSupports(XDH, !context.provider.isApple)
