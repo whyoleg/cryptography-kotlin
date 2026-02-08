@@ -13,7 +13,7 @@ For the openssl3 provider you must include two modules. You always need the api 
   additional configuration will be required
 * cryptography-provider-openssl3-prebuilt - unlike the shared module, this module embeds `libcrypto`, so no additional setup is
   needed neither to build the final binary, nor to run it.
-  Embedded OpenSSL version is 3.5.0
+  Embedded OpenSSL version is 3.6.0
 * cryptography-provider-openssl3-prebuilt-nativebuilds - uses libcrypto from [NativeBuilds](https://github.com/ensody/native-builds),
   so no additional setup is needed neither to build the final binary, nor to run it.
   By default, OpenSSL 3.6.0 is used.
