@@ -16,7 +16,7 @@ For the openssl3 provider you must include two modules. You always need the api 
   Embedded OpenSSL version is 3.5.0
 * cryptography-provider-openssl3-prebuilt-nativebuilds - uses libcrypto from [NativeBuilds](https://github.com/ensody/native-builds),
   so no additional setup is needed neither to build the final binary, nor to run it.
-  By default, OpenSSL 3.6.0 is used.
+  By default, OpenSSL 3.6.1 is used.
   You can explicitly select a more recent OpenSSL version by adding a dependency on `com.ensody.nativebuilds:openssl-libcrypto:<version>`.
   This might be useful if you want to integrate security fixes as quickly as possible.
 
