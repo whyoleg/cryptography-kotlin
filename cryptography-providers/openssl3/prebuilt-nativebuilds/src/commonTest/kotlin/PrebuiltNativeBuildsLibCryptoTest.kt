@@ -13,10 +13,10 @@ class PrebuiltNativeBuildsLibCryptoTest : LibCrypto3Test() {
 
     @Test
     fun testExactVersion() {
-        assertEquals("3.6.0", OpenSSL_version(OPENSSL_VERSION_STRING)?.toKString())
+        assertEquals("3.6.1", OpenSSL_version(OPENSSL_VERSION_STRING)?.toKString())
         assertEquals(3, OPENSSL_version_major().toInt())
         assertEquals(6, OPENSSL_version_minor().toInt())
-        assertEquals(0, OPENSSL_version_patch().toInt())
+        assertEquals(1, OPENSSL_version_patch().toInt())
     }
 
 }

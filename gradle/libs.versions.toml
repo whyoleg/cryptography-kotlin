@@ -22,7 +22,7 @@ maven-publish = "0.36.0"
 # other
 bouncycastle = "1.83"
 logback = "1.5.27"
-openssl = "3.6.0.13"
+openssl = "3.6.1"
 
 [libraries]
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
