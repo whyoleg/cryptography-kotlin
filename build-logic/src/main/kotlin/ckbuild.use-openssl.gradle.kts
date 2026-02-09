@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 import ckbuild.openssl.*
@@ -30,5 +30,5 @@ if (project == rootProject) {
     }
 
     configureOpenssl("v3_0", "3.0.15", "3.0.15_1", service.v3_0)
-    configureOpenssl("v3_5", "3.5.0", "3.5.0_1", service.v3_5)
+    configureOpenssl("v3_6", "3.6.0", "3.6.0", service.v3_6)
 }

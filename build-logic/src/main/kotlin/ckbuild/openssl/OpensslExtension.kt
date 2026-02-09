@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package ckbuild.openssl
@@ -13,13 +13,13 @@ import org.jetbrains.kotlin.konan.target.*
 @Suppress("PropertyName")
 abstract class OpensslService : BuildService<BuildServiceParameters.None> {
     abstract val v3_0: DirectoryProperty
-    abstract val v3_5: DirectoryProperty
+    abstract val v3_6: DirectoryProperty
 }
 
 @Suppress("PropertyName")
 class OpensslExtension(service: Provider<OpensslService>) {
     val v3_0: OpensslXExtension = OpensslXExtension(service.flatMap { it.v3_0 })
-    val v3_5: OpensslXExtension = OpensslXExtension(service.flatMap { it.v3_5 })
+    val v3_6: OpensslXExtension = OpensslXExtension(service.flatMap { it.v3_6 })
 }
 
 fun Task.uses(openssl: OpensslXExtension, block: OpensslXExtension.() -> Unit = {}) {
