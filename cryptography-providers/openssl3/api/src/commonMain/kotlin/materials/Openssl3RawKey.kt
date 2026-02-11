@@ -26,7 +26,7 @@ internal fun encodeRawPublicKey(key: CPointer<EVP_PKEY>): ByteArray = memScoped 
     checkError(EVP_PKEY_get_raw_public_key(key, null, lenVar.ptr))
     val result = ByteArray(lenVar.value.convert())
     checkError(EVP_PKEY_get_raw_public_key(key, result.refToU(0), lenVar.ptr))
-    result
+    result.ensureSizeExactly(lenVar.value.toInt())
 }
 
 @OptIn(UnsafeNumber::class)
@@ -35,5 +35,5 @@ internal fun encodeRawPrivateKey(key: CPointer<EVP_PKEY>): ByteArray = memScoped
     checkError(EVP_PKEY_get_raw_private_key(key, null, lenVar.ptr))
     val result = ByteArray(lenVar.value.convert())
     checkError(EVP_PKEY_get_raw_private_key(key, result.refToU(0), lenVar.ptr))
-    result
+    result.ensureSizeExactly(lenVar.value.toInt())
 }

@@ -25,7 +25,7 @@ internal fun deriveSharedSecret(
         checkError(EVP_PKEY_derive(context, null, secretSize.ptr))
         val secret = ByteArray(secretSize.value.toInt())
         checkError(EVP_PKEY_derive(context, secret.refToU(0), secretSize.ptr))
-        secret
+        secret.ensureSizeExactly(secretSize.value.toInt())
     } finally {
         EVP_PKEY_CTX_free(context)
     }
