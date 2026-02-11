@@ -4,38 +4,25 @@
 
 package dev.whyoleg.cryptography.providers.jdk.algorithms
 
-import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.providers.base.algorithms.*
 import dev.whyoleg.cryptography.providers.jdk.*
-import dev.whyoleg.cryptography.providers.jdk.materials.*
+import javax.crypto.spec.*
 
 internal class JdkAesOfb(
     private val state: JdkCryptographyState,
-) : AES.OFB {
-    private val keyWrapper: (JSecretKey) -> AES.OFB.Key = { key -> JdkAesOfbKey(state, key) }
-    private val keyDecoder = JdkSecretKeyDecoder<AES.Key.Format, _>("AES", keyWrapper)
+) : AES.OFB, BaseAes<AES.OFB.Key>() {
+    override fun wrapKey(rawKey: ByteArray): AES.OFB.Key = AesOfbKey(rawKey)
 
-    override fun keyDecoder(): Decoder<AES.Key.Format, AES.OFB.Key> = keyDecoder
-    override fun keyGenerator(keySize: BinarySize): KeyGenerator<AES.OFB.Key> = JdkSecretKeyGenerator(state, "AES", keyWrapper) {
-        init(keySize.inBits, state.secureRandom)
-    }
-}
+    private inner class AesOfbKey(rawKey: ByteArray) : AES.OFB.Key, BaseKey(rawKey) {
+        private val secretKey: JSecretKey = SecretKeySpec(rawKey, "AES")
 
-private class JdkAesOfbKey(
-    private val state: JdkCryptographyState,
-    private val key: JSecretKey,
-) : AES.OFB.Key, JdkEncodableKey<AES.Key.Format>(key) {
-    override fun cipher(): IvCipher = JdkAesIvCipher(
-        state = state,
-        key = key,
-        ivSize = 16,
-        algorithm = "AES/OFB/NoPadding"
-    )
-
-    override fun encodeToByteArrayBlocking(format: AES.Key.Format): ByteArray = when (format) {
-        AES.Key.Format.JWK -> error("$format is not supported")
-        AES.Key.Format.RAW -> encodeToRaw()
+        override fun cipher(): IvCipher = JdkAesIvCipher(
+            state = state,
+            key = secretKey,
+            ivSize = 16,
+            algorithm = "AES/OFB/NoPadding"
+        )
     }
 }

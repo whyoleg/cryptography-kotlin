@@ -5,8 +5,10 @@
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
 
 import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.BinarySize.Companion.bytes
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.providers.base.algorithms.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.providers.openssl3.operations.*
@@ -15,11 +17,11 @@ import platform.posix.*
 import kotlin.experimental.*
 import kotlin.native.ref.*
 
-internal object Openssl3AesCcm : AES.CCM, Openssl3Aes<AES.CCM.Key>() {
-    override fun wrapKey(keySize: BinarySize, key: ByteArray): AES.CCM.Key = AesCcmKey(keySize, key)
+internal object Openssl3AesCcm : AES.CCM, BaseAes<AES.CCM.Key>() {
+    override fun wrapKey(rawKey: ByteArray): AES.CCM.Key = AesCcmKey(rawKey)
 
-    private class AesCcmKey(keySize: BinarySize, key: ByteArray) : AES.CCM.Key, AesKey(key) {
-        private val algorithm = when (keySize) {
+    private class AesCcmKey(key: ByteArray) : AES.CCM.Key, BaseKey(key) {
+        private val algorithm = when (key.size.bytes) {
             AES.Key.Size.B128 -> "AES-128-CCM"
             AES.Key.Size.B192 -> "AES-192-CCM"
             AES.Key.Size.B256 -> "AES-256-CCM"

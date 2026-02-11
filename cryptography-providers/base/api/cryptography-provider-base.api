@@ -4,10 +4,53 @@ public final class dev/whyoleg/cryptography/providers/base/BytesKt {
 	public static final fun getEmptyByteArray ()[B
 }
 
+public abstract class dev/whyoleg/cryptography/providers/base/algorithms/BaseAes : dev/whyoleg/cryptography/algorithms/AES {
+	public fun <init> ()V
+	public final fun keyDecoder ()Ldev/whyoleg/cryptography/materials/Decoder;
+	public final fun keyGenerator-6q1zMKY (I)Ldev/whyoleg/cryptography/operations/KeyGenerator;
+	protected abstract fun wrapKey ([B)Ldev/whyoleg/cryptography/algorithms/AES$Key;
+}
+
+protected abstract class dev/whyoleg/cryptography/providers/base/algorithms/BaseAes$BaseKey : dev/whyoleg/cryptography/algorithms/AES$Key {
+	public fun <init> (Ldev/whyoleg/cryptography/providers/base/algorithms/BaseAes;[B)V
+	public final fun encodeToByteArrayBlocking (Ldev/whyoleg/cryptography/algorithms/AES$Key$Format;)[B
+	public synthetic fun encodeToByteArrayBlocking (Ldev/whyoleg/cryptography/materials/EncodingFormat;)[B
+	protected final fun getKey ()[B
+}
+
+public abstract class dev/whyoleg/cryptography/providers/base/algorithms/BaseChaCha20Poly1305 : dev/whyoleg/cryptography/algorithms/ChaCha20Poly1305 {
+	public fun <init> ()V
+	public final fun keyDecoder ()Ldev/whyoleg/cryptography/materials/Decoder;
+	public final fun keyGenerator ()Ldev/whyoleg/cryptography/operations/KeyGenerator;
+	protected abstract fun wrapKey ([B)Ldev/whyoleg/cryptography/algorithms/ChaCha20Poly1305$Key;
+}
+
+protected abstract class dev/whyoleg/cryptography/providers/base/algorithms/BaseChaCha20Poly1305$BaseKey : dev/whyoleg/cryptography/algorithms/ChaCha20Poly1305$Key {
+	public fun <init> (Ldev/whyoleg/cryptography/providers/base/algorithms/BaseChaCha20Poly1305;[B)V
+	public final fun encodeToByteArrayBlocking (Ldev/whyoleg/cryptography/algorithms/ChaCha20Poly1305$Key$Format;)[B
+	public synthetic fun encodeToByteArrayBlocking (Ldev/whyoleg/cryptography/materials/EncodingFormat;)[B
+	protected final fun getKey ()[B
+}
+
 public abstract class dev/whyoleg/cryptography/providers/base/algorithms/BaseHkdf : dev/whyoleg/cryptography/algorithms/HKDF {
 	public fun <init> (Ldev/whyoleg/cryptography/CryptographyProvider;)V
 	protected abstract fun digestSize (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;)I
 	public fun secretDerivation-nkIq3jI (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;I[B[B)Ldev/whyoleg/cryptography/operations/SecretDerivation;
+}
+
+public abstract class dev/whyoleg/cryptography/providers/base/algorithms/BaseHmac : dev/whyoleg/cryptography/algorithms/HMAC {
+	public fun <init> ()V
+	protected abstract fun blockSize (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;)I
+	public final fun keyDecoder (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;)Ldev/whyoleg/cryptography/materials/Decoder;
+	public final fun keyGenerator (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;)Ldev/whyoleg/cryptography/operations/KeyGenerator;
+	protected abstract fun wrapKey (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;[B)Ldev/whyoleg/cryptography/algorithms/HMAC$Key;
+}
+
+protected abstract class dev/whyoleg/cryptography/providers/base/algorithms/BaseHmac$BaseKey : dev/whyoleg/cryptography/algorithms/HMAC$Key {
+	public fun <init> (Ldev/whyoleg/cryptography/providers/base/algorithms/BaseHmac;Ldev/whyoleg/cryptography/CryptographyAlgorithmId;[B)V
+	public final fun encodeToByteArrayBlocking (Ldev/whyoleg/cryptography/algorithms/HMAC$Key$Format;)[B
+	public synthetic fun encodeToByteArrayBlocking (Ldev/whyoleg/cryptography/materials/EncodingFormat;)[B
+	protected final fun getKey ()[B
 }
 
 public final class dev/whyoleg/cryptography/providers/base/algorithms/EcKt {

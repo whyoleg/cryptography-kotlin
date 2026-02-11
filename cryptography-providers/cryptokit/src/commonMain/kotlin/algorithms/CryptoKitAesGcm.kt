@@ -7,47 +7,21 @@ package dev.whyoleg.cryptography.providers.cryptokit.algorithms
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.BinarySize.Companion.bytes
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.*
+import dev.whyoleg.cryptography.providers.base.algorithms.*
 import dev.whyoleg.cryptography.providers.base.operations.*
 import dev.whyoleg.cryptography.providers.cryptokit.internal.*
 import dev.whyoleg.cryptography.providers.cryptokit.internal.swift.DwcCryptoKitInterop.*
 
-internal object CryptoKitAesGcm : AES.GCM {
-    override fun keyDecoder(): Decoder<AES.Key.Format, AES.GCM.Key> = AesKeyDecoder()
+internal object CryptoKitAesGcm : AES.GCM, BaseAes<AES.GCM.Key>() {
+    override fun wrapKey(rawKey: ByteArray): AES.GCM.Key = AesGcmKey(rawKey)
 
-    override fun keyGenerator(keySize: BinarySize): KeyGenerator<AES.GCM.Key> = AesGcmKeyGenerator(keySize.inBytes)
-}
-
-private class AesKeyDecoder : Decoder<AES.Key.Format, AES.GCM.Key> {
-    override fun decodeFromByteArrayBlocking(format: AES.Key.Format, bytes: ByteArray): AES.GCM.Key = when (format) {
-        AES.Key.Format.RAW -> {
-            require(bytes.size == 16 || bytes.size == 24 || bytes.size == 32) {
-                "AES key size must be 128, 192 or 256 bits"
-            }
-            AesGcmKey(bytes.copyOf())
+    private class AesGcmKey(key: ByteArray) : AES.GCM.Key, BaseKey(key) {
+        override fun cipher(tagSize: BinarySize): IvAuthenticatedCipher {
+            require(tagSize == 16.bytes) { "GCM tag size must be 16 bytes, but was $tagSize" }
+            return AesGcmCipher(key, tagSize.inBytes)
         }
-        AES.Key.Format.JWK -> error("JWK is not supported")
-    }
-}
-
-private class AesGcmKeyGenerator(private val keySizeBytes: Int) : KeyGenerator<AES.GCM.Key> {
-    override fun generateKeyBlocking(): AES.GCM.Key {
-        val key = CryptographySystem.getDefaultRandom().nextBytes(keySizeBytes)
-        return AesGcmKey(key)
-    }
-}
-
-private class AesGcmKey(private val key: ByteArray) : AES.GCM.Key {
-    override fun cipher(tagSize: BinarySize): IvAuthenticatedCipher {
-        require(tagSize == 16.bytes) { "GCM tag size must be 16 bytes, but was $tagSize" }
-        return AesGcmCipher(key, tagSize.inBytes)
-    }
-
-    override fun encodeToByteArrayBlocking(format: AES.Key.Format): ByteArray = when (format) {
-        AES.Key.Format.RAW -> key.copyOf()
-        AES.Key.Format.JWK -> error("JWK is not supported")
     }
 }
 

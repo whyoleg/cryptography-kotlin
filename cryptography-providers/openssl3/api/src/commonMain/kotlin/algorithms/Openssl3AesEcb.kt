@@ -4,9 +4,10 @@
 
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
 
-import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.BinarySize.Companion.bytes
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.providers.base.algorithms.*
 import dev.whyoleg.cryptography.providers.base.operations.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
@@ -15,11 +16,11 @@ import kotlinx.cinterop.*
 import kotlin.experimental.*
 import kotlin.native.ref.*
 
-internal object Openssl3AesEcb : AES.ECB, Openssl3Aes<AES.ECB.Key>() {
-    override fun wrapKey(keySize: BinarySize, key: ByteArray): AES.ECB.Key = AesEcbKey(keySize, key)
+internal object Openssl3AesEcb : AES.ECB, BaseAes<AES.ECB.Key>() {
+    override fun wrapKey(rawKey: ByteArray): AES.ECB.Key = AesEcbKey(rawKey)
 
-    private class AesEcbKey(keySize: BinarySize, key: ByteArray) : AES.ECB.Key, AesKey(key) {
-        private val algorithm = when (keySize) {
+    private class AesEcbKey(key: ByteArray) : AES.ECB.Key, BaseKey(key) {
+        private val algorithm = when (key.size.bytes) {
             AES.Key.Size.B128 -> "AES-128-ECB"
             AES.Key.Size.B192 -> "AES-192-ECB"
             AES.Key.Size.B256 -> "AES-256-ECB"

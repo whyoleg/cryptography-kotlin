@@ -10,12 +10,6 @@ import dev.whyoleg.cryptography.providers.jdk.*
 internal abstract class JdkEncodableKey<F : EncodingFormat>(
     private val key: JKey,
 ) : Encodable<F> {
-
-    protected fun encodeToRaw(): ByteArray {
-        check(key.format == "RAW") { "Wrong JDK Key format, expected `RAW` got `${key.format}`" }
-        return key.encoded
-    }
-
     protected fun encodeToDer(): ByteArray {
         check(key.format == "PKCS#8" || key.format == "X.509") { "Wrong JDK Key format, expected `PKCS#8` or `X.509 got `${key.format}`" }
         return key.encoded

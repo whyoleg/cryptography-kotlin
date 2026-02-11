@@ -6,76 +6,57 @@ package dev.whyoleg.cryptography.providers.apple.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.apple.internal.*
 import dev.whyoleg.cryptography.providers.base.*
+import dev.whyoleg.cryptography.providers.base.algorithms.*
 import kotlinx.cinterop.*
 import platform.CoreCrypto.*
 
-internal object CCHmac : HMAC {
-    override fun keyDecoder(digest: CryptographyAlgorithmId<Digest>): Decoder<HMAC.Key.Format, HMAC.Key> {
-        return when (digest) {
-            SHA1   -> HmacKeyDecoder(kCCHmacAlgSHA1, CC_SHA1_DIGEST_LENGTH)
-            SHA224 -> HmacKeyDecoder(kCCHmacAlgSHA224, CC_SHA224_DIGEST_LENGTH)
-            SHA256 -> HmacKeyDecoder(kCCHmacAlgSHA256, CC_SHA256_DIGEST_LENGTH)
-            SHA384 -> HmacKeyDecoder(kCCHmacAlgSHA384, CC_SHA384_DIGEST_LENGTH)
-            SHA512 -> HmacKeyDecoder(kCCHmacAlgSHA512, CC_SHA512_DIGEST_LENGTH)
+internal object CCHmac : BaseHmac() {
+    override fun blockSize(digest: CryptographyAlgorithmId<Digest>): Int = when (digest) {
+        SHA1   -> CC_SHA1_BLOCK_BYTES
+        SHA224 -> CC_SHA224_BLOCK_BYTES
+        SHA256 -> CC_SHA256_BLOCK_BYTES
+        SHA384 -> CC_SHA384_BLOCK_BYTES
+        SHA512 -> CC_SHA512_BLOCK_BYTES
+        else   -> throw IllegalStateException("Unsupported hash algorithm: $digest")
+    }
+
+    override fun wrapKey(digest: CryptographyAlgorithmId<Digest>, rawKey: ByteArray): HMAC.Key = HmacKey(digest, rawKey)
+
+    private class HmacKey(
+        digest: CryptographyAlgorithmId<Digest>,
+        key: ByteArray,
+    ) : BaseKey(digest, key) {
+        private val signature = HmacSignature(key, hmacAlgorithm(digest), digestSize(digest))
+        override fun signatureGenerator(): SignatureGenerator = signature
+        override fun signatureVerifier(): SignatureVerifier = signature
+
+
+        private fun hmacAlgorithm(digest: CryptographyAlgorithmId<Digest>): CCHmacAlgorithm = when (digest) {
+            SHA1   -> kCCHmacAlgSHA1
+            SHA224 -> kCCHmacAlgSHA224
+            SHA256 -> kCCHmacAlgSHA256
+            SHA384 -> kCCHmacAlgSHA384
+            SHA512 -> kCCHmacAlgSHA512
             else   -> throw IllegalStateException("Unsupported hash algorithm: $digest")
         }
-    }
 
-    override fun keyGenerator(digest: CryptographyAlgorithmId<Digest>): KeyGenerator<HMAC.Key> {
-        return when (digest) {
-            SHA1   -> HmacKeyGenerator(kCCHmacAlgSHA1, CC_SHA1_BLOCK_BYTES, CC_SHA1_DIGEST_LENGTH)
-            SHA224 -> HmacKeyGenerator(kCCHmacAlgSHA224, CC_SHA224_BLOCK_BYTES, CC_SHA224_DIGEST_LENGTH)
-            SHA256 -> HmacKeyGenerator(kCCHmacAlgSHA256, CC_SHA256_BLOCK_BYTES, CC_SHA256_DIGEST_LENGTH)
-            SHA384 -> HmacKeyGenerator(kCCHmacAlgSHA384, CC_SHA384_BLOCK_BYTES, CC_SHA384_DIGEST_LENGTH)
-            SHA512 -> HmacKeyGenerator(kCCHmacAlgSHA512, CC_SHA512_BLOCK_BYTES, CC_SHA512_DIGEST_LENGTH)
-            else -> throw IllegalStateException("Unsupported hash algorithm: $digest")
+        private fun digestSize(digest: CryptographyAlgorithmId<Digest>): Int = when (digest) {
+            SHA1   -> CC_SHA1_DIGEST_LENGTH
+            SHA224 -> CC_SHA224_DIGEST_LENGTH
+            SHA256 -> CC_SHA256_DIGEST_LENGTH
+            SHA384 -> CC_SHA384_DIGEST_LENGTH
+            SHA512 -> CC_SHA512_DIGEST_LENGTH
+            else   -> throw IllegalStateException("Unsupported hash algorithm: $digest")
         }
-    }
-}
-
-private class HmacKeyDecoder(
-    private val hmacAlgorithm: CCHmacAlgorithm,
-    private val digestSize: Int,
-) : Decoder<HMAC.Key.Format, HMAC.Key> {
-    override fun decodeFromByteArrayBlocking(format: HMAC.Key.Format, bytes: ByteArray): HMAC.Key = when (format) {
-        HMAC.Key.Format.RAW -> wrapKey(hmacAlgorithm, bytes.copyOf(), digestSize)
-        HMAC.Key.Format.JWK -> error("JWK is not supported")
-    }
-}
-
-private class HmacKeyGenerator(
-    private val hmacAlgorithm: CCHmacAlgorithm,
-    private val blockSize: Int,
-    private val digestSize: Int,
-) : KeyGenerator<HMAC.Key> {
-    override fun generateKeyBlocking(): HMAC.Key {
-        val key = CryptographySystem.getDefaultRandom().nextBytes(blockSize)
-        return wrapKey(hmacAlgorithm, key, digestSize)
-    }
-}
-
-private fun wrapKey(
-    hmacAlgorithm: CCHmacAlgorithm,
-    key: ByteArray,
-    digestSize: Int,
-): HMAC.Key = object : HMAC.Key {
-    private val signature = HmacSignature(hmacAlgorithm, key, digestSize)
-    override fun signatureGenerator(): SignatureGenerator = signature
-    override fun signatureVerifier(): SignatureVerifier = signature
-
-    override fun encodeToByteArrayBlocking(format: HMAC.Key.Format): ByteArray = when (format) {
-        HMAC.Key.Format.RAW -> key.copyOf()
-        HMAC.Key.Format.JWK -> error("JWK is not supported")
     }
 }
 
 private class HmacSignature(
-    private val hmacAlgorithm: CCHmacAlgorithm,
     private val key: ByteArray,
+    private val hmacAlgorithm: CCHmacAlgorithm,
     private val digestSize: Int,
 ) : SignatureGenerator, SignatureVerifier {
     private fun createFunction() = HmacFunction(

@@ -6,12 +6,13 @@ package dev.whyoleg.cryptography.providers.apple.algorithms
 
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.providers.base.algorithms.*
 import platform.CoreCrypto.*
 
-internal object CCAesCtr : CCAes<AES.CTR.Key>(), AES.CTR {
-    override fun wrapKey(key: ByteArray): AES.CTR.Key = AesCtrKey(key)
+internal object CCAesCtr : BaseAes<AES.CTR.Key>(), AES.CTR {
+    override fun wrapKey(rawKey: ByteArray): AES.CTR.Key = AesCtrKey(rawKey)
 
-    private class AesCtrKey(private val key: ByteArray) : AES.CTR.Key {
+    private class AesCtrKey(key: ByteArray) : AES.CTR.Key, BaseKey(key) {
         override fun cipher(): IvCipher = CCAesIvCipher(
             algorithm = kCCAlgorithmAES,
             mode = kCCModeCTR,
@@ -19,10 +20,5 @@ internal object CCAesCtr : CCAes<AES.CTR.Key>(), AES.CTR {
             key = key,
             ivSize = 16
         )
-
-        override fun encodeToByteArrayBlocking(format: AES.Key.Format): ByteArray = when (format) {
-            AES.Key.Format.RAW -> key.copyOf()
-            AES.Key.Format.JWK -> error("JWK is not supported")
-        }
     }
 }

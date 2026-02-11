@@ -4,41 +4,28 @@
 
 package dev.whyoleg.cryptography.providers.jdk.algorithms
 
-import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.providers.base.algorithms.*
 import dev.whyoleg.cryptography.providers.jdk.*
-import dev.whyoleg.cryptography.providers.jdk.materials.*
+import javax.crypto.spec.*
 
 internal class JdkAesCbc(
     private val state: JdkCryptographyState,
-) : AES.CBC {
-    private val keyWrapper: (JSecretKey) -> AES.CBC.Key = { key -> JdkAesCbcKey(state, key) }
-    private val keyDecoder = JdkSecretKeyDecoder<AES.Key.Format, _>("AES", keyWrapper)
+) : AES.CBC, BaseAes<AES.CBC.Key>() {
+    override fun wrapKey(rawKey: ByteArray): AES.CBC.Key = AesCbcKey(rawKey)
 
-    override fun keyDecoder(): Decoder<AES.Key.Format, AES.CBC.Key> = keyDecoder
-    override fun keyGenerator(keySize: BinarySize): KeyGenerator<AES.CBC.Key> = JdkSecretKeyGenerator(state, "AES", keyWrapper) {
-        init(keySize.inBits, state.secureRandom)
-    }
-}
+    private inner class AesCbcKey(rawKey: ByteArray) : AES.CBC.Key, BaseKey(rawKey) {
+        private val secretKey: JSecretKey = SecretKeySpec(rawKey, "AES")
 
-private class JdkAesCbcKey(
-    private val state: JdkCryptographyState,
-    private val key: JSecretKey,
-) : AES.CBC.Key, JdkEncodableKey<AES.Key.Format>(key) {
-    override fun cipher(padding: Boolean): IvCipher = JdkAesIvCipher(
-        state = state,
-        key = key,
-        ivSize = 16,
-        algorithm = when {
-            padding -> "AES/CBC/PKCS5Padding"
-            else    -> "AES/CBC/NoPadding"
-        }
-    )
-
-    override fun encodeToByteArrayBlocking(format: AES.Key.Format): ByteArray = when (format) {
-        AES.Key.Format.JWK -> error("$format is not supported")
-        AES.Key.Format.RAW -> encodeToRaw()
+        override fun cipher(padding: Boolean): IvCipher = JdkAesIvCipher(
+            state = state,
+            key = secretKey,
+            ivSize = 16,
+            algorithm = when {
+                padding -> "AES/CBC/PKCS5Padding"
+                else    -> "AES/CBC/NoPadding"
+            }
+        )
     }
 }
