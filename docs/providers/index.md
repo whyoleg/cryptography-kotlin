@@ -11,7 +11,8 @@ At the current moment, the following providers are available out of the box:
 * [CryptoKit](cryptokit.md) - via
   [CryptoKit](https://developer.apple.com/documentation/cryptokit/)
 * [OpenSSL3](openssl3.md) - via [OpenSSL 3.x](https://www.openssl.org),
-  statically linked to prebuilt OpenSSL 3.6.0 or the [NativeBuilds](https://github.com/ensody/native-builds) publication (defaults to 3.6.1) or dynamically linked (experimental)
+  statically linked to prebuilt OpenSSL 3.6.0 or the [NativeBuilds](https://github.com/ensody/native-builds) publication (defaults to 3.6.1)
+  or dynamically linked (experimental)
 
 ## Optimal provider
 
@@ -84,6 +85,7 @@ For additional limitation please consult provider specific documentation.
 | **Symmetric-key<br/>encryption/decryption** | AES-CBC           |  ✅  |     ✅     |   ✅   | ❌         |    ✅     |
 |                                             | AES-CTR           |  ✅  |     ✅     |   ✅   | ❌         |    ✅     |
 |                                             | AES-GCM           |  ✅  |     ✅     |   ❌   | ✅         |    ✅     |
+|                                             | AES-CCM           |  ✅  |     ❌     |   ❌   | ❌         |    ✅     |
 |                                             | ChaCha20-Poly1305 |  ✅  |     ❌     |   ❌   | ✅         |    ✅     |
 |                                             | ⚠️ AES-ECB        |  ✅  |     ❌     |   ✅   | ❌         |    ✅     |
 |                                             | ⚠️ AES-OFB        |  ✅  |     ❌     |   ✅   | ❌         |    ✅     |

@@ -30,6 +30,17 @@ abstract interface <#A: dev.whyoleg.cryptography.algorithms/AES.Key> dev.whyoleg
         final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/AES.CBC> // dev.whyoleg.cryptography.algorithms/AES.CBC.Companion|null[0]
     }
 
+    abstract interface CCM : dev.whyoleg.cryptography.algorithms/AES<dev.whyoleg.cryptography.algorithms/AES.CCM.Key> { // dev.whyoleg.cryptography.algorithms/AES.CCM|null[0]
+        open val id // dev.whyoleg.cryptography.algorithms/AES.CCM.id|{}id[0]
+            open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/AES.CCM> // dev.whyoleg.cryptography.algorithms/AES.CCM.id.<get-id>|<get-id>(){}[0]
+
+        abstract interface Key : dev.whyoleg.cryptography.algorithms/AES.Key { // dev.whyoleg.cryptography.algorithms/AES.CCM.Key|null[0]
+            abstract fun cipher(dev.whyoleg.cryptography/BinarySize = ...): dev.whyoleg.cryptography.operations/IvAuthenticatedCipher // dev.whyoleg.cryptography.algorithms/AES.CCM.Key.cipher|cipher(dev.whyoleg.cryptography.BinarySize){}[0]
+        }
+
+        final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/AES.CCM> // dev.whyoleg.cryptography.algorithms/AES.CCM.Companion|null[0]
+    }
+
     abstract interface CFB : dev.whyoleg.cryptography.algorithms/AES<dev.whyoleg.cryptography.algorithms/AES.CFB.Key> { // dev.whyoleg.cryptography.algorithms/AES.CFB|null[0]
         open val id // dev.whyoleg.cryptography.algorithms/AES.CFB.id|{}id[0]
             open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/AES.CFB> // dev.whyoleg.cryptography.algorithms/AES.CFB.id.<get-id>|<get-id>(){}[0]

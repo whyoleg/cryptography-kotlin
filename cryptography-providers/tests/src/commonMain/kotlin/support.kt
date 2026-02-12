@@ -251,12 +251,13 @@ fun AlgorithmTestScope<DH>.supportsParameterGeneration(): Boolean = supports {
 fun ProviderTestScope.supports(algorithmId: CryptographyAlgorithmId<*>): Boolean = validate {
     when (algorithmId) {
         AES.CMAC if provider.isJdkDefault                                                       -> "Default JDK provider doesn't support AES-CMAC, only supported with BouncyCastle"
+        AES.CCM if provider.isJdkDefault -> "Default JDK provider doesn't support AES-CCM, only supported with BouncyCastle"
         RSA.PSS if provider.isJdkDefault && platform.isAndroid                                  -> "JDK provider on Android doesn't support RSASSA-PSS"
         ChaCha20Poly1305 if provider.isJdkDefault && platform.isJdk { major < 11 }              -> "Default JDK provider supports ChaCha20-Poly1305 from JDK 11"
         EdDSA if provider.isJdkDefault && (platform.isJdk { major < 15 } || platform.isAndroid) -> "Default JDK may not support EdDSA before JDK 15"
         // it's supported from JDK 11, but has wrong encoding because of https://bugs.openjdk.org/browse/JDK-8213363
         XDH if provider.isJdkDefault && platform.isJdk { major < 12 }                           -> "Default JDK may not support XDH before JDK 11"
-        else                                                                                    -> null
+        else                             -> null
     }
 }
 

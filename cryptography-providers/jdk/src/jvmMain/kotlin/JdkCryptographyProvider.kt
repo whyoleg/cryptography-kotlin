@@ -129,6 +129,7 @@ internal class JdkCryptographyProvider(provider: Provider?) : CryptographyProvid
             AES.OFB -> JdkAesOfb(state)
             AES.ECB   -> JdkAesEcb(state)
             AES.GCM   -> JdkAesGcm(state)
+            AES.CCM -> JdkAesCcm(state)
             ChaCha20Poly1305 -> JdkChaCha20Poly1305(state)
             RSA.OAEP         -> JdkRsaOaep(state)
             RSA.PSS          -> JdkRsaPss(state)

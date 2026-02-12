@@ -46,6 +46,18 @@ public interface AES<K : AES.Key> : CryptographyAlgorithm {
     }
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
+    public interface CCM : AES<CCM.Key> {
+        override val id: CryptographyAlgorithmId<CCM> get() = Companion
+
+        public companion object : CryptographyAlgorithmId<CCM>("AES-CCM")
+
+        @SubclassOptInRequired(CryptographyProviderApi::class)
+        public interface Key : AES.Key {
+            public fun cipher(tagSize: BinarySize = 128.bits): IvAuthenticatedCipher
+        }
+    }
+
+    @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface CTR : AES<CTR.Key> {
         override val id: CryptographyAlgorithmId<CTR> get() = Companion
 
