@@ -75,7 +75,7 @@ internal abstract class Openssl3Rsa<PublicK : RSA.PublicKey, PrivateK : RSA.Priv
         private val hashAlgorithm: String,
         private val publicExponent: UInt,
     ) : Openssl3KeyPairGenerator<KP>("RSA") {
-        override fun MemScope.createParams(): CValuesRef<OSSL_PARAM> = OSSL_PARAM_array(
+        override fun MemScope.createParams(): CValuesRef<OSSL_PARAM>? = OSSL_PARAM_array(
             OSSL_PARAM_construct_uint("bits".cstr.ptr, alloc(keySizeBits).ptr),
             OSSL_PARAM_construct_uint("e".cstr.ptr, alloc(publicExponent).ptr)
         )

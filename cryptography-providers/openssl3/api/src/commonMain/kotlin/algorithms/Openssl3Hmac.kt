@@ -65,7 +65,7 @@ private class HmacKey(hashAlgorithm: String, private val key: ByteArray) : HMAC.
 
 private class HmacSignature(private val hashAlgorithm: String, key: ByteArray) : EvpMac(Openssl3Hmac.mac, key) {
     @OptIn(UnsafeNumber::class)
-    override fun MemScope.createParams(): CValuesRef<OSSL_PARAM> = OSSL_PARAM_array(
+    override fun MemScope.createParams(): CValuesRef<OSSL_PARAM>? = OSSL_PARAM_array(
         OSSL_PARAM_construct_utf8_string("digest".cstr.ptr, hashAlgorithm.cstr.ptr, 0.convert())
     )
 }

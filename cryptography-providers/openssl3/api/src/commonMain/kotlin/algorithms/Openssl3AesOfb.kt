@@ -8,6 +8,7 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
+import dev.whyoleg.cryptography.providers.openssl3.operations.*
 import kotlin.experimental.*
 import kotlin.native.ref.*
 
@@ -28,7 +29,7 @@ internal object Openssl3AesOfb : AES.OFB, Openssl3Aes<AES.OFB.Key>() {
         private val cleaner = createCleaner(cipher, ::EVP_CIPHER_free)
 
         override fun cipher(): IvCipher {
-            return Openssl3AesIvCipher(cipher, key, ivSize = 16)
+            return Openssl3IvCipher(cipher, key, ivSize = 16)
         }
     }
 }

@@ -76,7 +76,7 @@ internal object Openssl3Ecdh : ECDH {
         private val curve: EC.Curve,
     ) : Openssl3KeyPairGenerator<ECDH.KeyPair>("EC") {
         @OptIn(UnsafeNumber::class)
-        override fun MemScope.createParams(): CValuesRef<OSSL_PARAM> = OSSL_PARAM_array(
+        override fun MemScope.createParams(): CValuesRef<OSSL_PARAM>? = OSSL_PARAM_array(
             OSSL_PARAM_construct_utf8_string("group".cstr.ptr, curve.name.cstr.ptr, 0.convert())
         )
 

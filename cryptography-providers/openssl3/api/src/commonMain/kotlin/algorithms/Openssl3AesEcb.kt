@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
@@ -36,19 +36,14 @@ internal object Openssl3AesEcb : AES.ECB, Openssl3Aes<AES.ECB.Key>() {
                 checkError(EVP_CIPHER_CTX_set_padding(context, if (padding) 1 else 0))
             }
         }
-    }
-}
 
-private class Openssl3AesEcbCipher(
-    private val cipher: CPointer<EVP_CIPHER>?,
-    private val key: ByteArray,
-    private val init: (CPointer<EVP_CIPHER_CTX>?) -> Unit = {},
-) : BaseCipher {
-    override fun createEncryptFunction(): CipherFunction {
-        return EvpCipherFunction(cipher, key, null, 0, encrypt = true, init)
-    }
-
-    override fun createDecryptFunction(): CipherFunction {
-        return EvpCipherFunction(cipher, key, null, 0, encrypt = false, init)
+        private class Openssl3AesEcbCipher(
+            private val cipher: CPointer<EVP_CIPHER>?,
+            private val key: ByteArray,
+            private val init: MemScope.(CPointer<EVP_CIPHER_CTX>?) -> Unit = {},
+        ) : BaseCipher {
+            override fun createEncryptFunction(): CipherFunction = EvpCipherFunction(cipher, key, encrypt = true, init)
+            override fun createDecryptFunction(): CipherFunction = EvpCipherFunction(cipher, key, encrypt = false, init)
+        }
     }
 }

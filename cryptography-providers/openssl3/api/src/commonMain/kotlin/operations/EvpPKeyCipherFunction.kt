@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.operations
@@ -15,7 +15,7 @@ import platform.posix.*
 internal class EvpPKeyCipherFunction(
     private val key: CPointer<EVP_PKEY>,
     private val encrypt: Boolean,
-    private val createParameters: MemScope.() -> CArrayPointer<OSSL_PARAM>,
+    private val createParameters: MemScope.() -> CArrayPointer<OSSL_PARAM>?,
 ) : BaseCipherFunction() {
     private var isClosed = false
     private var accumulator = EmptyByteArray

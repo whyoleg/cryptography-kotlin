@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
@@ -61,7 +61,7 @@ private class RsaPssSignatureGenerator(
     private val saltLengthBytes: Int,
 ) : Openssl3DigestSignatureGenerator(privateKey, hashAlgorithm) {
     @OptIn(UnsafeNumber::class)
-    override fun MemScope.createParams(): CValuesRef<OSSL_PARAM> = OSSL_PARAM_array(
+    override fun MemScope.createParams(): CValuesRef<OSSL_PARAM>? = OSSL_PARAM_array(
         OSSL_PARAM_construct_utf8_string("pad-mode".cstr.ptr, "pss".cstr.ptr, 0.convert()),
         OSSL_PARAM_construct_int("saltlen".cstr.ptr, alloc(saltLengthBytes).ptr),
     )
@@ -73,7 +73,7 @@ private class RsaPssSignatureVerifier(
     private val saltLengthBytes: Int,
 ) : Openssl3DigestSignatureVerifier(publicKey, hashAlgorithm) {
     @OptIn(UnsafeNumber::class)
-    override fun MemScope.createParams(): CValuesRef<OSSL_PARAM> = OSSL_PARAM_array(
+    override fun MemScope.createParams(): CValuesRef<OSSL_PARAM>? = OSSL_PARAM_array(
         OSSL_PARAM_construct_utf8_string("pad-mode".cstr.ptr, "pss".cstr.ptr, 0.convert()),
         OSSL_PARAM_construct_int("saltlen".cstr.ptr, alloc(saltLengthBytes).ptr),
     )
