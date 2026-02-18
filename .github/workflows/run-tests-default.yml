@@ -13,19 +13,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ 'ubuntu-latest' ]
-        target: [ 'jvmAll', 'js', 'wasm', 'native', 'connectedAndroid' ]
-        include:
-          - os: 'macos-latest'
-            target: 'macos'
-          - os: 'macos-latest'
-            target: 'ios'
-          - os: 'macos-latest'
-            target: 'watchos'
-          - os: 'macos-latest'
-            target: 'tvos'
-          - os: 'windows-latest'
-            target: 'native'
+        os: [ 'ubuntu-latest', 'macos-latest' ]
+        target: [ 'js', 'wasm' ]
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-environment

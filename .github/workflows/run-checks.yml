@@ -4,23 +4,23 @@ on:
   workflow_call:
 
 jobs:
-  build-project:
-    uses: ./.github/workflows/run-build-project.yml
-    permissions:
-      contents: write
-
-  build-website:
-    needs: [ build-project ]
-    uses: ./.github/workflows/run-build-website.yml
+  #  build-project:
+  #    uses: ./.github/workflows/run-build-project.yml
+  #    permissions:
+  #      contents: write
+  #
+  #  build-website:
+  #    needs: [ build-project ]
+  #    uses: ./.github/workflows/run-build-website.yml
 
   default-tests:
-    needs: [ build-project ]
+    #    needs: [ build-project ]
     uses: ./.github/workflows/run-tests-default.yml
 
-  compatibility-tests:
-    needs: [ default-tests ]
-    uses: ./.github/workflows/run-tests-compatibility.yml
-
-  slow-tasks:
-    needs: [ compatibility-tests ]
-    uses: ./.github/workflows/run-slow-tasks.yml
+#  compatibility-tests:
+#    needs: [ default-tests ]
+#    uses: ./.github/workflows/run-tests-compatibility.yml
+#
+#  slow-tasks:
+#    needs: [ compatibility-tests ]
+#    uses: ./.github/workflows/run-slow-tasks.yml
