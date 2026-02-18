@@ -56,7 +56,8 @@ fun AlgorithmTestScope<*>.supportsFormat(format: EncodingFormat): Boolean = supp
         format.name == "JWK" &&
                 (algorithm is EC<*, *, *> || algorithm is XDH || algorithm is EdDSA) &&
                 provider.isJdkDefault -> "JWK format not always supported because can't infer public key from private key without BouncyCastle"
-        format == EC.PublicKey.Format.RAW.Compressed && provider.isApple
+        format == EC.PublicKey.Format.RAW.Compressed &&
+                (provider.isApple || provider.isWebCrypto && platform.isBrowserSafari)
                                       -> "compressed key format"
         else                          -> null
     }
@@ -87,10 +88,22 @@ fun AlgorithmTestScope<out AES<*>>.supportsKeySize(keySizeBits: Int): Boolean = 
     }
 }
 
-fun AlgorithmTestScope<RSA.PSS>.supportsSaltSize(saltSize: Int?): Boolean = supports {
+// we do test only safari and chrome
+fun AlgorithmTestScope<*>.supportsDataInput(inputSize: Int): Boolean = supports {
     when {
-        provider.isApple && saltSize != null -> "custom saltSize"
-        else                                 -> null
+        inputSize == 0 &&
+                provider.isWebCrypto && platform.isBrowserSafari -> "empty data input"
+        else                                                     -> null
+    }
+}
+
+fun AlgorithmTestScope<RSA.PSS>.supportsSaltSize(saltSize: Int?, digestSize: Int): Boolean = supports {
+    when {
+        saltSize != null &&
+                provider.isApple                                 -> "custom saltSize"
+        saltSize != null && saltSize > digestSize &&
+                provider.isWebCrypto && platform.isBrowserSafari -> "saltSize bigger than digestSize=`$digestSize`"
+        else                                                     -> null
     }
 }
 
@@ -182,7 +195,7 @@ fun AlgorithmTestScope<out EC<*, *, *>>.supportsPrivateKeyDecoding(
     when {
         provider.isApple
                 && format == EC.PrivateKey.Format.RAW -> "private key '$format' format"
-        provider.isApple
+        (provider.isApple || provider.isWebCrypto && platform.isBrowserSafari)
                 && !hasPublicKey()                    -> "private key '$format' format without 'publicKey' from ${otherContext.provider}"
         else                                          -> null
     }

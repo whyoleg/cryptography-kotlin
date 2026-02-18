@@ -19,6 +19,7 @@ abstract class RsaOaepTest(provider: CryptographyProvider) : AlgorithmTest<RSA.O
         plaintext: ByteArray,
         associatedData: ByteArray?,
     ) {
+        if (!supportsDataInput(plaintext.size)) return
         if (!supportsAssociatedData(associatedData?.size)) return
 
         val encryptor = keyPair.publicKey.encryptor()

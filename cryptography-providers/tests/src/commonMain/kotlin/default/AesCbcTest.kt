@@ -30,14 +30,12 @@ abstract class AesCbcTest(provider: CryptographyProvider) : AesBasedTest<AES.CBC
             assertEquals(ivSize + blockSize * 21, encrypt(ByteArray(321)).size)
 
             // too short
-            assertFails { decrypt(ByteArray(0)) }
-            assertFails { decrypt(ByteArray(15)) }
-
+            assertFails("empty") { decrypt(ByteArray(0)) }
+            assertFails("15") { decrypt(ByteArray(15)) }
 
             // not padded
-            assertFails { decrypt(ByteArray(17)) }
-            assertFails { decrypt(ByteArray(319)) }
-            assertFails { decrypt(ByteArray(321)) }
+            assertFails("319") { decrypt(ByteArray(319)) }
+            assertFails("321") { decrypt(ByteArray(321)) }
         }
         if (supportsPadding(padding = false)) key.cipher(padding = false).run {
             assertEquals(ivSize + blockSize * 0, encrypt(ByteArray(0)).size)

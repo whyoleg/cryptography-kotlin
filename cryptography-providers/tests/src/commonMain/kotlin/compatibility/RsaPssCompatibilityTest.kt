@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.tests.compatibility
@@ -20,7 +20,10 @@ abstract class RsaPssCompatibilityTest(provider: CryptographyProvider) :
     RsaBasedCompatibilityTest<RSA.PSS.PublicKey, RSA.PSS.PrivateKey, RSA.PSS.KeyPair, RSA.PSS>(RSA.PSS, provider) {
 
     @Serializable
-    private data class SignatureParameters(val saltSizeBytes: Int?) : TestParameters
+    private data class SignatureParameters(
+        val saltSizeBytes: Int?,
+        val digestSizeBytes: Int, // required for checks only...
+    ) : TestParameters
 
     override suspend fun CompatibilityTestScope<RSA.PSS>.generate(isStressTest: Boolean) {
         val saltIterations = when {
@@ -35,9 +38,9 @@ abstract class RsaPssCompatibilityTest(provider: CryptographyProvider) :
         generateKeys(isStressTest) { keyPair, keyReference, (keySizeBites, _, digestSizeBytes) ->
             val maxSaltSize = (ceil((keySizeBites - 1) / 8.0) - digestSizeBytes - 2).toInt()
             (List(saltIterations) { CryptographyRandom.nextInt(maxSaltSize) } + null).forEach { saltSizeBytes ->
-                if (!supportsSaltSize(saltSizeBytes)) return@forEach
+                if (!supportsSaltSize(saltSizeBytes, digestSizeBytes)) return@forEach
 
-                val signatureParametersId = api.signatures.saveParameters(SignatureParameters(saltSizeBytes))
+                val signatureParametersId = api.signatures.saveParameters(SignatureParameters(saltSizeBytes, digestSizeBytes))
 
                 logger.log { "salt.size      = $saltSizeBytes" }
 
@@ -64,8 +67,8 @@ abstract class RsaPssCompatibilityTest(provider: CryptographyProvider) :
     override suspend fun CompatibilityTestScope<RSA.PSS>.validate() {
         val keyPairs = validateKeys()
 
-        api.signatures.getParameters<SignatureParameters> { (saltSizeBytes), parametersId, _ ->
-            if (!supportsSaltSize(saltSizeBytes)) return@getParameters
+        api.signatures.getParameters<SignatureParameters> { (saltSizeBytes, digestSizeBytes), parametersId, _ ->
+            if (!supportsSaltSize(saltSizeBytes, digestSizeBytes)) return@getParameters
 
             api.signatures.getData<SignatureData>(parametersId) { (keyReference, data, signature), _, _ ->
                 val (publicKeys, privateKeys) = keyPairs[keyReference] ?: return@getData

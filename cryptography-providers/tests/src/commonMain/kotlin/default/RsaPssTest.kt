@@ -36,7 +36,7 @@ abstract class RsaPssTest(provider: CryptographyProvider) : AlgorithmTest<RSA.PS
                     CryptographyRandom.nextInt(digestSize, maxSaltSize),
                     maxSaltSize
                 ).forEach { saltSize ->
-                    if (!supportsSaltSize(saltSize)) return@forEach
+                    if (!supportsSaltSize(saltSize, digestSize)) return@forEach
 
                     val (signatureGenerator, signatureVerifier) = when (saltSize) {
                         null -> keyPair.privateKey.signatureGenerator() to keyPair.publicKey.signatureVerifier()

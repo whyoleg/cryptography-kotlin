@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.tests
@@ -83,6 +83,19 @@ sealed class TestPlatform {
 }
 
 val TestPlatform.isBrowser: Boolean get() = this is TestPlatform.JS.Browser || this is TestPlatform.WasmJs.Browser
+val TestPlatform.isBrowserSafari: Boolean
+    get() {
+        // ...
+        //safari: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.2 Safari/605.1.15
+        //chrome: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/144.0.0.0 Safari/537.36
+        val userAgent = when (this) {
+            is TestPlatform.JS.Browser     -> userAgent
+            is TestPlatform.WasmJs.Browser -> userAgent
+            else                           -> return false
+        }
+        return !userAgent.contains("HeadlessChrome")
+    }
+
 val TestPlatform.isAndroid: Boolean get() = this is TestPlatform.Android
 inline fun TestPlatform.isAndroid(block: TestPlatform.Android.() -> Boolean): Boolean = this is TestPlatform.Android && block(this)
 

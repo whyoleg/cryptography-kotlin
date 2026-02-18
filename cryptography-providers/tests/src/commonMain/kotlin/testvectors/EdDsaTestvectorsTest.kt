@@ -31,6 +31,8 @@ abstract class EdDsaTestvectorsTest(provider: CryptographyProvider) : AlgorithmT
 
         val data = dataHex.hexToByteArray()
 
+        if (!supportsDataInput(data.size)) return@testWithAlgorithm
+
         verifier.assertVerifySignature(
             data = data,
             signature = signatureHex.hexToByteArray(),
