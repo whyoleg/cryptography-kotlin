@@ -484,6 +484,30 @@ abstract interface <#A: kotlin/Any?> dev.whyoleg.cryptography.operations/SharedS
     open suspend fun generateSharedSecretToByteArray(#A): kotlin/ByteArray // dev.whyoleg.cryptography.operations/SharedSecretGenerator.generateSharedSecretToByteArray|generateSharedSecretToByteArray(1:0){}[0]
 }
 
+abstract interface dev.whyoleg.cryptography.algorithms/ChaCha20 : dev.whyoleg.cryptography/CryptographyAlgorithm { // dev.whyoleg.cryptography.algorithms/ChaCha20|null[0]
+    open val id // dev.whyoleg.cryptography.algorithms/ChaCha20.id|{}id[0]
+        open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/ChaCha20> // dev.whyoleg.cryptography.algorithms/ChaCha20.id.<get-id>|<get-id>(){}[0]
+
+    abstract fun keyDecoder(): dev.whyoleg.cryptography.materials/Decoder<dev.whyoleg.cryptography.algorithms/ChaCha20.Key.Format, dev.whyoleg.cryptography.algorithms/ChaCha20.Key> // dev.whyoleg.cryptography.algorithms/ChaCha20.keyDecoder|keyDecoder(){}[0]
+    abstract fun keyGenerator(): dev.whyoleg.cryptography.operations/KeyGenerator<dev.whyoleg.cryptography.algorithms/ChaCha20.Key> // dev.whyoleg.cryptography.algorithms/ChaCha20.keyGenerator|keyGenerator(){}[0]
+
+    abstract interface Key : dev.whyoleg.cryptography.materials/Encodable<dev.whyoleg.cryptography.algorithms/ChaCha20.Key.Format> { // dev.whyoleg.cryptography.algorithms/ChaCha20.Key|null[0]
+        abstract fun cipher(): dev.whyoleg.cryptography.operations/IvCipher // dev.whyoleg.cryptography.algorithms/ChaCha20.Key.cipher|cipher(){}[0]
+
+        final enum class Format : dev.whyoleg.cryptography.materials/EncodingFormat, kotlin/Enum<dev.whyoleg.cryptography.algorithms/ChaCha20.Key.Format> { // dev.whyoleg.cryptography.algorithms/ChaCha20.Key.Format|null[0]
+            enum entry RAW // dev.whyoleg.cryptography.algorithms/ChaCha20.Key.Format.RAW|null[0]
+
+            final val entries // dev.whyoleg.cryptography.algorithms/ChaCha20.Key.Format.entries|#static{}entries[0]
+                final fun <get-entries>(): kotlin.enums/EnumEntries<dev.whyoleg.cryptography.algorithms/ChaCha20.Key.Format> // dev.whyoleg.cryptography.algorithms/ChaCha20.Key.Format.entries.<get-entries>|<get-entries>#static(){}[0]
+
+            final fun valueOf(kotlin/String): dev.whyoleg.cryptography.algorithms/ChaCha20.Key.Format // dev.whyoleg.cryptography.algorithms/ChaCha20.Key.Format.valueOf|valueOf#static(kotlin.String){}[0]
+            final fun values(): kotlin/Array<dev.whyoleg.cryptography.algorithms/ChaCha20.Key.Format> // dev.whyoleg.cryptography.algorithms/ChaCha20.Key.Format.values|values#static(){}[0]
+        }
+    }
+
+    final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/ChaCha20> // dev.whyoleg.cryptography.algorithms/ChaCha20.Companion|null[0]
+}
+
 abstract interface dev.whyoleg.cryptography.algorithms/ChaCha20Poly1305 : dev.whyoleg.cryptography/CryptographyAlgorithm { // dev.whyoleg.cryptography.algorithms/ChaCha20Poly1305|null[0]
     open val id // dev.whyoleg.cryptography.algorithms/ChaCha20Poly1305.id|{}id[0]
         open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/ChaCha20Poly1305> // dev.whyoleg.cryptography.algorithms/ChaCha20Poly1305.id.<get-id>|<get-id>(){}[0]
@@ -810,6 +834,31 @@ abstract interface dev.whyoleg.cryptography.algorithms/PBKDF2 : dev.whyoleg.cryp
     open fun secretDerivation(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest>, kotlin/Int, dev.whyoleg.cryptography/BinarySize, kotlinx.io.bytestring/ByteString): dev.whyoleg.cryptography.operations/SecretDerivation // dev.whyoleg.cryptography.algorithms/PBKDF2.secretDerivation|secretDerivation(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>;kotlin.Int;dev.whyoleg.cryptography.BinarySize;kotlinx.io.bytestring.ByteString){}[0]
 
     final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/PBKDF2> // dev.whyoleg.cryptography.algorithms/PBKDF2.Companion|null[0]
+}
+
+abstract interface dev.whyoleg.cryptography.algorithms/Poly1305 : dev.whyoleg.cryptography/CryptographyAlgorithm { // dev.whyoleg.cryptography.algorithms/Poly1305|null[0]
+    open val id // dev.whyoleg.cryptography.algorithms/Poly1305.id|{}id[0]
+        open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Poly1305> // dev.whyoleg.cryptography.algorithms/Poly1305.id.<get-id>|<get-id>(){}[0]
+
+    abstract fun keyDecoder(): dev.whyoleg.cryptography.materials/Decoder<dev.whyoleg.cryptography.algorithms/Poly1305.Key.Format, dev.whyoleg.cryptography.algorithms/Poly1305.Key> // dev.whyoleg.cryptography.algorithms/Poly1305.keyDecoder|keyDecoder(){}[0]
+    abstract fun keyGenerator(): dev.whyoleg.cryptography.operations/KeyGenerator<dev.whyoleg.cryptography.algorithms/Poly1305.Key> // dev.whyoleg.cryptography.algorithms/Poly1305.keyGenerator|keyGenerator(){}[0]
+
+    abstract interface Key : dev.whyoleg.cryptography.materials/Encodable<dev.whyoleg.cryptography.algorithms/Poly1305.Key.Format> { // dev.whyoleg.cryptography.algorithms/Poly1305.Key|null[0]
+        abstract fun signatureGenerator(): dev.whyoleg.cryptography.operations/SignatureGenerator // dev.whyoleg.cryptography.algorithms/Poly1305.Key.signatureGenerator|signatureGenerator(){}[0]
+        abstract fun signatureVerifier(): dev.whyoleg.cryptography.operations/SignatureVerifier // dev.whyoleg.cryptography.algorithms/Poly1305.Key.signatureVerifier|signatureVerifier(){}[0]
+
+        final enum class Format : dev.whyoleg.cryptography.materials/EncodingFormat, kotlin/Enum<dev.whyoleg.cryptography.algorithms/Poly1305.Key.Format> { // dev.whyoleg.cryptography.algorithms/Poly1305.Key.Format|null[0]
+            enum entry RAW // dev.whyoleg.cryptography.algorithms/Poly1305.Key.Format.RAW|null[0]
+
+            final val entries // dev.whyoleg.cryptography.algorithms/Poly1305.Key.Format.entries|#static{}entries[0]
+                final fun <get-entries>(): kotlin.enums/EnumEntries<dev.whyoleg.cryptography.algorithms/Poly1305.Key.Format> // dev.whyoleg.cryptography.algorithms/Poly1305.Key.Format.entries.<get-entries>|<get-entries>#static(){}[0]
+
+            final fun valueOf(kotlin/String): dev.whyoleg.cryptography.algorithms/Poly1305.Key.Format // dev.whyoleg.cryptography.algorithms/Poly1305.Key.Format.valueOf|valueOf#static(kotlin.String){}[0]
+            final fun values(): kotlin/Array<dev.whyoleg.cryptography.algorithms/Poly1305.Key.Format> // dev.whyoleg.cryptography.algorithms/Poly1305.Key.Format.values|values#static(){}[0]
+        }
+    }
+
+    final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Poly1305> // dev.whyoleg.cryptography.algorithms/Poly1305.Companion|null[0]
 }
 
 abstract interface dev.whyoleg.cryptography.algorithms/XDH : dev.whyoleg.cryptography/CryptographyAlgorithm { // dev.whyoleg.cryptography.algorithms/XDH|null[0]
