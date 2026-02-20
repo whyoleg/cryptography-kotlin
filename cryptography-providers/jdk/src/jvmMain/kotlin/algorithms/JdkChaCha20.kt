@@ -50,7 +50,11 @@ private class JdkChaCha20IvCipher(
     private val state: JdkCryptographyState,
     private val key: JSecretKey,
 ) : BaseIvCipher {
-    private val cipher = state.cipher("ChaCha20")
+    // cached = false: JDK's ChaCha20Cipher stores previous key+nonce and rejects reinitialization
+    // with the same pair (even with a different counter). Disabling pooling ensures each operation
+    // gets a fresh Cipher instance, allowing the same nonce with different counters (e.g. SSH
+    // chacha20-poly1305@openssh.com uses counter=0 and counter=1 with the same nonce per packet).
+    private val cipher = state.cipher("ChaCha20", cached = false)
 
     override fun createEncryptFunction(): CipherFunction {
         val nonce = ByteArray(nonceSize).also(state.secureRandom::nextBytes)
