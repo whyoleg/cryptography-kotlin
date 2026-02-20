@@ -41,7 +41,11 @@ private class JdkChaCha20Key(
 }
 
 // JDK's standalone ChaCha20 cipher requires ChaCha20ParameterSpec (not IvParameterSpec).
-// Counter starts at 1, matching RFC 8439 Section 2.4 (counter=0 is reserved for Poly1305 key in AEAD).
+// Supports two IV formats:
+//   - 12-byte IV: treated as nonce, counter defaults to 1 (RFC 8439 Section 2.4)
+//   - 16-byte IV: first 4 bytes are little-endian counter, remaining 12 bytes are nonce
+// This allows callers to control the initial block counter (e.g. SSH chacha20-poly1305@openssh.com
+// needs counter=0 for Poly1305 key derivation and counter=1 for message encryption).
 private class JdkChaCha20IvCipher(
     private val state: JdkCryptographyState,
     private val key: JSecretKey,
@@ -58,19 +62,42 @@ private class JdkChaCha20IvCipher(
     }
 
     override fun createEncryptFunctionWithIv(iv: ByteArray): CipherFunction {
+        val (nonce, counter) = parseIv(iv)
         return JdkCipherFunction(cipher.borrowResource {
-            init(JCipher.ENCRYPT_MODE, key, ChaCha20ParameterSpec(iv, 1), state.secureRandom)
+            init(JCipher.ENCRYPT_MODE, key, ChaCha20ParameterSpec(nonce, counter), state.secureRandom)
         })
     }
 
+    // Called by BaseImplicitIvDecryptFunction — iv is the full ciphertext, extract nonceSize bytes.
     private fun createDecryptFunctionWithIv(iv: ByteArray, startIndex: Int): CipherFunction {
-        val nonce = if (startIndex == 0 && iv.size == nonceSize) iv else iv.copyOfRange(startIndex, startIndex + nonceSize)
+        val nonce = iv.copyOfRange(startIndex, startIndex + nonceSize)
         return JdkCipherFunction(cipher.borrowResource {
             init(JCipher.DECRYPT_MODE, key, ChaCha20ParameterSpec(nonce, 1), state.secureRandom)
         })
     }
 
     override fun createDecryptFunctionWithIv(iv: ByteArray): CipherFunction {
-        return createDecryptFunctionWithIv(iv, 0)
+        val (nonce, counter) = parseIv(iv)
+        return JdkCipherFunction(cipher.borrowResource {
+            init(JCipher.DECRYPT_MODE, key, ChaCha20ParameterSpec(nonce, counter), state.secureRandom)
+        })
+    }
+}
+
+// Parses IV into (nonce, counter) pair.
+// 12-byte IV: nonce only, counter = 1 (RFC 8439 Section 2.4 default).
+// 16-byte IV: first 4 bytes = little-endian counter, next 12 bytes = nonce.
+private fun parseIv(iv: ByteArray): Pair<ByteArray, Int> {
+    return when (iv.size) {
+        nonceSize -> iv to 1
+        nonceSize + 4 -> {
+            val counter = (iv[0].toInt() and 0xFF) or
+                ((iv[1].toInt() and 0xFF) shl 8) or
+                ((iv[2].toInt() and 0xFF) shl 16) or
+                ((iv[3].toInt() and 0xFF) shl 24)
+            val nonce = iv.copyOfRange(4, 4 + nonceSize)
+            nonce to counter
+        }
+        else -> error("ChaCha20 IV must be $nonceSize bytes (nonce) or ${nonceSize + 4} bytes (counter + nonce), got ${iv.size}")
     }
 }
