@@ -58,11 +58,6 @@ protected abstract class dev/whyoleg/cryptography/providers/base/algorithms/Base
 	protected final fun getKey ()[B
 }
 
-public final class dev/whyoleg/cryptography/providers/base/algorithms/EcKt {
-	public static final fun convertEcPrivateKeyFromPkcs8ToSec1 ([B)[B
-	public static final fun convertEcPrivateKeyFromSec1ToPkcs8 ([B)[B
-}
-
 public final class dev/whyoleg/cryptography/providers/base/algorithms/EcdsaRawSignatureGenerator : dev/whyoleg/cryptography/operations/SignatureGenerator {
 	public fun <init> (Ldev/whyoleg/cryptography/operations/SignatureGenerator;I)V
 	public fun createSignFunction ()Ldev/whyoleg/cryptography/operations/SignFunction;
@@ -74,6 +69,8 @@ public final class dev/whyoleg/cryptography/providers/base/algorithms/EcdsaRawSi
 }
 
 public final class dev/whyoleg/cryptography/providers/base/materials/KeysKt {
+	public static final fun convertEcPrivateKeyFromPkcs8ToSec1 ([B)[B
+	public static final fun convertEcPrivateKeyFromSec1ToPkcs8 ([B)[B
 	public static final fun unwrapCurvePrivateKeyInfo-4RESAxk (Ljava/lang/String;[B)[B
 	public static final fun unwrapPem-unSj4pc (Ljava/lang/String;[B)[B
 	public static final fun unwrapPrivateKeyInfo-4RESAxk (Ljava/lang/String;[B)[B
