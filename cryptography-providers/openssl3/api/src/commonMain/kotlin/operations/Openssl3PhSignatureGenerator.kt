@@ -25,36 +25,31 @@ internal abstract class Openssl3PhSignatureGenerator(
     override fun createSignFunction(): SignFunction = AccumulatingSignFunction(::sign)
 
     @OptIn(UnsafeNumber::class)
-    private fun sign(data: ByteArray): ByteArray = memScoped {
-        val context = checkError(EVP_PKEY_CTX_new_from_pkey(null, privateKey, null))
-        try {
-            checkError(EVP_PKEY_sign_init_ex(context, createParams()))
+    private fun sign(data: ByteArray): ByteArray = with_PKEY_CTX(privateKey) { context ->
+        checkError(EVP_PKEY_sign_init_ex(context, createParams()))
 
-            data.usePinned { dataPin ->
-                val siglen = alloc<size_tVar>()
-                checkError(
-                    EVP_PKEY_sign(
-                        ctx = context,
-                        sig = null,
-                        siglen = siglen.ptr,
-                        tbs = dataPin.safeAddressOfU(0),
-                        tbslen = data.size.convert()
-                    )
+        data.usePinned { dataPin ->
+            val siglen = alloc<size_tVar>()
+            checkError(
+                EVP_PKEY_sign(
+                    ctx = context,
+                    sig = null,
+                    siglen = siglen.ptr,
+                    tbs = dataPin.safeAddressOfU(0),
+                    tbslen = data.size.convert()
                 )
-                val signature = ByteArray(siglen.value.convert())
-                checkError(
-                    EVP_PKEY_sign(
-                        ctx = context,
-                        sig = signature.safeRefToU(0),
-                        siglen = siglen.ptr,
-                        tbs = dataPin.safeAddressOfU(0),
-                        tbslen = data.size.convert()
-                    )
+            )
+            val signature = ByteArray(siglen.value.convert())
+            checkError(
+                EVP_PKEY_sign(
+                    ctx = context,
+                    sig = signature.safeRefToU(0),
+                    siglen = siglen.ptr,
+                    tbs = dataPin.safeAddressOfU(0),
+                    tbslen = data.size.convert()
                 )
-                signature.ensureSizeExactly(siglen.value.convert())
-            }
-        } finally {
-            EVP_PKEY_CTX_free(context)
+            )
+            signature.ensureSizeExactly(siglen.value.convert())
         }
     }
 }

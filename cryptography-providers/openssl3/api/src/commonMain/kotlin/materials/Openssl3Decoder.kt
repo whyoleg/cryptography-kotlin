@@ -64,22 +64,19 @@ internal abstract class Openssl3Decoder<F : EncodingFormat, K>(
 
     // be careful when using it, as it requires ALL parameters to be present, otherwise some features will not work;
     // like in case of EC private key import without public key - the later will not be computed
-    protected fun fromParameters(createParams: MemScope.() -> CValuesRef<OSSL_PARAM>?): CPointer<EVP_PKEY> = memScoped {
-        val context = checkError(EVP_PKEY_CTX_new_from_name(null, algorithm, null))
-        try {
-            checkError(EVP_PKEY_fromdata_init(context))
-            val pkeyVar = alloc<CPointerVar<EVP_PKEY>>()
-            checkError(
-                EVP_PKEY_fromdata(
-                    ctx = context,
-                    ppkey = pkeyVar.ptr,
-                    selection = selection,
-                    param = createParams()
-                )
+    protected fun fromParameters(
+        createParams: MemScope.() -> CValuesRef<OSSL_PARAM>?,
+    ): CPointer<EVP_PKEY> = with_PKEY_CTX(algorithm) { context ->
+        checkError(EVP_PKEY_fromdata_init(context))
+        val pkeyVar = alloc<CPointerVar<EVP_PKEY>>()
+        checkError(
+            EVP_PKEY_fromdata(
+                ctx = context,
+                ppkey = pkeyVar.ptr,
+                selection = selection,
+                param = createParams()
             )
-            checkError(pkeyVar.value)
-        } finally {
-            EVP_PKEY_CTX_free(context)
-        }
+        )
+        checkError(pkeyVar.value)
     }
 }

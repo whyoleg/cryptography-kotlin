@@ -124,28 +124,23 @@ internal object Openssl3Dh : DH {
         private val privateValueLengthBits: Int?,
     ) : DH.ParametersGenerator {
         @OptIn(UnsafeNumber::class)
-        override fun generateParametersBlocking(): DH.Parameters = memScoped {
-            val context = checkError(EVP_PKEY_CTX_new_from_name(null, "DH", null))
-            try {
-                checkError(EVP_PKEY_paramgen_init(context))
+        override fun generateParametersBlocking(): DH.Parameters = with_PKEY_CTX("DH") { context ->
+            checkError(EVP_PKEY_paramgen_init(context))
 
-                checkError(
-                    EVP_PKEY_CTX_set_params(
-                        context,
-                        OSSL_PARAM_array(
-                            OSSL_PARAM_construct_uint("pbits".cstr.ptr, alloc(primeSizeBits).ptr),
-                            privateValueLengthBits?.let { OSSL_PARAM_construct_int("priv_len".cstr.ptr, alloc(it).ptr) },
-                        )
+            checkError(
+                EVP_PKEY_CTX_set_params(
+                    context,
+                    OSSL_PARAM_array(
+                        OSSL_PARAM_construct_uint("pbits".cstr.ptr, alloc(primeSizeBits).ptr),
+                        privateValueLengthBits?.let { OSSL_PARAM_construct_int("priv_len".cstr.ptr, alloc(it).ptr) },
                     )
                 )
+            )
 
-                val paramsKeyVar = alloc<CPointerVar<EVP_PKEY>>()
-                checkError(EVP_PKEY_generate(context, paramsKeyVar.ptr))
-                val paramsKey = checkError(paramsKeyVar.value)
-                Openssl3DhParameters(paramsKey)
-            } finally {
-                EVP_PKEY_CTX_free(context)
-            }
+            val paramsKeyVar = alloc<CPointerVar<EVP_PKEY>>()
+            checkError(EVP_PKEY_generate(context, paramsKeyVar.ptr))
+            val paramsKey = checkError(paramsKeyVar.value)
+            Openssl3DhParameters(paramsKey)
         }
     }
 
