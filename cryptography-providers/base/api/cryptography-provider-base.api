@@ -32,6 +32,11 @@ protected abstract class dev/whyoleg/cryptography/providers/base/algorithms/Base
 	protected final fun getKey ()[B
 }
 
+public final class dev/whyoleg/cryptography/providers/base/algorithms/BaseEcdsaKt {
+	public static final fun convertEcdsaDerSignatureToRaw (I[B)[B
+	public static final fun convertEcdsaRawSignatureToDer (I[BII)[B
+}
+
 public abstract class dev/whyoleg/cryptography/providers/base/algorithms/BaseHkdf : dev/whyoleg/cryptography/algorithms/HKDF {
 	public fun <init> (Ldev/whyoleg/cryptography/CryptographyProvider;)V
 	protected abstract fun digestSize (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;)I
@@ -56,6 +61,16 @@ protected abstract class dev/whyoleg/cryptography/providers/base/algorithms/Base
 public final class dev/whyoleg/cryptography/providers/base/algorithms/EcKt {
 	public static final fun convertEcPrivateKeyFromPkcs8ToSec1 ([B)[B
 	public static final fun convertEcPrivateKeyFromSec1ToPkcs8 ([B)[B
+}
+
+public final class dev/whyoleg/cryptography/providers/base/algorithms/EcdsaRawSignatureGenerator : dev/whyoleg/cryptography/operations/SignatureGenerator {
+	public fun <init> (Ldev/whyoleg/cryptography/operations/SignatureGenerator;I)V
+	public fun createSignFunction ()Ldev/whyoleg/cryptography/operations/SignFunction;
+}
+
+public final class dev/whyoleg/cryptography/providers/base/algorithms/EcdsaRawSignatureVerifier : dev/whyoleg/cryptography/operations/SignatureVerifier {
+	public fun <init> (Ldev/whyoleg/cryptography/operations/SignatureVerifier;I)V
+	public fun createVerifyFunction ()Ldev/whyoleg/cryptography/operations/VerifyFunction;
 }
 
 public final class dev/whyoleg/cryptography/providers/base/materials/KeysKt {

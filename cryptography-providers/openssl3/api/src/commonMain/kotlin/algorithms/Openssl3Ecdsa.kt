@@ -8,7 +8,7 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
-import dev.whyoleg.cryptography.providers.base.*
+import dev.whyoleg.cryptography.providers.base.algorithms.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.providers.openssl3.materials.*
@@ -175,56 +175,6 @@ private class EcdsaDigestSignatureGenerator(
     override fun MemScope.createParams(): CValuesRef<OSSL_PARAM>? = null
 }
 
-private class EcdsaRawSignatureGenerator(
-    private val derGenerator: SignatureGenerator,
-    private val curveOrderSize: Int,
-) : SignatureGenerator {
-    override fun createSignFunction(): SignFunction = RawSignFunction(derGenerator.createSignFunction(), curveOrderSize)
-
-    private class RawSignFunction(
-        private val derSignFunction: SignFunction,
-        private val curveOrderSize: Int,
-    ) : SignFunction {
-        override fun update(source: ByteArray, startIndex: Int, endIndex: Int) {
-            derSignFunction.update(source, startIndex, endIndex)
-        }
-
-        override fun signIntoByteArray(destination: ByteArray, destinationOffset: Int): Int {
-            val signature = signToByteArray()
-            checkBounds(destination.size, destinationOffset, destinationOffset + signature.size)
-            signature.copyInto(destination, destinationOffset)
-            return signature.size
-        }
-
-        override fun signToByteArray(): ByteArray {
-            val derSignature = derSignFunction.signToByteArray()
-
-            return memScoped {
-                val pdataVar = alloc<CPointerVar<UByteVar>> { value = allocArrayOf(derSignature).reinterpret() }
-                val sig = checkError(d2i_ECDSA_SIG(null, pdataVar.ptr, derSignature.size.convert()))
-                try {
-                    val r = checkError(ECDSA_SIG_get0_r(sig))
-                    val s = checkError(ECDSA_SIG_get0_s(sig))
-                    val signature = ByteArray(curveOrderSize * 2)
-                    checkError(BN_bn2binpad(r, signature.refToU(0), curveOrderSize))
-                    checkError(BN_bn2binpad(s, signature.refToU(curveOrderSize), curveOrderSize))
-                    signature
-                } finally {
-                    ECDSA_SIG_free(sig)
-                }
-            }
-        }
-
-        override fun reset() {
-            derSignFunction.reset()
-        }
-
-        override fun close() {
-            derSignFunction.close()
-        }
-    }
-}
-
 private class EcdsaPhSignatureVerifier(
     publicKey: CPointer<EVP_PKEY>,
 ) : Openssl3PhSignatureVerifier(publicKey) {
@@ -236,56 +186,4 @@ private class EcdsaDigestSignatureVerifier(
     hashAlgorithm: String,
 ) : Openssl3DigestSignatureVerifier(publicKey, hashAlgorithm) {
     override fun MemScope.createParams(): CValuesRef<OSSL_PARAM>? = null
-}
-
-private class EcdsaRawSignatureVerifier(
-    private val derVerifier: SignatureVerifier,
-    private val curveOrderSize: Int,
-) : SignatureVerifier {
-    override fun createVerifyFunction(): VerifyFunction = RawVerifyFunction(derVerifier.createVerifyFunction(), curveOrderSize)
-
-    private class RawVerifyFunction(
-        private val derVerifyFunction: VerifyFunction,
-        private val curveOrderSize: Int,
-    ) : VerifyFunction {
-        override fun update(source: ByteArray, startIndex: Int, endIndex: Int) {
-            derVerifyFunction.update(source, startIndex, endIndex)
-        }
-
-        override fun tryVerify(signature: ByteArray, startIndex: Int, endIndex: Int): Boolean {
-            checkBounds(signature.size, startIndex, endIndex)
-
-            check((endIndex - startIndex) == curveOrderSize * 2) {
-                "Expected signature size ${curveOrderSize * 2}, received: ${endIndex - startIndex}"
-            }
-
-            val derSignature = memScoped {
-                val r = BN_bin2bn(signature.refToU(startIndex), curveOrderSize, null)
-                val s = BN_bin2bn(signature.refToU(startIndex + curveOrderSize), curveOrderSize, null)
-                val sig = ECDSA_SIG_new()
-                try {
-                    checkError(ECDSA_SIG_set0(sig, r, s))
-                    val outVar = alloc<CPointerVar<UByteVar>>()
-                    val signatureLength = checkError(i2d_ECDSA_SIG(sig, outVar.ptr))
-                    outVar.value!!.readBytes(signatureLength)
-                } finally {
-                    ECDSA_SIG_free(sig)
-                }
-            }
-
-            return derVerifyFunction.tryVerify(derSignature)
-        }
-
-        override fun verify(signature: ByteArray, startIndex: Int, endIndex: Int) {
-            check(tryVerify(signature, startIndex, endIndex)) { "Invalid signature" }
-        }
-
-        override fun reset() {
-            derVerifyFunction.reset()
-        }
-
-        override fun close() {
-            derVerifyFunction.close()
-        }
-    }
 }
