@@ -12,31 +12,28 @@ import platform.posix.*
 
 internal abstract class Openssl3PrivateKeyDecoder<F : EncodingFormat, K>(
     algorithm: String,
-) : Openssl3Decoder<F, K>(algorithm) {
-    override fun selection(format: F): Int = OSSL_KEYMGMT_SELECT_PRIVATE_KEY
+) : Openssl3Decoder<F, K>(algorithm, EVP_PKEY_KEYPAIR) {
     override fun inputStruct(format: F): String = "PrivateKeyInfo"
 }
 
 internal abstract class Openssl3PublicKeyDecoder<F : EncodingFormat, K>(
     algorithm: String,
-) : Openssl3Decoder<F, K>(algorithm) {
-    override fun selection(format: F): Int = OSSL_KEYMGMT_SELECT_PUBLIC_KEY
+) : Openssl3Decoder<F, K>(algorithm, EVP_PKEY_PUBLIC_KEY) {
     override fun inputStruct(format: F): String = "SubjectPublicKeyInfo"
 }
 
 internal abstract class Openssl3ParametersDecoder<F : EncodingFormat, P>(
     algorithm: String,
-) : Openssl3Decoder<F, P>(algorithm) {
-    override fun selection(format: F): Int = EVP_PKEY_KEY_PARAMETERS
+) : Openssl3Decoder<F, P>(algorithm, EVP_PKEY_KEY_PARAMETERS) {
     override fun inputStruct(format: F): String? = null
 }
 
 internal abstract class Openssl3Decoder<F : EncodingFormat, K>(
     private val algorithm: String,
+    private val selection: Int,
 ) : Decoder<F, K> {
     protected abstract fun wrapKey(key: CPointer<EVP_PKEY>): K
 
-    protected abstract fun selection(format: F): Int
     protected abstract fun inputType(format: F): String
     protected abstract fun inputStruct(format: F): String?
 
@@ -48,7 +45,7 @@ internal abstract class Openssl3Decoder<F : EncodingFormat, K>(
                 input_type = inputType(format).cstr.ptr,
                 input_struct = inputStruct(format)?.cstr?.ptr,
                 keytype = algorithm.cstr.ptr,
-                selection = selection(format),
+                selection = selection,
                 libctx = null,
                 propquery = null
             )
@@ -62,6 +59,27 @@ internal abstract class Openssl3Decoder<F : EncodingFormat, K>(
             wrapKey(pkey)
         } finally {
             OSSL_DECODER_CTX_free(context)
+        }
+    }
+
+    // be careful when using it, as it requires ALL parameters to be present, otherwise some features will not work;
+    // like in case of EC private key import without public key - the later will not be computed
+    protected fun fromParameters(createParams: MemScope.() -> CValuesRef<OSSL_PARAM>?): CPointer<EVP_PKEY> = memScoped {
+        val context = checkError(EVP_PKEY_CTX_new_from_name(null, algorithm, null))
+        try {
+            checkError(EVP_PKEY_fromdata_init(context))
+            val pkeyVar = alloc<CPointerVar<EVP_PKEY>>()
+            checkError(
+                EVP_PKEY_fromdata(
+                    ctx = context,
+                    ppkey = pkeyVar.ptr,
+                    selection = selection,
+                    param = createParams()
+                )
+            )
+            checkError(pkeyVar.value)
+        } finally {
+            EVP_PKEY_CTX_free(context)
         }
     }
 }

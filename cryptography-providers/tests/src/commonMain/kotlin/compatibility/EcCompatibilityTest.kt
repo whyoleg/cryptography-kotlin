@@ -90,9 +90,9 @@ abstract class EcCompatibilityTest<PublicK : EC.PublicKey, PrivateK : EC.Private
                 val expected = PemDocument.decode(expected)
                 val actual = PemDocument.decode(publicKey.encodeToByteString(format))
 
-                assertEquals(expected.label, actual.label)
-                assertEquals(PemLabel.PublicKey, actual.label)
-                assertContentEquals(expected.content, actual.content, "Public Key $format content encoding")
+                assertEquals(expected.label, actual.label, "Public Key $format content encoding: label")
+                assertEquals(PemLabel.PublicKey, actual.label, "Public Key $format content encoding: label")
+                assertContentEquals(expected.content, actual.content, "Public Key $format content encoding: content")
             }
         }
     }
@@ -130,31 +130,35 @@ abstract class EcCompatibilityTest<PublicK : EC.PublicKey, PrivateK : EC.Private
                     when (format) {
                         EC.PrivateKey.Format.JWK -> {}
                         EC.PrivateKey.Format.RAW -> {
-                            assertContentEquals(byteString, key.encodeToByteString(format))
+                            assertContentEquals(byteString, key.encodeToByteString(format), "Private Key $format")
                         }
                         EC.PrivateKey.Format.DER.SEC1 -> {
-                            assertEcPrivateKeyEquals(byteString.toByteArray(), key.encodeToByteArray(format))
+                            assertEcPrivateKeyEquals(byteString.toByteArray(), key.encodeToByteArray(format), "Private Key $format")
                         }
                         EC.PrivateKey.Format.PEM.SEC1 -> {
                             val expected = PemDocument.decode(byteString)
                             val actual = PemDocument.decode(key.encodeToByteString(format))
 
-                            assertEquals(PemLabel.EcPrivateKey, actual.label)
-                            assertEquals(expected.label, actual.label)
+                            assertEquals(PemLabel.EcPrivateKey, actual.label, "Private Key $format: label")
+                            assertEquals(expected.label, actual.label, "Private Key $format: content")
 
-                            assertEcPrivateKeyEquals(expected.content.toByteArray(), actual.content.toByteArray())
+                            assertEcPrivateKeyEquals(expected.content.toByteArray(), actual.content.toByteArray(), "Private Key $format")
                         }
                         EC.PrivateKey.Format.DER -> {
-                            assertPkcs8EcPrivateKeyEquals(byteString.toByteArray(), key.encodeToByteArray(format))
+                            assertPkcs8EcPrivateKeyEquals(byteString.toByteArray(), key.encodeToByteArray(format), "Private Key $format")
                         }
                         EC.PrivateKey.Format.PEM -> {
                             val expected = PemDocument.decode(byteString)
                             val actual = PemDocument.decode(key.encodeToByteString(format))
 
-                            assertEquals(expected.label, actual.label)
-                            assertEquals(PemLabel.PrivateKey, actual.label)
+                            assertEquals(expected.label, actual.label, "Private Key $format: label")
+                            assertEquals(PemLabel.PrivateKey, actual.label, "Private Key $format: label")
 
-                            assertPkcs8EcPrivateKeyEquals(expected.content.toByteArray(), actual.content.toByteArray())
+                            assertPkcs8EcPrivateKeyEquals(
+                                expectedBytes = expected.content.toByteArray(),
+                                actualBytes = actual.content.toByteArray(),
+                                message = "Private Key $format"
+                            )
                         }
                     }
                 }
@@ -176,36 +180,42 @@ abstract class EcCompatibilityTest<PublicK : EC.PublicKey, PrivateK : EC.Private
 private fun assertEcPrivateKeyEquals(
     expectedBytes: ByteArray,
     actualBytes: ByteArray,
+    message: String? = null,
     requireParametersCheck: Boolean = true,
 ) {
     val expected = Der.decodeFromByteArray(EcPrivateKey.serializer(), expectedBytes)
     val actual = Der.decodeFromByteArray(EcPrivateKey.serializer(), actualBytes)
 
-    assertEquals(expected.version, actual.version, "EcPrivateKey.version")
-    assertContentEquals(expected.privateKey, actual.privateKey, "EcPrivateKey.privateKey")
+    assertEquals(expected.version, actual.version, "EcPrivateKey.version: $message")
+    assertContentEquals(expected.privateKey, actual.privateKey, "EcPrivateKey.privateKey: $message")
 
     if (requireParametersCheck || expected.parameters != null && actual.parameters != null) {
-        assertEquals(expected.parameters, actual.parameters, "EcPrivateKey.parameters")
+        assertEquals(expected.parameters, actual.parameters, "EcPrivateKey.parameters: $message")
     }
 
     if (expected.publicKey != null && actual.publicKey != null) {
-        assertBitArrayEquals(expected.publicKey, actual.publicKey, "EcPrivateKey.publicKey")
+        assertBitArrayEquals(expected.publicKey, actual.publicKey, "EcPrivateKey.publicKey: $message")
     }
 }
 
-private fun assertPkcs8EcPrivateKeyEquals(expectedBytes: ByteArray, actualBytes: ByteArray) {
+private fun assertPkcs8EcPrivateKeyEquals(
+    expectedBytes: ByteArray,
+    actualBytes: ByteArray,
+    message: String? = null,
+) {
     val expected = Der.decodeFromByteArray(PrivateKeyInfo.serializer(), expectedBytes)
     val actual = Der.decodeFromByteArray(PrivateKeyInfo.serializer(), actualBytes)
 
-    assertEquals(expected.version, actual.version, "PrivateKeyInfo.version")
+    assertEquals(expected.version, actual.version, "PrivateKeyInfo.version: $message")
     val expectedAlgorithm = assertIs<EcAlgorithmIdentifier>(expected.privateKeyAlgorithm)
     val actualAlgorithm = assertIs<EcAlgorithmIdentifier>(actual.privateKeyAlgorithm)
-    assertEquals(expectedAlgorithm.parameters, actualAlgorithm.parameters, "PrivateKeyInfo.parameters")
+    assertEquals(expectedAlgorithm.parameters, actualAlgorithm.parameters, "PrivateKeyInfo.parameters: $message")
 
     assertEcPrivateKeyEquals(
         expectedBytes = expected.privateKey,
         actualBytes = actual.privateKey,
+        message = message,
         // different providers could encode or not encode parameters inside
-        requireParametersCheck = false
+        requireParametersCheck = false,
     )
 }

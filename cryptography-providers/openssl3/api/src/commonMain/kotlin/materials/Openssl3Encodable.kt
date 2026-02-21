@@ -15,7 +15,7 @@ import kotlin.experimental.*
 internal abstract class Openssl3PrivateKeyEncodable<F : EncodingFormat, PublicK>(
     key: CPointer<EVP_PKEY>,
     private var publicKey: PublicK?,
-) : Openssl3Encodable<F>(key), PublicKeyAccessor<PublicK> {
+) : Openssl3Encodable<F>(key, EVP_PKEY_KEYPAIR), PublicKeyAccessor<PublicK> {
     protected abstract fun wrapPublicKey(key: CPointer<EVP_PKEY>): PublicK
 
     final override fun getPublicKeyBlocking(): PublicK {
@@ -23,31 +23,28 @@ internal abstract class Openssl3PrivateKeyEncodable<F : EncodingFormat, PublicK>
         return publicKey!!
     }
 
-    override fun selection(format: F): Int = OSSL_KEYMGMT_SELECT_PRIVATE_KEY
     override fun outputStruct(format: F): String = "PrivateKeyInfo"
 }
 
 internal abstract class Openssl3PublicKeyEncodable<F : EncodingFormat>(
     key: CPointer<EVP_PKEY>,
-) : Openssl3Encodable<F>(key) {
-    override fun selection(format: F): Int = OSSL_KEYMGMT_SELECT_PUBLIC_KEY
+) : Openssl3Encodable<F>(key, EVP_PKEY_PUBLIC_KEY) {
     override fun outputStruct(format: F): String = "SubjectPublicKeyInfo"
 }
 
 internal abstract class Openssl3ParametersEncodable<F : EncodingFormat>(
     key: CPointer<EVP_PKEY>,
-) : Openssl3Encodable<F>(key) {
-    override fun selection(format: F): Int = EVP_PKEY_KEY_PARAMETERS
+) : Openssl3Encodable<F>(key, EVP_PKEY_KEY_PARAMETERS) {
     override fun outputStruct(format: F): String? = null
 }
 
 internal abstract class Openssl3Encodable<F : EncodingFormat>(
     val key: CPointer<EVP_PKEY>,
+    val selection: Int,
 ) : Encodable<F> {
     @OptIn(ExperimentalNativeApi::class)
     private val cleaner = key.cleaner()
 
-    protected abstract fun selection(format: F): Int
     protected abstract fun outputType(format: F): String
     protected abstract fun outputStruct(format: F): String?
 
@@ -55,7 +52,7 @@ internal abstract class Openssl3Encodable<F : EncodingFormat>(
         val context = checkError(
             OSSL_ENCODER_CTX_new_for_pkey(
                 pkey = key,
-                selection = selection(format),
+                selection = selection,
                 output_type = outputType(format).cstr.ptr,
                 output_struct = outputStruct(format)?.cstr?.ptr,
                 propquery = null

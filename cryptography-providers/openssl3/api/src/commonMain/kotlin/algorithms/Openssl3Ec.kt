@@ -54,26 +54,11 @@ internal abstract class Openssl3Ec<PublicK : EC.PublicKey, PrivateK : EC.Private
         }
 
         @OptIn(UnsafeNumber::class)
-        private fun decodePublicRawKey(curve: EC.Curve, input: ByteArray): CPointer<EVP_PKEY> = memScoped {
-            val context = checkError(EVP_PKEY_CTX_new_from_name(null, "EC", null))
-            try {
-                checkError(EVP_PKEY_fromdata_init(context))
-                val pkeyVar = alloc<CPointerVar<EVP_PKEY>>()
-                checkError(
-                    EVP_PKEY_fromdata(
-                        ctx = context,
-                        ppkey = pkeyVar.ptr,
-                        selection = EVP_PKEY_PUBLIC_KEY,
-                        param = OSSL_PARAM_array(
-                            OSSL_PARAM_construct_utf8_string("group".cstr.ptr, curve.name.cstr.ptr, 0.convert()),
-                            OSSL_PARAM_construct_octet_string("pub".cstr.ptr, input.safeRefToU(0), input.size.convert())
-                        )
-                    )
-                )
-                checkError(pkeyVar.value)
-            } finally {
-                EVP_PKEY_CTX_free(context)
-            }
+        private fun decodePublicRawKey(curve: EC.Curve, input: ByteArray): CPointer<EVP_PKEY> = fromParameters {
+            OSSL_PARAM_array(
+                OSSL_PARAM_construct_utf8_string("group".cstr.ptr, curve.name.cstr.ptr, 0.convert()),
+                OSSL_PARAM_construct_octet_string("pub".cstr.ptr, input.safeRefToU(0), input.size.convert())
+            )
         }
     }
 
@@ -103,55 +88,30 @@ internal abstract class Openssl3Ec<PublicK : EC.PublicKey, PrivateK : EC.Private
             return wrapPrivateKey(curve, key, null)
         }
 
-        @OptIn(UnsafeNumber::class)
-        private fun convertPrivateRawKeyToSec1(
-            curve: EC.Curve,
-            input: ByteArray,
-        ): ByteArray = memScoped {
-            val context = checkError(EVP_PKEY_CTX_new_from_name(null, "EC", null))
-            try {
-                checkError(EVP_PKEY_fromdata_init(context))
-                val pkeyVar = alloc<CPointerVar<EVP_PKEY>>()
-                checkError(
-                    EVP_PKEY_fromdata(
-                        ctx = context,
-                        ppkey = pkeyVar.ptr,
-                        selection = EVP_PKEY_PRIVATE_KEY,
-                        param = OSSL_PARAM_array(
-                            OSSL_PARAM_construct_utf8_string("group".cstr.ptr, curve.name.cstr.ptr, 0.convert()),
-                            OSSL_PARAM_construct_BN("priv".cstr.ptr, input.safeRefToU(0), input.size.convert())
-                        )
-                    )
+        // openssl doesn't infer a public key from a private key when decoding just a raw private key via `EVP_PKEY_fromdata;
+        // so after decoding, we wrap it in SEC1 EcPrivateKey structure;
+        // and import it via OSSL_DECODER as for other formats;
+        // in this case, openssl INFER public key :)
+        private fun convertPrivateRawKeyToSec1(curve: EC.Curve, input: ByteArray): ByteArray {
+            return Der.encodeToByteArray(
+                serializer = EcPrivateKey.serializer(),
+                value = EcPrivateKey(
+                    version = 1,
+                    privateKey = input,
+                    parameters = EcParameters(namedCurve = ObjectIdentifier(value = oid(curve)))
                 )
-                val privateKey = checkError(pkeyVar.value)
+            )
+        }
 
-                // openssl doesn't infer a public key from a private key when decoding just a raw private key;
-                // so after decoding, we wrap it in SEC1 EcPrivateKey structure;
-                // and import it via OSSL_DECODER as for other formats;
-                // in this case, openssl INFER public key :)
-
-                // we use privateKey only to get OID,
-                // as `group` openssl supports aliases for `group` in EVP_PKEY_fromdata, like P-521 for secp521r1
-                // but has no API to get OID from it directly
-
-                try {
-                    val groupId = checkError(OBJ_sn2nid(EC_group_name(privateKey)))
-                    val oidObj = checkError(OBJ_nid2obj(groupId))
-                    // no_name = 1 means encode as "1.2.3" and not as a real name like secp521r1
-                    val length = checkError(OBJ_obj2txt(null, 0, oidObj, no_name = 1)) + 1
-                    val oidString = allocArray<ByteVar>(length)
-                    checkError(OBJ_obj2txt(oidString, length.convert(), oidObj, 1))
-                    val parameters = EcParameters(ObjectIdentifier(oidString.toKString()))
-                    Der.encodeToByteArray(
-                        EcPrivateKey.serializer(),
-                        EcPrivateKey(1, input, parameters)
-                    )
-                } finally {
-                    EVP_PKEY_free(privateKey)
-                }
-            } finally {
-                EVP_PKEY_CTX_free(context)
-            }
+        private fun oid(curve: EC.Curve): String = memScoped {
+            val group = createEcGroup(curve.name)
+            val groupId = checkError(EC_GROUP_get_curve_name(group))
+            val oidObj = checkError(OBJ_nid2obj(groupId))
+            // no_name = 1 means encode as "1.2.3" and not as a real name like secp521r1
+            val length = checkError(OBJ_obj2txt(null, 0, oidObj, no_name = 1)) + 1
+            val oidString = allocArray<ByteVar>(length)
+            checkError(OBJ_obj2txt(oidString, length.convert(), oidObj, 1))
+            oidString.toKString()
         }
     }
 
