@@ -1,9 +1,10 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.jdk.algorithms
 
+import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.operations.*
@@ -15,8 +16,9 @@ import javax.crypto.spec.*
 internal class JdkRsaOaep(
     state: JdkCryptographyState,
 ) : JdkRsa<RSA.OAEP.PublicKey, RSA.OAEP.PrivateKey, RSA.OAEP.KeyPair>(state), RSA.OAEP {
-    override val wrapPublicKey: (JPublicKey, String) -> RSA.OAEP.PublicKey = ::RsaOaepPublicKey
-    override val wrapPrivateKey: (JPrivateKey, String, RSA.OAEP.PublicKey?) -> RSA.OAEP.PrivateKey = ::RsaOaepPrivateKey
+    override val wrapPublicKey: (JPublicKey, CryptographyAlgorithmId<Digest>) -> RSA.OAEP.PublicKey = ::RsaOaepPublicKey
+    override val wrapPrivateKey: (JPrivateKey, CryptographyAlgorithmId<Digest>, RSA.OAEP.PublicKey?) -> RSA.OAEP.PrivateKey =
+        ::RsaOaepPrivateKey
     override val wrapKeyPair: (RSA.OAEP.PublicKey, RSA.OAEP.PrivateKey) -> RSA.OAEP.KeyPair = ::RsaOaepKeyPair
 
     private class RsaOaepKeyPair(
@@ -26,17 +28,17 @@ internal class JdkRsaOaep(
 
     private inner class RsaOaepPublicKey(
         key: JPublicKey,
-        private val hashAlgorithmName: String,
-    ) : RSA.OAEP.PublicKey, RsaPublicEncodableKey(key) {
-        override fun encryptor(): AuthenticatedEncryptor = RsaOaepEncryptor(state, key, hashAlgorithmName)
+        digest: CryptographyAlgorithmId<Digest>,
+    ) : RSA.OAEP.PublicKey, RsaPublicEncodableKey(key, digest) {
+        override fun encryptor(): AuthenticatedEncryptor = RsaOaepEncryptor(state, key, hashAlgorithmName(digest))
     }
 
     private inner class RsaOaepPrivateKey(
         key: JPrivateKey,
-        hashAlgorithmName: String,
+        digest: CryptographyAlgorithmId<Digest>,
         publicKey: RSA.OAEP.PublicKey?,
-    ) : RSA.OAEP.PrivateKey, RsaPrivateEncodableKey(key, hashAlgorithmName, publicKey) {
-        override fun decryptor(): AuthenticatedDecryptor = RsaOaepDecryptor(state, key, hashAlgorithmName)
+    ) : RSA.OAEP.PrivateKey, RsaPrivateEncodableKey(key, digest, publicKey) {
+        override fun decryptor(): AuthenticatedDecryptor = RsaOaepDecryptor(state, key, hashAlgorithmName(digest))
     }
 }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.jdk.algorithms
@@ -14,8 +14,9 @@ import dev.whyoleg.cryptography.providers.jdk.operations.*
 internal class JdkRsaPkcs1(
     state: JdkCryptographyState,
 ) : JdkRsa<RSA.PKCS1.PublicKey, RSA.PKCS1.PrivateKey, RSA.PKCS1.KeyPair>(state), RSA.PKCS1 {
-    override val wrapPublicKey: (JPublicKey, String) -> RSA.PKCS1.PublicKey = ::RsaPkcs1PublicKey
-    override val wrapPrivateKey: (JPrivateKey, String, RSA.PKCS1.PublicKey?) -> RSA.PKCS1.PrivateKey = ::RsaPkcs1PrivateKey
+    override val wrapPublicKey: (JPublicKey, CryptographyAlgorithmId<Digest>) -> RSA.PKCS1.PublicKey = ::RsaPkcs1PublicKey
+    override val wrapPrivateKey: (JPrivateKey, CryptographyAlgorithmId<Digest>, RSA.PKCS1.PublicKey?) -> RSA.PKCS1.PrivateKey =
+        ::RsaPkcs1PrivateKey
     override val wrapKeyPair: (RSA.PKCS1.PublicKey, RSA.PKCS1.PrivateKey) -> RSA.PKCS1.KeyPair = ::RsaPkcs1KeyPair
 
     override fun hashAlgorithmName(digest: CryptographyAlgorithmId<Digest>): String {
@@ -29,10 +30,10 @@ internal class JdkRsaPkcs1(
 
     private inner class RsaPkcs1PublicKey(
         key: JPublicKey,
-        private val hashAlgorithmName: String,
-    ) : RSA.PKCS1.PublicKey, RsaPublicEncodableKey(key) {
+        digest: CryptographyAlgorithmId<Digest>,
+    ) : RSA.PKCS1.PublicKey, RsaPublicEncodableKey(key, digest) {
         override fun signatureVerifier(): SignatureVerifier {
-            return JdkSignatureVerifier(state, key, hashAlgorithmName + "withRSA", null)
+            return JdkSignatureVerifier(state, key, hashAlgorithmName(digest) + "withRSA", null)
         }
 
         override fun encryptor(): Encryptor = RsaPkcs1Encryptor(state, key)
@@ -40,11 +41,11 @@ internal class JdkRsaPkcs1(
 
     private inner class RsaPkcs1PrivateKey(
         key: JPrivateKey,
-        hashAlgorithmName: String,
+        digest: CryptographyAlgorithmId<Digest>,
         publicKey: RSA.PKCS1.PublicKey?,
-    ) : RSA.PKCS1.PrivateKey, RsaPrivateEncodableKey(key, hashAlgorithmName, publicKey) {
+    ) : RSA.PKCS1.PrivateKey, RsaPrivateEncodableKey(key, digest, publicKey) {
         override fun signatureGenerator(): SignatureGenerator {
-            return JdkSignatureGenerator(state, key, hashAlgorithmName + "withRSA", null)
+            return JdkSignatureGenerator(state, key, hashAlgorithmName(digest) + "withRSA", null)
         }
 
         override fun decryptor(): Decryptor = RsaPkcs1Decryptor(state, key)

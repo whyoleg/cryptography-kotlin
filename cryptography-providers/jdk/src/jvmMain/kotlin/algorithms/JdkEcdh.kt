@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.jdk.algorithms
@@ -10,8 +10,8 @@ import dev.whyoleg.cryptography.providers.jdk.*
 import dev.whyoleg.cryptography.providers.jdk.operations.*
 
 internal class JdkEcdh(state: JdkCryptographyState) : JdkEc<ECDH.PublicKey, ECDH.PrivateKey, ECDH.KeyPair>(state), ECDH {
-    override val wrapPublicKey: (JPublicKey) -> ECDH.PublicKey = ::EcdhPublicKey
-    override val wrapPrivateKey: (JPrivateKey, ECDH.PublicKey?) -> ECDH.PrivateKey = ::EcdhPrivateKey
+    override val wrapPublicKey: (JPublicKey, EC.Curve) -> ECDH.PublicKey = ::EcdhPublicKey
+    override val wrapPrivateKey: (JPrivateKey, EC.Curve, ECDH.PublicKey?) -> ECDH.PrivateKey = ::EcdhPrivateKey
     override val wrapKeyPair: (ECDH.PublicKey, ECDH.PrivateKey) -> ECDH.KeyPair = ::EcdhKeyPair
 
     private class EcdhKeyPair(
@@ -21,7 +21,8 @@ internal class JdkEcdh(state: JdkCryptographyState) : JdkEc<ECDH.PublicKey, ECDH
 
     private inner class EcdhPublicKey(
         key: JPublicKey,
-    ) : ECDH.PublicKey, BaseEcPublicKey(key), SharedSecretGenerator<ECDH.PrivateKey> {
+        curve: EC.Curve,
+    ) : ECDH.PublicKey, BaseEcPublicKey(key, curve), SharedSecretGenerator<ECDH.PrivateKey> {
         private val keyAgreement = state.keyAgreement("ECDH")
         override fun sharedSecretGenerator(): SharedSecretGenerator<ECDH.PrivateKey> = this
         override fun generateSharedSecretToByteArrayBlocking(other: ECDH.PrivateKey): ByteArray {
@@ -33,8 +34,9 @@ internal class JdkEcdh(state: JdkCryptographyState) : JdkEc<ECDH.PublicKey, ECDH
 
     private inner class EcdhPrivateKey(
         key: JPrivateKey,
+        curve: EC.Curve,
         publicKey: ECDH.PublicKey?,
-    ) : ECDH.PrivateKey, BaseEcPrivateKey(key, publicKey), SharedSecretGenerator<ECDH.PublicKey> {
+    ) : ECDH.PrivateKey, BaseEcPrivateKey(key, curve, publicKey), SharedSecretGenerator<ECDH.PublicKey> {
         private val keyAgreement = state.keyAgreement("ECDH")
         override fun sharedSecretGenerator(): SharedSecretGenerator<ECDH.PublicKey> = this
         override fun generateSharedSecretToByteArrayBlocking(other: ECDH.PublicKey): ByteArray {

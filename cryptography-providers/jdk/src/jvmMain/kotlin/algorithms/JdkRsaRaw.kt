@@ -1,9 +1,10 @@
 /*
- * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.jdk.algorithms
 
+import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.BinarySize.Companion.bits
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.operations.*
@@ -15,8 +16,9 @@ import java.security.interfaces.*
 internal class JdkRsaRaw(
     state: JdkCryptographyState,
 ) : JdkRsa<RSA.RAW.PublicKey, RSA.RAW.PrivateKey, RSA.RAW.KeyPair>(state), RSA.RAW {
-    override val wrapPublicKey: (JPublicKey, String) -> RSA.RAW.PublicKey = ::RsaRawPublicKey
-    override val wrapPrivateKey: (JPrivateKey, String, RSA.RAW.PublicKey?) -> RSA.RAW.PrivateKey = ::RsaRawPrivateKey
+    override val wrapPublicKey: (JPublicKey, CryptographyAlgorithmId<Digest>) -> RSA.RAW.PublicKey = ::RsaRawPublicKey
+    override val wrapPrivateKey: (JPrivateKey, CryptographyAlgorithmId<Digest>, RSA.RAW.PublicKey?) -> RSA.RAW.PrivateKey =
+        ::RsaRawPrivateKey
     override val wrapKeyPair: (RSA.RAW.PublicKey, RSA.RAW.PrivateKey) -> RSA.RAW.KeyPair = ::RsaRawKeyPair
 
     private class RsaRawKeyPair(
@@ -26,16 +28,16 @@ internal class JdkRsaRaw(
 
     private inner class RsaRawPublicKey(
         key: JPublicKey,
-        @Suppress("unused") hashAlgorithmName: String,
-    ) : RSA.RAW.PublicKey, RsaPublicEncodableKey(key) {
+        digest: CryptographyAlgorithmId<Digest>,
+    ) : RSA.RAW.PublicKey, RsaPublicEncodableKey(key, digest) {
         override fun encryptor(): Encryptor = RsaRawEncryptor(state, key)
     }
 
     private inner class RsaRawPrivateKey(
         key: JPrivateKey,
-        hashAlgorithmName: String,
+        digest: CryptographyAlgorithmId<Digest>,
         publicKey: RSA.RAW.PublicKey?,
-    ) : RSA.RAW.PrivateKey, RsaPrivateEncodableKey(key, hashAlgorithmName, publicKey) {
+    ) : RSA.RAW.PrivateKey, RsaPrivateEncodableKey(key, digest, publicKey) {
         override fun decryptor(): Decryptor = RsaRawDecryptor(state, key)
     }
 }

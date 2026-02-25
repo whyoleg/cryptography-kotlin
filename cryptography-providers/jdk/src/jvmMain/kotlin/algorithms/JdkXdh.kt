@@ -44,7 +44,7 @@ internal class JdkXdh(private val state: JdkCryptographyState) : XDH {
         override fun JPublicKey.convert(): XDH.PublicKey = XdhPublicKey(state, this, curve)
 
         override fun decodeFromByteArrayBlocking(format: XDH.PublicKey.Format, bytes: ByteArray): XDH.PublicKey = when (format) {
-            XDH.PublicKey.Format.JWK -> error("JWK is not supported")
+            XDH.PublicKey.Format.JWK -> decodeFromRaw(JsonWebKeys.decodeOkpPublicKey(curve.name, bytes))
             XDH.PublicKey.Format.RAW -> decodeFromRaw(bytes)
             XDH.PublicKey.Format.DER -> decodeFromDer(bytes)
             XDH.PublicKey.Format.PEM -> decodeFromDer(unwrapPem(PemLabel.PublicKey, bytes))
@@ -59,7 +59,12 @@ internal class JdkXdh(private val state: JdkCryptographyState) : XDH {
         override fun JPrivateKey.convert(): XDH.PrivateKey = XdhPrivateKey(state, this, null, curve)
 
         override fun decodeFromByteArrayBlocking(format: XDH.PrivateKey.Format, bytes: ByteArray): XDH.PrivateKey = when (format) {
-            XDH.PrivateKey.Format.JWK -> error("JWK is not supported")
+            XDH.PrivateKey.Format.JWK -> {
+                val components = JsonWebKeys.decodeOkpPrivateKey(curve.name, bytes)
+                val privateKey = decodeFromDerRaw(wrapCurvePrivateKeyInfo(0, curve.identifier, components.privateKey))
+                val publicKey = PublicKeyDecoder(curve).decodeFromByteArrayBlocking(XDH.PublicKey.Format.RAW, components.publicKey)
+                XdhPrivateKey(state, privateKey, publicKey, curve)
+            }
             XDH.PrivateKey.Format.RAW -> decodeFromDer(wrapCurvePrivateKeyInfo(0, curve.identifier, bytes))
             XDH.PrivateKey.Format.DER -> decodeFromDer(bytes)
             XDH.PrivateKey.Format.PEM -> decodeFromDer(unwrapPem(PemLabel.PrivateKey, bytes))
@@ -111,11 +116,13 @@ internal class JdkXdh(private val state: JdkCryptographyState) : XDH {
         }
 
         override fun encodeToByteArrayBlocking(format: XDH.PublicKey.Format): ByteArray = when (format) {
-            XDH.PublicKey.Format.JWK -> error("JWK is not supported")
-            XDH.PublicKey.Format.RAW -> unwrapSubjectPublicKeyInfo(curve.identifier.algorithm, encodeToDer())
+            XDH.PublicKey.Format.JWK -> JsonWebKeys.encodeOkpPublicKey(curve.name, encodeToRaw())
+            XDH.PublicKey.Format.RAW -> encodeToRaw()
             XDH.PublicKey.Format.DER -> encodeToDer()
             XDH.PublicKey.Format.PEM -> wrapPem(PemLabel.PublicKey, encodeToDer())
         }
+
+        private fun encodeToRaw(): ByteArray = unwrapSubjectPublicKeyInfo(curve.identifier.algorithm, encodeToDer())
     }
 
     private inner class XdhPrivateKey(
@@ -140,7 +147,11 @@ internal class JdkXdh(private val state: JdkCryptographyState) : XDH {
         }
 
         override fun encodeToByteArrayBlocking(format: XDH.PrivateKey.Format): ByteArray = when (format) {
-            XDH.PrivateKey.Format.JWK -> error("JWK is not supported")
+            XDH.PrivateKey.Format.JWK -> JsonWebKeys.encodeOkpPrivateKey(
+                curve = curve.name,
+                publicKey = getPublicKeyBlocking().encodeToByteArrayBlocking(XDH.PublicKey.Format.RAW),
+                privateKey = encodeToByteArrayBlocking(XDH.PrivateKey.Format.RAW),
+            )
             XDH.PrivateKey.Format.RAW -> unwrapCurvePrivateKeyInfo(curve.identifier.algorithm, encodeToDer())
             XDH.PrivateKey.Format.DER -> encodeToDer()
             XDH.PrivateKey.Format.PEM -> wrapPem(PemLabel.PrivateKey, encodeToDer())
