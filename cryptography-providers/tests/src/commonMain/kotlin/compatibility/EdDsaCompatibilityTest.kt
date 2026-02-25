@@ -142,7 +142,12 @@ abstract class EdDsaCompatibilityTest(
         expected: ByteString,
     ) {
         when (format) {
-            EdDSA.PublicKey.Format.JWK -> {}
+            EdDSA.PublicKey.Format.JWK -> assertJwtContentEquals(
+                expected = expected,
+                actual = publicKey.encodeToByteString(format),
+                requiredKeys = setOf("kty", "crv", "x"),
+                message = "Public Key $format encoding"
+            )
             EdDSA.PublicKey.Format.RAW,
             EdDSA.PublicKey.Format.DER,
                                        -> {
@@ -190,7 +195,12 @@ abstract class EdDsaCompatibilityTest(
                     }
 
                     when (format) {
-                        EdDSA.PrivateKey.Format.JWK -> {}
+                        EdDSA.PrivateKey.Format.JWK -> assertJwtContentEquals(
+                            expected = byteString,
+                            actual = key.encodeToByteString(format),
+                            requiredKeys = setOf("kty", "crv", "x", "d"),
+                            message = "Key $format encoding"
+                        )
                         EdDSA.PrivateKey.Format.RAW -> {
                             assertContentEquals(byteString, key.encodeToByteString(format))
                         }

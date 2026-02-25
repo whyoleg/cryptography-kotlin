@@ -153,7 +153,12 @@ abstract class XdhCompatibilityTest(
         expected: ByteString,
     ) {
         when (format) {
-            XDH.PublicKey.Format.JWK -> {}
+            XDH.PublicKey.Format.JWK -> assertJwtContentEquals(
+                expected = expected,
+                actual = publicKey.encodeToByteString(format),
+                requiredKeys = setOf("kty", "crv", "x"),
+                message = "Public Key $format encoding"
+            )
             XDH.PublicKey.Format.RAW,
             XDH.PublicKey.Format.DER,
                                      -> {
@@ -201,7 +206,12 @@ abstract class XdhCompatibilityTest(
                     }
 
                     when (format) {
-                        XDH.PrivateKey.Format.JWK -> {}
+                        XDH.PrivateKey.Format.JWK -> assertJwtContentEquals(
+                            expected = byteString,
+                            actual = key.encodeToByteString(format),
+                            requiredKeys = setOf("kty", "crv", "x", "d"),
+                            message = "Key $format encoding"
+                        )
                         XDH.PrivateKey.Format.RAW -> {
                             assertContentEquals(byteString, key.encodeToByteString(format))
                         }

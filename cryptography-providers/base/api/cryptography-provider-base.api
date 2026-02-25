@@ -68,6 +68,56 @@ public final class dev/whyoleg/cryptography/providers/base/algorithms/EcdsaRawSi
 	public fun createVerifyFunction ()Ldev/whyoleg/cryptography/operations/VerifyFunction;
 }
 
+public final class dev/whyoleg/cryptography/providers/base/materials/JsonWebKeys {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/providers/base/materials/JsonWebKeys;
+	public final fun decodeEcPrivateKey-XWxlsIE (Ljava/lang/String;I[B)Ldev/whyoleg/cryptography/providers/base/materials/JsonWebKeys$EcPrivateKeyComponents;
+	public final fun decodeEcPublicKey-XWxlsIE (Ljava/lang/String;I[B)[B
+	public final fun decodeHmacKey (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;[B)[B
+	public final fun decodeOkpPrivateKey (Ljava/lang/String;[B)Ldev/whyoleg/cryptography/providers/base/materials/JsonWebKeys$OkpPrivateKeyComponents;
+	public final fun decodeOkpPublicKey (Ljava/lang/String;[B)[B
+	public final fun decodeRsaPrivateKey (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;Ldev/whyoleg/cryptography/CryptographyAlgorithmId;[B)Ldev/whyoleg/cryptography/providers/base/materials/JsonWebKeys$RsaPrivateKeyComponents;
+	public final fun decodeRsaPublicKey (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;Ldev/whyoleg/cryptography/CryptographyAlgorithmId;[B)Ldev/whyoleg/cryptography/providers/base/materials/JsonWebKeys$RsaPublicKeyComponents;
+	public final fun decodeSymmetricKey (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;[B)[B
+	public final fun encodeEcPrivateKey-DFwOJLc (Ljava/lang/String;I[B[B)[B
+	public final fun encodeEcPublicKey-XWxlsIE (Ljava/lang/String;I[B)[B
+	public final fun encodeHmacKey (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;[B)[B
+	public final fun encodeOkpPrivateKey (Ljava/lang/String;[B[B)[B
+	public final fun encodeOkpPublicKey (Ljava/lang/String;[B)[B
+	public final fun encodeRsaPrivateKey (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;Ldev/whyoleg/cryptography/CryptographyAlgorithmId;[B[B[B[B[B[B[B[B)[B
+	public final fun encodeRsaPublicKey (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;Ldev/whyoleg/cryptography/CryptographyAlgorithmId;[B[B)[B
+	public final fun encodeSymmetricKey (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;[B)[B
+}
+
+public final class dev/whyoleg/cryptography/providers/base/materials/JsonWebKeys$EcPrivateKeyComponents {
+	public fun <init> ([B[B)V
+	public final fun getPrivateKey ()[B
+	public final fun getPublicKey ()[B
+}
+
+public final class dev/whyoleg/cryptography/providers/base/materials/JsonWebKeys$OkpPrivateKeyComponents {
+	public fun <init> ([B[B)V
+	public final fun getPrivateKey ()[B
+	public final fun getPublicKey ()[B
+}
+
+public final class dev/whyoleg/cryptography/providers/base/materials/JsonWebKeys$RsaPrivateKeyComponents {
+	public fun <init> ([B[B[B[B[B[B[B[B)V
+	public final fun getD ()[B
+	public final fun getDp ()[B
+	public final fun getDq ()[B
+	public final fun getE ()[B
+	public final fun getN ()[B
+	public final fun getP ()[B
+	public final fun getQ ()[B
+	public final fun getQi ()[B
+}
+
+public final class dev/whyoleg/cryptography/providers/base/materials/JsonWebKeys$RsaPublicKeyComponents {
+	public fun <init> ([B[B)V
+	public final fun getE ()[B
+	public final fun getN ()[B
+}
+
 public final class dev/whyoleg/cryptography/providers/base/materials/KeysKt {
 	public static final fun convertEcPrivateKeyFromPkcs8ToSec1 ([B)[B
 	public static final fun convertEcPrivateKeyFromSec1ToPkcs8 ([B)[B

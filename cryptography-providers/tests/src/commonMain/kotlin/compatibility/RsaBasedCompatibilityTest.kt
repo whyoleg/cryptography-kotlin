@@ -105,7 +105,12 @@ abstract class RsaBasedCompatibilityTest<PublicK : RSA.PublicKey, PrivateK : RSA
 
                 assertContentEquals(expected.content, actual.content, "Public Key $format content encoding")
             }
-            RSA.PublicKey.Format.JWK                                 -> {}
+            RSA.PublicKey.Format.JWK -> assertJwtContentEquals(
+                expected = expected,
+                actual = publicKey.encodeToByteString(format),
+                requiredKeys = setOf("kty", "n", "e"),
+                message = "Public Key $format encoding"
+            )
         }
     }
 
@@ -158,7 +163,12 @@ abstract class RsaBasedCompatibilityTest<PublicK : RSA.PublicKey, PrivateK : RSA
                             assertContentEquals(expected.content, actual.content, "Private Key $format content encoding")
                         }
 
-                        RSA.PrivateKey.Format.JWK                                  -> {}
+                        RSA.PrivateKey.Format.JWK -> assertJwtContentEquals(
+                            expected = bytes,
+                            actual = key.encodeToByteString(format),
+                            requiredKeys = setOf("kty", "n", "e", "d", "p", "q", "dp", "dq", "qi"),
+                            message = "Private Key $format encoding"
+                        )
                     }
                 }
                 put(keyReference, publicKeys to privateKeys)

@@ -79,7 +79,12 @@ abstract class EcCompatibilityTest<PublicK : EC.PublicKey, PrivateK : EC.Private
         expected: ByteString,
     ) {
         when (format) {
-            EC.PublicKey.Format.JWK -> {}
+            EC.PublicKey.Format.JWK -> assertJwtContentEquals(
+                expected = expected,
+                actual = publicKey.encodeToByteString(format),
+                requiredKeys = setOf("kty", "crv", "x", "y"),
+                message = "Key $format encoding"
+            )
             EC.PublicKey.Format.RAW,
             EC.PublicKey.Format.RAW.Compressed,
             EC.PublicKey.Format.DER,
@@ -128,7 +133,12 @@ abstract class EcCompatibilityTest<PublicK : EC.PublicKey, PrivateK : EC.Private
                     }
 
                     when (format) {
-                        EC.PrivateKey.Format.JWK -> {}
+                        EC.PrivateKey.Format.JWK -> assertJwtContentEquals(
+                            expected = byteString,
+                            actual = key.encodeToByteString(format),
+                            requiredKeys = setOf("kty", "crv", "x", "y", "d"),
+                            message = "Key $format encoding"
+                        )
                         EC.PrivateKey.Format.RAW -> {
                             assertContentEquals(byteString, key.encodeToByteString(format), "Private Key $format")
                         }

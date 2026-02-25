@@ -15,8 +15,8 @@ import dev.whyoleg.cryptography.serialization.asn1.modules.*
 public fun convertEcdsaDerSignatureToRaw(curveOrderSize: Int, derSignature: ByteArray): ByteArray {
     val signatureValue = Der.decodeFromByteArray(EcdsaSignatureValue.serializer(), derSignature)
 
-    val r = signatureValue.r.encodeToByteArray().trimLeadingZeros()
-    val s = signatureValue.s.encodeToByteArray().trimLeadingZeros()
+    val r = signatureValue.r.magnitudeToByteArray()
+    val s = signatureValue.s.magnitudeToByteArray()
 
     val rawSignature = ByteArray(curveOrderSize * 2)
 
@@ -37,12 +37,9 @@ public fun convertEcdsaRawSignatureToDer(
         "Expected signature size ${curveOrderSize * 2}, received: ${endIndex - startIndex}"
     }
 
-    val r = rawSignature.copyOfRange(startIndex, startIndex + curveOrderSize).makePositive()
-    val s = rawSignature.copyOfRange(startIndex + curveOrderSize, endIndex).makePositive()
-
     val signatureValue = EcdsaSignatureValue(
-        r = r.decodeToBigInt(),
-        s = s.decodeToBigInt()
+        r = BigInt.fromMagnitude(sign = 1, rawSignature.copyOfRange(startIndex, startIndex + curveOrderSize)),
+        s = BigInt.fromMagnitude(sign = 1, rawSignature.copyOfRange(startIndex + curveOrderSize, endIndex)),
     )
 
     return Der.encodeToByteArray(EcdsaSignatureValue.serializer(), signatureValue)
@@ -121,10 +118,3 @@ public class EcdsaRawSignatureVerifier(
     }
 }
 
-private fun ByteArray.makePositive(): ByteArray = if (this[0] < 0) byteArrayOf(0, *this) else this
-
-private fun ByteArray.trimLeadingZeros(): ByteArray {
-    val firstNonZeroIndex = indexOfFirst { it != 0.toByte() }
-    if (firstNonZeroIndex == -1) return this
-    return copyOfRange(firstNonZeroIndex, size)
-}

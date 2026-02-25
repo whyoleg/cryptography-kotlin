@@ -9,6 +9,7 @@ import dev.whyoleg.cryptography.BinarySize.Companion.bytes
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.providers.base.materials.*
 
 @CryptographyProviderApi
 public abstract class BaseAes<K : AES.Key> : AES<K> {
@@ -21,7 +22,7 @@ public abstract class BaseAes<K : AES.Key> : AES<K> {
         override fun decodeFromByteArrayBlocking(format: AES.Key.Format, bytes: ByteArray): K {
             val rawKey = when (format) {
                 AES.Key.Format.RAW -> bytes.copyOf()
-                AES.Key.Format.JWK -> TODO("JWK is not supported")
+                AES.Key.Format.JWK -> JsonWebKeys.decodeSymmetricKey(id, bytes)
             }
             requireAesKeySize(rawKey.size.bytes)
             return wrapKey(rawKey)
@@ -44,7 +45,7 @@ public abstract class BaseAes<K : AES.Key> : AES<K> {
     ) : AES.Key {
         final override fun encodeToByteArrayBlocking(format: AES.Key.Format): ByteArray = when (format) {
             AES.Key.Format.RAW -> key.copyOf()
-            AES.Key.Format.JWK -> TODO("JWK is not supported")
+            AES.Key.Format.JWK -> JsonWebKeys.encodeSymmetricKey(id, key)
         }
     }
 

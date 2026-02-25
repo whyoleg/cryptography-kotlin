@@ -8,6 +8,7 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.providers.base.materials.*
 
 private const val keySizeBytes: Int = 32
 
@@ -22,7 +23,7 @@ public abstract class BaseChaCha20Poly1305 : ChaCha20Poly1305 {
         override fun decodeFromByteArrayBlocking(format: ChaCha20Poly1305.Key.Format, bytes: ByteArray): ChaCha20Poly1305.Key {
             val rawKey = when (format) {
                 ChaCha20Poly1305.Key.Format.RAW -> bytes.copyOf()
-                ChaCha20Poly1305.Key.Format.JWK -> TODO("JWK is not supported")
+                ChaCha20Poly1305.Key.Format.JWK -> JsonWebKeys.decodeSymmetricKey(ChaCha20Poly1305, bytes)
             }
             require(rawKey.size == keySizeBytes) { "ChaCha20-Poly1305 key size must be 256 bits" }
             return wrapKey(rawKey)
@@ -41,7 +42,7 @@ public abstract class BaseChaCha20Poly1305 : ChaCha20Poly1305 {
     ) : ChaCha20Poly1305.Key {
         final override fun encodeToByteArrayBlocking(format: ChaCha20Poly1305.Key.Format): ByteArray = when (format) {
             ChaCha20Poly1305.Key.Format.RAW -> key.copyOf()
-            ChaCha20Poly1305.Key.Format.JWK -> TODO("JWK is not supported")
+            ChaCha20Poly1305.Key.Format.JWK -> JsonWebKeys.encodeSymmetricKey(ChaCha20Poly1305, key)
         }
     }
 }

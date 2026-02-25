@@ -218,6 +218,73 @@ final class dev.whyoleg.cryptography.providers.base.operations/BaseImplicitIvEnc
     final fun transformedSource(kotlinx.io/RawSource): kotlinx.io/RawSource // dev.whyoleg.cryptography.providers.base.operations/BaseImplicitIvEncryptFunction.transformedSource|transformedSource(kotlinx.io.RawSource){}[0]
 }
 
+final object dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys { // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys|null[0]
+    final fun decodeEcPrivateKey(dev.whyoleg.cryptography.algorithms/EC.Curve, kotlin/Int, kotlin/ByteArray): dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.EcPrivateKeyComponents // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.decodeEcPrivateKey|decodeEcPrivateKey(dev.whyoleg.cryptography.algorithms.EC.Curve;kotlin.Int;kotlin.ByteArray){}[0]
+    final fun decodeEcPublicKey(dev.whyoleg.cryptography.algorithms/EC.Curve, kotlin/Int, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.decodeEcPublicKey|decodeEcPublicKey(dev.whyoleg.cryptography.algorithms.EC.Curve;kotlin.Int;kotlin.ByteArray){}[0]
+    final fun decodeHmacKey(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest>, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.decodeHmacKey|decodeHmacKey(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>;kotlin.ByteArray){}[0]
+    final fun decodeOkpPrivateKey(kotlin/String, kotlin/ByteArray): dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.OkpPrivateKeyComponents // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.decodeOkpPrivateKey|decodeOkpPrivateKey(kotlin.String;kotlin.ByteArray){}[0]
+    final fun decodeOkpPublicKey(kotlin/String, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.decodeOkpPublicKey|decodeOkpPublicKey(kotlin.String;kotlin.ByteArray){}[0]
+    final fun decodeRsaPrivateKey(dev.whyoleg.cryptography/CryptographyAlgorithmId<*>, dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest>?, kotlin/ByteArray): dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.RsaPrivateKeyComponents // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.decodeRsaPrivateKey|decodeRsaPrivateKey(dev.whyoleg.cryptography.CryptographyAlgorithmId<*>;dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>?;kotlin.ByteArray){}[0]
+    final fun decodeRsaPublicKey(dev.whyoleg.cryptography/CryptographyAlgorithmId<*>, dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest>?, kotlin/ByteArray): dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.RsaPublicKeyComponents // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.decodeRsaPublicKey|decodeRsaPublicKey(dev.whyoleg.cryptography.CryptographyAlgorithmId<*>;dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>?;kotlin.ByteArray){}[0]
+    final fun decodeSymmetricKey(dev.whyoleg.cryptography/CryptographyAlgorithmId<*>, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.decodeSymmetricKey|decodeSymmetricKey(dev.whyoleg.cryptography.CryptographyAlgorithmId<*>;kotlin.ByteArray){}[0]
+    final fun encodeEcPrivateKey(dev.whyoleg.cryptography.algorithms/EC.Curve, kotlin/Int, kotlin/ByteArray, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.encodeEcPrivateKey|encodeEcPrivateKey(dev.whyoleg.cryptography.algorithms.EC.Curve;kotlin.Int;kotlin.ByteArray;kotlin.ByteArray){}[0]
+    final fun encodeEcPublicKey(dev.whyoleg.cryptography.algorithms/EC.Curve, kotlin/Int, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.encodeEcPublicKey|encodeEcPublicKey(dev.whyoleg.cryptography.algorithms.EC.Curve;kotlin.Int;kotlin.ByteArray){}[0]
+    final fun encodeHmacKey(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest>, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.encodeHmacKey|encodeHmacKey(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>;kotlin.ByteArray){}[0]
+    final fun encodeOkpPrivateKey(kotlin/String, kotlin/ByteArray, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.encodeOkpPrivateKey|encodeOkpPrivateKey(kotlin.String;kotlin.ByteArray;kotlin.ByteArray){}[0]
+    final fun encodeOkpPublicKey(kotlin/String, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.encodeOkpPublicKey|encodeOkpPublicKey(kotlin.String;kotlin.ByteArray){}[0]
+    final fun encodeRsaPrivateKey(dev.whyoleg.cryptography/CryptographyAlgorithmId<*>, dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest>?, kotlin/ByteArray, kotlin/ByteArray, kotlin/ByteArray, kotlin/ByteArray, kotlin/ByteArray, kotlin/ByteArray, kotlin/ByteArray, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.encodeRsaPrivateKey|encodeRsaPrivateKey(dev.whyoleg.cryptography.CryptographyAlgorithmId<*>;dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>?;kotlin.ByteArray;kotlin.ByteArray;kotlin.ByteArray;kotlin.ByteArray;kotlin.ByteArray;kotlin.ByteArray;kotlin.ByteArray;kotlin.ByteArray){}[0]
+    final fun encodeRsaPublicKey(dev.whyoleg.cryptography/CryptographyAlgorithmId<*>, dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest>?, kotlin/ByteArray, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.encodeRsaPublicKey|encodeRsaPublicKey(dev.whyoleg.cryptography.CryptographyAlgorithmId<*>;dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>?;kotlin.ByteArray;kotlin.ByteArray){}[0]
+    final fun encodeSymmetricKey(dev.whyoleg.cryptography/CryptographyAlgorithmId<*>, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.encodeSymmetricKey|encodeSymmetricKey(dev.whyoleg.cryptography.CryptographyAlgorithmId<*>;kotlin.ByteArray){}[0]
+
+    final class EcPrivateKeyComponents { // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.EcPrivateKeyComponents|null[0]
+        constructor <init>(kotlin/ByteArray, kotlin/ByteArray) // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.EcPrivateKeyComponents.<init>|<init>(kotlin.ByteArray;kotlin.ByteArray){}[0]
+
+        final val privateKey // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.EcPrivateKeyComponents.privateKey|{}privateKey[0]
+            final fun <get-privateKey>(): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.EcPrivateKeyComponents.privateKey.<get-privateKey>|<get-privateKey>(){}[0]
+        final val publicKey // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.EcPrivateKeyComponents.publicKey|{}publicKey[0]
+            final fun <get-publicKey>(): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.EcPrivateKeyComponents.publicKey.<get-publicKey>|<get-publicKey>(){}[0]
+    }
+
+    final class OkpPrivateKeyComponents { // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.OkpPrivateKeyComponents|null[0]
+        constructor <init>(kotlin/ByteArray, kotlin/ByteArray) // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.OkpPrivateKeyComponents.<init>|<init>(kotlin.ByteArray;kotlin.ByteArray){}[0]
+
+        final val privateKey // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.OkpPrivateKeyComponents.privateKey|{}privateKey[0]
+            final fun <get-privateKey>(): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.OkpPrivateKeyComponents.privateKey.<get-privateKey>|<get-privateKey>(){}[0]
+        final val publicKey // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.OkpPrivateKeyComponents.publicKey|{}publicKey[0]
+            final fun <get-publicKey>(): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.OkpPrivateKeyComponents.publicKey.<get-publicKey>|<get-publicKey>(){}[0]
+    }
+
+    final class RsaPrivateKeyComponents { // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.RsaPrivateKeyComponents|null[0]
+        constructor <init>(kotlin/ByteArray, kotlin/ByteArray, kotlin/ByteArray, kotlin/ByteArray, kotlin/ByteArray, kotlin/ByteArray, kotlin/ByteArray, kotlin/ByteArray) // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.RsaPrivateKeyComponents.<init>|<init>(kotlin.ByteArray;kotlin.ByteArray;kotlin.ByteArray;kotlin.ByteArray;kotlin.ByteArray;kotlin.ByteArray;kotlin.ByteArray;kotlin.ByteArray){}[0]
+
+        final val d // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.RsaPrivateKeyComponents.d|{}d[0]
+            final fun <get-d>(): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.RsaPrivateKeyComponents.d.<get-d>|<get-d>(){}[0]
+        final val dp // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.RsaPrivateKeyComponents.dp|{}dp[0]
+            final fun <get-dp>(): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.RsaPrivateKeyComponents.dp.<get-dp>|<get-dp>(){}[0]
+        final val dq // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.RsaPrivateKeyComponents.dq|{}dq[0]
+            final fun <get-dq>(): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.RsaPrivateKeyComponents.dq.<get-dq>|<get-dq>(){}[0]
+        final val e // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.RsaPrivateKeyComponents.e|{}e[0]
+            final fun <get-e>(): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.RsaPrivateKeyComponents.e.<get-e>|<get-e>(){}[0]
+        final val n // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.RsaPrivateKeyComponents.n|{}n[0]
+            final fun <get-n>(): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.RsaPrivateKeyComponents.n.<get-n>|<get-n>(){}[0]
+        final val p // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.RsaPrivateKeyComponents.p|{}p[0]
+            final fun <get-p>(): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.RsaPrivateKeyComponents.p.<get-p>|<get-p>(){}[0]
+        final val q // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.RsaPrivateKeyComponents.q|{}q[0]
+            final fun <get-q>(): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.RsaPrivateKeyComponents.q.<get-q>|<get-q>(){}[0]
+        final val qi // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.RsaPrivateKeyComponents.qi|{}qi[0]
+            final fun <get-qi>(): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.RsaPrivateKeyComponents.qi.<get-qi>|<get-qi>(){}[0]
+    }
+
+    final class RsaPublicKeyComponents { // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.RsaPublicKeyComponents|null[0]
+        constructor <init>(kotlin/ByteArray, kotlin/ByteArray) // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.RsaPublicKeyComponents.<init>|<init>(kotlin.ByteArray;kotlin.ByteArray){}[0]
+
+        final val e // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.RsaPublicKeyComponents.e|{}e[0]
+            final fun <get-e>(): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.RsaPublicKeyComponents.e.<get-e>|<get-e>(){}[0]
+        final val n // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.RsaPublicKeyComponents.n|{}n[0]
+            final fun <get-n>(): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.materials/JsonWebKeys.RsaPublicKeyComponents.n.<get-n>|<get-n>(){}[0]
+    }
+}
+
 final val dev.whyoleg.cryptography.providers.base/EmptyByteArray // dev.whyoleg.cryptography.providers.base/EmptyByteArray|{}EmptyByteArray[0]
     final fun <get-EmptyByteArray>(): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base/EmptyByteArray.<get-EmptyByteArray>|<get-EmptyByteArray>(){}[0]
 

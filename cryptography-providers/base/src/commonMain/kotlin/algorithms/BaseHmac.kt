@@ -8,6 +8,7 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.providers.base.materials.*
 
 @CryptographyProviderApi
 public abstract class BaseHmac : HMAC {
@@ -22,7 +23,7 @@ public abstract class BaseHmac : HMAC {
         override fun decodeFromByteArrayBlocking(format: HMAC.Key.Format, bytes: ByteArray): HMAC.Key {
             val rawKey = when (format) {
                 HMAC.Key.Format.RAW -> bytes.copyOf()
-                HMAC.Key.Format.JWK -> TODO("JWK is not supported")
+                HMAC.Key.Format.JWK -> JsonWebKeys.decodeHmacKey(digest, bytes)
             }
             return wrapKey(digest, rawKey)
         }
@@ -41,7 +42,7 @@ public abstract class BaseHmac : HMAC {
     ) : HMAC.Key {
         final override fun encodeToByteArrayBlocking(format: HMAC.Key.Format): ByteArray = when (format) {
             HMAC.Key.Format.RAW -> key.copyOf()
-            HMAC.Key.Format.JWK -> TODO("JWK is not supported")
+            HMAC.Key.Format.JWK -> JsonWebKeys.encodeHmacKey(digest, key)
         }
     }
 }

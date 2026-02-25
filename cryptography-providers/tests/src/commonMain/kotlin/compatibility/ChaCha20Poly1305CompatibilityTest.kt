@@ -162,7 +162,12 @@ abstract class ChaCha20Poly1305CompatibilityTest(provider: CryptographyProvider)
                                 key.encodeToByteString(format),
                                 "Key $format encoding"
                             )
-                            ChaCha20Poly1305.Key.Format.JWK -> {} //no check for JWK yet
+                            ChaCha20Poly1305.Key.Format.JWK -> assertJwtContentEquals(
+                                expected = bytes,
+                                actual = key.encodeToByteString(format),
+                                requiredKeys = setOf("kty", "k"),
+                                message = "Key $format encoding"
+                            )
                         }
                     }
                     put(keyReference, keys)
