@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.apple.algorithms
@@ -25,16 +25,16 @@ internal object SecRsaRaw : SecRsa<RSA.RAW.PublicKey, RSA.RAW.PrivateKey, RSA.RA
 
     private class RsaRawPublicKey(
         publicKey: SecKeyRef,
-        @Suppress("unused") algorithm: SecKeyAlgorithm?,
-    ) : RsaPublicKey(publicKey), RSA.RAW.PublicKey {
+        digest: CryptographyAlgorithmId<Digest>,
+    ) : RsaPublicKey(publicKey, digest), RSA.RAW.PublicKey {
         override fun encryptor(): Encryptor = RsaRawEncryptor(publicKey)
     }
 
     private class RsaRawPrivateKey(
         privateKey: SecKeyRef,
-        @Suppress("unused") algorithm: SecKeyAlgorithm?,
+        digest: CryptographyAlgorithmId<Digest>,
         publicKey: RSA.RAW.PublicKey?,
-    ) : RsaPrivateKey(privateKey, algorithm, publicKey), RSA.RAW.PrivateKey {
+    ) : RsaPrivateKey(privateKey, digest, publicKey), RSA.RAW.PrivateKey {
         override fun decryptor(): Decryptor = RsaRawDecryptor(privateKey)
     }
 }

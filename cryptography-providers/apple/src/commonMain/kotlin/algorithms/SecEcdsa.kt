@@ -23,12 +23,13 @@ import kotlin.native.ref.*
 private class EcCurveData private constructor(
     val size: Int,
     val orderSize: Int,
-    val curve: ObjectIdentifier,
+    val curveId: ObjectIdentifier,
+    val curve: EC.Curve,
 ) {
     companion object {
-        val P256 = EcCurveData(256, 32, ObjectIdentifier.secp256r1)
-        val P384 = EcCurveData(384, 48, ObjectIdentifier.secp384r1)
-        val P521 = EcCurveData(521, 66, ObjectIdentifier.secp521r1)
+        private val P256 = EcCurveData(256, 32, ObjectIdentifier.secp256r1, EC.Curve.P256)
+        private val P384 = EcCurveData(384, 48, ObjectIdentifier.secp384r1, EC.Curve.P384)
+        private val P521 = EcCurveData(521, 66, ObjectIdentifier.secp521r1, EC.Curve.P521)
 
         operator fun invoke(curve: EC.Curve): EcCurveData = when (curve) {
             EC.Curve.P256 -> P256
@@ -59,7 +60,7 @@ private class EcdsaPublicKeyDecoder(
 
     override fun decodeFromByteArrayBlocking(format: EC.PublicKey.Format, bytes: ByteArray): ECDSA.PublicKey {
         val rawKey = when (format) {
-            EC.PublicKey.Format.JWK            -> error("$format is not supported")
+            EC.PublicKey.Format.JWK -> JsonWebKeys.decodeEcPublicKey(curve.curve, curve.orderSize, bytes)
             EC.PublicKey.Format.RAW            -> bytes
             EC.PublicKey.Format.RAW.Compressed -> error("$format is not supported")
             EC.PublicKey.Format.DER            -> decodeDer(bytes)
@@ -89,15 +90,18 @@ private class EcdsaPrivateKeyDecoder(
     private val curve: EcCurveData,
 ) : Decoder<EC.PrivateKey.Format, ECDSA.PrivateKey> {
     override fun decodeFromByteArrayBlocking(format: EC.PrivateKey.Format, bytes: ByteArray): ECDSA.PrivateKey {
-        val ecPrivateKey = when (format) {
-            EC.PrivateKey.Format.JWK      -> error("$format is not supported")
+        val rawKey = when (format) {
+            EC.PrivateKey.Format.JWK -> {
+                val ecRawKey = JsonWebKeys.decodeEcPrivateKey(curve.curve, curve.orderSize, bytes)
+                // Apple format: 0x04 | x | y | d
+                ecRawKey.publicKey + ecRawKey.privateKey
+            }
             EC.PrivateKey.Format.RAW      -> error("$format is not supported")
             EC.PrivateKey.Format.DER      -> decodeDerPkcs8(bytes)
             EC.PrivateKey.Format.PEM      -> decodeDerPkcs8(unwrapPem(PemLabel.PrivateKey, bytes))
             EC.PrivateKey.Format.DER.SEC1 -> decodeDerSec1(bytes)
             EC.PrivateKey.Format.PEM.SEC1 -> decodeDerSec1(unwrapPem(PemLabel.EcPrivateKey, bytes))
         }
-        val rawKey = ecPrivateKey.convertToRawKey()
         check(rawKey.size == curve.orderSize * 3 + 1) {
             "Invalid raw key size: ${rawKey.size}, expected: ${curve.orderSize * 3 + 1}"
         }
@@ -111,16 +115,16 @@ private class EcdsaPrivateKeyDecoder(
         return EcdsaPrivateKey(secKey, curve, publicKey = null)
     }
 
-    private fun decodeDerPkcs8(input: ByteArray): EcPrivateKey {
+    private fun decodeDerPkcs8(input: ByteArray): ByteArray {
         val pki = Der.decodeFromByteArray(PrivateKeyInfo.serializer(), input)
         ensureCurve(pki.privateKeyAlgorithm, curve)
-        return Der.decodeFromByteArray(EcPrivateKey.serializer(), pki.privateKey)
+        return Der.decodeFromByteArray(EcPrivateKey.serializer(), pki.privateKey).convertToRawKey()
     }
 
-    private fun decodeDerSec1(input: ByteArray): EcPrivateKey {
+    private fun decodeDerSec1(input: ByteArray): ByteArray {
         val ecPrivateKey = Der.decodeFromByteArray(EcPrivateKey.serializer(), input)
         ensureCurve(ecPrivateKey.parameters, curve)
-        return ecPrivateKey
+        return ecPrivateKey.convertToRawKey()
     }
 
     private fun EcPrivateKey.convertToRawKey(): ByteArray {
@@ -178,7 +182,7 @@ private class EcdsaPublicKey(
         val rawKey = exportSecKey(publicKey)
 
         return when (format) {
-            EC.PublicKey.Format.JWK            -> error("$format is not supported")
+            EC.PublicKey.Format.JWK -> JsonWebKeys.encodeEcPublicKey(curve.curve, curve.orderSize, rawKey)
             EC.PublicKey.Format.RAW            -> rawKey
             EC.PublicKey.Format.RAW.Compressed -> error("$format is not supported")
             EC.PublicKey.Format.DER            -> encodeDer(rawKey)
@@ -188,7 +192,7 @@ private class EcdsaPublicKey(
 
     private fun encodeDer(rawKey: ByteArray): ByteArray {
         val spki = SubjectPublicKeyInfo(
-            algorithm = EcAlgorithmIdentifier(EcParameters(curve.curve)),
+            algorithm = EcAlgorithmIdentifier(EcParameters(curve.curveId)),
             subjectPublicKey = rawKey.toBitArray(),
         )
 
@@ -222,7 +226,12 @@ private class EcdsaPrivateKey(
     override fun encodeToByteArrayBlocking(format: EC.PrivateKey.Format): ByteArray {
         val rawKey = exportSecKey(privateKey)
         return when (format) {
-            EC.PrivateKey.Format.JWK      -> error("$format is not supported")
+            EC.PrivateKey.Format.JWK -> JsonWebKeys.encodeEcPrivateKey(
+                curve = curve.curve,
+                orderSize = curve.orderSize,
+                publicKey = rawKey.copyOfRange(0, curve.orderSize * 2 + 1),
+                privateKey = rawKey.copyOfRange(curve.orderSize * 2 + 1, curve.orderSize * 3 + 1)
+            )
             EC.PrivateKey.Format.RAW      -> rawKey.copyOfRange(curve.orderSize * 2 + 1, curve.orderSize * 3 + 1)
             EC.PrivateKey.Format.DER      -> encodeDerPkcs8(rawKey)
             EC.PrivateKey.Format.PEM      -> wrapPem(PemLabel.PrivateKey, encodeDerPkcs8(rawKey))
@@ -234,7 +243,7 @@ private class EcdsaPrivateKey(
     private fun encodeDerPkcs8(rawKey: ByteArray): ByteArray {
         val pki = PrivateKeyInfo(
             version = 0,
-            privateKeyAlgorithm = EcAlgorithmIdentifier(EcParameters(curve.curve)),
+            privateKeyAlgorithm = EcAlgorithmIdentifier(EcParameters(curve.curveId)),
             privateKey = encodeDerEcPrivateKey(rawKey)
         )
         return Der.encodeToByteArray(PrivateKeyInfo.serializer(), pki)
@@ -244,7 +253,7 @@ private class EcdsaPrivateKey(
         val ecPrivateKey = EcPrivateKey(
             version = 1,
             privateKey = rawKey.copyOfRange(curve.orderSize * 2 + 1, curve.orderSize * 3 + 1),
-            parameters = EcParameters(curve.curve),
+            parameters = EcParameters(curve.curveId),
             publicKey = rawKey.copyOfRange(0, curve.orderSize * 2 + 1).toBitArray()
         )
 
@@ -260,8 +269,8 @@ private fun ensureCurve(identifier: AlgorithmIdentifier, curve: EcCurveData) {
 }
 
 private fun ensureCurve(parameters: EcParameters?, curve: EcCurveData) {
-    check(parameters?.namedCurve == curve.curve) {
-        "Expected curve `${curve.curve}`, but was ${parameters?.namedCurve}"
+    check(parameters?.namedCurve == curve.curveId) {
+        "Expected curve `${curve.curveId}`, but was ${parameters?.namedCurve}"
     }
 }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.apple.algorithms
@@ -25,18 +25,18 @@ internal object SecRsaPkcs1 : SecRsa<RSA.PKCS1.PublicKey, RSA.PKCS1.PrivateKey, 
 
     private class RsaPkcs1PublicKey(
         publicKey: SecKeyRef,
-        private val algorithm: SecKeyAlgorithm?,
-    ) : RsaPublicKey(publicKey), RSA.PKCS1.PublicKey {
-        override fun signatureVerifier(): SignatureVerifier = SecSignatureVerifier(publicKey, algorithm)
+        digest: CryptographyAlgorithmId<Digest>,
+    ) : RsaPublicKey(publicKey, digest), RSA.PKCS1.PublicKey {
+        override fun signatureVerifier(): SignatureVerifier = SecSignatureVerifier(publicKey, hashAlgorithm(digest))
         override fun encryptor(): Encryptor = RsaPkcs1Encryptor(publicKey)
     }
 
     private class RsaPkcs1PrivateKey(
         privateKey: SecKeyRef,
-        private val algorithm: SecKeyAlgorithm?,
+        digest: CryptographyAlgorithmId<Digest>,
         publicKey: RSA.PKCS1.PublicKey?,
-    ) : RsaPrivateKey(privateKey, algorithm, publicKey), RSA.PKCS1.PrivateKey {
-        override fun signatureGenerator(): SignatureGenerator = SecSignatureGenerator(privateKey, algorithm)
+    ) : RsaPrivateKey(privateKey, digest, publicKey), RSA.PKCS1.PrivateKey {
+        override fun signatureGenerator(): SignatureGenerator = SecSignatureGenerator(privateKey, hashAlgorithm(digest))
         override fun decryptor(): Decryptor = RsaPkcs1Decryptor(privateKey)
     }
 }
