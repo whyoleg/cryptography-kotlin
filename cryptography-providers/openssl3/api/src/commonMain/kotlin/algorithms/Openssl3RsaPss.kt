@@ -25,9 +25,11 @@ internal object Openssl3RsaPss : Openssl3Rsa<RSA.PSS.PublicKey, RSA.PSS.PrivateK
 
     private class RsaPssPublicKey(
         key: CPointer<EVP_PKEY>,
-        private val hashAlgorithm: String,
-    ) : RsaPublicKey(key), RSA.PSS.PublicKey {
+        digest: CryptographyAlgorithmId<Digest>,
+    ) : RsaPublicKey(key, digest), RSA.PSS.PublicKey {
+
         override fun signatureVerifier(): SignatureVerifier {
+            val hashAlgorithm = hashAlgorithmName(digest)
             val md = EVP_MD_fetch(null, hashAlgorithm, null)
             val digestSize = EVP_MD_get_size(md)
             EVP_MD_free(md)
@@ -35,15 +37,17 @@ internal object Openssl3RsaPss : Openssl3Rsa<RSA.PSS.PublicKey, RSA.PSS.PrivateK
         }
 
         override fun signatureVerifier(saltSize: BinarySize): SignatureVerifier =
-            RsaPssSignatureVerifier(key, hashAlgorithm, saltSize.inBytes)
+            RsaPssSignatureVerifier(key, hashAlgorithmName(digest), saltSize.inBytes)
     }
 
     private class RsaPssPrivateKey(
         key: CPointer<EVP_PKEY>,
-        hashAlgorithm: String,
+        digest: CryptographyAlgorithmId<Digest>,
         publicKey: RSA.PSS.PublicKey?,
-    ) : RsaPrivateKey(key, hashAlgorithm, publicKey), RSA.PSS.PrivateKey {
+    ) : RsaPrivateKey(key, digest, publicKey), RSA.PSS.PrivateKey {
+
         override fun signatureGenerator(): SignatureGenerator {
+            val hashAlgorithm = hashAlgorithmName(digest)
             val md = EVP_MD_fetch(null, hashAlgorithm, null)
             val digestSize = EVP_MD_get_size(md)
             EVP_MD_free(md)
@@ -51,7 +55,7 @@ internal object Openssl3RsaPss : Openssl3Rsa<RSA.PSS.PublicKey, RSA.PSS.PrivateK
         }
 
         override fun signatureGenerator(saltSize: BinarySize): SignatureGenerator =
-            RsaPssSignatureGenerator(key, hashAlgorithm, saltSize.inBytes)
+            RsaPssSignatureGenerator(key, hashAlgorithmName(digest), saltSize.inBytes)
     }
 }
 
@@ -78,3 +82,4 @@ private class RsaPssSignatureVerifier(
         OSSL_PARAM_construct_int("saltlen".cstr.ptr, alloc(saltLengthBytes).ptr),
     )
 }
+

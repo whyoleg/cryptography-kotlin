@@ -4,6 +4,7 @@
 
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
 
+import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.*
@@ -26,18 +27,18 @@ internal object Openssl3RsaOaep : Openssl3Rsa<RSA.OAEP.PublicKey, RSA.OAEP.Priva
 
     private class RsaOaepPublicKey(
         key: CPointer<EVP_PKEY>,
-        hashAlgorithm: String,
-    ) : RsaPublicKey(key), RSA.OAEP.PublicKey {
-        private val encryptor = RsaOaepEncryptor(key, hashAlgorithm)
+        digest: CryptographyAlgorithmId<Digest>,
+    ) : RsaPublicKey(key, digest), RSA.OAEP.PublicKey {
+        private val encryptor = RsaOaepEncryptor(key, hashAlgorithmName(digest))
         override fun encryptor(): AuthenticatedEncryptor = encryptor
     }
 
     private class RsaOaepPrivateKey(
         key: CPointer<EVP_PKEY>,
-        hashAlgorithm: String,
+        digest: CryptographyAlgorithmId<Digest>,
         publicKey: RSA.OAEP.PublicKey?,
-    ) : RsaPrivateKey(key, hashAlgorithm, publicKey), RSA.OAEP.PrivateKey {
-        private val decryptor = RsaOaepDecryptor(key, hashAlgorithm)
+    ) : RsaPrivateKey(key, digest, publicKey), RSA.OAEP.PrivateKey {
+        private val decryptor = RsaOaepDecryptor(key, hashAlgorithmName(digest))
         override fun decryptor(): AuthenticatedDecryptor = decryptor
     }
 }

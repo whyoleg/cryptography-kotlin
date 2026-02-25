@@ -4,6 +4,7 @@
 
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
 
+import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.operations.*
@@ -25,18 +26,18 @@ internal object Openssl3RsaPkcs1 : Openssl3Rsa<RSA.PKCS1.PublicKey, RSA.PKCS1.Pr
 
     private class RsaPkcs1PublicKey(
         key: CPointer<EVP_PKEY>,
-        private val hashAlgorithm: String,
-    ) : RsaPublicKey(key), RSA.PKCS1.PublicKey {
-        override fun signatureVerifier(): SignatureVerifier = RsaPkcs1SignatureVerifier(key, hashAlgorithm)
+        digest: CryptographyAlgorithmId<Digest>,
+    ) : RsaPublicKey(key, digest), RSA.PKCS1.PublicKey {
+        override fun signatureVerifier(): SignatureVerifier = RsaPkcs1SignatureVerifier(key, hashAlgorithmName(digest))
         override fun encryptor(): Encryptor = RsaPkcs1Encryptor(key)
     }
 
     private class RsaPkcs1PrivateKey(
         key: CPointer<EVP_PKEY>,
-        hashAlgorithm: String,
+        digest: CryptographyAlgorithmId<Digest>,
         publicKey: RSA.PKCS1.PublicKey?,
-    ) : RsaPrivateKey(key, hashAlgorithm, publicKey), RSA.PKCS1.PrivateKey {
-        override fun signatureGenerator(): SignatureGenerator = RsaPkcs1SignatureGenerator(key, hashAlgorithm)
+    ) : RsaPrivateKey(key, digest, publicKey), RSA.PKCS1.PrivateKey {
+        override fun signatureGenerator(): SignatureGenerator = RsaPkcs1SignatureGenerator(key, hashAlgorithmName(digest))
         override fun decryptor(): Decryptor = RsaPkcs1Decryptor(key)
     }
 }
@@ -92,3 +93,4 @@ private class RsaPkcs1Decryptor(
         }
     }
 }
+

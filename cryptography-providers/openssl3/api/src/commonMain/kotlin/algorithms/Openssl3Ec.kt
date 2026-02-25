@@ -8,6 +8,7 @@ import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.*
+import dev.whyoleg.cryptography.providers.base.materials.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.providers.openssl3.materials.*
@@ -44,7 +45,12 @@ internal abstract class Openssl3Ec<PublicK : EC.PublicKey, PrivateK : EC.Private
             EC.PublicKey.Format.RAW,
             EC.PublicKey.Format.RAW.Compressed,
                                     -> wrapKey(decodePublicRawKey(curve, bytes))
-            EC.PublicKey.Format.JWK -> error("JWK format is not supported")
+            EC.PublicKey.Format.JWK -> wrapKey(
+                decodePublicRawKey(
+                    curve,
+                    JsonWebKeys.decodeEcPublicKey(curve, EC_order_size(curve.name), bytes)
+                )
+            )
             else                    -> super.decodeFromByteArrayBlocking(format, bytes)
         }
 
@@ -79,7 +85,10 @@ internal abstract class Openssl3Ec<PublicK : EC.PublicKey, PrivateK : EC.Private
 
         override fun decodeFromByteArrayBlocking(format: EC.PrivateKey.Format, bytes: ByteArray): PrivateK = when (format) {
             EC.PrivateKey.Format.RAW -> super.decodeFromByteArrayBlocking(format, convertPrivateRawKeyToSec1(curve, bytes))
-            EC.PrivateKey.Format.JWK -> error("JWK format is not supported")
+            EC.PrivateKey.Format.JWK -> super.decodeFromByteArrayBlocking(
+                format,
+                convertPrivateRawKeyToSec1(curve, JsonWebKeys.decodeEcPrivateKey(curve, EC_order_size(curve.name), bytes).privateKey)
+            )
             else                     -> super.decodeFromByteArrayBlocking(format, bytes)
         }
 
@@ -146,7 +155,11 @@ internal abstract class Openssl3Ec<PublicK : EC.PublicKey, PrivateK : EC.Private
         override fun encodeToByteArrayBlocking(format: EC.PublicKey.Format): ByteArray = when (format) {
             EC.PublicKey.Format.RAW            -> encodePublicRawKey(key)
             EC.PublicKey.Format.RAW.Compressed -> encodePublicRawCompressedKey(key)
-            EC.PublicKey.Format.JWK            -> error("JWK format is not supported")
+            EC.PublicKey.Format.JWK -> JsonWebKeys.encodeEcPublicKey(
+                curve = curve,
+                orderSize = EC_order_size(key),
+                publicKey = encodePublicRawKey(key)
+            )
             else                               -> super.encodeToByteArrayBlocking(format)
         }
 
@@ -199,7 +212,12 @@ internal abstract class Openssl3Ec<PublicK : EC.PublicKey, PrivateK : EC.Private
 
         override fun encodeToByteArrayBlocking(format: EC.PrivateKey.Format): ByteArray = when (format) {
             EC.PrivateKey.Format.RAW -> encodePrivateRawKey(key)
-            EC.PrivateKey.Format.JWK -> error("JWK format is not supported")
+            EC.PrivateKey.Format.JWK -> JsonWebKeys.encodeEcPrivateKey(
+                curve = curve,
+                orderSize = EC_order_size(key),
+                publicKey = encodePublicRawKey(key),
+                privateKey = encodePrivateRawKey(key)
+            )
             else                     -> super.encodeToByteArrayBlocking(format)
         }
     }
@@ -248,7 +266,7 @@ internal abstract class Openssl3Ec<PublicK : EC.PublicKey, PrivateK : EC.Private
         val order = checkError(BN_new())
         try {
             checkError(EC_GROUP_get_order(group, order, null))
-            (checkError(BN_num_bits(order)) + 7) / 8
+            BN_num_bytes(order)
         } finally {
             BN_free(order)
         }
