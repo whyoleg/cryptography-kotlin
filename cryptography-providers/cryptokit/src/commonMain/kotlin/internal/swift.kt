@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2025-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.cryptokit.internal
@@ -39,5 +39,12 @@ internal fun EC.Curve.swiftEcCurve(): DwcEcCurve = when (this) {
     EC.Curve.P256 -> DwcEcCurveP256
     EC.Curve.P384 -> DwcEcCurveP384
     EC.Curve.P521 -> DwcEcCurveP521
+    else          -> error("Unsupported EC curve: $this")
+}
+
+internal fun EC.Curve.orderSize(): Int = when (this) {
+    EC.Curve.P256 -> 32
+    EC.Curve.P384 -> 48
+    EC.Curve.P521 -> 66
     else          -> error("Unsupported EC curve: $this")
 }

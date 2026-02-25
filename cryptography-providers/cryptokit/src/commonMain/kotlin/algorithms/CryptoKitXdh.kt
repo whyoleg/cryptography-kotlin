@@ -47,7 +47,7 @@ internal object CryptoKitXdh : XDH {
                 XDH.PublicKey.Format.RAW -> bytes
                 XDH.PublicKey.Format.DER -> unwrapSubjectPublicKeyInfo(ObjectIdentifier.X25519, bytes)
                 XDH.PublicKey.Format.PEM -> unwrapSubjectPublicKeyInfo(ObjectIdentifier.X25519, unwrapPem(PemLabel.PublicKey, bytes))
-                else                     -> error("$format is not supported by CryptoKit XDH")
+                XDH.PublicKey.Format.JWK -> JsonWebKeys.decodeOkpPublicKey(XDH.Curve.X25519.name, bytes)
             }
             return XdhPublicKey(swiftTry { error -> raw.useNSData { SwiftXdhPublicKey.decodeRawWithRawRepresentation(it, error) } })
         }
@@ -59,7 +59,7 @@ internal object CryptoKitXdh : XDH {
                 XDH.PrivateKey.Format.RAW -> bytes
                 XDH.PrivateKey.Format.DER -> unwrapCurvePrivateKeyInfo(ObjectIdentifier.X25519, bytes)
                 XDH.PrivateKey.Format.PEM -> unwrapCurvePrivateKeyInfo(ObjectIdentifier.X25519, unwrapPem(PemLabel.PrivateKey, bytes))
-                else                      -> error("$format is not supported by CryptoKit XDH")
+                XDH.PrivateKey.Format.JWK -> JsonWebKeys.decodeOkpPrivateKey(XDH.Curve.X25519.name, bytes).privateKey
             }
             return XdhPrivateKey(swiftTry { error -> raw.useNSData { SwiftXdhPrivateKey.decodeRawWithRawRepresentation(it, error) } })
         }
@@ -80,7 +80,7 @@ internal object CryptoKitXdh : XDH {
                 XDH.PublicKey.Format.RAW -> raw
                 XDH.PublicKey.Format.DER -> encodeToDer(raw)
                 XDH.PublicKey.Format.PEM -> wrapPem(PemLabel.PublicKey, encodeToDer(raw))
-                XDH.PublicKey.Format.JWK -> error("$format is not supported by CryptoKit XDH")
+                XDH.PublicKey.Format.JWK -> JsonWebKeys.encodeOkpPublicKey(XDH.Curve.X25519.name, raw)
             }
         }
 
@@ -103,7 +103,11 @@ internal object CryptoKitXdh : XDH {
                 XDH.PrivateKey.Format.RAW -> raw
                 XDH.PrivateKey.Format.DER -> encodeToDer(raw)
                 XDH.PrivateKey.Format.PEM -> wrapPem(PemLabel.PrivateKey, encodeToDer(raw))
-                XDH.PrivateKey.Format.JWK -> error("$format is not supported by CryptoKit XDH")
+                XDH.PrivateKey.Format.JWK -> JsonWebKeys.encodeOkpPrivateKey(
+                    curve = XDH.Curve.X25519.name,
+                    publicKey = privateKey.publicKey().rawRepresentation().toByteArray(),
+                    privateKey = raw,
+                )
             }
         }
 

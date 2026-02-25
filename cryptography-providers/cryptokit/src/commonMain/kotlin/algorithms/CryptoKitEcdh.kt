@@ -17,70 +17,82 @@ import kotlinx.cinterop.*
 @OptIn(UnsafeNumber::class)
 internal object CryptoKitEcdh : ECDH {
     override fun publicKeyDecoder(curve: EC.Curve): Decoder<EC.PublicKey.Format, ECDH.PublicKey> {
-        return PublicKeyDecoder(curve.swiftEcCurve())
+        return PublicKeyDecoder(curve)
     }
 
     override fun privateKeyDecoder(curve: EC.Curve): Decoder<EC.PrivateKey.Format, ECDH.PrivateKey> {
-        return PrivateKeyDecoder(curve.swiftEcCurve())
+        return PrivateKeyDecoder(curve)
     }
 
     override fun keyPairGenerator(curve: EC.Curve): KeyGenerator<ECDH.KeyPair> {
-        return KeyPairGenerator(curve.swiftEcCurve())
+        return KeyPairGenerator(curve)
     }
 
     private class KeyPairGenerator(
-        private val curve: DwcEcCurve,
+        private val curve: EC.Curve,
     ) : KeyGenerator<ECDH.KeyPair> {
+        private val swiftCurve get() = curve.swiftEcCurve()
+
         override fun generateKeyBlocking(): ECDH.KeyPair {
-            val privateKey = DwcEcdhPrivateKey.generateWithCurve(curve)
+            val privateKey = DwcEcdhPrivateKey.generateWithCurve(swiftCurve)
             return EcdhKeyPair(
-                privateKey = EcdhPrivateKey(privateKey),
-                publicKey = EcdhPublicKey(privateKey.publicKey())
+                privateKey = EcdhPrivateKey(curve, privateKey),
+                publicKey = EcdhPublicKey(curve, privateKey.publicKey())
             )
         }
     }
 
     private class PublicKeyDecoder(
-        private val curve: DwcEcCurve,
+        private val curve: EC.Curve,
     ) : Decoder<EC.PublicKey.Format, ECDH.PublicKey> {
+        private val swiftCurve get() = curve.swiftEcCurve()
+
         override fun decodeFromByteArrayBlocking(format: EC.PublicKey.Format, bytes: ByteArray): ECDH.PublicKey {
-            return EcdhPublicKey(swiftTry { error ->
+            return EcdhPublicKey(curve, swiftTry { error ->
                 when (format) {
-                    EC.PublicKey.Format.JWK -> error("JWK is not supported")
-                    EC.PublicKey.Format.RAW -> bytes.useNSData { DwcEcdhPublicKey.decodeRawWithCurve(curve, it, error) }
+                    EC.PublicKey.Format.JWK            -> {
+                        val rawKey = JsonWebKeys.decodeEcPublicKey(curve, curve.orderSize(), bytes)
+                        rawKey.useNSData { DwcEcdhPublicKey.decodeRawWithCurve(swiftCurve, it, error) }
+                    }
+                    EC.PublicKey.Format.RAW            -> bytes.useNSData { DwcEcdhPublicKey.decodeRawWithCurve(swiftCurve, it, error) }
                     EC.PublicKey.Format.RAW.Compressed -> bytes.useNSData {
                         DwcEcdhPublicKey.decodeRawCompressedWithCurve(
-                            curve,
+                            swiftCurve,
                             it,
                             error
                         )
                     }
-                    EC.PublicKey.Format.DER -> bytes.useNSData { DwcEcdhPublicKey.decodeDerWithCurve(curve, it, error) }
-                    EC.PublicKey.Format.PEM -> DwcEcdhPublicKey.decodePemWithCurve(curve, bytes.decodeToString(), error)
+                    EC.PublicKey.Format.DER            -> bytes.useNSData { DwcEcdhPublicKey.decodeDerWithCurve(swiftCurve, it, error) }
+                    EC.PublicKey.Format.PEM            -> DwcEcdhPublicKey.decodePemWithCurve(swiftCurve, bytes.decodeToString(), error)
                 }
             })
         }
     }
 
     private class PrivateKeyDecoder(
-        private val curve: DwcEcCurve,
+        private val curve: EC.Curve,
     ) : Decoder<EC.PrivateKey.Format, ECDH.PrivateKey> {
+        private val swiftCurve get() = curve.swiftEcCurve()
+
         override fun decodeFromByteArrayBlocking(format: EC.PrivateKey.Format, bytes: ByteArray): ECDH.PrivateKey {
-            return EcdhPrivateKey(swiftTry { error ->
+            return EcdhPrivateKey(curve, swiftTry { error ->
                 when (format) {
-                    EC.PrivateKey.Format.JWK      -> error("JWK is not supported")
-                    EC.PrivateKey.Format.RAW -> bytes.useNSData { DwcEcdhPrivateKey.decodeRawWithCurve(curve, it, error) }
+                    EC.PrivateKey.Format.JWK -> {
+                        val rawKey = JsonWebKeys.decodeEcPrivateKey(curve, curve.orderSize(), bytes).privateKey
+                        rawKey.useNSData { DwcEcdhPrivateKey.decodeRawWithCurve(swiftCurve, it, error) }
+                    }
+                    EC.PrivateKey.Format.RAW -> bytes.useNSData { DwcEcdhPrivateKey.decodeRawWithCurve(swiftCurve, it, error) }
                     EC.PrivateKey.Format.DER      -> decodeFromDer(bytes, error)
                     EC.PrivateKey.Format.DER.SEC1 -> decodeFromDer(convertEcPrivateKeyFromSec1ToPkcs8(bytes), error)
                     EC.PrivateKey.Format.PEM,
                     EC.PrivateKey.Format.PEM.SEC1,
-                                             -> DwcEcdhPrivateKey.decodePemWithCurve(curve, bytes.decodeToString(), error)
+                                             -> DwcEcdhPrivateKey.decodePemWithCurve(swiftCurve, bytes.decodeToString(), error)
                 }
             })
         }
 
         private fun decodeFromDer(bytes: ByteArray, error: DwcErrorPointer): DwcEcdhPrivateKey? {
-            return bytes.useNSData { DwcEcdhPrivateKey.decodeDerWithCurve(curve, it, error) }
+            return bytes.useNSData { DwcEcdhPrivateKey.decodeDerWithCurve(swiftCurve, it, error) }
         }
     }
 }
@@ -92,10 +104,15 @@ private class EcdhKeyPair(
 
 @OptIn(UnsafeNumber::class)
 private class EcdhPublicKey(
+    private val curve: EC.Curve,
     val publicKey: DwcEcdhPublicKey,
 ) : ECDH.PublicKey, SharedSecretGenerator<ECDH.PrivateKey> {
     override fun encodeToByteArrayBlocking(format: EC.PublicKey.Format): ByteArray = when (format) {
-        EC.PublicKey.Format.JWK -> error("JWK is not supported")
+        EC.PublicKey.Format.JWK -> JsonWebKeys.encodeEcPublicKey(
+            curve = curve,
+            orderSize = curve.orderSize(),
+            publicKey = publicKey.rawRepresentation().toByteArray()
+        )
         EC.PublicKey.Format.RAW -> publicKey.rawRepresentation().toByteArray()
         EC.PublicKey.Format.RAW.Compressed -> swiftTry { error -> publicKey.compressedRepresentationAndReturnError(error)?.toByteArray() }
         EC.PublicKey.Format.DER -> publicKey.derRepresentation().toByteArray()
@@ -112,12 +129,18 @@ private class EcdhPublicKey(
 
 @OptIn(UnsafeNumber::class)
 private class EcdhPrivateKey(
+    private val curve: EC.Curve,
     val privateKey: DwcEcdhPrivateKey,
 ) : ECDH.PrivateKey, SharedSecretGenerator<ECDH.PublicKey> {
-    override fun getPublicKeyBlocking(): ECDH.PublicKey = EcdhPublicKey(privateKey.publicKey())
+    override fun getPublicKeyBlocking(): ECDH.PublicKey = EcdhPublicKey(curve, privateKey.publicKey())
 
     override fun encodeToByteArrayBlocking(format: EC.PrivateKey.Format): ByteArray = when (format) {
-        EC.PrivateKey.Format.JWK      -> error("JWK is not supported")
+        EC.PrivateKey.Format.JWK -> JsonWebKeys.encodeEcPrivateKey(
+            curve = curve,
+            orderSize = curve.orderSize(),
+            publicKey = privateKey.publicKey().rawRepresentation().toByteArray(),
+            privateKey = privateKey.rawRepresentation().toByteArray()
+        )
         EC.PrivateKey.Format.RAW      -> privateKey.rawRepresentation().toByteArray()
         EC.PrivateKey.Format.DER      -> privateKey.derRepresentation().toByteArray()
         EC.PrivateKey.Format.DER.SEC1 -> convertEcPrivateKeyFromPkcs8ToSec1(privateKey.derRepresentation().toByteArray())
@@ -146,3 +169,4 @@ private fun deriveSecret(
         privateKey.deriveSecretWithPublicKey(publicKey, error)
     }.toByteArray()
 }
+
