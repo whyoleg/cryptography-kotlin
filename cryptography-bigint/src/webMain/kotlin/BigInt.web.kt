@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.bigint
@@ -12,9 +12,27 @@ public actual class BigInt internal constructor(
 ) : Number(), Comparable<BigInt> {
     public actual companion object {
         public actual val ZERO: BigInt = BigInt(jsBigInt(0))
+
+        public actual fun fromMagnitude(sign: Int, magnitude: ByteArray): BigInt {
+            if (magnitude.isEmpty()) return ZERO
+            if (magnitude.all { it == 0.toByte() }) return ZERO
+            val jsBigInt = jsBigInt("0x" + magnitude.toHexString())
+            return when (sign) {
+                -1   -> BigInt(jsBigIntNegate(jsBigInt))
+                else -> BigInt(jsBigInt)
+            }
+        }
     }
 
     public actual val sign: Int get() = jsBigIntSign(jsBigInt)
+    public actual val absoluteValue: BigInt get() = if (sign >= 0) this else BigInt(jsBigIntNegate(jsBigInt))
+
+    public actual fun magnitudeToByteArray(): ByteArray {
+        return absoluteValue.jsBigInt.convertToString(16).decodeHexToByteArray()
+    }
+
+    public actual operator fun unaryPlus(): BigInt = this
+    public actual operator fun unaryMinus(): BigInt = if (sign == 0) this else BigInt(jsBigIntNegate(jsBigInt))
 
     public actual operator fun compareTo(other: Byte): Int = compareTo(other.toBigInt())
     public actual operator fun compareTo(other: Short): Int = compareTo(other.toBigInt())
@@ -95,15 +113,13 @@ public actual fun ByteArray.decodeToBigInt(): BigInt {
     return BigInt(jsBigInt)
 }
 
-public actual fun BigInt.encodeToByteArray(): ByteArray {
-    // missing zero byte
-    fun String.decodeFromHex(): ByteArray = (if (length % 2 == 0) this else "0$this").hexToByteArray()
 
+public actual fun BigInt.encodeToByteArray(): ByteArray {
     val positive = this >= 0
 
     val bytes = when {
-        positive -> jsBigInt.convertToString(16).decodeFromHex()
-        else     -> jsBigIntNegate(jsBigInt).convertToString(16).decodeFromHex().invertTwoComplement()
+        positive -> jsBigInt.convertToString(16).decodeHexToByteArray()
+        else     -> jsBigIntNegate(jsBigInt).convertToString(16).decodeHexToByteArray().invertTwoComplement()
     }
 
     val firstBytePositive = bytes[0] >= 0
@@ -115,6 +131,10 @@ public actual fun BigInt.encodeToByteArray(): ByteArray {
         bytes.copyInto(it, 1)
     }
 }
+
+
+// hex string may have odd length (missing leading zero nibble)
+private fun String.decodeHexToByteArray(): ByteArray = (if (length % 2 == 0) this else "0$this").hexToByteArray()
 
 // works in place
 private fun ByteArray.invertTwoComplement(): ByteArray {

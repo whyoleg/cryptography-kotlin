@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 @file:JvmMultifileClass
@@ -17,9 +17,25 @@ public actual class BigInt internal constructor(
 ) : Number(), Comparable<BigInt> {
     public actual companion object {
         public actual val ZERO: BigInt = BigInt(BigInteger.ZERO)
+
+        public actual fun fromMagnitude(sign: Int, magnitude: ByteArray): BigInt {
+            if (magnitude.isEmpty()) return ZERO
+            return BigInt(BigInteger(sign, magnitude))
+        }
     }
 
     public actual val sign: Int get() = javaBigInteger.signum()
+    public actual val absoluteValue: BigInt get() = if (sign >= 0) this else BigInt(javaBigInteger.abs())
+
+    public actual fun magnitudeToByteArray(): ByteArray {
+        val bytes = javaBigInteger.abs().toByteArray()
+        val firstNonZeroIndex = bytes.indexOfFirst { it != 0.toByte() }
+        if (firstNonZeroIndex == -1) return bytes
+        return bytes.copyOfRange(firstNonZeroIndex, bytes.size)
+    }
+
+    public actual operator fun unaryPlus(): BigInt = this
+    public actual operator fun unaryMinus(): BigInt = BigInt(javaBigInteger.negate())
 
     public actual operator fun compareTo(other: Byte): Int = compareTo(other.toBigInt())
     public actual operator fun compareTo(other: Short): Int = compareTo(other.toBigInt())
@@ -64,6 +80,7 @@ public actual fun String.toBigInt(): BigInt = BigInt(toBigInteger())
 public actual fun String.toBigIntOrNull(): BigInt? = toBigIntegerOrNull()?.let(::BigInt)
 
 public actual fun ByteArray.decodeToBigInt(): BigInt = BigInt(BigInteger(this))
+
 public actual fun BigInt.encodeToByteArray(): ByteArray = javaBigInteger.toByteArray()
 
 public fun BigInt.toJavaBigInteger(): BigInteger = javaBigInteger

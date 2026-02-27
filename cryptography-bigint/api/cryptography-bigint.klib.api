@@ -7,6 +7,8 @@
 
 // Library unique name: <dev.whyoleg.cryptography:cryptography-bigint>
 final class dev.whyoleg.cryptography.bigint/BigInt : kotlin/Comparable<dev.whyoleg.cryptography.bigint/BigInt>, kotlin/Number { // dev.whyoleg.cryptography.bigint/BigInt|null[0]
+    final val absoluteValue // dev.whyoleg.cryptography.bigint/BigInt.absoluteValue|{}absoluteValue[0]
+        final fun <get-absoluteValue>(): dev.whyoleg.cryptography.bigint/BigInt // dev.whyoleg.cryptography.bigint/BigInt.absoluteValue.<get-absoluteValue>|<get-absoluteValue>(){}[0]
     final val sign // dev.whyoleg.cryptography.bigint/BigInt.sign|{}sign[0]
         final fun <get-sign>(): kotlin/Int // dev.whyoleg.cryptography.bigint/BigInt.sign.<get-sign>|<get-sign>(){}[0]
 
@@ -17,6 +19,7 @@ final class dev.whyoleg.cryptography.bigint/BigInt : kotlin/Comparable<dev.whyol
     final fun compareTo(kotlin/Short): kotlin/Int // dev.whyoleg.cryptography.bigint/BigInt.compareTo|compareTo(kotlin.Short){}[0]
     final fun equals(kotlin/Any?): kotlin/Boolean // dev.whyoleg.cryptography.bigint/BigInt.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // dev.whyoleg.cryptography.bigint/BigInt.hashCode|hashCode(){}[0]
+    final fun magnitudeToByteArray(): kotlin/ByteArray // dev.whyoleg.cryptography.bigint/BigInt.magnitudeToByteArray|magnitudeToByteArray(){}[0]
     final fun toByte(): kotlin/Byte // dev.whyoleg.cryptography.bigint/BigInt.toByte|toByte(){}[0]
     final fun toDouble(): kotlin/Double // dev.whyoleg.cryptography.bigint/BigInt.toDouble|toDouble(){}[0]
     final fun toFloat(): kotlin/Float // dev.whyoleg.cryptography.bigint/BigInt.toFloat|toFloat(){}[0]
@@ -24,11 +27,14 @@ final class dev.whyoleg.cryptography.bigint/BigInt : kotlin/Comparable<dev.whyol
     final fun toLong(): kotlin/Long // dev.whyoleg.cryptography.bigint/BigInt.toLong|toLong(){}[0]
     final fun toShort(): kotlin/Short // dev.whyoleg.cryptography.bigint/BigInt.toShort|toShort(){}[0]
     final fun toString(): kotlin/String // dev.whyoleg.cryptography.bigint/BigInt.toString|toString(){}[0]
+    final fun unaryMinus(): dev.whyoleg.cryptography.bigint/BigInt // dev.whyoleg.cryptography.bigint/BigInt.unaryMinus|unaryMinus(){}[0]
+    final fun unaryPlus(): dev.whyoleg.cryptography.bigint/BigInt // dev.whyoleg.cryptography.bigint/BigInt.unaryPlus|unaryPlus(){}[0]
 
     final object Companion { // dev.whyoleg.cryptography.bigint/BigInt.Companion|null[0]
         final val ZERO // dev.whyoleg.cryptography.bigint/BigInt.Companion.ZERO|{}ZERO[0]
             final fun <get-ZERO>(): dev.whyoleg.cryptography.bigint/BigInt // dev.whyoleg.cryptography.bigint/BigInt.Companion.ZERO.<get-ZERO>|<get-ZERO>(){}[0]
 
+        final fun fromMagnitude(kotlin/Int, kotlin/ByteArray): dev.whyoleg.cryptography.bigint/BigInt // dev.whyoleg.cryptography.bigint/BigInt.Companion.fromMagnitude|fromMagnitude(kotlin.Int;kotlin.ByteArray){}[0]
         final fun serializer(): kotlinx.serialization/KSerializer<dev.whyoleg.cryptography.bigint/BigInt> // dev.whyoleg.cryptography.bigint/BigInt.Companion.serializer|serializer(){}[0]
     }
 }

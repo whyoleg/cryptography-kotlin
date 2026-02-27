@@ -10,10 +10,12 @@ public final class dev/whyoleg/cryptography/bigint/BigInt : java/lang/Number, ja
 	public final fun doubleValue ()D
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun floatValue ()F
+	public final fun getAbsoluteValue ()Ldev/whyoleg/cryptography/bigint/BigInt;
 	public final fun getSign ()I
 	public fun hashCode ()I
 	public final fun intValue ()I
 	public final fun longValue ()J
+	public final fun magnitudeToByteArray ()[B
 	public final fun shortValue ()S
 	public fun toByte ()B
 	public fun toDouble ()D
@@ -22,9 +24,12 @@ public final class dev/whyoleg/cryptography/bigint/BigInt : java/lang/Number, ja
 	public fun toLong ()J
 	public fun toShort ()S
 	public fun toString ()Ljava/lang/String;
+	public final fun unaryMinus ()Ldev/whyoleg/cryptography/bigint/BigInt;
+	public final fun unaryPlus ()Ldev/whyoleg/cryptography/bigint/BigInt;
 }
 
 public final class dev/whyoleg/cryptography/bigint/BigInt$Companion {
+	public final fun fromMagnitude (I[B)Ldev/whyoleg/cryptography/bigint/BigInt;
 	public final fun getZERO ()Ldev/whyoleg/cryptography/bigint/BigInt;
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }

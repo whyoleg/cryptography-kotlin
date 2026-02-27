@@ -77,8 +77,7 @@ abstract class DhCompatibilityTest(
                 algorithm.parametersDecoder().decodeFromByteArray(
                     DH.Parameters.Format.DER, Der.encodeToByteArray(
                         DhParameters(
-                            // Prepend "00" to ensure two's complement interpretation is positive
-                            prime = ("00$rfcPrimeHex").hexToByteArray().decodeToBigInt(),
+                            prime = BigInt.fromMagnitude(sign = 1, rfcPrimeHex.hexToByteArray()),
                             base = 2.toBigInt(),
                         )
                     )
