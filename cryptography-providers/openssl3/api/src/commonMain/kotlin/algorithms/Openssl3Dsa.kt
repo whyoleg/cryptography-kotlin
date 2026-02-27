@@ -6,12 +6,16 @@ package dev.whyoleg.cryptography.providers.openssl3.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
+import dev.whyoleg.cryptography.bigint.*
 import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.providers.base.checkBounds
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.providers.openssl3.materials.*
 import dev.whyoleg.cryptography.providers.openssl3.operations.*
+import dev.whyoleg.cryptography.serialization.asn1.*
+import dev.whyoleg.cryptography.serialization.asn1.modules.*
 import kotlinx.cinterop.*
 
 internal object Openssl3Dsa : DSA {
@@ -111,7 +115,7 @@ internal object Openssl3Dsa : DSA {
 
             return when (format) {
                 DSA.SignatureFormat.DER -> derVerifier
-                DSA.SignatureFormat.RAW -> error("$format is not supported")
+                DSA.SignatureFormat.RAW -> DsaRawSignatureVerifier(derVerifier, DSA_q_size(key))
             }
         }
     }
@@ -137,7 +141,7 @@ internal object Openssl3Dsa : DSA {
 
             return when (format) {
                 DSA.SignatureFormat.DER -> derGenerator
-                DSA.SignatureFormat.RAW -> error("$format is not supported")
+                DSA.SignatureFormat.RAW -> DsaRawSignatureGenerator(derGenerator, DSA_q_size(key))
             }
         }
     }
@@ -155,4 +159,106 @@ private class DsaDigestSignatureVerifier(
     hashAlgorithm: String,
 ) : Openssl3DigestSignatureVerifier(publicKey, hashAlgorithm) {
     override fun MemScope.createParams(): CValuesRef<OSSL_PARAM>? = null
+}
+
+@OptIn(UnsafeNumber::class)
+private fun DSA_q_size(key: CPointer<EVP_PKEY>): Int = memScoped {
+    val qVar = alloc<CPointerVar<BIGNUM>>()
+    checkError(EVP_PKEY_get_bn_param(key, "q", qVar.ptr))
+    val q = checkError(qVar.value)
+    try {
+        (checkError(BN_num_bits(q)) + 7) / 8
+    } finally {
+        BN_free(q)
+    }
+}
+
+private class DsaRawSignatureGenerator(
+    private val derGenerator: SignatureGenerator,
+    private val qSize: Int,
+) : SignatureGenerator {
+    override fun createSignFunction(): SignFunction = RawSignFunction(derGenerator.createSignFunction(), qSize)
+
+    private class RawSignFunction(
+        private val derSignFunction: SignFunction,
+        private val qSize: Int,
+    ) : SignFunction {
+        override fun update(source: ByteArray, startIndex: Int, endIndex: Int) {
+            derSignFunction.update(source, startIndex, endIndex)
+        }
+
+        override fun signIntoByteArray(destination: ByteArray, destinationOffset: Int): Int {
+            val signature = signToByteArray()
+            checkBounds(destination.size, destinationOffset, destinationOffset + signature.size)
+            signature.copyInto(destination, destinationOffset)
+            return signature.size
+        }
+
+        override fun signToByteArray(): ByteArray {
+            val derSignature = derSignFunction.signToByteArray()
+
+            val signatureValue = Der.decodeFromByteArray(DsaSignatureValue.serializer(), derSignature)
+
+            val r = signatureValue.r.encodeToByteArray().trimLeadingZeros()
+            val s = signatureValue.s.encodeToByteArray().trimLeadingZeros()
+
+            val rawSignature = ByteArray(qSize * 2)
+            r.copyInto(rawSignature, qSize - r.size)
+            s.copyInto(rawSignature, qSize * 2 - s.size)
+            return rawSignature
+        }
+
+        override fun reset() = derSignFunction.reset()
+        override fun close() = derSignFunction.close()
+    }
+}
+
+private class DsaRawSignatureVerifier(
+    private val derVerifier: SignatureVerifier,
+    private val qSize: Int,
+) : SignatureVerifier {
+    override fun createVerifyFunction(): VerifyFunction = RawVerifyFunction(derVerifier.createVerifyFunction(), qSize)
+
+    private class RawVerifyFunction(
+        private val derVerifyFunction: VerifyFunction,
+        private val qSize: Int,
+    ) : VerifyFunction {
+        override fun update(source: ByteArray, startIndex: Int, endIndex: Int) {
+            derVerifyFunction.update(source, startIndex, endIndex)
+        }
+
+        override fun tryVerify(signature: ByteArray, startIndex: Int, endIndex: Int): Boolean {
+            checkBounds(signature.size, startIndex, endIndex)
+
+            check((endIndex - startIndex) == qSize * 2) {
+                "Expected signature size ${qSize * 2}, received: ${endIndex - startIndex}"
+            }
+
+            val r = signature.copyOfRange(startIndex, startIndex + qSize).makePositive()
+            val s = signature.copyOfRange(startIndex + qSize, endIndex).makePositive()
+
+            val signatureValue = DsaSignatureValue(
+                r = r.decodeToBigInt(),
+                s = s.decodeToBigInt()
+            )
+            val derSignature = Der.encodeToByteArray(DsaSignatureValue.serializer(), signatureValue)
+
+            return derVerifyFunction.tryVerify(derSignature)
+        }
+
+        override fun verify(signature: ByteArray, startIndex: Int, endIndex: Int) {
+            check(tryVerify(signature, startIndex, endIndex)) { "Invalid signature" }
+        }
+
+        override fun reset() = derVerifyFunction.reset()
+        override fun close() = derVerifyFunction.close()
+    }
+}
+
+private fun ByteArray.makePositive(): ByteArray = if (this.isNotEmpty() && this[0] < 0) byteArrayOf(0, *this) else this
+
+private fun ByteArray.trimLeadingZeros(): ByteArray {
+    var i = 0
+    while (i < size && this[i] == 0.toByte()) i++
+    return if (i == 0) this else copyOfRange(i, size)
 }
