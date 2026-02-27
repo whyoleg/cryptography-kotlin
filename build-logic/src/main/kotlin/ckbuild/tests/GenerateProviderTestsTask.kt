@@ -131,6 +131,9 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
             "DhTest",
             "DhCompatibilityTest",
 
+            "DsaTest",
+            "DsaCompatibilityTest",
+
             "RsaOaepTest",
             "RsaOaepCompatibilityTest",
             "RsaPkcs1Test",

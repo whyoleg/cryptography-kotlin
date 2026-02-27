@@ -605,6 +605,99 @@ abstract interface dev.whyoleg.cryptography.algorithms/DH : dev.whyoleg.cryptogr
     final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/DH> // dev.whyoleg.cryptography.algorithms/DH.Companion|null[0]
 }
 
+abstract interface dev.whyoleg.cryptography.algorithms/DSA : dev.whyoleg.cryptography/CryptographyAlgorithm { // dev.whyoleg.cryptography.algorithms/DSA|null[0]
+    open val id // dev.whyoleg.cryptography.algorithms/DSA.id|{}id[0]
+        open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/DSA> // dev.whyoleg.cryptography.algorithms/DSA.id.<get-id>|<get-id>(){}[0]
+
+    abstract fun keyPairGenerator(dev.whyoleg.cryptography/BinarySize = ...): dev.whyoleg.cryptography.operations/KeyGenerator<dev.whyoleg.cryptography.algorithms/DSA.KeyPair> // dev.whyoleg.cryptography.algorithms/DSA.keyPairGenerator|keyPairGenerator(dev.whyoleg.cryptography.BinarySize){}[0]
+    abstract fun privateKeyDecoder(): dev.whyoleg.cryptography.materials/Decoder<dev.whyoleg.cryptography.algorithms/DSA.PrivateKey.Format, dev.whyoleg.cryptography.algorithms/DSA.PrivateKey> // dev.whyoleg.cryptography.algorithms/DSA.privateKeyDecoder|privateKeyDecoder(){}[0]
+    abstract fun publicKeyDecoder(): dev.whyoleg.cryptography.materials/Decoder<dev.whyoleg.cryptography.algorithms/DSA.PublicKey.Format, dev.whyoleg.cryptography.algorithms/DSA.PublicKey> // dev.whyoleg.cryptography.algorithms/DSA.publicKeyDecoder|publicKeyDecoder(){}[0]
+
+    final enum class SignatureFormat : kotlin/Enum<dev.whyoleg.cryptography.algorithms/DSA.SignatureFormat> { // dev.whyoleg.cryptography.algorithms/DSA.SignatureFormat|null[0]
+        enum entry DER // dev.whyoleg.cryptography.algorithms/DSA.SignatureFormat.DER|null[0]
+        enum entry RAW // dev.whyoleg.cryptography.algorithms/DSA.SignatureFormat.RAW|null[0]
+
+        final val entries // dev.whyoleg.cryptography.algorithms/DSA.SignatureFormat.entries|#static{}entries[0]
+            final fun <get-entries>(): kotlin.enums/EnumEntries<dev.whyoleg.cryptography.algorithms/DSA.SignatureFormat> // dev.whyoleg.cryptography.algorithms/DSA.SignatureFormat.entries.<get-entries>|<get-entries>#static(){}[0]
+
+        final fun valueOf(kotlin/String): dev.whyoleg.cryptography.algorithms/DSA.SignatureFormat // dev.whyoleg.cryptography.algorithms/DSA.SignatureFormat.valueOf|valueOf#static(kotlin.String){}[0]
+        final fun values(): kotlin/Array<dev.whyoleg.cryptography.algorithms/DSA.SignatureFormat> // dev.whyoleg.cryptography.algorithms/DSA.SignatureFormat.values|values#static(){}[0]
+    }
+
+    abstract interface KeyPair { // dev.whyoleg.cryptography.algorithms/DSA.KeyPair|null[0]
+        abstract val privateKey // dev.whyoleg.cryptography.algorithms/DSA.KeyPair.privateKey|{}privateKey[0]
+            abstract fun <get-privateKey>(): dev.whyoleg.cryptography.algorithms/DSA.PrivateKey // dev.whyoleg.cryptography.algorithms/DSA.KeyPair.privateKey.<get-privateKey>|<get-privateKey>(){}[0]
+        abstract val publicKey // dev.whyoleg.cryptography.algorithms/DSA.KeyPair.publicKey|{}publicKey[0]
+            abstract fun <get-publicKey>(): dev.whyoleg.cryptography.algorithms/DSA.PublicKey // dev.whyoleg.cryptography.algorithms/DSA.KeyPair.publicKey.<get-publicKey>|<get-publicKey>(){}[0]
+    }
+
+    abstract interface PrivateKey : dev.whyoleg.cryptography.materials/Encodable<dev.whyoleg.cryptography.algorithms/DSA.PrivateKey.Format>, dev.whyoleg.cryptography.operations/PublicKeyAccessor<dev.whyoleg.cryptography.algorithms/DSA.PublicKey> { // dev.whyoleg.cryptography.algorithms/DSA.PrivateKey|null[0]
+        abstract fun signatureGenerator(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest>?, dev.whyoleg.cryptography.algorithms/DSA.SignatureFormat): dev.whyoleg.cryptography.operations/SignatureGenerator // dev.whyoleg.cryptography.algorithms/DSA.PrivateKey.signatureGenerator|signatureGenerator(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>?;dev.whyoleg.cryptography.algorithms.DSA.SignatureFormat){}[0]
+
+        sealed class Format : dev.whyoleg.cryptography.materials/EncodingFormat { // dev.whyoleg.cryptography.algorithms/DSA.PrivateKey.Format|null[0]
+            final fun toString(): kotlin/String // dev.whyoleg.cryptography.algorithms/DSA.PrivateKey.Format.toString|toString(){}[0]
+
+            final object DER : dev.whyoleg.cryptography.algorithms/DSA.PrivateKey.Format { // dev.whyoleg.cryptography.algorithms/DSA.PrivateKey.Format.DER|null[0]
+                final val name // dev.whyoleg.cryptography.algorithms/DSA.PrivateKey.Format.DER.name|{}name[0]
+                    final fun <get-name>(): kotlin/String // dev.whyoleg.cryptography.algorithms/DSA.PrivateKey.Format.DER.name.<get-name>|<get-name>(){}[0]
+
+                final fun equals(kotlin/Any?): kotlin/Boolean // dev.whyoleg.cryptography.algorithms/DSA.PrivateKey.Format.DER.equals|equals(kotlin.Any?){}[0]
+                final fun hashCode(): kotlin/Int // dev.whyoleg.cryptography.algorithms/DSA.PrivateKey.Format.DER.hashCode|hashCode(){}[0]
+            }
+
+            final object JWK : dev.whyoleg.cryptography.algorithms/DSA.PrivateKey.Format { // dev.whyoleg.cryptography.algorithms/DSA.PrivateKey.Format.JWK|null[0]
+                final val name // dev.whyoleg.cryptography.algorithms/DSA.PrivateKey.Format.JWK.name|{}name[0]
+                    final fun <get-name>(): kotlin/String // dev.whyoleg.cryptography.algorithms/DSA.PrivateKey.Format.JWK.name.<get-name>|<get-name>(){}[0]
+
+                final fun equals(kotlin/Any?): kotlin/Boolean // dev.whyoleg.cryptography.algorithms/DSA.PrivateKey.Format.JWK.equals|equals(kotlin.Any?){}[0]
+                final fun hashCode(): kotlin/Int // dev.whyoleg.cryptography.algorithms/DSA.PrivateKey.Format.JWK.hashCode|hashCode(){}[0]
+            }
+
+            final object PEM : dev.whyoleg.cryptography.algorithms/DSA.PrivateKey.Format { // dev.whyoleg.cryptography.algorithms/DSA.PrivateKey.Format.PEM|null[0]
+                final val name // dev.whyoleg.cryptography.algorithms/DSA.PrivateKey.Format.PEM.name|{}name[0]
+                    final fun <get-name>(): kotlin/String // dev.whyoleg.cryptography.algorithms/DSA.PrivateKey.Format.PEM.name.<get-name>|<get-name>(){}[0]
+
+                final fun equals(kotlin/Any?): kotlin/Boolean // dev.whyoleg.cryptography.algorithms/DSA.PrivateKey.Format.PEM.equals|equals(kotlin.Any?){}[0]
+                final fun hashCode(): kotlin/Int // dev.whyoleg.cryptography.algorithms/DSA.PrivateKey.Format.PEM.hashCode|hashCode(){}[0]
+            }
+        }
+    }
+
+    abstract interface PublicKey : dev.whyoleg.cryptography.materials/Encodable<dev.whyoleg.cryptography.algorithms/DSA.PublicKey.Format> { // dev.whyoleg.cryptography.algorithms/DSA.PublicKey|null[0]
+        abstract fun signatureVerifier(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest>?, dev.whyoleg.cryptography.algorithms/DSA.SignatureFormat): dev.whyoleg.cryptography.operations/SignatureVerifier // dev.whyoleg.cryptography.algorithms/DSA.PublicKey.signatureVerifier|signatureVerifier(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>?;dev.whyoleg.cryptography.algorithms.DSA.SignatureFormat){}[0]
+
+        sealed class Format : dev.whyoleg.cryptography.materials/EncodingFormat { // dev.whyoleg.cryptography.algorithms/DSA.PublicKey.Format|null[0]
+            final fun toString(): kotlin/String // dev.whyoleg.cryptography.algorithms/DSA.PublicKey.Format.toString|toString(){}[0]
+
+            final object DER : dev.whyoleg.cryptography.algorithms/DSA.PublicKey.Format { // dev.whyoleg.cryptography.algorithms/DSA.PublicKey.Format.DER|null[0]
+                final val name // dev.whyoleg.cryptography.algorithms/DSA.PublicKey.Format.DER.name|{}name[0]
+                    final fun <get-name>(): kotlin/String // dev.whyoleg.cryptography.algorithms/DSA.PublicKey.Format.DER.name.<get-name>|<get-name>(){}[0]
+
+                final fun equals(kotlin/Any?): kotlin/Boolean // dev.whyoleg.cryptography.algorithms/DSA.PublicKey.Format.DER.equals|equals(kotlin.Any?){}[0]
+                final fun hashCode(): kotlin/Int // dev.whyoleg.cryptography.algorithms/DSA.PublicKey.Format.DER.hashCode|hashCode(){}[0]
+            }
+
+            final object JWK : dev.whyoleg.cryptography.algorithms/DSA.PublicKey.Format { // dev.whyoleg.cryptography.algorithms/DSA.PublicKey.Format.JWK|null[0]
+                final val name // dev.whyoleg.cryptography.algorithms/DSA.PublicKey.Format.JWK.name|{}name[0]
+                    final fun <get-name>(): kotlin/String // dev.whyoleg.cryptography.algorithms/DSA.PublicKey.Format.JWK.name.<get-name>|<get-name>(){}[0]
+
+                final fun equals(kotlin/Any?): kotlin/Boolean // dev.whyoleg.cryptography.algorithms/DSA.PublicKey.Format.JWK.equals|equals(kotlin.Any?){}[0]
+                final fun hashCode(): kotlin/Int // dev.whyoleg.cryptography.algorithms/DSA.PublicKey.Format.JWK.hashCode|hashCode(){}[0]
+            }
+
+            final object PEM : dev.whyoleg.cryptography.algorithms/DSA.PublicKey.Format { // dev.whyoleg.cryptography.algorithms/DSA.PublicKey.Format.PEM|null[0]
+                final val name // dev.whyoleg.cryptography.algorithms/DSA.PublicKey.Format.PEM.name|{}name[0]
+                    final fun <get-name>(): kotlin/String // dev.whyoleg.cryptography.algorithms/DSA.PublicKey.Format.PEM.name.<get-name>|<get-name>(){}[0]
+
+                final fun equals(kotlin/Any?): kotlin/Boolean // dev.whyoleg.cryptography.algorithms/DSA.PublicKey.Format.PEM.equals|equals(kotlin.Any?){}[0]
+                final fun hashCode(): kotlin/Int // dev.whyoleg.cryptography.algorithms/DSA.PublicKey.Format.PEM.hashCode|hashCode(){}[0]
+            }
+        }
+    }
+
+    final object Companion : dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/DSA> // dev.whyoleg.cryptography.algorithms/DSA.Companion|null[0]
+}
+
 abstract interface dev.whyoleg.cryptography.algorithms/Digest : dev.whyoleg.cryptography/CryptographyAlgorithm { // dev.whyoleg.cryptography.algorithms/Digest|null[0]
     abstract val id // dev.whyoleg.cryptography.algorithms/Digest.id|{}id[0]
         abstract fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest> // dev.whyoleg.cryptography.algorithms/Digest.id.<get-id>|<get-id>(){}[0]
