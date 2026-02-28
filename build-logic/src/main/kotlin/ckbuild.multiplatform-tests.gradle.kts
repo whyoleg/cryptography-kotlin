@@ -39,10 +39,6 @@ kotlin {
             testTask {
                 useKarma {
                     useConfigDirectory(rootDir.resolve("karma.config.d"))
-                    // when adding new browsers here, please check that tests correctly handle new browsers
-                    // the only way to distinguish those is by using userAgent, where it's not easy to determine browser
-                    useChromeHeadless()
-                    useSafari()
                 }
             }
         }
