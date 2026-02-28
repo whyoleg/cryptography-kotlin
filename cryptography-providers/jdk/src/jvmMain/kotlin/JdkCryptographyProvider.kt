@@ -136,6 +136,7 @@ internal class JdkCryptographyProvider(provider: Provider?) : CryptographyProvid
             RSA.PKCS1        -> JdkRsaPkcs1(state)
             RSA.RAW          -> JdkRsaRaw(state)
             ECDSA            -> JdkEcdsa(state)
+            DSA              -> JdkDsa(state)
             EdDSA -> JdkEdDsa(state)
             ECDH             -> JdkEcdh(state)
             XDH   -> JdkXdh(state)
