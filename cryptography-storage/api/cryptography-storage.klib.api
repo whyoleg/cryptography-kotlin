@@ -1,0 +1,120 @@
+// Klib ABI Dump
+// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, wasmJs, wasmWasi, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <dev.whyoleg.cryptography:cryptography-storage>
+open annotation class dev.whyoleg.cryptography.storage/ExperimentalKeyStorageApi : kotlin/Annotation { // dev.whyoleg.cryptography.storage/ExperimentalKeyStorageApi|null[0]
+    constructor <init>() // dev.whyoleg.cryptography.storage/ExperimentalKeyStorageApi.<init>|<init>(){}[0]
+}
+
+final enum class dev.whyoleg.cryptography.storage/Accessibility : kotlin/Enum<dev.whyoleg.cryptography.storage/Accessibility> { // dev.whyoleg.cryptography.storage/Accessibility|null[0]
+    enum entry AfterFirstUnlock // dev.whyoleg.cryptography.storage/Accessibility.AfterFirstUnlock|null[0]
+    enum entry Always // dev.whyoleg.cryptography.storage/Accessibility.Always|null[0]
+    enum entry WhenPasscodeSetThisDeviceOnly // dev.whyoleg.cryptography.storage/Accessibility.WhenPasscodeSetThisDeviceOnly|null[0]
+    enum entry WhenUnlocked // dev.whyoleg.cryptography.storage/Accessibility.WhenUnlocked|null[0]
+
+    final val entries // dev.whyoleg.cryptography.storage/Accessibility.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<dev.whyoleg.cryptography.storage/Accessibility> // dev.whyoleg.cryptography.storage/Accessibility.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): dev.whyoleg.cryptography.storage/Accessibility // dev.whyoleg.cryptography.storage/Accessibility.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<dev.whyoleg.cryptography.storage/Accessibility> // dev.whyoleg.cryptography.storage/Accessibility.values|values#static(){}[0]
+}
+
+final enum class dev.whyoleg.cryptography.storage/DeviceBinding : kotlin/Enum<dev.whyoleg.cryptography.storage/DeviceBinding> { // dev.whyoleg.cryptography.storage/DeviceBinding|null[0]
+    enum entry None // dev.whyoleg.cryptography.storage/DeviceBinding.None|null[0]
+    enum entry SecureEnclavePreferred // dev.whyoleg.cryptography.storage/DeviceBinding.SecureEnclavePreferred|null[0]
+    enum entry ThisDeviceOnly // dev.whyoleg.cryptography.storage/DeviceBinding.ThisDeviceOnly|null[0]
+
+    final val entries // dev.whyoleg.cryptography.storage/DeviceBinding.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<dev.whyoleg.cryptography.storage/DeviceBinding> // dev.whyoleg.cryptography.storage/DeviceBinding.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): dev.whyoleg.cryptography.storage/DeviceBinding // dev.whyoleg.cryptography.storage/DeviceBinding.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<dev.whyoleg.cryptography.storage/DeviceBinding> // dev.whyoleg.cryptography.storage/DeviceBinding.values|values#static(){}[0]
+}
+
+abstract interface <#A: kotlin/Any?, #B: kotlin/Any?> dev.whyoleg.cryptography.storage/AsymmetricStore { // dev.whyoleg.cryptography.storage/AsymmetricStore|null[0]
+    abstract fun delete(kotlin/ByteArray): kotlin/Boolean // dev.whyoleg.cryptography.storage/AsymmetricStore.delete|delete(kotlin.ByteArray){}[0]
+    abstract fun exists(kotlin/ByteArray): kotlin/Boolean // dev.whyoleg.cryptography.storage/AsymmetricStore.exists|exists(kotlin.ByteArray){}[0]
+    abstract fun generate(kotlin/ByteArray, dev.whyoleg.cryptography.storage/AccessPolicy = ...): dev.whyoleg.cryptography.storage/Handle<#A, #B> // dev.whyoleg.cryptography.storage/AsymmetricStore.generate|generate(kotlin.ByteArray;dev.whyoleg.cryptography.storage.AccessPolicy){}[0]
+    abstract fun get(kotlin/ByteArray): dev.whyoleg.cryptography.storage/Handle<#A, #B>? // dev.whyoleg.cryptography.storage/AsymmetricStore.get|get(kotlin.ByteArray){}[0]
+}
+
+abstract interface <#A: kotlin/Any?> dev.whyoleg.cryptography.storage/SymmetricStore { // dev.whyoleg.cryptography.storage/SymmetricStore|null[0]
+    abstract fun delete(kotlin/ByteArray): kotlin/Boolean // dev.whyoleg.cryptography.storage/SymmetricStore.delete|delete(kotlin.ByteArray){}[0]
+    abstract fun exists(kotlin/ByteArray): kotlin/Boolean // dev.whyoleg.cryptography.storage/SymmetricStore.exists|exists(kotlin.ByteArray){}[0]
+    abstract fun generate(kotlin/ByteArray, dev.whyoleg.cryptography.storage/AccessPolicy = ...): dev.whyoleg.cryptography.storage/Handle<#A, kotlin/Unit> // dev.whyoleg.cryptography.storage/SymmetricStore.generate|generate(kotlin.ByteArray;dev.whyoleg.cryptography.storage.AccessPolicy){}[0]
+    abstract fun get(kotlin/ByteArray): dev.whyoleg.cryptography.storage/Handle<#A, kotlin/Unit>? // dev.whyoleg.cryptography.storage/SymmetricStore.get|get(kotlin.ByteArray){}[0]
+}
+
+abstract interface dev.whyoleg.cryptography.storage/KeyStore { // dev.whyoleg.cryptography.storage/KeyStore|null[0]
+    abstract fun aesCbc(dev.whyoleg.cryptography/BinarySize = ...): dev.whyoleg.cryptography.storage/SymmetricStore<dev.whyoleg.cryptography.algorithms/AES.CBC.Key> // dev.whyoleg.cryptography.storage/KeyStore.aesCbc|aesCbc(dev.whyoleg.cryptography.BinarySize){}[0]
+    abstract fun aesCtr(dev.whyoleg.cryptography/BinarySize = ...): dev.whyoleg.cryptography.storage/SymmetricStore<dev.whyoleg.cryptography.algorithms/AES.CTR.Key> // dev.whyoleg.cryptography.storage/KeyStore.aesCtr|aesCtr(dev.whyoleg.cryptography.BinarySize){}[0]
+    abstract fun aesGcm(dev.whyoleg.cryptography/BinarySize = ...): dev.whyoleg.cryptography.storage/SymmetricStore<dev.whyoleg.cryptography.algorithms/AES.GCM.Key> // dev.whyoleg.cryptography.storage/KeyStore.aesGcm|aesGcm(dev.whyoleg.cryptography.BinarySize){}[0]
+    abstract fun ecdsa(dev.whyoleg.cryptography.algorithms/EC.Curve = ...): dev.whyoleg.cryptography.storage/AsymmetricStore<dev.whyoleg.cryptography.algorithms/ECDSA.PublicKey, dev.whyoleg.cryptography.algorithms/ECDSA.PrivateKey> // dev.whyoleg.cryptography.storage/KeyStore.ecdsa|ecdsa(dev.whyoleg.cryptography.algorithms.EC.Curve){}[0]
+    abstract fun rsaOaep(dev.whyoleg.cryptography/BinarySize = ..., dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest> = ...): dev.whyoleg.cryptography.storage/AsymmetricStore<dev.whyoleg.cryptography.algorithms/RSA.OAEP.PublicKey, dev.whyoleg.cryptography.algorithms/RSA.OAEP.PrivateKey> // dev.whyoleg.cryptography.storage/KeyStore.rsaOaep|rsaOaep(dev.whyoleg.cryptography.BinarySize;dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>){}[0]
+    abstract fun rsaPkcs1(dev.whyoleg.cryptography/BinarySize = ..., dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest> = ...): dev.whyoleg.cryptography.storage/AsymmetricStore<dev.whyoleg.cryptography.algorithms/RSA.PKCS1.PublicKey, dev.whyoleg.cryptography.algorithms/RSA.PKCS1.PrivateKey> // dev.whyoleg.cryptography.storage/KeyStore.rsaPkcs1|rsaPkcs1(dev.whyoleg.cryptography.BinarySize;dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>){}[0]
+    abstract fun rsaPss(dev.whyoleg.cryptography/BinarySize = ..., dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest> = ...): dev.whyoleg.cryptography.storage/AsymmetricStore<dev.whyoleg.cryptography.algorithms/RSA.PSS.PublicKey, dev.whyoleg.cryptography.algorithms/RSA.PSS.PrivateKey> // dev.whyoleg.cryptography.storage/KeyStore.rsaPss|rsaPss(dev.whyoleg.cryptography.BinarySize;dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>){}[0]
+}
+
+final class <#A: kotlin/Any?, #B: kotlin/Any?> dev.whyoleg.cryptography.storage/Handle { // dev.whyoleg.cryptography.storage/Handle|null[0]
+    constructor <init>(#A, #B, dev.whyoleg.cryptography.storage/KeyAttributes) // dev.whyoleg.cryptography.storage/Handle.<init>|<init>(1:0;1:1;dev.whyoleg.cryptography.storage.KeyAttributes){}[0]
+
+    final val attributes // dev.whyoleg.cryptography.storage/Handle.attributes|{}attributes[0]
+        final fun <get-attributes>(): dev.whyoleg.cryptography.storage/KeyAttributes // dev.whyoleg.cryptography.storage/Handle.attributes.<get-attributes>|<get-attributes>(){}[0]
+    final val private // dev.whyoleg.cryptography.storage/Handle.private|{}private[0]
+        final fun <get-private>(): #B // dev.whyoleg.cryptography.storage/Handle.private.<get-private>|<get-private>(){}[0]
+    final val public // dev.whyoleg.cryptography.storage/Handle.public|{}public[0]
+        final fun <get-public>(): #A // dev.whyoleg.cryptography.storage/Handle.public.<get-public>|<get-public>(){}[0]
+
+    final fun component1(): #A // dev.whyoleg.cryptography.storage/Handle.component1|component1(){}[0]
+    final fun component2(): #B // dev.whyoleg.cryptography.storage/Handle.component2|component2(){}[0]
+    final fun component3(): dev.whyoleg.cryptography.storage/KeyAttributes // dev.whyoleg.cryptography.storage/Handle.component3|component3(){}[0]
+    final fun copy(#A = ..., #B = ..., dev.whyoleg.cryptography.storage/KeyAttributes = ...): dev.whyoleg.cryptography.storage/Handle<#A, #B> // dev.whyoleg.cryptography.storage/Handle.copy|copy(1:0;1:1;dev.whyoleg.cryptography.storage.KeyAttributes){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.whyoleg.cryptography.storage/Handle.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.whyoleg.cryptography.storage/Handle.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.whyoleg.cryptography.storage/Handle.toString|toString(){}[0]
+}
+
+final class dev.whyoleg.cryptography.storage/AccessPolicy { // dev.whyoleg.cryptography.storage/AccessPolicy|null[0]
+    constructor <init>(kotlin/Boolean = ..., dev.whyoleg.cryptography.storage/Accessibility = ..., dev.whyoleg.cryptography.storage/DeviceBinding = ..., kotlin/Boolean = ...) // dev.whyoleg.cryptography.storage/AccessPolicy.<init>|<init>(kotlin.Boolean;dev.whyoleg.cryptography.storage.Accessibility;dev.whyoleg.cryptography.storage.DeviceBinding;kotlin.Boolean){}[0]
+
+    final val accessibility // dev.whyoleg.cryptography.storage/AccessPolicy.accessibility|{}accessibility[0]
+        final fun <get-accessibility>(): dev.whyoleg.cryptography.storage/Accessibility // dev.whyoleg.cryptography.storage/AccessPolicy.accessibility.<get-accessibility>|<get-accessibility>(){}[0]
+    final val deviceBinding // dev.whyoleg.cryptography.storage/AccessPolicy.deviceBinding|{}deviceBinding[0]
+        final fun <get-deviceBinding>(): dev.whyoleg.cryptography.storage/DeviceBinding // dev.whyoleg.cryptography.storage/AccessPolicy.deviceBinding.<get-deviceBinding>|<get-deviceBinding>(){}[0]
+    final val exportablePrivate // dev.whyoleg.cryptography.storage/AccessPolicy.exportablePrivate|{}exportablePrivate[0]
+        final fun <get-exportablePrivate>(): kotlin/Boolean // dev.whyoleg.cryptography.storage/AccessPolicy.exportablePrivate.<get-exportablePrivate>|<get-exportablePrivate>(){}[0]
+    final val requireUserPresence // dev.whyoleg.cryptography.storage/AccessPolicy.requireUserPresence|{}requireUserPresence[0]
+        final fun <get-requireUserPresence>(): kotlin/Boolean // dev.whyoleg.cryptography.storage/AccessPolicy.requireUserPresence.<get-requireUserPresence>|<get-requireUserPresence>(){}[0]
+
+    final fun component1(): kotlin/Boolean // dev.whyoleg.cryptography.storage/AccessPolicy.component1|component1(){}[0]
+    final fun component2(): dev.whyoleg.cryptography.storage/Accessibility // dev.whyoleg.cryptography.storage/AccessPolicy.component2|component2(){}[0]
+    final fun component3(): dev.whyoleg.cryptography.storage/DeviceBinding // dev.whyoleg.cryptography.storage/AccessPolicy.component3|component3(){}[0]
+    final fun component4(): kotlin/Boolean // dev.whyoleg.cryptography.storage/AccessPolicy.component4|component4(){}[0]
+    final fun copy(kotlin/Boolean = ..., dev.whyoleg.cryptography.storage/Accessibility = ..., dev.whyoleg.cryptography.storage/DeviceBinding = ..., kotlin/Boolean = ...): dev.whyoleg.cryptography.storage/AccessPolicy // dev.whyoleg.cryptography.storage/AccessPolicy.copy|copy(kotlin.Boolean;dev.whyoleg.cryptography.storage.Accessibility;dev.whyoleg.cryptography.storage.DeviceBinding;kotlin.Boolean){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.whyoleg.cryptography.storage/AccessPolicy.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.whyoleg.cryptography.storage/AccessPolicy.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.whyoleg.cryptography.storage/AccessPolicy.toString|toString(){}[0]
+}
+
+final class dev.whyoleg.cryptography.storage/KeyAttributes { // dev.whyoleg.cryptography.storage/KeyAttributes|null[0]
+    constructor <init>(kotlin/Boolean, kotlin/Boolean, kotlin/ByteArray?) // dev.whyoleg.cryptography.storage/KeyAttributes.<init>|<init>(kotlin.Boolean;kotlin.Boolean;kotlin.ByteArray?){}[0]
+
+    final val extractable // dev.whyoleg.cryptography.storage/KeyAttributes.extractable|{}extractable[0]
+        final fun <get-extractable>(): kotlin/Boolean // dev.whyoleg.cryptography.storage/KeyAttributes.extractable.<get-extractable>|<get-extractable>(){}[0]
+    final val label // dev.whyoleg.cryptography.storage/KeyAttributes.label|{}label[0]
+        final fun <get-label>(): kotlin/ByteArray? // dev.whyoleg.cryptography.storage/KeyAttributes.label.<get-label>|<get-label>(){}[0]
+    final val persistent // dev.whyoleg.cryptography.storage/KeyAttributes.persistent|{}persistent[0]
+        final fun <get-persistent>(): kotlin/Boolean // dev.whyoleg.cryptography.storage/KeyAttributes.persistent.<get-persistent>|<get-persistent>(){}[0]
+
+    final fun component1(): kotlin/Boolean // dev.whyoleg.cryptography.storage/KeyAttributes.component1|component1(){}[0]
+    final fun component2(): kotlin/Boolean // dev.whyoleg.cryptography.storage/KeyAttributes.component2|component2(){}[0]
+    final fun component3(): kotlin/ByteArray? // dev.whyoleg.cryptography.storage/KeyAttributes.component3|component3(){}[0]
+    final fun copy(kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/ByteArray? = ...): dev.whyoleg.cryptography.storage/KeyAttributes // dev.whyoleg.cryptography.storage/KeyAttributes.copy|copy(kotlin.Boolean;kotlin.Boolean;kotlin.ByteArray?){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.whyoleg.cryptography.storage/KeyAttributes.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.whyoleg.cryptography.storage/KeyAttributes.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.whyoleg.cryptography.storage/KeyAttributes.toString|toString(){}[0]
+}

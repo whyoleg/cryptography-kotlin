@@ -47,6 +47,8 @@ projects("cryptography-kotlin") {
 
     // providers API, high-level API
     module("cryptography-core")
+    // storage API (additive, experimental)
+    module("cryptography-storage")
 
     // providers
     folder("cryptography-providers", prefix = "cryptography-provider") {
