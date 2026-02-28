@@ -47,6 +47,8 @@ projects("cryptography-kotlin") {
 
     // providers API, high-level API
     module("cryptography-core")
+    // storage API (additive, experimental)
+    module("cryptography-storage")
 
     // providers
     folder("cryptography-providers", prefix = "cryptography-provider") {
@@ -58,6 +60,7 @@ projects("cryptography-kotlin") {
             module("bc") // preconfigured JDK with BC provider
         }
         module("apple")
+        module("apple-keychain")
         module("webcrypto")
         folder("openssl3") {
             module("api")

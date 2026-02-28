@@ -22,11 +22,13 @@ object Projects {
         "cryptography-serialization-asn1-modules" to setOf(Tag.PUBLISHED),
 
         "cryptography-core" to setOf(Tag.PUBLISHED),
+        "cryptography-storage" to setOf(Tag.PUBLISHED),
 
         "cryptography-provider-base" to setOf(Tag.PUBLISHED),
         "cryptography-provider-jdk" to setOf(Tag.PUBLISHED),
         "cryptography-provider-jdk-bc" to setOf(Tag.PUBLISHED),
         "cryptography-provider-apple" to setOf(Tag.PUBLISHED),
+        "cryptography-provider-apple-keychain" to setOf(Tag.PUBLISHED),
         "cryptography-provider-cryptokit" to setOf(Tag.PUBLISHED),
         "cryptography-provider-webcrypto" to setOf(Tag.PUBLISHED),
         "cryptography-provider-openssl3-api" to setOf(Tag.PUBLISHED),
