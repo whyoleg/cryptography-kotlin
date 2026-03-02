@@ -239,6 +239,74 @@ public object JsonWebKeys {
             else      -> null
         }
 
+    // === DSA ===
+
+    public fun encodeDsaPublicKey(
+        p: ByteArray,
+        q: ByteArray,
+        g: ByteArray,
+        y: ByteArray,
+    ): ByteArray = jwk(kty = "DSA", alg = null) {
+        put("p", p)
+        put("q", q)
+        put("g", g)
+        put("y", y)
+    }
+
+    public fun encodeDsaPrivateKey(
+        p: ByteArray,
+        q: ByteArray,
+        g: ByteArray,
+        x: ByteArray,
+        y: ByteArray? = null,
+    ): ByteArray = jwk(kty = "DSA", alg = null) {
+        put("p", p)
+        put("q", q)
+        put("g", g)
+        if (y != null) put("y", y)
+        put("x", x)
+    }
+
+    public fun decodeDsaPublicKey(
+        jwkKey: ByteArray,
+    ): DsaPublicKeyComponents {
+        val obj = parseJwk(jwkKey, expectedKty = "DSA")
+        return DsaPublicKeyComponents(
+            p = requireNotNull(obj.getByteArray("p")) { "'p' is required" },
+            q = requireNotNull(obj.getByteArray("q")) { "'q' is required" },
+            g = requireNotNull(obj.getByteArray("g")) { "'g' is required" },
+            y = requireNotNull(obj.getByteArray("y")) { "'y' is required" },
+        )
+    }
+
+    public fun decodeDsaPrivateKey(
+        jwkKey: ByteArray,
+    ): DsaPrivateKeyComponents {
+        val obj = parseJwk(jwkKey, expectedKty = "DSA")
+        return DsaPrivateKeyComponents(
+            p = requireNotNull(obj.getByteArray("p")) { "'p' is required" },
+            q = requireNotNull(obj.getByteArray("q")) { "'q' is required" },
+            g = requireNotNull(obj.getByteArray("g")) { "'g' is required" },
+            x = requireNotNull(obj.getByteArray("x")) { "'x' is required" },
+            y = obj.getByteArray("y"),
+        )
+    }
+
+    public class DsaPublicKeyComponents(
+        public val p: ByteArray,
+        public val q: ByteArray,
+        public val g: ByteArray,
+        public val y: ByteArray,
+    )
+
+    public class DsaPrivateKeyComponents(
+        public val p: ByteArray,
+        public val q: ByteArray,
+        public val g: ByteArray,
+        public val x: ByteArray,
+        public val y: ByteArray?,
+    )
+
     // === Internal helpers ===
 
     private fun parseJwk(jwkKey: ByteArray, expectedKty: String): JsonObject {

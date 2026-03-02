@@ -18,6 +18,7 @@ import dev.whyoleg.cryptography.serialization.asn1.*
 import dev.whyoleg.cryptography.serialization.asn1.modules.*
 import dev.whyoleg.cryptography.bigint.*
 import dev.whyoleg.cryptography.providers.base.checkBounds
+import dev.whyoleg.cryptography.providers.base.materials.JsonWebKeys
 import java.math.BigInteger
 import java.security.interfaces.*
 import java.security.spec.*
@@ -35,13 +36,26 @@ internal class JdkDsa(
     private inner class DsaPublicKeyDecoder :
         JdkPublicKeyDecoder<DSA.PublicKey.Format, DSA.PublicKey>(state, "DSA") {
 
-        override fun decodeFromByteArrayBlocking(format: DSA.PublicKey.Format, bytes: ByteArray): DSA.PublicKey = decodeFromDer(
-            when (format) {
-                DSA.PublicKey.Format.JWK -> error("$format is not supported")
-                DSA.PublicKey.Format.DER -> bytes
-                DSA.PublicKey.Format.PEM -> unwrapPem(PemLabel.PublicKey, bytes)
+        override fun decodeFromByteArrayBlocking(format: DSA.PublicKey.Format, bytes: ByteArray): DSA.PublicKey = when (format) {
+            DSA.PublicKey.Format.JWK -> {
+                val c = JsonWebKeys.decodeDsaPublicKey(bytes)
+                decode(
+                    DSAPublicKeySpec(
+                        BigInteger(1, c.y),
+                        BigInteger(1, c.p),
+                        BigInteger(1, c.q),
+                        BigInteger(1, c.g),
+                    )
+                )
             }
-        )
+            else -> decodeFromDer(
+                when (format) {
+                    DSA.PublicKey.Format.JWK -> error("unreachable")
+                    DSA.PublicKey.Format.DER -> bytes
+                    DSA.PublicKey.Format.PEM -> unwrapPem(PemLabel.PublicKey, bytes)
+                }
+            )
+        }
 
         override fun JPublicKey.convert(): DSA.PublicKey = DsaPublicKey(this)
     }
@@ -49,13 +63,43 @@ internal class JdkDsa(
     private inner class DsaPrivateKeyDecoder :
         JdkPrivateKeyDecoder<DSA.PrivateKey.Format, DSA.PrivateKey>(state, "DSA") {
 
-        override fun decodeFromByteArrayBlocking(format: DSA.PrivateKey.Format, bytes: ByteArray): DSA.PrivateKey = decodeFromDer(
-            when (format) {
-                DSA.PrivateKey.Format.JWK -> error("$format is not supported")
-                DSA.PrivateKey.Format.DER -> bytes
-                DSA.PrivateKey.Format.PEM -> unwrapPem(PemLabel.PrivateKey, bytes)
+        override fun decodeFromByteArrayBlocking(format: DSA.PrivateKey.Format, bytes: ByteArray): DSA.PrivateKey = when (format) {
+            DSA.PrivateKey.Format.JWK -> {
+                val c = JsonWebKeys.decodeDsaPrivateKey(bytes)
+
+                val jPrivate = decodeRaw(
+                    DSAPrivateKeySpec(
+                        BigInteger(1, c.x),
+                        BigInteger(1, c.p),
+                        BigInteger(1, c.q),
+                        BigInteger(1, c.g),
+                    )
+                )
+
+                val publicKey: DSA.PublicKey? = c.y?.let { y ->
+                    val jPublic = state.keyFactory("DSA").use { factory ->
+                        factory.generatePublic(
+                            DSAPublicKeySpec(
+                                BigInteger(1, y),
+                                BigInteger(1, c.p),
+                                BigInteger(1, c.q),
+                                BigInteger(1, c.g),
+                            )
+                        )
+                    } as JPublicKey
+                    DsaPublicKey(jPublic)
+                }
+
+                DsaPrivateKey(jPrivate, publicKey = publicKey)
             }
-        )
+            else -> decodeFromDer(
+                when (format) {
+                    DSA.PrivateKey.Format.JWK -> error("unreachable")
+                    DSA.PrivateKey.Format.DER -> bytes
+                    DSA.PrivateKey.Format.PEM -> unwrapPem(PemLabel.PrivateKey, bytes)
+                }
+            )
+        }
 
         override fun JPrivateKey.convert(): DSA.PrivateKey = DsaPrivateKey(this, publicKey = null)
     }
@@ -101,7 +145,16 @@ internal class JdkDsa(
         }
 
         override fun encodeToByteArrayBlocking(format: DSA.PublicKey.Format): ByteArray = when (format) {
-            DSA.PublicKey.Format.JWK -> error("$format is not supported")
+            DSA.PublicKey.Format.JWK -> {
+                val dsaKey = key as DSAPublicKey
+                val params = dsaKey.params
+                JsonWebKeys.encodeDsaPublicKey(
+                    p = params.p.toKotlinBigInt().magnitudeToByteArray(),
+                    q = params.q.toKotlinBigInt().magnitudeToByteArray(),
+                    g = params.g.toKotlinBigInt().magnitudeToByteArray(),
+                    y = dsaKey.y.toKotlinBigInt().magnitudeToByteArray(),
+                )
+            }
             DSA.PublicKey.Format.DER -> encodeToDer()
             DSA.PublicKey.Format.PEM -> wrapPem(PemLabel.PublicKey, encodeToDer())
         }
@@ -136,7 +189,23 @@ internal class JdkDsa(
         }
 
         override fun encodeToByteArrayBlocking(format: DSA.PrivateKey.Format): ByteArray = when (format) {
-            DSA.PrivateKey.Format.JWK -> error("$format is not supported")
+            DSA.PrivateKey.Format.JWK -> {
+                val dsaKey = key as DSAPrivateKey
+                val params = dsaKey.params
+
+                val p = params.p
+                val g = params.g
+                val x = dsaKey.x
+                val y: BigInteger = g.modPow(x, p)
+
+                JsonWebKeys.encodeDsaPrivateKey(
+                    p = params.p.toKotlinBigInt().magnitudeToByteArray(),
+                    q = params.q.toKotlinBigInt().magnitudeToByteArray(),
+                    g = params.g.toKotlinBigInt().magnitudeToByteArray(),
+                    x = dsaKey.x.toKotlinBigInt().magnitudeToByteArray(),
+                    y = y.toKotlinBigInt().magnitudeToByteArray(),
+                )
+            }
             DSA.PrivateKey.Format.DER -> encodeToDer()
             DSA.PrivateKey.Format.PEM -> wrapPem(PemLabel.PrivateKey, encodeToDer())
         }

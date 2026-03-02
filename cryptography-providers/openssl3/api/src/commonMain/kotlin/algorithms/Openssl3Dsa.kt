@@ -10,6 +10,8 @@ import dev.whyoleg.cryptography.bigint.*
 import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.checkBounds
+import dev.whyoleg.cryptography.providers.base.materials.JsonWebKeys
+import dev.whyoleg.cryptography.providers.base.refToU
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.providers.openssl3.materials.*
@@ -31,7 +33,23 @@ internal object Openssl3Dsa : DSA {
         override fun inputType(format: DSA.PublicKey.Format): String = when (format) {
             DSA.PublicKey.Format.DER -> "DER"
             DSA.PublicKey.Format.PEM -> "PEM"
-            DSA.PublicKey.Format.JWK -> error("JWK format is not supported")
+            DSA.PublicKey.Format.JWK -> error("should not be called: handled explicitly in decodeFromByteArrayBlocking")
+        }
+
+        @OptIn(UnsafeNumber::class)
+        override fun decodeFromByteArrayBlocking(format: DSA.PublicKey.Format, bytes: ByteArray): DSA.PublicKey = when (format) {
+            DSA.PublicKey.Format.JWK -> {
+                val c = JsonWebKeys.decodeDsaPublicKey(bytes)
+                wrapKey(fromParameters {
+                    OSSL_PARAM_array(
+                        constructDsaBnParam("p", c.p),
+                        constructDsaBnParam("q", c.q),
+                        constructDsaBnParam("g", c.g),
+                        constructDsaBnParam("pub", c.y),
+                    )
+                })
+            }
+            else                    -> super.decodeFromByteArrayBlocking(format, bytes)
         }
 
         override fun wrapKey(key: CPointer<EVP_PKEY>): DSA.PublicKey = DsaPublicKey(key)
@@ -41,7 +59,27 @@ internal object Openssl3Dsa : DSA {
         override fun inputType(format: DSA.PrivateKey.Format): String = when (format) {
             DSA.PrivateKey.Format.DER -> "DER"
             DSA.PrivateKey.Format.PEM -> "PEM"
-            DSA.PrivateKey.Format.JWK -> error("JWK format is not supported")
+            DSA.PrivateKey.Format.JWK -> error("should not be called: handled explicitly in decodeFromByteArrayBlocking")
+        }
+
+        @OptIn(UnsafeNumber::class)
+        override fun decodeFromByteArrayBlocking(format: DSA.PrivateKey.Format, bytes: ByteArray): DSA.PrivateKey = when (format) {
+            DSA.PrivateKey.Format.JWK -> {
+                val c = JsonWebKeys.decodeDsaPrivateKey(bytes)
+
+                val yBytes = c.y ?: dsaComputePublicY(p = c.p, g = c.g, x = c.x)
+
+                wrapKey(fromParameters {
+                    OSSL_PARAM_array(
+                        constructDsaBnParam("p", c.p),
+                        constructDsaBnParam("q", c.q),
+                        constructDsaBnParam("g", c.g),
+                        constructDsaBnParam("pub", yBytes),
+                        constructDsaBnParam("priv", c.x),
+                    )
+                })
+            }
+            else                     -> super.decodeFromByteArrayBlocking(format, bytes)
         }
 
         override fun wrapKey(key: CPointer<EVP_PKEY>): DSA.PrivateKey = DsaPrivateKey(key, publicKey = null)
@@ -105,7 +143,18 @@ internal object Openssl3Dsa : DSA {
         override fun outputType(format: DSA.PublicKey.Format): String = when (format) {
             DSA.PublicKey.Format.DER -> "DER"
             DSA.PublicKey.Format.PEM -> "PEM"
-            DSA.PublicKey.Format.JWK -> error("JWK format is not supported")
+            DSA.PublicKey.Format.JWK -> error("should not be called: handled explicitly in encodeToByteArrayBlocking")
+        }
+
+        override fun encodeToByteArrayBlocking(format: DSA.PublicKey.Format): ByteArray = when (format) {
+            DSA.PublicKey.Format.JWK -> {
+                val p = getDsaBnParam(key, "p")
+                val q = getDsaBnParam(key, "q")
+                val g = getDsaBnParam(key, "g")
+                val y = getDsaBnParam(key, "pub")
+                JsonWebKeys.encodeDsaPublicKey(p = p, q = q, g = g, y = y)
+            }
+            else                    -> super.encodeToByteArrayBlocking(format)
         }
 
         override fun signatureVerifier(digest: CryptographyAlgorithmId<Digest>?, format: DSA.SignatureFormat): SignatureVerifier {
@@ -131,7 +180,19 @@ internal object Openssl3Dsa : DSA {
         override fun outputType(format: DSA.PrivateKey.Format): String = when (format) {
             DSA.PrivateKey.Format.DER -> "DER"
             DSA.PrivateKey.Format.PEM -> "PEM"
-            DSA.PrivateKey.Format.JWK -> error("JWK format is not supported")
+            DSA.PrivateKey.Format.JWK -> error("should not be called: handled explicitly in encodeToByteArrayBlocking")
+        }
+
+        override fun encodeToByteArrayBlocking(format: DSA.PrivateKey.Format): ByteArray = when (format) {
+            DSA.PrivateKey.Format.JWK -> {
+                val p = getDsaBnParam(key, "p")
+                val q = getDsaBnParam(key, "q")
+                val g = getDsaBnParam(key, "g")
+                val x = getDsaBnParam(key, "priv")
+                val y = getDsaBnParam(key, "pub")
+                JsonWebKeys.encodeDsaPrivateKey(p = p, q = q, g = g, x = x, y = y)
+            }
+            else                     -> super.encodeToByteArrayBlocking(format)
         }
 
         override fun signatureGenerator(digest: CryptographyAlgorithmId<Digest>?, format: DSA.SignatureFormat): SignatureGenerator {
@@ -159,6 +220,63 @@ private class DsaDigestSignatureVerifier(
     hashAlgorithm: String,
 ) : Openssl3DigestSignatureVerifier(publicKey, hashAlgorithm) {
     override fun MemScope.createParams(): CValuesRef<OSSL_PARAM>? = null
+}
+
+private fun getDsaBnParam(key: CPointer<EVP_PKEY>, paramName: String): ByteArray = memScoped {
+    val bnVar = alloc<CPointerVar<BIGNUM>>()
+    checkError(EVP_PKEY_get_bn_param(key, paramName, bnVar.ptr))
+    val bn = checkError(bnVar.value)
+    try {
+        val size = BN_num_bytes(bn)
+        val bytes = ByteArray(size)
+        checkError(BN_bn2binpad(bn, bytes.refToU(0), size))
+        bytes
+    } finally {
+        BN_free(bn)
+    }
+}
+
+@OptIn(UnsafeNumber::class)
+private fun MemScope.constructDsaBnParam(
+    name: String,
+    value: ByteArray,
+): CValue<OSSL_PARAM> {
+    // `value` is big-endian; OSSL_PARAM_construct_BN expects native-endian unsigned integer bytes.
+    val bn = checkError(BN_bin2bn(value.refToU(0), value.size, null))
+    try {
+        val size = BN_num_bytes(bn)
+        val bytes = allocArray<UByteVar>(size)
+        checkError(BN_bn2nativepad(bn, bytes, size))
+        return OSSL_PARAM_construct_BN(name.cstr.ptr, bytes, size.convert())
+    } finally {
+        BN_free(bn)
+    }
+}
+
+@OptIn(UnsafeNumber::class)
+private fun dsaComputePublicY(
+    p: ByteArray,
+    g: ByteArray,
+    x: ByteArray,
+): ByteArray = memScoped {
+    val bnP = checkError(BN_bin2bn(p.refToU(0), p.size, null))
+    val bnG = checkError(BN_bin2bn(g.refToU(0), g.size, null))
+    val bnX = checkError(BN_bin2bn(x.refToU(0), x.size, null))
+    val bnY = checkError(BN_new())
+    val ctx = checkError(BN_CTX_new())
+    try {
+        checkError(BN_mod_exp(bnY, bnG, bnX, bnP, ctx))
+        val size = BN_num_bytes(bnY)
+        val out = ByteArray(size)
+        checkError(BN_bn2binpad(bnY, out.refToU(0), size))
+        out
+    } finally {
+        BN_CTX_free(ctx)
+        BN_free(bnY)
+        BN_free(bnX)
+        BN_free(bnG)
+        BN_free(bnP)
+    }
 }
 
 @OptIn(UnsafeNumber::class)
