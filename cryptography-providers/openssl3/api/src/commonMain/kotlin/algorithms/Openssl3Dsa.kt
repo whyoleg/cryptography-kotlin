@@ -26,8 +26,81 @@ internal object Openssl3Dsa : DSA {
 
     override fun privateKeyDecoder(): Decoder<DSA.PrivateKey.Format, DSA.PrivateKey> = DsaPrivateKeyDecoder
 
+    override fun parametersDecoder(): Decoder<DSA.Parameters.Format, DSA.Parameters> = DsaParametersDecoder
+
+    override fun parametersGenerator(pBits: BinarySize, qBits: BinarySize?): DSA.ParametersGenerator =
+        DsaParametersGenerator(pBits = pBits.inBits.toUInt(), qBits = qBits?.inBits?.toUInt())
+
     override fun keyPairGenerator(keySize: BinarySize): KeyGenerator<DSA.KeyPair> =
-        DsaKeyPairGenerator(pBits = keySize.inBits.toUInt())
+        DsaKeyPairGeneratorFromGeneratedParameters(pBits = keySize, qBits = null)
+
+    private class DsaKeyPairGeneratorFromGeneratedParameters(
+        private val pBits: BinarySize,
+        private val qBits: BinarySize?,
+    ) : KeyGenerator<DSA.KeyPair> {
+        override fun generateKeyBlocking(): DSA.KeyPair {
+            val parameters = parametersGenerator(pBits = pBits, qBits = qBits).generateParametersBlocking()
+            return parameters.keyPairGenerator().generateKeyBlocking()
+        }
+    }
+
+    private object DsaParametersDecoder : Openssl3ParametersDecoder<DSA.Parameters.Format, DSA.Parameters>("DSA") {
+        override fun inputType(format: DSA.Parameters.Format): String = when (format) {
+            DSA.Parameters.Format.DER -> "DER"
+            DSA.Parameters.Format.PEM -> "PEM"
+        }
+
+        override fun wrapKey(key: CPointer<EVP_PKEY>): DSA.Parameters = Openssl3DsaParameters(key)
+    }
+
+    private class DsaParametersGenerator(
+        private val pBits: UInt,
+        private val qBits: UInt?,
+    ) : DSA.ParametersGenerator {
+        @OptIn(UnsafeNumber::class)
+        override fun generateParametersBlocking(): DSA.Parameters = with_PKEY_CTX("DSA") { context ->
+            checkError(EVP_PKEY_paramgen_init(context))
+
+            checkError(
+                EVP_PKEY_CTX_set_params(
+                    context,
+                    OSSL_PARAM_array(
+                        OSSL_PARAM_construct_uint("pbits".cstr.ptr, alloc(pBits).ptr),
+                        qBits?.let { OSSL_PARAM_construct_uint("qbits".cstr.ptr, alloc(it).ptr) },
+                    )
+                )
+            )
+
+            val paramsKeyVar = alloc<CPointerVar<EVP_PKEY>>()
+            checkError(EVP_PKEY_generate(context, paramsKeyVar.ptr))
+            val paramsKey = checkError(paramsKeyVar.value)
+            Openssl3DsaParameters(paramsKey)
+        }
+    }
+
+    private class Openssl3DsaParameters(
+        key: CPointer<EVP_PKEY>,
+    ) : DSA.Parameters, Openssl3ParametersEncodable<DSA.Parameters.Format>(key) {
+
+        override fun keyPairGenerator(): KeyGenerator<DSA.KeyPair> = DsaKeyGenerator(key)
+
+        override fun outputType(format: DSA.Parameters.Format): String = when (format) {
+            DSA.Parameters.Format.DER -> "DER"
+            DSA.Parameters.Format.PEM -> "PEM"
+        }
+    }
+
+    private class DsaKeyGenerator(key: CPointer<EVP_PKEY>) : Openssl3KeyPairGenerator<DSA.KeyPair>(key) {
+        override fun MemScope.createParams(): CValuesRef<OSSL_PARAM>? = null
+
+        override fun wrapKeyPair(keyPair: CPointer<EVP_PKEY>): DSA.KeyPair {
+            val publicKey = DsaPublicKey(keyPair)
+            return DsaKeyPair(
+                publicKey = publicKey,
+                privateKey = DsaPrivateKey(keyPair, publicKey)
+            )
+        }
+    }
 
     private object DsaPublicKeyDecoder : Openssl3PublicKeyDecoder<DSA.PublicKey.Format, DSA.PublicKey>("DSA") {
         override fun inputType(format: DSA.PublicKey.Format): String = when (format) {
@@ -83,52 +156,6 @@ internal object Openssl3Dsa : DSA {
         }
 
         override fun wrapKey(key: CPointer<EVP_PKEY>): DSA.PrivateKey = DsaPrivateKey(key, publicKey = null)
-    }
-
-    private class DsaKeyPairGenerator(
-        private val pBits: UInt,
-        private val qBits: UInt? = null, // optional; can be set later if needed
-    ) : KeyGenerator<DSA.KeyPair> {
-
-        @OptIn(UnsafeNumber::class)
-        override fun generateKeyBlocking(): DSA.KeyPair = memScoped {
-            // 1) generate DSA parameters
-            val paramCtx = checkError(EVP_PKEY_CTX_new_from_name(null, "DSA", null))
-            val paramsKey: CPointer<EVP_PKEY> = try {
-                checkError(EVP_PKEY_paramgen_init(paramCtx))
-
-                val params = OSSL_PARAM_array(
-                    OSSL_PARAM_construct_uint("pbits".cstr.ptr, alloc(pBits).ptr),
-                    qBits?.let { OSSL_PARAM_construct_uint("qbits".cstr.ptr, alloc(it).ptr) },
-                )
-                checkError(EVP_PKEY_CTX_set_params(paramCtx, params))
-
-                val paramsKeyVar = alloc<CPointerVar<EVP_PKEY>>()
-                checkError(EVP_PKEY_generate(paramCtx, paramsKeyVar.ptr))
-                checkError(paramsKeyVar.value)
-            } finally {
-                EVP_PKEY_CTX_free(paramCtx)
-            }
-
-            // 2) generate key pair from parameters
-            val keyCtx = checkError(EVP_PKEY_CTX_new_from_pkey(null, paramsKey, null))
-            try {
-                checkError(EVP_PKEY_keygen_init(keyCtx))
-
-                val keyVar = alloc<CPointerVar<EVP_PKEY>>()
-                checkError(EVP_PKEY_generate(keyCtx, keyVar.ptr))
-                val keyPairKey = checkError(keyVar.value)
-
-                val publicKey = DsaPublicKey(keyPairKey)
-                DsaKeyPair(
-                    publicKey = publicKey,
-                    privateKey = DsaPrivateKey(keyPairKey, publicKey)
-                )
-            } finally {
-                EVP_PKEY_CTX_free(keyCtx)
-                EVP_PKEY_free(paramsKey)
-            }
-        }
     }
 
     private class DsaKeyPair(

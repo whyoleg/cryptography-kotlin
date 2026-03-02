@@ -18,6 +18,51 @@ public interface DSA : CryptographyAlgorithm {
     public fun publicKeyDecoder(): Decoder<PublicKey.Format, PublicKey>
     public fun privateKeyDecoder(): Decoder<PrivateKey.Format, PrivateKey>
 
+    public fun parametersDecoder(): Decoder<Parameters.Format, Parameters>
+
+    /**
+     * Creates a generator for DSA domain parameters.
+     *
+     * DSA parameters consist of a prime modulus [p] and a subgroup of prime order [q], with generator [g]
+     * (commonly referred to as (p, q, g)).
+     *
+     * - [pBits] controls the size of the prime modulus `p` (typical values: 2048 or 3072 bits).
+     * - [qBits] controls the size of the subgroup order `q` (typical values: 224 or 256 bits for `pBits=2048`,
+     *   and 256 bits for `pBits=3072`).
+     *
+     * If [qBits] is `null`, the provider chooses a suitable default for the given [pBits].
+     *
+     * Note: not all providers/platforms support explicit `qBits` selection. In such cases, implementations may
+     * ignore [qBits].
+     */
+    public fun parametersGenerator(pBits: BinarySize, qBits: BinarySize? = null): ParametersGenerator
+
+    @SubclassOptInRequired(CryptographyProviderApi::class)
+    public interface ParametersGenerator {
+        public suspend fun generateParameters(): Parameters = generateParametersBlocking()
+        public fun generateParametersBlocking(): Parameters
+    }
+
+    @SubclassOptInRequired(CryptographyProviderApi::class)
+    public interface Parameters : Encodable<Parameters.Format> {
+        public fun keyPairGenerator(): KeyGenerator<KeyPair>
+
+        public sealed class Format : EncodingFormat {
+            final override fun toString(): String = name
+
+            // DER encoding of DSAParameters ASN.1 structure: SEQUENCE { p, q, g }
+            public data object DER : Format() {
+                override val name: String get() = "DER"
+            }
+
+            // PEM encoding with "DSA PARAMETERS" label
+            public data object PEM : Format() {
+                override val name: String get() = "PEM"
+            }
+        }
+    }
+
+    // Convenience: provider may implement this via parametersGenerator(pBits = keySize, qBits = null)
     public fun keyPairGenerator(
         keySize: BinarySize = 2048.bits,
     ): KeyGenerator<KeyPair>

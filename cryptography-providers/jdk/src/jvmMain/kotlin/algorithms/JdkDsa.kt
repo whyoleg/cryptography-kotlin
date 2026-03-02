@@ -31,7 +31,94 @@ internal class JdkDsa(
 
     override fun privateKeyDecoder(): Decoder<DSA.PrivateKey.Format, DSA.PrivateKey> = DsaPrivateKeyDecoder()
 
-    override fun keyPairGenerator(keySize: BinarySize): KeyGenerator<DSA.KeyPair> = DsaKeyPairGenerator(keySize)
+    override fun parametersDecoder(): Decoder<DSA.Parameters.Format, DSA.Parameters> = DsaParametersDecoder()
+
+    override fun parametersGenerator(pBits: BinarySize, qBits: BinarySize?): DSA.ParametersGenerator =
+        DsaParametersGenerator(pBits, qBits)
+
+    override fun keyPairGenerator(keySize: BinarySize): KeyGenerator<DSA.KeyPair> =
+        DsaKeyPairGeneratorFromParameters(parametersGenerator(pBits = keySize, qBits = null).generateParametersBlocking())
+
+    private inner class DsaKeyPairGeneratorFromSpec(
+        private val parameters: DSAParameterSpec,
+    ) : JdkKeyPairGenerator<DSA.KeyPair>(state, "DSA") {
+
+        override fun JKeyPairGenerator.init() {
+            initialize(parameters, state.secureRandom)
+        }
+
+        override fun JKeyPair.convert(): DSA.KeyPair {
+            val publicKey = DsaPublicKey(public)
+            val privateKey = DsaPrivateKey(private, publicKey)
+            return DsaKeyPair(publicKey, privateKey)
+        }
+    }
+
+    private inner class DsaKeyPairGeneratorFromParameters(
+        private val parameters: DSA.Parameters,
+    ) : KeyGenerator<DSA.KeyPair> {
+        override fun generateKeyBlocking(): DSA.KeyPair {
+            check(parameters is JdkDsaParameters) { "Only parameters produced by JDK provider are supported" }
+            val spec = parameters.parameters.getParameterSpec(DSAParameterSpec::class.java)
+            return DsaKeyPairGeneratorFromSpec(spec).generateKeyBlocking()
+        }
+    }
+
+    private inner class DsaParametersDecoder : Decoder<DSA.Parameters.Format, DSA.Parameters> {
+        override fun decodeFromByteArrayBlocking(format: DSA.Parameters.Format, bytes: ByteArray): DSA.Parameters = when (format) {
+            DSA.Parameters.Format.DER -> decodeFromDer(bytes)
+            DSA.Parameters.Format.PEM -> decodeFromDer(unwrapPem(PemLabel.DsaParameters, bytes))
+        }
+
+        private fun decodeFromDer(bytes: ByteArray): DSA.Parameters =
+            JdkDsaParameters(state.algorithmParameters("DSA").also { it.init(bytes) })
+    }
+
+    private inner class DsaParametersGenerator(
+        private val pBits: BinarySize,
+        private val qBits: BinarySize?,
+    ) : DSA.ParametersGenerator {
+        private val algorithmParameterGenerator = state.algorithmParameterGenerator("DSA")
+
+        override fun generateParametersBlocking(): DSA.Parameters = algorithmParameterGenerator.use { paramGen ->
+            val q = qBits
+            if (q != null) {
+                val spec = createDsaGenParameterSpecOrNull(pBits.inBits, q.inBits)
+                if (spec != null) {
+                    paramGen.init(spec, state.secureRandom)
+                } else {
+                    // DSAGenParameterSpec is not available (e.g., Android < 35). Fall back to pBits-only init.
+                    paramGen.init(pBits.inBits, state.secureRandom)
+                }
+            } else {
+                paramGen.init(pBits.inBits, state.secureRandom)
+            }
+            JdkDsaParameters(paramGen.generateParameters())
+        }
+    }
+
+    private fun createDsaGenParameterSpecOrNull(pBits: Int, qBits: Int): AlgorithmParameterSpec? {
+        return try {
+            val clazz = Class.forName("java.security.spec.DSAGenParameterSpec")
+            val ctor = clazz.getConstructor(Int::class.javaPrimitiveType, Int::class.javaPrimitiveType)
+            ctor.newInstance(pBits, qBits) as AlgorithmParameterSpec
+        } catch (_: Throwable) {
+            null
+        }
+    }
+
+    private inner class JdkDsaParameters(
+        val parameters: JAlgorithmParameters,
+    ) : DSA.Parameters {
+        override fun keyPairGenerator(): KeyGenerator<DSA.KeyPair> = DsaKeyPairGeneratorFromSpec(
+            parameters.getParameterSpec(DSAParameterSpec::class.java)
+        )
+
+        override fun encodeToByteArrayBlocking(format: DSA.Parameters.Format): ByteArray = when (format) {
+            DSA.Parameters.Format.DER -> parameters.encoded
+            DSA.Parameters.Format.PEM -> wrapPem(PemLabel.DsaParameters, parameters.encoded)
+        }
+    }
 
     private inner class DsaPublicKeyDecoder :
         JdkPublicKeyDecoder<DSA.PublicKey.Format, DSA.PublicKey>(state, "DSA") {
@@ -102,21 +189,6 @@ internal class JdkDsa(
         }
 
         override fun JPrivateKey.convert(): DSA.PrivateKey = DsaPrivateKey(this, publicKey = null)
-    }
-
-    private inner class DsaKeyPairGenerator(
-        private val keySize: BinarySize,
-    ) : JdkKeyPairGenerator<DSA.KeyPair>(state, "DSA") {
-
-        override fun JKeyPairGenerator.init() {
-            initialize(keySize.inBits, state.secureRandom)
-        }
-
-        override fun JKeyPair.convert(): DSA.KeyPair {
-            val publicKey = DsaPublicKey(public)
-            val privateKey = DsaPrivateKey(private, publicKey)
-            return DsaKeyPair(publicKey, privateKey)
-        }
     }
 
     private class DsaKeyPair(
