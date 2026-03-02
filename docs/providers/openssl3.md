@@ -24,8 +24,6 @@ For supported targets and algorithms, please consult [Supported primitives secti
 
 ## Limitations
 
-* KeyFormat: doesn't support `JWK` key format yet
-
 ## Example
 
 ```kotlin

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.apple.algorithms
@@ -25,17 +25,17 @@ internal object SecRsaOaep : SecRsa<RSA.OAEP.PublicKey, RSA.OAEP.PrivateKey, RSA
 
     private class RsaOaepPublicKey(
         publicKey: SecKeyRef,
-        private val algorithm: SecKeyAlgorithm?,
-    ) : RsaPublicKey(publicKey), RSA.OAEP.PublicKey {
-        override fun encryptor(): AuthenticatedEncryptor = RsaOaepEncryptor(publicKey, algorithm)
+        digest: CryptographyAlgorithmId<Digest>,
+    ) : RsaPublicKey(publicKey, digest), RSA.OAEP.PublicKey {
+        override fun encryptor(): AuthenticatedEncryptor = RsaOaepEncryptor(publicKey, hashAlgorithm(digest))
     }
 
     private class RsaOaepPrivateKey(
         privateKey: SecKeyRef,
-        private val algorithm: SecKeyAlgorithm?,
+        digest: CryptographyAlgorithmId<Digest>,
         publicKey: RSA.OAEP.PublicKey?,
-    ) : RsaPrivateKey(privateKey, algorithm, publicKey), RSA.OAEP.PrivateKey {
-        override fun decryptor(): AuthenticatedDecryptor = RsaOaepDecryptor(privateKey, algorithm)
+    ) : RsaPrivateKey(privateKey, digest, publicKey), RSA.OAEP.PrivateKey {
+        override fun decryptor(): AuthenticatedDecryptor = RsaOaepDecryptor(privateKey, hashAlgorithm(digest))
     }
 }
 

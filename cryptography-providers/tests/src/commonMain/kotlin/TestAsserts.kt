@@ -8,8 +8,26 @@ import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.serialization.asn1.*
 import dev.whyoleg.cryptography.serialization.asn1.modules.*
 import kotlinx.io.bytestring.*
+import kotlinx.serialization.json.*
 import kotlin.io.encoding.*
 import kotlin.test.*
+
+fun assertJwtContentEquals(
+    expected: ByteString,
+    actual: ByteString,
+    requiredKeys: Set<String>,
+    message: String? = null,
+) {
+    val expectedJson = Json.decodeFromString(JsonObject.serializer(), expected.decodeToString())
+    val actualJson = Json.decodeFromString(JsonObject.serializer(), actual.decodeToString())
+
+    assertTrue(expectedJson.keys.containsAll(requiredKeys), "Missing required keys: $requiredKeys | $message")
+    assertTrue(actualJson.keys.containsAll(requiredKeys), "Missing required keys: $requiredKeys | $message")
+
+    expectedJson.keys.intersect(actualJson.keys).forEach { key ->
+        assertEquals(expectedJson[key], actualJson[key], "Jwt.$key | $message")
+    }
+}
 
 // base64 is used to have better messages
 

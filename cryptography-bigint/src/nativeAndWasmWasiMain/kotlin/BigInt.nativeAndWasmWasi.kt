@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.bigint
@@ -23,6 +23,21 @@ public actual class BigInt internal constructor(
 ) : Number(), Comparable<BigInt> {
     public actual companion object {
         public actual val ZERO: BigInt = BigInt(0, uintArrayOf(0U))
+
+        public actual fun fromMagnitude(sign: Int, magnitude: ByteArray): BigInt {
+            if (magnitude.isEmpty()) return ZERO
+            if (magnitude.all { it == 0.toByte() }) return ZERO
+            val result = magnitude.decodeMagnitude()
+            if (result.isEmpty()) return ZERO
+            return BigInt(sign, result.asUIntArray())
+        }
+    }
+
+    public actual val absoluteValue: BigInt get() = if (sign >= 0) this else BigInt(-sign, magnitude)
+
+    public actual fun magnitudeToByteArray(): ByteArray {
+        if (sign == 0) return byteArrayOf(0)
+        return encodeMagnitude()
     }
 
     init {
@@ -31,6 +46,9 @@ public actual class BigInt internal constructor(
         check(magnitude.isNotEmpty()) { "empty magnitude" }
         if (sign == 0) check(magnitude.size == 1 && magnitude[0] == 0U) { "zero sign and not array(0)" }
     }
+
+    public actual operator fun unaryPlus(): BigInt = this
+    public actual operator fun unaryMinus(): BigInt = if (sign == 0) this else BigInt(-sign, magnitude)
 
     public actual operator fun compareTo(other: Byte): Int = compareTo(other.toBigInt())
     public actual operator fun compareTo(other: Short): Int = compareTo(other.toBigInt())
@@ -253,28 +271,45 @@ public actual fun ByteArray.decodeToBigInt(): BigInt {
 
     if (size == 1 && this[0] == 0.toByte()) return BigInt.ZERO
     val sign = if (this[0] < 0) -1 else 1
-    // not used when sign < 0
-    val bytes = copyOf().invertTwoComplementIfNeeded(sign)
-    val magnitude = IntArray(size / 4 + 1)
-
-    repeat(bytes.size) {
-        val byteIndex = bytes.size - 1 - it
-        val intIndex = magnitude.size - 1 - it / 4
-        val shiftedByte = bytes[byteIndex].toUInt() and 0xFFU shl (it % 4) * 8
-        magnitude[intIndex] += shiftedByte.toInt()
-    }
-
-    val result = magnitude.removeLeadingZeros()
+    val result = copyOf().invertTwoComplementIfNeeded(sign).decodeMagnitude()
     if (result.isEmpty()) return BigInt.ZERO
     return BigInt(sign, result.asUIntArray())
+}
+
+
+private fun ByteArray.decodeMagnitude(): IntArray {
+    val magnitude = IntArray(size / 4 + 1)
+    repeat(size) {
+        val byteIndex = size - 1 - it
+        val intIndex = magnitude.size - 1 - it / 4
+        val shiftedByte = this[byteIndex].toUInt() and 0xFFU shl (it % 4) * 8
+        magnitude[intIndex] += shiftedByte.toInt()
+    }
+    return magnitude.removeLeadingZeros()
 }
 
 @OptIn(ExperimentalUnsignedTypes::class)
 public actual fun BigInt.encodeToByteArray(): ByteArray {
     if (sign == 0) return byteArrayOf(0)
 
+    val bytes = encodeMagnitude().invertTwoComplementIfNeeded(sign)
+
+    val positive = sign > 0
+    val firstBytePositive = bytes[0] >= 0
+    if (positive == firstBytePositive) return bytes
+
+    // prepend sign byte
+    return ByteArray(bytes.size + 1).also {
+        it[0] = if (positive) 0 else -1
+        bytes.copyInto(it, 1)
+    }
+}
+
+
+@OptIn(ExperimentalUnsignedTypes::class)
+private fun BigInt.encodeMagnitude(): ByteArray {
     val magnitude = magnitude.asIntArray()
-    val bytes = ByteArray(magnitude.size * 4 - (magnitude[0].countLeadingZeroBits() / 8)).also { bytes ->
+    return ByteArray(magnitude.size * 4 - (magnitude[0].countLeadingZeroBits() / 8)).also { bytes ->
         var currentInt = 0
         repeat(bytes.size) {
             val byteIndex = bytes.size - 1 - it
@@ -286,16 +321,6 @@ public actual fun BigInt.encodeToByteArray(): ByteArray {
             val currentByte = (currentInt ushr (byteInIntIndex) * 8).toByte()
             bytes[byteIndex] = currentByte
         }
-    }.invertTwoComplementIfNeeded(sign)
-
-    val positive = sign > 0
-    val firstBytePositive = bytes[0] >= 0
-    if (positive == firstBytePositive) return bytes
-
-    // prepend sign byte
-    return ByteArray(bytes.size + 1).also {
-        it[0] = if (positive) 0 else -1
-        bytes.copyInto(it, 1)
     }
 }
 

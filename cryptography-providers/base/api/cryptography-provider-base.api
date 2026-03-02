@@ -4,18 +4,123 @@ public final class dev/whyoleg/cryptography/providers/base/BytesKt {
 	public static final fun getEmptyByteArray ()[B
 }
 
+public abstract class dev/whyoleg/cryptography/providers/base/algorithms/BaseAes : dev/whyoleg/cryptography/algorithms/AES {
+	public fun <init> ()V
+	public final fun keyDecoder ()Ldev/whyoleg/cryptography/materials/Decoder;
+	public final fun keyGenerator-6q1zMKY (I)Ldev/whyoleg/cryptography/operations/KeyGenerator;
+	protected abstract fun wrapKey ([B)Ldev/whyoleg/cryptography/algorithms/AES$Key;
+}
+
+protected abstract class dev/whyoleg/cryptography/providers/base/algorithms/BaseAes$BaseKey : dev/whyoleg/cryptography/algorithms/AES$Key {
+	public fun <init> (Ldev/whyoleg/cryptography/providers/base/algorithms/BaseAes;[B)V
+	public final fun encodeToByteArrayBlocking (Ldev/whyoleg/cryptography/algorithms/AES$Key$Format;)[B
+	public synthetic fun encodeToByteArrayBlocking (Ldev/whyoleg/cryptography/materials/EncodingFormat;)[B
+	protected final fun getKey ()[B
+}
+
+public abstract class dev/whyoleg/cryptography/providers/base/algorithms/BaseChaCha20Poly1305 : dev/whyoleg/cryptography/algorithms/ChaCha20Poly1305 {
+	public fun <init> ()V
+	public final fun keyDecoder ()Ldev/whyoleg/cryptography/materials/Decoder;
+	public final fun keyGenerator ()Ldev/whyoleg/cryptography/operations/KeyGenerator;
+	protected abstract fun wrapKey ([B)Ldev/whyoleg/cryptography/algorithms/ChaCha20Poly1305$Key;
+}
+
+protected abstract class dev/whyoleg/cryptography/providers/base/algorithms/BaseChaCha20Poly1305$BaseKey : dev/whyoleg/cryptography/algorithms/ChaCha20Poly1305$Key {
+	public fun <init> (Ldev/whyoleg/cryptography/providers/base/algorithms/BaseChaCha20Poly1305;[B)V
+	public final fun encodeToByteArrayBlocking (Ldev/whyoleg/cryptography/algorithms/ChaCha20Poly1305$Key$Format;)[B
+	public synthetic fun encodeToByteArrayBlocking (Ldev/whyoleg/cryptography/materials/EncodingFormat;)[B
+	protected final fun getKey ()[B
+}
+
+public final class dev/whyoleg/cryptography/providers/base/algorithms/BaseEcdsaKt {
+	public static final fun convertEcdsaDerSignatureToRaw (I[B)[B
+	public static final fun convertEcdsaRawSignatureToDer (I[BII)[B
+}
+
 public abstract class dev/whyoleg/cryptography/providers/base/algorithms/BaseHkdf : dev/whyoleg/cryptography/algorithms/HKDF {
 	public fun <init> (Ldev/whyoleg/cryptography/CryptographyProvider;)V
 	protected abstract fun digestSize (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;)I
 	public fun secretDerivation-nkIq3jI (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;I[B[B)Ldev/whyoleg/cryptography/operations/SecretDerivation;
 }
 
-public final class dev/whyoleg/cryptography/providers/base/algorithms/EcKt {
-	public static final fun convertEcPrivateKeyFromPkcs8ToSec1 ([B)[B
-	public static final fun convertEcPrivateKeyFromSec1ToPkcs8 ([B)[B
+public abstract class dev/whyoleg/cryptography/providers/base/algorithms/BaseHmac : dev/whyoleg/cryptography/algorithms/HMAC {
+	public fun <init> ()V
+	protected abstract fun blockSize (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;)I
+	public final fun keyDecoder (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;)Ldev/whyoleg/cryptography/materials/Decoder;
+	public final fun keyGenerator (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;)Ldev/whyoleg/cryptography/operations/KeyGenerator;
+	protected abstract fun wrapKey (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;[B)Ldev/whyoleg/cryptography/algorithms/HMAC$Key;
+}
+
+protected abstract class dev/whyoleg/cryptography/providers/base/algorithms/BaseHmac$BaseKey : dev/whyoleg/cryptography/algorithms/HMAC$Key {
+	public fun <init> (Ldev/whyoleg/cryptography/providers/base/algorithms/BaseHmac;Ldev/whyoleg/cryptography/CryptographyAlgorithmId;[B)V
+	public final fun encodeToByteArrayBlocking (Ldev/whyoleg/cryptography/algorithms/HMAC$Key$Format;)[B
+	public synthetic fun encodeToByteArrayBlocking (Ldev/whyoleg/cryptography/materials/EncodingFormat;)[B
+	protected final fun getKey ()[B
+}
+
+public final class dev/whyoleg/cryptography/providers/base/algorithms/EcdsaRawSignatureGenerator : dev/whyoleg/cryptography/operations/SignatureGenerator {
+	public fun <init> (Ldev/whyoleg/cryptography/operations/SignatureGenerator;I)V
+	public fun createSignFunction ()Ldev/whyoleg/cryptography/operations/SignFunction;
+}
+
+public final class dev/whyoleg/cryptography/providers/base/algorithms/EcdsaRawSignatureVerifier : dev/whyoleg/cryptography/operations/SignatureVerifier {
+	public fun <init> (Ldev/whyoleg/cryptography/operations/SignatureVerifier;I)V
+	public fun createVerifyFunction ()Ldev/whyoleg/cryptography/operations/VerifyFunction;
+}
+
+public final class dev/whyoleg/cryptography/providers/base/materials/JsonWebKeys {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/providers/base/materials/JsonWebKeys;
+	public final fun decodeEcPrivateKey-XWxlsIE (Ljava/lang/String;I[B)Ldev/whyoleg/cryptography/providers/base/materials/JsonWebKeys$EcPrivateKeyComponents;
+	public final fun decodeEcPublicKey-XWxlsIE (Ljava/lang/String;I[B)[B
+	public final fun decodeHmacKey (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;[B)[B
+	public final fun decodeOkpPrivateKey (Ljava/lang/String;[B)Ldev/whyoleg/cryptography/providers/base/materials/JsonWebKeys$OkpPrivateKeyComponents;
+	public final fun decodeOkpPublicKey (Ljava/lang/String;[B)[B
+	public final fun decodeRsaPrivateKey (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;Ldev/whyoleg/cryptography/CryptographyAlgorithmId;[B)Ldev/whyoleg/cryptography/providers/base/materials/JsonWebKeys$RsaPrivateKeyComponents;
+	public final fun decodeRsaPublicKey (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;Ldev/whyoleg/cryptography/CryptographyAlgorithmId;[B)Ldev/whyoleg/cryptography/providers/base/materials/JsonWebKeys$RsaPublicKeyComponents;
+	public final fun decodeSymmetricKey (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;[B)[B
+	public final fun encodeEcPrivateKey-DFwOJLc (Ljava/lang/String;I[B[B)[B
+	public final fun encodeEcPublicKey-XWxlsIE (Ljava/lang/String;I[B)[B
+	public final fun encodeHmacKey (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;[B)[B
+	public final fun encodeOkpPrivateKey (Ljava/lang/String;[B[B)[B
+	public final fun encodeOkpPublicKey (Ljava/lang/String;[B)[B
+	public final fun encodeRsaPrivateKey (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;Ldev/whyoleg/cryptography/CryptographyAlgorithmId;[B[B[B[B[B[B[B[B)[B
+	public final fun encodeRsaPublicKey (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;Ldev/whyoleg/cryptography/CryptographyAlgorithmId;[B[B)[B
+	public final fun encodeSymmetricKey (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;[B)[B
+}
+
+public final class dev/whyoleg/cryptography/providers/base/materials/JsonWebKeys$EcPrivateKeyComponents {
+	public fun <init> ([B[B)V
+	public final fun getPrivateKey ()[B
+	public final fun getPublicKey ()[B
+}
+
+public final class dev/whyoleg/cryptography/providers/base/materials/JsonWebKeys$OkpPrivateKeyComponents {
+	public fun <init> ([B[B)V
+	public final fun getPrivateKey ()[B
+	public final fun getPublicKey ()[B
+}
+
+public final class dev/whyoleg/cryptography/providers/base/materials/JsonWebKeys$RsaPrivateKeyComponents {
+	public fun <init> ([B[B[B[B[B[B[B[B)V
+	public final fun getD ()[B
+	public final fun getDp ()[B
+	public final fun getDq ()[B
+	public final fun getE ()[B
+	public final fun getN ()[B
+	public final fun getP ()[B
+	public final fun getQ ()[B
+	public final fun getQi ()[B
+}
+
+public final class dev/whyoleg/cryptography/providers/base/materials/JsonWebKeys$RsaPublicKeyComponents {
+	public fun <init> ([B[B)V
+	public final fun getE ()[B
+	public final fun getN ()[B
 }
 
 public final class dev/whyoleg/cryptography/providers/base/materials/KeysKt {
+	public static final fun convertEcPrivateKeyFromPkcs8ToSec1 ([B)[B
+	public static final fun convertEcPrivateKeyFromSec1ToPkcs8 ([B)[B
 	public static final fun unwrapCurvePrivateKeyInfo-4RESAxk (Ljava/lang/String;[B)[B
 	public static final fun unwrapPem-unSj4pc (Ljava/lang/String;[B)[B
 	public static final fun unwrapPrivateKeyInfo-4RESAxk (Ljava/lang/String;[B)[B

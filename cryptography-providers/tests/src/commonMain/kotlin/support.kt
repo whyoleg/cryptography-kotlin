@@ -53,12 +53,12 @@ fun AlgorithmTestScope<*>.supportsDigest(digest: CryptographyAlgorithmId<Digest>
 
 fun AlgorithmTestScope<*>.supportsFormat(format: EncodingFormat): Boolean = supports {
     when {
-        // only WebCrypto supports JWK for now
-        format.name == "JWK" && !provider.isWebCrypto
-             -> "JWK key format"
+        format.name == "JWK" &&
+                (algorithm is EC<*, *, *> || algorithm is XDH || algorithm is EdDSA) &&
+                provider.isJdkDefault -> "JWK format not always supported because can't infer public key from private key without BouncyCastle"
         format == EC.PublicKey.Format.RAW.Compressed && provider.isApple
-             -> "compressed key format"
-        else -> null
+                                      -> "compressed key format"
+        else                          -> null
     }
 }
 

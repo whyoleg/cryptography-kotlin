@@ -48,7 +48,7 @@ internal object CryptoKitEdDsa : EdDSA {
                 EdDSA.PublicKey.Format.RAW -> bytes
                 EdDSA.PublicKey.Format.DER -> unwrapSubjectPublicKeyInfo(ObjectIdentifier.Ed25519, bytes)
                 EdDSA.PublicKey.Format.PEM -> unwrapSubjectPublicKeyInfo(ObjectIdentifier.Ed25519, unwrapPem(PemLabel.PublicKey, bytes))
-                EdDSA.PublicKey.Format.JWK -> error("$format is not supported by CryptoKit EdDSA")
+                EdDSA.PublicKey.Format.JWK -> JsonWebKeys.decodeOkpPublicKey(EdDSA.Curve.Ed25519.name, bytes)
             }
             return EdPublicKey(swiftTry { error -> raw.useNSData { SwiftEdDsaPublicKey.decodeRawWithRawRepresentation(it, error) } })
         }
@@ -60,7 +60,7 @@ internal object CryptoKitEdDsa : EdDSA {
                 EdDSA.PrivateKey.Format.RAW -> bytes
                 EdDSA.PrivateKey.Format.DER -> unwrapCurvePrivateKeyInfo(ObjectIdentifier.Ed25519, bytes)
                 EdDSA.PrivateKey.Format.PEM -> unwrapCurvePrivateKeyInfo(ObjectIdentifier.Ed25519, unwrapPem(PemLabel.PrivateKey, bytes))
-                EdDSA.PrivateKey.Format.JWK -> error("$format is not supported by CryptoKit EdDSA")
+                EdDSA.PrivateKey.Format.JWK -> JsonWebKeys.decodeOkpPrivateKey(EdDSA.Curve.Ed25519.name, bytes).privateKey
             }
             return EdPrivateKey(swiftTry { error -> raw.useNSData { SwiftEdDsaPrivateKey.decodeRawWithRawRepresentation(it, error) } })
         }
@@ -81,7 +81,7 @@ internal object CryptoKitEdDsa : EdDSA {
                 EdDSA.PublicKey.Format.RAW -> raw
                 EdDSA.PublicKey.Format.DER -> encodeToDer(raw)
                 EdDSA.PublicKey.Format.PEM -> wrapPem(PemLabel.PublicKey, encodeToDer(raw))
-                EdDSA.PublicKey.Format.JWK -> error("$format is not supported by CryptoKit EdDSA")
+                EdDSA.PublicKey.Format.JWK -> JsonWebKeys.encodeOkpPublicKey(EdDSA.Curve.Ed25519.name, raw)
             }
         }
 
@@ -109,7 +109,11 @@ internal object CryptoKitEdDsa : EdDSA {
                 EdDSA.PrivateKey.Format.RAW -> raw
                 EdDSA.PrivateKey.Format.DER -> encodeToDer(raw)
                 EdDSA.PrivateKey.Format.PEM -> wrapPem(PemLabel.PrivateKey, encodeToDer(raw))
-                EdDSA.PrivateKey.Format.JWK -> error("$format is not supported by CryptoKit EdDSA")
+                EdDSA.PrivateKey.Format.JWK -> JsonWebKeys.encodeOkpPrivateKey(
+                    curve = EdDSA.Curve.Ed25519.name,
+                    publicKey = privateKey.publicKey().rawRepresentation().toByteArray(),
+                    privateKey = raw,
+                )
             }
         }
 

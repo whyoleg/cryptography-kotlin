@@ -6,45 +6,21 @@ package dev.whyoleg.cryptography.providers.cryptokit.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.*
+import dev.whyoleg.cryptography.providers.base.algorithms.*
 import dev.whyoleg.cryptography.providers.base.operations.*
 import dev.whyoleg.cryptography.providers.cryptokit.internal.*
 import dev.whyoleg.cryptography.providers.cryptokit.internal.swift.DwcCryptoKitInterop.*
 
-private const val keySize = 32
 private const val nonceSize: Int = 12
 private const val tagSize: Int = 16
 
-internal object CryptoKitChaCha20Poly1305 : ChaCha20Poly1305 {
-    override fun keyDecoder(): Decoder<ChaCha20Poly1305.Key.Format, ChaCha20Poly1305.Key> = ChaCha20Poly1305KeyDecoder()
-    override fun keyGenerator(): KeyGenerator<ChaCha20Poly1305.Key> = ChaCha20Poly1305KeyGenerator()
-}
+internal object CryptoKitChaCha20Poly1305 : BaseChaCha20Poly1305() {
+    override fun wrapKey(rawKey: ByteArray): ChaCha20Poly1305.Key = ChaCha20Poly1305Key(rawKey)
 
-private class ChaCha20Poly1305KeyDecoder : Decoder<ChaCha20Poly1305.Key.Format, ChaCha20Poly1305.Key> {
-    override fun decodeFromByteArrayBlocking(format: ChaCha20Poly1305.Key.Format, bytes: ByteArray): ChaCha20Poly1305.Key = when (format) {
-        ChaCha20Poly1305.Key.Format.RAW -> {
-            require(bytes.size == keySize) { "ChaCha20-Poly1305 key size must be 256 bits" }
-            ChaCha20Poly1305Key(bytes.copyOf())
-        }
-        ChaCha20Poly1305.Key.Format.JWK -> error("JWK is not supported")
-    }
-}
-
-private class ChaCha20Poly1305KeyGenerator : KeyGenerator<ChaCha20Poly1305.Key> {
-    override fun generateKeyBlocking(): ChaCha20Poly1305.Key {
-        val key = CryptographySystem.getDefaultRandom().nextBytes(keySize)
-        return ChaCha20Poly1305Key(key)
-    }
-}
-
-private class ChaCha20Poly1305Key(private val key: ByteArray) : ChaCha20Poly1305.Key {
-    override fun cipher(): IvAuthenticatedCipher = ChaCha20Poly1305Cipher(key)
-
-    override fun encodeToByteArrayBlocking(format: ChaCha20Poly1305.Key.Format): ByteArray = when (format) {
-        ChaCha20Poly1305.Key.Format.RAW -> key.copyOf()
-        ChaCha20Poly1305.Key.Format.JWK -> error("JWK is not supported")
+    private class ChaCha20Poly1305Key(key: ByteArray) : BaseKey(key) {
+        override fun cipher(): IvAuthenticatedCipher = ChaCha20Poly1305Cipher(key)
     }
 }
 

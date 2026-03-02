@@ -4,44 +4,30 @@
 
 package dev.whyoleg.cryptography.providers.jdk.algorithms
 
-import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.providers.base.algorithms.*
 import dev.whyoleg.cryptography.providers.base.operations.*
 import dev.whyoleg.cryptography.providers.jdk.*
-import dev.whyoleg.cryptography.providers.jdk.materials.*
 import dev.whyoleg.cryptography.providers.jdk.operations.*
 import javax.crypto.spec.*
 
 internal class JdkAesEcb(
     private val state: JdkCryptographyState,
-) : AES.ECB {
-    private val keyWrapper: (JSecretKey) -> AES.ECB.Key = { key -> JdkAesEcbKey(state, key) }
-    private val keyDecoder = JdkSecretKeyDecoder<AES.Key.Format, _>("AES", keyWrapper)
+) : AES.ECB, BaseAes<AES.ECB.Key>() {
+    override fun wrapKey(rawKey: ByteArray): AES.ECB.Key = AesEcbKey(rawKey)
 
-    override fun keyDecoder(): Decoder<AES.Key.Format, AES.ECB.Key> = keyDecoder
-    override fun keyGenerator(keySize: BinarySize): KeyGenerator<AES.ECB.Key> = JdkSecretKeyGenerator(state, "AES", keyWrapper) {
-        init(keySize.inBits, state.secureRandom)
-    }
-}
+    private inner class AesEcbKey(rawKey: ByteArray) : AES.ECB.Key, BaseKey(rawKey) {
+        private val secretKey: JSecretKey = SecretKeySpec(rawKey, "AES")
 
-private class JdkAesEcbKey(
-    private val state: JdkCryptographyState,
-    private val key: JSecretKey,
-) : AES.ECB.Key, JdkEncodableKey<AES.Key.Format>(key) {
-    override fun cipher(padding: Boolean): Cipher = JdkAesEcbCipher(
-        state = state,
-        key = key,
-        algorithm = when {
-            padding -> "AES/ECB/PKCS5Padding"
-            else    -> "AES/ECB/NoPadding"
-        }
-    )
-
-    override fun encodeToByteArrayBlocking(format: AES.Key.Format): ByteArray = when (format) {
-        AES.Key.Format.JWK -> error("$format is not supported")
-        AES.Key.Format.RAW -> encodeToRaw()
+        override fun cipher(padding: Boolean): Cipher = JdkAesEcbCipher(
+            state = state,
+            key = secretKey,
+            algorithm = when {
+                padding -> "AES/ECB/PKCS5Padding"
+                else    -> "AES/ECB/NoPadding"
+            }
+        )
     }
 }
 

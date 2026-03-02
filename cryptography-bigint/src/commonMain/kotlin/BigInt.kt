@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 @file:JvmMultifileClass
@@ -14,9 +14,17 @@ import kotlin.jvm.*
 public expect class BigInt : Number, Comparable<BigInt> {
     public companion object {
         public val ZERO: BigInt
+
+        public fun fromMagnitude(sign: Int, magnitude: ByteArray): BigInt
     }
 
     public val sign: Int
+    public val absoluteValue: BigInt
+
+    public fun magnitudeToByteArray(): ByteArray
+
+    public operator fun unaryPlus(): BigInt
+    public operator fun unaryMinus(): BigInt
 
     // from `Comparable`
     public operator fun compareTo(other: Byte): Int

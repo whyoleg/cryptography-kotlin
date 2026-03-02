@@ -4,9 +4,10 @@
 
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
 
-import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.BinarySize.Companion.bytes
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.providers.base.algorithms.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.providers.openssl3.operations.*
@@ -15,17 +16,17 @@ import kotlin.experimental.*
 import kotlin.native.ref.*
 
 @OptIn(ExperimentalNativeApi::class)
-internal object Openssl3AesCmac : AES.CMAC, Openssl3Aes<AES.CMAC.Key>() {
+internal object Openssl3AesCmac : AES.CMAC, BaseAes<AES.CMAC.Key>() {
     val mac = checkError(EVP_MAC_fetch(null, "CMAC", null))
 
     // is it needed at all for `object`?
     @OptIn(ExperimentalNativeApi::class)
     private val cleaner = createCleaner(Openssl3Hmac.mac, ::EVP_MAC_free)
 
-    override fun wrapKey(keySize: BinarySize, key: ByteArray): AES.CMAC.Key = AesCmacKey(keySize, key)
+    override fun wrapKey(rawKey: ByteArray): AES.CMAC.Key = AesCmacKey(rawKey)
 
-    private class AesCmacKey(keySize: BinarySize, key: ByteArray) : AES.CMAC.Key, AesKey(key) {
-        private val algorithm = when (keySize) {
+    private class AesCmacKey(key: ByteArray) : AES.CMAC.Key, BaseKey(key) {
+        private val algorithm = when (key.size.bytes) {
             AES.Key.Size.B128 -> "AES-128-CBC"
             AES.Key.Size.B192 -> "AES-192-CBC"
             AES.Key.Size.B256 -> "AES-256-CBC"

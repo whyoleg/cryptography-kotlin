@@ -6,38 +6,22 @@ package dev.whyoleg.cryptography.providers.jdk.algorithms
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
-import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.algorithms.*
 import dev.whyoleg.cryptography.providers.base.operations.*
 import dev.whyoleg.cryptography.providers.jdk.*
-import dev.whyoleg.cryptography.providers.jdk.algorithms.*
-import dev.whyoleg.cryptography.providers.jdk.materials.*
 import dev.whyoleg.cryptography.providers.jdk.operations.*
 import javax.crypto.spec.*
 
 internal class JdkAesCcm(
     private val state: JdkCryptographyState,
-) : AES.CCM {
-    private val keyWrapper: (JSecretKey) -> AES.CCM.Key = { key -> JdkAesCcmKey(state, key) }
-    private val keyDecoder = JdkSecretKeyDecoder<AES.Key.Format, _>("AES", keyWrapper)
+) : AES.CCM, BaseAes<AES.CCM.Key>() {
+    override fun wrapKey(rawKey: ByteArray): AES.CCM.Key = AesCcmKey(rawKey)
 
-    override fun keyDecoder(): Decoder<AES.Key.Format, AES.CCM.Key> = keyDecoder
+    private inner class AesCcmKey(rawKey: ByteArray) : AES.CCM.Key, BaseKey(rawKey) {
+        private val secretKey: JSecretKey = SecretKeySpec(rawKey, "AES")
 
-    override fun keyGenerator(keySize: BinarySize): KeyGenerator<AES.CCM.Key> = JdkSecretKeyGenerator(state, "AES", keyWrapper) {
-        init(keySize.inBits, state.secureRandom)
-    }
-}
-
-private class JdkAesCcmKey(
-    private val state: JdkCryptographyState,
-    private val key: JSecretKey,
-) : AES.CCM.Key, JdkEncodableKey<AES.Key.Format>(key) {
-    override fun cipher(tagSize: BinarySize): IvAuthenticatedCipher = JdkAesCcmCipher(state, key, tagSize.inBits)
-
-    override fun encodeToByteArrayBlocking(format: AES.Key.Format): ByteArray = when (format) {
-        AES.Key.Format.JWK -> error("$format is not supported")
-        AES.Key.Format.RAW -> encodeToRaw()
+        override fun cipher(tagSize: BinarySize): IvAuthenticatedCipher = JdkAesCcmCipher(state, secretKey, tagSize.inBits)
     }
 }
 

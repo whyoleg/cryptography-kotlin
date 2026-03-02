@@ -38,43 +38,38 @@ internal class EvpPKeyCipherFunction(
     private fun finalize(): ByteArray {
         ensureNotClosed()
 
-        return memScoped {
-            val context = checkError(EVP_PKEY_CTX_new_from_pkey(null, key, null))
-            try {
+        return with_PKEY_CTX(key) { context ->
+            checkError(
+                EVP_PKEY_cipher_init_ex(
+                    ctx = context,
+                    params = createParameters()
+                )
+            )
+
+            accumulator.usePinned { inputPin ->
+                val outlen = alloc<size_tVar>()
                 checkError(
-                    EVP_PKEY_cipher_init_ex(
+                    EVP_PKEY_cipher(
                         ctx = context,
-                        params = createParameters()
+                        out = null,
+                        outlen = outlen.ptr,
+                        `in` = inputPin.safeAddressOfU(0),
+                        inlen = accumulator.size.convert()
                     )
                 )
-
-                accumulator.usePinned { inputPin ->
-                    val outlen = alloc<size_tVar>()
+                val output = ByteArray(outlen.value.convert())
+                output.usePinned { outputPin ->
                     checkError(
                         EVP_PKEY_cipher(
                             ctx = context,
-                            out = null,
+                            out = outputPin.safeAddressOfU(0),
                             outlen = outlen.ptr,
                             `in` = inputPin.safeAddressOfU(0),
                             inlen = accumulator.size.convert()
                         )
                     )
-                    val output = ByteArray(outlen.value.convert())
-                    output.usePinned { outputPin ->
-                        checkError(
-                            EVP_PKEY_cipher(
-                                ctx = context,
-                                out = outputPin.safeAddressOfU(0),
-                                outlen = outlen.ptr,
-                                `in` = inputPin.safeAddressOfU(0),
-                                inlen = accumulator.size.convert()
-                            )
-                        )
-                    }
-                    output.ensureSizeExactly(outlen.value.convert())
                 }
-            } finally {
-                EVP_PKEY_CTX_free(context)
+                output.ensureSizeExactly(outlen.value.convert())
             }
         }
     }

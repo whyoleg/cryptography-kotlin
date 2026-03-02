@@ -15,18 +15,13 @@ internal fun deriveSharedSecret(
     publicKey: CPointer<EVP_PKEY>,
     privateKey: CPointer<EVP_PKEY>,
     createParams: MemScope.() -> CValuesRef<OSSL_PARAM>? = { null },
-): ByteArray = memScoped {
-    val context = checkError(EVP_PKEY_CTX_new_from_pkey(null, privateKey, null))
-    try {
-        checkError(EVP_PKEY_derive_init(context))
-        createParams()?.let { checkError(EVP_PKEY_CTX_set_params(context, it)) }
-        checkError(EVP_PKEY_derive_set_peer(context, publicKey))
-        val secretSize = alloc<size_tVar>()
-        checkError(EVP_PKEY_derive(context, null, secretSize.ptr))
-        val secret = ByteArray(secretSize.value.toInt())
-        checkError(EVP_PKEY_derive(context, secret.refToU(0), secretSize.ptr))
-        secret.ensureSizeExactly(secretSize.value.toInt())
-    } finally {
-        EVP_PKEY_CTX_free(context)
-    }
+): ByteArray = with_PKEY_CTX(privateKey) { context ->
+    checkError(EVP_PKEY_derive_init(context))
+    createParams()?.let { checkError(EVP_PKEY_CTX_set_params(context, it)) }
+    checkError(EVP_PKEY_derive_set_peer(context, publicKey))
+    val secretSize = alloc<size_tVar>()
+    checkError(EVP_PKEY_derive(context, null, secretSize.ptr))
+    val secret = ByteArray(secretSize.value.toInt())
+    checkError(EVP_PKEY_derive(context, secret.refToU(0), secretSize.ptr))
+    secret.ensureSizeExactly(secretSize.value.toInt())
 }

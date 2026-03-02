@@ -24,35 +24,30 @@ internal abstract class Openssl3PhSignatureVerifier(
     override fun createVerifyFunction(): VerifyFunction = AccumulatingVerifyFunction(::verify)
 
     @OptIn(UnsafeNumber::class)
-    private fun verify(data: ByteArray, signature: ByteArray): String? = memScoped {
-        val context = checkError(EVP_PKEY_CTX_new_from_pkey(null, publicKey, null))
-        try {
-            checkError(EVP_PKEY_verify_init_ex(context, createParams()))
+    private fun verify(data: ByteArray, signature: ByteArray): String? = with_PKEY_CTX(publicKey) { context ->
+        checkError(EVP_PKEY_verify_init_ex(context, createParams()))
 
-            data.usePinned { dataPin ->
-                signature.usePinned { sigPin ->
-                    val result = EVP_PKEY_verify(
-                        ctx = context,
-                        sig = sigPin.safeAddressOfU(0),
-                        siglen = signature.size.convert(),
-                        tbs = dataPin.safeAddressOfU(0),
-                        tbslen = data.size.convert()
-                    )
-                    // 0     - means verification failed
-                    // 1     - means verification succeeded
-                    // other - means error
-                    when {
-                        result == 1 -> null // success
-                        result == 0 -> "Signature verification failed" // verification failed
-                        else        -> {
-                            checkError(result) // will throw
-                            null // unreachable
-                        }
+        data.usePinned { dataPin ->
+            signature.usePinned { sigPin ->
+                val result = EVP_PKEY_verify(
+                    ctx = context,
+                    sig = sigPin.safeAddressOfU(0),
+                    siglen = signature.size.convert(),
+                    tbs = dataPin.safeAddressOfU(0),
+                    tbslen = data.size.convert()
+                )
+                // 0     - means verification failed
+                // 1     - means verification succeeded
+                // other - means error
+                when {
+                    result == 1 -> null // success
+                    result == 0 -> "Signature verification failed" // verification failed
+                    else        -> {
+                        checkError(result) // will throw
+                        null // unreachable
                     }
                 }
             }
-        } finally {
-            EVP_PKEY_CTX_free(context)
         }
     }
 }

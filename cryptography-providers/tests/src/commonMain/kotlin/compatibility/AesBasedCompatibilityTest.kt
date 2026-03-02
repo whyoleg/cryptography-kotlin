@@ -55,7 +55,12 @@ abstract class AesBasedCompatibilityTest<K : AES.Key, A : AES<K>>(
                     ) { key, format, bytes ->
                         when (format) {
                             AES.Key.Format.RAW -> assertContentEquals(bytes, key.encodeToByteString(format), "Key $format encoding")
-                            AES.Key.Format.JWK -> {} //no check for JWK yet
+                            AES.Key.Format.JWK -> assertJwtContentEquals(
+                                expected = bytes,
+                                actual = key.encodeToByteString(format),
+                                requiredKeys = setOf("kty", "k"),
+                                message = "Key $format encoding"
+                            )
                         }
                     }
                     put(keyReference, keys)

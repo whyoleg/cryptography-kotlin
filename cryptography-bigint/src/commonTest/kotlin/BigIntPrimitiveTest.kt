@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.bigint
@@ -8,6 +8,30 @@ import kotlin.random.*
 import kotlin.test.*
 
 class BigIntPrimitiveTest {
+
+    @Test
+    fun testUnaryPlus() {
+        assertEquals(123.toBigInt(), +123.toBigInt())
+        assertEquals(BigInt.ZERO, +BigInt.ZERO)
+        assertEquals((-123).toBigInt(), +(-123).toBigInt())
+    }
+
+    @Test
+    fun testUnaryMinus() {
+        assertEquals((-123).toBigInt(), -123.toBigInt())
+        assertEquals(BigInt.ZERO, -BigInt.ZERO)
+        assertEquals(123.toBigInt(), -(-123).toBigInt())
+        assertEquals("-999999999999999999999999999999".toBigInt(), -"999999999999999999999999999999".toBigInt())
+    }
+
+    @Test
+    fun testUnaryMinusRoundtrip() {
+        val values = listOf(0, 1, -1, 127, -128, 65537, Int.MAX_VALUE, Int.MIN_VALUE + 1)
+        values.forEach { v ->
+            val bigInt = v.toBigInt()
+            assertEquals(bigInt, -(-bigInt))
+        }
+    }
 
     @Test
     fun testSigns() {

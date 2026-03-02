@@ -73,7 +73,12 @@ abstract class HmacCompatibilityTest(provider: CryptographyProvider) : Compatibi
                     ) { key, format, bytes ->
                         when (format) {
                             HMAC.Key.Format.RAW -> assertContentEquals(bytes, key.encodeToByteString(format), "Key $format encoding")
-                            HMAC.Key.Format.JWK -> {} //no check for JWK yet
+                            HMAC.Key.Format.JWK -> assertJwtContentEquals(
+                                expected = bytes,
+                                actual = key.encodeToByteString(format),
+                                requiredKeys = setOf("kty", "k"),
+                                message = "Key $format encoding"
+                            )
                         }
                     }
                     put(keyReference, keys)

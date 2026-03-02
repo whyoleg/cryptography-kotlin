@@ -4,6 +4,7 @@
 
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
 
+import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.operations.*
@@ -25,16 +26,16 @@ internal object Openssl3RsaRaw : Openssl3Rsa<RSA.RAW.PublicKey, RSA.RAW.PrivateK
 
     private class RsaRawPublicKey(
         key: CPointer<EVP_PKEY>,
-        @Suppress("unused") hashAlgorithm: String,
-    ) : RsaPublicKey(key), RSA.RAW.PublicKey {
+        digest: CryptographyAlgorithmId<Digest>,
+    ) : RsaPublicKey(key, digest), RSA.RAW.PublicKey {
         override fun encryptor(): Encryptor = RsaRawEncryptor(key)
     }
 
     private class RsaRawPrivateKey(
         key: CPointer<EVP_PKEY>,
-        hashAlgorithm: String,
+        digest: CryptographyAlgorithmId<Digest>,
         publicKey: RSA.RAW.PublicKey?,
-    ) : RsaPrivateKey(key, hashAlgorithm, publicKey), RSA.RAW.PrivateKey {
+    ) : RsaPrivateKey(key, digest, publicKey), RSA.RAW.PrivateKey {
         override fun decryptor(): Decryptor = RsaRawDecryptor(key)
     }
 }

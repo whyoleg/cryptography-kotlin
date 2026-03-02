@@ -6,7 +6,6 @@ For supported targets and algorithms, please consult [Supported primitives secti
 
 ## Limitations
 
-* KeyFormat: doesn't support `JWK` key format yet
 * EC.PrivateKey:
     * `DER`, `PEM`, `DER.SEC1`, `PEM.SEC1`:
       to decode, `publicKey` field should be present in `EcPrivateKey` structure specified

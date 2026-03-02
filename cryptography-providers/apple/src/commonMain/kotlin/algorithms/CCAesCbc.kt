@@ -6,12 +6,13 @@ package dev.whyoleg.cryptography.providers.apple.algorithms
 
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.providers.base.algorithms.*
 import platform.CoreCrypto.*
 
-internal object CCAesCbc : CCAes<AES.CBC.Key>(), AES.CBC {
-    override fun wrapKey(key: ByteArray): AES.CBC.Key = AesCbcKey(key)
+internal object CCAesCbc : BaseAes<AES.CBC.Key>(), AES.CBC {
+    override fun wrapKey(rawKey: ByteArray): AES.CBC.Key = AesCbcKey(rawKey)
 
-    private class AesCbcKey(private val key: ByteArray) : AES.CBC.Key {
+    private class AesCbcKey(key: ByteArray) : AES.CBC.Key, BaseKey(key) {
         override fun cipher(padding: Boolean): IvCipher = CCAesIvCipher(
             algorithm = kCCAlgorithmAES,
             mode = kCCModeCBC,
@@ -20,11 +21,6 @@ internal object CCAesCbc : CCAes<AES.CBC.Key>(), AES.CBC {
             ivSize = 16
         ) {
             require(it % kCCBlockSizeAES128.toInt() == 0) { "Ciphertext is not padded" }
-        }
-
-        override fun encodeToByteArrayBlocking(format: AES.Key.Format): ByteArray = when (format) {
-            AES.Key.Format.RAW -> key.copyOf()
-            AES.Key.Format.JWK -> error("JWK is not supported")
         }
     }
 }

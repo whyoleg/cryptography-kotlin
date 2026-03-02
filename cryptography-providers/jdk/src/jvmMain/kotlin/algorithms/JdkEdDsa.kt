@@ -44,7 +44,7 @@ internal class JdkEdDsa(private val state: JdkCryptographyState) : EdDSA {
         override fun JPublicKey.convert(): EdDSA.PublicKey = EdDsaPublicKey(state, this, curve)
 
         override fun decodeFromByteArrayBlocking(format: EdDSA.PublicKey.Format, bytes: ByteArray): EdDSA.PublicKey = when (format) {
-            EdDSA.PublicKey.Format.JWK -> error("JWK is not supported")
+            EdDSA.PublicKey.Format.JWK -> decodeFromRaw(JsonWebKeys.decodeOkpPublicKey(curve.name, bytes))
             EdDSA.PublicKey.Format.RAW -> decodeFromRaw(bytes)
             EdDSA.PublicKey.Format.DER -> decodeFromDer(bytes)
             EdDSA.PublicKey.Format.PEM -> decodeFromDer(unwrapPem(PemLabel.PublicKey, bytes))
@@ -59,7 +59,12 @@ internal class JdkEdDsa(private val state: JdkCryptographyState) : EdDSA {
         override fun JPrivateKey.convert(): EdDSA.PrivateKey = EdDsaPrivateKey(state, this, null, curve)
 
         override fun decodeFromByteArrayBlocking(format: EdDSA.PrivateKey.Format, bytes: ByteArray): EdDSA.PrivateKey = when (format) {
-            EdDSA.PrivateKey.Format.JWK -> error("JWK is not supported")
+            EdDSA.PrivateKey.Format.JWK -> {
+                val components = JsonWebKeys.decodeOkpPrivateKey(curve.name, bytes)
+                val privateKey = decodeFromDerRaw(wrapCurvePrivateKeyInfo(0, curve.identifier, components.privateKey))
+                val publicKey = PublicKeyDecoder(curve).decodeFromByteArrayBlocking(EdDSA.PublicKey.Format.RAW, components.publicKey)
+                EdDsaPrivateKey(state, privateKey, publicKey, curve)
+            }
             EdDSA.PrivateKey.Format.RAW -> decodeFromDer(wrapCurvePrivateKeyInfo(0, curve.identifier, bytes))
             EdDSA.PrivateKey.Format.DER -> decodeFromDer(bytes)
             EdDSA.PrivateKey.Format.PEM -> decodeFromDer(unwrapPem(PemLabel.PrivateKey, bytes))
@@ -107,11 +112,13 @@ internal class JdkEdDsa(private val state: JdkCryptographyState) : EdDSA {
         }
 
         override fun encodeToByteArrayBlocking(format: EdDSA.PublicKey.Format): ByteArray = when (format) {
-            EdDSA.PublicKey.Format.JWK -> error("JWK is not supported")
-            EdDSA.PublicKey.Format.RAW -> unwrapSubjectPublicKeyInfo(curve.identifier.algorithm, encodeToDer())
+            EdDSA.PublicKey.Format.JWK -> JsonWebKeys.encodeOkpPublicKey(curve.name, encodeToRaw())
+            EdDSA.PublicKey.Format.RAW -> encodeToRaw()
             EdDSA.PublicKey.Format.DER -> encodeToDer()
             EdDSA.PublicKey.Format.PEM -> wrapPem(PemLabel.PublicKey, encodeToDer())
         }
+
+        private fun encodeToRaw(): ByteArray = unwrapSubjectPublicKeyInfo(curve.identifier.algorithm, encodeToDer())
     }
 
     private inner class EdDsaPrivateKey(
@@ -132,7 +139,11 @@ internal class JdkEdDsa(private val state: JdkCryptographyState) : EdDSA {
         }
 
         override fun encodeToByteArrayBlocking(format: EdDSA.PrivateKey.Format): ByteArray = when (format) {
-            EdDSA.PrivateKey.Format.JWK -> error("JWK is not supported")
+            EdDSA.PrivateKey.Format.JWK -> JsonWebKeys.encodeOkpPrivateKey(
+                curve = curve.name,
+                publicKey = getPublicKeyBlocking().encodeToByteArrayBlocking(EdDSA.PublicKey.Format.RAW),
+                privateKey = encodeToByteArrayBlocking(EdDSA.PrivateKey.Format.RAW),
+            )
             EdDSA.PrivateKey.Format.RAW -> unwrapCurvePrivateKeyInfo(curve.identifier.algorithm, encodeToDer())
             EdDSA.PrivateKey.Format.DER -> encodeToDer()
             EdDSA.PrivateKey.Format.PEM -> wrapPem(PemLabel.PrivateKey, encodeToDer())

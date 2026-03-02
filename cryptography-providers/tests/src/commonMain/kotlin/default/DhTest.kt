@@ -22,8 +22,7 @@ abstract class DhTest(provider: CryptographyProvider) : AlgorithmTest<DH>(DH.Com
         val parameters = algorithm.parametersDecoder().decodeFromByteArray(
             DH.Parameters.Format.DER, Der.encodeToByteArray(
                 DhParameters(
-                    // Prepend "00" to ensure two's complement interpretation is positive
-                    prime = ("00$primeHex").hexToByteArray().decodeToBigInt(),
+                    prime = BigInt.fromMagnitude(sign = 1, primeHex.hexToByteArray()),
                     base = 2.toBigInt(),
                 )
             )

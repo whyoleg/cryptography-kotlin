@@ -4,19 +4,20 @@
 
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
 
-import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.BinarySize.Companion.bytes
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.providers.base.algorithms.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.providers.openssl3.operations.*
 import kotlin.experimental.*
 import kotlin.native.ref.*
 
-internal object Openssl3AesCtr : AES.CTR, Openssl3Aes<AES.CTR.Key>() {
-    override fun wrapKey(keySize: BinarySize, key: ByteArray): AES.CTR.Key = AesCtrKey(keySize, key)
+internal object Openssl3AesCtr : AES.CTR, BaseAes<AES.CTR.Key>() {
+    override fun wrapKey(rawKey: ByteArray): AES.CTR.Key = AesCtrKey(rawKey)
 
-    private class AesCtrKey(keySize: BinarySize, key: ByteArray) : AES.CTR.Key, AesKey(key) {
-        private val algorithm = when (keySize) {
+    private class AesCtrKey(key: ByteArray) : AES.CTR.Key, BaseKey(key) {
+        private val algorithm = when (key.size.bytes) {
             AES.Key.Size.B128 -> "AES-128-CTR"
             AES.Key.Size.B192 -> "AES-192-CTR"
             AES.Key.Size.B256 -> "AES-256-CTR"

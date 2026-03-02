@@ -6,12 +6,13 @@ package dev.whyoleg.cryptography.providers.apple.algorithms
 
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.providers.base.algorithms.*
 import platform.CoreCrypto.*
 
-internal object CCAesCfb8 : CCAes<AES.CFB8.Key>(), AES.CFB8 {
-    override fun wrapKey(key: ByteArray): AES.CFB8.Key = AesCFBKey(key)
+internal object CCAesCfb8 : BaseAes<AES.CFB8.Key>(), AES.CFB8 {
+    override fun wrapKey(rawKey: ByteArray): AES.CFB8.Key = AesCfb8Key(rawKey)
 
-    private class AesCFBKey(private val key: ByteArray) : AES.CFB8.Key {
+    private class AesCfb8Key(key: ByteArray) : AES.CFB8.Key, BaseKey(key) {
         override fun cipher(): IvCipher = CCAesIvCipher(
             algorithm = kCCAlgorithmAES,
             mode = kCCModeCFB8,
@@ -19,10 +20,5 @@ internal object CCAesCfb8 : CCAes<AES.CFB8.Key>(), AES.CFB8 {
             key = key,
             ivSize = 16
         )
-
-        override fun encodeToByteArrayBlocking(format: AES.Key.Format): ByteArray = when (format) {
-            AES.Key.Format.RAW -> key.copyOf()
-            AES.Key.Format.JWK -> error("JWK is not supported")
-        }
     }
 }

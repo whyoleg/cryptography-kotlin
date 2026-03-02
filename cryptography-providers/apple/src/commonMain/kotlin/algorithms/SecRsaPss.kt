@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.apple.algorithms
@@ -24,18 +24,18 @@ internal object SecRsaPss : SecRsa<RSA.PSS.PublicKey, RSA.PSS.PrivateKey, RSA.PS
 
     private class RsaPssPublicKey(
         publicKey: SecKeyRef,
-        private val algorithm: SecKeyAlgorithm?,
-    ) : RsaPublicKey(publicKey), RSA.PSS.PublicKey {
-        override fun signatureVerifier(): SignatureVerifier = SecSignatureVerifier(publicKey, algorithm)
+        digest: CryptographyAlgorithmId<Digest>,
+    ) : RsaPublicKey(publicKey, digest), RSA.PSS.PublicKey {
+        override fun signatureVerifier(): SignatureVerifier = SecSignatureVerifier(publicKey, hashAlgorithm(digest))
         override fun signatureVerifier(saltSize: BinarySize): SignatureVerifier = error("custom saltLength is not supported")
     }
 
     private class RsaPssPrivateKey(
         privateKey: SecKeyRef,
-        private val algorithm: SecKeyAlgorithm?,
+        digest: CryptographyAlgorithmId<Digest>,
         publicKey: RSA.PSS.PublicKey?,
-    ) : RsaPrivateKey(privateKey, algorithm, publicKey), RSA.PSS.PrivateKey {
-        override fun signatureGenerator(): SignatureGenerator = SecSignatureGenerator(privateKey, algorithm)
+    ) : RsaPrivateKey(privateKey, digest, publicKey), RSA.PSS.PrivateKey {
+        override fun signatureGenerator(): SignatureGenerator = SecSignatureGenerator(privateKey, hashAlgorithm(digest))
         override fun signatureGenerator(saltSize: BinarySize): SignatureGenerator = error("custom saltLength is not supported")
     }
 }
