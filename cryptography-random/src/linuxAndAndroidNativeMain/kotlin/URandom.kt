@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.random
@@ -50,7 +50,10 @@ private fun awaitURandomReady() {
 }
 
 private fun open(path: String): Int {
-    val fd = open(path, O_RDONLY, null)
-    if (fd <= 0) errnoCheck()
+    // O_CLOEXEC is needed to not inherit file descriptor to child processes
+    // see https://github.com/whyoleg/cryptography-kotlin/issues/138
+    val fd = open(path, O_RDONLY or O_CLOEXEC, null)
+    // According to POSIX, open returns -1 on error; 0 is a valid descriptor
+    if (fd < 0) errnoCheck()
     return fd
 }
