@@ -63,39 +63,12 @@ Ask before making documentation changes if unsure whether the information is pro
 
 ## Critical Patterns
 
-### Algorithm Interface Pattern
+### Algorithm & Provider Patterns
 
-All algorithms follow this exact structure:
+**Algorithm APIs** are defined in `cryptography-core/src/commonMain/kotlin/algorithms/`. Look at existing algorithms (e.g., `HMAC.kt`,
+`AES.kt`) as reference when adding new ones.
 
-```kotlin
-@SubclassOptInRequired(CryptographyProviderApi::class)
-interface MyAlgorithm : CryptographyAlgorithm {
-    override val id: CryptographyAlgorithmId<MyAlgorithm> get() = Companion
-
-    companion object : CryptographyAlgorithmId<MyAlgorithm>("MY-ALGORITHM")
-
-    fun keyDecoder(): KeyDecoder<Key.Format, Key>
-    fun keyGenerator(): KeyGenerator<Key>
-
-    @SubclassOptInRequired(CryptographyProviderApi::class)
-    interface Key : EncodableKey<Key.Format> {
-        sealed class Format : KeyFormat { /* RAW, DER, PEM, JWK */ }
-    }
-}
-```
-
-### Provider Implementation Pattern
-
-```kotlin
-// In provider's algorithms/ directory
-internal class ProviderMyAlgorithm(private val state: ProviderState) : MyAlgorithm {
-    override fun keyDecoder(): KeyDecoder<...> = ...
-    override fun keyGenerator(...): KeyGenerator<...> = ...
-}
-
-// Register in provider's getOrNull()
-MyAlgorithm -> ProviderMyAlgorithm(state)
-```
+**Provider implementations** go in the provider's `algorithms/` directory and are registered in the provider's `getOrNull()` method.
 
 ### Deprecation Handling
 

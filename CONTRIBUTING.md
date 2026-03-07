@@ -157,7 +157,7 @@ Register in provider's `getOrNull()` method.
 ### 4. Add Tests
 
 1. Register in `build-logic/src/main/kotlin/ckbuild/tests/GenerateProviderTestsTask.kt`
-2. Create test classes in `cryptography-provider-tests/src/commonMain/kotlin/`:
+2. Create test classes in `cryptography-providers/tests/src/commonMain/kotlin/`:
     - Default test in `default/`
     - Compatibility test in `compatibility/`
     - Test vectors in `testvectors/` (if available)
