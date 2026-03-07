@@ -33,6 +33,9 @@ projects("cryptography-kotlin") {
     module("cryptography-bom")
     module("cryptography-version-catalog")
 
+    // docs module for dokka aggregation and mkdocs
+    module("docs")
+
     // core util modules
     module("cryptography-bigint")
     module("cryptography-random")

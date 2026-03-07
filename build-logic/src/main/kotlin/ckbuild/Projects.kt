@@ -13,6 +13,8 @@ object Projects {
         "cryptography-bom" to setOf(Tag.PUBLISHED, Tag.NOT_LIBRARY),
         "cryptography-version-catalog" to setOf(Tag.PUBLISHED, Tag.NOT_LIBRARY),
 
+        "docs" to setOf(),
+
         "cryptography-bigint" to setOf(Tag.PUBLISHED),
         "cryptography-random" to setOf(Tag.PUBLISHED),
 
