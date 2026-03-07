@@ -269,10 +269,11 @@ fun AlgorithmTestScope<XDH>.supportsPrivateKeyDecoding(
     }
 }
 
-fun AlgorithmTestScope<DH>.supportsParameterGeneration(): Boolean = supports {
+fun AlgorithmTestScope<DH>.supportsComplexParameterGeneration(): Boolean = supports {
     when {
         provider.isBouncyCastle -> "DH parameter generation is very slow with BouncyCastle"
-        platform.isAndroid -> "DH parameter generation is very slow on Android"
+        provider.isOpenssl3 -> "DH parameter generation is very slow on Openssl"
+        platform.isAndroid  -> "DH parameter generation is very slow on Android"
         else                    -> null
     }
 }

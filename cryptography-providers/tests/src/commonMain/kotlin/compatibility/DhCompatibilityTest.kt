@@ -50,13 +50,20 @@ abstract class DhCompatibilityTest(
         }
 
         val dhParameters = buildList {
-            if (supportsParameterGeneration()) {
-                listOf(1024, 2048).forEach { primeSize ->
-                    listOf(null, 256, 512).forEach { privateValueSize ->
-                        val generator = algorithm.parametersGenerator(primeSize.bits, privateValueSize?.bits)
-                        repeat(parameterIterations) {
-                            add(generator.generateParameters())
-                        }
+            // 1024 bits
+            listOf(null, 256, 512).forEach { privateValueSize ->
+                val generator = algorithm.parametersGenerator(1024.bits, privateValueSize?.bits)
+                repeat(parameterIterations) {
+                    add(generator.generateParameters())
+                }
+            }
+
+            // 2048 bits
+            if (supportsComplexParameterGeneration()) {
+                listOf(null, 256, 512).forEach { privateValueSize ->
+                    val generator = algorithm.parametersGenerator(2048.bits, privateValueSize?.bits)
+                    repeat(parameterIterations) {
+                        add(generator.generateParameters())
                     }
                 }
             }
