@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.tests.compatibility
@@ -43,6 +43,7 @@ abstract class RsaOaepCompatibilityTest(provider: CryptographyProvider) :
                 repeat(cipherIterations) {
                     val plaintextSize = CryptographyRandom.nextInt(maxPlaintextSize)
                     logger.log { "plaintext.size        = $plaintextSize" }
+                    if (!supportsDataInput(plaintextSize)) return@repeat
                     val plaintext = ByteString(CryptographyRandom.nextBytes(plaintextSize))
                     val ciphertext = encryptor.encrypt(plaintext, associatedData)
                     val ciphertext2 = encryptor2.encrypt(plaintext, associatedData)

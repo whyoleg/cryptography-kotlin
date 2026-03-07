@@ -47,4 +47,4 @@ val TestProvider.isWebCrypto: Boolean get() = this == TestProvider.WebCrypto
 val TestProvider.isApple: Boolean get() = this == TestProvider.Apple
 val TestProvider.isCryptoKit: Boolean get() = this == TestProvider.CryptoKit
 val TestProvider.isOpenssl3: Boolean get() = this is TestProvider.OpenSSL3
-fun TestProvider.isOpenssl3(block: TestProvider.OpenSSL3.() -> Boolean): Boolean = this is TestProvider.OpenSSL3 && block(this)
+inline fun TestProvider.isOpenssl3(block: TestProvider.OpenSSL3.() -> Boolean): Boolean = this is TestProvider.OpenSSL3 && block(this)

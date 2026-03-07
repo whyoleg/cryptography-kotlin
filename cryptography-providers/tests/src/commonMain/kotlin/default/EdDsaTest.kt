@@ -93,18 +93,20 @@ abstract class EdDsaTest(provider: CryptographyProvider) : AlgorithmTest<EdDSA>(
 
             val verifier = keyPair.publicKey.signatureVerifier()
             val generator = keyPair.privateKey.signatureGenerator()
-            val sigEmpty = generator.generateSignature(ByteString())
-            assertEquals(
-                signatureSize,
-                sigEmpty.size,
-                "RAW signature size mismatch for empty data on ${curve.name}"
-            )
-            verifier.assertVerifySignature(
-                ByteString(),
-                sigEmpty,
-                "RAW signature verification failed for empty data on ${curve.name}"
-            )
 
+            if (supportsDataInput(0)) {
+                val sigEmpty = generator.generateSignature(ByteString())
+                assertEquals(
+                    signatureSize,
+                    sigEmpty.size,
+                    "RAW signature size mismatch for empty data on ${curve.name}"
+                )
+                verifier.assertVerifySignature(
+                    ByteString(),
+                    sigEmpty,
+                    "RAW signature verification failed for empty data on ${curve.name}"
+                )
+            }
             repeat(8) { n ->
                 val size = 10.0.pow(n).toInt()
                 val data = CryptographyRandom.nextBytes(size)
