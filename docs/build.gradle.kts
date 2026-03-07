@@ -23,14 +23,12 @@ tasks.dokkaGeneratePublicationHtml {
 }
 
 tasks.register<Copy>("mkdocsCopy") {
-    // CHANGELOG.md is at the root of the repository
     into(layout.projectDirectory)
     from(rootDir.resolve("CHANGELOG.md"))
 }
 
 tasks.register<Exec>("mkdocsBuild") {
-    // mkdocs.yml is at the root of the repository, so mkdocs must run from there
-    workingDir = rootDir
+    workingDir = layout.projectDirectory.asFile
     dependsOn(tasks.dokkaGeneratePublicationHtml)
     dependsOn(tasks.named("mkdocsCopy"))
     commandLine("mkdocs", "build", "--clean", "--strict")

@@ -9,6 +9,9 @@ remote_branch: gh-pages
 
 copyright: 'Copyright &copy; 2025 Oleg Yukhnevich'
 
+docs_dir: .
+site_dir: ../site
+
 extra:
   social:
     - icon: fontawesome/brands/twitter
