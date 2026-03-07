@@ -25,7 +25,7 @@ internal class JdkDh(
 
     override fun parametersDecoder(): Decoder<DH.Parameters.Format, DH.Parameters> = DhParametersDecoder()
 
-    override fun parametersGenerator(primeSize: BinarySize, privateValueSize: BinarySize?): DH.ParametersGenerator =
+    override fun parametersGenerator(primeSize: BinarySize, privateValueSize: BinarySize?): ParametersGenerator<DH.Parameters> =
         DhParametersGenerator(primeSize, privateValueSize)
 
     private inner class DhKeyPairGenerator(
@@ -137,17 +137,16 @@ internal class JdkDh(
     private inner class DhParametersGenerator(
         private val primeSize: BinarySize,
         private val privateValueSize: BinarySize?,
-    ) : DH.ParametersGenerator {
-        private val algorithmParameterGenerator = state.algorithmParameterGenerator("DH")
-
-        override fun generateParametersBlocking(): DH.Parameters = algorithmParameterGenerator.use { paramGen ->
+    ) : JdkParametersGenerator<DH.Parameters>(state, "DH") {
+        override fun JAlgorithmParameterGenerator.init() {
             if (privateValueSize != null) {
-                paramGen.init(DHGenParameterSpec(primeSize.inBits, privateValueSize.inBits), state.secureRandom)
+                init(DHGenParameterSpec(primeSize.inBits, privateValueSize.inBits), state.secureRandom)
             } else {
-                paramGen.init(primeSize.inBits, state.secureRandom)
+                init(primeSize.inBits, state.secureRandom)
             }
-            JdkDhParameters(paramGen.generateParameters())
         }
+
+        override fun JAlgorithmParameters.convert(): DH.Parameters = JdkDhParameters(this)
     }
 
     private inner class JdkDhParameters(

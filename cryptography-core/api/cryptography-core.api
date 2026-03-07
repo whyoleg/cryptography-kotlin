@@ -251,8 +251,8 @@ public abstract interface class dev/whyoleg/cryptography/algorithms/DH : dev/why
 	public static final field Companion Ldev/whyoleg/cryptography/algorithms/DH$Companion;
 	public fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
 	public abstract fun parametersDecoder ()Ldev/whyoleg/cryptography/materials/Decoder;
-	public abstract fun parametersGenerator-EFf-y7U (ILdev/whyoleg/cryptography/BinarySize;)Ldev/whyoleg/cryptography/algorithms/DH$ParametersGenerator;
-	public static synthetic fun parametersGenerator-EFf-y7U$default (Ldev/whyoleg/cryptography/algorithms/DH;ILdev/whyoleg/cryptography/BinarySize;ILjava/lang/Object;)Ldev/whyoleg/cryptography/algorithms/DH$ParametersGenerator;
+	public abstract fun parametersGenerator-EFf-y7U (ILdev/whyoleg/cryptography/BinarySize;)Ldev/whyoleg/cryptography/operations/ParametersGenerator;
+	public static synthetic fun parametersGenerator-EFf-y7U$default (Ldev/whyoleg/cryptography/algorithms/DH;ILdev/whyoleg/cryptography/BinarySize;ILjava/lang/Object;)Ldev/whyoleg/cryptography/operations/ParametersGenerator;
 	public abstract fun privateKeyDecoder ()Ldev/whyoleg/cryptography/materials/Decoder;
 	public abstract fun publicKeyDecoder ()Ldev/whyoleg/cryptography/materials/Decoder;
 }
@@ -285,11 +285,6 @@ public final class dev/whyoleg/cryptography/algorithms/DH$Parameters$Format$PEM 
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getName ()Ljava/lang/String;
 	public fun hashCode ()I
-}
-
-public abstract interface class dev/whyoleg/cryptography/algorithms/DH$ParametersGenerator {
-	public fun generateParameters (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun generateParametersBlocking ()Ldev/whyoleg/cryptography/algorithms/DH$Parameters;
 }
 
 public abstract interface class dev/whyoleg/cryptography/algorithms/DH$PrivateKey : dev/whyoleg/cryptography/materials/Encodable, dev/whyoleg/cryptography/operations/PublicKeyAccessor {
@@ -1163,6 +1158,11 @@ public abstract interface class dev/whyoleg/cryptography/operations/IvEncryptor 
 public abstract interface class dev/whyoleg/cryptography/operations/KeyGenerator {
 	public fun generateKey (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun generateKeyBlocking ()Ljava/lang/Object;
+}
+
+public abstract interface class dev/whyoleg/cryptography/operations/ParametersGenerator {
+	public fun generateParameters (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun generateParametersBlocking ()Ljava/lang/Object;
 }
 
 public abstract interface class dev/whyoleg/cryptography/operations/PublicKeyAccessor {

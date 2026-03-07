@@ -472,6 +472,11 @@ abstract interface <#A: kotlin/Any?> dev.whyoleg.cryptography.operations/KeyGene
     open suspend fun generateKey(): #A // dev.whyoleg.cryptography.operations/KeyGenerator.generateKey|generateKey(){}[0]
 }
 
+abstract interface <#A: kotlin/Any?> dev.whyoleg.cryptography.operations/ParametersGenerator { // dev.whyoleg.cryptography.operations/ParametersGenerator|null[0]
+    abstract fun generateParametersBlocking(): #A // dev.whyoleg.cryptography.operations/ParametersGenerator.generateParametersBlocking|generateParametersBlocking(){}[0]
+    open suspend fun generateParameters(): #A // dev.whyoleg.cryptography.operations/ParametersGenerator.generateParameters|generateParameters(){}[0]
+}
+
 abstract interface <#A: kotlin/Any?> dev.whyoleg.cryptography.operations/PublicKeyAccessor { // dev.whyoleg.cryptography.operations/PublicKeyAccessor|null[0]
     abstract fun getPublicKeyBlocking(): #A // dev.whyoleg.cryptography.operations/PublicKeyAccessor.getPublicKeyBlocking|getPublicKeyBlocking(){}[0]
     open suspend fun getPublicKey(): #A // dev.whyoleg.cryptography.operations/PublicKeyAccessor.getPublicKey|getPublicKey(){}[0]
@@ -514,7 +519,7 @@ abstract interface dev.whyoleg.cryptography.algorithms/DH : dev.whyoleg.cryptogr
         open fun <get-id>(): dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/DH> // dev.whyoleg.cryptography.algorithms/DH.id.<get-id>|<get-id>(){}[0]
 
     abstract fun parametersDecoder(): dev.whyoleg.cryptography.materials/Decoder<dev.whyoleg.cryptography.algorithms/DH.Parameters.Format, dev.whyoleg.cryptography.algorithms/DH.Parameters> // dev.whyoleg.cryptography.algorithms/DH.parametersDecoder|parametersDecoder(){}[0]
-    abstract fun parametersGenerator(dev.whyoleg.cryptography/BinarySize, dev.whyoleg.cryptography/BinarySize? = ...): dev.whyoleg.cryptography.algorithms/DH.ParametersGenerator // dev.whyoleg.cryptography.algorithms/DH.parametersGenerator|parametersGenerator(dev.whyoleg.cryptography.BinarySize;dev.whyoleg.cryptography.BinarySize?){}[0]
+    abstract fun parametersGenerator(dev.whyoleg.cryptography/BinarySize, dev.whyoleg.cryptography/BinarySize? = ...): dev.whyoleg.cryptography.operations/ParametersGenerator<dev.whyoleg.cryptography.algorithms/DH.Parameters> // dev.whyoleg.cryptography.algorithms/DH.parametersGenerator|parametersGenerator(dev.whyoleg.cryptography.BinarySize;dev.whyoleg.cryptography.BinarySize?){}[0]
     abstract fun privateKeyDecoder(): dev.whyoleg.cryptography.materials/Decoder<dev.whyoleg.cryptography.algorithms/DH.PrivateKey.Format, dev.whyoleg.cryptography.algorithms/DH.PrivateKey> // dev.whyoleg.cryptography.algorithms/DH.privateKeyDecoder|privateKeyDecoder(){}[0]
     abstract fun publicKeyDecoder(): dev.whyoleg.cryptography.materials/Decoder<dev.whyoleg.cryptography.algorithms/DH.PublicKey.Format, dev.whyoleg.cryptography.algorithms/DH.PublicKey> // dev.whyoleg.cryptography.algorithms/DH.publicKeyDecoder|publicKeyDecoder(){}[0]
 
@@ -547,11 +552,6 @@ abstract interface dev.whyoleg.cryptography.algorithms/DH : dev.whyoleg.cryptogr
                 final fun hashCode(): kotlin/Int // dev.whyoleg.cryptography.algorithms/DH.Parameters.Format.PEM.hashCode|hashCode(){}[0]
             }
         }
-    }
-
-    abstract interface ParametersGenerator { // dev.whyoleg.cryptography.algorithms/DH.ParametersGenerator|null[0]
-        abstract fun generateParametersBlocking(): dev.whyoleg.cryptography.algorithms/DH.Parameters // dev.whyoleg.cryptography.algorithms/DH.ParametersGenerator.generateParametersBlocking|generateParametersBlocking(){}[0]
-        open suspend fun generateParameters(): dev.whyoleg.cryptography.algorithms/DH.Parameters // dev.whyoleg.cryptography.algorithms/DH.ParametersGenerator.generateParameters|generateParameters(){}[0]
     }
 
     abstract interface PrivateKey : dev.whyoleg.cryptography.materials/Encodable<dev.whyoleg.cryptography.algorithms/DH.PrivateKey.Format>, dev.whyoleg.cryptography.operations/PublicKeyAccessor<dev.whyoleg.cryptography.algorithms/DH.PublicKey> { // dev.whyoleg.cryptography.algorithms/DH.PrivateKey|null[0]

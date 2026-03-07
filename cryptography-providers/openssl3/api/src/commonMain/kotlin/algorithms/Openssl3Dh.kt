@@ -21,7 +21,7 @@ internal object Openssl3Dh : DH {
 
     override fun parametersDecoder(): Decoder<DH.Parameters.Format, DH.Parameters> = DhParametersDecoder
 
-    override fun parametersGenerator(primeSize: BinarySize, privateValueSize: BinarySize?): DH.ParametersGenerator =
+    override fun parametersGenerator(primeSize: BinarySize, privateValueSize: BinarySize?): ParametersGenerator<DH.Parameters> =
         DhParametersGenerator(primeSize.inBits.toUInt(), privateValueSize?.inBits)
 
     private object DhPrivateKeyDecoder : Openssl3PrivateKeyDecoder<DH.PrivateKey.Format, DH.PrivateKey>("DH") {
@@ -122,26 +122,14 @@ internal object Openssl3Dh : DH {
     private class DhParametersGenerator(
         private val primeSizeBits: UInt,
         private val privateValueLengthBits: Int?,
-    ) : DH.ParametersGenerator {
+    ) : Openssl3ParametersGenerator<DH.Parameters>("DH") {
+        override fun wrapParameters(key: CPointer<EVP_PKEY>): DH.Parameters = Openssl3DhParameters(key)
+
         @OptIn(UnsafeNumber::class)
-        override fun generateParametersBlocking(): DH.Parameters = with_PKEY_CTX("DH") { context ->
-            checkError(EVP_PKEY_paramgen_init(context))
-
-            checkError(
-                EVP_PKEY_CTX_set_params(
-                    context,
-                    OSSL_PARAM_array(
-                        OSSL_PARAM_construct_uint("pbits".cstr.ptr, alloc(primeSizeBits).ptr),
-                        privateValueLengthBits?.let { OSSL_PARAM_construct_int("priv_len".cstr.ptr, alloc(it).ptr) },
-                    )
-                )
-            )
-
-            val paramsKeyVar = alloc<CPointerVar<EVP_PKEY>>()
-            checkError(EVP_PKEY_generate(context, paramsKeyVar.ptr))
-            val paramsKey = checkError(paramsKeyVar.value)
-            Openssl3DhParameters(paramsKey)
-        }
+        override fun MemScope.createParams(): CValuesRef<OSSL_PARAM>? = OSSL_PARAM_array(
+            OSSL_PARAM_construct_uint("pbits".cstr.ptr, alloc(primeSizeBits).ptr),
+            privateValueLengthBits?.let { OSSL_PARAM_construct_int("priv_len".cstr.ptr, alloc(it).ptr) },
+        )
     }
 
     private class Openssl3DhParameters(

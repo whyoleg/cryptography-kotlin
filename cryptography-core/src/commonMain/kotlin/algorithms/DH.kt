@@ -18,13 +18,7 @@ public interface DH : CryptographyAlgorithm {
     public fun privateKeyDecoder(): Decoder<PrivateKey.Format, PrivateKey>
 
     public fun parametersDecoder(): Decoder<Parameters.Format, Parameters>
-    public fun parametersGenerator(primeSize: BinarySize, privateValueSize: BinarySize? = null): ParametersGenerator
-
-    @SubclassOptInRequired(CryptographyProviderApi::class)
-    public interface ParametersGenerator {
-        public suspend fun generateParameters(): Parameters = generateParametersBlocking()
-        public fun generateParametersBlocking(): Parameters
-    }
+    public fun parametersGenerator(primeSize: BinarySize, privateValueSize: BinarySize? = null): ParametersGenerator<Parameters>
 
     @SubclassOptInRequired(CryptographyProviderApi::class)
     public interface Parameters : Encodable<Parameters.Format> {
