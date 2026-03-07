@@ -60,7 +60,7 @@ private class EcdsaDerSignatureGenerator(
 ) : SignatureGenerator {
     override suspend fun generateSignature(data: ByteArray): ByteArray {
         val rawSignature = rawGenerator.generateSignature(data)
-        return convertEcdsaRawSignatureToDer(curveOrderSize, rawSignature, 0, rawSignature.size)
+        return convertDssRawSignatureToDer(curveOrderSize, rawSignature, 0, rawSignature.size)
     }
 
     @OptIn(UnsafeByteStringApi::class)
@@ -78,7 +78,7 @@ private class EcdsaDerSignatureVerifier(
     private val curveOrderSize: Int,
 ) : SignatureVerifier {
     override suspend fun tryVerifySignature(data: ByteArray, signature: ByteArray): Boolean {
-        val rawSignature = convertEcdsaDerSignatureToRaw(curveOrderSize, signature)
+        val rawSignature = convertDssDerSignatureToRaw(curveOrderSize, signature)
         return rawVerifier.tryVerifySignature(data, rawSignature)
     }
 

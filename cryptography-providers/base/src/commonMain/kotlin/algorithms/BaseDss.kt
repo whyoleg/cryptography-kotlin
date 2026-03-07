@@ -11,50 +11,54 @@ import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.serialization.asn1.*
 import dev.whyoleg.cryptography.serialization.asn1.modules.*
 
+// Shared DER <-> RAW (r || s) signature format conversion for DSA and ECDSA.
+// Both use the same ASN.1 structure: SEQUENCE { r INTEGER, s INTEGER }.
+// The `orderSize` parameter is the subprime q size (DSA) or curve order size (ECDSA).
+
 @CryptographyProviderApi
-public fun convertEcdsaDerSignatureToRaw(curveOrderSize: Int, derSignature: ByteArray): ByteArray {
-    val signatureValue = Der.decodeFromByteArray(EcdsaSignatureValue.serializer(), derSignature)
+public fun convertDssDerSignatureToRaw(orderSize: Int, derSignature: ByteArray): ByteArray {
+    val signatureValue = Der.decodeFromByteArray(DssSignatureValue.serializer(), derSignature)
 
     val r = signatureValue.r.magnitudeToByteArray()
     val s = signatureValue.s.magnitudeToByteArray()
 
-    val rawSignature = ByteArray(curveOrderSize * 2)
+    val rawSignature = ByteArray(orderSize * 2)
 
-    r.copyInto(rawSignature, curveOrderSize - r.size)
-    s.copyInto(rawSignature, curveOrderSize * 2 - s.size)
+    r.copyInto(rawSignature, orderSize - r.size)
+    s.copyInto(rawSignature, orderSize * 2 - s.size)
 
     return rawSignature
 }
 
 @CryptographyProviderApi
-public fun convertEcdsaRawSignatureToDer(
-    curveOrderSize: Int,
+public fun convertDssRawSignatureToDer(
+    orderSize: Int,
     rawSignature: ByteArray,
     startIndex: Int,
     endIndex: Int,
 ): ByteArray {
-    check((endIndex - startIndex) == curveOrderSize * 2) {
-        "Expected signature size ${curveOrderSize * 2}, received: ${endIndex - startIndex}"
+    check((endIndex - startIndex) == orderSize * 2) {
+        "Expected signature size ${orderSize * 2}, received: ${endIndex - startIndex}"
     }
 
-    val signatureValue = EcdsaSignatureValue(
-        r = BigInt.fromMagnitude(sign = 1, rawSignature.copyOfRange(startIndex, startIndex + curveOrderSize)),
-        s = BigInt.fromMagnitude(sign = 1, rawSignature.copyOfRange(startIndex + curveOrderSize, endIndex)),
+    val signatureValue = DssSignatureValue(
+        r = BigInt.fromMagnitude(sign = 1, rawSignature.copyOfRange(startIndex, startIndex + orderSize)),
+        s = BigInt.fromMagnitude(sign = 1, rawSignature.copyOfRange(startIndex + orderSize, endIndex)),
     )
 
-    return Der.encodeToByteArray(EcdsaSignatureValue.serializer(), signatureValue)
+    return Der.encodeToByteArray(DssSignatureValue.serializer(), signatureValue)
 }
 
 @CryptographyProviderApi
-public class EcdsaRawSignatureGenerator(
+public class DssRawSignatureGenerator(
     private val derGenerator: SignatureGenerator,
-    private val curveOrderSize: Int,
+    private val orderSize: Int,
 ) : SignatureGenerator {
-    override fun createSignFunction(): SignFunction = RawSignFunction(derGenerator.createSignFunction(), curveOrderSize)
+    override fun createSignFunction(): SignFunction = RawSignFunction(derGenerator.createSignFunction(), orderSize)
 
     private class RawSignFunction(
         private val derSignFunction: SignFunction,
-        private val curveOrderSize: Int,
+        private val orderSize: Int,
     ) : SignFunction {
         override fun update(source: ByteArray, startIndex: Int, endIndex: Int) {
             derSignFunction.update(source, startIndex, endIndex)
@@ -68,7 +72,7 @@ public class EcdsaRawSignatureGenerator(
         }
 
         override fun signToByteArray(): ByteArray {
-            return convertEcdsaDerSignatureToRaw(curveOrderSize, derSignFunction.signToByteArray())
+            return convertDssDerSignatureToRaw(orderSize, derSignFunction.signToByteArray())
         }
 
         override fun reset() {
@@ -82,15 +86,15 @@ public class EcdsaRawSignatureGenerator(
 }
 
 @CryptographyProviderApi
-public class EcdsaRawSignatureVerifier(
+public class DssRawSignatureVerifier(
     private val derVerifier: SignatureVerifier,
-    private val curveOrderSize: Int,
+    private val orderSize: Int,
 ) : SignatureVerifier {
-    override fun createVerifyFunction(): VerifyFunction = RawVerifyFunction(derVerifier.createVerifyFunction(), curveOrderSize)
+    override fun createVerifyFunction(): VerifyFunction = RawVerifyFunction(derVerifier.createVerifyFunction(), orderSize)
 
     private class RawVerifyFunction(
         private val derVerifyFunction: VerifyFunction,
-        private val curveOrderSize: Int,
+        private val orderSize: Int,
     ) : VerifyFunction {
         override fun update(source: ByteArray, startIndex: Int, endIndex: Int) {
             derVerifyFunction.update(source, startIndex, endIndex)
@@ -100,7 +104,7 @@ public class EcdsaRawSignatureVerifier(
             checkBounds(signature.size, startIndex, endIndex)
 
             return derVerifyFunction.tryVerify(
-                convertEcdsaRawSignatureToDer(curveOrderSize, signature, startIndex, endIndex),
+                convertDssRawSignatureToDer(orderSize, signature, startIndex, endIndex),
             )
         }
 
@@ -117,4 +121,3 @@ public class EcdsaRawSignatureVerifier(
         }
     }
 }
-

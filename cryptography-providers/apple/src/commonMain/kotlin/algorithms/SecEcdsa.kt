@@ -174,7 +174,7 @@ private class EcdsaPublicKey(
         val verifier = SecSignatureVerifier(publicKey, digest.ecdsaSecKeyAlgorithm())
         return when (format) {
             ECDSA.SignatureFormat.DER -> verifier
-            ECDSA.SignatureFormat.RAW -> EcdsaRawSignatureVerifier(verifier, curve.orderSize)
+            ECDSA.SignatureFormat.RAW -> DssRawSignatureVerifier(verifier, curve.orderSize)
         }
     }
 
@@ -219,7 +219,7 @@ private class EcdsaPrivateKey(
         val generator = SecSignatureGenerator(privateKey, digest.ecdsaSecKeyAlgorithm())
         return when (format) {
             ECDSA.SignatureFormat.DER -> generator
-            ECDSA.SignatureFormat.RAW -> EcdsaRawSignatureGenerator(generator, curve.orderSize)
+            ECDSA.SignatureFormat.RAW -> DssRawSignatureGenerator(generator, curve.orderSize)
         }
     }
 

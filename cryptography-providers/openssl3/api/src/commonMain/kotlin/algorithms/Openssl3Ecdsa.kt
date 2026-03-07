@@ -35,7 +35,7 @@ internal object Openssl3Ecdsa : Openssl3Ec<ECDSA.PublicKey, ECDSA.PrivateKey, EC
             }
             return when (format) {
                 ECDSA.SignatureFormat.DER -> derSignatureGenerator
-                ECDSA.SignatureFormat.RAW -> EcdsaRawSignatureGenerator(derSignatureGenerator, EC_order_size(key))
+                ECDSA.SignatureFormat.RAW -> DssRawSignatureGenerator(derSignatureGenerator, EC_order_size(key))
             }
         }
     }
@@ -51,7 +51,7 @@ internal object Openssl3Ecdsa : Openssl3Ec<ECDSA.PublicKey, ECDSA.PrivateKey, EC
             }
             return when (format) {
                 ECDSA.SignatureFormat.DER -> derSignatureVerifier
-                ECDSA.SignatureFormat.RAW -> EcdsaRawSignatureVerifier(derSignatureVerifier, EC_order_size(key))
+                ECDSA.SignatureFormat.RAW -> DssRawSignatureVerifier(derSignatureVerifier, EC_order_size(key))
             }
         }
     }

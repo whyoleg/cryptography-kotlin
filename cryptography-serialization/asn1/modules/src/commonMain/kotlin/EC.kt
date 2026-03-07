@@ -4,7 +4,6 @@
 
 package dev.whyoleg.cryptography.serialization.asn1.modules
 
-import dev.whyoleg.cryptography.bigint.*
 import dev.whyoleg.cryptography.serialization.asn1.*
 import dev.whyoleg.cryptography.serialization.asn1.ContextSpecificTag.*
 import kotlinx.serialization.*
@@ -81,17 +80,3 @@ public value class EcParameters(
 public val ObjectIdentifier.Companion.secp256r1: ObjectIdentifier get() = ObjectIdentifier("1.2.840.10045.3.1.7")
 public val ObjectIdentifier.Companion.secp384r1: ObjectIdentifier get() = ObjectIdentifier("1.3.132.0.34")
 public val ObjectIdentifier.Companion.secp521r1: ObjectIdentifier get() = ObjectIdentifier("1.3.132.0.35")
-
-/**
- * ```
- * Ecdsa-Sig-Value ::= SEQUENCE {
- *   r INTEGER,
- *   s INTEGER
- * }
- * ```
- */
-@Serializable
-public class EcdsaSignatureValue(
-    public val r: BigInt,
-    public val s: BigInt,
-)

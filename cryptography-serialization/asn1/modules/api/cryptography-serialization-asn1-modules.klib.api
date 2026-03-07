@@ -67,6 +67,28 @@ final class dev.whyoleg.cryptography.serialization.asn1.modules/DhParameters { /
     }
 }
 
+final class dev.whyoleg.cryptography.serialization.asn1.modules/DssSignatureValue { // dev.whyoleg.cryptography.serialization.asn1.modules/DssSignatureValue|null[0]
+    constructor <init>(dev.whyoleg.cryptography.bigint/BigInt, dev.whyoleg.cryptography.bigint/BigInt) // dev.whyoleg.cryptography.serialization.asn1.modules/DssSignatureValue.<init>|<init>(dev.whyoleg.cryptography.bigint.BigInt;dev.whyoleg.cryptography.bigint.BigInt){}[0]
+
+    final val r // dev.whyoleg.cryptography.serialization.asn1.modules/DssSignatureValue.r|{}r[0]
+        final fun <get-r>(): dev.whyoleg.cryptography.bigint/BigInt // dev.whyoleg.cryptography.serialization.asn1.modules/DssSignatureValue.r.<get-r>|<get-r>(){}[0]
+    final val s // dev.whyoleg.cryptography.serialization.asn1.modules/DssSignatureValue.s|{}s[0]
+        final fun <get-s>(): dev.whyoleg.cryptography.bigint/BigInt // dev.whyoleg.cryptography.serialization.asn1.modules/DssSignatureValue.s.<get-s>|<get-s>(){}[0]
+
+    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<dev.whyoleg.cryptography.serialization.asn1.modules/DssSignatureValue> { // dev.whyoleg.cryptography.serialization.asn1.modules/DssSignatureValue.$serializer|null[0]
+        final val descriptor // dev.whyoleg.cryptography.serialization.asn1.modules/DssSignatureValue.$serializer.descriptor|{}descriptor[0]
+            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // dev.whyoleg.cryptography.serialization.asn1.modules/DssSignatureValue.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
+
+        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // dev.whyoleg.cryptography.serialization.asn1.modules/DssSignatureValue.$serializer.childSerializers|childSerializers(){}[0]
+        final fun deserialize(kotlinx.serialization.encoding/Decoder): dev.whyoleg.cryptography.serialization.asn1.modules/DssSignatureValue // dev.whyoleg.cryptography.serialization.asn1.modules/DssSignatureValue.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
+        final fun serialize(kotlinx.serialization.encoding/Encoder, dev.whyoleg.cryptography.serialization.asn1.modules/DssSignatureValue) // dev.whyoleg.cryptography.serialization.asn1.modules/DssSignatureValue.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;dev.whyoleg.cryptography.serialization.asn1.modules.DssSignatureValue){}[0]
+    }
+
+    final object Companion { // dev.whyoleg.cryptography.serialization.asn1.modules/DssSignatureValue.Companion|null[0]
+        final fun serializer(): kotlinx.serialization/KSerializer<dev.whyoleg.cryptography.serialization.asn1.modules/DssSignatureValue> // dev.whyoleg.cryptography.serialization.asn1.modules/DssSignatureValue.Companion.serializer|serializer(){}[0]
+    }
+}
+
 final class dev.whyoleg.cryptography.serialization.asn1.modules/EcAlgorithmIdentifier : dev.whyoleg.cryptography.serialization.asn1.modules/AlgorithmIdentifier { // dev.whyoleg.cryptography.serialization.asn1.modules/EcAlgorithmIdentifier|null[0]
     constructor <init>(dev.whyoleg.cryptography.serialization.asn1.modules/EcParameters?) // dev.whyoleg.cryptography.serialization.asn1.modules/EcAlgorithmIdentifier.<init>|<init>(dev.whyoleg.cryptography.serialization.asn1.modules.EcParameters?){}[0]
 
@@ -99,28 +121,6 @@ final class dev.whyoleg.cryptography.serialization.asn1.modules/EcPrivateKey { /
 
     final object Companion { // dev.whyoleg.cryptography.serialization.asn1.modules/EcPrivateKey.Companion|null[0]
         final fun serializer(): kotlinx.serialization/KSerializer<dev.whyoleg.cryptography.serialization.asn1.modules/EcPrivateKey> // dev.whyoleg.cryptography.serialization.asn1.modules/EcPrivateKey.Companion.serializer|serializer(){}[0]
-    }
-}
-
-final class dev.whyoleg.cryptography.serialization.asn1.modules/EcdsaSignatureValue { // dev.whyoleg.cryptography.serialization.asn1.modules/EcdsaSignatureValue|null[0]
-    constructor <init>(dev.whyoleg.cryptography.bigint/BigInt, dev.whyoleg.cryptography.bigint/BigInt) // dev.whyoleg.cryptography.serialization.asn1.modules/EcdsaSignatureValue.<init>|<init>(dev.whyoleg.cryptography.bigint.BigInt;dev.whyoleg.cryptography.bigint.BigInt){}[0]
-
-    final val r // dev.whyoleg.cryptography.serialization.asn1.modules/EcdsaSignatureValue.r|{}r[0]
-        final fun <get-r>(): dev.whyoleg.cryptography.bigint/BigInt // dev.whyoleg.cryptography.serialization.asn1.modules/EcdsaSignatureValue.r.<get-r>|<get-r>(){}[0]
-    final val s // dev.whyoleg.cryptography.serialization.asn1.modules/EcdsaSignatureValue.s|{}s[0]
-        final fun <get-s>(): dev.whyoleg.cryptography.bigint/BigInt // dev.whyoleg.cryptography.serialization.asn1.modules/EcdsaSignatureValue.s.<get-s>|<get-s>(){}[0]
-
-    final object $serializer : kotlinx.serialization.internal/GeneratedSerializer<dev.whyoleg.cryptography.serialization.asn1.modules/EcdsaSignatureValue> { // dev.whyoleg.cryptography.serialization.asn1.modules/EcdsaSignatureValue.$serializer|null[0]
-        final val descriptor // dev.whyoleg.cryptography.serialization.asn1.modules/EcdsaSignatureValue.$serializer.descriptor|{}descriptor[0]
-            final fun <get-descriptor>(): kotlinx.serialization.descriptors/SerialDescriptor // dev.whyoleg.cryptography.serialization.asn1.modules/EcdsaSignatureValue.$serializer.descriptor.<get-descriptor>|<get-descriptor>(){}[0]
-
-        final fun childSerializers(): kotlin/Array<kotlinx.serialization/KSerializer<*>> // dev.whyoleg.cryptography.serialization.asn1.modules/EcdsaSignatureValue.$serializer.childSerializers|childSerializers(){}[0]
-        final fun deserialize(kotlinx.serialization.encoding/Decoder): dev.whyoleg.cryptography.serialization.asn1.modules/EcdsaSignatureValue // dev.whyoleg.cryptography.serialization.asn1.modules/EcdsaSignatureValue.$serializer.deserialize|deserialize(kotlinx.serialization.encoding.Decoder){}[0]
-        final fun serialize(kotlinx.serialization.encoding/Encoder, dev.whyoleg.cryptography.serialization.asn1.modules/EcdsaSignatureValue) // dev.whyoleg.cryptography.serialization.asn1.modules/EcdsaSignatureValue.$serializer.serialize|serialize(kotlinx.serialization.encoding.Encoder;dev.whyoleg.cryptography.serialization.asn1.modules.EcdsaSignatureValue){}[0]
-    }
-
-    final object Companion { // dev.whyoleg.cryptography.serialization.asn1.modules/EcdsaSignatureValue.Companion|null[0]
-        final fun serializer(): kotlinx.serialization/KSerializer<dev.whyoleg.cryptography.serialization.asn1.modules/EcdsaSignatureValue> // dev.whyoleg.cryptography.serialization.asn1.modules/EcdsaSignatureValue.Companion.serializer|serializer(){}[0]
     }
 }
 
