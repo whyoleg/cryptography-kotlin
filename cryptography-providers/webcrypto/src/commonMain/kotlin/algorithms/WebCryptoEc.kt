@@ -127,10 +127,34 @@ private object EcPrivateKeyProcessor : WebCryptoKeyProcessor<EC.PrivateKey.Forma
                 key = Der.encodeToByteArray(EcPrivateKey.serializer(), EcPrivateKey(version = 1, key))
             )
         }
-        EC.PrivateKey.Format.DER      -> key
-        EC.PrivateKey.Format.PEM      -> unwrapPem(PemLabel.PrivateKey, key)
-        EC.PrivateKey.Format.DER.SEC1 -> convertEcPrivateKeyFromSec1ToPkcs8(key)
-        EC.PrivateKey.Format.PEM.SEC1 -> convertEcPrivateKeyFromSec1ToPkcs8(unwrapPem(PemLabel.EcPrivateKey, key))
+        EC.PrivateKey.Format.DER      -> recodeWithoutParameters(key)
+        EC.PrivateKey.Format.PEM      -> recodeWithoutParameters(unwrapPem(PemLabel.PrivateKey, key))
+        EC.PrivateKey.Format.DER.SEC1 -> recodeWithoutParameters(convertEcPrivateKeyFromSec1ToPkcs8(key))
+        EC.PrivateKey.Format.PEM.SEC1 -> recodeWithoutParameters(convertEcPrivateKeyFromSec1ToPkcs8(unwrapPem(PemLabel.EcPrivateKey, key)))
+    }
+
+    // https://github.com/whyoleg/cryptography-kotlin/issues/124
+    // Safari doesn't work with `EcPrivateKey` containing `parameters`
+    // parameters are included in `PrivateKeyInfo`
+    private fun recodeWithoutParameters(derKey: ByteArray): ByteArray {
+        val pki = Der.decodeFromByteArray(PrivateKeyInfo.serializer(), derKey)
+        val privateKey = Der.decodeFromByteArray(EcPrivateKey.serializer(), pki.privateKey)
+
+        if (privateKey.parameters == null) return derKey
+
+        return wrapPrivateKeyInfo(
+            version = pki.version,
+            identifier = pki.privateKeyAlgorithm,
+            key = Der.encodeToByteArray(
+                EcPrivateKey.serializer(),
+                EcPrivateKey(
+                    version = 1,
+                    privateKey = privateKey.privateKey,
+                    parameters = null, // parameters should be `null` here for compatibility with WebKit (safari)
+                    publicKey = privateKey.publicKey
+                )
+            )
+        )
     }
 
     override fun afterEncoding(algorithm: Algorithm, format: EC.PrivateKey.Format, key: ByteArray): ByteArray = when (format) {
