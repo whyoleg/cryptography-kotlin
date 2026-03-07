@@ -30,6 +30,35 @@ fun AlgorithmTestScope<ECDSA>.supportsSignatureDigest(digest: CryptographyAlgori
     else -> supportsDigest(digest)
 }
 
+fun AlgorithmTestScope<DSA>.supportsDsaParameters(subprimeSizeBits: Int?): Boolean = supports {
+    when {
+        subprimeSizeBits != null &&
+                (provider.isBouncyCastle || provider.isJdkDefault && platform.isAndroid) -> "DSAGenParameterSpec is not supported by BouncyCastle and Android"
+        else                                                                             -> null
+    }
+}
+
+fun AlgorithmTestScope<DSA>.supportsDsaSignatureDigest(digest: CryptographyAlgorithmId<Digest>?): Boolean = when (digest) {
+    null -> supports {
+        when {
+            provider.isJdkDefault -> "DSA without digest (uses RawDSA TLS specific)"
+            else                  -> null
+        }
+    }
+    else -> when (supportsDigest(digest)) {
+        // support was added with SHA3 family in https://bugs.openjdk.org/browse/JDK-8252260
+        true  -> supports {
+            when {
+                digest == SHA384 || digest == SHA512 &&
+                        provider.isJdkDefault &&
+                        (platform.isJdk { major < 17 } || platform.isAndroid) -> "DSA with SHA384 or SHA512 digest"
+                else                                                          -> null
+            }
+        }
+        false -> false
+    }
+}
+
 fun AlgorithmTestScope<*>.supportsDigest(digest: CryptographyAlgorithmId<Digest>): Boolean = supports {
     val sha3Algorithms = setOf(SHA3_224, SHA3_256, SHA3_384, SHA3_512)
 

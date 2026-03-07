@@ -23,6 +23,10 @@ public final class dev/whyoleg/cryptography/serialization/asn1/modules/DHKt {
 	public static final fun getDH (Ldev/whyoleg/cryptography/serialization/asn1/ObjectIdentifier$Companion;)Ljava/lang/String;
 }
 
+public final class dev/whyoleg/cryptography/serialization/asn1/modules/DSAKt {
+	public static final fun getDSA (Ldev/whyoleg/cryptography/serialization/asn1/ObjectIdentifier$Companion;)Ljava/lang/String;
+}
+
 public final class dev/whyoleg/cryptography/serialization/asn1/modules/DhAlgorithmIdentifier : dev/whyoleg/cryptography/serialization/asn1/modules/AlgorithmIdentifier {
 	public fun <init> (Ldev/whyoleg/cryptography/serialization/asn1/modules/DhParameters;)V
 	public fun getAlgorithm-STa95mE ()Ljava/lang/String;
@@ -50,6 +54,35 @@ public final synthetic class dev/whyoleg/cryptography/serialization/asn1/modules
 }
 
 public final class dev/whyoleg/cryptography/serialization/asn1/modules/DhParameters$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/modules/DsaAlgorithmIdentifier : dev/whyoleg/cryptography/serialization/asn1/modules/AlgorithmIdentifier {
+	public fun <init> (Ldev/whyoleg/cryptography/serialization/asn1/modules/DsaParameters;)V
+	public fun getAlgorithm-STa95mE ()Ljava/lang/String;
+	public fun getParameters ()Ldev/whyoleg/cryptography/serialization/asn1/modules/DsaParameters;
+	public synthetic fun getParameters ()Ljava/lang/Object;
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/modules/DsaParameters {
+	public static final field Companion Ldev/whyoleg/cryptography/serialization/asn1/modules/DsaParameters$Companion;
+	public fun <init> (Ldev/whyoleg/cryptography/bigint/BigInt;Ldev/whyoleg/cryptography/bigint/BigInt;Ldev/whyoleg/cryptography/bigint/BigInt;)V
+	public final fun getGenerator ()Ldev/whyoleg/cryptography/bigint/BigInt;
+	public final fun getPrime ()Ldev/whyoleg/cryptography/bigint/BigInt;
+	public final fun getSubprime ()Ldev/whyoleg/cryptography/bigint/BigInt;
+}
+
+public final synthetic class dev/whyoleg/cryptography/serialization/asn1/modules/DsaParameters$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/serialization/asn1/modules/DsaParameters$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/whyoleg/cryptography/serialization/asn1/modules/DsaParameters;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/whyoleg/cryptography/serialization/asn1/modules/DsaParameters;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+}
+
+public final class dev/whyoleg/cryptography/serialization/asn1/modules/DsaParameters$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 

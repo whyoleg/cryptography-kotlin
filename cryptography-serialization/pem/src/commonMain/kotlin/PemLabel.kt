@@ -80,5 +80,12 @@ public value class PemLabel(public val value: String) {
          * as described in [RFC2631](https://datatracker.ietf.org/doc/html/rfc2631) and PKCS#3
          */
         public val DhParameters: PemLabel = PemLabel("DH PARAMETERS")
+
+        /**
+         * Represents a label used in PEM documents that contain
+         * DER encoded ASN.1 `DSAParameters` structure
+         * as described in [FIPS 186](https://nvlpubs.nist.gov/nistpubs/fips/nist.fips.186-4.pdf) (RFC 3279)
+         */
+        public val DsaParameters: PemLabel = PemLabel("DSA PARAMETERS")
     }
 }
