@@ -10,6 +10,7 @@ import org.jetbrains.kotlin.gradle.tasks.*
 plugins {
     id("ckbuild.multiplatform-library")
     id("ckbuild.multiplatform-provider-tests")
+    id("ckbuild.multiplatform-xcframework")
     id("ckbuild.use-openssl")
 }
 

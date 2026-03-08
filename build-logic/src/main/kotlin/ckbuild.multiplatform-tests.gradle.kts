@@ -18,7 +18,6 @@ plugins {
 }
 
 val skipTestTasks = booleanProperty("ckbuild.skipTestTasks", defaultValue = false)
-val skipReleaseLinkTasks = booleanProperty("ckbuild.skipReleaseLinkTasks", defaultValue = false)
 
 kotlin {
     // just applying `kotlin-test` doesn't work for JVM if there are multiple test tasks (like when we test on different JDKs)
@@ -54,12 +53,7 @@ kotlin {
 
     // setup tests running in RELEASE mode
     targets.withType<KotlinNativeTarget>().configureEach {
-        binaries.test(listOf(NativeBuildType.RELEASE)) {
-            linkTaskProvider.configure {
-                val skipReleaseLinkTasks = skipReleaseLinkTasks // for CC
-                onlyIf { !skipReleaseLinkTasks.get() }
-            }
-        }
+        binaries.test(listOf(NativeBuildType.RELEASE))
     }
     targets.withType<KotlinNativeTargetWithTests<*>>().configureEach {
         testRuns.create("releaseTest") {
