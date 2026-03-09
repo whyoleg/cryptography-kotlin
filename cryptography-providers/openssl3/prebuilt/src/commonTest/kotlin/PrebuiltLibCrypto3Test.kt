@@ -5,7 +5,7 @@
 package dev.whyoleg.cryptography.providers.openssl3.prebuilt
 
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
-import dev.whyoleg.cryptography.providers.openssl3.test.*
+import dev.whyoleg.cryptography.providers.openssl3.tests.*
 import kotlinx.cinterop.*
 import kotlin.test.*
 

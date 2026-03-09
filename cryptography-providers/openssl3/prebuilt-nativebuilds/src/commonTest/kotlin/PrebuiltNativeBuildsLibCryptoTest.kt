@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.prebuiltnativebuilds
 
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
-import dev.whyoleg.cryptography.providers.openssl3.test.*
+import dev.whyoleg.cryptography.providers.openssl3.tests.*
 import kotlinx.cinterop.*
 import kotlin.test.*
 

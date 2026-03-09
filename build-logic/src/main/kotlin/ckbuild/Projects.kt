@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package ckbuild
@@ -36,7 +36,7 @@ object Projects {
         "cryptography-provider-optimal" to setOf(Tag.PUBLISHED),
 
         "cryptography-provider-jdk-android-tests" to setOf(),
-        "cryptography-provider-openssl3-test" to setOf(),
+        "cryptography-provider-openssl3-tests" to setOf(),
         "cryptography-provider-tests" to setOf(),
     )
 
