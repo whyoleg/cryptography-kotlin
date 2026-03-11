@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 import ckbuild.*
@@ -46,15 +46,4 @@ dependencies {
 
 tasks.dokkaGeneratePublicationHtml {
     outputDirectory.set(file("docs/api"))
-}
-
-tasks.register<Copy>("mkdocsCopy") {
-    into(rootDir.resolve("docs"))
-    from("CHANGELOG.md")
-}
-
-tasks.register<Exec>("mkdocsBuild") {
-    dependsOn(tasks.dokkaGeneratePublicationHtml)
-    dependsOn(tasks.named("mkdocsCopy"))
-    commandLine("mkdocs", "build", "--clean", "--strict")
 }

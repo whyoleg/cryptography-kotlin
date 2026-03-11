@@ -25,7 +25,7 @@ nav:
       - index.md
       - 'Secure random': random.md
       - 'BigInt': bigint.md
-      - 'Changelog': CHANGELOG.md
+      - 'Changelog': changelog.md
       - 'Examples': examples.md
       - 'Dependency management':
           - 'Gradle version catalog': dependencies/gradle-version-catalog.md

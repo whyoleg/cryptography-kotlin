@@ -12,10 +12,11 @@ jobs:
         with:
           python-version: 3.x
       - run: pip install mkdocs-material
+      - run: brew install just
       - uses: ./.github/actions/setup-environment
 
       - name: Build documentation
-        run: ./gradlew mkdocsBuild
+        run: just docs
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
