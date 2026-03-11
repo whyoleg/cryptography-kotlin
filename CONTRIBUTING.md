@@ -1,12 +1,12 @@
 # Contributing to cryptography-kotlin
 
-This guide covers development setup, building, testing, and contribution workflow.
+This guide covers project overview, architecture, development setup, building, testing, and contribution workflow.
 
 ## Prerequisites
 
 - JDK 17+ (for building)
-- Gradle 8.x (wrapper included)
-- For native development on macOS: Xcode Command Line Tools
+- Gradle 9.x (wrapper included)
+- [`just`](https://github.com/casey/just) command runner (`brew install just` on macOS)
 
 ## Project Structure
 
@@ -38,6 +38,40 @@ cryptography-kotlin/
 └── docs/                        # MkDocs documentation
 ```
 
+## Code Architecture
+
+### Algorithm & Provider Patterns
+
+**Algorithm APIs** are defined in `cryptography-core/src/commonMain/kotlin/algorithms/`. Look at existing algorithms (e.g., `HMAC.kt`,
+`AES.kt`) as reference when adding new ones.
+
+**Provider implementations** go in the provider's `algorithms/` directory and are registered in the provider's `getOrNull()` method.
+
+### API Annotations
+
+| Annotation                                               | Usage                                      |
+|----------------------------------------------------------|--------------------------------------------|
+| `@CryptographyProviderApi`                               | Provider implementation internals          |
+| `@DelicateCryptographyApi`                               | Dangerous APIs (ECB, MD5, SHA1, RIPEMD160) |
+| `@SubclassOptInRequired(CryptographyProviderApi::class)` | Interfaces for provider implementation     |
+
+### Naming Conventions
+
+| Element                  | Pattern                                                    | Example                      |
+|--------------------------|------------------------------------------------------------|------------------------------|
+| Provider algorithm class | `<Provider><Algorithm>`                                    | `JdkAesGcm`, `Openssl3Ecdsa` |
+| Provider key class       | `<Provider><Algorithm>Key`                                 | `JdkAesGcmKey`               |
+| Package                  | `dev.whyoleg.cryptography.providers.<provider>.algorithms` |                              |
+| Test class (generated)   | `<Provider>_<TestType>_<Algorithm>Test`                    | `JDK_Default_AesGcmTest`     |
+
+### Deprecation Handling
+
+When deprecating APIs:
+
+- Use `@Deprecated` with `DeprecationLevel.ERROR`
+- Throw exception if implementation is not feasible
+- Never silently ignore deprecated behavior
+
 ## Building
 
 ### Build Specific Modules (Recommended)
@@ -45,33 +79,25 @@ cryptography-kotlin/
 Building specific modules is faster than building everything:
 
 ```bash
-# Build a provider module
-./gradlew :cryptography-provider-jdk:build -Pckbuild.skipTestTasks=true -Pckbuild.skipLinkTasks=true
+# Build a provider module (short form, auto-prefixed with :cryptography-)
+just build provider-jdk
 
 # Build core API
-./gradlew :cryptography-core:build -Pckbuild.skipTestTasks=true -Pckbuild.skipLinkTasks=true
+just build core
 
-# Build OpenSSL API
-./gradlew :cryptography-provider-openssl3-api:build -Pckbuild.skipTestTasks=true -Pckbuild.skipLinkTasks=true
+# Or use the full Gradle module path
+just build :cryptography-provider-openssl3-api
 ```
 
 ### Build All Modules
 
 ```bash
 # Skip tests and native linking for faster builds
-./gradlew build -Pckbuild.skipTestTasks=true -Pckbuild.skipLinkTasks=true
+just build
 
 # Link all native binaries
-./gradlew linkAll
+just link
 ```
-
-### Gradle Properties
-
-| Property                           | Description            |
-|------------------------------------|------------------------|
-| `-Pckbuild.skipTestTasks=true`     | Skip all test tasks    |
-| `-Pckbuild.skipLinkTasks=true`     | Skip native linking    |
-| `-Pckbuild.warningsAsErrors=false` | Don't fail on warnings |
 
 ## Running Tests
 
@@ -81,18 +107,65 @@ Run tests for a specific provider rather than all providers:
 
 ```bash
 # JVM tests
-./gradlew :cryptography-provider-jdk:jvmTest
+just test-provider-jdk
 
-# JavaScript tests
-./gradlew :cryptography-provider-webcrypto:jsTest
+# WebCrypto tests (WasmJS on Node.js)
+just test-provider-webcrypto
 
 # Native tests (macOS ARM)
-./gradlew :cryptography-provider-openssl3-prebuilt:macosArm64Test
-./gradlew :cryptography-provider-cryptokit:macosArm64Test
+just test-provider-openssl3
+just test-provider-cryptokit
+just test-provider-apple
 
-# Specific test class
-./gradlew :cryptography-provider-jdk:jvmTest --tests "dev.whyoleg.cryptography.providers.jdk.JDK_Default_AesGcmTest"
+# Filter by test class (wildcard supported)
+just test-provider-jdk "*AesGcmTest*"
 ```
+
+### Compatibility Tests
+
+Cross-provider compatibility tests use a two-phase pipeline via a local testtool server:
+
+1. **Generate** – each provider creates test vectors (keys, ciphertexts, signatures, etc.) and stores them via the testtool server
+2. **Validate** – each provider reads *all* generated test vectors and verifies them, ensuring cross-provider compatibility
+
+The testtool server starts automatically when running compat steps – no manual server management needed. Server data persists in
+`build/testtool/server-storage/` between invocations within the same generate/validate cycle.
+
+#### Workflow
+
+```bash
+# 1. Clean previous server storage (start fresh)
+just compat-clean
+
+# 2. Generate test vectors for each provider you want to test
+just test-provider-jdk --step generate
+just test-provider-cryptokit --step generate
+
+# 3. Validate test vectors for each provider
+just test-provider-jdk --step validate
+just test-provider-cryptokit --step validate
+```
+
+Skip `compat-clean` only when intentionally adding more providers on top of an existing generate run.
+
+To filter by a specific algorithm, pass its test class as the first argument:
+
+```bash
+just test-provider-jdk "*AesGcmCompatibilityTest*" --step generate
+just test-provider-cryptokit "*AesGcmCompatibilityTest*" --step generate
+just test-provider-jdk "*AesGcmCompatibilityTest*" --step validate
+just test-provider-cryptokit "*AesGcmCompatibilityTest*" --step validate
+```
+
+#### Provider Reference
+
+| Provider           | `just` recipe             | Notes          |
+|--------------------|---------------------------|----------------|
+| JDK                | `test-provider-jdk`       |                |
+| Apple CommonCrypto | `test-provider-apple`     | Requires macOS |
+| CryptoKit          | `test-provider-cryptokit` | Requires macOS |
+| OpenSSL3 Prebuilt  | `test-provider-openssl3`  |                |
+| WebCrypto (WasmJS) | `test-provider-webcrypto` |                |
 
 ### Test Types
 
@@ -104,23 +177,18 @@ Tests are organized in `cryptography-provider-tests`:
 | Compatibility | `compatibility/` | Cross-provider/cross-platform validation                        |
 | Test Vectors  | `testvectors/`   | RFC/specification compliance tests                              |
 
-### Test Filtering (Compatibility Tests)
-
-```bash
-# Run all compatibility steps
-./gradlew allTest -Pckbuild.providerTests.step=compatibility.loop
-
-# Run specific step
-./gradlew allTest -Pckbuild.providerTests.step=compatibility.generate
-./gradlew allTest -Pckbuild.providerTests.step=compatibility.generateStress
-./gradlew allTest -Pckbuild.providerTests.step=compatibility.validate
-```
-
 ### Platform Limitations
 
 - On macOS ARM machines, only `macosArm64` tests can be run locally
 - `linuxX64`, `mingwX64`, etc. require their respective platforms
 - Use CI for full cross-platform testing
+
+| Issue                   | Platforms Affected                             |
+|-------------------------|------------------------------------------------|
+| Native linking          | All native targets need explicit linking       |
+| WebCrypto limitations   | Many algorithms unsupported (SHA3, CMAC, etc.) |
+| CryptoKit limitations   | No AES-CBC, AES-CTR, RSA encryption            |
+| JDK version differences | Algorithms vary by Java version                |
 
 ## Adding a New Algorithm
 
@@ -165,32 +233,8 @@ Register in provider's `getOrNull()` method.
 ### 5. Update Public API
 
 ```bash
-./gradlew :cryptography-core:updateKotlinAbi
+just update-abi
 ```
-
-## Build Logic
-
-Custom Gradle plugins in `build-logic/`:
-
-| Plugin                                 | Purpose                         |
-|----------------------------------------|---------------------------------|
-| `ckbuild.multiplatform-library`        | Standard library setup          |
-| `ckbuild.multiplatform-provider-tests` | Auto-generates test classes     |
-| `ckbuild.use-openssl`                  | Configures OpenSSL dependencies |
-
-Target functions in `build-logic/src/main/kotlin/ckbuild/targets.kt`:
-
-| Function          | Targets                   |
-|-------------------|---------------------------|
-| `allTargets()`    | All platforms             |
-| `appleTargets()`  | macOS, iOS, watchOS, tvOS |
-| `nativeTargets()` | All native platforms      |
-| `webTargets()`    | JS and WasmJS             |
-
-## Code Style
-
-- Follow default Kotlin IDEA formatting
-- Copyright header: `Copyright (c) <current-year> Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.`
 
 ## CI/CD
 
@@ -208,9 +252,5 @@ Check workflow results in the Actions tab before merging.
 - API documentation is auto-generated via Dokka
 
 ```bash
-# Generate API docs
-./gradlew dokkaGeneratePublicationHtml
-
-# Build documentation site
-./gradlew mkdocsBuild
+just docs
 ```
