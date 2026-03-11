@@ -1,16 +1,17 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 import ckbuild.*
 
 plugins {
-    kotlin("multiplatform")
     id("org.jetbrains.dokka")
 }
 
 dokka {
-    setupHomepageLink()
+    pluginsConfiguration.html {
+        homepageLink.set("https://whyoleg.github.io/cryptography-kotlin")
+    }
 
     dokkaPublications.configureEach {
         // we don't suppress inherited members explicitly as without it classes like RSA.OAEP don't show functions like keyGenerator
@@ -25,17 +26,22 @@ dokka {
             localDirectory = rootDir
             remoteUrl("https://github.com/whyoleg/cryptography-kotlin/tree/$version/")
         }
-
-        if (name.endsWith("Main")) {
-            samples.from("src/${name.replace("Main", "Samples")}/kotlin")
+        externalDocumentationLinks.register("kotlinx-io") {
+            url("https://kotlinlang.org/api/kotlinx-io/")
         }
     }
 }
 
-kotlin {
-    sourceSets.configureEach {
-        if (name.endsWith("Test")) {
-            kotlin.srcDir("src/${name.replace("Test", "Samples")}/kotlin")
+// root config - output and module aggregation
+if (project == rootProject) {
+    dokka {
+        dokkaPublications.html {
+            outputDirectory.set(file("docs/api"))
+        }
+    }
+    dependencies {
+        Projects.libraries.forEach {
+            dokka(project(":$it"))
         }
     }
 }

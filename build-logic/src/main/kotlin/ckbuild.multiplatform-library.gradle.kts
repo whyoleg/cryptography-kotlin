@@ -10,12 +10,27 @@ plugins {
     id("ckbuild.multiplatform-base")
     id("ckbuild.multiplatform-tests")
     id("ckbuild.publication")
-    id("ckbuild.documentation")
+    id("ckbuild.dokka")
 }
 
 kotlin {
     explicitApi()
     abiValidation {
         enabled = true
+    }
+    // register samples as tests
+    sourceSets.configureEach {
+        if (name.endsWith("Test")) {
+            kotlin.srcDir("src/${name.replace("Test", "Samples")}/kotlin")
+        }
+    }
+}
+
+dokka {
+    // register samples as samples
+    dokkaSourceSets.configureEach {
+        if (name.endsWith("Main")) {
+            samples.from("src/${name.replace("Main", "Samples")}/kotlin")
+        }
     }
 }

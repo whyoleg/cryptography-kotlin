@@ -1,23 +1,10 @@
+/*
+ * Copyright (c) 2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ */
+
 package ckbuild
 
-import org.gradle.kotlin.dsl.*
 import org.jetbrains.dokka.gradle.*
-import org.jetbrains.dokka.gradle.engine.plugins.*
-
-fun DokkaExtension.setupHomepageLink() {
-    pluginsConfiguration.named<DokkaHtmlPluginParameters>("html") {
-        homepageLink.set("https://whyoleg.github.io/cryptography-kotlin")
-    }
-}
-
-fun DokkaExtension.registerKotlinxIoExternalDocumentation() {
-    dokkaSourceSets.configureEach {
-        externalDocumentationLinks.register("kotlinx-io") {
-            url("https://kotlinlang.org/api/kotlinx-io/")
-        }
-    }
-}
-
 
 fun DokkaExtension.includeCommonDocs() {
     dokkaSourceSets.configureEach {

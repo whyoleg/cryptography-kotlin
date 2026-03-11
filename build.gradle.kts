@@ -9,13 +9,12 @@ import org.jetbrains.kotlin.gradle.targets.wasm.nodejs.*
 import org.jetbrains.kotlin.gradle.targets.wasm.npm.*
 
 plugins {
-    alias(libs.plugins.kotlin.dokka)
-
     alias(libs.plugins.android.kotlin.multiplatform.library) apply false
     alias(libs.plugins.kotlin.multiplatform) apply false
     alias(libs.plugins.kotlin.plugin.serialization) apply false
 
     id("ckbuild.use-openssl")
+    id("ckbuild.dokka")
 }
 
 Projects.validateProjectTags(project)
@@ -32,18 +31,4 @@ plugins.withType<WasmNodeJsRootPlugin> {
         lockFileDirectory.set(layout.buildDirectory.dir("kotlin-js-store/wasm"))
         packageLockMismatchReport.set(LockFileMismatchReport.NONE)
     }
-}
-
-dokka {
-    setupHomepageLink()
-}
-
-dependencies {
-    Projects.libraries.forEach {
-        dokka(project(":$it"))
-    }
-}
-
-tasks.dokkaGeneratePublicationHtml {
-    outputDirectory.set(file("docs/api"))
 }
