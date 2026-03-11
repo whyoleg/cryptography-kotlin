@@ -19,7 +19,6 @@ dokka {
         failOnWarning = true
     }
     dokkaSourceSets.configureEach {
-        includes.from(rootDir.resolve("dokka/modules.md"))
         reportUndocumented = false // set true later
         skipDeprecated = true
         sourceLink {
@@ -28,6 +27,14 @@ dokka {
         }
         externalDocumentationLinks.register("kotlinx-io") {
             url("https://kotlinlang.org/api/kotlinx-io/")
+        }
+
+        if (project != rootProject && project.name in Projects.documented) {
+            if (name.endsWith("Main")) {
+                // TODO: dokka requires for `includes` files to be present...
+                //  otherwise we could use `includes.from("src/${name}Docs/module.md")`
+                includes.from("src/commonDocs/module.md")
+            }
         }
     }
 }
@@ -40,7 +47,7 @@ if (project == rootProject) {
         }
     }
     dependencies {
-        Projects.libraries.forEach {
+        Projects.documented.forEach {
             dokka(project(":$it"))
         }
     }

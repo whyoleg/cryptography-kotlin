@@ -47,7 +47,7 @@ provider.get(SHA512)
 ```
 
 The library provides an ability to configure the default security provider used by JDK provider via
-[DefaultJdkSecurityProvider][DefaultJdkSecurityProvider].
+`DefaultJdkSecurityProvider`.
 In addition to that, it's possible to use [BouncyCastle](https://www.bouncycastle.org) as the default provider via an additional dependency:
 
 ```kotlin
@@ -68,8 +68,6 @@ For better compatibility, you can use [BouncyCastle](https://www.bouncycastle.or
 in [Custom Java providers](#custom-java-providers).
 
 [CryptographyProvider]: ../api/cryptography-core/dev.whyoleg.cryptography/-cryptography-provider/index.html
-
-[DefaultJdkSecurityProvider]: ../api/cryptography-provider-jdk/dev.whyoleg.cryptography.providers.jdk/-default-jdk-security-provider/index.html
 
 [JCA]: https://docs.oracle.com/en/java/javase/17/security/java-cryptography-architecture-jca-reference-guide.html
 

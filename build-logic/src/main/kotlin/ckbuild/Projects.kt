@@ -7,7 +7,11 @@ package ckbuild
 import org.gradle.api.*
 
 object Projects {
-    private enum class Tag { PUBLISHED, NOT_LIBRARY }
+    private enum class Tag {
+        PUBLISHED,
+        NOT_LIBRARY,
+        EXCLUDE_FROM_DOKKA
+    }
 
     private val projectTags: Map<String, Set<Tag>> = mapOf(
         "cryptography-bom" to setOf(Tag.PUBLISHED, Tag.NOT_LIBRARY),
@@ -23,17 +27,18 @@ object Projects {
 
         "cryptography-core" to setOf(Tag.PUBLISHED),
 
-        "cryptography-provider-base" to setOf(Tag.PUBLISHED),
-        "cryptography-provider-jdk" to setOf(Tag.PUBLISHED),
-        "cryptography-provider-jdk-bc" to setOf(Tag.PUBLISHED),
-        "cryptography-provider-apple" to setOf(Tag.PUBLISHED),
-        "cryptography-provider-cryptokit" to setOf(Tag.PUBLISHED),
-        "cryptography-provider-webcrypto" to setOf(Tag.PUBLISHED),
-        "cryptography-provider-openssl3-api" to setOf(Tag.PUBLISHED),
-        "cryptography-provider-openssl3-shared" to setOf(Tag.PUBLISHED),
-        "cryptography-provider-openssl3-prebuilt" to setOf(Tag.PUBLISHED),
-        "cryptography-provider-openssl3-prebuilt-nativebuilds" to setOf(Tag.PUBLISHED),
-        "cryptography-provider-optimal" to setOf(Tag.PUBLISHED),
+        // no need for providers to be in API reference really
+        "cryptography-provider-base" to setOf(Tag.PUBLISHED, Tag.EXCLUDE_FROM_DOKKA),
+        "cryptography-provider-jdk" to setOf(Tag.PUBLISHED, Tag.EXCLUDE_FROM_DOKKA),
+        "cryptography-provider-jdk-bc" to setOf(Tag.PUBLISHED, Tag.EXCLUDE_FROM_DOKKA),
+        "cryptography-provider-apple" to setOf(Tag.PUBLISHED, Tag.EXCLUDE_FROM_DOKKA),
+        "cryptography-provider-cryptokit" to setOf(Tag.PUBLISHED, Tag.EXCLUDE_FROM_DOKKA),
+        "cryptography-provider-webcrypto" to setOf(Tag.PUBLISHED, Tag.EXCLUDE_FROM_DOKKA),
+        "cryptography-provider-openssl3-api" to setOf(Tag.PUBLISHED, Tag.EXCLUDE_FROM_DOKKA),
+        "cryptography-provider-openssl3-shared" to setOf(Tag.PUBLISHED, Tag.EXCLUDE_FROM_DOKKA),
+        "cryptography-provider-openssl3-prebuilt" to setOf(Tag.PUBLISHED, Tag.EXCLUDE_FROM_DOKKA),
+        "cryptography-provider-openssl3-prebuilt-nativebuilds" to setOf(Tag.PUBLISHED, Tag.EXCLUDE_FROM_DOKKA),
+        "cryptography-provider-optimal" to setOf(Tag.PUBLISHED, Tag.EXCLUDE_FROM_DOKKA),
 
         "cryptography-provider-jdk-android-tests" to setOf(),
         "cryptography-provider-openssl3-tests" to setOf(),
@@ -42,6 +47,11 @@ object Projects {
 
     val published: Set<String> = projectTags.filter { Tag.PUBLISHED in it.value }.keys
     val libraries: Set<String> = projectTags.filter { Tag.PUBLISHED in it.value && Tag.NOT_LIBRARY !in it.value }.keys
+    val documented: Set<String> = projectTags.filter {
+        Tag.PUBLISHED in it.value
+                && Tag.NOT_LIBRARY !in it.value
+                && Tag.EXCLUDE_FROM_DOKKA !in it.value
+    }.keys
 
     fun validateProjectTags(project: Project) {
         check(project == project.rootProject) { "Should be called only in rootProject" }

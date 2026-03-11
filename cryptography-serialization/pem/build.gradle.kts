@@ -30,7 +30,3 @@ kover {
         }
     }
 }
-
-dokka {
-    includeCommonDocs()
-}
