@@ -23,7 +23,6 @@ extra:
 nav:
   - 'Overview':
       - index.md
-      - 'Changelog': changelog.md
       - 'Examples': examples.md
       - 'Dependency management':
           - 'Gradle version catalog': dependencies/gradle-version-catalog.md
@@ -36,6 +35,7 @@ nav:
       - 'CryptoKit': providers/cryptokit.md
       - 'WebCrypto': providers/webcrypto.md
       - 'OpenSSL3': providers/openssl3.md
+  - 'Changelog': changelog.md
   - 'API': api/index.html
 
 theme:
