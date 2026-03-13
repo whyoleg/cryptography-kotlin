@@ -1,11 +1,29 @@
 # Module cryptography-bigint
 
-[BigInt][BigInt]: an arbitrary-precision integer.
+Arbitrary-precision integer for multiplatform use.
+
+The module provides [BigInt][BigInt] with:
+
+- Conversion between primitive number types, [String][String], and [ByteArray][ByteArray] (two's complement)
+- Comparison with itself and other number types
+- Serialization via [kotlinx.serialization][kotlinx.serialization]
+
+Platform implementations:
+
+- JVM: [BigInteger](https://docs.oracle.com/javase/8/docs/api/java/math/BigInteger.html)
+- JS, WasmJs: [JS BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt)
+- Native, WasmWasi: implemented from scratch
+
+#### [Get complete dependency details at klibs.io](https://klibs.io/package/dev.whyoleg.cryptography/cryptography-bigint)
 
 [BigInt]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-bigint/dev.whyoleg.cryptography.bigint/-big-int/index.html
+
+[String]: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/
+
+[ByteArray]: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/
+
+[kotlinx.serialization]: https://github.com/Kotlin/kotlinx.serialization
 
 # Package dev.whyoleg.cryptography.bigint
 
-[BigInt][BigInt]: an arbitrary-precision integer.
-
-[BigInt]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-bigint/dev.whyoleg.cryptography.bigint/-big-int/index.html
+Arbitrary-precision integer for multiplatform use.

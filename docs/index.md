@@ -9,7 +9,6 @@ CryptographyProvider.Default
 
 cryptography-kotlin provides multiplatform API which consists of multiple components:
 
-* [Secure random][Secure random] with [kotlin.Random][kotlin.Random] like API which can be used independently of other modules
 * common API to use different cryptography operations,
   like [ciphers][ciphers], [digests][digests], [signatures][signatures], [key derivation][key derivation], [Key agreement][Key agreement]
 * multiple algorithms definitions, like [AES][AES], [RSA][RSA], [ECDSA][ECDSA], [ECDH][ECDH], [SHA][SHA256], [HMAC][HMAC]
@@ -49,10 +48,6 @@ kotlin {
 ```
 
 Additionally, it's possible to use [BOM][BOM] or [Gradle version catalog][Gradle version catalog] to add dependencies easier.
-
-[Secure random]: random.md
-
-[kotlin.Random]: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.random/-random/
 
 [ciphers]: api/cryptography-core/dev.whyoleg.cryptography.operations/-cipher/index.html
 
