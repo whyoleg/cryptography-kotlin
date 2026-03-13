@@ -13,6 +13,7 @@ classes
 build/
 *.log
 /local.properties
+.DS_Store
 /docs/api
 /docs/changelog.md
 /site
