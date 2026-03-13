@@ -1,3 +1,8 @@
+---
+hide:
+  - navigation
+---
+
 # CHANGELOG
 
 ## 0.5.0 – CryptoKit & optimal providers

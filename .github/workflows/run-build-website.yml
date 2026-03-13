@@ -11,7 +11,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: 3.x
-      - run: pip install mkdocs-material
+      # install just and dependencies for mkdocs-material
+      - run: brew install just cairo freetype libffi libjpeg libpng zlib
+      - run: pip install mkdocs-material "mkdocs-material[imaging]"
       - run: brew install just
       - uses: ./.github/actions/setup-environment
 
