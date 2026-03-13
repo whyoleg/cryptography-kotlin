@@ -2,11 +2,11 @@
 
 Arbitrary-precision integer for multiplatform use.
 
-The module provides [BigInt][BigInt] with:
+The module provides [BigInt][dev.whyoleg.cryptography.bigint.BigInt] with:
 
-- Conversion between primitive number types, [String][String], and [ByteArray][ByteArray] (two's complement)
+- Conversion between primitive number types, [String][kotlin.String], and [ByteArray][kotlin.ByteArray] (two's complement)
 - Comparison with itself and other number types
-- Serialization via [kotlinx.serialization][kotlinx.serialization]
+- Serialization via [kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization)
 
 Platform implementations:
 
@@ -15,14 +15,6 @@ Platform implementations:
 - Native, WasmWasi: implemented from scratch
 
 #### [Get complete dependency details at klibs.io](https://klibs.io/package/dev.whyoleg.cryptography/cryptography-bigint)
-
-[BigInt]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-bigint/dev.whyoleg.cryptography.bigint/-big-int/index.html
-
-[String]: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/
-
-[ByteArray]: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/
-
-[kotlinx.serialization]: https://github.com/Kotlin/kotlinx.serialization
 
 # Package dev.whyoleg.cryptography.bigint
 

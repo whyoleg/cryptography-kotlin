@@ -1,8 +1,8 @@
 # Module cryptography-random
 
-Zero-dependency platform-dependent CSPRNG exposed via [kotlin.Random][kotlin.Random] API.
+Zero-dependency platform-dependent CSPRNG exposed via [Random][kotlin.random.Random] API.
 
-The module provides [CryptographyRandom][CryptographyRandom] which uses
+The module provides [CryptographyRandom][dev.whyoleg.cryptography.random.CryptographyRandom] which uses
 platform-native secure random sources:
 
 - JVM: [SecureRandom](https://docs.oracle.com/javase/8/docs/api/java/security/SecureRandom.html)
@@ -14,12 +14,6 @@ platform-native secure random sources:
 
 #### [Get complete dependency details at klibs.io](https://klibs.io/package/dev.whyoleg.cryptography/cryptography-random)
 
-[kotlin.Random]: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.random/-random/
-
-[CryptographyRandom]: https://whyoleg.github.io/cryptography-kotlin/api/cryptography-random/dev.whyoleg.cryptography.random/-cryptography-random/index.html
-
 # Package dev.whyoleg.cryptography.random
 
-Zero-dependency platform-dependent CSPRNG exposed via [kotlin.Random][kotlin.Random] API.
-
-[kotlin.Random]: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.random/-random/
+Zero-dependency platform-dependent CSPRNG exposed via [Random][kotlin.random.Random] API.
