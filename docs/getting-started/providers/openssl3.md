@@ -1,37 +1,27 @@
 # OpenSSL3
 
-Provides implementation of [CryptographyProvider][CryptographyProvider] via [OpenSSL 3.x][OpenSSL 3.x]
+The OpenSSL3 provider wraps [OpenSSL 3.x][OpenSSL 3.x] and is the default for native Linux, MinGW, and Android Native targets.
 
-For the openssl3 provider you must include two modules. You always need the api module and one additional module providing libcrypto:
+## Linking options
 
-* cryptography-provider-openssl3-api - provides mapping from cinterop declarations of openssl to cryptography-kotlin API.
+When using the OpenSSL3 provider directly, you must include two modules:
+the api module and one additional module providing libcrypto:
+
+* `cryptography-provider-openssl3-api` - provides mapping from cinterop declarations of openssl to cryptography-kotlin API.
   This module doesn't provide any configuration of how it should be linked to the `libcrypto` library. You need to combine it with exactly
   one of the following modules. Otherwise, building the final binary will fail unless correct linking arguments are provided.
-* cryptography-provider-openssl3-shared - additionally provides embedded dynamic linking arguments (via cinterop) to `libcrypto`,
+* `cryptography-provider-openssl3-shared` - additionally provides embedded dynamic linking arguments (via cinterop) to `libcrypto`,
   so when building final binary openssl3 should be installed on PC where it builds, as well as on PC where this binary will be running.
   Embedded linking arguments use default paths, where openssl3 is installed, though if it's installed in a custom directory,
   additional configuration will be required
-* cryptography-provider-openssl3-prebuilt - unlike the shared module, this module embeds `libcrypto`, so no additional setup is
+* `cryptography-provider-openssl3-prebuilt` - unlike the shared module, this module embeds `libcrypto`, so no additional setup is
   needed neither to build the final binary, nor to run it.
   Embedded OpenSSL version is 3.6.0
-* cryptography-provider-openssl3-prebuilt-nativebuilds - uses libcrypto from [NativeBuilds](https://github.com/ensody/native-builds),
+* `cryptography-provider-openssl3-prebuilt-nativebuilds` - uses libcrypto from [NativeBuilds](https://github.com/ensody/native-builds),
   so no additional setup is needed neither to build the final binary, nor to run it.
   By default, OpenSSL 3.6.1 is used.
   You can explicitly select a more recent OpenSSL version by adding a dependency on `com.ensody.nativebuilds:openssl-libcrypto:<version>`.
   This might be useful if you want to integrate security fixes as quickly as possible.
-
-For supported targets and algorithms, please consult [Supported primitives section][Supported primitives section]
-
-## Limitations
-
-## Example
-
-```kotlin
-val provider = CryptographyProvider.Openssl3 // or CryptographyProvider.Default
-
-// get some algorithm
-provider.get(SHA512)
-```
 
 ## Using in your projects
 
@@ -53,10 +43,8 @@ dependencies {
 }
 ```
 
-[CryptographyProvider]: ../api/cryptography-core/dev.whyoleg.cryptography/-cryptography-provider/index.html
+Access via `CryptographyProvider.Openssl3` (available on native targets).
+
+[CryptographyProvider]: ../../api/cryptography-core/dev.whyoleg.cryptography/-cryptography-provider/index.html
 
 [OpenSSL 3.x]: https://www.openssl.org
-
-[NativeBuilds]: https://github.com/ensody/native-builds
-
-[Supported primitives section]: index.md#supported-primitives

@@ -16,18 +16,17 @@ copyright: 'Copyright &copy; 2025 Oleg Yukhnevich'
 nav:
   - 'Overview':
       - index.md
-      - 'Examples': examples.md
-      - 'Dependency management':
-          - 'Gradle version catalog': dependencies/gradle-version-catalog.md
-          - 'BOM': dependencies/bom.md
-          - 'Snapshots': dependencies/snapshots.md
-  - 'Providers':
-      - providers/index.md
-      - 'JDK': providers/jdk.md
-      - 'Apple': providers/apple.md
-      - 'CryptoKit': providers/cryptokit.md
-      - 'WebCrypto': providers/webcrypto.md
-      - 'OpenSSL3': providers/openssl3.md
+  - 'Getting Started':
+      - getting-started/index.md
+      - 'Choosing a Provider':
+          - getting-started/providers/index.md
+          - 'JDK': getting-started/providers/jdk.md
+          - 'Apple': getting-started/providers/apple.md
+          - 'WebCrypto': getting-started/providers/webcrypto.md
+          - 'OpenSSL3': getting-started/providers/openssl3.md
+      - 'Dependency Management': getting-started/dependency-management.md
+  - 'Algorithms': algorithms.md
+  - 'Examples': examples.md
   - 'Changelog': changelog.md
   - 'API': api/index.html
 
