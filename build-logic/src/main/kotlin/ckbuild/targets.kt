@@ -75,6 +75,9 @@ fun KotlinMultiplatformExtension.jsTarget(
     js {
         nodejs()
         if (supportsBrowser) browser()
+        compilerOptions {
+            target = "es2015"
+        }
     }
 }
 
