@@ -1,12 +1,18 @@
 /*
- * Copyright (c) 2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2025-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography
 
 import dev.whyoleg.cryptography.random.*
 
-// thread-unsafe, mutations should be used only during APP initialzation if needed
+/**
+ * Manages global cryptography configuration: the default provider, provider registry, and default random.
+ *
+ * Mutations ([setDefaultProvider], [registerProvider], [setDefaultRandom]) should only be called
+ * during application initialization before any cryptographic operations.
+ * This object is not thread-safe for mutations.
+ */
 public object CryptographySystem {
     private val impl = CryptographySystemImpl()
 
@@ -14,15 +20,72 @@ public object CryptographySystem {
         loadProviders()
     }
 
-    // can be called at-most-once before calling `getDefaultProvider`
+    /**
+     * Overrides the default provider with the given [provider].
+     *
+     * Must be called at most once and before any call to [getDefaultProvider],
+     * otherwise an [IllegalStateException] is thrown.
+     *
+     * Use [getDefaultProvider] to retrieve the provider configured here or resolved from the registry.
+     */
     public fun setDefaultProvider(provider: CryptographyProvider): Unit = impl.setDefaultProvider(provider)
+
+    /**
+     * Returns the default [CryptographyProvider], resolving it on first access.
+     *
+     * If [setDefaultProvider] was called, that provider is used.
+     * Otherwise, the provider is resolved from the registry:
+     * a single registered provider is used directly,
+     * and multiple registered providers are combined into a composite that
+     * queries each in priority order.
+     *
+     * Throws [IllegalStateException] if no providers are registered and none was set explicitly.
+     *
+     * Use [setDefaultProvider] to override the resolved provider.
+     * Use [registerProvider] to add providers to the registry.
+     */
     public fun getDefaultProvider(): CryptographyProvider = impl.getDefaultProvider()
 
-    // lower priority is better
+    /**
+     * Adds a lazily-initialized provider to the global registry with the given [priority].
+     *
+     * Lower [priority] values indicate higher precedence.
+     * Each registered provider must have a unique priority.
+     * Must be called before any call to [getRegisteredProviders] or [getDefaultProvider].
+     *
+     * Use [getRegisteredProviders] to retrieve all registered providers sorted by priority.
+     * Use [getDefaultProvider] to resolve the default provider from the registry.
+     */
     public fun registerProvider(provider: Lazy<CryptographyProvider>, priority: Int): Unit = impl.registerProvider(provider, priority)
+
+    /**
+     * Returns all registered providers sorted by priority (lowest first).
+     *
+     * The list is computed once on first access; subsequent calls to [registerProvider]
+     * after this point will throw.
+     *
+     * Use [registerProvider] to add providers to the registry before this is called.
+     */
     public fun getRegisteredProviders(): List<CryptographyProvider> = impl.getRegisteredProviders()
 
+    /**
+     * Overrides the default random source with the given [random].
+     *
+     * Must be called at most once and before any call to [getDefaultRandom],
+     * otherwise an [IllegalStateException] is thrown.
+     *
+     * Use [getDefaultRandom] to retrieve the random source configured here or the platform default.
+     */
     public fun setDefaultRandom(random: CryptographyRandom): Unit = impl.setDefaultRandom(random)
+
+    /**
+     * Returns the default [CryptographyRandom] source, resolving it on first access.
+     *
+     * If [setDefaultRandom] was called, that source is used.
+     * Otherwise, the platform-specific default random is used.
+     *
+     * Use [setDefaultRandom] to override the default random source.
+     */
     public fun getDefaultRandom(): CryptographyRandom = impl.getDefaultRandom()
 }
 
