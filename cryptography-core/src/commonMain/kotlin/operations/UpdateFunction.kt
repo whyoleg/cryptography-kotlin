@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.operations
@@ -9,23 +9,59 @@ import kotlinx.io.*
 import kotlinx.io.bytestring.*
 import kotlinx.io.unsafe.*
 
+/**
+ * Base interface for incremental (streaming) cryptographic operations such as hashing and signing.
+ *
+ * Data should be fed incrementally via [update], and the result could be obtained from a subtype-specific finalization method.
+ * Should be [closed][close] after use to release resources.
+ */
 @SubclassOptInRequired(CryptographyProviderApi::class)
 public interface UpdateFunction : AutoCloseable {
+    /**
+     * Resets the accumulated state, allowing this function to be reused for a new operation
+     * without creating a new instance.
+     */
     public fun reset()
 
+    /**
+     * Feeds data from the [source] byte array into this function.
+     * Only the portion from [startIndex] (inclusive) to [endIndex] (exclusive) is processed.
+     */
     public fun update(source: ByteArray, startIndex: Int = 0, endIndex: Int = source.size)
+
+    /**
+     * Feeds data from the [source] byte string into this function.
+     * Only the portion from [startIndex] (inclusive) to [endIndex] (exclusive) is processed.
+     */
     public fun update(source: ByteString, startIndex: Int = 0, endIndex: Int = source.size) {
         update(source.asByteArray(), startIndex, endIndex)
     }
 
+    /**
+     * Reads all available data from the [source] and feeds it into this function.
+     */
     public fun update(source: RawSource) {
         updatingSource(source).buffered().transferTo(discardingSink())
     }
 
+    /**
+     * Returns a [RawSource] wrapper around the given [source] that feeds all data read through it
+     * into this function as a side effect. Useful for processing data from a source while
+     * simultaneously computing a hash or signature.
+     *
+     * Use [updatingSink] to wrap a sink instead.
+     */
     public fun updatingSource(source: RawSource): RawSource {
         return UpdatingSource(source, this)
     }
 
+    /**
+     * Returns a [RawSink] wrapper around the given [sink] that feeds all data written through it
+     * into this function as a side effect. Useful for writing data to a sink while
+     * simultaneously computing a hash or signature.
+     *
+     * Use [updatingSource] to wrap a source instead.
+     */
     public fun updatingSink(sink: RawSink): RawSink {
         return UpdatingSink(sink, this)
     }
