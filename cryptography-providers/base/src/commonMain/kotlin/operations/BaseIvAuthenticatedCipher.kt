@@ -46,12 +46,12 @@ public interface BaseIvAuthenticatedDecryptor : IvAuthenticatedDecryptor, BaseAu
     }
 
     @DelicateCryptographyApi
-    override fun decryptingSourceWithIv(iv: ByteArray, plaintext: RawSource, associatedData: ByteArray?): RawSource {
-        return createDecryptFunctionWithIv(iv, associatedData).transformedSource(plaintext)
+    override fun decryptingSourceWithIv(iv: ByteArray, ciphertext: RawSource, associatedData: ByteArray?): RawSource {
+        return createDecryptFunctionWithIv(iv, associatedData).transformedSource(ciphertext)
     }
 
     @DelicateCryptographyApi
-    override fun decryptingSinkWithIv(iv: ByteArray, ciphertext: RawSink, associatedData: ByteArray?): RawSink {
-        return createDecryptFunctionWithIv(iv, associatedData).transformedSink(ciphertext)
+    override fun decryptingSinkWithIv(iv: ByteArray, plaintext: RawSink, associatedData: ByteArray?): RawSink {
+        return createDecryptFunctionWithIv(iv, associatedData).transformedSink(plaintext)
     }
 }

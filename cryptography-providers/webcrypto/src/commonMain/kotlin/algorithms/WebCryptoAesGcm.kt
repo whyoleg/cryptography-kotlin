@@ -78,6 +78,6 @@ private class AesGcmCipher(
 
     override fun encryptingSourceWithIv(iv: ByteArray, plaintext: RawSource, associatedData: ByteArray?): RawSource = nonBlocking()
     override fun encryptingSinkWithIv(iv: ByteArray, ciphertext: RawSink, associatedData: ByteArray?): RawSink = nonBlocking()
-    override fun decryptingSourceWithIv(iv: ByteArray, plaintext: RawSource, associatedData: ByteArray?): RawSource = nonBlocking()
-    override fun decryptingSinkWithIv(iv: ByteArray, ciphertext: RawSink, associatedData: ByteArray?): RawSink = nonBlocking()
+    override fun decryptingSourceWithIv(iv: ByteArray, ciphertext: RawSource, associatedData: ByteArray?): RawSource = nonBlocking()
+    override fun decryptingSinkWithIv(iv: ByteArray, plaintext: RawSink, associatedData: ByteArray?): RawSink = nonBlocking()
 }

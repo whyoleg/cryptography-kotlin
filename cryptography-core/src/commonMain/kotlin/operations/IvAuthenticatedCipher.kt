@@ -128,11 +128,11 @@ public interface IvAuthenticatedDecryptor : IvDecryptor, AuthenticatedDecryptor 
     }
 
     @DelicateCryptographyApi
-    public fun decryptingSourceWithIv(iv: ByteArray, plaintext: RawSource, associatedData: ByteArray?): RawSource
+    public fun decryptingSourceWithIv(iv: ByteArray, ciphertext: RawSource, associatedData: ByteArray?): RawSource
 
     @DelicateCryptographyApi
-    public fun decryptingSourceWithIv(iv: ByteString, plaintext: RawSource, associatedData: ByteString?): RawSource {
-        return decryptingSourceWithIv(iv.asByteArray(), plaintext, associatedData?.asByteArray())
+    public fun decryptingSourceWithIv(iv: ByteString, ciphertext: RawSource, associatedData: ByteString?): RawSource {
+        return decryptingSourceWithIv(iv.asByteArray(), ciphertext, associatedData?.asByteArray())
     }
 
 
@@ -142,10 +142,10 @@ public interface IvAuthenticatedDecryptor : IvDecryptor, AuthenticatedDecryptor 
     }
 
     @DelicateCryptographyApi
-    public fun decryptingSinkWithIv(iv: ByteArray, ciphertext: RawSink, associatedData: ByteArray?): RawSink
+    public fun decryptingSinkWithIv(iv: ByteArray, plaintext: RawSink, associatedData: ByteArray?): RawSink
 
     @DelicateCryptographyApi
-    public fun decryptingSinkWithIv(iv: ByteString, ciphertext: RawSink, associatedData: ByteString?): RawSink {
-        return decryptingSinkWithIv(iv.asByteArray(), ciphertext, associatedData?.toByteArray())
+    public fun decryptingSinkWithIv(iv: ByteString, plaintext: RawSink, associatedData: ByteString?): RawSink {
+        return decryptingSinkWithIv(iv.asByteArray(), plaintext, associatedData?.toByteArray())
     }
 }
