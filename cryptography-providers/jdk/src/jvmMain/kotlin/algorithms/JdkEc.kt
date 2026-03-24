@@ -163,12 +163,12 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey<Pub
         }
 
         private fun encodeToJwk(): ByteArray {
-            val ecKey = key as ECPublicKey
-            return JsonWebKeys.encodeEcPublicKey(curve, ecKey.params.curveOrderSize(), uncompressedToByteArray())
+            val _ = key as ECPublicKey
+            return JsonWebKeys.encodeEcPublicKey(curve, key.params.curveOrderSize(), uncompressedToByteArray())
         }
 
         private fun compressedToByteArray(): ByteArray {
-            key as ECPublicKey
+            val _ = key as ECPublicKey
             val fieldSize = key.params.curveOrderSize()
 
             val output = ByteArray(fieldSize + 1)
@@ -178,7 +178,7 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey<Pub
         }
 
         private fun uncompressedToByteArray(): ByteArray {
-            key as ECPublicKey
+            val _ = key as ECPublicKey
             val fieldSize = key.params.curveOrderSize()
 
             val output = ByteArray(fieldSize * 2 + 1)
@@ -210,7 +210,7 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey<Pub
     ) : EC.PrivateKey<PublicK>, JdkEncodableKey<EC.PrivateKey.Format>(key) {
         override fun getPublicKeyBlocking(): PublicK {
             if (publicKey == null) {
-                key as ECPrivateKey
+                val _ = key as ECPrivateKey
                 publicKey = EcPublicKeyDecoder(curve).fromPrivateKey(key)
             }
             return publicKey!!
@@ -226,7 +226,7 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey<Pub
         }
 
         private fun encodeToJwk(): ByteArray {
-            key as ECPrivateKey
+            val _ = key as ECPrivateKey
             val fieldSize = key.params.curveOrderSize()
             val rawPublicKey = getPublicKeyBlocking().encodeToByteArrayBlocking(EC.PublicKey.Format.RAW)
             return JsonWebKeys.encodeEcPrivateKey(

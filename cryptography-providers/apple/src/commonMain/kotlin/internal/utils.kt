@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.apple.internal
@@ -16,6 +16,8 @@ internal fun Any?.retainBridge(): CFTypeRef? = CFBridgingRetain(this)
 
 @Suppress("UNCHECKED_CAST")
 internal fun <T : Any> CFTypeRef?.releaseBridgeAs(): T? = releaseBridge()?.let { it as T }
+
+@IgnorableReturnValue
 internal fun CFTypeRef?.releaseBridge(): Any? = CFBridgingRelease(this)
 
 internal fun CFTypeRef?.release(): Unit = CFRelease(this)

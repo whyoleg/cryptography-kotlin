@@ -6,13 +6,13 @@ package dev.whyoleg.cryptography.providers.openssl3.tests
 
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import kotlinx.cinterop.*
-import platform.posix.*
 
 private val almostEmptyArray = ByteArray(1)
 
 //this hack will be dropped with introducing of new IO or functions APIs
 internal fun ByteArray.fixEmpty(): ByteArray = if (isNotEmpty()) this else almostEmptyArray
 
+@IgnorableReturnValue
 internal fun checkError(result: Int): Int {
     if (result > 0) return result
     println(result)

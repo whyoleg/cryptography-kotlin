@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.operations
@@ -98,7 +98,7 @@ public interface SignatureVerifier {
         return verifySignatureBlocking(data, signature)
     }
 
-    public fun verifySignatureBlocking(data: ByteArray, signature: ByteArray): Unit {
+    public fun verifySignatureBlocking(data: ByteArray, signature: ByteArray) {
         createVerifyFunction().use {
             it.update(data)
             it.verify(signature)
@@ -109,7 +109,7 @@ public interface SignatureVerifier {
         return verifySignatureBlocking(data.asByteArray(), signature.asByteArray())
     }
 
-    public fun verifySignatureBlocking(data: RawSource, signature: ByteString): Unit {
+    public fun verifySignatureBlocking(data: RawSource, signature: ByteString) {
         createVerifyFunction().use {
             it.update(data)
             it.verify(signature)

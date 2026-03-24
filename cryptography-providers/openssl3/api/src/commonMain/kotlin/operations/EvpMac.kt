@@ -40,7 +40,8 @@ internal abstract class EvpMac(
             checkBounds(source.size, startIndex, endIndex)
             val context = context.access()
 
-            source.usePinned {
+            // KT-84921
+            val _ = source.usePinned {
                 checkError(
                     EVP_MAC_update(
                         ctx = context,
@@ -56,7 +57,8 @@ internal abstract class EvpMac(
             val context = context.access()
             checkBounds(destination.size, destinationOffset, destinationOffset + macSize)
 
-            destination.usePinned {
+            // KT-84921
+            val _ = destination.usePinned {
                 checkError(
                     EVP_MAC_final(
                         ctx = context,
@@ -71,7 +73,7 @@ internal abstract class EvpMac(
 
         override fun signToByteArray(): ByteArray {
             val signature = ByteArray(macSize)
-            signIntoByteArray(signature)
+            val _ = signIntoByteArray(signature)
             return signature
         }
 

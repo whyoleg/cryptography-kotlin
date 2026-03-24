@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
@@ -41,7 +41,8 @@ internal class Openssl3Digest(
             checkBounds(source.size, startIndex, endIndex)
 
             val context = context.access()
-            source.usePinned {
+            // KT-84921
+            val _ = source.usePinned {
                 checkError(EVP_DigestUpdate(context, it.safeAddressOf(startIndex), (endIndex - startIndex).convert()))
             }
         }
@@ -50,7 +51,8 @@ internal class Openssl3Digest(
             checkBounds(destination.size, destinationOffset, destinationOffset + digestSize)
 
             val context = context.access()
-            destination.usePinned {
+            // KT-84921
+            val _ = destination.usePinned {
                 checkError(EVP_DigestFinal(context, it.safeAddressOfU(destinationOffset), null))
             }
             reset()
@@ -59,7 +61,7 @@ internal class Openssl3Digest(
 
         override fun hashToByteArray(): ByteArray {
             val output = ByteArray(digestSize)
-            hashIntoByteArray(output)
+            val _ = hashIntoByteArray(output)
             return output
         }
 

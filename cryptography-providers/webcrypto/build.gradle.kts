@@ -21,7 +21,6 @@ kotlin {
 
             OptIns.ExperimentalWasmJsInterop,
         )
-        freeCompilerArgs.add("-Xexpect-actual-classes")
     }
 
     sourceSets.commonMain.dependencies {

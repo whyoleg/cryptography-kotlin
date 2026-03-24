@@ -103,7 +103,7 @@ private class HmacFunction(
 
     override fun signToByteArray(): ByteArray {
         val output = ByteArray(digestSize)
-        signIntoByteArray(output)
+        val _ = signIntoByteArray(output)
         return output
     }
 

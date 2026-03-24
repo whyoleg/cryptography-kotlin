@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2025-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography
@@ -65,7 +65,7 @@ class CryptographySystemTest {
     fun registerProviderThrowsErrorWhenProviderIsAlreadyAccessed() = testSystem { system ->
         val provider1 = TestCryptographyProvider("Provider1")
         system.registerProvider(lazyOf(provider1), priority = 0)
-        system.getDefaultProvider()
+        val _ = system.getDefaultProvider()
 
         val provider2 = TestCryptographyProvider("Provider2")
         val exception = assertFailsWith<IllegalStateException> {
@@ -84,7 +84,7 @@ class CryptographySystemTest {
         system.registerProvider(lazyProvider, priority = 0)
         assertFalse(initialized)
 
-        system.getDefaultProvider()
+        val _ = system.getDefaultProvider()
         assertTrue(initialized)
     }
 

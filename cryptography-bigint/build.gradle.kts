@@ -15,10 +15,6 @@ description = "cryptography-kotlin BigInt API"
 kotlin {
     allTargets()
 
-    compilerOptions {
-        freeCompilerArgs.add("-Xexpect-actual-classes")
-    }
-
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     applyDefaultHierarchyTemplate {
         common {

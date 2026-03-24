@@ -183,8 +183,8 @@ abstract class ChaCha20Poly1305CompatibilityTest(provider: CryptographyProvider)
 private suspend fun IvAuthenticatedCipher.resetIv(context: TestContext): IvAuthenticatedCipher {
     if (context.provider.isJdk) {
         val initial = encrypt(ByteString())
-        encrypt(ByteString()) // discarded
-        decrypt(initial)
+        val _ = encrypt(ByteString()) // discarded
+        val _ = decrypt(initial) // discarded
     }
     return this
 }

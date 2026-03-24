@@ -52,7 +52,7 @@ abstract class AesCbcTest(provider: CryptographyProvider) : AesBasedTest<AES.CBC
             assertFails { decrypt(ByteArray(321)) }
 
             // only IV, empty ciphertext
-            decrypt(ByteArray(ivSize))
+            val _ = decrypt(ByteArray(ivSize))
         }
     }
 

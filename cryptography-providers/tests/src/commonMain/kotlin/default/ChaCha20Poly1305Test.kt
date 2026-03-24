@@ -37,7 +37,7 @@ abstract class ChaCha20Poly1305Test(provider: CryptographyProvider) : AlgorithmT
         val key = algorithm.keyGenerator().generateKey()
 
         val ciphertext = key.cipher().encrypt(data)
-        key.cipher().encrypt(ByteString()) // reset nonce ...
+        val _ = key.cipher().encrypt(ByteString()) // reset nonce ...
         val plaintext = key.cipher().decrypt(ciphertext)
 
         assertContentEquals(data, plaintext)

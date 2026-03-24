@@ -58,7 +58,8 @@ internal class EvpPKeyCipherFunction(
                     )
                 )
                 val output = ByteArray(outlen.value.convert())
-                output.usePinned { outputPin ->
+                // KT-84921
+                val _ = output.usePinned { outputPin ->
                     checkError(
                         EVP_PKEY_cipher(
                             ctx = context,

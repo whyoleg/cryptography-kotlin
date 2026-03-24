@@ -159,7 +159,8 @@ internal class EvpCipherFunction(
 
         return memScoped {
             val dataOutMoved = alloc<IntVar>()
-            source.usePinned { sourcePinned ->
+            // KT-84921
+            val _ = source.usePinned { sourcePinned ->
                 destination.usePinned { destinationPinned ->
                     checkError(
                         EVP_CipherUpdate(
@@ -183,7 +184,8 @@ internal class EvpCipherFunction(
 
         return memScoped {
             val dataOutMoved = alloc<IntVar>()
-            destination.usePinned { destinationPinned ->
+            // KT-84921
+            val _ = destination.usePinned { destinationPinned ->
                 checkError(
                     EVP_CipherFinal(
                         ctx = context,
@@ -214,7 +216,8 @@ internal class EvpCipherFunction(
         val context = context.access()
 
         val destination = ByteArray(tagSize)
-        destination.usePinned { destinationPin ->
+        // KT-84921
+        val _ = destination.usePinned { destinationPin ->
             checkError(
                 EVP_CIPHER_CTX_ctrl(
                     ctx = context,
@@ -230,7 +233,8 @@ internal class EvpCipherFunction(
     private fun setAeadTag(tagSize: Int, source: ByteArray, startIndex: Int) {
         val context = context.access()
 
-        source.usePinned { sourcePin ->
+        // KT-84921
+        val _ = source.usePinned { sourcePin ->
             checkError(
                 EVP_CIPHER_CTX_ctrl(
                     ctx = context,

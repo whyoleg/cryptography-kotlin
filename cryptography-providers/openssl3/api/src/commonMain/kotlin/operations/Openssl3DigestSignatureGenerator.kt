@@ -75,7 +75,8 @@ internal abstract class Openssl3DigestSignatureGenerator(
             checkBounds(source.size, startIndex, endIndex)
 
             val context = context.access()
-            source.usePinned {
+            // KT-84921
+            val _ = source.usePinned {
                 checkError(EVP_DigestSignUpdate(context, it.safeAddressOf(startIndex), (endIndex - startIndex).convert()))
             }
         }

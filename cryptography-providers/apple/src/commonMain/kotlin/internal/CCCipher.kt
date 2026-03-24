@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.apple.internal
@@ -149,11 +149,13 @@ internal class CCCipher(
                 dataOutMoved = dataOutMoved,
             )
 
-            if (ciphertextOutput.size != moved) cryptorRef.final(
-                dataOut = ciphertextOutput.refTo(moved),
-                dataOutAvailable = ciphertextOutput.size - moved,
-                dataOutMoved = dataOutMoved,
-            )
+            if (ciphertextOutput.size != moved) {
+                val _ = cryptorRef.final(
+                    dataOut = ciphertextOutput.refTo(moved),
+                    dataOutAvailable = ciphertextOutput.size - moved,
+                    dataOutMoved = dataOutMoved,
+                )
+            }
             ciphertextOutput
         }
     }

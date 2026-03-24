@@ -83,7 +83,7 @@ private class RsaRawDecryptor(
         }
 
         override fun finalizeIntoByteArray(destination: ByteArray, destinationOffset: Int): Int {
-            super.finalizeIntoByteArray(destination, destinationOffset)
+            val _ = super.finalizeIntoByteArray(destination, destinationOffset)
             return outputSize
         }
 
@@ -98,7 +98,7 @@ private class RsaRawDecryptor(
             startIndex: Int,
             endIndex: Int,
         ): Int {
-            super.transformAndFinalizeIntoByteArray(source, destination, destinationOffset, startIndex, endIndex)
+            val _ = super.transformAndFinalizeIntoByteArray(source, destination, destinationOffset, startIndex, endIndex)
             return outputSize
         }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.webcrypto.internal
@@ -8,7 +8,7 @@ import kotlin.coroutines.*
 import kotlin.js.Promise
 
 internal actual suspend fun <T : JsAny> Promise<T>.await(): T = suspendCoroutine { continuation ->
-    then(
+    val _ = then(
         { continuation.resume(it); null },
         { continuation.resumeWithException(Throwable(it.toString())); null }
     )

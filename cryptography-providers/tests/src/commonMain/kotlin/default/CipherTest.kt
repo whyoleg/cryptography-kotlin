@@ -91,13 +91,13 @@ interface CipherTest {
         when (algorithm.id) {
             AES.GCM          -> {
                 // just reset the IV
-                encryptor.encrypt(ByteString())
+                val _ = encryptor.encrypt(ByteString())
             }
             ChaCha20Poly1305 -> {
                 // the check about reusing IV in JDK 11 and 17 is too strict: it will check on decryption too...
                 val initial = encryptor.encrypt(ByteString())
-                encryptor.encrypt(ByteString()) // discarded
-                decryptor.decrypt(initial)
+                val _ = encryptor.encrypt(ByteString()) // discarded
+                val _ = decryptor.decrypt(initial)
             }
         }
     }

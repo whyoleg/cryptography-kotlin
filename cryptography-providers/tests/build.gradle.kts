@@ -19,7 +19,6 @@ kotlin {
             OptIns.DelicateCryptographyApi,
             OptIns.CryptographyProviderApi,
         )
-        freeCompilerArgs.add("-Xexpect-actual-classes")
     }
 
     sourceSets {

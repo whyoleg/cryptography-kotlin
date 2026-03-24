@@ -131,7 +131,8 @@ public abstract class BaseCipherFunction : CipherFunction, AutoCloseable {
             outputBuffer.write(transformToByteArray(input, inputStartIndex, inputStartIndex + maxInputSize))
             maxInputSize
         } else {
-            UnsafeBufferOperations.writeToTail(outputBuffer, outputSize) { output, outputStartIndex, _ ->
+            // we don't care here how much we have written to output
+            val _ = UnsafeBufferOperations.writeToTail(outputBuffer, outputSize) { output, outputStartIndex, _ ->
                 transformIntoByteArray(
                     source = input,
                     destination = output,
@@ -152,7 +153,8 @@ public abstract class BaseCipherFunction : CipherFunction, AutoCloseable {
         if (maxOutputSize == -1 || maxOutputSize > UnsafeBufferOperations.maxSafeWriteCapacity) {
             outputBuffer.write(finalizeToByteArray())
         } else {
-            UnsafeBufferOperations.writeToTail(outputBuffer, maxOutputSize) { output, outputStartIndex, _ ->
+            // we don't care here how much we have written to output
+            val _ = UnsafeBufferOperations.writeToTail(outputBuffer, maxOutputSize) { output, outputStartIndex, _ ->
                 finalizeIntoByteArray(output, outputStartIndex)
             }
         }
@@ -177,11 +179,11 @@ public abstract class BaseCipherFunction : CipherFunction, AutoCloseable {
                 if (bytesRead == -1L) {
                     isFinalized = true
                     while (inputBuffer.size != 0L) {
-                        transformTo(inputBuffer, outputBuffer, Long.MAX_VALUE)
+                        val _ = transformTo(inputBuffer, outputBuffer, Long.MAX_VALUE)
                     }
                     finalizeTo(outputBuffer)
                 } else {
-                    transformTo(inputBuffer, outputBuffer, Long.MAX_VALUE)
+                    val _ = transformTo(inputBuffer, outputBuffer, Long.MAX_VALUE)
                 }
             }
 

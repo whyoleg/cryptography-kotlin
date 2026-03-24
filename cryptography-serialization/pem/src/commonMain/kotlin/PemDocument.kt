@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2025-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.serialization.pem
@@ -433,7 +433,8 @@ private fun PemDocument.encodeToByteArrayImpl(): ByteArray {
     array[BEGIN_BYTES.size + label.size + SUFFIX_BYTES.size] = NEW_LINE_BYTE
 
     // encode `base64\n`
-    Base64.Pem.encodeIntoByteArray(content, array, BEGIN_BYTES.size + label.size + SUFFIX_BYTES.size + 1)
+    // result is ignored, as it's already handled by `encodedSize`
+    val _ = Base64.Pem.encodeIntoByteArray(content, array, BEGIN_BYTES.size + label.size + SUFFIX_BYTES.size + 1)
     array[BEGIN_BYTES.size + label.size + SUFFIX_BYTES.size + 1 + encodedSize] = NEW_LINE_BYTE
 
     // encode `-----END LABEL-----\n`

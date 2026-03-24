@@ -18,7 +18,11 @@ kotlin {
     compilerOptions {
         allWarningsAsErrors.set(warningsAsErrors)
         progressiveMode.set(true)
-        freeCompilerArgs.add("-Xrender-internal-diagnostic-names")
+        freeCompilerArgs.addAll(
+            "-Xrender-internal-diagnostic-names",
+            "-Xexpect-actual-classes",
+            "-Xreturn-value-checker=full"
+        )
     }
 }
 

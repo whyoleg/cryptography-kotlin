@@ -14,10 +14,6 @@ description = "cryptography-kotlin random API"
 kotlin {
     allTargets()
 
-    compilerOptions {
-        freeCompilerArgs.add("-Xexpect-actual-classes")
-    }
-
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     applyDefaultHierarchyTemplate {
         common {

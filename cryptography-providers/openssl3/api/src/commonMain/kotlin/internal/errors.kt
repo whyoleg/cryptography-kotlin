@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.internal
@@ -19,6 +19,7 @@ internal fun checkError(result: size_t): size_t {
     fail(result.convert())
 }
 
+@IgnorableReturnValue // mostly used as a check if the operation is failed (e.g. 0 or 1)
 internal fun checkError(result: Int): Int {
     if (result > 0) return result
     fail(result)

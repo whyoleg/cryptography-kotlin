@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2025-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.base
@@ -32,7 +32,7 @@ public fun NSData.toByteArray(): ByteArray {
     if (length.convert<Int>() == 0) return EmptyByteArray
 
     return ByteArray(length.convert()).also {
-        getIntoByteArray(it)
+        val _ = getIntoByteArray(it)
     }
 }
 

@@ -89,7 +89,8 @@ internal abstract class Openssl3DigestSignatureVerifier(
             checkBounds(source.size, startIndex, endIndex)
 
             val context = context.access()
-            source.usePinned {
+            // KT-84921
+            val _ = source.usePinned {
                 checkError(EVP_DigestVerifyUpdate(context, it.safeAddressOf(startIndex), (endIndex - startIndex).convert()))
             }
         }
