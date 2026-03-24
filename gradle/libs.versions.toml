@@ -12,7 +12,7 @@ kotlinx-kover = "0.9.7"
 ktor = "3.4.1"
 
 # android
-android = "8.13.2" # 9.0.0
+android = "9.1.0"
 androidx-test = "1.7.0"
 
 # gradle/build

@@ -139,7 +139,7 @@ fun KotlinMultiplatformExtension.jvmTarget(
 fun KotlinMultiplatformExtension.androidLibraryTarget() {
     project.plugins.apply("com.android.kotlin.multiplatform.library")
 
-    androidLibrary {
+    extensions.configure<KotlinMultiplatformAndroidLibraryTarget> {
         namespace = "${project.group}.${project.name.replace("-", ".")}"
         compileSdk = 36
         minSdk = 21
