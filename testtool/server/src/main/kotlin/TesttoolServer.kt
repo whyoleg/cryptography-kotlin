@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.testtool.server
@@ -9,7 +9,6 @@ import io.ktor.serialization.kotlinx.*
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
-import io.ktor.server.plugins.calllogging.*
 import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
@@ -33,7 +32,6 @@ fun startTesttoolServer(storagePath: Path): Closeable {
 
 @OptIn(ExperimentalSerializationApi::class)
 private fun startServer(storagePath: Path) = embeddedServer(CIO, 9000) {
-    install(CallLogging) { disableDefaultColors() }
     install(CORS) { anyHost() }
     install(WebSockets) {
         contentConverter = KotlinxWebsocketSerializationConverter(ConfiguredCbor)
