@@ -13,6 +13,9 @@ remote_branch: gh-pages
 
 copyright: 'Copyright &copy; 2025 Oleg Yukhnevich'
 
+exclude_docs:
+  snippets/
+
 nav:
   - 'Overview':
       - index.md
@@ -67,19 +70,27 @@ theme:
     - content.action.edit
     - content.action.view
     - content.tabs.link
+    - content.tooltips
+    - content.footnote.tooltips
 
 markdown_extensions:
+  - abbr
   - smarty
   - tables
   - attr_list
   - admonition
+  - footnotes
   - pymdownx.details
   - pymdownx.highlight
   - pymdownx.inlinehilite
-  - pymdownx.snippets
+  - pymdownx.snippets:
+      base_path: [ 'docs/snippets' ]
   - pymdownx.superfences
   - pymdownx.magiclink
   - pymdownx.smartsymbols
+  - pymdownx.emoji: # for emoji shortcuts with :name: syntax
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - toc:
       permalink: true
 

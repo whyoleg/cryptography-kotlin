@@ -38,17 +38,3 @@ dokka {
         }
     }
 }
-
-// root config - output and module aggregation
-if (project == rootProject) {
-    dokka {
-        dokkaPublications.html {
-            outputDirectory.set(file("docs/api"))
-        }
-    }
-    dependencies {
-        Projects.documented.forEach {
-            dokka(project(":$it"))
-        }
-    }
-}

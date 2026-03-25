@@ -14,7 +14,7 @@ plugins {
     alias(libs.plugins.kotlin.plugin.serialization) apply false
 
     id("ckbuild.use-openssl")
-    id("ckbuild.dokka")
+    id("ckbuild.mkdocs")
 }
 
 Projects.validateProjectTags(project)

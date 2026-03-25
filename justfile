@@ -21,8 +21,7 @@ update-abi:
 
 # Generate API docs and build MkDocs site
 docs:
-    ./gradlew :dokkaGenerateHtml
-    cp CHANGELOG.md docs/changelog.md
+    ./gradlew :mkdocsPrepare
     mkdocs build --clean --strict
 
 # Remove compatibility test server storage (run before a fresh generate+validate cycle)
