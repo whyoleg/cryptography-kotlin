@@ -99,6 +99,12 @@ interface CipherTest {
                 val _ = encryptor.encrypt(ByteString()) // discarded
                 val _ = decryptor.decrypt(initial)
             }
+            ChaCha20         -> {
+                // same nonce-reuse check as ChaCha20-Poly1305
+                val initial = encryptor.encrypt(ByteString())
+                encryptor.encrypt(ByteString()) // discarded
+                decryptor.decrypt(initial)
+            }
         }
     }
 }

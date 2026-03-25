@@ -82,10 +82,12 @@ For additional limitation please consult provider specific documentation.
 |                                             | ⚠️ RIPEMD160      |  ✅  |     ❌     |   ❌   | ❌         |    ✅     |
 | **MAC**                                     | HMAC              |  ✅  |     ✅     |   ✅   | ✅         |    ✅     |
 |                                             | CMAC              |  ✅  |     ❌     |   ❌   | ❌         |    ✅     |
+|                                             | Poly1305          |  ✅  |     ❌     |   ❌   | ❌         |    ✅     |
 | **Symmetric-key<br/>encryption/decryption** | AES-CBC           |  ✅  |     ✅     |   ✅   | ❌         |    ✅     |
 |                                             | AES-CTR           |  ✅  |     ✅     |   ✅   | ❌         |    ✅     |
 |                                             | AES-GCM           |  ✅  |     ✅     |   ❌   | ✅         |    ✅     |
 |                                             | AES-CCM           |  ✅  |     ❌     |   ❌   | ❌         |    ✅     |
+|                                             | ChaCha20          |  ✅  |     ❌     |   ❌   | ❌         |    ✅     |
 |                                             | ChaCha20-Poly1305 |  ✅  |     ❌     |   ❌   | ✅         |    ✅     |
 |                                             | ⚠️ AES-ECB        |  ✅  |     ❌     |   ✅   | ❌         |    ✅     |
 |                                             | ⚠️ AES-OFB        |  ✅  |     ❌     |   ✅   | ❌         |    ✅     |
