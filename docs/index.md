@@ -20,6 +20,8 @@ sha.hash("Kotlin is Awesome".encodeToByteArray())
 ```
 
 - **New here?** Check out the [Getting Started](getting-started/index.md) guide
+- **How are operations and keys organized?** See [Primitives](primitives/index.md)
+- **Which algorithms are supported?** Check [Operations](primitives/operations/index.md)
 - **Need the API docs?** See the [API Reference](api/index.html)
 
 ## Standalone modules

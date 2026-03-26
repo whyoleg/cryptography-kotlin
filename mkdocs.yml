@@ -28,8 +28,23 @@ nav:
           - 'WebCrypto': getting-started/providers/webcrypto.md
           - 'OpenSSL3': getting-started/providers/openssl3.md
       - 'Dependency Management': getting-started/dependency-management.md
-  - 'Algorithms': algorithms.md
-  - 'Examples': examples.md
+  - 'Primitives':
+      - primitives/index.md
+      - 'Working with Keys': primitives/keys.md
+      - 'Operations':
+          - primitives/operations/index.md
+          - 'Hashing': primitives/operations/hashing.md
+          - 'MAC': primitives/operations/mac.md
+          - 'Digital Signatures': primitives/operations/digital-signatures.md
+          - 'AEAD': primitives/operations/aead.md
+          - 'Symmetric Encryption': primitives/operations/symmetric-encryption.md
+          - 'Public-Key Encryption': primitives/operations/public-key-encryption.md
+          - 'Key Agreement': primitives/operations/key-agreement.md
+          - 'Key Derivation': primitives/operations/key-derivation.md
+      - 'Recipes':
+          - 'Secure Messaging': primitives/recipes/secure-messaging.md
+          - 'Password-Based Encryption': primitives/recipes/password-based-encryption.md
+          - 'Hybrid Encryption': primitives/recipes/hybrid-encryption.md
   - 'Changelog': changelog.md
   - 'API': api/index.html
 

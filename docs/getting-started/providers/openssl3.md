@@ -45,6 +45,11 @@ dependencies {
 
 Access via `CryptographyProvider.Openssl3` (available on native targets).
 
+---
+
+See the [algorithm support tables](../../primitives/operations/index.md) for specific limitations
+and [Working with Keys](../../primitives/keys.md#key-formats) for key format restrictions.
+
 [CryptographyProvider]: ../../api/cryptography-core/dev.whyoleg.cryptography/-cryptography-provider/index.html
 
 [OpenSSL 3.x]: https://www.openssl.org

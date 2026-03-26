@@ -2,19 +2,13 @@
 
 The WebCrypto provider wraps the [W3C WebCrypto API][WebCrypto] and is the default for JS and WASM targets.
 
-## Limitations
+!!! note "Suspend functions only"
 
-* only `suspend` functions are supported, because `WebCrypto` API is async by default
-* AES.* (browser only): may not support `192 bit` keys
-* AES.CBC: only `padding=true` is supported
-* EdDSA/XDH:
-    * supports only Ed25519 and X25519
-    * algorithms were added later to WebCrypto and might not be available in all browsers (https://github.com/w3c/webcrypto/pull/362)
-    * (browser only) private key decoding may fail for DER/PEM formats that contain embedded public key
+    The WebCrypto API is asynchronous by default. Because of this, the WebCrypto provider only supports
+    `suspend` functions. Calling `Blocking` variants (e.g., `encryptBlocking()`, `generateKeyBlocking()`)
+    will throw an exception.
 
 ## Using in your projects
-
-If you need the WebCrypto provider explicitly (instead of via `optimal`):
 
 ```kotlin
 dependencies {
@@ -23,6 +17,11 @@ dependencies {
 ```
 
 Access via `CryptographyProvider.WebCrypto` (available on js, wasmJs targets).
+
+---
+
+See the [algorithm support tables](../../primitives/operations/index.md) for specific limitations
+and [Working with Keys](../../primitives/keys.md#key-formats) for key format restrictions.
 
 [CryptographyProvider]: ../../api/cryptography-core/dev.whyoleg.cryptography/-cryptography-provider/index.html
 
