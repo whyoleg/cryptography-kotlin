@@ -3,7 +3,7 @@
 kotlin = "2.3.20"
 
 # kotlin/kotlinx
-kotlin-dokka = "2.2.0-Beta"
+kotlin-dokka = "2.2.0"
 kotlinx-io = "0.9.0"
 kotlinx-serialization = "1.10.0"
 kotlinx-coroutines = "1.10.2"
