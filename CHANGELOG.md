@@ -5,6 +5,77 @@ hide:
 
 # CHANGELOG
 
+## 0.6.0 – Even more algorithms, JWK & PEM, documentation!
+
+> Published 2 Apr 2026
+
+### New algorithms
+
+* **EdDSA** (Ed25519, Ed448) – supported by JDK, OpenSSL, CryptoKit, and WebCrypto providers
+* **XDH** (X25519, X448) – supported by JDK, OpenSSL, CryptoKit, and WebCrypto providers
+* **ChaCha20-Poly1305** – supported by JDK, OpenSSL, and CryptoKit providers
+* **Diffie-Hellman (DH)** – supported by JDK and OpenSSL providers
+* **DSA** – supported by JDK and OpenSSL providers
+* **AES-CCM** – supported by JDK and OpenSSL providers
+* **AES-CFB8** ([#137](https://github.com/whyoleg/cryptography-kotlin/pull/137)), **AES-OFB** and **AES-CFB** (legacy) – supported by JDK,
+  OpenSSL and, Apple providers
+
+### General Improvements
+
+* JWK (JSON Web Key) encoding support for RSA, ECDSA, XDH, and EdDSA across JDK, OpenSSL, CryptoKit, and Apple
+  providers (in addition to WebCrypto)
+* New API to derive a public key from a private key, implemented for all supported algorithms
+* Support signing pre-hashed data in ECDSA ([#136](https://github.com/whyoleg/cryptography-kotlin/pull/136))
+* New `PemDocument` API with improved performance, popular `PemLabel` definitions, and extensive documentation
+* Integrate OpenSSL prebuilt static lib via NativeBuilds ([#131](https://github.com/whyoleg/cryptography-kotlin/pull/131))
+* Improve `cryptokit` provider Swift compatibility, as well as introduce a new `dev.whyoleg.cryptography` Gradle plugin to configure the
+  linker options in case Xcode is installed in a non-standard location
+
+### Bug fixes
+
+* Fix WebCrypto `EcPrivateKey` import for Safari compatibility ([#124](https://github.com/whyoleg/cryptography-kotlin/issues/124))
+* Use `O_CLOEXEC` in `cryptography-random` to prevent file descriptor inheritance on Linux
+  ([#138](https://github.com/whyoleg/cryptography-kotlin/issues/138))
+
+### Breaking changes
+
+* Refactored key-related abstractions, introducing interfaces for encoding to support DH parameters more naturally:
+    * `dev.whyoleg.cryptography.materials.key.Key` interface was deprecated without replacement
+    * `EncodableKey`, `KeyDecoder`, and `KeyFormat` from `dev.whyoleg.cryptography.materials.key` package were replaced by `Encodable`,
+      `Decoder` and `EncodingFormat` interfaces in `dev.whyoleg.cryptography.materials` package
+    * `dev.whyoleg.cryptography.materials.key.KeyGenerator` was renamed to `dev.whyoleg.cryptography.operations.KeyGenerator`
+    * `EC.PrivateKey` and `RSA.PrivateKey` now have generic types `EC.PrivateKey<PublicK>` and `RSA.PrivateKey<PublicK>`
+* `AES.IvCipher`, `AES.IvAuthenticatedCipher` and all related IV cipher interfaces were extracted from `AES` and moved
+  to `dev.whyoleg.cryptography.operations.*` (e.g. `IvCipher`, `IvAuthenticatedCipher`, `IvEncryptor`, `IvDecryptor`)
+* `PemLabel.representation` property was renamed to `PemLabel.value` in the `cryptography-serialization-pem` module
+* Simplified `AlgorithmIdentifier` hierarchy by removing `KeyAlgorithmIdentifier` in the ASN.1 module
+* Refactored `AlgorithmIdentifierSerializer` for better extensibility and optional parameters support
+
+### Testing improvements
+
+* WebCrypto provider now supports running tests in Safari in addition to Chrome
+  ([#124](https://github.com/whyoleg/cryptography-kotlin/issues/124))
+* Build Framework/XCFramework for all Apple providers, for all targets
+
+### Documentation improvements
+
+* Comprehensive KDoc documentation for all core APIs: algorithms, operations, and materials
+* Reworked the documentation website with a lot of new content!
+
+### Other improvements
+
+* Kotlin 2.2.0 -> 2.3.20
+* kotlinx-io 0.8.0 -> 0.9.0
+* kotlinx-serialization 1.8.1 -> 1.10.0
+* Update the prebuilt OpenSSL version to 3.6.0
+* BigInt:
+    * introduce magnitude-based and unary operators
+* ASN.1:
+    * add OIDs and AlgorithmIdentifiers for X25519, X448, Ed25519 and Ed448
+    * support optional `publicKey` in `PrivateKeyInfo` (`OneAsymmetricKey`)
+    * support DH algorithm and parameter serialization
+    * Generalize ECDSA signatures as DSS for both ECDSA and DSA
+
 ## 0.5.0 – CryptoKit & optimal providers
 
 > Published 30 Jun 2025
