@@ -23,6 +23,10 @@ val generateAlgorithmTables = tasks.register<GenerateAlgorithmTablesTask>("gener
     outputDirectory.set(file("docs/snippets/operations"))
 }
 
+val updateReadmeAlgorithmTable = tasks.register<UpdateReadmeAlgorithmTableTask>("updateReadmeAlgorithmTable") {
+    readmeFile.set(file("README.md"))
+}
+
 tasks.register<Copy>("mkdocsPrepare") {
     dependsOn(generateAlgorithmTables, tasks.dokkaGeneratePublicationHtml)
     destinationDir = file("docs")

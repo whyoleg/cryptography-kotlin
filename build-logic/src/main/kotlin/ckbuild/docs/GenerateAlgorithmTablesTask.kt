@@ -38,6 +38,25 @@ abstract class GenerateAlgorithmTablesTask : DefaultTask() {
     }
 }
 
+abstract class UpdateReadmeAlgorithmTableTask : DefaultTask() {
+
+    @get:InputFile
+    abstract val readmeFile: RegularFileProperty
+
+    @TaskAction
+    fun update() {
+        val file = readmeFile.get().asFile
+        val content = file.readText()
+        val expected = buildReadmeContent(content)
+        file.writeText(expected)
+        if (content != expected) {
+            throw GradleException(
+                "README.md algorithm table was out of date and has been updated. Please commit the changes."
+            )
+        }
+    }
+}
+
 // region Enums
 
 private enum class Status(
@@ -601,6 +620,36 @@ private fun relativePath(toPage: String): String {
     val toParts = toPage.split("/").filter { it.isNotEmpty() }
     val common = fromParts.zip(toParts).takeWhile { (a, b) -> a == b }.size
     return (List(fromParts.size - common) { ".." } + toParts.drop(common)).joinToString("/")
+}
+
+// endregion
+
+// region README
+
+private const val README_MARKER_START = "<!-- SUPPORTED_ALGORITHMS_START -->"
+private const val README_MARKER_END = "<!-- SUPPORTED_ALGORITHMS_END -->"
+
+private fun buildReadmeContent(currentContent: String): String {
+    val startIdx = currentContent.indexOf(README_MARKER_START)
+    val endIdx = currentContent.indexOf(README_MARKER_END)
+    require(startIdx in 0..<endIdx) {
+        "README.md must contain $README_MARKER_START and $README_MARKER_END markers"
+    }
+
+    val before = currentContent.substring(0, startIdx + README_MARKER_START.length)
+    val after = currentContent.substring(endIdx)
+    return before + "\n\n" + buildReadmeTable() + "\n" + after
+}
+
+private fun buildReadmeTable(): String = buildString {
+    appendLine("| Operation | Algorithms |")
+    appendLine("|-----------|------------|")
+
+    for (operation in Operation.entries) {
+        val algorithmNames = algorithms.getValue(operation).joinToString(", ", transform = Algorithm::id)
+        val opLink = "[${operation.displayName}](https://whyoleg.github.io/cryptography-kotlin/${operation.page.removeSuffix(".md")}/)"
+        appendLine("| $opLink | $algorithmNames |")
+    }
 }
 
 // endregion
