@@ -12,13 +12,16 @@ jobs:
         with:
           python-version: 3.x
       # install just and dependencies for mkdocs-material
-      - run: brew install just cairo freetype libffi libjpeg libpng zlib
+      - run: brew install just cairo freetype libffi libjpeg libpng zlib pngquant
       - run: pip install mkdocs-material "mkdocs-material[imaging]"
       - run: brew install just
       - uses: ./.github/actions/setup-environment
 
       - name: Build documentation
         run: just docs
+        env:
+          # see https://squidfunk.github.io/mkdocs-material/plugins/requirements/image-processing/#cairo-library-was-not-found
+          DYLD_FALLBACK_LIBRARY_PATH: /opt/homebrew/lib
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

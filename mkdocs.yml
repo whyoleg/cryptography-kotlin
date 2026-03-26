@@ -96,6 +96,11 @@ markdown_extensions:
 
 plugins:
   - search
+  - social
+  - optimize
+  - privacy:
+      links_attr_map:
+        target: _blank
 
 extra:
   social:
