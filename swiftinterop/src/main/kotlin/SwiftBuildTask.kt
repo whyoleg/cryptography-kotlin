@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2025-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.swiftinterop
@@ -83,7 +83,11 @@ abstract class SwiftBuildTask : DefaultTask() {
                 "--build-path", buildDirectory,
                 "--triple", swiftTargetTriple,
                 "--sdk", sdkPath,
-                "--product", swiftProduct
+                "--product", swiftProduct,
+                // makes static archive redistributable by disabling debug info
+                // additionally, avoids warnings on user side about unavailable cache modules
+                // for other approaches see https://forums.swift.org/t/swift-behavior-of-gmodules-and-dsyms/23211
+                "-debug-info-format", "none"
             )
         }
 
