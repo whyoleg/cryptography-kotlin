@@ -4,35 +4,53 @@
 
 import ckbuild.*
 import ckbuild.tests.*
-import com.android.build.gradle.internal.tasks.*
 import org.jetbrains.kotlin.gradle.plugin.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.*
 import org.jetbrains.kotlin.gradle.targets.js.ir.*
 import org.jetbrains.kotlin.gradle.targets.js.testing.*
 import org.jetbrains.kotlin.gradle.targets.jvm.tasks.*
 import org.jetbrains.kotlin.gradle.targets.native.tasks.*
+import org.jetbrains.kotlin.gradle.tasks.*
 
 plugins {
-    id("ckbuild.multiplatform-base")
-    id("org.jetbrains.kotlinx.kover")
+    kotlin("multiplatform")
+    id("ckbuild.kotlin")
 }
 
-val skipTestTasks = booleanProperty("ckbuild.skipTestTasks", defaultValue = false)
+// region link tasks
+
+val skipLinkTasks = booleanProperty("ckbuild.skipLinkTasks", defaultValue = false)
+val skipReleaseLinkTasks = booleanProperty("ckbuild.skipReleaseLinkTasks", defaultValue = false)
 
 kotlin {
-    // just applying `kotlin-test` doesn't work for JVM if there are multiple test tasks (like when we test on different JDKs)
-    sourceSets.configureEach {
-        when (name) {
-            "commonTest" -> "test"
-            "jvmTest"    -> "test-junit"
-            else         -> null
-        }?.let { testDependency ->
-            dependencies {
-                implementation(kotlin(testDependency))
-            }
+    // setup tests running in RELEASE mode
+    targets.withType<KotlinNativeTarget>().configureEach {
+        binaries.test(listOf(NativeBuildType.RELEASE))
+    }
+    targets.withType<KotlinNativeTargetWithTests<*>>().configureEach {
+        testRuns.create("releaseTest") {
+            setExecutionSourceFrom(binaries.getTest(NativeBuildType.RELEASE))
         }
     }
+}
 
+tasks.register("linkAll") {
+    dependsOn(tasks.withType<KotlinNativeLink>())
+}
+
+tasks.withType<KotlinNativeLink>().configureEach {
+    val isRelease = binary.buildType == NativeBuildType.RELEASE
+    val skipLinkTasks = skipLinkTasks // for CC
+    val skipReleaseLinkTasks = skipReleaseLinkTasks // for CC
+    onlyIf { !skipLinkTasks.get() }
+    if (isRelease) onlyIf { !skipReleaseLinkTasks.get() }
+}
+
+// endregion link tasks
+
+// region js config
+
+kotlin {
     targets.withType<KotlinJsIrTarget>().configureEach {
         whenBrowserConfigured {
             testTask {
@@ -51,17 +69,11 @@ kotlin {
         }
     }
 
-    // setup tests running in RELEASE mode
-    targets.withType<KotlinNativeTarget>().configureEach {
-        binaries.test(listOf(NativeBuildType.RELEASE))
-    }
-    targets.withType<KotlinNativeTargetWithTests<*>>().configureEach {
-        testRuns.create("releaseTest") {
-            setExecutionSourceFrom(binaries.getTest(NativeBuildType.RELEASE))
-        }
-    }
 }
 
+// endregion js config
+
+// region shortcut tasks
 // for CI mainly
 
 registerTestAggregationTask(
@@ -99,7 +111,4 @@ listOf("ios", "watchos", "tvos", "macos").forEach { targetGroup ->
     )
 }
 
-tasks.matching { it is AbstractTestTask || it is AndroidTestTask || it.name == "koverVerify" }.configureEach {
-    val skipTestTasks = skipTestTasks // for CC
-    onlyIf { !skipTestTasks.get() }
-}
+// endregion shortcut tasks

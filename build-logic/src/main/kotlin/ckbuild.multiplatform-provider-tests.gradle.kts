@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 import ckbuild.tests.*
@@ -12,7 +12,7 @@ import org.jetbrains.kotlin.gradle.targets.jvm.tasks.*
 import org.jetbrains.kotlin.gradle.targets.native.tasks.*
 
 plugins {
-    id("ckbuild.multiplatform-tests")
+    id("ckbuild.multiplatform")
     id("testtool.server")
 }
 

@@ -2,13 +2,11 @@
  * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
-import ckbuild.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.*
-import org.jetbrains.kotlin.gradle.tasks.*
 
 plugins {
-    id("ckbuild.multiplatform-base")
+    id("ckbuild.multiplatform")
 }
 
 kotlin {

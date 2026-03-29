@@ -5,7 +5,7 @@
 import ckbuild.*
 
 plugins {
-    id("ckbuild.multiplatform-tests")
+    id("ckbuild.multiplatform")
 }
 
 kotlin {

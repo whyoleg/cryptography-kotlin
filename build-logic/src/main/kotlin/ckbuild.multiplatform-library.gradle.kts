@@ -7,30 +7,12 @@
 import org.jetbrains.kotlin.gradle.dsl.abi.*
 
 plugins {
-    id("ckbuild.multiplatform-base")
-    id("ckbuild.multiplatform-tests")
-    id("ckbuild.publication")
-    id("ckbuild.dokka")
+    id("ckbuild.multiplatform")
+    id("ckbuild.kotlin-library")
 }
 
 kotlin {
-    explicitApi()
     abiValidation {
         enabled = true
-    }
-    // register samples as tests
-    sourceSets.configureEach {
-        if (name.endsWith("Test")) {
-            kotlin.srcDir("src/${name.replace("Test", "Samples")}/kotlin")
-        }
-    }
-}
-
-dokka {
-    // register samples as samples
-    dokkaSourceSets.configureEach {
-        if (name.endsWith("Main")) {
-            samples.from("src/${name.replace("Main", "Samples")}/kotlin")
-        }
     }
 }
