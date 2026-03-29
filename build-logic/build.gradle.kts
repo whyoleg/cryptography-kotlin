@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 plugins {
@@ -14,6 +14,7 @@ dependencies {
     implementation(libs.kotlinx.benchmark.gradle.plugin)
     implementation(libs.android.gradle.plugin)
     implementation(libs.maven.publish.gradle.plugin)
+    implementation(libs.gradle.publish.gradle.plugin)
     implementation(libs.apache.commons.compress)
     implementation("testtool:plugin")
 }

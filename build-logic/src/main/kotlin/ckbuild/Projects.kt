@@ -26,6 +26,7 @@ object Projects {
         "cryptography-serialization-asn1-modules" to setOf(Tag.PUBLISHED),
 
         "cryptography-core" to setOf(Tag.PUBLISHED),
+        "cryptography-gradle-plugin" to setOf(Tag.PUBLISHED, Tag.EXCLUDE_FROM_DOKKA),
 
         // no need for providers to be in API reference really
         "cryptography-provider-base" to setOf(Tag.PUBLISHED, Tag.EXCLUDE_FROM_DOKKA),

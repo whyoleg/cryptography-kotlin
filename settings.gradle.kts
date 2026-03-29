@@ -69,4 +69,7 @@ projects("cryptography-kotlin") {
         module("cryptokit")
         module("optimal") // composite provider
     }
+
+    // gradle plugin with helpers for swift and other things
+    module("cryptography-gradle-plugin")
 }

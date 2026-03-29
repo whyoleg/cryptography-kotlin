@@ -18,6 +18,7 @@ androidx-test = "1.7.0"
 # gradle/build
 apache-commons-compress = "1.28.0"
 maven-publish = "0.36.0"
+gradle-publish = "2.1.1"
 
 # other
 bouncycastle = "1.83"
@@ -31,6 +32,7 @@ kotlinx-kover-gradle-plugin = { module = "org.jetbrains.kotlinx:kover-gradle-plu
 kotlinx-benchmark-gradle-plugin = { module = "org.jetbrains.kotlinx:kotlinx-benchmark-plugin", version.ref = "kotlinx-benchmark" }
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "android" }
 maven-publish-gradle-plugin = { module = "com.vanniktech:gradle-maven-publish-plugin", version.ref = "maven-publish" }
+gradle-publish-gradle-plugin = { module = "com.gradle.publish:plugin-publish-plugin", version.ref = "gradle-publish" }
 
 apache-commons-compress = { module = "org.apache.commons:commons-compress", version.ref = "apache-commons-compress" }
 
