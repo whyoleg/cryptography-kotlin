@@ -5,6 +5,15 @@ On Apple platforms, the library provides two provider implementations:
 * **CryptoKit** -- the modern, preferred provider via [CryptoKit][CryptoKit]
 * **CommonCrypto** -- the legacy fallback via [CommonCrypto][CommonCrypto]
 
+!!! warning "Non-default Xcode location"
+
+    The CryptoKit provider requires Swift and links against Swift libraries shipped with Xcode.
+    If Xcode is **not** installed at `/Applications/Xcode.app` (e.g. you use multiple Xcode versions
+    or a tool like [xcodes](https://github.com/XcodesOrg/xcodes)), you may see linker errors at
+    build time.
+    See [Xcode / Swift compatibility](../../getting-started/troubleshooting/xcode-compatibility.md)
+    for how to fix this.
+
 ## Using in your projects
 
 ```kotlin

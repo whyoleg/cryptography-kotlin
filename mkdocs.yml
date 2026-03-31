@@ -28,6 +28,8 @@ nav:
           - 'WebCrypto': getting-started/providers/webcrypto.md
           - 'OpenSSL3': getting-started/providers/openssl3.md
       - 'Dependency Management': getting-started/dependency-management.md
+      - 'Troubleshooting':
+          - 'Xcode / Swift compatibility': getting-started/troubleshooting/xcode-compatibility.md
   - 'Primitives':
       - primitives/index.md
       - 'Working with Keys': primitives/keys.md
