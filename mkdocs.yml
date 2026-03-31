@@ -30,6 +30,7 @@ nav:
       - 'Dependency Management': getting-started/dependency-management.md
       - 'Troubleshooting':
           - 'Xcode / Swift compatibility': getting-started/troubleshooting/xcode-compatibility.md
+          - 'ProGuard / R8': getting-started/troubleshooting/proguard-r8.md
   - 'Primitives':
       - primitives/index.md
       - 'Working with Keys': primitives/keys.md

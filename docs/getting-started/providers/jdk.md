@@ -2,6 +2,14 @@
 
 The JDK provider wraps Java's built-in [JCA][JCA] and is the default for JVM targets.
 
+!!! note "ProGuard / R8 (desktop JVM)"
+
+    The JDK provider uses Java `ServiceLoader` for auto-discovery. ProGuard on desktop JVM (e.g.
+    Compose Desktop) removes the provider classes because they are only referenced by name in
+    service descriptor files.
+    See [ProGuard / R8 — providers not found](../../getting-started/troubleshooting/proguard-r8.md)
+    for the required keep rules.
+
 ## Using in your projects
 
 ```kotlin
