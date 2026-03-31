@@ -16,7 +16,7 @@ jobs:
           cache-disabled: true
 
       - name: Publish release to Maven Central
-        run: ./gradlew publishToMavenCentral -Pversion=${{ github.ref_name }} --no-configuration-cache
+        run: ./gradlew publishToMavenCentral -Pckbuild.requireSigning=true -Pversion=${{ github.ref_name }}
         env:
           ORG_GRADLE_PROJECT_signingInMemoryKey: ${{secrets.signingKey}}
           ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{secrets.signingPassword}}

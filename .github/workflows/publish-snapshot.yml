@@ -14,7 +14,7 @@ jobs:
       - uses: ./.github/actions/setup-environment
 
       - name: Publish snapshot to Maven Central
-        run: ./gradlew publishToMavenCentral -Pversion=0.6.0-SNAPSHOT
+        run: ./gradlew publishToMavenCentral -Pckbuild.requireSigning=true -Pversion=0.6.0-SNAPSHOT
         env:
           ORG_GRADLE_PROJECT_signingInMemoryKey: ${{secrets.signingKey}}
           ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{secrets.signingPassword}}

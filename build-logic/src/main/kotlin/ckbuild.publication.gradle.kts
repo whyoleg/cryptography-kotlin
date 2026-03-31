@@ -42,8 +42,9 @@ mavenPublishing {
     }
 }
 
-// we ignore the singing requirement because:
+// In most cases we ignore the singing requirement because:
 // * we should be able to run `publishToMavenLocal` without signing;
 // * signing is needed to Maven Central only, and it will anyway validate that the signature is present;
 // * failure because of absent signature will anyway fail only on CI during publishing release;
-signing.isRequired = false
+// Still, it makes sense to enable signing check during publication, specifically to fail during SNAPSHOT publication
+signing.isRequired = booleanProperty("ckbuild.requireSigning", defaultValue = false).get()
