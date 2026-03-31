@@ -1,6 +1,8 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
+
+import ckbuild.*
 
 plugins {
     signing
@@ -45,11 +47,3 @@ mavenPublishing {
 // * signing is needed to Maven Central only, and it will anyway validate that the signature is present;
 // * failure because of absent signature will anyway fail only on CI during publishing release;
 signing.isRequired = false
-
-// javadocJar setup
-// we have a single javadoc artifact which is used for all publications,
-// and so we need to manually create task dependencies to make Gradle happy
-val javadocJar by tasks.registering(Jar::class) { archiveClassifier.set("javadoc") }
-tasks.withType<Sign>().configureEach { dependsOn(javadocJar) }
-tasks.withType<AbstractPublishToMaven>().configureEach { mustRunAfter(tasks.withType<Sign>()) }
-publishing.publications.withType<MavenPublication>().configureEach { artifact(javadocJar) }

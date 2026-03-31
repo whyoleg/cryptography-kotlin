@@ -3,6 +3,7 @@
  */
 
 import ckbuild.*
+import com.vanniktech.maven.publish.*
 
 plugins {
     `version-catalog`
@@ -10,6 +11,10 @@ plugins {
 }
 
 description = "cryptography-kotlin Gradle Version Catalog"
+
+mavenPublishing {
+    configure(VersionCatalog())
+}
 
 catalog {
     versionCatalog {
@@ -21,14 +26,6 @@ catalog {
                 /* group =    */ "dev.whyoleg.cryptography",
                 /* artifact = */ name
             ).versionRef(cryptographyVersion)
-        }
-    }
-}
-
-publishing {
-    publications {
-        val versionCatalog by creating(MavenPublication::class) {
-            from(components["versionCatalog"])
         }
     }
 }

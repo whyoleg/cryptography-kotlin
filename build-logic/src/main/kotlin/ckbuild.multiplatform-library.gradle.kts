@@ -4,6 +4,7 @@
 
 @file:OptIn(ExperimentalAbiValidation::class)
 
+import com.vanniktech.maven.publish.*
 import org.jetbrains.kotlin.gradle.dsl.abi.*
 
 plugins {
@@ -15,4 +16,8 @@ kotlin {
     abiValidation {
         enabled = true
     }
+}
+
+mavenPublishing {
+    configure(KotlinMultiplatform())
 }
