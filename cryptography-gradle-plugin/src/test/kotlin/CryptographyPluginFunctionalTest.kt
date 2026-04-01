@@ -12,8 +12,6 @@ class CryptographyPluginFunctionalTest {
 
     @Test
     fun testConfigureSwiftLinkerOpts() = forEachGradleVersion { gradleVersion ->
-        if (!System.getProperty("os.name").contains("Mac", ignoreCase = true)) return@forEachGradleVersion
-
         val projectDir = createProjectDir()
         projectDir.resolve("build.gradle.kts").writeText(
             """
@@ -40,9 +38,12 @@ class CryptographyPluginFunctionalTest {
                 val target = kotlin.targets.getByName("iosSimulatorArm64") as org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
                 val framework = target.binaries.getFramework("DEBUG")
                 val linkerOpts = framework.linkerOpts
-                doLast {    
+                doLast {
                     println(linkerOpts)
-                    check(linkerOpts.any { it.startsWith("-L${swiftLibrariesPath}/iphonesimulator") }) { "linker opts are not configured" }
+                    if (${swiftLibrariesPath != null}) {
+                        println("check linkerOpts")
+                        check(linkerOpts.any { it.startsWith("-L${swiftLibrariesPath}/iphonesimulator") }) { "linker opts are not configured" }
+                    }
                 }
             }
             """.trimIndent()
@@ -60,8 +61,6 @@ class CryptographyPluginFunctionalTest {
 
     @Test
     fun testConfigureSwiftLinkerOptsDisabled() = forEachGradleVersion { gradleVersion ->
-        if (!System.getProperty("os.name").contains("Mac", ignoreCase = true)) return@forEachGradleVersion
-
         val projectDir = createProjectDir()
         projectDir.resolve("build.gradle.kts").writeText(
             """
@@ -93,9 +92,12 @@ class CryptographyPluginFunctionalTest {
                 val target = kotlin.targets.getByName("iosSimulatorArm64") as org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
                 val framework = target.binaries.getFramework("DEBUG")
                 val linkerOpts = framework.linkerOpts
-                doLast {    
+                doLast {
                     println(linkerOpts)
-                    check(linkerOpts.none { it.startsWith("-L${swiftLibrariesPath}/iphonesimulator") }) { "linker opts are not configured" }
+                    if (${swiftLibrariesPath != null}) {
+                        println("check linkerOpts")
+                        check(linkerOpts.none { it.startsWith("-L${swiftLibrariesPath}/iphonesimulator") }) { "linker opts are not configured" }
+                    }
                 }
             }
             """.trimIndent()
@@ -162,7 +164,8 @@ class CryptographyPluginFunctionalTest {
     }
 
     companion object {
-        private val swiftLibrariesPath by lazy {
+        private val swiftLibrariesPath: String? by lazy {
+            if (!System.getProperty("os.name").contains("Mac", ignoreCase = true)) return@lazy null
             val process = ProcessBuilder("xcrun", "--find", "swift").start()
             if (process.waitFor() != 0) throw IllegalStateException("xcrun --find swift failed")
             process.inputStream.use {

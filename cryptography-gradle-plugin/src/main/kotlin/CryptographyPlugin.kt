@@ -33,6 +33,8 @@ public abstract class CryptographyPlugin : Plugin<Project> {
         val ckext = target.extensions.create("cryptography", CryptographyExtension::class.java).apply {
             configureSwiftLinkerOpts.convention(false)
         }
+        if (!HostManager.hostIsMac) return
+
         val xcodeSwiftLibsPath = target.providers.of(XcodeSwiftPath::class.java) {}.map {
             // it's only possible to get path to swift binary, not libs
             it.replace("/usr/bin/swift", "/usr/lib/swift")
