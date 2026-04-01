@@ -18,7 +18,7 @@ val devArtifactsDirectory = layout.buildDirectory.dir("maven-dev-artifacts")
 
 publishing.repositories.maven(devArtifactsDirectory) { name = "dev" }
 
-tasks.test {
+tasks.withType<Test>().configureEach {
     dependsOn(tasks.named("publishAllPublicationsToDevRepository"))
 
     inputs

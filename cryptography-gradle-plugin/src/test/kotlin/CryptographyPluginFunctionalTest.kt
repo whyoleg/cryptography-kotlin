@@ -143,8 +143,19 @@ class CryptographyPluginFunctionalTest {
     }
 
     private fun forEachGradleVersion(block: (gradleVersion: String) -> Unit) {
+        val javaVersion = when (val specVersion = System.getProperty("java.specification.version")) {
+            "1.8" -> 8
+            else  -> specVersion.toInt()
+        }
         // Latest stable releases for each major version
-        listOf("7.6.6", "8.14.4", "9.4.1").forEach {
+        mutableListOf<String>().apply {
+            add("7.6.6")
+            add("8.14.4")
+            // Gradle 9+ requires Java 17+
+            if (javaVersion >= 17) {
+                add("9.4.1")
+            }
+        }.forEach {
             println("// RUN WITH GRADLE $it")
             block(it)
         }
