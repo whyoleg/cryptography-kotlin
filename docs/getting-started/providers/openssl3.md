@@ -27,18 +27,18 @@ the api module and one additional module providing libcrypto:
 
 ```kotlin
 dependencies {
-    implementation("dev.whyoleg.cryptography:cryptography-provider-openssl3-api:0.5.0")
+    implementation("dev.whyoleg.cryptography:cryptography-provider-openssl3-api:0.6.0")
 
     // Additionally, you must choose exactly one of these options:
 
     // Option 1: shared
-    implementation("dev.whyoleg.cryptography:cryptography-provider-openssl3-shared:0.5.0")
+    implementation("dev.whyoleg.cryptography:cryptography-provider-openssl3-shared:0.6.0")
 
     // Option 2: prebuilt
-    implementation("dev.whyoleg.cryptography:cryptography-provider-openssl3-prebuilt:0.5.0")
+    implementation("dev.whyoleg.cryptography:cryptography-provider-openssl3-prebuilt:0.6.0")
 
     // Option 3: prebuilt-nativebuilds
-    implementation("dev.whyoleg.cryptography:cryptography-provider-openssl3-prebuilt-nativebuilds:0.5.0")
+    implementation("dev.whyoleg.cryptography:cryptography-provider-openssl3-prebuilt-nativebuilds:0.6.0")
     implementation("com.ensody.nativebuilds:openssl-libcrypto:3.6.0") // optional but recommended to get automatic (e.g. Dependabot) updates
 }
 ```

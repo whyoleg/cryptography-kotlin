@@ -11,7 +11,7 @@ Configure `settings.gradle.kts`:
 dependencyResolutionManagement {
     versionCatalogs {
         create("cryptographyLibs") {
-            from("dev.whyoleg.cryptography:cryptography-version-catalog:0.5.0")
+            from("dev.whyoleg.cryptography:cryptography-version-catalog:0.6.0")
         }
     }
 }
@@ -32,7 +32,7 @@ Paste into `libs.versions.toml`:
 
 ```toml
 [versions]
-cryptography = "0.5.0"
+cryptography = "0.6.0"
 
 [libraries]
 cryptography-core = { group = "dev.whyoleg.cryptography", name = "cryptography-core", version.ref = "cryptography" }
@@ -58,7 +58,7 @@ of all modules because of direct dependency on the BOM module.
 
 ```kotlin
 dependencies {
-    implementation(platform("dev.whyoleg.cryptography:cryptography-bom:0.5.0"))
+    implementation(platform("dev.whyoleg.cryptography:cryptography-bom:0.6.0"))
 
     // now you can declare other dependencies without a version
     implementation("dev.whyoleg.cryptography:cryptography-core")
@@ -83,8 +83,8 @@ repositories {
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("dev.whyoleg.cryptography:cryptography-core:0.6.0-SNAPSHOT")
-            implementation("dev.whyoleg.cryptography:cryptography-provider-optimal:0.6.0-SNAPSHOT")
+            implementation("dev.whyoleg.cryptography:cryptography-core:0.7.0-SNAPSHOT")
+            implementation("dev.whyoleg.cryptography:cryptography-provider-optimal:0.7.0-SNAPSHOT")
         }
     }
 }

@@ -14,8 +14,8 @@ For most users, the `optimal` provider is the right choice — it automatically 
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("dev.whyoleg.cryptography:cryptography-core:0.5.0")
-            implementation("dev.whyoleg.cryptography:cryptography-provider-optimal:0.5.0")
+            implementation("dev.whyoleg.cryptography:cryptography-core:0.6.0")
+            implementation("dev.whyoleg.cryptography:cryptography-provider-optimal:0.6.0")
         }
     }
 }

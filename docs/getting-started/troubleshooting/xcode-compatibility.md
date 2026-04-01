@@ -34,7 +34,7 @@ In `build.gradle.kts`, apply the plugin and enable automatic linker option confi
 
 ```kotlin
 plugins {
-    id("dev.whyoleg.cryptography") version "0.5.0"
+    id("dev.whyoleg.cryptography") version "0.6.0"
 }
 
 cryptography {

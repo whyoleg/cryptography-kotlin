@@ -15,7 +15,7 @@ it bundles the best-fit provider for each target as a single dependency:
 
 ```kotlin
 dependencies {
-    implementation("dev.whyoleg.cryptography:cryptography-provider-optimal:0.5.0")
+    implementation("dev.whyoleg.cryptography:cryptography-provider-optimal:0.6.0")
 }
 ```
 

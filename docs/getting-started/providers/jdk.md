@@ -14,7 +14,7 @@ The JDK provider wraps Java's built-in [JCA][JCA] and is the default for JVM tar
 
 ```kotlin
 dependencies {
-    implementation("dev.whyoleg.cryptography:cryptography-provider-jdk:0.5.0")
+    implementation("dev.whyoleg.cryptography:cryptography-provider-jdk:0.6.0")
 }
 ```
 
@@ -50,7 +50,7 @@ as the default provider via an additional dependency:
 
 ```kotlin
 dependencies {
-    implementation("dev.whyoleg.cryptography:cryptography-provider-jdk-bc:0.5.0")
+    implementation("dev.whyoleg.cryptography:cryptography-provider-jdk-bc:0.6.0")
 }
 ```
 

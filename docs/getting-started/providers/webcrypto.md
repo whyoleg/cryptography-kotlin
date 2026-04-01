@@ -12,7 +12,7 @@ The WebCrypto provider wraps the [W3C WebCrypto API][WebCrypto] and is the defau
 
 ```kotlin
 dependencies {
-    implementation("dev.whyoleg.cryptography:cryptography-provider-webcrypto:0.5.0")
+    implementation("dev.whyoleg.cryptography:cryptography-provider-webcrypto:0.6.0")
 }
 ```
 

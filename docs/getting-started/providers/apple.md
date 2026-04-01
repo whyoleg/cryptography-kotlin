@@ -19,9 +19,9 @@ On Apple platforms, the library provides two provider implementations:
 ```kotlin
 dependencies {
     // for cryptokit
-    implementation("dev.whyoleg.cryptography:cryptography-provider-cryptokit:0.5.0")
+    implementation("dev.whyoleg.cryptography:cryptography-provider-cryptokit:0.6.0")
     // for commoncrypto
-    implementation("dev.whyoleg.cryptography:cryptography-provider-apple:0.5.0")
+    implementation("dev.whyoleg.cryptography:cryptography-provider-apple:0.6.0")
 }
 ```
 

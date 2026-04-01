@@ -77,7 +77,7 @@ body:
     attributes:
       label: Library Version
       description: Which version of cryptography-kotlin?
-      placeholder: "0.5.0"
+      placeholder: "0.6.0"
     validations:
       required: true
 
