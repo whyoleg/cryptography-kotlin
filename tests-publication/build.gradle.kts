@@ -1,11 +1,16 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 import org.jetbrains.kotlin.gradle.*
 
 plugins {
-    kotlin("multiplatform") version "2.2.0"
+    kotlin("multiplatform") version "2.3.20"
+    alias(cryptographyLibs.plugins.cryptography)
+}
+
+cryptography {
+    configureSwiftLinkerOpts = true
 }
 
 kotlin {
@@ -21,20 +26,20 @@ kotlin {
         browser()
     }
 
-    macosX64()
+    @Suppress("DEPRECATION") macosX64()
     macosArm64()
 
     iosArm64()
     iosX64()
     iosSimulatorArm64()
 
-    watchosX64()
+    @Suppress("DEPRECATION") watchosX64()
     watchosArm32()
     watchosArm64()
     watchosSimulatorArm64()
     watchosDeviceArm64()
 
-    tvosX64()
+    @Suppress("DEPRECATION") tvosX64()
     tvosArm64()
     tvosSimulatorArm64()
 
