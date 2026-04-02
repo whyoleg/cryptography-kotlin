@@ -3,7 +3,7 @@
 
 site_name: cryptography-kotlin
 site_author: Oleg Yukhnevich
-site_description: "Type-safe Multi-platform cryptography kotlin library"
+site_description: "A cryptography/crypto library for Kotlin Multiplatform"
 site_url: https://whyoleg.github.io/cryptography-kotlin/
 
 repo_name: cryptography-kotlin
@@ -11,7 +11,7 @@ repo_url: https://github.com/whyoleg/cryptography-kotlin
 edit_uri: edit/main/docs/
 remote_branch: gh-pages
 
-copyright: 'Copyright &copy; 2025 Oleg Yukhnevich'
+copyright: 'Copyright &copy; 2026 Oleg Yukhnevich'
 
 exclude_docs:
   snippets/
