@@ -17,6 +17,7 @@ plugins {
 plugins.withType<KotlinBasePluginWrapper>().configureEach {
     extensions.configure<KotlinProjectExtension>("kotlin") {
         explicitApi()
+        abiValidation()
         // register samples as tests
         sourceSets.configureEach {
             if (name == "test") {

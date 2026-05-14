@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 @file:Suppress("UnstableApiUsage")
@@ -12,7 +12,7 @@ dependencyResolutionManagement {
 }
 
 if (kotlinVersionOverride != null) {
-    val kotlinDevRepository = "https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev"
+    val kotlinDevRepository = "https://redirector.kotlinlang.org/maven/dev"
     val kotlinGroup = "org.jetbrains.kotlin"
 
     logger.lifecycle("Kotlin version override: $kotlinVersionOverride, repository: $kotlinDevRepository")
