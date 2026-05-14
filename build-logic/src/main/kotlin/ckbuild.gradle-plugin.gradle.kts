@@ -50,18 +50,29 @@ dependencies {
 
 @OptIn(ExperimentalBuildToolsApi::class, ExperimentalKotlinGradlePluginApi::class)
 kotlin {
-    compilerVersion = "2.0.21" // to be able to use AV/LV 1.4 for Gradle 7+ compatibility
+//    compilerVersion = "2.0.21" // to be able to use AV/LV 1.4 for Gradle 7+ compatibility
     compilerOptions {
         // progressiveMode works only for latest kotlin version
         progressiveMode.set(false)
-        languageVersion.set(KotlinVersion.KOTLIN_1_4)
-        apiVersion.set(KotlinVersion.KOTLIN_1_4)
+        languageVersion.set(KotlinVersion.KOTLIN_2_0)
+        apiVersion.set(KotlinVersion.KOTLIN_2_0)
         freeCompilerArgs.addAll(
             "-Xsuppress-version-warnings",
             "-Xskip-metadata-version-check"
         )
     }
 }
+
+// see https://youtrack.jetbrains.com/issue/KT-86158
+//configurations.named { it.startsWith("kotlinCompilerPluginClasspath") }.configureEach {
+//    resolutionStrategy {
+//        eachDependency {
+//            if (requested.group == "org.jetbrains.kotlin") {
+//                useVersion("2.0.21")
+//            }
+//        }
+//    }
+//}
 
 gradlePlugin {
     website = "https://whyoleg.github.io/cryptography-kotlin/"
