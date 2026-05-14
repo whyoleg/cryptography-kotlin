@@ -12,12 +12,6 @@ plugins {
     id("ckbuild.kotlin-library")
 }
 
-kotlin {
-    abiValidation {
-        enabled = true
-    }
-}
-
 mavenPublishing {
     configure(KotlinMultiplatform())
 }

@@ -17,9 +17,6 @@ plugins {
 }
 
 kotlin {
-    abiValidation {
-        enabled = true
-    }
     compilerOptions {
         freeCompilerArgs.add("-Xjdk-release=8")
         jvmTarget = JvmTarget.JVM_1_8
