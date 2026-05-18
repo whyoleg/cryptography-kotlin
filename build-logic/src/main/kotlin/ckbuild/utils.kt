@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2025-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package ckbuild
@@ -18,3 +18,11 @@ fun Project.booleanProperty(name: String, defaultValue: Boolean): Provider<Boole
 
 fun Project.stringProperty(name: String, defaultValue: String): Provider<String> =
     providers.gradleProperty(name).orElse(defaultValue)
+
+fun Project.stringProperty(name: String): Provider<String> =
+    providers.gradleProperty(name)
+
+fun Project.stringListProperty(name: String, delimiter: String): Provider<List<String>> =
+    providers.gradleProperty(name).map {
+        if (it.isNotBlank()) it.split(delimiter) else emptyList()
+    }.orElse(emptyList())

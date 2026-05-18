@@ -4,8 +4,6 @@
 
 import ckbuild.*
 import com.android.build.gradle.internal.tasks.*
-import org.gradle.api.tasks.testing.*
-import org.gradle.kotlin.dsl.*
 import org.jetbrains.kotlin.gradle.dsl.*
 import org.jetbrains.kotlin.gradle.plugin.*
 
@@ -13,19 +11,29 @@ plugins {
     id("org.jetbrains.kotlinx.kover")
 }
 
-val warningsAsErrors = booleanProperty("ckbuild.warningsAsErrors", defaultValue = true)
 val skipTestTasks = booleanProperty("ckbuild.skipTestTasks", defaultValue = false)
+
+// allows overriding some kotlin properties
+val kotlinWarningsAsErrors = booleanProperty("kotlin_warnings_as_errors", defaultValue = true)
+val kotlinLanguageVersion = stringProperty("kotlin_language_version").map(KotlinVersion::fromVersion)
+val kotlinApiVersion = stringProperty("kotlin_api_version").map(KotlinVersion::fromVersion)
+val kotlinAdditionalCliOptions = stringListProperty("kotlin_additional_cli_options", delimiter = " ")
 
 plugins.withType<KotlinBasePluginWrapper>().configureEach {
     extensions.configure<KotlinProjectExtension>("kotlin") {
 
         fun KotlinCommonCompilerOptions.configureCommonOptions() {
-            allWarningsAsErrors.set(warningsAsErrors)
+            allWarningsAsErrors.set(kotlinWarningsAsErrors)
             progressiveMode.set(true)
             freeCompilerArgs.addAll(
                 "-Xrender-internal-diagnostic-names",
+                "-Xreport-all-warnings",
                 "-Xreturn-value-checker=full"
             )
+
+            languageVersion.set(kotlinLanguageVersion)
+            apiVersion.set(kotlinApiVersion)
+            freeCompilerArgs.addAll(kotlinAdditionalCliOptions)
         }
 
         when (this) {
