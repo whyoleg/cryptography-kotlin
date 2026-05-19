@@ -1,0 +1,81 @@
+name: Build project with custom kotlin flags
+on:
+  push:
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build-fast:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ 'ubuntu-latest', 'macos-latest', 'windows-latest' ]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-environment
+        with:
+          cache-read-only: true
+          submit-dependency-graph: true
+      - run: >
+          ./gradlew
+          build publishToMavenLocal
+          --continue
+          -Pckbuild.skipTestTasks=true
+          -Pckbuild.skipLinkTasks=true
+
+  build-link:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ 'ubuntu-latest', 'macos-latest', 'windows-latest' ]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-environment
+        with:
+          cache-read-only: true
+          submit-dependency-graph: true
+      - run: >
+          ./gradlew
+          build publishToMavenLocal
+          --continue
+          -Pckbuild.skipTestTasks=true
+
+  build-link-release:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ 'ubuntu-latest', 'macos-latest', 'windows-latest' ]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-environment
+        with:
+          cache-read-only: true
+          submit-dependency-graph: true
+      - run: >
+          ./gradlew
+          build publishToMavenLocal
+          --continue
+          -Pckbuild.skipTestTasks=true
+          -Pckbuild.skipReleaseLinkTasks=true
+
+  build-full:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ 'ubuntu-latest', 'macos-latest', 'windows-latest' ]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-environment
+        with:
+          cache-read-only: true
+          submit-dependency-graph: true
+      - run: >
+          ./gradlew
+          build publishToMavenLocal
+          --continue
