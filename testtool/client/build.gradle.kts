@@ -18,7 +18,7 @@ kotlin {
             jvmTarget = JvmTarget.JVM_1_8
         }
     }
-    js(IR) {
+    js {
         nodejs()
         browser()
     }
