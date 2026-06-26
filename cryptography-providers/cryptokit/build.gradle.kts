@@ -16,9 +16,7 @@ plugins {
 description = "cryptography-kotlin Cryptokit provider"
 
 kotlin {
-    appleTargets(
-        supportsWatchosArm32 = false,
-    )
+    appleTargets()
 
     compilerOptions {
         optIn.addAll(

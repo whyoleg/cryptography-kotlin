@@ -1,3 +1,1 @@
 staticLibraries = libcrypto.a
-
-linkerOpts.android_x86 = -latomic

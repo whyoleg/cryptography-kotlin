@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2025-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.swiftinterop
@@ -39,14 +39,11 @@ abstract class GenerateSwiftCInteropDefinitionTask : DefaultTask() {
             linkerOpts.ios_x64 = ${linkerOpts("iphonesimulator")}
             linkerOpts.ios_simulator_arm64 = ${linkerOpts("iphonesimulator")}
             
-            linkerOpts.watchos_arm32 = ${linkerOpts("watchos")}
             linkerOpts.watchos_arm64 = ${linkerOpts("watchos")}
             linkerOpts.watchos_device_arm64 = ${linkerOpts("watchos")}
-            linkerOpts.watchos_x64 = ${linkerOpts("watchsimulator")}
             linkerOpts.watchos_simulator_arm64 = ${linkerOpts("watchsimulator")}
             
             linkerOpts.tvos_arm64 = ${linkerOpts("appletvos")}
-            linkerOpts.tvos_x64 = ${linkerOpts("appletvsimulator")}
             linkerOpts.tvos_simulator_arm64 = ${linkerOpts("appletvsimulator")}
             """.trimIndent()
         )

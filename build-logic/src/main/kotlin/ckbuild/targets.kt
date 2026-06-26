@@ -27,24 +27,17 @@ fun KotlinMultiplatformExtension.allBenchmarkTargets() {
     webTargets(supportsBrowser = false)
 }
 
-fun KotlinMultiplatformExtension.appleTargets(
-    // not supported by Swift anymore -> not supported by CryptoKit
-    supportsWatchosArm32: Boolean = true,
-) {
-    @Suppress("DEPRECATION") macosX64()
+fun KotlinMultiplatformExtension.appleTargets() {
     macosArm64()
 
     iosArm64()
     iosX64()
     iosSimulatorArm64()
 
-    @Suppress("DEPRECATION") watchosX64()
-    if (supportsWatchosArm32) watchosArm32()
     watchosArm64()
     watchosSimulatorArm64()
     watchosDeviceArm64()
 
-    @Suppress("DEPRECATION") tvosX64()
     tvosArm64()
     tvosSimulatorArm64()
 }
@@ -52,21 +45,13 @@ fun KotlinMultiplatformExtension.appleTargets(
 fun KotlinMultiplatformExtension.desktopTargets() {
     linuxX64()
     linuxArm64()
-
     mingwX64()
-
-    @Suppress("DEPRECATION") macosX64()
     macosArm64()
 }
 
 fun KotlinMultiplatformExtension.nativeTargets() {
     appleTargets()
     desktopTargets()
-
-    androidNativeX64()
-    androidNativeX86()
-    androidNativeArm64()
-    androidNativeArm32()
 }
 
 fun KotlinMultiplatformExtension.jsTarget(

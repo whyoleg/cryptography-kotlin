@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2025-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.swiftinterop
@@ -31,7 +31,6 @@ enum class SwiftTargetTriple(
     val konanTarget: KonanTarget,
 ) : Serializable {
     MACOS_ARM64("arm64", SwiftSdk.macosx, KonanTarget.MACOS_ARM64),
-    MACOS_X64("x86_64", SwiftSdk.macosx, KonanTarget.MACOS_X64),
 
     IOS_ARM64("arm64", SwiftSdk.iphoneos, KonanTarget.IOS_ARM64),
     IOS_SIMULATOR_ARM64("arm64", SwiftSdk.iphonesimulator, KonanTarget.IOS_SIMULATOR_ARM64),
@@ -39,12 +38,10 @@ enum class SwiftTargetTriple(
 
     TVOS_ARM64("arm64", SwiftSdk.appletvos, KonanTarget.TVOS_ARM64),
     TVOS_SIMULATOR_ARM64("arm64", SwiftSdk.appletvsimulator, KonanTarget.TVOS_SIMULATOR_ARM64),
-    TVOS_SIMULATOR_X64("x86_64", SwiftSdk.appletvsimulator, KonanTarget.TVOS_X64),
 
     WATCHOS_ARM64_32("arm64_32", SwiftSdk.watchos, KonanTarget.WATCHOS_ARM64),
     WATCHOS_ARM64("arm64", SwiftSdk.watchos, KonanTarget.WATCHOS_DEVICE_ARM64),
-    WATCHOS_SIMULATOR_ARM64("arm64", SwiftSdk.watchsimulator, KonanTarget.WATCHOS_SIMULATOR_ARM64),
-    WATCHOS_SIMULATOR_X64("x86_64", SwiftSdk.watchsimulator, KonanTarget.WATCHOS_X64);
+    WATCHOS_SIMULATOR_ARM64("arm64", SwiftSdk.watchsimulator, KonanTarget.WATCHOS_SIMULATOR_ARM64);
 
     override fun toString(): String = when (sdk.isSimulator) {
         true  -> "$arch-apple-${sdk.platform}-simulator"
