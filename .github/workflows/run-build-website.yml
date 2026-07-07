@@ -7,8 +7,8 @@ jobs:
   website:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
         with:
           python-version: 3.x
       # install just and dependencies for mkdocs-material
@@ -24,6 +24,6 @@ jobs:
           DYLD_FALLBACK_LIBRARY_PATH: /opt/homebrew/lib
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: site
