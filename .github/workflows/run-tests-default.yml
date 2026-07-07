@@ -27,7 +27,7 @@ jobs:
           - os: 'windows-latest'
             target: 'native'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup-environment
 
       - name: Run tests
