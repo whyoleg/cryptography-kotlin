@@ -31,27 +31,27 @@ kotlin {
     iosX64()
     iosSimulatorArm64()
 
-    @Suppress("DEPRECATION") watchosX64()
-    watchosArm32()
+//    @Suppress("DEPRECATION") watchosX64()
+//    watchosArm32()
     watchosArm64()
     watchosDeviceArm64()
     watchosSimulatorArm64()
 
-    @Suppress("DEPRECATION") tvosX64()
+//    @Suppress("DEPRECATION") tvosX64()
     tvosArm64()
     tvosSimulatorArm64()
 
-    @Suppress("DEPRECATION") macosX64()
+//    @Suppress("DEPRECATION") macosX64()
     macosArm64()
 
     linuxX64()
     linuxArm64()
     mingwX64()
 
-    androidNativeX64()
-    androidNativeX86()
-    androidNativeArm64()
-    androidNativeArm32()
+//    androidNativeX64()
+//    androidNativeX86()
+//    androidNativeArm64()
+//    androidNativeArm32()
 
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     applyDefaultHierarchyTemplate {
