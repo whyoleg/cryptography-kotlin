@@ -1,4 +1,4 @@
-// swift-tools-version:6.2
+// swift-tools-version:6.0
 import PackageDescription
 
 // dwc = dev.whyoleg.cryptography
@@ -6,10 +6,10 @@ let package = Package(
     name: "DwcCryptoKitInterop",
     // versions for CryptoKit and/or Kotlin/Native support
     platforms: [
-        .macOS(.v11),
-        .iOS(.v14),
-        .tvOS(.v14),
-        .watchOS(.v7)
+        .macOS(.v12),
+        .iOS(.v15),
+        .tvOS(.v15),
+        .watchOS(.v8)
     ],
     products: [
         .library(
