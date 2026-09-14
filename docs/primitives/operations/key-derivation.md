@@ -1,10 +1,11 @@
 # Key Derivation
 
-Key derivation functions transform raw input material into well-formed cryptographic keys. This library provides two
+Key derivation functions transform raw input material into well-formed cryptographic keys. This library provides three
 algorithms for two fundamentally different scenarios:
 
 - **HKDF** (KDF) -- derives keys from high-entropy input such as key agreement output or random bytes. Fast by design.
 - **PBKDF2** (password-based) -- derives keys from low-entropy passwords. Deliberately slow to resist brute-force attacks.
+- **scrypt** (password-based) -- derives keys from low-entropy passwords with configurable CPU and memory costs.
 
 !!! note "Assumed imports"
 
@@ -121,6 +122,30 @@ The iteration count is the primary tuning parameter. A higher count means more w
 both the legitimate user and any attacker. The
 [OWASP Password Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)
 recommends **600,000 iterations for SHA-256**.
+
+## scrypt
+
+Scrypt is a memory-hard password-based key derivation function. It is available with the JDK BouncyCastle provider and
+OpenSSL3; the default JDK provider without BouncyCastle does not report it as supported.
+
+```kotlin
+val scrypt = provider.get(Scrypt)
+val password = "user-password".encodeToByteArray()
+val salt = CryptographyRandom.nextBytes(16)
+
+val derivation = scrypt.secretDerivation(
+    cost = 16384,
+    blockSize = 8,
+    parallelization = 1,
+    outputSize = 256.bits,
+    salt = salt,
+    maximumMemoryBytes = 32L * 1024 * 1024
+)
+val derivedKey = derivation.deriveSecretToByteArray(password)
+```
+
+`maximumMemoryBytes` is a mandatory budget for provider working buffers and must satisfy the minimum documented by the
+API. It does not limit or guarantee total process resident memory (RSS).
 
 ## Supported Algorithms
 
