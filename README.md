@@ -41,7 +41,7 @@ and [API Reference](https://whyoleg.github.io/cryptography-kotlin/api/).
 
 | Operation | Algorithms |
 |-----------|------------|
-| [Hashing](https://whyoleg.github.io/cryptography-kotlin/primitives/operations/hashing/) | SHA224, SHA256, SHA384, SHA512, SHA3, SHA1, MD5, RIPEMD160 |
+| [Hashing](https://whyoleg.github.io/cryptography-kotlin/primitives/operations/hashing/) | SHA224, SHA256, SHA384, SHA512, SHA3, SHAKE256, SHA1, MD5, RIPEMD160 |
 | [MAC](https://whyoleg.github.io/cryptography-kotlin/primitives/operations/mac/) | AES-CMAC, HMAC |
 | [Digital Signatures](https://whyoleg.github.io/cryptography-kotlin/primitives/operations/digital-signatures/) | RSA-PSS, RSA-PKCS1, ECDSA, EdDSA, DSA |
 | [AEAD](https://whyoleg.github.io/cryptography-kotlin/primitives/operations/aead/) | AES-GCM, AES-CCM, ChaCha20-Poly1305 |

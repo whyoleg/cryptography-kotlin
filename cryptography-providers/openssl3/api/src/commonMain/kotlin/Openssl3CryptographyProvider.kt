@@ -18,6 +18,16 @@ public val CryptographyProvider.Companion.Openssl3: CryptographyProvider by defa
 internal object Openssl3CryptographyProvider : CryptographyProvider() {
     override val name: String = "OpenSSL3 (${OpenSSL_version(OPENSSL_VERSION_STRING)?.toKString() ?: "unknown"})"
 
+    private val supportsShake256 by lazy {
+        EVP_MD_fetch(null, "SHAKE-256", null)?.let {
+            EVP_MD_free(it)
+            true
+        } ?: run {
+            ERR_clear_error()
+            false
+        }
+    }
+
     @Suppress("UNCHECKED_CAST")
     override fun <A : CryptographyAlgorithm> getOrNull(identifier: CryptographyAlgorithmId<A>): A? = when (identifier) {
         MD5              -> Openssl3Digest("MD5", MD5)
@@ -40,14 +50,14 @@ internal object Openssl3CryptographyProvider : CryptographyProvider() {
         AES.OFB          -> Openssl3AesOfb
         AES.ECB          -> Openssl3AesEcb
         AES.GCM          -> Openssl3AesGcm
-        AES.CCM -> Openssl3AesCcm
+        AES.CCM          -> Openssl3AesCcm
         ChaCha20Poly1305 -> Openssl3ChaCha20Poly1305
         ECDSA            -> Openssl3Ecdsa
-        DSA -> Openssl3Dsa
+        DSA              -> Openssl3Dsa
         ECDH             -> Openssl3Ecdh
-        EdDSA -> Openssl3EdDsa
-        XDH   -> Openssl3Xdh
-        DH -> Openssl3Dh
+        EdDSA            -> Openssl3EdDsa
+        XDH              -> Openssl3Xdh
+        DH               -> Openssl3Dh
         RSA.PSS          -> Openssl3RsaPss
         RSA.PKCS1        -> Openssl3RsaPkcs1
         RSA.OAEP         -> Openssl3RsaOaep
@@ -55,6 +65,7 @@ internal object Openssl3CryptographyProvider : CryptographyProvider() {
         PBKDF2           -> Openssl3Pbkdf2
         HKDF             -> Openssl3Hkdf
         Scrypt           -> Openssl3Scrypt
+        SHAKE256 if supportsShake256 -> Openssl3Shake256()
         else             -> null
     } as A?
 }

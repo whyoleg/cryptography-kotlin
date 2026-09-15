@@ -45,8 +45,9 @@ in [BouncyCastle](#bouncycastle).
 ## BouncyCastle
 
 Some algorithms or parameters may not be supported by the default JDK provider depending on JDK version
-or platform (e.g., Android). The library provides an ability to use [BouncyCastle](https://www.bouncycastle.org)
-as the default provider via an additional dependency:
+or platform (e.g., Android). SHAKE256 requires a selected Bouncy Castle provider with compatible APIs.
+The `cryptography-provider-jdk-bc` module supplies the tested Bouncy Castle dependency and configures it
+as the default provider:
 
 ```kotlin
 dependencies {

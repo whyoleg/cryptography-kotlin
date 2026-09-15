@@ -14,12 +14,18 @@ kotlin {
     sourceSets {
         commonTest.dependencies {
             implementation(projects.cryptographyProviderJdk)
+            implementation(projects.cryptographyProviderJdkBc)
+            implementation(libs.bouncycastle)
         }
     }
 }
 
 providerTests {
     packageName.set("dev.whyoleg.cryptography.providers.jdk.android")
-    imports.addAll("dev.whyoleg.cryptography.providers.jdk.*")
+    imports.addAll(
+        "dev.whyoleg.cryptography.providers.jdk.*",
+        "org.bouncycastle.jce.provider.BouncyCastleProvider",
+    )
     providerInitializers.put("JDK_Android", "CryptographyProvider.JDK")
+    providerInitializers.put("JDK_Android_BC", "CryptographyProvider.JDK(BouncyCastleProvider())")
 }

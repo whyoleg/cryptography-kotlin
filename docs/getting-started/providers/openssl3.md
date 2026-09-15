@@ -45,6 +45,9 @@ dependencies {
 
 Access via `CryptographyProvider.Openssl3` (available on native targets).
 
+SHAKE256 is registered after a runtime capability check. Shared installations which do not provide SHAKE256 remain
+supported for existing algorithms and report SHAKE256 as unavailable instead of failing provider startup.
+
 ---
 
 See the [algorithm support tables](../../primitives/operations/index.md) for specific limitations
