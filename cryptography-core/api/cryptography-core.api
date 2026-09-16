@@ -971,6 +971,16 @@ public final class dev/whyoleg/cryptography/algorithms/SHA512 : dev/whyoleg/cryp
 	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/SHA512;
 }
 
+public abstract interface class dev/whyoleg/cryptography/algorithms/Scrypt : dev/whyoleg/cryptography/CryptographyAlgorithm {
+	public static final field Companion Ldev/whyoleg/cryptography/algorithms/Scrypt$Companion;
+	public fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
+	public fun secretDerivation-TbR3gEw (IIIILkotlinx/io/bytestring/ByteString;J)Ldev/whyoleg/cryptography/operations/SecretDerivation;
+	public abstract fun secretDerivation-TbR3gEw (IIII[BJ)Ldev/whyoleg/cryptography/operations/SecretDerivation;
+}
+
+public final class dev/whyoleg/cryptography/algorithms/Scrypt$Companion : dev/whyoleg/cryptography/CryptographyAlgorithmId {
+}
+
 public abstract interface class dev/whyoleg/cryptography/algorithms/XDH : dev/whyoleg/cryptography/CryptographyAlgorithm {
 	public static final field Companion Ldev/whyoleg/cryptography/algorithms/XDH$Companion;
 	public fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;

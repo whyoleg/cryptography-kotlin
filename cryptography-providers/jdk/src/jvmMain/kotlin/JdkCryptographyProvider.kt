@@ -97,7 +97,7 @@ public fun CryptographyProvider.Companion.JDK(
     return JdkCryptographyProvider(provider)
 }
 
-internal class JdkCryptographyProvider(provider: Provider?) : CryptographyProvider() {
+internal class JdkCryptographyProvider(private val provider: Provider?) : CryptographyProvider() {
     private val state = JdkCryptographyState(provider)
     override val name: String = when (provider) {
         null -> "JDK"
@@ -107,7 +107,7 @@ internal class JdkCryptographyProvider(provider: Provider?) : CryptographyProvid
     private val cache = ConcurrentHashMap<CryptographyAlgorithmId<*>, CryptographyAlgorithm?>()
 
     @Suppress("UNCHECKED_CAST")
-    override fun <A : CryptographyAlgorithm> getOrNull(identifier: CryptographyAlgorithmId<A>): A? = cache.getOrPut(identifier) {
+    override fun <A : CryptographyAlgorithm> getOrNull(identifier: CryptographyAlgorithmId<A>): A? = if (identifier == Scrypt && !JdkScrypt.isSupported(provider)) null else cache.getOrPut(identifier) {
         when (identifier) {
             MD5       -> JdkDigest(state, "MD5", MD5)
             SHA1      -> JdkDigest(state, "SHA-1", SHA1)
@@ -143,6 +143,7 @@ internal class JdkCryptographyProvider(provider: Provider?) : CryptographyProvid
             DH -> JdkDh(state)
             PBKDF2           -> JdkPbkdf2(state)
             HKDF             -> JdkHkdf(state, this)
+            Scrypt           -> JdkScrypt
             else             -> null
         }
     } as A?

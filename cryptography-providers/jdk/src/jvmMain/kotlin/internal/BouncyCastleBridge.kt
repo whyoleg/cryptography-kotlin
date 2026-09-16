@@ -6,9 +6,12 @@ package dev.whyoleg.cryptography.providers.jdk.internal
 
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.providers.jdk.*
+import org.bouncycastle.crypto.generators.*
 import org.bouncycastle.crypto.params.*
 import org.bouncycastle.jcajce.interfaces.*
 import org.bouncycastle.jce.*
+import org.bouncycastle.jce.provider.*
+import java.security.*
 import java.security.interfaces.*
 import java.security.spec.*
 import kotlin.jvm.optionals.*
@@ -22,6 +25,31 @@ internal object BouncyCastleBridge {
         true
     } catch (_: ClassNotFoundException) {
         false
+    }
+
+    private val isScryptAvailable = try {
+        Class.forName("org.bouncycastle.crypto.generators.SCrypt")
+        true
+    } catch (_: ClassNotFoundException) {
+        false
+    }
+
+    fun supportsScrypt(provider: JProvider?): Boolean =
+        isScryptAvailable && when (provider) {
+            null -> Security.getProviders().any { it is BouncyCastleProvider }
+            else -> provider is BouncyCastleProvider
+        }
+
+    fun generateScrypt(
+        input: ByteArray,
+        salt: ByteArray,
+        cost: Int,
+        blockSize: Int,
+        parallelization: Int,
+        outputSizeBytes: Int,
+    ): ByteArray {
+        check(isScryptAvailable) { "BouncyCastle scrypt implementation is not available" }
+        return SCrypt.generate(input, salt, cost, blockSize, parallelization, outputSizeBytes)
     }
 
     fun deriveEcPublicKey(

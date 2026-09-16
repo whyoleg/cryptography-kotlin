@@ -48,7 +48,7 @@ and [API Reference](https://whyoleg.github.io/cryptography-kotlin/api/).
 | [Symmetric Encryption](https://whyoleg.github.io/cryptography-kotlin/primitives/operations/symmetric-encryption/) | AES-CBC, AES-CTR, AES-ECB, AES-OFB, AES-CFB, AES-CFB8 |
 | [Public-Key Encryption](https://whyoleg.github.io/cryptography-kotlin/primitives/operations/public-key-encryption/) | RSA-OAEP, RSA-PKCS1, RSA-RAW |
 | [Key Agreement](https://whyoleg.github.io/cryptography-kotlin/primitives/operations/key-agreement/) | ECDH, XDH, DH |
-| [Key Derivation](https://whyoleg.github.io/cryptography-kotlin/primitives/operations/key-derivation/) | PBKDF2, HKDF |
+| [Key Derivation](https://whyoleg.github.io/cryptography-kotlin/primitives/operations/key-derivation/) | PBKDF2, HKDF, scrypt |
 
 <!-- SUPPORTED_ALGORITHMS_END -->
 [//]: # (@formatter:on)

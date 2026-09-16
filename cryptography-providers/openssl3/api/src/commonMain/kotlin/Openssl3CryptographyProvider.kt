@@ -54,6 +54,7 @@ internal object Openssl3CryptographyProvider : CryptographyProvider() {
         RSA.RAW          -> Openssl3RsaRaw
         PBKDF2           -> Openssl3Pbkdf2
         HKDF             -> Openssl3Hkdf
+        Scrypt           -> Openssl3Scrypt
         else             -> null
     } as A?
 }

@@ -541,6 +541,18 @@ private val algorithms = listOf(
             Provider.OpenSSL3 to Supported,
         ),
     ),
+    Algorithm(
+        id = "scrypt",
+        operation = Operation.KeyDerivation,
+        apiPath = "-scrypt",
+        providers = mapOf(
+            Provider.JDK to Limited("Requires BouncyCastle"),
+            Provider.WebCrypto to Unsupported,
+            Provider.Apple to Unsupported,
+            Provider.CryptoKit to Unsupported,
+            Provider.OpenSSL3 to Supported,
+        ),
+    ),
 ).groupBy(Algorithm::operation)
 
 // endregion
