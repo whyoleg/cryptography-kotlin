@@ -97,7 +97,6 @@ abstract class RsaBasedCompatibilityTest<PublicK : RSA.PublicKey, PrivateK : RSA
                 val expectedLabel = when (format) {
                     RSA.PublicKey.Format.PEM       -> PemLabel.PublicKey
                     RSA.PublicKey.Format.PEM.PKCS1 -> PemLabel.RsaPublicKey
-                    else                           -> {}
                 }
 
                 assertEquals(expected.label, actual.label)
@@ -154,7 +153,6 @@ abstract class RsaBasedCompatibilityTest<PublicK : RSA.PublicKey, PrivateK : RSA
                             val expectedLabel = when (format) {
                                 RSA.PrivateKey.Format.PEM       -> PemLabel.PrivateKey
                                 RSA.PrivateKey.Format.PEM.PKCS1 -> PemLabel.RsaPrivateKey
-                                else                            -> {}
                             }
 
                             assertEquals(expected.label, actual.label)
