@@ -58,7 +58,6 @@ public abstract class CryptographyPlugin : Plugin<Project> {
                                     KonanTarget.TVOS_SIMULATOR_ARM64    -> "appletvsimulator"
                                     KonanTarget.TVOS_X64                -> "appletvsimulator"
 
-                                    KonanTarget.WATCHOS_ARM32           -> "watchos"
                                     KonanTarget.WATCHOS_ARM64           -> "watchos"
                                     KonanTarget.WATCHOS_DEVICE_ARM64    -> "watchos"
                                     KonanTarget.WATCHOS_SIMULATOR_ARM64 -> "watchsimulator"
