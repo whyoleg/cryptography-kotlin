@@ -13,14 +13,4 @@ description = "cryptography-kotlin random API"
 
 kotlin {
     allTargets()
-
-    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-    applyDefaultHierarchyTemplate {
-        common {
-            group("linuxAndAndroidNative") {
-                group("linux")
-                group("androidNative")
-            }
-        }
-    }
 }

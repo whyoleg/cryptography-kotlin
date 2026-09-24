@@ -29,16 +29,8 @@ kotlin {
                 group("nonApple") {
                     group("mingw")
                     group("linux")
-                    group("androidNative")
                 }
-                group("apple") {
-                    group("cryptokitSupported") {
-                        withApple()
-                        excludeCompilations {
-                            (it.target as? KotlinNativeTarget)?.konanTarget == KonanTarget.WATCHOS_ARM32
-                        }
-                    }
-                }
+                group("apple")
             }
         }
     }
@@ -55,8 +47,6 @@ kotlin {
         }
         appleMain.dependencies {
             implementation(projects.cryptographyProviderApple)
-        }
-        named("cryptokitSupportedMain").dependencies {
             implementation(projects.cryptographyProviderCryptokit)
         }
         named("nonAppleMain").dependencies {
