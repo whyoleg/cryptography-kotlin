@@ -48,3 +48,6 @@ mavenPublishing {
 // * failure because of absent signature will anyway fail only on CI during publishing release;
 // Still, it makes sense to enable signing check during publication, specifically to fail during SNAPSHOT publication
 signing.isRequired = booleanProperty("ckbuild.requireSigning", defaultValue = false).get()
+
+// local location for published artifacts
+publishing.repositories.maven(rootProject.layout.buildDirectory.dir("maven-dev-artifacts")) { name = "dev" }
