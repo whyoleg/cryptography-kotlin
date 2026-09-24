@@ -5,24 +5,24 @@ kotlin = "2.4.20"
 # kotlin/kotlinx
 kotlin-dokka = "2.2.0"
 kotlinx-io = "0.9.1"
-kotlinx-serialization = "1.10.0"
-kotlinx-coroutines = "1.10.2"
-kotlinx-benchmark = "0.4.16"
-kotlinx-kover = "0.9.7"
-ktor = "3.4.1"
+kotlinx-serialization = "1.11.0"
+kotlinx-coroutines = "1.11.0"
+kotlinx-benchmark = "0.5.0"
+kotlinx-kover = "0.9.9"
+ktor = "3.6.0"
 
 # android
-android = "9.1.0"
+android = "9.2.1"
 androidx-test = "1.7.0"
 
 # gradle/build
 apache-commons-compress = "1.28.0"
-maven-publish = "0.36.0"
+maven-publish = "0.37.0"
 gradle-publish = "2.1.1"
 
 # other
-bouncycastle = "1.83"
-openssl = "3.6.1_1"
+bouncycastle = "1.86"
+openssl = "3.6.4"
 
 [libraries]
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
