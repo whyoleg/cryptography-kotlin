@@ -29,7 +29,7 @@ runs:
     # Android test failures are not available in gradle build scans
     - name: Upload test reports
       if: failure()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: android-test-reports-${{ inputs.test-reports-classifier }}-${{ inputs.api-level }}
         path: '**/build/reports/androidTests'
