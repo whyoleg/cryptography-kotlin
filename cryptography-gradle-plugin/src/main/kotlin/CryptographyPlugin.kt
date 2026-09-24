@@ -52,17 +52,13 @@ public abstract class CryptographyPlugin : Plugin<Project> {
                                     KonanTarget.IOS_X64                 -> "iphonesimulator"
 
                                     KonanTarget.MACOS_ARM64             -> "macosx"
-                                    KonanTarget.MACOS_X64               -> "macosx"
 
                                     KonanTarget.TVOS_ARM64              -> "appletvos"
                                     KonanTarget.TVOS_SIMULATOR_ARM64    -> "appletvsimulator"
-                                    KonanTarget.TVOS_X64                -> "appletvsimulator"
 
-                                    KonanTarget.WATCHOS_ARM32           -> "watchos"
                                     KonanTarget.WATCHOS_ARM64           -> "watchos"
                                     KonanTarget.WATCHOS_DEVICE_ARM64    -> "watchos"
                                     KonanTarget.WATCHOS_SIMULATOR_ARM64 -> "watchsimulator"
-                                    KonanTarget.WATCHOS_X64             -> "watchsimulator"
                                     else                                -> error("Unsupported target: ${target.konanTarget}")
                                 }
                                 "-L$libsDir/$platformDir"

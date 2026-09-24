@@ -80,19 +80,14 @@ kotlin {
             KonanTarget.IOS_SIMULATOR_ARM64,
             KonanTarget.IOS_X64
                                    -> "iphonesimulator"
-            KonanTarget.MACOS_ARM64,
-            KonanTarget.MACOS_X64
-                                   -> "macosx"
+            KonanTarget.MACOS_ARM64 -> "macosx"
             KonanTarget.TVOS_ARM64 -> "appletvos"
-            KonanTarget.TVOS_SIMULATOR_ARM64,
-            KonanTarget.TVOS_X64
+            KonanTarget.TVOS_SIMULATOR_ARM64
                                    -> "appletvsimulator"
-            KonanTarget.WATCHOS_ARM32,
             KonanTarget.WATCHOS_ARM64,
             KonanTarget.WATCHOS_DEVICE_ARM64
                                    -> "watchos"
-            KonanTarget.WATCHOS_SIMULATOR_ARM64,
-            KonanTarget.WATCHOS_X64
+            KonanTarget.WATCHOS_SIMULATOR_ARM64
                                    -> "watchsimulator"
             else                   -> error("Unsupported Apple target: ${appleTarget.konanTarget}")
         }
