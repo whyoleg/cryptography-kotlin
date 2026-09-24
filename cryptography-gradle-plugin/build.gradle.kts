@@ -14,12 +14,12 @@ gradlePlugin {
     }
 }
 
-val devArtifactsDirectory = layout.buildDirectory.dir("maven-dev-artifacts")
+val devArtifactsDirectory = layout.buildDirectory.dir("mavenTestArtifacts")
 
-publishing.repositories.maven(devArtifactsDirectory) { name = "dev" }
+publishing.repositories.maven(devArtifactsDirectory) { name = "test" }
 
 tasks.withType<Test>().configureEach {
-    dependsOn(tasks.named("publishAllPublicationsToDevRepository"))
+    dependsOn(tasks.named("publishAllPublicationsToTestRepository"))
 
     inputs
         .files(devArtifactsDirectory.get().asFileTree.matching { include("**/*.module") })
