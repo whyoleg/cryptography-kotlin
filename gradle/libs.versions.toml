@@ -12,12 +12,12 @@ kotlinx-kover = "0.9.9"
 ktor = "3.6.0"
 
 # android
-android = "9.1.0"
+android = "9.2.1"
 androidx-test = "1.7.0"
 
 # gradle/build
 apache-commons-compress = "1.28.0"
-maven-publish = "0.36.0"
+maven-publish = "0.37.0"
 gradle-publish = "2.1.1"
 
 # other
