@@ -29,9 +29,6 @@ kotlin {
         commonMain.dependencies {
             api(projects.cryptographyProviderOpenssl3Api)
         }
-        commonTest.dependencies {
-            implementation(projects.cryptographyProviderOpenssl3Tests)
-        }
     }
 
     targets.withType<KotlinNativeTarget>().configureEach {

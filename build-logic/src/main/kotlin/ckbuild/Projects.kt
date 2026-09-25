@@ -42,7 +42,6 @@ object Projects {
         "cryptography-provider-optimal" to setOf(Tag.PUBLISHED, Tag.EXCLUDE_FROM_DOKKA),
 
         "cryptography-provider-jdk-android-tests" to setOf(),
-        "cryptography-provider-openssl3-tests" to setOf(),
         "cryptography-provider-tests" to setOf(),
     )
 

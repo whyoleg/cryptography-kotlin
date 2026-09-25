@@ -64,7 +64,6 @@ projects("cryptography-kotlin") {
             module("shared")
             module("prebuilt")
             module("prebuilt-nativebuilds")
-            module("tests")
         }
         module("cryptokit")
         module("optimal") // composite provider
