@@ -83,13 +83,13 @@ interface CipherTest {
         }
     }
 
-    // GCM and ChaCha20 mode on JDK has a check which tries to prevent reuse of the same IV with the same key.
+    // GCM, CCM and ChaCha20 mode on JDK has a check which tries to prevent reuse of the same IV with the same key.
     // we need to set random IV first to be able to reuse IV for different plaintext for the same key
     private suspend fun AlgorithmTestScope<*>.resetIv(encryptor: Encryptor, decryptor: Decryptor) {
         if (!context.provider.isJdk) return
 
         when (algorithm.id) {
-            AES.GCM          -> {
+            AES.GCM, AES.CCM -> {
                 // just reset the IV
                 val _ = encryptor.encrypt(ByteString())
             }

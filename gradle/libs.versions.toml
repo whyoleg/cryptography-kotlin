@@ -21,7 +21,7 @@ maven-publish = "0.37.0"
 gradle-publish = "2.1.1"
 
 # other
-bouncycastle = "1.83"
+bouncycastle = "1.86"
 openssl = "3.6.4"
 
 [libraries]

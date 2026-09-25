@@ -7,6 +7,7 @@ package dev.whyoleg.cryptography.providers.tests.compatibility
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.BinarySize.Companion.bits
 import dev.whyoleg.cryptography.algorithms.*
+import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.tests.*
 import dev.whyoleg.cryptography.providers.tests.compatibility.api.*
 import dev.whyoleg.cryptography.random.*
@@ -76,7 +77,7 @@ abstract class AesCcmCompatibilityTest(provider: CryptographyProvider) :
                                 ciphertext
                             }
                             else -> {
-                                val ciphertext = cipher.encryptWithIv(iv, plaintext, associatedData)
+                                val ciphertext = cipher.resetIv(context).encryptWithIv(iv, plaintext, associatedData)
                                 logger.log { "ciphertext.size = ${ciphertext.size}" }
                                 assertContentEquals(plaintext, cipher.decryptWithIv(iv, ciphertext, associatedData), "Initial Decrypt")
                                 ciphertext
@@ -116,7 +117,7 @@ abstract class AesCcmCompatibilityTest(provider: CryptographyProvider) :
                                 plaintext,
                                 cipher.decryptWithIv(
                                     iv,
-                                    cipher.encryptWithIv(iv, plaintext, associatedData),
+                                    cipher.resetIv(context).encryptWithIv(iv, plaintext, associatedData),
                                     associatedData
                                 ),
                                 "Encrypt-Decrypt"
@@ -127,4 +128,13 @@ abstract class AesCcmCompatibilityTest(provider: CryptographyProvider) :
             }
         }
     }
+}
+
+// CCM mode on JDK (BC) has a check which tries to prevent reuse of the same IV with the same key.
+// we need to set random IV first to be able to reuse IV for different plaintext for the same key
+private suspend fun IvAuthenticatedCipher.resetIv(context: TestContext): IvAuthenticatedCipher {
+    if (context.provider.isBouncyCastle) {
+        val _ = encrypt(ByteString())
+    }
+    return this
 }
