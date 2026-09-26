@@ -10,7 +10,7 @@ plugins {
 }
 
 dependencies {
-    Projects.documented.forEach {
+    documentedLibrariesProjectNames().forEach {
         dokka(project(":$it"))
     }
 }

@@ -18,7 +18,7 @@ mavenPublishing {
 
 dependencies {
     constraints {
-        Projects.libraries.forEach {
+        publishedLibrariesProjectNames().forEach {
             api(project(":$it"))
         }
     }

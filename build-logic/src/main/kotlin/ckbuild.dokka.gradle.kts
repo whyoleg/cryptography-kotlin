@@ -29,7 +29,7 @@ dokka {
             url("https://kotlinlang.org/api/kotlinx-io/")
         }
 
-        if (project != rootProject && project.name in Projects.documented) {
+        if (project != rootProject && project.name in documentedLibrariesProjectNames()) {
             if (name.endsWith("Main")) {
                 // TODO: dokka requires for `includes` files to be present...
                 //  otherwise we could use `includes.from("src/${name}Docs/module.md")`

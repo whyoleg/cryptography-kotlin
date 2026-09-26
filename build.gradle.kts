@@ -2,7 +2,6 @@
  * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
-import ckbuild.*
 import org.jetbrains.kotlin.gradle.targets.js.nodejs.*
 import org.jetbrains.kotlin.gradle.targets.js.npm.*
 import org.jetbrains.kotlin.gradle.targets.wasm.nodejs.*
@@ -16,8 +15,6 @@ plugins {
     id("ckbuild.use-openssl")
     id("ckbuild.mkdocs")
 }
-
-Projects.validateProjectTags(project)
 
 // ignore package lock
 plugins.withType<NodeJsRootPlugin> {

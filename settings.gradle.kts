@@ -28,47 +28,56 @@ dependencyResolutionManagement {
     }
 }
 
+@Suppress("LocalVariableName")
 projects("cryptography-kotlin") {
+    // sync with build-logic/src/main/kotlin/ckbuild/Projects.kt
+    // included into BOM, version catalog and Dokka
+    val PUBLISHED_LIBRARY_WITH_DOCS = listOf("PUBLISHED_LIBRARY", "DOCUMENTED_LIBRARY")
+    // only BOM and version catalog
+    val PUBLISHED_LIBRARY_WITHOUT_DOCS = listOf("PUBLISHED_LIBRARY")
+
     // build-tools modules
     module("cryptography-bom")
     module("cryptography-version-catalog")
 
     // core util modules
-    module("cryptography-bigint")
-    module("cryptography-random")
+    module("cryptography-bigint", PUBLISHED_LIBRARY_WITH_DOCS)
+    module("cryptography-random", PUBLISHED_LIBRARY_WITH_DOCS)
     folder("cryptography-serialization") {
-        module("pem") {
+        module("pem", PUBLISHED_LIBRARY_WITH_DOCS) {
             module("benchmarks")
         }
-        module("asn1") {
-            module("modules")
+        module("asn1", PUBLISHED_LIBRARY_WITH_DOCS) {
+            module("modules", PUBLISHED_LIBRARY_WITH_DOCS)
         }
     }
 
     // providers API, high-level API
-    module("cryptography-core")
+    module("cryptography-core", PUBLISHED_LIBRARY_WITH_DOCS)
 
     // providers
     folder("cryptography-providers", prefix = "cryptography-provider") {
-        module("base")
+        module("base", PUBLISHED_LIBRARY_WITHOUT_DOCS)
         module("tests")
 
-        module("jdk") {
+        module("jdk", PUBLISHED_LIBRARY_WITHOUT_DOCS) {
             module("android-tests")
-            module("bc") // preconfigured JDK with BC provider
+            // preconfigured JDK with BC provider
+            module("bc", PUBLISHED_LIBRARY_WITHOUT_DOCS)
         }
-        module("apple")
-        module("webcrypto")
+        module("apple", PUBLISHED_LIBRARY_WITHOUT_DOCS)
+        module("webcrypto", PUBLISHED_LIBRARY_WITHOUT_DOCS)
         folder("openssl3") {
-            module("api")
-            module("shared")
-            module("prebuilt")
-            module("prebuilt-nativebuilds")
+            module("api", PUBLISHED_LIBRARY_WITHOUT_DOCS)
+            module("shared", PUBLISHED_LIBRARY_WITHOUT_DOCS)
+            module("prebuilt", PUBLISHED_LIBRARY_WITHOUT_DOCS)
+            module("prebuilt-nativebuilds", PUBLISHED_LIBRARY_WITHOUT_DOCS)
         }
-        module("cryptokit")
-        module("optimal") // composite provider
+        module("cryptokit", PUBLISHED_LIBRARY_WITHOUT_DOCS)
+        // composite provider
+        module("optimal", PUBLISHED_LIBRARY_WITHOUT_DOCS)
     }
 
     // gradle plugin with helpers for swift and other things
-    module("cryptography-gradle-plugin")
+    module("cryptography-gradle-plugin", PUBLISHED_LIBRARY_WITHOUT_DOCS)
 }

@@ -19,8 +19,7 @@ mavenPublishing {
 catalog {
     versionCatalog {
         val cryptographyVersion = version("cryptography", version.toString())
-        Projects.published.forEach { name ->
-            if (project.name == name) return@forEach // skip version catalog :)
+        publishedLibrariesProjectNames().forEach { name ->
             library(
                 /* alias =    */ name.substringAfter("cryptography-"),
                 /* group =    */ "dev.whyoleg.cryptography",
