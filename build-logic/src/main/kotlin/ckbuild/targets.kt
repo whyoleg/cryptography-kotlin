@@ -80,6 +80,10 @@ fun KotlinMultiplatformExtension.wasmJsTarget(
 fun KotlinMultiplatformExtension.wasmWasiTarget() {
     wasmWasi {
         nodejs()
+
+        // TODO: wasmtime is ±10 times slower than nodejs on random and big int tests (big byte arrays)...
+        //  as well, as it looks like it only starts logging after some time - does it run twice?
+        wasmtime()
     }
 }
 
