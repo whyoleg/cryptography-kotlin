@@ -23,3 +23,6 @@ kotlin {
         implementation(libs.kotlinx.serialization.json)
     }
 }
+
+// https://youtrack.jetbrains.com/issue/KT-89521 -> 2.5.0-Beta2
+tasks.named("wasmJsTestBundleAsEsm") { onlyIf { false } }
