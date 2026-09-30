@@ -4,7 +4,12 @@
 
 @file:Suppress("UnstableApiUsage")
 
+// To use kotlin compiler built locally uncomment this
+// or pass properties during build: `./gradlew TASK -Pckbuild.kotlinVersionOverride=2.5.255-SNAPSHOT -Pckbuild.kotlinRepositoryOverride=mavenLocal
+//val kotlinVersionOverride = "2.5.255-SNAPSHOT"
+//val kotlinRepositoryOverride = "mavenLocal"
 val kotlinVersionOverride = providers.gradleProperty("ckbuild.kotlinVersionOverride").orNull?.takeIf(String::isNotBlank)
+val kotlinRepositoryOverride = providers.gradleProperty("ckbuild.kotlinRepositoryOverride").orNull?.takeIf(String::isNotBlank)
 
 // we need to create it eagerly to be able to override later
 dependencyResolutionManagement {
@@ -12,14 +17,16 @@ dependencyResolutionManagement {
 }
 
 if (kotlinVersionOverride != null) {
-    val kotlinDevRepository = "https://redirector.kotlinlang.org/maven/dev"
+    val kotlinDevRepository = kotlinRepositoryOverride ?: "https://redirector.kotlinlang.org/maven/dev"
     val kotlinGroup = "org.jetbrains.kotlin"
 
     logger.lifecycle("Kotlin version override: $kotlinVersionOverride, repository: $kotlinDevRepository")
 
     pluginManagement {
         repositories {
-            maven(kotlinDevRepository) {
+            if (kotlinDevRepository == "mavenLocal") mavenLocal {
+                content { includeGroupAndSubgroups(kotlinGroup) }
+            } else maven(kotlinDevRepository) {
                 content { includeGroupAndSubgroups(kotlinGroup) }
             }
         }
@@ -27,7 +34,9 @@ if (kotlinVersionOverride != null) {
 
     dependencyResolutionManagement {
         repositories {
-            maven(kotlinDevRepository) {
+            if (kotlinDevRepository == "mavenLocal") mavenLocal {
+                content { includeGroupAndSubgroups(kotlinGroup) }
+            } else maven(kotlinDevRepository) {
                 content { includeGroupAndSubgroups(kotlinGroup) }
             }
         }
