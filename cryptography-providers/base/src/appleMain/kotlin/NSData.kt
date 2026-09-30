@@ -10,6 +10,7 @@ import platform.Foundation.*
 
 private val EmptyNSData = NSData()
 
+// ISSUE: all NSData related operations are failing
 @CryptographyProviderApi
 @OptIn(UnsafeNumber::class, ExperimentalForeignApi::class)
 public fun NSData.getIntoByteArray(

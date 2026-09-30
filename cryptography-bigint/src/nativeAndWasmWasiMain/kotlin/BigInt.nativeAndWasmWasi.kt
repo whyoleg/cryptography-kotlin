@@ -90,6 +90,7 @@ public actual class BigInt internal constructor(
     public actual override fun toFloat(): Float = toString().toFloat()
     public actual override fun toDouble(): Double = toString().toDouble()
 
+    // ISSUE[EXPECT_ACTUAL_IR_MISMATCH]: ArrayDeque/ArrayList usage
     public actual override fun toString(): String {
         if (sign == 0) return "0"
 

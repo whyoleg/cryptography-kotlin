@@ -1,13 +1,12 @@
 /*
- * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 @file:OptIn(ExperimentalWasmJsInterop::class)
 
 package dev.whyoleg.cryptography.bigint
 
-import kotlin.js.*
-
+// ISSUE[EXTERNAL_TYPE_EXTENDS_NON_EXTERNAL_TYPE]: JsAny usage in webMain
 internal external interface JsBigInt : JsAny {
     @JsName("toString")
     fun convertToString(): String
