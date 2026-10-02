@@ -25,6 +25,8 @@ kotlin {
         commonMain.dependencies {
             api(kotlin("test"))
 
+            api(projects.cryptographyTesthost)
+
             api(projects.cryptographyCore)
             api(projects.cryptographySerializationPem)
             api(projects.cryptographySerializationAsn1)

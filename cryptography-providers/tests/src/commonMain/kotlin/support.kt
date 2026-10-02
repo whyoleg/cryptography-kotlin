@@ -11,6 +11,7 @@ import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.serialization.asn1.*
 import dev.whyoleg.cryptography.serialization.asn1.modules.*
 import dev.whyoleg.cryptography.serialization.pem.*
+import dev.whyoleg.cryptography.testhost.*
 import kotlinx.io.bytestring.*
 
 fun AlgorithmTestScope<*>.supportsFunctions() = supports {

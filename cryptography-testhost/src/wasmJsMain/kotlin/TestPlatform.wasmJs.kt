@@ -1,10 +1,10 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 @file:OptIn(kotlin.js.ExperimentalWasmJsInterop::class)
 
-package dev.whyoleg.cryptography.providers.tests
+package dev.whyoleg.cryptography.testhost
 
 internal actual val currentTestPlatform: TestPlatform = jsPlatform().run {
     when {

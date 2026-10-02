@@ -55,6 +55,9 @@ projects("cryptography-kotlin") {
     // providers API, high-level API
     module("cryptography-core", PUBLISHED_LIBRARY_WITH_DOCS)
 
+    // test apis: storage, env, platform
+    module("cryptography-testhost")
+
     // providers
     folder("cryptography-providers", prefix = "cryptography-provider") {
         module("base", PUBLISHED_LIBRARY_WITHOUT_DOCS)

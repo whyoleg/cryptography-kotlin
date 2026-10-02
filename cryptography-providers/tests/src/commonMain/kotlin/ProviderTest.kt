@@ -1,10 +1,11 @@
 /*
- * Copyright (c) 2023-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.tests
 
 import dev.whyoleg.cryptography.*
+import dev.whyoleg.cryptography.testhost.*
 import kotlinx.coroutines.test.*
 import kotlin.time.*
 import kotlin.time.Duration.Companion.minutes
@@ -14,7 +15,7 @@ abstract class ProviderTest(provider: CryptographyProvider) {
     private val timeout: Duration = 60.minutes
     private val logger = TestLogger(enabled = false, tag = provider.name)
     private val context = TestContext(
-        platform = currentTestPlatform,
+        platform = TestPlatform.current(),
         provider = when (provider.name) {
             "WebCrypto" -> TestProvider.WebCrypto
             "JDK"       -> TestProvider.JDK.Default
