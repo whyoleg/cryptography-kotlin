@@ -68,5 +68,6 @@ abstract class SupportedAlgorithmsTest(provider: CryptographyProvider) : Provide
 
         assertSupports(PBKDF2, !context.provider.isCryptoKit)
         assertSupports(HKDF)
+        assertSupports(Scrypt, context.provider.isBouncyCastle || context.provider.isOpenssl3)
     }
 }

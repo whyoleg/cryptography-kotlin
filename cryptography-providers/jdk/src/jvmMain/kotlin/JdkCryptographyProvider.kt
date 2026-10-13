@@ -97,7 +97,7 @@ public fun CryptographyProvider.Companion.JDK(
     return JdkCryptographyProvider(provider)
 }
 
-internal class JdkCryptographyProvider(provider: Provider?) : CryptographyProvider() {
+internal class JdkCryptographyProvider(private val provider: Provider?) : CryptographyProvider() {
     private val state = JdkCryptographyState(provider)
     override val name: String = when (provider) {
         null -> "JDK"
@@ -143,6 +143,8 @@ internal class JdkCryptographyProvider(provider: Provider?) : CryptographyProvid
             DH -> JdkDh(state)
             PBKDF2           -> JdkPbkdf2(state)
             HKDF             -> JdkHkdf(state, this)
+            Scrypt if JdkScrypt.isSupported(provider) -> JdkScrypt
+            Scrypt           -> return null
             else             -> null
         }
     } as A?

@@ -58,6 +58,10 @@ protected abstract class dev/whyoleg/cryptography/providers/base/algorithms/Base
 	protected final fun getKey ()[B
 }
 
+public final class dev/whyoleg/cryptography/providers/base/algorithms/BaseScryptKt {
+	public static final fun validateScryptParameters-lV-RIyI (IIIJI)V
+}
+
 public final class dev/whyoleg/cryptography/providers/base/algorithms/DssRawSignatureGenerator : dev/whyoleg/cryptography/operations/SignatureGenerator {
 	public fun <init> (Ldev/whyoleg/cryptography/operations/SignatureGenerator;I)V
 	public fun createSignFunction ()Ldev/whyoleg/cryptography/operations/SignFunction;

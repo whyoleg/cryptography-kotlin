@@ -1,10 +1,11 @@
 # Key Derivation
 
-Key derivation functions transform raw input material into well-formed cryptographic keys. This library provides two
+Key derivation functions transform raw input material into well-formed cryptographic keys. This library provides three
 algorithms for two fundamentally different scenarios:
 
 - **HKDF** (KDF) -- derives keys from high-entropy input such as key agreement output or random bytes. Fast by design.
 - **PBKDF2** (password-based) -- derives keys from low-entropy passwords. Deliberately slow to resist brute-force attacks.
+- **scrypt** (password-based) -- derives keys from low-entropy passwords with configurable CPU and memory costs.
 
 !!! note "Assumed imports"
 
@@ -121,6 +122,34 @@ The iteration count is the primary tuning parameter. A higher count means more w
 both the legitimate user and any attacker. The
 [OWASP Password Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)
 recommends **600,000 iterations for SHA-256**.
+
+## scrypt
+
+Scrypt derives cryptographic keys from passwords using a salt and configurable CPU and memory costs. Its memory-hard
+design makes large-scale password guessing expensive by requiring substantial memory as well as computation for each
+attempt.
+
+```kotlin
+val scrypt = provider.get(Scrypt)
+val password = "user-password".encodeToByteArray()
+val salt = CryptographyRandom.nextBytes(16)
+
+val derivation = scrypt.secretDerivation(
+    cost = 1 shl 17, // N = 2^17
+    blockSize = 8,
+    parallelization = 1,
+    maximumMemoryBytes = 134_223_872L, // 128 MiB plus a 6 KiB working-buffer allowance
+    outputSize = 256.bits,
+    salt = salt
+)
+val derivedKey = derivation.deriveSecretToByteArray(password)
+```
+
+This example uses one of the [OWASP-recommended parameter sets](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html#scrypt)
+for `cost` (`N`), `blockSize` (`r`), and `parallelization` (`p`), which has a nominal memory cost of 128 MiB. For this
+combination, `maximumMemoryBytes` includes an additional 6 KiB working-buffer allowance. Applications should choose this
+budget independently rather than calculate it from parameters supplied by an untrusted source. The budget does not limit
+or guarantee total process resident memory (RSS).
 
 ## Supported Algorithms
 

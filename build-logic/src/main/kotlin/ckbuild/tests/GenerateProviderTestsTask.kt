@@ -76,6 +76,10 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
 
             "Pbkdf2CompatibilityTest",
 
+            "ScryptTest",
+            "ScryptCompatibilityTest",
+            "ScryptTestvectorsTest",
+
             "HkdfCompatibilityTest",
             "HkdfTestvectorsTest",
 

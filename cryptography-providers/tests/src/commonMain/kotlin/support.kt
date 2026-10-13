@@ -293,6 +293,7 @@ fun AlgorithmTestScope<DH>.supportsComplexParameterGeneration(): Boolean = suppo
 
 fun ProviderTestScope.supports(algorithmId: CryptographyAlgorithmId<*>): Boolean = validate {
     when (algorithmId) {
+        Scrypt if !provider.isBouncyCastle && !provider.isOpenssl3                              -> "scrypt is only supported by BouncyCastle and OpenSSL3"
         AES.CMAC if provider.isJdkDefault                                                       -> "Default JDK provider doesn't support AES-CMAC, only supported with BouncyCastle"
         AES.CCM if provider.isJdkDefault -> "Default JDK provider doesn't support AES-CCM, only supported with BouncyCastle"
         RSA.PSS if provider.isJdkDefault && platform.isAndroid                                  -> "JDK provider on Android doesn't support RSASSA-PSS"
