@@ -18,21 +18,27 @@ class BcDefaultJdkSecurityProviderTest {
     }
 
     @Test
-    fun scryptRequiresSelectedBouncyCastleProvider() {
+    fun bouncyCastleOnlyAlgorithmsRequireSelectedBouncyCastleProvider() {
         val nonBouncyCastleProvider = Security.getProviders().first { it.name != "BC" }
-        assertNull(CryptographyProvider.JDK(nonBouncyCastleProvider).getOrNull(Scrypt))
+        val nonBouncyCastle = CryptographyProvider.JDK(nonBouncyCastleProvider)
+        assertNull(nonBouncyCastle.getOrNull(Scrypt))
+        assertNull(nonBouncyCastle.getOrNull(SHAKE256))
 
         val bouncyCastleProvider = ServiceLoader.load(DefaultJdkSecurityProvider::class.java).single().provider.value
-        assertNotNull(CryptographyProvider.JDK(bouncyCastleProvider).getOrNull(Scrypt))
+        val bouncyCastle = CryptographyProvider.JDK(bouncyCastleProvider)
+        assertNotNull(bouncyCastle.getOrNull(Scrypt))
+        assertNotNull(bouncyCastle.getOrNull(SHAKE256))
     }
 
     @Test
-    fun allProvidersExposeScryptWhenBouncyCastleIsRegistered() {
+    fun allProvidersExposeBouncyCastleOnlyAlgorithmsWhenBouncyCastleIsRegistered() {
         val bouncyCastleProvider = ServiceLoader.load(DefaultJdkSecurityProvider::class.java).single().provider.value
         val wasRegistered = Security.getProvider(bouncyCastleProvider.name) != null
         if (!wasRegistered) Security.addProvider(bouncyCastleProvider)
         try {
-            assertNotNull(CryptographyProvider.JDK().getOrNull(Scrypt))
+            val provider = CryptographyProvider.JDK()
+            assertNotNull(provider.getOrNull(Scrypt))
+            assertNotNull(provider.getOrNull(SHAKE256))
         } finally {
             if (!wasRegistered) Security.removeProvider(bouncyCastleProvider.name)
         }

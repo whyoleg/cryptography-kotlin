@@ -145,6 +145,8 @@ internal class JdkCryptographyProvider(private val provider: Provider?) : Crypto
             HKDF             -> JdkHkdf(state, this)
             Scrypt if JdkScrypt.isSupported(provider) -> JdkScrypt
             Scrypt           -> return null
+            SHAKE256 if JdkShake256.isSupported(provider) -> JdkShake256
+            SHAKE256         -> return null
             else             -> null
         }
     } as A?

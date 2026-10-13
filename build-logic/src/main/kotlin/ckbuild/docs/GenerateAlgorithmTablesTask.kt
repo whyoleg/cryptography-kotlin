@@ -461,6 +461,18 @@ private val algorithms = listOf(
         ),
     ),
     Algorithm(
+        id = "SHAKE256",
+        operation = Operation.Hashing,
+        apiPath = "-s-h-a-k-e256",
+        providers = mapOf(
+            Provider.JDK to Limited("Requires BouncyCastle"),
+            Provider.WebCrypto to Unsupported,
+            Provider.Apple to Unsupported,
+            Provider.CryptoKit to Unsupported,
+            Provider.OpenSSL3 to Supported,
+        ),
+    ),
+    Algorithm(
         id = "SHA1",
         operation = Operation.Hashing,
         status = Status.Legacy,

@@ -29,6 +29,20 @@ println(digest.contentEquals(digest2)) // true
 
 The [`Hasher`][Hasher] is reusable -- each [`hash`][hash] call is independent and does not accumulate state.
 
+## Extendable output with SHAKE256
+
+SHAKE256 uses the same `Hasher` operations, but requires a positive output size when the hasher is created:
+
+```kotlin
+import dev.whyoleg.cryptography.BinarySize.Companion.bytes
+
+val shake = provider.get(SHAKE256)
+val output = shake.hasher(64.bytes).hash("input".encodeToByteArray())
+```
+
+Finalization produces exactly the configured number of bytes and resets the function. The API does not expose a
+squeeze stream; create a hasher with the required final output size instead.
+
 For larger data, the overload that accepts a [`RawSource`][RawSource] from [kotlinx-io] could be used instead:
 
 ```kotlin

@@ -6,6 +6,7 @@ package dev.whyoleg.cryptography.providers.jdk.internal
 
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.providers.jdk.*
+import org.bouncycastle.crypto.digests.*
 import org.bouncycastle.crypto.generators.*
 import org.bouncycastle.crypto.params.*
 import org.bouncycastle.jcajce.interfaces.*
@@ -27,18 +28,23 @@ internal object BouncyCastleBridge {
         false
     }
 
-    private val isScryptAvailable = try {
-        Class.forName("org.bouncycastle.crypto.generators.SCrypt")
+    private val isScryptAvailable = classAvailable("org.bouncycastle.crypto.generators.SCrypt")
+    private val isShakeAvailable = classAvailable("org.bouncycastle.crypto.digests.SHAKEDigest")
+
+    private fun classAvailable(name: String): Boolean = try {
+        Class.forName(name)
         true
     } catch (_: ClassNotFoundException) {
         false
     }
 
-    fun supportsScrypt(provider: JProvider?): Boolean =
-        isScryptAvailable && when (provider) {
-            null -> Security.getProviders().any { it is BouncyCastleProvider }
-            else -> provider is BouncyCastleProvider
-        }
+    private fun isSelected(provider: JProvider?): Boolean = when (provider) {
+        null -> Security.getProviders().any { it is BouncyCastleProvider }
+        else -> provider is BouncyCastleProvider
+    }
+
+    fun supportsScrypt(provider: JProvider?): Boolean = isScryptAvailable && isSelected(provider)
+    fun supportsShake256(provider: JProvider?): Boolean = isShakeAvailable && isSelected(provider)
 
     fun generateScrypt(
         input: ByteArray,
@@ -50,6 +56,16 @@ internal object BouncyCastleBridge {
     ): ByteArray {
         check(isScryptAvailable) { "BouncyCastle scrypt implementation is not available" }
         return SCrypt.generate(input, salt, cost, blockSize, parallelization, outputSizeBytes)
+    }
+
+    class Shake256State internal constructor() {
+        private val digest = SHAKEDigest(256)
+
+        fun update(source: ByteArray, startIndex: Int, length: Int) = digest.update(source, startIndex, length)
+        fun finish(destination: ByteArray, destinationOffset: Int, length: Int): Int =
+            digest.doFinal(destination, destinationOffset, length)
+
+        fun reset() = digest.reset()
     }
 
     fun deriveEcPublicKey(

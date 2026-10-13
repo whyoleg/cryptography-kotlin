@@ -80,6 +80,9 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
             "ScryptCompatibilityTest",
             "ScryptTestvectorsTest",
 
+            "Shake256Test",
+            "Shake256TestvectorsTest",
+
             "HkdfCompatibilityTest",
             "HkdfTestvectorsTest",
 

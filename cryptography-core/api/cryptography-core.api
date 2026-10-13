@@ -971,6 +971,10 @@ public final class dev/whyoleg/cryptography/algorithms/SHA512 : dev/whyoleg/cryp
 	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/SHA512;
 }
 
+public final class dev/whyoleg/cryptography/algorithms/SHAKE256 : dev/whyoleg/cryptography/CryptographyAlgorithmId {
+	public static final field INSTANCE Ldev/whyoleg/cryptography/algorithms/SHAKE256;
+}
+
 public abstract interface class dev/whyoleg/cryptography/algorithms/Scrypt : dev/whyoleg/cryptography/CryptographyAlgorithm {
 	public static final field Companion Ldev/whyoleg/cryptography/algorithms/Scrypt$Companion;
 	public fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
@@ -1075,6 +1079,11 @@ public final class dev/whyoleg/cryptography/algorithms/XDH$PublicKey$Format$RAW 
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getName ()Ljava/lang/String;
 	public fun hashCode ()I
+}
+
+public abstract interface class dev/whyoleg/cryptography/algorithms/XOF : dev/whyoleg/cryptography/CryptographyAlgorithm {
+	public abstract fun getId ()Ldev/whyoleg/cryptography/CryptographyAlgorithmId;
+	public abstract fun hasher-6q1zMKY (I)Ldev/whyoleg/cryptography/operations/Hasher;
 }
 
 public final class dev/whyoleg/cryptography/algorithms/symmetric/SymmetricKeySize {

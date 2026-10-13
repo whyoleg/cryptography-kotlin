@@ -50,6 +50,7 @@ abstract class SupportedAlgorithmsTest(provider: CryptographyProvider) : Provide
         assertSupports(SHA3_256, supportsSha3)
         assertSupports(SHA3_384, supportsSha3)
         assertSupports(SHA3_512, supportsSha3)
+        assertSupports(SHAKE256, context.provider.isBouncyCastle || context.provider.isOpenssl3)
 
         assertSupports(RIPEMD160, !context.provider.isApple && !context.provider.isWebCrypto && !context.provider.isCryptoKit)
 
