@@ -61,7 +61,7 @@ fun KotlinMultiplatformExtension.jsTarget(
         nodejs()
         if (supportsBrowser) browser()
         compilerOptions {
-            target = "es2015"
+            target = "es2020"
         }
     }
 }
@@ -79,7 +79,8 @@ fun KotlinMultiplatformExtension.wasmJsTarget(
 @OptIn(ExperimentalWasmDsl::class)
 fun KotlinMultiplatformExtension.wasmWasiTarget() {
     wasmWasi {
-        nodejs()
+        // TODO: replace with wasmtime, when tests will be faster - 2.5.20
+        @Suppress("DEPRECATION") nodejs()
     }
 }
 

@@ -1,6 +1,6 @@
 [versions]
 
-kotlin = "2.5.0-Beta1"
+kotlin = "2.5.0-Beta2"
 
 # kotlin/kotlinx
 kotlin-dokka = "2.2.0"

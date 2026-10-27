@@ -4,8 +4,6 @@
 
 import ckbuild.*
 import com.android.build.gradle.internal.tasks.*
-import org.gradle.api.tasks.testing.*
-import org.gradle.kotlin.dsl.*
 import org.jetbrains.kotlin.gradle.dsl.*
 import org.jetbrains.kotlin.gradle.plugin.*
 
@@ -24,7 +22,8 @@ plugins.withType<KotlinBasePluginWrapper>().configureEach {
             progressiveMode.set(true)
             freeCompilerArgs.addAll(
                 "-Xrender-internal-diagnostic-names",
-                "-Xreturn-value-checker=full"
+                "-Xreturn-value-checker=full",
+                "-Xstrict-equality-for-structural-classes"
             )
         }
 
