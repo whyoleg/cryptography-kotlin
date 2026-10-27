@@ -4,6 +4,7 @@
 
 import ckbuild.*
 import ckbuild.tests.*
+import org.jetbrains.kotlin.gradle.*
 import org.jetbrains.kotlin.gradle.plugin.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.*
 import org.jetbrains.kotlin.gradle.targets.js.ir.*
@@ -11,6 +12,7 @@ import org.jetbrains.kotlin.gradle.targets.js.testing.*
 import org.jetbrains.kotlin.gradle.targets.jvm.tasks.*
 import org.jetbrains.kotlin.gradle.targets.native.tasks.*
 import org.jetbrains.kotlin.gradle.tasks.*
+import kotlin.time.Duration.Companion.seconds
 
 plugins {
     kotlin("multiplatform")
@@ -53,9 +55,13 @@ tasks.withType<KotlinNativeLink>().configureEach {
 kotlin {
     targets.withType<KotlinJsIrTarget>().configureEach {
         whenBrowserConfigured {
-            testTask {
-                useKarma {
-                    useConfigDirectory(rootDir.resolve("karma.config.d"))
+            @OptIn(ExperimentalJsTestDsl::class)
+            test {
+                timeout = 6000.seconds
+
+                chromium()
+                if (System.getProperty("os.name").contains("Mac", ignoreCase = true)) {
+                    webkit()
                 }
             }
         }
