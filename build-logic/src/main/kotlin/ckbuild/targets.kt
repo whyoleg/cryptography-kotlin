@@ -81,6 +81,7 @@ fun KotlinMultiplatformExtension.wasmWasiTarget() {
     wasmWasi {
         // TODO: replace with wasmtime, when tests will be faster - 2.5.20
         @Suppress("DEPRECATION") nodejs()
+        wasmtime()
     }
 }
 
