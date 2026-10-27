@@ -5,7 +5,7 @@
 import org.jetbrains.kotlin.gradle.*
 
 plugins {
-    kotlin("multiplatform") version "2.3.20"
+    kotlin("multiplatform") version "2.5.0-Beta2"
     alias(cryptographyLibs.plugins.cryptography)
 }
 
@@ -26,20 +26,16 @@ kotlin {
         browser()
     }
 
-    @Suppress("DEPRECATION") macosX64()
     macosArm64()
 
     iosArm64()
     iosX64()
     iosSimulatorArm64()
 
-    @Suppress("DEPRECATION") watchosX64()
-    watchosArm32()
     watchosArm64()
     watchosSimulatorArm64()
     watchosDeviceArm64()
 
-    @Suppress("DEPRECATION") tvosX64()
     tvosArm64()
     tvosSimulatorArm64()
 
@@ -47,11 +43,6 @@ kotlin {
     linuxArm64()
 
     mingwX64()
-
-    androidNativeX64()
-    androidNativeX86()
-    androidNativeArm64()
-    androidNativeArm32()
 
     sourceSets {
         commonMain.dependencies {
