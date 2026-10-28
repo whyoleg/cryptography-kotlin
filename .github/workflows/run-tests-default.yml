@@ -16,13 +16,13 @@ jobs:
         os: [ 'ubuntu-latest' ]
         target: [ 'jvmAll', 'js', 'wasm', 'native', 'connectedAndroid' ]
         include:
-          - os: 'macos-latest'
+          - os: 'xcode-27'
             target: 'macos'
-          - os: 'macos-latest'
+          - os: 'xcode-27'
             target: 'ios'
-          - os: 'macos-latest'
+          - os: 'xcode-27'
             target: 'watchos'
-          - os: 'macos-latest'
+          - os: 'xcode-27'
             target: 'tvos'
           - os: 'windows-latest'
             target: 'native'
