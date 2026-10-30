@@ -20,10 +20,7 @@ public fun NSData.getIntoByteArray(
     if (outputSize == 0) return 0
     checkBounds(destination.size, destinationOffset, destinationOffset + outputSize)
 
-    destination.usePinned {
-        getBytes(it.addressOf(destinationOffset), length)
-    }
-    return outputSize
+    TODO("https://youtrack.jetbrains.com/issue/KT-89799")
 }
 
 @CryptographyProviderApi
@@ -41,9 +38,7 @@ public fun NSData.toByteArray(): ByteArray {
 public fun ByteArray.toNSData(): NSData {
     if (isEmpty()) return EmptyNSData
 
-    return usePinned {
-        NSData.dataWithBytes(it.addressOf(0), size.convert())
-    }
+    TODO("https://youtrack.jetbrains.com/issue/KT-89799")
 }
 
 @CryptographyProviderApi
@@ -56,13 +51,5 @@ public fun <R> ByteArray.useNSData(
     if (isEmpty()) return block(EmptyNSData)
     checkBounds(size, startIndex, endIndex)
 
-    return usePinned {
-        block(
-            NSData.dataWithBytesNoCopy(
-                bytes = it.addressOf(startIndex),
-                length = (endIndex - startIndex).convert(),
-                freeWhenDone = false
-            )
-        )
-    }
+    TODO("https://youtrack.jetbrains.com/issue/KT-89799")
 }
