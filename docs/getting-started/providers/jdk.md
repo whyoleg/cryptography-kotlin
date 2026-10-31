@@ -34,6 +34,17 @@ val provider = CryptographyProvider.JDK(BouncyCastleProvider())
 provider.get(SHA512)
 ```
 
+## Unsupported algorithms and parameters
+
+Exceptions thrown by JCA are propagated as is, without wrapping, so unsupported parameters are usually reported by a subclass of
+`GeneralSecurityException`, for example, `NoSuchAlgorithmException` or `InvalidAlgorithmParameterException`.
+See [When something isn't supported](index.md#when-something-isnt-supported).
+
+!!! warning "RSA-PSS with SHA3 on older JDK versions"
+
+    On older JDK versions it's possible to create a signature generator for RSA-PSS with SHA3 digests,
+    but signing fails with `NullPointerException`.
+
 ## Android support
 
 JDK provider is also tested via Android emulator on API level 35.

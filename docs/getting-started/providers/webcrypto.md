@@ -8,6 +8,10 @@ The WebCrypto provider wraps the [W3C WebCrypto API][WebCrypto] and is the defau
     `suspend` functions. Calling `Blocking` variants (e.g., `encryptBlocking()`, `generateKeyBlocking()`)
     will throw an exception.
 
+!!! note "Only NIST curves"
+
+    EC algorithms support only `P-256`, `P-384` and `P-521` curves. Other curves fail immediately with `IllegalStateException`.
+
 ## Using in your projects
 
 ```kotlin

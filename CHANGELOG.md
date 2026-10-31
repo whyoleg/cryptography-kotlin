@@ -5,6 +5,22 @@ hide:
 
 # CHANGELOG
 
+## Unreleased
+
+### Bug fixes
+
+* CryptoKit: verifying a malformed ECDSA signature no longer aborts the whole process
+* `tryVerify` returns `false` for malformed signatures (empty, truncated, wrong size, bad DER, values out of range) on all providers,
+  instead of throwing provider-specific exceptions
+* JDK: `getOrNull` returns `null` for algorithms which are not available in the security provider
+* JDK: RSA RAW output is padded when decrypting into a provided array
+* OpenSSL3: fix AES-CMAC releasing a native handle which it did not own, and RSA cipher functions outliving their keys
+
+### Behavior changes
+
+* Unsupported parameters (curves, digests, sizes) now fail in the method receiving them (decoder, generator, signer, ...), when the provider
+  can detect it, instead of failing on first use
+
 ## 0.6.0 – Even more algorithms, JWK & PEM, documentation!
 
 > Published 2 Apr 2026
