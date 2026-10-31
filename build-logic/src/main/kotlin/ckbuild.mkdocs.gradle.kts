@@ -7,6 +7,7 @@ import ckbuild.docs.*
 
 plugins {
     id("ckbuild.dokka")
+    id("ckbuild.test-limitations")
 }
 
 dependencies {

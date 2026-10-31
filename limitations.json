@@ -1,0 +1,169 @@
+{
+  "environments": [
+    "apple/native-macosx",
+    "cryptokit/native-macosx",
+    "jdk.bc/jdk-21",
+    "jdk.default/jdk-11",
+    "jdk.default/jdk-21",
+    "jdk.default/jdk-8",
+    "openssl3-3.x/native-macosx",
+    "webcrypto/nodejs"
+  ],
+  "suites": {
+    "MD5": {
+      "unsupported": [
+        {
+          "description": "MD5 is not supported",
+          "environments": [
+            "webcrypto"
+          ]
+        }
+      ]
+    },
+    "RIPEMD-160": {
+      "unsupported": [
+        {
+          "description": "RIPEMD-160 is not supported",
+          "environments": [
+            "apple",
+            "cryptokit",
+            "webcrypto"
+          ]
+        },
+        {
+          "description": "RIPEMD-160 is supported only with BouncyCastle",
+          "environments": [
+            "jdk.default"
+          ]
+        }
+      ]
+    },
+    "SHA-1": {
+      "limitations": [
+        {
+          "kind": "Fails",
+          "description": "Incremental functions are not supported",
+          "environments": [
+            "webcrypto"
+          ]
+        }
+      ]
+    },
+    "SHA-224": {
+      "unsupported": [
+        {
+          "description": "SHA-224 is not supported",
+          "environments": [
+            "cryptokit",
+            "webcrypto"
+          ]
+        }
+      ]
+    },
+    "SHA-256": {
+      "limitations": [
+        {
+          "kind": "Fails",
+          "description": "Incremental functions are not supported",
+          "environments": [
+            "webcrypto"
+          ]
+        }
+      ]
+    },
+    "SHA-384": {
+      "limitations": [
+        {
+          "kind": "Fails",
+          "description": "Incremental functions are not supported",
+          "environments": [
+            "webcrypto"
+          ]
+        }
+      ]
+    },
+    "SHA-512": {
+      "limitations": [
+        {
+          "kind": "Fails",
+          "description": "Incremental functions are not supported",
+          "environments": [
+            "webcrypto"
+          ]
+        }
+      ]
+    },
+    "SHA3-224": {
+      "unsupported": [
+        {
+          "description": "SHA3 digests are not supported",
+          "environments": [
+            "apple",
+            "cryptokit",
+            "webcrypto"
+          ]
+        },
+        {
+          "description": "SHA3 digests are not supported on JDK 8 and Android without BouncyCastle",
+          "environments": [
+            "jdk.default/jdk-8"
+          ]
+        }
+      ]
+    },
+    "SHA3-256": {
+      "unsupported": [
+        {
+          "description": "SHA3 digests are not supported",
+          "environments": [
+            "apple",
+            "cryptokit",
+            "webcrypto"
+          ]
+        },
+        {
+          "description": "SHA3 digests are not supported on JDK 8 and Android without BouncyCastle",
+          "environments": [
+            "jdk.default/jdk-8"
+          ]
+        }
+      ]
+    },
+    "SHA3-384": {
+      "unsupported": [
+        {
+          "description": "SHA3 digests are not supported",
+          "environments": [
+            "apple",
+            "cryptokit",
+            "webcrypto"
+          ]
+        },
+        {
+          "description": "SHA3 digests are not supported on JDK 8 and Android without BouncyCastle",
+          "environments": [
+            "jdk.default/jdk-8"
+          ]
+        }
+      ]
+    },
+    "SHA3-512": {
+      "unsupported": [
+        {
+          "description": "SHA3 digests are not supported",
+          "environments": [
+            "apple",
+            "cryptokit",
+            "webcrypto"
+          ]
+        },
+        {
+          "description": "SHA3 digests are not supported on JDK 8 and Android without BouncyCastle",
+          "environments": [
+            "jdk.default/jdk-8"
+          ]
+        }
+      ]
+    }
+  }
+}

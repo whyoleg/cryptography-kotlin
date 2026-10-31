@@ -4,6 +4,8 @@
 
 plugins {
     `kotlin-dsl`
+    // for `provider-tests`, the same version as `kotlin-dsl` uses
+    kotlin("plugin.serialization") version embeddedKotlinVersion apply false
 }
 
 dependencies {

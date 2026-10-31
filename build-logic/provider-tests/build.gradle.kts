@@ -4,6 +4,7 @@
 
 plugins {
     `kotlin-dsl`
+    kotlin("plugin.serialization")
 }
 
 dependencies {
@@ -11,12 +12,16 @@ dependencies {
     compileOnly(libs.android.gradle.plugin)
 
     implementation(project(":teststorage"))
+    implementation(libs.kotlinx.serialization.json)
 }
 
 gradlePlugin {
     plugins {
         create("ckbuild.provider-tests") {
             implementationClass = "ckbuild.providertests.ProviderTestsPlugin"
+        }
+        create("ckbuild.test-limitations") {
+            implementationClass = "ckbuild.providertests.TestLimitationsPlugin"
         }
     }
 }
