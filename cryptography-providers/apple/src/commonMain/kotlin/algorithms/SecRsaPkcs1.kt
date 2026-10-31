@@ -24,7 +24,7 @@ internal object SecRsaPkcs1 : SecRsa<RSA.PKCS1.PublicKey, RSA.PKCS1.PrivateKey, 
     ) : RSA.PKCS1.KeyPair
 
     private class RsaPkcs1PublicKey(
-        publicKey: SecKeyRef,
+        publicKey: SecKey,
         digest: CryptographyAlgorithmId<Digest>,
     ) : RsaPublicKey(publicKey, digest), RSA.PKCS1.PublicKey {
         override fun signatureVerifier(): SignatureVerifier = SecSignatureVerifier(publicKey, hashAlgorithm(digest))
@@ -32,7 +32,7 @@ internal object SecRsaPkcs1 : SecRsa<RSA.PKCS1.PublicKey, RSA.PKCS1.PrivateKey, 
     }
 
     private class RsaPkcs1PrivateKey(
-        privateKey: SecKeyRef,
+        privateKey: SecKey,
         digest: CryptographyAlgorithmId<Digest>,
         publicKey: RSA.PKCS1.PublicKey?,
     ) : RsaPrivateKey(privateKey, digest, publicKey), RSA.PKCS1.PrivateKey {
@@ -41,13 +41,13 @@ internal object SecRsaPkcs1 : SecRsa<RSA.PKCS1.PublicKey, RSA.PKCS1.PrivateKey, 
     }
 }
 
-private class RsaPkcs1Encryptor(private val publicKey: SecKeyRef) : BaseEncryptor {
+private class RsaPkcs1Encryptor(private val publicKey: SecKey) : BaseEncryptor {
     override fun createEncryptFunction(): CipherFunction {
         return SecCipherFunction(publicKey, kSecKeyAlgorithmRSAEncryptionPKCS1, ::SecKeyCreateEncryptedData)
     }
 }
 
-private class RsaPkcs1Decryptor(private val privateKey: SecKeyRef) : BaseDecryptor {
+private class RsaPkcs1Decryptor(private val privateKey: SecKey) : BaseDecryptor {
     override fun createDecryptFunction(): CipherFunction {
         return SecCipherFunction(privateKey, kSecKeyAlgorithmRSAEncryptionPKCS1, ::SecKeyCreateDecryptedData)
     }

@@ -16,14 +16,12 @@ import dev.whyoleg.cryptography.serialization.asn1.modules.*
 import dev.whyoleg.cryptography.serialization.pem.*
 import platform.Foundation.*
 import platform.Security.*
-import kotlin.experimental.*
-import kotlin.native.ref.*
 import dev.whyoleg.cryptography.serialization.asn1.modules.RsaPrivateKey as Asn1RsaPrivateKey
 import dev.whyoleg.cryptography.serialization.asn1.modules.RsaPublicKey as Asn1RsaPublicKey
 
 internal abstract class SecRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey<PublicK>, KP : RSA.KeyPair<PublicK, PrivateK>>(
-    private val wrapPublicKey: (SecKeyRef, CryptographyAlgorithmId<Digest>) -> PublicK,
-    private val wrapPrivateKey: (SecKeyRef, CryptographyAlgorithmId<Digest>, PublicK?) -> PrivateK,
+    private val wrapPublicKey: (SecKey, CryptographyAlgorithmId<Digest>) -> PublicK,
+    private val wrapPrivateKey: (SecKey, CryptographyAlgorithmId<Digest>, PublicK?) -> PrivateK,
     private val wrapKeyPair: (PublicK, PrivateK) -> KP,
 ) : RSA<PublicK, PrivateK, KP> {
 
@@ -131,22 +129,19 @@ internal abstract class SecRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKe
                 generateSecKey(attributes)
             }
 
-            val publicKey = wrapPublicKey(SecKeyCopyPublicKey(secPrivateKey)!!, digest)
+            val publicKey = wrapPublicKey(secPrivateKey.access().copyPublicKey(), digest)
             val privateKey = wrapPrivateKey(secPrivateKey, digest, publicKey)
             return wrapKeyPair(publicKey, privateKey)
         }
     }
 
     protected abstract inner class RsaPublicKey(
-        protected val publicKey: SecKeyRef,
+        protected val publicKey: SecKey,
         protected val digest: CryptographyAlgorithmId<Digest>,
     ) : RSA.PublicKey {
 
-        @OptIn(ExperimentalNativeApi::class)
-        private val cleanup = createCleaner(publicKey, SecKeyRef::release)
-
         final override fun encodeToByteArrayBlocking(format: RSA.PublicKey.Format): ByteArray {
-            val pkcs1Key = exportSecKey(publicKey)
+            val pkcs1Key = exportSecKey(publicKey.access())
 
             return when (format) {
                 RSA.PublicKey.Format.JWK -> {
@@ -167,23 +162,20 @@ internal abstract class SecRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKe
     }
 
     protected abstract inner class RsaPrivateKey(
-        protected val privateKey: SecKeyRef,
+        protected val privateKey: SecKey,
         protected val digest: CryptographyAlgorithmId<Digest>,
         private var publicKey: PublicK?,
     ) : RSA.PrivateKey<PublicK> {
 
-        @OptIn(ExperimentalNativeApi::class)
-        private val cleanup = createCleaner(privateKey, SecKeyRef::release)
-
         final override fun getPublicKeyBlocking(): PublicK {
             if (publicKey == null) {
-                publicKey = wrapPublicKey(SecKeyCopyPublicKey(privateKey)!!, digest)
+                publicKey = wrapPublicKey(privateKey.access().copyPublicKey(), digest)
             }
             return publicKey!!
         }
 
         final override fun encodeToByteArrayBlocking(format: RSA.PrivateKey.Format): ByteArray {
-            val pkcs1Key = exportSecKey(privateKey)
+            val pkcs1Key = exportSecKey(privateKey.access())
 
             return when (format) {
                 RSA.PrivateKey.Format.JWK -> {

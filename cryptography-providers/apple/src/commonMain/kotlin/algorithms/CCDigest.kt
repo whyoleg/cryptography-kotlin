@@ -7,7 +7,6 @@ package dev.whyoleg.cryptography.providers.apple.algorithms
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.operations.*
-import dev.whyoleg.cryptography.providers.apple.internal.*
 import dev.whyoleg.cryptography.providers.base.*
 import kotlinx.cinterop.*
 
@@ -18,14 +17,14 @@ internal class CCDigest<CTX : CPointed>(
     override fun hasher(): Hasher = this
     override fun createHashFunction(): HashFunction = CCHashFunction(
         algorithm = hashAlgorithm,
-        context = Resource(hashAlgorithm.alloc(), nativeHeap::free)
+        context = NativeResource(hashAlgorithm.alloc(), nativeHeap::free)
     )
 }
 
 private class CCHashFunction<CTX : CPointed>(
     private val algorithm: CCHashAlgorithm<CTX>,
-    private val context: Resource<CPointer<CTX>>,
-) : HashFunction, SafeCloseable(SafeCloseAction(context, AutoCloseable::close)) {
+    private val context: NativeResource<CPointer<CTX>>,
+) : HashFunction, AutoCloseable by context {
     init {
         reset()
     }

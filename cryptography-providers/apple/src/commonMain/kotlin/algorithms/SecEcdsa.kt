@@ -17,8 +17,6 @@ import dev.whyoleg.cryptography.serialization.pem.*
 import kotlinx.cinterop.*
 import platform.Foundation.*
 import platform.Security.*
-import kotlin.experimental.*
-import kotlin.native.ref.*
 
 private class EcCurveData private constructor(
     val size: Int,
@@ -150,7 +148,7 @@ private class EcdsaKeyPairGenerator(
             generateSecKey(attributes)
         }
 
-        val publicKey = EcdsaPublicKey(SecKeyCopyPublicKey(privateKey)!!, curve)
+        val publicKey = EcdsaPublicKey(privateKey.access().copyPublicKey(), curve)
         return EcdsaKeyPair(
             publicKey = publicKey,
             privateKey = EcdsaPrivateKey(privateKey, curve, publicKey)
@@ -164,11 +162,9 @@ private class EcdsaKeyPair(
 ) : ECDSA.KeyPair
 
 private class EcdsaPublicKey(
-    private val publicKey: SecKeyRef,
+    private val publicKey: SecKey,
     private val curve: EcCurveData,
 ) : ECDSA.PublicKey {
-    @OptIn(ExperimentalNativeApi::class)
-    private val cleanup = createCleaner(publicKey, SecKeyRef::release)
 
     override fun signatureVerifier(digest: CryptographyAlgorithmId<Digest>?, format: ECDSA.SignatureFormat): SignatureVerifier {
         val verifier = SecSignatureVerifier(publicKey, digest.ecdsaSecKeyAlgorithm())
@@ -179,7 +175,7 @@ private class EcdsaPublicKey(
     }
 
     override fun encodeToByteArrayBlocking(format: EC.PublicKey.Format): ByteArray {
-        val rawKey = exportSecKey(publicKey)
+        val rawKey = exportSecKey(publicKey.access())
 
         return when (format) {
             EC.PublicKey.Format.JWK -> JsonWebKeys.encodeEcPublicKey(curve.curve, curve.orderSize, rawKey)
@@ -201,16 +197,14 @@ private class EcdsaPublicKey(
 }
 
 private class EcdsaPrivateKey(
-    private val privateKey: SecKeyRef,
+    private val privateKey: SecKey,
     private val curve: EcCurveData,
     private var publicKey: ECDSA.PublicKey?,
 ) : ECDSA.PrivateKey {
-    @OptIn(ExperimentalNativeApi::class)
-    private val cleanup = createCleaner(privateKey, SecKeyRef::release)
 
     override fun getPublicKeyBlocking(): ECDSA.PublicKey {
         if (publicKey == null) {
-            publicKey = EcdsaPublicKey(SecKeyCopyPublicKey(privateKey)!!, curve)
+            publicKey = EcdsaPublicKey(privateKey.access().copyPublicKey(), curve)
         }
         return publicKey!!
     }
@@ -224,7 +218,7 @@ private class EcdsaPrivateKey(
     }
 
     override fun encodeToByteArrayBlocking(format: EC.PrivateKey.Format): ByteArray {
-        val rawKey = exportSecKey(privateKey)
+        val rawKey = exportSecKey(privateKey.access())
         return when (format) {
             EC.PrivateKey.Format.JWK -> JsonWebKeys.encodeEcPrivateKey(
                 curve = curve.curve,

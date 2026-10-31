@@ -7,7 +7,6 @@ package dev.whyoleg.cryptography.providers.apple.algorithms
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.operations.*
-import dev.whyoleg.cryptography.providers.apple.internal.*
 import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.base.algorithms.*
 import kotlinx.cinterop.*
@@ -63,7 +62,7 @@ private class HmacSignature(
         hmacAlgorithm = hmacAlgorithm,
         key = key,
         digestSize = digestSize,
-        context = Resource(nativeHeap.alloc<CCHmacContext>().ptr, nativeHeap::free)
+        context = NativeResource(nativeHeap.alloc<CCHmacContext>().ptr, nativeHeap::free)
     )
 
     override fun createSignFunction(): SignFunction = createFunction()
@@ -74,8 +73,8 @@ private class HmacFunction(
     private val hmacAlgorithm: CCHmacAlgorithm,
     private val key: ByteArray,
     private val digestSize: Int,
-    private val context: Resource<CPointer<CCHmacContext>>,
-) : SignFunction, VerifyFunction, SafeCloseable(SafeCloseAction(context, AutoCloseable::close)) {
+    private val context: NativeResource<CPointer<CCHmacContext>>,
+) : SignFunction, VerifyFunction, AutoCloseable by context {
     init {
         reset()
     }

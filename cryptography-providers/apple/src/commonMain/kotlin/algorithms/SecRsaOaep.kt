@@ -24,14 +24,14 @@ internal object SecRsaOaep : SecRsa<RSA.OAEP.PublicKey, RSA.OAEP.PrivateKey, RSA
     ) : RSA.OAEP.KeyPair
 
     private class RsaOaepPublicKey(
-        publicKey: SecKeyRef,
+        publicKey: SecKey,
         digest: CryptographyAlgorithmId<Digest>,
     ) : RsaPublicKey(publicKey, digest), RSA.OAEP.PublicKey {
         override fun encryptor(): AuthenticatedEncryptor = RsaOaepEncryptor(publicKey, hashAlgorithm(digest))
     }
 
     private class RsaOaepPrivateKey(
-        privateKey: SecKeyRef,
+        privateKey: SecKey,
         digest: CryptographyAlgorithmId<Digest>,
         publicKey: RSA.OAEP.PublicKey?,
     ) : RsaPrivateKey(privateKey, digest, publicKey), RSA.OAEP.PrivateKey {
@@ -39,7 +39,8 @@ internal object SecRsaOaep : SecRsa<RSA.OAEP.PublicKey, RSA.OAEP.PrivateKey, RSA
     }
 }
 
-private class RsaOaepEncryptor(private val publicKey: SecKeyRef, private val algorithm: SecKeyAlgorithm?) : BaseAuthenticatedEncryptor {
+private class RsaOaepEncryptor(private val publicKey: SecKey, private val algorithm: SecKeyAlgorithm?) :
+    BaseAuthenticatedEncryptor {
     override fun createEncryptFunction(associatedData: ByteArray?): CipherFunction {
         require(associatedData == null) { "Associated data inclusion is not supported" }
 
@@ -47,7 +48,8 @@ private class RsaOaepEncryptor(private val publicKey: SecKeyRef, private val alg
     }
 }
 
-private class RsaOaepDecryptor(private val privateKey: SecKeyRef, private val algorithm: SecKeyAlgorithm?) : BaseAuthenticatedDecryptor {
+private class RsaOaepDecryptor(private val privateKey: SecKey, private val algorithm: SecKeyAlgorithm?) :
+    BaseAuthenticatedDecryptor {
     override fun createDecryptFunction(associatedData: ByteArray?): CipherFunction {
         require(associatedData == null) { "Associated data inclusion is not supported" }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.apple.internal
@@ -12,7 +12,7 @@ import platform.Foundation.*
 import platform.Security.*
 
 internal fun SecCipherFunction(
-    key: SecKeyRef,
+    key: SecKey,
     algorithm: SecKeyAlgorithm?,
     finalizer: (SecKeyRef?, SecKeyAlgorithm?, CFDataRef?, error: CValuesRef<CFErrorRefVar>) -> CFDataRef?,
 ): CipherFunction = AccumulatingCipherFunction { input ->
@@ -20,7 +20,7 @@ internal fun SecCipherFunction(
         val error = alloc<CFErrorRefVar>()
         input.useNSData { inputData ->
             val output = finalizer.invoke(
-                key,
+                key.access(),
                 algorithm,
                 inputData.retainBridgeAs<CFDataRef>(),
                 error.ptr

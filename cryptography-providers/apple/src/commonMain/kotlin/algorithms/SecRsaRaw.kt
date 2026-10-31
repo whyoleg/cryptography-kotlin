@@ -24,14 +24,14 @@ internal object SecRsaRaw : SecRsa<RSA.RAW.PublicKey, RSA.RAW.PrivateKey, RSA.RA
     ) : RSA.RAW.KeyPair
 
     private class RsaRawPublicKey(
-        publicKey: SecKeyRef,
+        publicKey: SecKey,
         digest: CryptographyAlgorithmId<Digest>,
     ) : RsaPublicKey(publicKey, digest), RSA.RAW.PublicKey {
         override fun encryptor(): Encryptor = RsaRawEncryptor(publicKey)
     }
 
     private class RsaRawPrivateKey(
-        privateKey: SecKeyRef,
+        privateKey: SecKey,
         digest: CryptographyAlgorithmId<Digest>,
         publicKey: RSA.RAW.PublicKey?,
     ) : RsaPrivateKey(privateKey, digest, publicKey), RSA.RAW.PrivateKey {
@@ -39,13 +39,13 @@ internal object SecRsaRaw : SecRsa<RSA.RAW.PublicKey, RSA.RAW.PrivateKey, RSA.RA
     }
 }
 
-private class RsaRawEncryptor(private val publicKey: SecKeyRef) : BaseEncryptor {
+private class RsaRawEncryptor(private val publicKey: SecKey) : BaseEncryptor {
     override fun createEncryptFunction(): CipherFunction {
         return SecCipherFunction(publicKey, kSecKeyAlgorithmRSAEncryptionRaw, ::SecKeyCreateEncryptedData)
     }
 }
 
-private class RsaRawDecryptor(private val privateKey: SecKeyRef) : BaseDecryptor {
+private class RsaRawDecryptor(private val privateKey: SecKey) : BaseDecryptor {
     override fun createDecryptFunction(): CipherFunction {
         return SecCipherFunction(privateKey, kSecKeyAlgorithmRSAEncryptionRaw, ::SecKeyCreateDecryptedData)
     }

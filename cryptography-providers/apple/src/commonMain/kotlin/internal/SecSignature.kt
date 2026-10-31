@@ -13,7 +13,7 @@ import platform.Foundation.*
 import platform.Security.*
 
 internal class SecSignatureVerifier(
-    private val publicKey: SecKeyRef,
+    private val publicKey: SecKey,
     private val algorithm: SecKeyAlgorithm?,
 ) : SignatureVerifier {
     private fun verify(data: ByteArray, signature: ByteArray): String? = memScoped {
@@ -21,7 +21,7 @@ internal class SecSignatureVerifier(
         data.useNSData { data ->
             signature.useNSData { signature ->
                 val result = SecKeyVerifySignature(
-                    key = publicKey,
+                    key = publicKey.access(),
                     algorithm = algorithm,
                     signedData = data.retainBridgeAs<CFDataRef>(),
                     error = error.ptr,
@@ -39,14 +39,14 @@ internal class SecSignatureVerifier(
 }
 
 internal class SecSignatureGenerator(
-    private val privateKey: SecKeyRef,
+    private val privateKey: SecKey,
     private val algorithm: SecKeyAlgorithm?,
 ) : SignatureGenerator {
     private fun sign(data: ByteArray): ByteArray = memScoped {
         val error = alloc<CFErrorRefVar>()
         data.useNSData { data ->
             val signature = SecKeyCreateSignature(
-                key = privateKey,
+                key = privateKey.access(),
                 algorithm = algorithm,
                 dataToSign = data.retainBridgeAs<CFDataRef>(),
                 error = error.ptr

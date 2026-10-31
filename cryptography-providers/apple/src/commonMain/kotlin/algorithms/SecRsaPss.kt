@@ -23,7 +23,7 @@ internal object SecRsaPss : SecRsa<RSA.PSS.PublicKey, RSA.PSS.PrivateKey, RSA.PS
     ) : RSA.PSS.KeyPair
 
     private class RsaPssPublicKey(
-        publicKey: SecKeyRef,
+        publicKey: SecKey,
         digest: CryptographyAlgorithmId<Digest>,
     ) : RsaPublicKey(publicKey, digest), RSA.PSS.PublicKey {
         override fun signatureVerifier(): SignatureVerifier = SecSignatureVerifier(publicKey, hashAlgorithm(digest))
@@ -31,7 +31,7 @@ internal object SecRsaPss : SecRsa<RSA.PSS.PublicKey, RSA.PSS.PrivateKey, RSA.PS
     }
 
     private class RsaPssPrivateKey(
-        privateKey: SecKeyRef,
+        privateKey: SecKey,
         digest: CryptographyAlgorithmId<Digest>,
         publicKey: RSA.PSS.PublicKey?,
     ) : RsaPrivateKey(privateKey, digest, publicKey), RSA.PSS.PrivateKey {

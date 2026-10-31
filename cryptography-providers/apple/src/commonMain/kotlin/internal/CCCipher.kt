@@ -24,9 +24,9 @@ internal fun CCCipherFunction(
     validateFullInputSize: (Int) -> Unit = {},
 ): CipherFunction {
     val cryptorRef = nativeHeap.alloc<CCCryptorRefVar>()
-    val resource = Resource(cryptorRef) {
+    val resource = NativeResource(cryptorRef) {
         CCCryptorRelease(it.value)
-        nativeHeap.free(cryptorRef)
+        nativeHeap.free(it)
     }
     try {
         checkResult(
@@ -56,10 +56,10 @@ internal fun CCCipherFunction(
 
 @OptIn(UnsafeNumber::class)
 private class CCCipherFunction(
-    private val cryptorRef: Resource<CCCryptorRefVar>,
+    private val cryptorRef: NativeResource<CCCryptorRefVar>,
     override val blockSize: Int,
     private val validateFullInputSize: (Int) -> Unit = {},
-) : BaseCipherFunction(), AutoCloseable by SafeCloseable(SafeCloseAction(cryptorRef, AutoCloseable::close)) {
+) : BaseCipherFunction(), AutoCloseable by cryptorRef {
     private var fullInputSize = 0
 
     override fun maxOutputSize(inputSize: Int): Int {
