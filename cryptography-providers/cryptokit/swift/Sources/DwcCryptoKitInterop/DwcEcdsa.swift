@@ -101,47 +101,33 @@ import Foundation
         }
     }
 
+    // malformed signatures are rejected instead of throwing
     @objc public func verifyDer(signature: NSData, digest: DwcDigest) -> Bool {
-        return switch curve {
+        switch curve {
         case .p256:
-            (key as! P256.Signing.PublicKey).isValidSignature(
-                try! P256.Signing.ECDSASignature(derRepresentation: signature),
-                for: digest.digest
-            )
-
+            guard let signature = try? P256.Signing.ECDSASignature(derRepresentation: signature) else { return false }
+            return (key as! P256.Signing.PublicKey).isValidSignature(signature, for: digest.digest)
         case .p384:
-            (key as! P384.Signing.PublicKey).isValidSignature(
-                try! P384.Signing.ECDSASignature(derRepresentation: signature),
-                for: digest.digest
-            )
-
+            guard let signature = try? P384.Signing.ECDSASignature(derRepresentation: signature) else { return false }
+            return (key as! P384.Signing.PublicKey).isValidSignature(signature, for: digest.digest)
         case .p521:
-            (key as! P521.Signing.PublicKey).isValidSignature(
-                try! P521.Signing.ECDSASignature(derRepresentation: signature),
-                for: digest.digest
-            )
+            guard let signature = try? P521.Signing.ECDSASignature(derRepresentation: signature) else { return false }
+            return (key as! P521.Signing.PublicKey).isValidSignature(signature, for: digest.digest)
         }
     }
 
+    // malformed signatures are rejected instead of throwing
     @objc public func verifyRaw(signature: NSData, digest: DwcDigest) -> Bool {
-        return switch curve {
+        switch curve {
         case .p256:
-            (key as! P256.Signing.PublicKey).isValidSignature(
-                try! P256.Signing.ECDSASignature(rawRepresentation: signature),
-                for: digest.digest
-            )
-
+            guard let signature = try? P256.Signing.ECDSASignature(rawRepresentation: signature) else { return false }
+            return (key as! P256.Signing.PublicKey).isValidSignature(signature, for: digest.digest)
         case .p384:
-            (key as! P384.Signing.PublicKey).isValidSignature(
-                try! P384.Signing.ECDSASignature(rawRepresentation: signature),
-                for: digest.digest
-            )
-
+            guard let signature = try? P384.Signing.ECDSASignature(rawRepresentation: signature) else { return false }
+            return (key as! P384.Signing.PublicKey).isValidSignature(signature, for: digest.digest)
         case .p521:
-            (key as! P521.Signing.PublicKey).isValidSignature(
-                try! P521.Signing.ECDSASignature(rawRepresentation: signature),
-                for: digest.digest
-            )
+            guard let signature = try? P521.Signing.ECDSASignature(rawRepresentation: signature) else { return false }
+            return (key as! P521.Signing.PublicKey).isValidSignature(signature, for: digest.digest)
         }
     }
 
