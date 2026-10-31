@@ -501,6 +501,163 @@
         }
       ]
     },
+    "RSA-OAEP": {
+      "unsupported": [
+        {
+          "description": "RSA-OAEP is not supported",
+          "environments": [
+            "cryptokit"
+          ]
+        }
+      ],
+      "limitations": [
+        {
+          "kind": "Fails",
+          "description": "Associated data (label) is not supported",
+          "environments": [
+            "apple"
+          ]
+        },
+        {
+          "kind": "Fails",
+          "description": "Incremental functions are not supported",
+          "environments": [
+            "webcrypto"
+          ]
+        },
+        {
+          "kind": "Fails",
+          "description": "SHA3 digests are not supported",
+          "environments": [
+            "apple",
+            "webcrypto"
+          ]
+        },
+        {
+          "kind": "Fails",
+          "description": "SHA3 digests are not supported on JDK 8 and Android without BouncyCastle",
+          "environments": [
+            "jdk.default/jdk-8"
+          ]
+        }
+      ]
+    },
+    "RSA-PKCS1-V1.5-encryption": {
+      "unsupported": [
+        {
+          "description": "RSA-PKCS1 encryption is not supported",
+          "environments": [
+            "webcrypto"
+          ]
+        },
+        {
+          "description": "RSA-PKCS1 is not supported",
+          "environments": [
+            "cryptokit"
+          ]
+        }
+      ]
+    },
+    "RSA-PKCS1-V1.5-signature": {
+      "unsupported": [
+        {
+          "description": "RSA-PKCS1 is not supported",
+          "environments": [
+            "cryptokit"
+          ]
+        }
+      ],
+      "limitations": [
+        {
+          "kind": "Fails",
+          "description": "Incremental functions are not supported",
+          "environments": [
+            "webcrypto"
+          ]
+        },
+        {
+          "kind": "Fails",
+          "description": "SHA3 based HMAC and signatures are supported only since JDK 17 or with BouncyCastle",
+          "environments": [
+            "jdk.default/jdk-11"
+          ]
+        },
+        {
+          "kind": "Fails",
+          "description": "SHA3 digests are not supported",
+          "environments": [
+            "apple",
+            "webcrypto"
+          ]
+        },
+        {
+          "kind": "Fails",
+          "description": "SHA3 digests are not supported on JDK 8 and Android without BouncyCastle",
+          "environments": [
+            "jdk.default/jdk-8"
+          ]
+        }
+      ]
+    },
+    "RSA-PSS": {
+      "unsupported": [
+        {
+          "description": "RSA-PSS is not supported",
+          "environments": [
+            "cryptokit"
+          ]
+        }
+      ],
+      "limitations": [
+        {
+          "kind": "Fails",
+          "description": "Custom salt size is not supported",
+          "environments": [
+            "apple"
+          ]
+        },
+        {
+          "kind": "Fails",
+          "description": "Incremental functions are not supported",
+          "environments": [
+            "webcrypto"
+          ]
+        },
+        {
+          "kind": "Fails",
+          "description": "SHA3 digests are not supported",
+          "environments": [
+            "apple",
+            "webcrypto"
+          ]
+        },
+        {
+          "kind": "Fails",
+          "description": "SHA3 digests are not supported on JDK 8 and Android without BouncyCastle",
+          "environments": [
+            "jdk.default/jdk-8"
+          ]
+        },
+        {
+          "kind": "Fails",
+          "description": "Signing with SHA3 digests is not supported on old JDK",
+          "environments": [
+            "jdk.default/jdk-11"
+          ]
+        }
+      ]
+    },
+    "RSA-RAW": {
+      "unsupported": [
+        {
+          "description": "RSA-RAW is not supported",
+          "environments": [
+            "cryptokit",
+            "webcrypto"
+          ]
+        }
+      ]
+    },
     "SHA-1": {
       "limitations": [
         {
