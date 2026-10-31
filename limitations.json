@@ -10,6 +10,54 @@
     "webcrypto/nodejs"
   ],
   "suites": {
+    "AES-CBC": {
+      "unsupported": [
+        {
+          "description": "AES-CBC is not supported",
+          "environments": [
+            "cryptokit"
+          ]
+        }
+      ],
+      "limitations": [
+        {
+          "kind": "Fails",
+          "description": "Encryption without padding is not supported",
+          "environments": [
+            "webcrypto"
+          ]
+        },
+        {
+          "kind": "Fails",
+          "description": "Incremental functions are not supported",
+          "environments": [
+            "webcrypto"
+          ]
+        }
+      ]
+    },
+    "AES-CFB": {
+      "unsupported": [
+        {
+          "description": "AES-CFB is not supported",
+          "environments": [
+            "cryptokit",
+            "webcrypto"
+          ]
+        }
+      ]
+    },
+    "AES-CFB8": {
+      "unsupported": [
+        {
+          "description": "AES-CFB8 is not supported",
+          "environments": [
+            "cryptokit",
+            "webcrypto"
+          ]
+        }
+      ]
+    },
     "AES-CMAC": {
       "unsupported": [
         {
@@ -24,6 +72,47 @@
           "description": "AES-CMAC is supported only with BouncyCastle",
           "environments": [
             "jdk.default"
+          ]
+        }
+      ]
+    },
+    "AES-CTR": {
+      "unsupported": [
+        {
+          "description": "AES-CTR is not supported",
+          "environments": [
+            "cryptokit"
+          ]
+        }
+      ],
+      "limitations": [
+        {
+          "kind": "Fails",
+          "description": "Incremental functions are not supported",
+          "environments": [
+            "webcrypto"
+          ]
+        }
+      ]
+    },
+    "AES-ECB": {
+      "unsupported": [
+        {
+          "description": "AES-ECB is not supported",
+          "environments": [
+            "cryptokit",
+            "webcrypto"
+          ]
+        }
+      ]
+    },
+    "AES-OFB": {
+      "unsupported": [
+        {
+          "description": "AES-OFB is not supported",
+          "environments": [
+            "cryptokit",
+            "webcrypto"
           ]
         }
       ]
