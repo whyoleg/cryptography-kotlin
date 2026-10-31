@@ -16,6 +16,9 @@ import dev.whyoleg.cryptography.serialization.asn1.modules.*
 import dev.whyoleg.cryptography.serialization.pem.*
 
 internal class JdkXdh(private val state: JdkCryptographyState) : XDH {
+    // supported since JDK 11
+    private val keyAgreement = state.keyAgreement("XDH")
+
     private val XDH.Curve.identifier: AlgorithmIdentifier
         get() = when (this) {
             XDH.Curve.X25519 -> X25519AlgorithmIdentifier
@@ -107,7 +110,6 @@ internal class JdkXdh(private val state: JdkCryptographyState) : XDH {
         val key: JPublicKey,
         private val curve: XDH.Curve,
     ) : XDH.PublicKey, JdkEncodableKey<XDH.PublicKey.Format>(key), SharedSecretGenerator<XDH.PrivateKey> {
-        private val keyAgreement = state.keyAgreement("XDH")
         override fun sharedSecretGenerator(): SharedSecretGenerator<XDH.PrivateKey> = this
 
         override fun generateSharedSecretToByteArrayBlocking(other: XDH.PrivateKey): ByteArray {
@@ -131,7 +133,6 @@ internal class JdkXdh(private val state: JdkCryptographyState) : XDH {
         private var publicKey: XDH.PublicKey?,
         private val curve: XDH.Curve,
     ) : XDH.PrivateKey, JdkEncodableKey<XDH.PrivateKey.Format>(key), SharedSecretGenerator<XDH.PublicKey> {
-        private val keyAgreement = state.keyAgreement("XDH")
         override fun sharedSecretGenerator(): SharedSecretGenerator<XDH.PublicKey> = this
 
         override fun getPublicKeyBlocking(): XDH.PublicKey {

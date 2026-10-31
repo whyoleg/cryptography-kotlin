@@ -14,12 +14,15 @@ import javax.crypto.spec.*
 internal class JdkAesCmac(
     private val state: JdkCryptographyState,
 ) : AES.CMAC, BaseAes<AES.CMAC.Key>() {
+    // not supported by the default JDK provider
+    private val mac = state.mac("AESCMAC")
+
     override fun wrapKey(rawKey: ByteArray): AES.CMAC.Key = AesCmacKey(rawKey)
 
     private inner class AesCmacKey(rawKey: ByteArray) : AES.CMAC.Key, BaseKey(rawKey) {
         private val secretKey: JSecretKey = SecretKeySpec(rawKey, "AESCMAC")
 
-        private val signature = JdkMacSignature(state, secretKey, "AESCMAC")
+        private val signature = JdkMacSignature(mac, secretKey)
 
         override fun signatureGenerator(): SignatureGenerator = signature
         override fun signatureVerifier(): SignatureVerifier = signature

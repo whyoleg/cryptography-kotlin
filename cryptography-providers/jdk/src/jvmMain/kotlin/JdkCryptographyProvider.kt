@@ -104,10 +104,16 @@ internal class JdkCryptographyProvider(provider: Provider?) : CryptographyProvid
         else -> "JDK (${provider.name})"
     }
 
-    private val cache = ConcurrentHashMap<CryptographyAlgorithmId<*>, CryptographyAlgorithm?>()
+    // `ConcurrentHashMap` doesn't support `null` values, so unsupported algorithms are cached as `Unsupported`
+    private val cache = ConcurrentHashMap<CryptographyAlgorithmId<*>, Any>()
 
     @Suppress("UNCHECKED_CAST")
     override fun <A : CryptographyAlgorithm> getOrNull(identifier: CryptographyAlgorithmId<A>): A? = cache.getOrPut(identifier) {
+        createAlgorithm(identifier) ?: Unsupported
+    }.takeIf { it !== Unsupported } as A?
+
+    // algorithms create required primitives eagerly, so if they are not supported by the security provider (f.e. on older JDK versions), creation fails
+    private fun createAlgorithm(identifier: CryptographyAlgorithmId<*>): CryptographyAlgorithm? = try {
         when (identifier) {
             MD5       -> JdkDigest(state, "MD5", MD5)
             SHA1      -> JdkDigest(state, "SHA-1", SHA1)
@@ -145,7 +151,11 @@ internal class JdkCryptographyProvider(provider: Provider?) : CryptographyProvid
             HKDF             -> JdkHkdf(state, this)
             else             -> null
         }
-    } as A?
+    } catch (_: GeneralSecurityException) {
+        null
+    }
+
+    private object Unsupported
 }
 
 internal class JdkCryptographyProviderContainer : CryptographyProviderContainer {

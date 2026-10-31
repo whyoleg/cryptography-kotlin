@@ -15,6 +15,11 @@ import java.security.spec.*
 internal class JdkRsaPss(
     state: JdkCryptographyState,
 ) : JdkRsa<RSA.PSS.PublicKey, RSA.PSS.PrivateKey, RSA.PSS.KeyPair>(state), RSA.PSS {
+    init {
+        // not supported on Android
+        val _ = state.signature("RSASSA-PSS")
+    }
+
     override val wrapPublicKey: (JPublicKey, CryptographyAlgorithmId<Digest>) -> RSA.PSS.PublicKey = ::RsaPssPublicKey
     override val wrapPrivateKey: (JPrivateKey, CryptographyAlgorithmId<Digest>, RSA.PSS.PublicKey?) -> RSA.PSS.PrivateKey =
         ::RsaPssPrivateKey

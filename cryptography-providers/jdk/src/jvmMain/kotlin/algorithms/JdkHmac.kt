@@ -25,7 +25,7 @@ internal class JdkHmac(
         key: ByteArray,
     ) : BaseKey(digest, key) {
         private val secretKey: JSecretKey = SecretKeySpec(key, "Hmac${digest.hashAlgorithmName()}")
-        private val signature = JdkMacSignature(state, secretKey, secretKey.algorithm)
+        private val signature = JdkMacSignature(state.mac(secretKey.algorithm), secretKey)
         override fun signatureGenerator(): SignatureGenerator = signature
         override fun signatureVerifier(): SignatureVerifier = signature
     }

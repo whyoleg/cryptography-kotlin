@@ -40,10 +40,13 @@ internal class JdkCryptographyState(private val provider: JProvider?) {
                 { fromProvider(algorithm, provider) }
             }
         }
-        when (cached) {
+        val pooled = when (cached) {
             true  -> Pooled.Cached(instantiate)
             false -> Pooled.Empty(instantiate)
         }
+        // fails early if the algorithm is not supported by the provider, the instance is reused if cached
+        pooled.use {}
+        pooled
     }
 
     fun cipher(algorithm: String, cached: Boolean = true): Pooled<JCipher> =

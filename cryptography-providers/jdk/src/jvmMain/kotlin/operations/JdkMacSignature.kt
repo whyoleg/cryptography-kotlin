@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.jdk.operations
@@ -9,12 +9,9 @@ import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.jdk.*
 
 internal class JdkMacSignature(
-    state: JdkCryptographyState,
+    private val mac: Pooled<JMac>,
     private val key: JSecretKey,
-    algorithm: String,
 ) : SignatureGenerator, SignatureVerifier {
-    private val mac = state.mac(algorithm)
-
     private fun createFunction() = JdkMacFunction(mac.borrowResource { init(key) })
 
     override fun createSignFunction(): SignFunction = createFunction()

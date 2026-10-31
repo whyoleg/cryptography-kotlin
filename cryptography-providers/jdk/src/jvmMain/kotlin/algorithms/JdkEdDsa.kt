@@ -16,6 +16,11 @@ import dev.whyoleg.cryptography.serialization.asn1.modules.*
 import dev.whyoleg.cryptography.serialization.pem.*
 
 internal class JdkEdDsa(private val state: JdkCryptographyState) : EdDSA {
+    init {
+        // supported since JDK 15
+        val _ = state.signature("EdDSA")
+    }
+
     private val EdDSA.Curve.identifier: AlgorithmIdentifier
         get() = when (this) {
             EdDSA.Curve.Ed25519 -> Ed25519AlgorithmIdentifier

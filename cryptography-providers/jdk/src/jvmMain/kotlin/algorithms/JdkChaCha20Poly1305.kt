@@ -15,12 +15,15 @@ import javax.crypto.spec.*
 internal class JdkChaCha20Poly1305(
     private val state: JdkCryptographyState,
 ) : BaseChaCha20Poly1305() {
+    // supported since JDK 11
+    private val cipher = state.cipher("ChaCha20-Poly1305")
+
     override fun wrapKey(rawKey: ByteArray): ChaCha20Poly1305.Key = ChaCha20Poly1305Key(rawKey)
 
     private inner class ChaCha20Poly1305Key(rawKey: ByteArray) : ChaCha20Poly1305.Key, BaseKey(rawKey) {
         private val secretKey: JSecretKey = SecretKeySpec(rawKey, "ChaCha20")
 
-        override fun cipher(): IvAuthenticatedCipher = JdkChaCha20Poly1305Cipher(state, secretKey)
+        override fun cipher(): IvAuthenticatedCipher = JdkChaCha20Poly1305Cipher(state, cipher, secretKey)
     }
 }
 
@@ -28,10 +31,9 @@ private const val chachaNonceSize: Int = 12
 
 private class JdkChaCha20Poly1305Cipher(
     private val state: JdkCryptographyState,
+    private val cipher: Pooled<JCipher>,
     private val key: JSecretKey,
 ) : BaseIvAuthenticatedCipher {
-    private val cipher = state.cipher("ChaCha20-Poly1305")
-
     override fun createEncryptFunction(associatedData: ByteArray?): CipherFunction {
         val iv = ByteArray(chachaNonceSize).also(state.secureRandom::nextBytes)
         return BaseImplicitIvEncryptFunction(iv, createEncryptFunctionWithIv(iv, associatedData))

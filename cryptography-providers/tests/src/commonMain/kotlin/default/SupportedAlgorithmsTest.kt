@@ -16,6 +16,8 @@ abstract class SupportedAlgorithmsTest(provider: CryptographyProvider) : Provide
         supported: Boolean = true,
     ) {
         val algorithm = provider.getOrNull(algorithmId)
+        // availability of algorithms in the default JDK provider depends on the JDK version
+        if (algorithm == null && context.provider.isJdkDefault) return
         when {
             supported -> assertNotNull(algorithm, "Algorithm ${algorithmId.name} is not supported by ${provider.name} provider")
             else      -> assertNull(algorithm, "Algorithm ${algorithmId.name} is supported by ${provider.name} provider")

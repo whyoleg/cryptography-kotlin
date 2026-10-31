@@ -16,12 +16,15 @@ import javax.crypto.spec.*
 internal class JdkAesCcm(
     private val state: JdkCryptographyState,
 ) : AES.CCM, BaseAes<AES.CCM.Key>() {
+    // not supported by the default JDK provider
+    private val cipher = state.cipher("AES/CCM/NoPadding")
+
     override fun wrapKey(rawKey: ByteArray): AES.CCM.Key = AesCcmKey(rawKey)
 
     private inner class AesCcmKey(rawKey: ByteArray) : AES.CCM.Key, BaseKey(rawKey) {
         private val secretKey: JSecretKey = SecretKeySpec(rawKey, "AES")
 
-        override fun cipher(tagSize: BinarySize): IvAuthenticatedCipher = JdkAesCcmCipher(state, secretKey, tagSize.inBits)
+        override fun cipher(tagSize: BinarySize): IvAuthenticatedCipher = JdkAesCcmCipher(state, cipher, secretKey, tagSize.inBits)
     }
 }
 
@@ -29,11 +32,10 @@ private const val defaultIvSize: Int = 12
 
 private class JdkAesCcmCipher(
     private val state: JdkCryptographyState,
+    private val cipher: Pooled<JCipher>,
     private val key: JSecretKey,
     private val tagSizeBits: Int,
 ) : BaseIvAuthenticatedCipher {
-    private val cipher = state.cipher("AES/CCM/NoPadding")
-
     override fun createEncryptFunction(associatedData: ByteArray?): CipherFunction {
         val iv = ByteArray(defaultIvSize).also(state.secureRandom::nextBytes)
         return BaseImplicitIvEncryptFunction(iv, createEncryptFunctionWithIv(iv, associatedData))
