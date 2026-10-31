@@ -8,6 +8,7 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.BinarySize.Companion.bits
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.base.operations.*
 import dev.whyoleg.cryptography.providers.jdk.*
 import dev.whyoleg.cryptography.providers.jdk.operations.*
@@ -68,7 +69,6 @@ private class RsaRawDecryptor(
         })
     }
 
-    // TODO: add some tests for this
     // for some reason, BC provider output size is truncated, so we need to ensure it's padded
     private class RsaRawDecryptFunction(
         private val outputSize: Int,
@@ -83,8 +83,7 @@ private class RsaRawDecryptor(
         }
 
         override fun finalizeIntoByteArray(destination: ByteArray, destinationOffset: Int): Int {
-            val _ = super.finalizeIntoByteArray(destination, destinationOffset)
-            return outputSize
+            return finalizeToByteArray().copyIntoChecked(destination, destinationOffset)
         }
 
         override fun transformAndFinalizeToByteArray(source: ByteArray, startIndex: Int, endIndex: Int): ByteArray {
@@ -98,8 +97,13 @@ private class RsaRawDecryptor(
             startIndex: Int,
             endIndex: Int,
         ): Int {
-            val _ = super.transformAndFinalizeIntoByteArray(source, destination, destinationOffset, startIndex, endIndex)
-            return outputSize
+            return transformAndFinalizeToByteArray(source, startIndex, endIndex).copyIntoChecked(destination, destinationOffset)
+        }
+
+        private fun ByteArray.copyIntoChecked(destination: ByteArray, destinationOffset: Int): Int {
+            checkBounds(destination.size, destinationOffset, destinationOffset + size)
+            copyInto(destination, destinationOffset)
+            return size
         }
 
         private fun ByteArray.pad(size: Int): ByteArray {
