@@ -88,12 +88,11 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
             "Ripemd160AlgorithmTest",
             "HmacAlgorithmTest",
             "AesCmacAlgorithmTest",
+            "HkdfAlgorithmTest",
+            "Pbkdf2AlgorithmTest",
 
             // old tests, while they are not migrated
             "SupportedAlgorithmsTest",
-            "Pbkdf2CompatibilityTest",
-            "HkdfCompatibilityTest",
-            "HkdfTestvectorsTest",
             "AesCbcTest",
             "AesCbcCompatibilityTest",
             "AesCfb8Test",

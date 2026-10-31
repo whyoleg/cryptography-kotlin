@@ -28,6 +28,33 @@
         }
       ]
     },
+    "HKDF": {
+      "limitations": [
+        {
+          "kind": "Fails",
+          "description": "SHA3 based HMAC and signatures are supported only since JDK 17 or with BouncyCastle",
+          "environments": [
+            "jdk.default/jdk-11"
+          ]
+        },
+        {
+          "kind": "Fails",
+          "description": "SHA3 digests are not supported",
+          "environments": [
+            "apple",
+            "cryptokit",
+            "webcrypto"
+          ]
+        },
+        {
+          "kind": "Fails",
+          "description": "SHA3 digests are not supported on JDK 8 and Android without BouncyCastle",
+          "environments": [
+            "jdk.default/jdk-8"
+          ]
+        }
+      ]
+    },
     "HMAC": {
       "limitations": [
         {
@@ -75,6 +102,44 @@
         {
           "description": "MD5 is not supported",
           "environments": [
+            "webcrypto"
+          ]
+        }
+      ]
+    },
+    "PBKDF2": {
+      "unsupported": [
+        {
+          "description": "PBKDF2 is not supported",
+          "environments": [
+            "cryptokit"
+          ]
+        }
+      ],
+      "limitations": [
+        {
+          "kind": "Fails",
+          "description": "PBKDF2 with SHA3 digests is not supported without BouncyCastle",
+          "environments": [
+            "jdk.default"
+          ]
+        },
+        {
+          "kind": "Fails",
+          "description": "SHA3 digests are not supported",
+          "environments": [
+            "apple",
+            "webcrypto"
+          ]
+        },
+        {
+          "kind": "Skipped",
+          "description": "16777216 iterations are too slow",
+          "environments": [
+            "apple",
+            "jdk.bc",
+            "jdk.default",
+            "openssl3-3.x",
             "webcrypto"
           ]
         }
