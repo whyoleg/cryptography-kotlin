@@ -4,13 +4,13 @@
 
 package dev.whyoleg.cryptography.testhost
 
+internal val isAndroid = System.getProperty("java.vendor")!!.contains("android", ignoreCase = true)
+
 internal actual val currentTestPlatform: TestPlatform = when {
-    System.getProperty("java.vendor")!!.contains("android", ignoreCase = true) -> {
-        TestPlatform.Android(
-            apiLevel = Class.forName($$"android.os.Build$VERSION").getField("SDK_INT").get(null) as Int
-        )
-    }
-    else                                                                       -> {
+    isAndroid -> TestPlatform.Android(
+        apiLevel = Class.forName($$"android.os.Build$VERSION").getField("SDK_INT").get(null) as Int
+    )
+    else      -> {
         val version = System.getProperty("java.version") ?: ""
         TestPlatform.JDK(
             major = when (val major = version.substringBefore(".").toIntOrNull() ?: -1) {
