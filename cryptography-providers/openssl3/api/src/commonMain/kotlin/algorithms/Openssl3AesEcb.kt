@@ -7,14 +7,13 @@ package dev.whyoleg.cryptography.providers.openssl3.algorithms
 import dev.whyoleg.cryptography.BinarySize.Companion.bytes
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.base.algorithms.*
 import dev.whyoleg.cryptography.providers.base.operations.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.providers.openssl3.operations.*
 import kotlinx.cinterop.*
-import kotlin.experimental.*
-import kotlin.native.ref.*
 
 internal object Openssl3AesEcb : AES.ECB, BaseAes<AES.ECB.Key>() {
     override fun wrapKey(rawKey: ByteArray): AES.ECB.Key = AesEcbKey(rawKey)
@@ -27,10 +26,7 @@ internal object Openssl3AesEcb : AES.ECB, BaseAes<AES.ECB.Key>() {
             else              -> error("Unsupported key size")
         }
 
-        private val cipher = EVP_CIPHER_fetch(null, algorithm, null)
-
-        @OptIn(ExperimentalNativeApi::class)
-        private val cleaner = createCleaner(cipher, ::EVP_CIPHER_free)
+        private val cipher = NativeResource(checkError(EVP_CIPHER_fetch(null, algorithm, null)), ::EVP_CIPHER_free)
 
         override fun cipher(padding: Boolean): Cipher {
             return Openssl3AesEcbCipher(cipher, key) { context ->
@@ -39,12 +35,12 @@ internal object Openssl3AesEcb : AES.ECB, BaseAes<AES.ECB.Key>() {
         }
 
         private class Openssl3AesEcbCipher(
-            private val cipher: CPointer<EVP_CIPHER>?,
+            private val cipher: EvpCipher,
             private val key: ByteArray,
             private val init: MemScope.(CPointer<EVP_CIPHER_CTX>?) -> Unit = {},
         ) : BaseCipher {
-            override fun createEncryptFunction(): CipherFunction = EvpCipherFunction(cipher, key, encrypt = true, init)
-            override fun createDecryptFunction(): CipherFunction = EvpCipherFunction(cipher, key, encrypt = false, init)
+            override fun createEncryptFunction(): CipherFunction = EvpCipherFunction(cipher.access(), key, encrypt = true, init)
+            override fun createDecryptFunction(): CipherFunction = EvpCipherFunction(cipher.access(), key, encrypt = false, init)
         }
     }
 }

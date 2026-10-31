@@ -13,7 +13,7 @@ import platform.posix.*
 
 @OptIn(UnsafeNumber::class)
 internal class EvpPKeyCipherFunction(
-    private val key: CPointer<EVP_PKEY>,
+    private val key: EvpPKey,
     private val encrypt: Boolean,
     private val createParameters: MemScope.() -> CArrayPointer<OSSL_PARAM>?,
 ) : BaseCipherFunction() {
@@ -38,7 +38,7 @@ internal class EvpPKeyCipherFunction(
     private fun finalize(): ByteArray {
         ensureNotClosed()
 
-        return with_PKEY_CTX(key) { context ->
+        return with_PKEY_CTX(key.access()) { context ->
             checkError(
                 EVP_PKEY_cipher_init_ex(
                     ctx = context,

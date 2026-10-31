@@ -7,20 +7,15 @@ package dev.whyoleg.cryptography.providers.openssl3.algorithms
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.base.algorithms.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.providers.openssl3.operations.*
 import kotlinx.cinterop.*
-import kotlin.experimental.*
-import kotlin.native.ref.*
 
 internal object Openssl3Hmac : BaseHmac() {
-    val mac = checkError(EVP_MAC_fetch(null, "HMAC", null))
-
-    // is it needed at all for `object`?
-    @OptIn(ExperimentalNativeApi::class)
-    private val cleaner = createCleaner(mac, ::EVP_MAC_free)
+    val mac = NativeResource(checkError(EVP_MAC_fetch(null, "HMAC", null)), ::EVP_MAC_free)
 
     override fun blockSize(digest: CryptographyAlgorithmId<Digest>): Int = blockSize(hashAlgorithmName(digest))
 

@@ -19,9 +19,9 @@ private fun EVP_CIPHER_CTX(
     encrypt: Boolean,
     createParams: MemScope.() -> CValuesRef<OSSL_PARAM>? = { null },
     configureContext: MemScope.(CPointer<EVP_CIPHER_CTX>?) -> Unit = {},
-): Resource<CPointer<EVP_CIPHER_CTX>?> = memScoped {
+): NativeResource<CPointer<EVP_CIPHER_CTX>> = memScoped {
     val context = checkError(EVP_CIPHER_CTX_new())
-    val resource = Resource<CPointer<EVP_CIPHER_CTX>?>(context, ::EVP_CIPHER_CTX_free)
+    val resource = NativeResource(context, ::EVP_CIPHER_CTX_free)
     try {
         // two-step initialization, as we need to set `params` first, and then set key and iv
         // this is required for AES CCM
@@ -133,9 +133,8 @@ internal fun EvpCipherFunction(
 )
 
 internal class EvpCipherFunction(
-    private val context: Resource<CPointer<EVP_CIPHER_CTX>?>,
-) : BaseCipherFunction() {
-    private val closeable = SafeCloseable(SafeCloseAction(context, AutoCloseable::close))
+    private val context: NativeResource<CPointer<EVP_CIPHER_CTX>>,
+) : BaseCipherFunction(), AutoCloseable by context {
     override val blockSize: Int // TODO: accepted value
         get() = checkError(EVP_CIPHER_CTX_get_block_size(context.access()))
 
@@ -196,10 +195,6 @@ internal class EvpCipherFunction(
             }
             dataOutMoved.value.convert()
         }
-    }
-
-    override fun close() {
-        closeable.close()
     }
 
     fun aeadEncryptTransform(tagSize: Int, plaintext: ByteArray): ByteArray = use {

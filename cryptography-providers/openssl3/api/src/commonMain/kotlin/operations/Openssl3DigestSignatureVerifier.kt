@@ -10,22 +10,18 @@ import dev.whyoleg.cryptography.providers.base.operations.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import kotlinx.cinterop.*
-import kotlin.experimental.*
 
 internal abstract class Openssl3DigestSignatureVerifier(
-    private val publicKey: CPointer<EVP_PKEY>,
+    private val publicKey: EvpPKey,
     private val hashAlgorithm: String?,
 ) : SignatureVerifier {
-    @OptIn(ExperimentalNativeApi::class)
-    private val cleaner = publicKey.upRef().cleaner()
-
     protected abstract fun MemScope.createParams(): CValuesRef<OSSL_PARAM>?
 
     // in case of no digest, streaming is not supported
     override fun createVerifyFunction(): VerifyFunction = if (hashAlgorithm == null) {
         AccumulatingVerifyFunction(::verify)
     } else {
-        Openssl3DigestVerifyFunction(Resource(checkError(EVP_MD_CTX_new()), ::EVP_MD_CTX_free))
+        Openssl3DigestVerifyFunction(NativeResource(checkError(EVP_MD_CTX_new()), ::EVP_MD_CTX_free))
     }
 
     // one shot
@@ -70,16 +66,15 @@ internal abstract class Openssl3DigestSignatureVerifier(
                 mdname = hashAlgorithm,
                 libctx = null,
                 props = null,
-                pkey = publicKey,
+                pkey = publicKey.access(),
                 params = createParams()
             )
         )
     }
 
-    // inner class to have a reference to class with cleaner
     private inner class Openssl3DigestVerifyFunction(
-        private val context: Resource<CPointer<EVP_MD_CTX>>,
-    ) : VerifyFunction, SafeCloseable(SafeCloseAction(context, AutoCloseable::close)) {
+        private val context: NativeResource<CPointer<EVP_MD_CTX>>,
+    ) : VerifyFunction, AutoCloseable by context {
         init {
             reset()
         }

@@ -13,7 +13,6 @@ import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.providers.openssl3.operations.*
 import kotlinx.cinterop.*
-import kotlin.experimental.*
 
 internal object Openssl3RsaOaep : Openssl3Rsa<RSA.OAEP.PublicKey, RSA.OAEP.PrivateKey, RSA.OAEP.KeyPair>(
     wrapPublicKey = ::RsaOaepPublicKey,
@@ -26,7 +25,7 @@ internal object Openssl3RsaOaep : Openssl3Rsa<RSA.OAEP.PublicKey, RSA.OAEP.Priva
     ) : RSA.OAEP.KeyPair
 
     private class RsaOaepPublicKey(
-        key: CPointer<EVP_PKEY>,
+        key: EvpPKey,
         digest: CryptographyAlgorithmId<Digest>,
     ) : RsaPublicKey(key, digest), RSA.OAEP.PublicKey {
         private val encryptor = RsaOaepEncryptor(key, hashAlgorithmName(digest))
@@ -34,7 +33,7 @@ internal object Openssl3RsaOaep : Openssl3Rsa<RSA.OAEP.PublicKey, RSA.OAEP.Priva
     }
 
     private class RsaOaepPrivateKey(
-        key: CPointer<EVP_PKEY>,
+        key: EvpPKey,
         digest: CryptographyAlgorithmId<Digest>,
         publicKey: RSA.OAEP.PublicKey?,
     ) : RsaPrivateKey(key, digest, publicKey), RSA.OAEP.PrivateKey {
@@ -44,12 +43,9 @@ internal object Openssl3RsaOaep : Openssl3Rsa<RSA.OAEP.PublicKey, RSA.OAEP.Priva
 }
 
 private class RsaOaepEncryptor(
-    private val publicKey: CPointer<EVP_PKEY>,
+    private val publicKey: EvpPKey,
     private val hashAlgorithm: String,
 ) : BaseAuthenticatedEncryptor {
-    @OptIn(ExperimentalNativeApi::class)
-    private val cleaner = publicKey.upRef().cleaner()
-
     @OptIn(UnsafeNumber::class)
     override fun createEncryptFunction(associatedData: ByteArray?): CipherFunction {
         return EvpPKeyCipherFunction(publicKey, encrypt = true) {
@@ -63,12 +59,9 @@ private class RsaOaepEncryptor(
 }
 
 private class RsaOaepDecryptor(
-    private val privateKey: CPointer<EVP_PKEY>,
+    private val privateKey: EvpPKey,
     private val hashAlgorithm: String,
 ) : BaseAuthenticatedDecryptor {
-    @OptIn(ExperimentalNativeApi::class)
-    private val cleaner = privateKey.upRef().cleaner()
-
     @OptIn(UnsafeNumber::class)
     override fun createDecryptFunction(associatedData: ByteArray?): CipherFunction {
         return EvpPKeyCipherFunction(privateKey, encrypt = false) {

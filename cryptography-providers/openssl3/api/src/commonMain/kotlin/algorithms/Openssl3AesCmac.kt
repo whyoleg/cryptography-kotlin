@@ -7,21 +7,15 @@ package dev.whyoleg.cryptography.providers.openssl3.algorithms
 import dev.whyoleg.cryptography.BinarySize.Companion.bytes
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.base.algorithms.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.providers.openssl3.operations.*
 import kotlinx.cinterop.*
-import kotlin.experimental.*
-import kotlin.native.ref.*
 
-@OptIn(ExperimentalNativeApi::class)
 internal object Openssl3AesCmac : AES.CMAC, BaseAes<AES.CMAC.Key>() {
-    val mac = checkError(EVP_MAC_fetch(null, "CMAC", null))
-
-    // is it needed at all for `object`?
-    @OptIn(ExperimentalNativeApi::class)
-    private val cleaner = createCleaner(Openssl3Hmac.mac, ::EVP_MAC_free)
+    val mac = NativeResource(checkError(EVP_MAC_fetch(null, "CMAC", null)), ::EVP_MAC_free)
 
     override fun wrapKey(rawKey: ByteArray): AES.CMAC.Key = AesCmacKey(rawKey)
 

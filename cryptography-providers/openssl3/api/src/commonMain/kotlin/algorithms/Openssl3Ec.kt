@@ -18,8 +18,8 @@ import kotlinx.cinterop.*
 import platform.posix.*
 
 internal abstract class Openssl3Ec<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey<PublicK>, KP : EC.KeyPair<PublicK, PrivateK>>(
-    private val wrapPublicKey: (EC.Curve, CPointer<EVP_PKEY>) -> PublicK,
-    private val wrapPrivateKey: (EC.Curve, CPointer<EVP_PKEY>, PublicK?) -> PrivateK,
+    private val wrapPublicKey: (EC.Curve, EvpPKey) -> PublicK,
+    private val wrapPrivateKey: (EC.Curve, EvpPKey, PublicK?) -> PrivateK,
     private val wrapKeyPair: (PublicK, PrivateK) -> KP,
 ) : EC<PublicK, PrivateK, KP> {
 
@@ -54,13 +54,13 @@ internal abstract class Openssl3Ec<PublicK : EC.PublicKey, PrivateK : EC.Private
             else                    -> super.decodeFromByteArrayBlocking(format, bytes)
         }
 
-        override fun wrapKey(key: CPointer<EVP_PKEY>): PublicK {
-            EC_check_key_group(key, curve)
+        override fun wrapKey(key: EvpPKey): PublicK {
+            EC_check_key_group(key.access(), curve)
             return wrapPublicKey(curve, key)
         }
 
         @OptIn(UnsafeNumber::class)
-        private fun decodePublicRawKey(curve: EC.Curve, input: ByteArray): CPointer<EVP_PKEY> = fromParameters {
+        private fun decodePublicRawKey(curve: EC.Curve, input: ByteArray): EvpPKey = fromParameters {
             OSSL_PARAM_array(
                 OSSL_PARAM_construct_utf8_string("group".cstr.ptr, curve.name.cstr.ptr, 0.convert()),
                 OSSL_PARAM_construct_octet_string("pub".cstr.ptr, input.safeRefToU(0), input.size.convert())
@@ -92,8 +92,8 @@ internal abstract class Openssl3Ec<PublicK : EC.PublicKey, PrivateK : EC.Private
             else                     -> super.decodeFromByteArrayBlocking(format, bytes)
         }
 
-        override fun wrapKey(key: CPointer<EVP_PKEY>): PrivateK {
-            EC_check_key_group(key, curve)
+        override fun wrapKey(key: EvpPKey): PrivateK {
+            EC_check_key_group(key.access(), curve)
             return wrapPrivateKey(curve, key, null)
         }
 
@@ -132,7 +132,7 @@ internal abstract class Openssl3Ec<PublicK : EC.PublicKey, PrivateK : EC.Private
             OSSL_PARAM_construct_utf8_string("group".cstr.ptr, curve.name.cstr.ptr, 0.convert())
         )
 
-        override fun wrapKeyPair(keyPair: CPointer<EVP_PKEY>): KP {
+        override fun wrapKeyPair(keyPair: EvpPKey): KP {
             val publicKey = wrapPublicKey(curve, keyPair)
             val privateKey = wrapPrivateKey(curve, keyPair, publicKey)
             return wrapKeyPair(publicKey, privateKey)
@@ -141,7 +141,7 @@ internal abstract class Openssl3Ec<PublicK : EC.PublicKey, PrivateK : EC.Private
 
     protected abstract inner class Openssl3EcPublicKey(
         protected val curve: EC.Curve,
-        key: CPointer<EVP_PKEY>,
+        key: EvpPKey,
     ) : EC.PublicKey, Openssl3PublicKeyEncodable<EC.PublicKey.Format>(key) {
         override fun outputType(format: EC.PublicKey.Format): String = when (format) {
             EC.PublicKey.Format.DER -> "DER"
@@ -153,12 +153,12 @@ internal abstract class Openssl3Ec<PublicK : EC.PublicKey, PrivateK : EC.Private
         }
 
         override fun encodeToByteArrayBlocking(format: EC.PublicKey.Format): ByteArray = when (format) {
-            EC.PublicKey.Format.RAW            -> encodePublicRawKey(key)
-            EC.PublicKey.Format.RAW.Compressed -> encodePublicRawCompressedKey(key)
+            EC.PublicKey.Format.RAW            -> encodePublicRawKey(key.access())
+            EC.PublicKey.Format.RAW.Compressed -> encodePublicRawCompressedKey(key.access())
             EC.PublicKey.Format.JWK -> JsonWebKeys.encodeEcPublicKey(
                 curve = curve,
-                orderSize = EC_order_size(key),
-                publicKey = encodePublicRawKey(key)
+                orderSize = EC_order_size(key.access()),
+                publicKey = encodePublicRawKey(key.access())
             )
             else                               -> super.encodeToByteArrayBlocking(format)
         }
@@ -194,10 +194,10 @@ internal abstract class Openssl3Ec<PublicK : EC.PublicKey, PrivateK : EC.Private
 
     protected abstract inner class Openssl3EcPrivateKey(
         protected val curve: EC.Curve,
-        key: CPointer<EVP_PKEY>,
+        key: EvpPKey,
         publicKey: PublicK?,
     ) : EC.PrivateKey<PublicK>, Openssl3PrivateKeyEncodable<EC.PrivateKey.Format, PublicK>(key, publicKey) {
-        final override fun wrapPublicKey(key: CPointer<EVP_PKEY>): PublicK = wrapPublicKey(curve, key)
+        final override fun wrapPublicKey(key: EvpPKey): PublicK = wrapPublicKey(curve, key)
 
         override fun outputType(format: EC.PrivateKey.Format): String = when (format) {
             EC.PrivateKey.Format.DER, EC.PrivateKey.Format.DER.SEC1 -> "DER"
@@ -211,12 +211,12 @@ internal abstract class Openssl3Ec<PublicK : EC.PublicKey, PrivateK : EC.Private
         }
 
         override fun encodeToByteArrayBlocking(format: EC.PrivateKey.Format): ByteArray = when (format) {
-            EC.PrivateKey.Format.RAW -> encodePrivateRawKey(key)
+            EC.PrivateKey.Format.RAW -> encodePrivateRawKey(key.access())
             EC.PrivateKey.Format.JWK -> JsonWebKeys.encodeEcPrivateKey(
                 curve = curve,
-                orderSize = EC_order_size(key),
-                publicKey = encodePublicRawKey(key),
-                privateKey = encodePrivateRawKey(key)
+                orderSize = EC_order_size(key.access()),
+                publicKey = encodePublicRawKey(key.access()),
+                privateKey = encodePrivateRawKey(key.access())
             )
             else                     -> super.encodeToByteArrayBlocking(format)
         }

@@ -6,11 +6,12 @@ package dev.whyoleg.cryptography.providers.openssl3.operations
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.providers.base.operations.*
+import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import kotlinx.cinterop.*
 
 internal abstract class Openssl3IvAuthenticatedCipher(
-    protected val cipher: CPointer<EVP_CIPHER>?,
+    protected val cipher: EvpCipher,
     protected val key: ByteArray,
     protected val tagSize: Int,
     protected val implicitIvSize: Int, // for implicit cases
@@ -28,7 +29,7 @@ internal abstract class Openssl3IvAuthenticatedCipher(
         validateIvSize(iv.size)
         return AccumulatingCipherFunction { plaintext ->
             EvpCipherFunction(
-                cipher = cipher,
+                cipher = cipher.access(),
                 key = key,
                 iv = iv,
                 ivStartIndex = 0,
@@ -61,7 +62,7 @@ internal abstract class Openssl3IvAuthenticatedCipher(
 
         return AccumulatingCipherFunction { ciphertext ->
             EvpCipherFunction(
-                cipher = cipher,
+                cipher = cipher.access(),
                 key = key,
                 iv = iv,
                 ivStartIndex = ivStartIndex,

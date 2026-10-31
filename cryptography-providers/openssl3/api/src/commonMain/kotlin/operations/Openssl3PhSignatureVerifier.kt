@@ -10,21 +10,17 @@ import dev.whyoleg.cryptography.providers.base.operations.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import kotlinx.cinterop.*
-import kotlin.experimental.*
 
 // works only over pre-hashed data
 internal abstract class Openssl3PhSignatureVerifier(
-    private val publicKey: CPointer<EVP_PKEY>,
+    private val publicKey: EvpPKey,
 ) : SignatureVerifier {
-    @OptIn(ExperimentalNativeApi::class)
-    private val cleaner = publicKey.upRef().cleaner()
-
     protected abstract fun MemScope.createParams(): CValuesRef<OSSL_PARAM>?
 
     override fun createVerifyFunction(): VerifyFunction = AccumulatingVerifyFunction(::verify)
 
     @OptIn(UnsafeNumber::class)
-    private fun verify(data: ByteArray, signature: ByteArray): String? = with_PKEY_CTX(publicKey) { context ->
+    private fun verify(data: ByteArray, signature: ByteArray): String? = with_PKEY_CTX(publicKey.access()) { context ->
         checkError(EVP_PKEY_verify_init_ex(context, createParams()))
 
         data.usePinned { dataPin ->

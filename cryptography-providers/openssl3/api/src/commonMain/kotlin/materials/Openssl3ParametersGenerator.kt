@@ -13,13 +13,13 @@ internal abstract class Openssl3ParametersGenerator<P>(
     private val algorithm: String,
 ) : ParametersGenerator<P> {
     protected abstract fun MemScope.createParams(): CValuesRef<OSSL_PARAM>?
-    protected abstract fun wrapParameters(key: CPointer<EVP_PKEY>): P
+    protected abstract fun wrapParameters(key: EvpPKey): P
 
     final override fun generateParametersBlocking(): P = with_PKEY_CTX(algorithm) { context ->
         checkError(EVP_PKEY_paramgen_init(context))
         createParams()?.let { checkError(EVP_PKEY_CTX_set_params(context, it)) }
         val paramsKeyVar = alloc<CPointerVar<EVP_PKEY>>()
         checkError(EVP_PKEY_generate(context, paramsKeyVar.ptr))
-        wrapParameters(checkError(paramsKeyVar.value))
+        wrapParameters(EvpPKey(checkError(paramsKeyVar.value)))
     }
 }

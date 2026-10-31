@@ -32,7 +32,7 @@ internal abstract class Openssl3Decoder<F : EncodingFormat, K>(
     private val algorithm: String,
     private val selection: Int,
 ) : Decoder<F, K> {
-    protected abstract fun wrapKey(key: CPointer<EVP_PKEY>): K
+    protected abstract fun wrapKey(key: EvpPKey): K
 
     protected abstract fun inputType(format: F): String
     protected abstract fun inputStruct(format: F): String?
@@ -56,7 +56,7 @@ internal abstract class Openssl3Decoder<F : EncodingFormat, K>(
             val pdataVar = alloc<CPointerVar<UByteVar>> { value = allocArrayOf(bytes).reinterpret() }
             checkError(OSSL_DECODER_from_data(context, pdataVar.ptr, pdataLenVar.ptr))
             val pkey = checkError(pkeyVar.value)
-            wrapKey(pkey)
+            wrapKey(EvpPKey(pkey))
         } finally {
             OSSL_DECODER_CTX_free(context)
         }
@@ -66,7 +66,7 @@ internal abstract class Openssl3Decoder<F : EncodingFormat, K>(
     // like in case of EC private key import without public key - the later will not be computed
     protected fun fromParameters(
         createParams: MemScope.() -> CValuesRef<OSSL_PARAM>?,
-    ): CPointer<EVP_PKEY> = with_PKEY_CTX(algorithm) { context ->
+    ): EvpPKey = with_PKEY_CTX(algorithm) { context ->
         checkError(EVP_PKEY_fromdata_init(context))
         val pkeyVar = alloc<CPointerVar<EVP_PKEY>>()
         checkError(
@@ -77,6 +77,6 @@ internal abstract class Openssl3Decoder<F : EncodingFormat, K>(
                 param = createParams()
             )
         )
-        checkError(pkeyVar.value)
+        EvpPKey(checkError(pkeyVar.value))
     }
 }

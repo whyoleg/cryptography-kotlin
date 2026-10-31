@@ -8,6 +8,7 @@ import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.materials.*
+import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.providers.openssl3.materials.*
 import dev.whyoleg.cryptography.providers.openssl3.operations.*
@@ -35,7 +36,7 @@ internal object Openssl3EdDsa : EdDSA {
             else                       -> super.decodeFromByteArrayBlocking(format, bytes)
         }
 
-        override fun wrapKey(key: CPointer<EVP_PKEY>): EdDSA.PublicKey = EdDsaPublicKey(curve, key)
+        override fun wrapKey(key: EvpPKey): EdDSA.PublicKey = EdDsaPublicKey(curve, key)
 
         private fun decodeRaw(bytes: ByteArray): EdDSA.PublicKey {
             val type = when (curve) {
@@ -63,7 +64,7 @@ internal object Openssl3EdDsa : EdDSA {
             else                        -> super.decodeFromByteArrayBlocking(format, bytes)
         }
 
-        override fun wrapKey(key: CPointer<EVP_PKEY>): EdDSA.PrivateKey = EdDsaPrivateKey(curve, key)
+        override fun wrapKey(key: EvpPKey): EdDSA.PrivateKey = EdDsaPrivateKey(curve, key)
 
         private fun decodeRaw(bytes: ByteArray): EdDSA.PrivateKey {
             val type = when (curve) {
@@ -79,7 +80,7 @@ internal object Openssl3EdDsa : EdDSA {
         private val curve: EdDSA.Curve,
     ) : Openssl3KeyPairGenerator<EdDSA.KeyPair>(curve.name) {
         override fun MemScope.createParams(): CValuesRef<OSSL_PARAM>? = null
-        override fun wrapKeyPair(keyPair: CPointer<EVP_PKEY>): EdDSA.KeyPair {
+        override fun wrapKeyPair(keyPair: EvpPKey): EdDSA.KeyPair {
             val publicKey = EdDsaPublicKey(curve, keyPair)
             return EdDsaKeyPair(
                 publicKey = publicKey,
@@ -95,7 +96,7 @@ internal object Openssl3EdDsa : EdDSA {
 
     private class EdDsaPublicKey(
         private val curve: EdDSA.Curve,
-        key: CPointer<EVP_PKEY>,
+        key: EvpPKey,
     ) : EdDSA.PublicKey, Openssl3PublicKeyEncodable<EdDSA.PublicKey.Format>(key) {
         override fun outputType(format: EdDSA.PublicKey.Format): String = when (format) {
             EdDSA.PublicKey.Format.DER -> "DER"
@@ -108,9 +109,9 @@ internal object Openssl3EdDsa : EdDSA {
         override fun encodeToByteArrayBlocking(format: EdDSA.PublicKey.Format): ByteArray = when (format) {
             EdDSA.PublicKey.Format.JWK -> JsonWebKeys.encodeOkpPublicKey(
                 curve = curve.name,
-                publicKey = encodeRawPublicKey(key),
+                publicKey = encodeRawPublicKey(key.access()),
             )
-            EdDSA.PublicKey.Format.RAW -> encodeRawPublicKey(key)
+            EdDSA.PublicKey.Format.RAW -> encodeRawPublicKey(key.access())
             else                       -> super.encodeToByteArrayBlocking(format)
         }
 
@@ -119,10 +120,10 @@ internal object Openssl3EdDsa : EdDSA {
 
     private class EdDsaPrivateKey(
         private val curve: EdDSA.Curve,
-        key: CPointer<EVP_PKEY>,
+        key: EvpPKey,
         publicKey: EdDSA.PublicKey? = null,
     ) : EdDSA.PrivateKey, Openssl3PrivateKeyEncodable<EdDSA.PrivateKey.Format, EdDSA.PublicKey>(key, publicKey) {
-        override fun wrapPublicKey(key: CPointer<EVP_PKEY>): EdDSA.PublicKey = EdDsaPublicKey(curve, key)
+        override fun wrapPublicKey(key: EvpPKey): EdDSA.PublicKey = EdDsaPublicKey(curve, key)
 
         override fun outputType(format: EdDSA.PrivateKey.Format): String = when (format) {
             EdDSA.PrivateKey.Format.DER -> "DER"
@@ -135,10 +136,10 @@ internal object Openssl3EdDsa : EdDSA {
         override fun encodeToByteArrayBlocking(format: EdDSA.PrivateKey.Format): ByteArray = when (format) {
             EdDSA.PrivateKey.Format.JWK -> JsonWebKeys.encodeOkpPrivateKey(
                 curve = curve.name,
-                publicKey = encodeRawPublicKey(key),
-                privateKey = encodeRawPrivateKey(key),
+                publicKey = encodeRawPublicKey(key.access()),
+                privateKey = encodeRawPrivateKey(key.access()),
             )
-            EdDSA.PrivateKey.Format.RAW -> encodeRawPrivateKey(key)
+            EdDSA.PrivateKey.Format.RAW -> encodeRawPrivateKey(key.access())
             else                        -> super.encodeToByteArrayBlocking(format)
         }
 
@@ -147,13 +148,13 @@ internal object Openssl3EdDsa : EdDSA {
 }
 
 private class EdDsaSignatureGenerator(
-    privateKey: CPointer<EVP_PKEY>,
+    privateKey: EvpPKey,
 ) : Openssl3DigestSignatureGenerator(privateKey, hashAlgorithm = null) {
     override fun MemScope.createParams(): CValuesRef<OSSL_PARAM>? = null
 }
 
 private class EdDsaSignatureVerifier(
-    publicKey: CPointer<EVP_PKEY>,
+    publicKey: EvpPKey,
 ) : Openssl3DigestSignatureVerifier(publicKey, hashAlgorithm = null) {
     override fun MemScope.createParams(): CValuesRef<OSSL_PARAM>? = null
 }

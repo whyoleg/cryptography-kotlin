@@ -24,7 +24,7 @@ internal object Openssl3RsaPss : Openssl3Rsa<RSA.PSS.PublicKey, RSA.PSS.PrivateK
     ) : RSA.PSS.KeyPair
 
     private class RsaPssPublicKey(
-        key: CPointer<EVP_PKEY>,
+        key: EvpPKey,
         digest: CryptographyAlgorithmId<Digest>,
     ) : RsaPublicKey(key, digest), RSA.PSS.PublicKey {
 
@@ -41,7 +41,7 @@ internal object Openssl3RsaPss : Openssl3Rsa<RSA.PSS.PublicKey, RSA.PSS.PrivateK
     }
 
     private class RsaPssPrivateKey(
-        key: CPointer<EVP_PKEY>,
+        key: EvpPKey,
         digest: CryptographyAlgorithmId<Digest>,
         publicKey: RSA.PSS.PublicKey?,
     ) : RsaPrivateKey(key, digest, publicKey), RSA.PSS.PrivateKey {
@@ -60,7 +60,7 @@ internal object Openssl3RsaPss : Openssl3Rsa<RSA.PSS.PublicKey, RSA.PSS.PrivateK
 }
 
 private class RsaPssSignatureGenerator(
-    privateKey: CPointer<EVP_PKEY>,
+    privateKey: EvpPKey,
     hashAlgorithm: String,
     private val saltLengthBytes: Int,
 ) : Openssl3DigestSignatureGenerator(privateKey, hashAlgorithm) {
@@ -72,7 +72,7 @@ private class RsaPssSignatureGenerator(
 }
 
 private class RsaPssSignatureVerifier(
-    publicKey: CPointer<EVP_PKEY>,
+    publicKey: EvpPKey,
     hashAlgorithm: String,
     private val saltLengthBytes: Int,
 ) : Openssl3DigestSignatureVerifier(publicKey, hashAlgorithm) {

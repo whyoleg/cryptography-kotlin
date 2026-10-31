@@ -311,6 +311,14 @@ final fun dev.whyoleg.cryptography.providers.base.materials/wrapSubjectPublicKey
 final fun dev.whyoleg.cryptography.providers.base/checkBounds(kotlin/Int, kotlin/Int, kotlin/Int) // dev.whyoleg.cryptography.providers.base/checkBounds|checkBounds(kotlin.Int;kotlin.Int;kotlin.Int){}[0]
 
 // Targets: [native]
+final class <#A: kotlin/Any> dev.whyoleg.cryptography.providers.base/NativeResource : kotlin/AutoCloseable { // dev.whyoleg.cryptography.providers.base/NativeResource|null[0]
+    constructor <init>(#A, kotlin/Function1<#A, kotlin/Unit>) // dev.whyoleg.cryptography.providers.base/NativeResource.<init>|<init>(1:0;kotlin.Function1<1:0,kotlin.Unit>){}[0]
+
+    final fun access(): #A // dev.whyoleg.cryptography.providers.base/NativeResource.access|access(){}[0]
+    final fun close() // dev.whyoleg.cryptography.providers.base/NativeResource.close|close(){}[0]
+}
+
+// Targets: [native]
 final fun (kotlin/ByteArray).dev.whyoleg.cryptography.providers.base/refToU(kotlin/Int): kotlinx.cinterop/CValuesRef<kotlinx.cinterop/UByteVarOf<kotlin/UByte>> // dev.whyoleg.cryptography.providers.base/refToU|refToU@kotlin.ByteArray(kotlin.Int){}[0]
 
 // Targets: [native]

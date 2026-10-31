@@ -30,7 +30,7 @@ internal object Openssl3Dh : DH {
             DH.PrivateKey.Format.PEM -> "PEM"
         }
 
-        override fun wrapKey(key: CPointer<EVP_PKEY>): DH.PrivateKey {
+        override fun wrapKey(key: EvpPKey): DH.PrivateKey {
             return DhPrivateKey(key, publicKey = null)
         }
     }
@@ -41,14 +41,14 @@ internal object Openssl3Dh : DH {
             DH.PublicKey.Format.PEM -> "PEM"
         }
 
-        override fun wrapKey(key: CPointer<EVP_PKEY>): DH.PublicKey {
+        override fun wrapKey(key: EvpPKey): DH.PublicKey {
             return DhPublicKey(key)
         }
     }
 
-    private class DhKeyGenerator(key: CPointer<EVP_PKEY>) : Openssl3KeyPairGenerator<DH.KeyPair>(key) {
+    private class DhKeyGenerator(key: EvpPKey) : Openssl3KeyPairGenerator<DH.KeyPair>(key) {
         override fun MemScope.createParams(): CValuesRef<OSSL_PARAM>? = null
-        override fun wrapKeyPair(keyPair: CPointer<EVP_PKEY>): DH.KeyPair {
+        override fun wrapKeyPair(keyPair: EvpPKey): DH.KeyPair {
             val publicKey = DhPublicKey(keyPair)
             return DhKeyPair(
                 publicKey = publicKey,
@@ -63,12 +63,12 @@ internal object Openssl3Dh : DH {
     ) : DH.KeyPair
 
     private class DhPrivateKey(
-        key: CPointer<EVP_PKEY>,
+        key: EvpPKey,
         publicKey: DH.PublicKey?,
     ) : DH.PrivateKey,
         Openssl3PrivateKeyEncodable<DH.PrivateKey.Format, DH.PublicKey>(key, publicKey),
         SharedSecretGenerator<DH.PublicKey> {
-        override fun wrapPublicKey(key: CPointer<EVP_PKEY>): DH.PublicKey = DhPublicKey(key)
+        override fun wrapPublicKey(key: EvpPKey): DH.PublicKey = DhPublicKey(key)
 
         override fun outputType(format: DH.PrivateKey.Format): String = when (format) {
             DH.PrivateKey.Format.DER -> "DER"
@@ -80,7 +80,7 @@ internal object Openssl3Dh : DH {
         override fun generateSharedSecretToByteArrayBlocking(other: DH.PublicKey): ByteArray {
             check(other is DhPublicKey)
 
-            return deriveSharedSecret(publicKey = other.key, privateKey = key) {
+            return deriveSharedSecret(publicKey = other.key.access(), privateKey = key.access()) {
                 // enable padding
                 OSSL_PARAM_array(OSSL_PARAM_construct_uint("pad".cstr.ptr, alloc(1.toUInt()).ptr))
             }
@@ -88,7 +88,7 @@ internal object Openssl3Dh : DH {
     }
 
     private class DhPublicKey(
-        key: CPointer<EVP_PKEY>,
+        key: EvpPKey,
     ) : DH.PublicKey, Openssl3PublicKeyEncodable<DH.PublicKey.Format>(key), SharedSecretGenerator<DH.PrivateKey> {
 
         override fun outputType(format: DH.PublicKey.Format): String = when (format) {
@@ -101,7 +101,7 @@ internal object Openssl3Dh : DH {
         override fun generateSharedSecretToByteArrayBlocking(other: DH.PrivateKey): ByteArray {
             check(other is DhPrivateKey)
 
-            return deriveSharedSecret(publicKey = key, privateKey = other.key) {
+            return deriveSharedSecret(publicKey = key.access(), privateKey = other.key.access()) {
                 // enable padding
                 OSSL_PARAM_array(OSSL_PARAM_construct_uint("pad".cstr.ptr, alloc(1.toUInt()).ptr))
             }
@@ -114,7 +114,7 @@ internal object Openssl3Dh : DH {
             DH.Parameters.Format.PEM -> "PEM"
         }
 
-        override fun wrapKey(key: CPointer<EVP_PKEY>): DH.Parameters {
+        override fun wrapKey(key: EvpPKey): DH.Parameters {
             return Openssl3DhParameters(key)
         }
     }
@@ -123,7 +123,7 @@ internal object Openssl3Dh : DH {
         private val primeSizeBits: UInt,
         private val privateValueLengthBits: Int?,
     ) : Openssl3ParametersGenerator<DH.Parameters>("DH") {
-        override fun wrapParameters(key: CPointer<EVP_PKEY>): DH.Parameters = Openssl3DhParameters(key)
+        override fun wrapParameters(key: EvpPKey): DH.Parameters = Openssl3DhParameters(key)
 
         @OptIn(UnsafeNumber::class)
         override fun MemScope.createParams(): CValuesRef<OSSL_PARAM>? = OSSL_PARAM_array(
@@ -133,7 +133,7 @@ internal object Openssl3Dh : DH {
     }
 
     private class Openssl3DhParameters(
-        key: CPointer<EVP_PKEY>,
+        key: EvpPKey,
     ) : DH.Parameters, Openssl3ParametersEncodable<DH.Parameters.Format>(key) {
         override fun keyPairGenerator(): KeyGenerator<DH.KeyPair> = DhKeyGenerator(key)
 

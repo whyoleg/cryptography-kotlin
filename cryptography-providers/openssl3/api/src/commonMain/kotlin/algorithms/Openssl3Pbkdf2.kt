@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024-2025 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.openssl3.algorithms
@@ -11,10 +11,10 @@ import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import kotlinx.cinterop.*
-import kotlin.experimental.*
-import kotlin.native.ref.*
 
 internal object Openssl3Pbkdf2 : PBKDF2 {
+    val kdf = NativeResource(checkError(EVP_KDF_fetch(null, "PBKDF2", null)), ::EVP_KDF_free)
+
     override fun secretDerivation(
         digest: CryptographyAlgorithmId<Digest>,
         iterations: Int,
@@ -34,14 +34,9 @@ private class Openssl3Pbkdf2SecretDerivation(
     private val iterations: Int,
     private val outputSize: BinarySize,
 ) : SecretDerivation {
-    private val kdf = EVP_KDF_fetch(null, "PBKDF2", null)
-
-    @OptIn(ExperimentalNativeApi::class)
-    private val cleaner = createCleaner(kdf, ::EVP_KDF_free)
-
     @OptIn(UnsafeNumber::class)
     override fun deriveSecretToByteArrayBlocking(input: ByteArray): ByteArray = memScoped {
-        val context = checkError(EVP_KDF_CTX_new(kdf))
+        val context = checkError(EVP_KDF_CTX_new(Openssl3Pbkdf2.kdf.access()))
         try {
             val output = ByteArray(outputSize.inBytes)
             checkError(

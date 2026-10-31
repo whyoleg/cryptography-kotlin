@@ -11,13 +11,13 @@ import kotlinx.cinterop.*
 import platform.posix.*
 
 @OptIn(UnsafeNumber::class)
-internal fun decodeRawPublicKey(type: Int, bytes: ByteArray): CPointer<EVP_PKEY> = checkError(
-    EVP_PKEY_new_raw_public_key(type, null, bytes.refToU(0), bytes.size.convert())
+internal fun decodeRawPublicKey(type: Int, bytes: ByteArray): EvpPKey = EvpPKey(
+    checkError(EVP_PKEY_new_raw_public_key(type, null, bytes.refToU(0), bytes.size.convert()))
 )
 
 @OptIn(UnsafeNumber::class)
-internal fun decodeRawPrivateKey(type: Int, bytes: ByteArray): CPointer<EVP_PKEY> = checkError(
-    EVP_PKEY_new_raw_private_key(type, null, bytes.refToU(0), bytes.size.convert())
+internal fun decodeRawPrivateKey(type: Int, bytes: ByteArray): EvpPKey = EvpPKey(
+    checkError(EVP_PKEY_new_raw_private_key(type, null, bytes.refToU(0), bytes.size.convert()))
 )
 
 @OptIn(UnsafeNumber::class)

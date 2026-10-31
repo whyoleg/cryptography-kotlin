@@ -6,9 +6,8 @@ package dev.whyoleg.cryptography.providers.openssl3.algorithms
 
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.operations.*
-import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
+import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.operations.*
-import kotlinx.cinterop.*
 
 internal object Openssl3Ecdh : Openssl3Ec<ECDH.PublicKey, ECDH.PrivateKey, ECDH.KeyPair>(
     wrapPublicKey = ::EcdhPublicKey,
@@ -22,7 +21,7 @@ internal object Openssl3Ecdh : Openssl3Ec<ECDH.PublicKey, ECDH.PrivateKey, ECDH.
 
     private class EcdhPrivateKey(
         curve: EC.Curve,
-        key: CPointer<EVP_PKEY>,
+        key: EvpPKey,
         publicKey: ECDH.PublicKey?,
     ) : Openssl3EcPrivateKey(curve, key, publicKey), ECDH.PrivateKey, SharedSecretGenerator<ECDH.PublicKey> {
         override fun sharedSecretGenerator(): SharedSecretGenerator<ECDH.PublicKey> = this
@@ -30,20 +29,20 @@ internal object Openssl3Ecdh : Openssl3Ec<ECDH.PublicKey, ECDH.PrivateKey, ECDH.
         override fun generateSharedSecretToByteArrayBlocking(other: ECDH.PublicKey): ByteArray {
             check(other is EcdhPublicKey)
 
-            return deriveSharedSecret(publicKey = other.key, privateKey = key)
+            return deriveSharedSecret(publicKey = other.key.access(), privateKey = key.access())
         }
     }
 
     private class EcdhPublicKey(
         curve: EC.Curve,
-        key: CPointer<EVP_PKEY>,
+        key: EvpPKey,
     ) : Openssl3EcPublicKey(curve, key), ECDH.PublicKey, SharedSecretGenerator<ECDH.PrivateKey> {
         override fun sharedSecretGenerator(): SharedSecretGenerator<ECDH.PrivateKey> = this
 
         override fun generateSharedSecretToByteArrayBlocking(other: ECDH.PrivateKey): ByteArray {
             check(other is EcdhPrivateKey)
 
-            return deriveSharedSecret(publicKey = key, privateKey = other.key)
+            return deriveSharedSecret(publicKey = key.access(), privateKey = other.key.access())
         }
     }
 }

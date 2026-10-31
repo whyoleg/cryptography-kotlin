@@ -11,14 +11,14 @@ import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import kotlinx.cinterop.*
 
 internal abstract class EvpMac(
-    private val mac: CPointer<EVP_MAC>,
+    private val mac: NativeResource<CPointer<EVP_MAC>>,
     private val key: ByteArray,
 ) : SignatureGenerator, SignatureVerifier {
     protected abstract fun MemScope.createParams(): CValuesRef<OSSL_PARAM>?
 
     private fun createFunction() = MacFunction(
         key = key,
-        context = Resource(checkError(EVP_MAC_CTX_new(mac)), ::EVP_MAC_CTX_free)
+        context = NativeResource(checkError(EVP_MAC_CTX_new(mac.access())), ::EVP_MAC_CTX_free)
     )
 
     override fun createSignFunction(): SignFunction = createFunction()
@@ -26,8 +26,8 @@ internal abstract class EvpMac(
 
     private inner class MacFunction(
         private val key: ByteArray,
-        private val context: Resource<CPointer<EVP_MAC_CTX>>,
-    ) : SignFunction, VerifyFunction, SafeCloseable(SafeCloseAction(context, AutoCloseable::close)) {
+        private val context: NativeResource<CPointer<EVP_MAC_CTX>>,
+    ) : SignFunction, VerifyFunction, AutoCloseable by context {
         @OptIn(UnsafeNumber::class)
         private val macSize get() = EVP_MAC_CTX_get_mac_size(context.access()).convert<Int>()
 

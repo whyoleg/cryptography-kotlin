@@ -8,6 +8,7 @@ import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.materials.*
+import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.providers.openssl3.materials.*
 import dev.whyoleg.cryptography.providers.openssl3.operations.*
@@ -35,7 +36,7 @@ internal object Openssl3Xdh : XDH {
             else                     -> super.decodeFromByteArrayBlocking(format, bytes)
         }
 
-        override fun wrapKey(key: CPointer<EVP_PKEY>): XDH.PublicKey = XdhPublicKey(curve, key)
+        override fun wrapKey(key: EvpPKey): XDH.PublicKey = XdhPublicKey(curve, key)
 
         private fun decodeRaw(bytes: ByteArray): XDH.PublicKey {
             val type = when (curve) {
@@ -63,7 +64,7 @@ internal object Openssl3Xdh : XDH {
             else                      -> super.decodeFromByteArrayBlocking(format, bytes)
         }
 
-        override fun wrapKey(key: CPointer<EVP_PKEY>): XDH.PrivateKey = XdhPrivateKey(curve, key)
+        override fun wrapKey(key: EvpPKey): XDH.PrivateKey = XdhPrivateKey(curve, key)
 
         private fun decodeRaw(bytes: ByteArray): XDH.PrivateKey {
             val type = when (curve) {
@@ -78,7 +79,7 @@ internal object Openssl3Xdh : XDH {
         private val curve: XDH.Curve,
     ) : Openssl3KeyPairGenerator<XDH.KeyPair>(curve.name) {
         override fun MemScope.createParams(): CValuesRef<OSSL_PARAM>? = null
-        override fun wrapKeyPair(keyPair: CPointer<EVP_PKEY>): XDH.KeyPair {
+        override fun wrapKeyPair(keyPair: EvpPKey): XDH.KeyPair {
             val publicKey = XdhPublicKey(curve, keyPair)
             return XdhKeyPair(
                 publicKey = publicKey,
@@ -94,7 +95,7 @@ internal object Openssl3Xdh : XDH {
 
     private class XdhPublicKey(
         private val curve: XDH.Curve,
-        key: CPointer<EVP_PKEY>,
+        key: EvpPKey,
     ) : XDH.PublicKey, Openssl3PublicKeyEncodable<XDH.PublicKey.Format>(key), SharedSecretGenerator<XDH.PrivateKey> {
         override fun outputType(format: XDH.PublicKey.Format): String = when (format) {
             XDH.PublicKey.Format.DER -> "DER"
@@ -107,26 +108,26 @@ internal object Openssl3Xdh : XDH {
         override fun encodeToByteArrayBlocking(format: XDH.PublicKey.Format): ByteArray = when (format) {
             XDH.PublicKey.Format.JWK -> JsonWebKeys.encodeOkpPublicKey(
                 curve = curve.name,
-                publicKey = encodeRawPublicKey(key),
+                publicKey = encodeRawPublicKey(key.access()),
             )
-            XDH.PublicKey.Format.RAW -> encodeRawPublicKey(key)
+            XDH.PublicKey.Format.RAW -> encodeRawPublicKey(key.access())
             else                     -> super.encodeToByteArrayBlocking(format)
         }
 
         override fun sharedSecretGenerator(): SharedSecretGenerator<XDH.PrivateKey> = this
         override fun generateSharedSecretToByteArrayBlocking(other: XDH.PrivateKey): ByteArray {
             check(other is XdhPrivateKey)
-            return deriveSharedSecret(publicKey = key, privateKey = other.key)
+            return deriveSharedSecret(publicKey = key.access(), privateKey = other.key.access())
         }
     }
 
     private class XdhPrivateKey(
         private val curve: XDH.Curve,
-        key: CPointer<EVP_PKEY>,
+        key: EvpPKey,
         publicKey: XDH.PublicKey? = null,
     ) : XDH.PrivateKey, Openssl3PrivateKeyEncodable<XDH.PrivateKey.Format, XDH.PublicKey>(key, publicKey),
         SharedSecretGenerator<XDH.PublicKey> {
-        override fun wrapPublicKey(key: CPointer<EVP_PKEY>): XDH.PublicKey = XdhPublicKey(curve, key)
+        override fun wrapPublicKey(key: EvpPKey): XDH.PublicKey = XdhPublicKey(curve, key)
 
         override fun outputType(format: XDH.PrivateKey.Format): String = when (format) {
             XDH.PrivateKey.Format.DER -> "DER"
@@ -139,17 +140,17 @@ internal object Openssl3Xdh : XDH {
         override fun encodeToByteArrayBlocking(format: XDH.PrivateKey.Format): ByteArray = when (format) {
             XDH.PrivateKey.Format.JWK -> JsonWebKeys.encodeOkpPrivateKey(
                 curve = curve.name,
-                publicKey = encodeRawPublicKey(key),
-                privateKey = encodeRawPrivateKey(key),
+                publicKey = encodeRawPublicKey(key.access()),
+                privateKey = encodeRawPrivateKey(key.access()),
             )
-            XDH.PrivateKey.Format.RAW -> encodeRawPrivateKey(key)
+            XDH.PrivateKey.Format.RAW -> encodeRawPrivateKey(key.access())
             else                      -> super.encodeToByteArrayBlocking(format)
         }
 
         override fun sharedSecretGenerator(): SharedSecretGenerator<XDH.PublicKey> = this
         override fun generateSharedSecretToByteArrayBlocking(other: XDH.PublicKey): ByteArray {
             check(other is XdhPublicKey)
-            return deriveSharedSecret(publicKey = other.key, privateKey = key)
+            return deriveSharedSecret(publicKey = other.key.access(), privateKey = key.access())
         }
     }
 }

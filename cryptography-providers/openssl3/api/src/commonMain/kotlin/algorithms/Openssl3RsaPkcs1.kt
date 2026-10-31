@@ -12,7 +12,6 @@ import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.providers.openssl3.operations.*
 import kotlinx.cinterop.*
-import kotlin.experimental.*
 
 internal object Openssl3RsaPkcs1 : Openssl3Rsa<RSA.PKCS1.PublicKey, RSA.PKCS1.PrivateKey, RSA.PKCS1.KeyPair>(
     wrapPublicKey = ::RsaPkcs1PublicKey,
@@ -25,7 +24,7 @@ internal object Openssl3RsaPkcs1 : Openssl3Rsa<RSA.PKCS1.PublicKey, RSA.PKCS1.Pr
     ) : RSA.PKCS1.KeyPair
 
     private class RsaPkcs1PublicKey(
-        key: CPointer<EVP_PKEY>,
+        key: EvpPKey,
         digest: CryptographyAlgorithmId<Digest>,
     ) : RsaPublicKey(key, digest), RSA.PKCS1.PublicKey {
         override fun signatureVerifier(): SignatureVerifier = RsaPkcs1SignatureVerifier(key, hashAlgorithmName(digest))
@@ -33,7 +32,7 @@ internal object Openssl3RsaPkcs1 : Openssl3Rsa<RSA.PKCS1.PublicKey, RSA.PKCS1.Pr
     }
 
     private class RsaPkcs1PrivateKey(
-        key: CPointer<EVP_PKEY>,
+        key: EvpPKey,
         digest: CryptographyAlgorithmId<Digest>,
         publicKey: RSA.PKCS1.PublicKey?,
     ) : RsaPrivateKey(key, digest, publicKey), RSA.PKCS1.PrivateKey {
@@ -43,7 +42,7 @@ internal object Openssl3RsaPkcs1 : Openssl3Rsa<RSA.PKCS1.PublicKey, RSA.PKCS1.Pr
 }
 
 private class RsaPkcs1SignatureGenerator(
-    privateKey: CPointer<EVP_PKEY>,
+    privateKey: EvpPKey,
     hashAlgorithm: String,
 ) : Openssl3DigestSignatureGenerator(privateKey, hashAlgorithm) {
     @OptIn(UnsafeNumber::class)
@@ -53,7 +52,7 @@ private class RsaPkcs1SignatureGenerator(
 }
 
 private class RsaPkcs1SignatureVerifier(
-    publicKey: CPointer<EVP_PKEY>,
+    publicKey: EvpPKey,
     hashAlgorithm: String,
 ) : Openssl3DigestSignatureVerifier(publicKey, hashAlgorithm) {
     @OptIn(UnsafeNumber::class)
@@ -63,11 +62,8 @@ private class RsaPkcs1SignatureVerifier(
 }
 
 private class RsaPkcs1Encryptor(
-    private val publicKey: CPointer<EVP_PKEY>,
+    private val publicKey: EvpPKey,
 ) : BaseEncryptor {
-    @OptIn(ExperimentalNativeApi::class)
-    private val cleaner = publicKey.upRef().cleaner()
-
     @OptIn(UnsafeNumber::class)
     override fun createEncryptFunction(): CipherFunction {
         return EvpPKeyCipherFunction(publicKey, encrypt = true) {
@@ -79,11 +75,8 @@ private class RsaPkcs1Encryptor(
 }
 
 private class RsaPkcs1Decryptor(
-    private val privateKey: CPointer<EVP_PKEY>,
+    private val privateKey: EvpPKey,
 ) : BaseDecryptor {
-    @OptIn(ExperimentalNativeApi::class)
-    private val cleaner = privateKey.upRef().cleaner()
-
     @OptIn(UnsafeNumber::class)
     override fun createDecryptFunction(): CipherFunction {
         return EvpPKeyCipherFunction(privateKey, encrypt = false) {

@@ -17,8 +17,8 @@ import dev.whyoleg.cryptography.providers.openssl3.materials.*
 import kotlinx.cinterop.*
 
 internal abstract class Openssl3Rsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey<PublicK>, KP : RSA.KeyPair<PublicK, PrivateK>>(
-    private val wrapPublicKey: (CPointer<EVP_PKEY>, CryptographyAlgorithmId<Digest>) -> PublicK,
-    private val wrapPrivateKey: (CPointer<EVP_PKEY>, CryptographyAlgorithmId<Digest>, PublicK?) -> PrivateK,
+    private val wrapPublicKey: (EvpPKey, CryptographyAlgorithmId<Digest>) -> PublicK,
+    private val wrapPrivateKey: (EvpPKey, CryptographyAlgorithmId<Digest>, PublicK?) -> PrivateK,
     private val wrapKeyPair: (PublicK, PrivateK) -> KP,
 ) : RSA<PublicK, PrivateK, KP> {
 
@@ -53,7 +53,7 @@ internal abstract class Openssl3Rsa<PublicK : RSA.PublicKey, PrivateK : RSA.Priv
             else                     -> super.decodeFromByteArrayBlocking(format, bytes)
         }
 
-        override fun wrapKey(key: CPointer<EVP_PKEY>): PublicK = wrapPublicKey(key, digest)
+        override fun wrapKey(key: EvpPKey): PublicK = wrapPublicKey(key, digest)
     }
 
     final override fun privateKeyDecoder(digest: CryptographyAlgorithmId<Digest>): Decoder<RSA.PrivateKey.Format, PrivateK> =
@@ -93,7 +93,7 @@ internal abstract class Openssl3Rsa<PublicK : RSA.PublicKey, PrivateK : RSA.Priv
             else                      -> super.decodeFromByteArrayBlocking(format, bytes)
         }
 
-        override fun wrapKey(key: CPointer<EVP_PKEY>): PrivateK = wrapPrivateKey(key, digest, null)
+        override fun wrapKey(key: EvpPKey): PrivateK = wrapPrivateKey(key, digest, null)
     }
 
     final override fun keyPairGenerator(
@@ -116,7 +116,7 @@ internal abstract class Openssl3Rsa<PublicK : RSA.PublicKey, PrivateK : RSA.Priv
             OSSL_PARAM_construct_uint("e".cstr.ptr, alloc(publicExponent).ptr)
         )
 
-        override fun wrapKeyPair(keyPair: CPointer<EVP_PKEY>): KP {
+        override fun wrapKeyPair(keyPair: EvpPKey): KP {
             val publicKey = wrapPublicKey(keyPair, digest)
             val privateKey = wrapPrivateKey(keyPair, digest, publicKey)
             return wrapKeyPair(publicKey, privateKey)
@@ -124,7 +124,7 @@ internal abstract class Openssl3Rsa<PublicK : RSA.PublicKey, PrivateK : RSA.Priv
     }
 
     protected abstract inner class RsaPublicKey(
-        key: CPointer<EVP_PKEY>,
+        key: EvpPKey,
         protected val digest: CryptographyAlgorithmId<Digest>,
     ) : RSA.PublicKey, Openssl3PublicKeyEncodable<RSA.PublicKey.Format>(key) {
 
@@ -141,8 +141,8 @@ internal abstract class Openssl3Rsa<PublicK : RSA.PublicKey, PrivateK : RSA.Priv
 
         override fun encodeToByteArrayBlocking(format: RSA.PublicKey.Format): ByteArray = when (format) {
             RSA.PublicKey.Format.JWK -> {
-                val n = getRsaBnParam(key, "n")
-                val e = getRsaBnParam(key, "e")
+                val n = getRsaBnParam(key.access(), "n")
+                val e = getRsaBnParam(key.access(), "e")
                 JsonWebKeys.encodeRsaPublicKey(algorithmId = this@Openssl3Rsa.id, digest = digest, n = n, e = e)
             }
             else                     -> super.encodeToByteArrayBlocking(format)
@@ -150,12 +150,12 @@ internal abstract class Openssl3Rsa<PublicK : RSA.PublicKey, PrivateK : RSA.Priv
     }
 
     protected abstract inner class RsaPrivateKey(
-        key: CPointer<EVP_PKEY>,
+        key: EvpPKey,
         protected val digest: CryptographyAlgorithmId<Digest>,
         publicKey: PublicK?,
     ) : RSA.PrivateKey<PublicK>, Openssl3PrivateKeyEncodable<RSA.PrivateKey.Format, PublicK>(key, publicKey) {
 
-        final override fun wrapPublicKey(key: CPointer<EVP_PKEY>): PublicK = wrapPublicKey(key, digest)
+        final override fun wrapPublicKey(key: EvpPKey): PublicK = wrapPublicKey(key, digest)
 
         override fun outputType(format: RSA.PrivateKey.Format): String = when (format) {
             RSA.PrivateKey.Format.DER, RSA.PrivateKey.Format.DER.PKCS1 -> "DER"
@@ -170,14 +170,14 @@ internal abstract class Openssl3Rsa<PublicK : RSA.PublicKey, PrivateK : RSA.Priv
 
         override fun encodeToByteArrayBlocking(format: RSA.PrivateKey.Format): ByteArray = when (format) {
             RSA.PrivateKey.Format.JWK -> {
-                val n = getRsaBnParam(key, "n")
-                val e = getRsaBnParam(key, "e")
-                val d = getRsaBnParam(key, "d")
-                val p = getRsaBnParam(key, "rsa-factor1")
-                val q = getRsaBnParam(key, "rsa-factor2")
-                val dp = getRsaBnParam(key, "rsa-exponent1")
-                val dq = getRsaBnParam(key, "rsa-exponent2")
-                val qi = getRsaBnParam(key, "rsa-coefficient1")
+                val n = getRsaBnParam(key.access(), "n")
+                val e = getRsaBnParam(key.access(), "e")
+                val d = getRsaBnParam(key.access(), "d")
+                val p = getRsaBnParam(key.access(), "rsa-factor1")
+                val q = getRsaBnParam(key.access(), "rsa-factor2")
+                val dp = getRsaBnParam(key.access(), "rsa-exponent1")
+                val dq = getRsaBnParam(key.access(), "rsa-exponent2")
+                val qi = getRsaBnParam(key.access(), "rsa-coefficient1")
                 JsonWebKeys.encodeRsaPrivateKey(
                     algorithmId = this@Openssl3Rsa.id, digest = digest,
                     n = n, e = e, d = d, p = p, q = q, dp = dp, dq = dq, qi = qi

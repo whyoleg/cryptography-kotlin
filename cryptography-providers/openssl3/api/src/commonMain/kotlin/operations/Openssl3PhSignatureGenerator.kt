@@ -11,21 +11,17 @@ import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import kotlinx.cinterop.*
 import platform.posix.*
-import kotlin.experimental.*
 
 // works only over pre-hashed data
 internal abstract class Openssl3PhSignatureGenerator(
-    private val privateKey: CPointer<EVP_PKEY>,
+    private val privateKey: EvpPKey,
 ) : SignatureGenerator {
-    @OptIn(ExperimentalNativeApi::class)
-    private val cleaner = privateKey.upRef().cleaner()
-
     protected abstract fun MemScope.createParams(): CValuesRef<OSSL_PARAM>?
 
     override fun createSignFunction(): SignFunction = AccumulatingSignFunction(::sign)
 
     @OptIn(UnsafeNumber::class)
-    private fun sign(data: ByteArray): ByteArray = with_PKEY_CTX(privateKey) { context ->
+    private fun sign(data: ByteArray): ByteArray = with_PKEY_CTX(privateKey.access()) { context ->
         checkError(EVP_PKEY_sign_init_ex(context, createParams()))
 
         data.usePinned { dataPin ->

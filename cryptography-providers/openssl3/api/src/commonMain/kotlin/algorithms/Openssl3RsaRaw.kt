@@ -12,7 +12,6 @@ import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.providers.openssl3.operations.*
 import kotlinx.cinterop.*
-import kotlin.experimental.*
 
 internal object Openssl3RsaRaw : Openssl3Rsa<RSA.RAW.PublicKey, RSA.RAW.PrivateKey, RSA.RAW.KeyPair>(
     wrapPublicKey = ::RsaRawPublicKey,
@@ -25,14 +24,14 @@ internal object Openssl3RsaRaw : Openssl3Rsa<RSA.RAW.PublicKey, RSA.RAW.PrivateK
     ) : RSA.RAW.KeyPair
 
     private class RsaRawPublicKey(
-        key: CPointer<EVP_PKEY>,
+        key: EvpPKey,
         digest: CryptographyAlgorithmId<Digest>,
     ) : RsaPublicKey(key, digest), RSA.RAW.PublicKey {
         override fun encryptor(): Encryptor = RsaRawEncryptor(key)
     }
 
     private class RsaRawPrivateKey(
-        key: CPointer<EVP_PKEY>,
+        key: EvpPKey,
         digest: CryptographyAlgorithmId<Digest>,
         publicKey: RSA.RAW.PublicKey?,
     ) : RsaPrivateKey(key, digest, publicKey), RSA.RAW.PrivateKey {
@@ -41,11 +40,8 @@ internal object Openssl3RsaRaw : Openssl3Rsa<RSA.RAW.PublicKey, RSA.RAW.PrivateK
 }
 
 private class RsaRawEncryptor(
-    private val publicKey: CPointer<EVP_PKEY>,
+    private val publicKey: EvpPKey,
 ) : BaseEncryptor {
-    @OptIn(ExperimentalNativeApi::class)
-    private val cleaner = publicKey.upRef().cleaner()
-
     @OptIn(UnsafeNumber::class)
     override fun createEncryptFunction(): CipherFunction {
         return EvpPKeyCipherFunction(publicKey, encrypt = true) {
@@ -57,11 +53,8 @@ private class RsaRawEncryptor(
 }
 
 private class RsaRawDecryptor(
-    private val privateKey: CPointer<EVP_PKEY>,
+    private val privateKey: EvpPKey,
 ) : BaseDecryptor {
-    @OptIn(ExperimentalNativeApi::class)
-    private val cleaner = privateKey.upRef().cleaner()
-
     @OptIn(UnsafeNumber::class)
     override fun createDecryptFunction(): CipherFunction {
         return EvpPKeyCipherFunction(privateKey, encrypt = false) {

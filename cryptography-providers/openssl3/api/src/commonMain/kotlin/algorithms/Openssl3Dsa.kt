@@ -43,7 +43,7 @@ internal object Openssl3Dsa : DSA {
             DSA.PublicKey.Format.PEM -> "PEM"
         }
 
-        override fun wrapKey(key: CPointer<EVP_PKEY>): DSA.PublicKey = DsaPublicKey(key)
+        override fun wrapKey(key: EvpPKey): DSA.PublicKey = DsaPublicKey(key)
     }
 
     private object DsaPrivateKeyDecoder : Openssl3PrivateKeyDecoder<DSA.PrivateKey.Format, DSA.PrivateKey>("DSA") {
@@ -52,7 +52,7 @@ internal object Openssl3Dsa : DSA {
             DSA.PrivateKey.Format.PEM -> "PEM"
         }
 
-        override fun wrapKey(key: CPointer<EVP_PKEY>): DSA.PrivateKey = DsaPrivateKey(key, publicKey = null)
+        override fun wrapKey(key: EvpPKey): DSA.PrivateKey = DsaPrivateKey(key, publicKey = null)
     }
 
     private object DsaParametersDecoder : Openssl3ParametersDecoder<DSA.Parameters.Format, DSA.Parameters>("DSA") {
@@ -61,14 +61,14 @@ internal object Openssl3Dsa : DSA {
             DSA.Parameters.Format.PEM -> "PEM"
         }
 
-        override fun wrapKey(key: CPointer<EVP_PKEY>): DSA.Parameters = Openssl3DsaParameters(key)
+        override fun wrapKey(key: EvpPKey): DSA.Parameters = Openssl3DsaParameters(key)
     }
 
     private class DsaParametersGenerator(
         private val pBits: UInt,
         private val qBits: UInt,
     ) : Openssl3ParametersGenerator<DSA.Parameters>("DSA") {
-        override fun wrapParameters(key: CPointer<EVP_PKEY>): DSA.Parameters = Openssl3DsaParameters(key)
+        override fun wrapParameters(key: EvpPKey): DSA.Parameters = Openssl3DsaParameters(key)
 
         @OptIn(UnsafeNumber::class)
         override fun MemScope.createParams(): CValuesRef<OSSL_PARAM>? = OSSL_PARAM_array(
@@ -78,7 +78,7 @@ internal object Openssl3Dsa : DSA {
     }
 
     private class Openssl3DsaParameters(
-        key: CPointer<EVP_PKEY>,
+        key: EvpPKey,
     ) : DSA.Parameters, Openssl3ParametersEncodable<DSA.Parameters.Format>(key) {
         override fun keyPairGenerator(): KeyGenerator<DSA.KeyPair> = DsaKeyPairGenerator(key)
 
@@ -88,9 +88,9 @@ internal object Openssl3Dsa : DSA {
         }
     }
 
-    private class DsaKeyPairGenerator(key: CPointer<EVP_PKEY>) : Openssl3KeyPairGenerator<DSA.KeyPair>(key) {
+    private class DsaKeyPairGenerator(key: EvpPKey) : Openssl3KeyPairGenerator<DSA.KeyPair>(key) {
         override fun MemScope.createParams(): CValuesRef<OSSL_PARAM>? = null
-        override fun wrapKeyPair(keyPair: CPointer<EVP_PKEY>): DSA.KeyPair {
+        override fun wrapKeyPair(keyPair: EvpPKey): DSA.KeyPair {
             val publicKey = DsaPublicKey(keyPair)
             return DsaKeyPair(
                 publicKey = publicKey,
@@ -105,7 +105,7 @@ internal object Openssl3Dsa : DSA {
     ) : DSA.KeyPair
 
     private class DsaPublicKey(
-        key: CPointer<EVP_PKEY>,
+        key: EvpPKey,
     ) : DSA.PublicKey, Openssl3PublicKeyEncodable<DSA.PublicKey.Format>(key) {
 
         override fun outputType(format: DSA.PublicKey.Format): String = when (format) {
@@ -120,19 +120,19 @@ internal object Openssl3Dsa : DSA {
             }
 
             return when (format) {
-                DSA.SignatureFormat.DER -> DssDerSignatureVerifier(derVerifier, DSA_q_size(key))
-                DSA.SignatureFormat.RAW -> DssRawSignatureVerifier(derVerifier, DSA_q_size(key))
+                DSA.SignatureFormat.DER -> DssDerSignatureVerifier(derVerifier, DSA_q_size(key.access()))
+                DSA.SignatureFormat.RAW -> DssRawSignatureVerifier(derVerifier, DSA_q_size(key.access()))
             }
         }
     }
 
     private class DsaPrivateKey(
-        key: CPointer<EVP_PKEY>,
+        key: EvpPKey,
         publicKey: DSA.PublicKey?,
     ) : DSA.PrivateKey,
         Openssl3PrivateKeyEncodable<DSA.PrivateKey.Format, DSA.PublicKey>(key, publicKey) {
 
-        override fun wrapPublicKey(key: CPointer<EVP_PKEY>): DSA.PublicKey = DsaPublicKey(key)
+        override fun wrapPublicKey(key: EvpPKey): DSA.PublicKey = DsaPublicKey(key)
 
         override fun outputType(format: DSA.PrivateKey.Format): String = when (format) {
             DSA.PrivateKey.Format.DER -> "DER"
@@ -147,33 +147,33 @@ internal object Openssl3Dsa : DSA {
 
             return when (format) {
                 DSA.SignatureFormat.DER -> derGenerator
-                DSA.SignatureFormat.RAW -> DssRawSignatureGenerator(derGenerator, DSA_q_size(key))
+                DSA.SignatureFormat.RAW -> DssRawSignatureGenerator(derGenerator, DSA_q_size(key.access()))
             }
         }
     }
 }
 
 private class DsaPhSignatureGenerator(
-    privateKey: CPointer<EVP_PKEY>,
+    privateKey: EvpPKey,
 ) : Openssl3PhSignatureGenerator(privateKey) {
     override fun MemScope.createParams(): CValuesRef<OSSL_PARAM>? = null
 }
 
 private class DsaPhSignatureVerifier(
-    publicKey: CPointer<EVP_PKEY>,
+    publicKey: EvpPKey,
 ) : Openssl3PhSignatureVerifier(publicKey) {
     override fun MemScope.createParams(): CValuesRef<OSSL_PARAM>? = null
 }
 
 private class DsaDigestSignatureGenerator(
-    privateKey: CPointer<EVP_PKEY>,
+    privateKey: EvpPKey,
     hashAlgorithm: String,
 ) : Openssl3DigestSignatureGenerator(privateKey, hashAlgorithm) {
     override fun MemScope.createParams(): CValuesRef<OSSL_PARAM>? = null
 }
 
 private class DsaDigestSignatureVerifier(
-    publicKey: CPointer<EVP_PKEY>,
+    publicKey: EvpPKey,
     hashAlgorithm: String,
 ) : Openssl3DigestSignatureVerifier(publicKey, hashAlgorithm) {
     override fun MemScope.createParams(): CValuesRef<OSSL_PARAM>? = null

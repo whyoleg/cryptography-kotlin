@@ -13,25 +13,20 @@ import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import kotlinx.cinterop.*
 
 internal class Openssl3Digest(
-    private val md: CPointer<EVP_MD>,
+    algorithm: String,
     override val id: CryptographyAlgorithmId<Digest>,
-) : Hasher, Digest, SafeCloseable(SafeCloseAction(md, ::EVP_MD_free)) {
-    private val digestSize get() = EVP_MD_get_size(md)
-
-    constructor(
-        algorithm: String,
-        id: CryptographyAlgorithmId<Digest>,
-    ) : this(checkError(EVP_MD_fetch(null, algorithm, null)), id)
+) : Hasher, Digest {
+    private val md = NativeResource(checkError(EVP_MD_fetch(null, algorithm, null)), ::EVP_MD_free)
+    private val digestSize get() = EVP_MD_get_size(md.access())
 
     override fun hasher(): Hasher = this
     override fun createHashFunction(): HashFunction {
-        return Openssl3HashFunction(Resource(checkError(EVP_MD_CTX_new()), ::EVP_MD_CTX_free))
+        return Openssl3HashFunction(NativeResource(checkError(EVP_MD_CTX_new()), ::EVP_MD_CTX_free))
     }
 
-    // inner class to have a reference to class and so `md` cleaner - so that `md` can be freed at the right time
     private inner class Openssl3HashFunction(
-        private val context: Resource<CPointer<EVP_MD_CTX>>,
-    ) : HashFunction, SafeCloseable(SafeCloseAction(context, AutoCloseable::close)) {
+        private val context: NativeResource<CPointer<EVP_MD_CTX>>,
+    ) : HashFunction, AutoCloseable by context {
         init {
             reset()
         }
@@ -66,7 +61,7 @@ internal class Openssl3Digest(
         }
 
         override fun reset() {
-            checkError(EVP_DigestInit(context.access(), md))
+            checkError(EVP_DigestInit(context.access(), md.access()))
         }
     }
 }

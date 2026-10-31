@@ -6,11 +6,12 @@ package dev.whyoleg.cryptography.providers.openssl3.operations
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.providers.base.operations.*
+import dev.whyoleg.cryptography.providers.openssl3.internal.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import kotlinx.cinterop.*
 
 internal class Openssl3IvCipher(
-    private val cipher: CPointer<EVP_CIPHER>?,
+    private val cipher: EvpCipher,
     private val key: ByteArray,
     private val ivSize: Int,
     private val init: MemScope.(CPointer<EVP_CIPHER_CTX>?) -> Unit = {},
@@ -28,7 +29,7 @@ internal class Openssl3IvCipher(
         require(iv.size == ivSize) { "IV size is wrong" }
 
         return EvpCipherFunction(
-            cipher = cipher,
+            cipher = cipher.access(),
             key = key,
             iv = iv,
             ivStartIndex = 0,
@@ -41,7 +42,7 @@ internal class Openssl3IvCipher(
         require(iv.size - startIndex >= ivSize) { "IV size is wrong" }
 
         return EvpCipherFunction(
-            cipher = cipher,
+            cipher = cipher.access(),
             key = key,
             iv = iv,
             ivStartIndex = startIndex,
