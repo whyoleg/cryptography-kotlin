@@ -42,25 +42,6 @@ fun Project.applyProviderTestFilters() {
                     setIncludePatterns("*AlgorithmTest.restore")
                 }
             )
-            // old tests, while they are not migrated
-            "compatibility.generate" -> TestFilters(
-                androidTestRegex = "^.*CompatibilityTest#generateStep$",
-                kotlinTestFilter = {
-                    setIncludePatterns("*CompatibilityTest.generateStep")
-                }
-            )
-            "compatibility.generateStress" -> TestFilters(
-                androidTestRegex = "^.*CompatibilityTest#generateStressStep$",
-                kotlinTestFilter = {
-                    setIncludePatterns("*CompatibilityTest.generateStressStep")
-                }
-            )
-            "compatibility.validate" -> TestFilters(
-                androidTestRegex = "^.*CompatibilityTest#validateStep$",
-                kotlinTestFilter = {
-                    setIncludePatterns("*CompatibilityTest.validateStep")
-                }
-            )
             else -> error("wrong argument")
         }
     }

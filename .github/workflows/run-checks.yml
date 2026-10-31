@@ -18,9 +18,9 @@ jobs:
     uses: ./.github/workflows/run-tests-default.yml
 
   compatibility-tests:
-    needs: [ default-tests ]
+    needs: [ build-project ]
     uses: ./.github/workflows/run-tests-compatibility.yml
 
   slow-tasks:
-    needs: [ compatibility-tests ]
+    needs: [ default-tests, compatibility-tests ]
     uses: ./.github/workflows/run-slow-tasks.yml

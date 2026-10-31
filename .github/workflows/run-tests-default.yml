@@ -7,6 +7,7 @@ defaults:
   run:
     shell: bash
 
+# provider tests are run in `run-tests-compatibility.yml`
 jobs:
   tests-default:
     runs-on: ${{ matrix.os }}
@@ -32,11 +33,16 @@ jobs:
 
       - name: Run tests
         if: ${{ matrix.target != 'connectedAndroid' }}
-        run: ./gradlew ${{ matrix.target }}Test --continue -Pckbuild.skipReleaseLinkTasks=${{ github.ref_name != 'main' }}
+        run: >
+          ./gradlew
+          ${{ matrix.target }}Test
+          --continue
+          -Pckbuild.skipProviderTestTasks=true
+          -Pckbuild.skipReleaseLinkTasks=${{ github.ref_name != 'main' }}
 
       - name: Run tests (android)
         if: ${{ matrix.target == 'connectedAndroid' }}
         uses: ./.github/actions/run-android-emulator-tests
         with:
           test-reports-classifier: 'default'
-          run: ./gradlew ${{ matrix.target }}Test --continue
+          run: ./gradlew ${{ matrix.target }}Test --continue -Pckbuild.skipProviderTestTasks=true
