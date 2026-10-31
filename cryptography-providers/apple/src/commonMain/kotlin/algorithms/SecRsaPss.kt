@@ -8,6 +8,7 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.apple.internal.*
+import dev.whyoleg.cryptography.providers.base.*
 import platform.Security.*
 
 internal object SecRsaPss : SecRsa<RSA.PSS.PublicKey, RSA.PSS.PrivateKey, RSA.PSS.KeyPair>(
@@ -24,18 +25,18 @@ internal object SecRsaPss : SecRsa<RSA.PSS.PublicKey, RSA.PSS.PrivateKey, RSA.PS
 
     private class RsaPssPublicKey(
         publicKey: SecKey,
-        digest: CryptographyAlgorithmId<Digest>,
+        digest: SecRsaDigest,
     ) : RsaPublicKey(publicKey, digest), RSA.PSS.PublicKey {
-        override fun signatureVerifier(): SignatureVerifier = SecSignatureVerifier(publicKey, hashAlgorithm(digest))
-        override fun signatureVerifier(saltSize: BinarySize): SignatureVerifier = error("custom saltLength is not supported")
+        override fun signatureVerifier(): SignatureVerifier = SecSignatureVerifier(publicKey, digest.algorithm)
+        override fun signatureVerifier(saltSize: BinarySize): SignatureVerifier = unsupportedParameter("salt size", saltSize)
     }
 
     private class RsaPssPrivateKey(
         privateKey: SecKey,
-        digest: CryptographyAlgorithmId<Digest>,
+        digest: SecRsaDigest,
         publicKey: RSA.PSS.PublicKey?,
     ) : RsaPrivateKey(privateKey, digest, publicKey), RSA.PSS.PrivateKey {
-        override fun signatureGenerator(): SignatureGenerator = SecSignatureGenerator(privateKey, hashAlgorithm(digest))
-        override fun signatureGenerator(saltSize: BinarySize): SignatureGenerator = error("custom saltLength is not supported")
+        override fun signatureGenerator(): SignatureGenerator = SecSignatureGenerator(privateKey, digest.algorithm)
+        override fun signatureGenerator(saltSize: BinarySize): SignatureGenerator = unsupportedParameter("salt size", saltSize)
     }
 }

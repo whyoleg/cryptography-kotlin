@@ -18,17 +18,17 @@ import dev.whyoleg.cryptography.serialization.pem.*
 
 internal object CryptoKitEdDsa : EdDSA {
     override fun publicKeyDecoder(curve: EdDSA.Curve): Decoder<EdDSA.PublicKey.Format, EdDSA.PublicKey> {
-        check(curve == EdDSA.Curve.Ed25519) { "CryptoKit supports Ed25519 only" }
+        if (curve != EdDSA.Curve.Ed25519) unsupportedParameter("curve", curve.name)
         return PublicKeyDecoder
     }
 
     override fun privateKeyDecoder(curve: EdDSA.Curve): Decoder<EdDSA.PrivateKey.Format, EdDSA.PrivateKey> {
-        check(curve == EdDSA.Curve.Ed25519) { "CryptoKit supports Ed25519 only" }
+        if (curve != EdDSA.Curve.Ed25519) unsupportedParameter("curve", curve.name)
         return PrivateKeyDecoder
     }
 
     override fun keyPairGenerator(curve: EdDSA.Curve): KeyGenerator<EdDSA.KeyPair> {
-        check(curve == EdDSA.Curve.Ed25519) { "CryptoKit supports Ed25519 only" }
+        if (curve != EdDSA.Curve.Ed25519) unsupportedParameter("curve", curve.name)
         return KeyPairGenerator
     }
 

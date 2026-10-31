@@ -10,6 +10,7 @@ import dev.whyoleg.cryptography.bigint.*
 import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.apple.internal.*
+import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.base.materials.*
 import dev.whyoleg.cryptography.serialization.asn1.*
 import dev.whyoleg.cryptography.serialization.asn1.modules.*
@@ -20,24 +21,27 @@ import dev.whyoleg.cryptography.serialization.asn1.modules.RsaPrivateKey as Asn1
 import dev.whyoleg.cryptography.serialization.asn1.modules.RsaPublicKey as Asn1RsaPublicKey
 
 internal abstract class SecRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey<PublicK>, KP : RSA.KeyPair<PublicK, PrivateK>>(
-    private val wrapPublicKey: (SecKey, CryptographyAlgorithmId<Digest>) -> PublicK,
-    private val wrapPrivateKey: (SecKey, CryptographyAlgorithmId<Digest>, PublicK?) -> PrivateK,
+    private val wrapPublicKey: (SecKey, SecRsaDigest) -> PublicK,
+    private val wrapPrivateKey: (SecKey, SecRsaDigest, PublicK?) -> PrivateK,
     private val wrapKeyPair: (PublicK, PrivateK) -> KP,
 ) : RSA<PublicK, PrivateK, KP> {
 
+    // resolves the digest into the algorithm used by operations of the RSA variant, fails if the digest is not supported
     protected abstract fun hashAlgorithm(digest: CryptographyAlgorithmId<Digest>): SecKeyAlgorithm?
 
+    private fun resolveDigest(digest: CryptographyAlgorithmId<Digest>): SecRsaDigest = SecRsaDigest(digest, hashAlgorithm(digest))
+
     final override fun publicKeyDecoder(digest: CryptographyAlgorithmId<Digest>): Decoder<RSA.PublicKey.Format, PublicK> =
-        RsaPublicKeyDecoder(digest)
+        RsaPublicKeyDecoder(resolveDigest(digest))
 
     private inner class RsaPublicKeyDecoder(
-        private val digest: CryptographyAlgorithmId<Digest>,
+        private val digest: SecRsaDigest,
     ) : Decoder<RSA.PublicKey.Format, PublicK> {
 
         override fun decodeFromByteArrayBlocking(format: RSA.PublicKey.Format, bytes: ByteArray): PublicK {
             val pkcs1DerKey = when (format) {
                 RSA.PublicKey.Format.JWK -> {
-                    val components = JsonWebKeys.decodeRsaPublicKey(this@SecRsa.id, digest, bytes)
+                    val components = JsonWebKeys.decodeRsaPublicKey(this@SecRsa.id, digest.id, bytes)
                     Der.encodeToByteArray(
                         Asn1RsaPublicKey.serializer(),
                         Asn1RsaPublicKey(
@@ -64,16 +68,16 @@ internal abstract class SecRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKe
     }
 
     final override fun privateKeyDecoder(digest: CryptographyAlgorithmId<Digest>): Decoder<RSA.PrivateKey.Format, PrivateK> =
-        RsaPrivateKeyDecoder(digest)
+        RsaPrivateKeyDecoder(resolveDigest(digest))
 
     private inner class RsaPrivateKeyDecoder(
-        private val digest: CryptographyAlgorithmId<Digest>,
+        private val digest: SecRsaDigest,
     ) : Decoder<RSA.PrivateKey.Format, PrivateK> {
 
         override fun decodeFromByteArrayBlocking(format: RSA.PrivateKey.Format, bytes: ByteArray): PrivateK {
             val pkcs1DerKey = when (format) {
                 RSA.PrivateKey.Format.JWK -> {
-                    val components = JsonWebKeys.decodeRsaPrivateKey(this@SecRsa.id, digest, bytes)
+                    val components = JsonWebKeys.decodeRsaPrivateKey(this@SecRsa.id, digest.id, bytes)
                     Der.encodeToByteArray(
                         Asn1RsaPrivateKey.serializer(),
                         Asn1RsaPrivateKey(
@@ -111,14 +115,14 @@ internal abstract class SecRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKe
         digest: CryptographyAlgorithmId<Digest>,
         publicExponent: BigInt,
     ): KeyGenerator<KP> {
-        check(publicExponent == 65537.toBigInt()) { "Only F4(default) public exponent is supported" }
+        if (publicExponent != 65537.toBigInt()) unsupportedParameter("public exponent", publicExponent)
 
-        return RsaKeyGenerator(keySize.inBits, digest)
+        return RsaKeyGenerator(keySize.inBits, resolveDigest(digest))
     }
 
     private inner class RsaKeyGenerator(
         private val keySizeBits: Int,
-        private val digest: CryptographyAlgorithmId<Digest>,
+        private val digest: SecRsaDigest,
     ) : KeyGenerator<KP> {
         override fun generateKeyBlocking(): KP {
             val secPrivateKey = CFMutableDictionary(2) {
@@ -137,7 +141,7 @@ internal abstract class SecRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKe
 
     protected abstract inner class RsaPublicKey(
         protected val publicKey: SecKey,
-        protected val digest: CryptographyAlgorithmId<Digest>,
+        protected val digest: SecRsaDigest,
     ) : RSA.PublicKey {
 
         final override fun encodeToByteArrayBlocking(format: RSA.PublicKey.Format): ByteArray {
@@ -148,7 +152,7 @@ internal abstract class SecRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKe
                     val rsaPubKey = Der.decodeFromByteArray(Asn1RsaPublicKey.serializer(), pkcs1Key)
                     JsonWebKeys.encodeRsaPublicKey(
                         algorithmId = this@SecRsa.id,
-                        digest = digest,
+                        digest = digest.id,
                         n = rsaPubKey.modulus.magnitudeToByteArray(),
                         e = rsaPubKey.publicExponent.magnitudeToByteArray(),
                     )
@@ -163,7 +167,7 @@ internal abstract class SecRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKe
 
     protected abstract inner class RsaPrivateKey(
         protected val privateKey: SecKey,
-        protected val digest: CryptographyAlgorithmId<Digest>,
+        protected val digest: SecRsaDigest,
         private var publicKey: PublicK?,
     ) : RSA.PrivateKey<PublicK> {
 
@@ -182,7 +186,7 @@ internal abstract class SecRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKe
                     val rsaPrivKey = Der.decodeFromByteArray(Asn1RsaPrivateKey.serializer(), pkcs1Key)
                     JsonWebKeys.encodeRsaPrivateKey(
                         algorithmId = this@SecRsa.id,
-                        digest = digest,
+                        digest = digest.id,
                         n = rsaPrivKey.modulus.magnitudeToByteArray(),
                         e = rsaPrivKey.publicExponent.magnitudeToByteArray(),
                         d = rsaPrivKey.privateExponent.magnitudeToByteArray(),
@@ -201,3 +205,6 @@ internal abstract class SecRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKe
         }
     }
 }
+
+// `id` is used for encoding, `algorithm` - by operations of the RSA variant
+internal class SecRsaDigest(val id: CryptographyAlgorithmId<Digest>, val algorithm: SecKeyAlgorithm?)

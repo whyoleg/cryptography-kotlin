@@ -17,17 +17,17 @@ import dev.whyoleg.cryptography.serialization.pem.*
 
 internal object CryptoKitXdh : XDH {
     override fun publicKeyDecoder(curve: XDH.Curve): Decoder<XDH.PublicKey.Format, XDH.PublicKey> {
-        check(curve == XDH.Curve.X25519) { "CryptoKit supports X25519 only" }
+        if (curve != XDH.Curve.X25519) unsupportedParameter("curve", curve.name)
         return PublicKeyDecoder
     }
 
     override fun privateKeyDecoder(curve: XDH.Curve): Decoder<XDH.PrivateKey.Format, XDH.PrivateKey> {
-        check(curve == XDH.Curve.X25519) { "CryptoKit supports X25519 only" }
+        if (curve != XDH.Curve.X25519) unsupportedParameter("curve", curve.name)
         return PrivateKeyDecoder
     }
 
     override fun keyPairGenerator(curve: XDH.Curve): KeyGenerator<XDH.KeyPair> {
-        check(curve == XDH.Curve.X25519) { "CryptoKit supports X25519 only" }
+        if (curve != XDH.Curve.X25519) unsupportedParameter("curve", curve.name)
         return KeyPairGenerator
     }
 

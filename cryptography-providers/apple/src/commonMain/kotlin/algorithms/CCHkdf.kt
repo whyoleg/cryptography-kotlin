@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.apple.algorithms
@@ -7,6 +7,7 @@ package dev.whyoleg.cryptography.providers.apple.algorithms
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.providers.apple.*
+import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.base.algorithms.*
 import platform.CoreCrypto.*
 
@@ -18,7 +19,7 @@ internal object CCHkdf : BaseHkdf(AppleCryptographyProvider) {
             SHA256 -> CC_SHA256_DIGEST_LENGTH
             SHA384 -> CC_SHA384_DIGEST_LENGTH
             SHA512 -> CC_SHA512_DIGEST_LENGTH
-            else   -> throw IllegalStateException("Unsupported hash algorithm: $digest")
+            else -> unsupportedParameter("hash algorithm", digest.name)
         }
     }
 }

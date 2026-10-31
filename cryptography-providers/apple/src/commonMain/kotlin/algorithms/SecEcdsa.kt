@@ -9,6 +9,7 @@ import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.apple.internal.*
+import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.base.algorithms.*
 import dev.whyoleg.cryptography.providers.base.materials.*
 import dev.whyoleg.cryptography.serialization.asn1.*
@@ -33,7 +34,7 @@ private class EcCurveData private constructor(
             EC.Curve.P256 -> P256
             EC.Curve.P384 -> P384
             EC.Curve.P521 -> P521
-            else          -> error("Unsupported curve: ${curve.name}")
+            else -> unsupportedParameter("curve", curve.name)
         }
     }
 }

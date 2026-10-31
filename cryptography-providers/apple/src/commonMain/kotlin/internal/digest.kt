@@ -1,11 +1,12 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.apple.internal
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
+import dev.whyoleg.cryptography.providers.base.*
 import platform.CoreCrypto.*
 import platform.Security.*
 
@@ -15,7 +16,7 @@ internal fun CryptographyAlgorithmId<Digest>.rsaPssSecKeyAlgorithm(): SecKeyAlgo
     SHA256 -> kSecKeyAlgorithmRSASignatureMessagePSSSHA256
     SHA384 -> kSecKeyAlgorithmRSASignatureMessagePSSSHA384
     SHA512 -> kSecKeyAlgorithmRSASignatureMessagePSSSHA512
-    else -> throw IllegalStateException("Unsupported hash algorithm: $this")
+    else -> unsupportedParameter("hash algorithm", name)
 }
 
 internal fun CryptographyAlgorithmId<Digest>.rsaPkcs1SecKeyAlgorithm(): SecKeyAlgorithm? = when (this) {
@@ -24,7 +25,7 @@ internal fun CryptographyAlgorithmId<Digest>.rsaPkcs1SecKeyAlgorithm(): SecKeyAl
     SHA256 -> kSecKeyAlgorithmRSASignatureMessagePKCS1v15SHA256
     SHA384 -> kSecKeyAlgorithmRSASignatureMessagePKCS1v15SHA384
     SHA512 -> kSecKeyAlgorithmRSASignatureMessagePKCS1v15SHA512
-    else -> throw IllegalStateException("Unsupported hash algorithm: $this")
+    else -> unsupportedParameter("hash algorithm", name)
 }
 
 internal fun CryptographyAlgorithmId<Digest>.rsaOaepSecKeyAlgorithm(): SecKeyAlgorithm? = when (this) {
@@ -33,7 +34,7 @@ internal fun CryptographyAlgorithmId<Digest>.rsaOaepSecKeyAlgorithm(): SecKeyAlg
     SHA256 -> kSecKeyAlgorithmRSAEncryptionOAEPSHA256
     SHA384 -> kSecKeyAlgorithmRSAEncryptionOAEPSHA384
     SHA512 -> kSecKeyAlgorithmRSAEncryptionOAEPSHA512
-    else -> throw IllegalStateException("Unsupported hash algorithm: $this")
+    else -> unsupportedParameter("hash algorithm", name)
 }
 
 internal fun CryptographyAlgorithmId<Digest>?.ecdsaSecKeyAlgorithm(): SecKeyAlgorithm? = when (this) {
@@ -43,7 +44,7 @@ internal fun CryptographyAlgorithmId<Digest>?.ecdsaSecKeyAlgorithm(): SecKeyAlgo
     SHA256 -> kSecKeyAlgorithmECDSASignatureMessageX962SHA256
     SHA384 -> kSecKeyAlgorithmECDSASignatureMessageX962SHA384
     SHA512 -> kSecKeyAlgorithmECDSASignatureMessageX962SHA512
-    else -> throw IllegalStateException("Unsupported hash algorithm: $this")
+    else -> unsupportedParameter("hash algorithm", name)
 }
 
 internal fun CryptographyAlgorithmId<Digest>.pbkdh2Algorithm(): CCPseudoRandomAlgorithm = when (this) {
@@ -52,5 +53,5 @@ internal fun CryptographyAlgorithmId<Digest>.pbkdh2Algorithm(): CCPseudoRandomAl
     SHA256 -> kCCPRFHmacAlgSHA256
     SHA384 -> kCCPRFHmacAlgSHA384
     SHA512 -> kCCPRFHmacAlgSHA512
-    else -> throw IllegalStateException("Unsupported hash algorithm: $this")
+    else -> unsupportedParameter("hash algorithm", name)
 }

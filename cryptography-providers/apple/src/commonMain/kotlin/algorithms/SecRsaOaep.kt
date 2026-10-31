@@ -25,17 +25,17 @@ internal object SecRsaOaep : SecRsa<RSA.OAEP.PublicKey, RSA.OAEP.PrivateKey, RSA
 
     private class RsaOaepPublicKey(
         publicKey: SecKey,
-        digest: CryptographyAlgorithmId<Digest>,
+        digest: SecRsaDigest,
     ) : RsaPublicKey(publicKey, digest), RSA.OAEP.PublicKey {
-        override fun encryptor(): AuthenticatedEncryptor = RsaOaepEncryptor(publicKey, hashAlgorithm(digest))
+        override fun encryptor(): AuthenticatedEncryptor = RsaOaepEncryptor(publicKey, digest.algorithm)
     }
 
     private class RsaOaepPrivateKey(
         privateKey: SecKey,
-        digest: CryptographyAlgorithmId<Digest>,
+        digest: SecRsaDigest,
         publicKey: RSA.OAEP.PublicKey?,
     ) : RsaPrivateKey(privateKey, digest, publicKey), RSA.OAEP.PrivateKey {
-        override fun decryptor(): AuthenticatedDecryptor = RsaOaepDecryptor(privateKey, hashAlgorithm(digest))
+        override fun decryptor(): AuthenticatedDecryptor = RsaOaepDecryptor(privateKey, digest.algorithm)
     }
 }
 

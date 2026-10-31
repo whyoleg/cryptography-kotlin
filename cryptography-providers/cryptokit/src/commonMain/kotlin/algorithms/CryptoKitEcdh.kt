@@ -31,7 +31,7 @@ internal object CryptoKitEcdh : ECDH {
     private class KeyPairGenerator(
         private val curve: EC.Curve,
     ) : KeyGenerator<ECDH.KeyPair> {
-        private val swiftCurve get() = curve.swiftEcCurve()
+        private val swiftCurve = curve.swiftEcCurve()
 
         override fun generateKeyBlocking(): ECDH.KeyPair {
             val privateKey = DwcEcdhPrivateKey.generateWithCurve(swiftCurve)
@@ -45,7 +45,7 @@ internal object CryptoKitEcdh : ECDH {
     private class PublicKeyDecoder(
         private val curve: EC.Curve,
     ) : Decoder<EC.PublicKey.Format, ECDH.PublicKey> {
-        private val swiftCurve get() = curve.swiftEcCurve()
+        private val swiftCurve = curve.swiftEcCurve()
 
         override fun decodeFromByteArrayBlocking(format: EC.PublicKey.Format, bytes: ByteArray): ECDH.PublicKey {
             return EcdhPublicKey(curve, swiftTry { error ->
@@ -72,7 +72,7 @@ internal object CryptoKitEcdh : ECDH {
     private class PrivateKeyDecoder(
         private val curve: EC.Curve,
     ) : Decoder<EC.PrivateKey.Format, ECDH.PrivateKey> {
-        private val swiftCurve get() = curve.swiftEcCurve()
+        private val swiftCurve = curve.swiftEcCurve()
 
         override fun decodeFromByteArrayBlocking(format: EC.PrivateKey.Format, bytes: ByteArray): ECDH.PrivateKey {
             return EcdhPrivateKey(curve, swiftTry { error ->

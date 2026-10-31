@@ -6,6 +6,7 @@ package dev.whyoleg.cryptography.providers.cryptokit.internal
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
+import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.cryptokit.internal.swift.DwcCryptoKitInterop.*
 import kotlinx.cinterop.*
 import platform.Foundation.*
@@ -31,7 +32,7 @@ internal fun CryptographyAlgorithmId<Digest>?.swiftHashAlgorithm(): DwcHashAlgor
     SHA384 -> DwcHashAlgorithmSha384
     SHA512 -> DwcHashAlgorithmSha512
     null   -> throw IllegalStateException("Operation without digest is unsupported!")
-    else   -> throw IllegalStateException("Unsupported hash algorithm: $this")
+    else -> unsupportedParameter("hash algorithm", name)
 }
 
 @OptIn(UnsafeNumber::class)
@@ -39,12 +40,12 @@ internal fun EC.Curve.swiftEcCurve(): DwcEcCurve = when (this) {
     EC.Curve.P256 -> DwcEcCurveP256
     EC.Curve.P384 -> DwcEcCurveP384
     EC.Curve.P521 -> DwcEcCurveP521
-    else          -> error("Unsupported EC curve: $this")
+    else -> unsupportedParameter("curve", name)
 }
 
 internal fun EC.Curve.orderSize(): Int = when (this) {
     EC.Curve.P256 -> 32
     EC.Curve.P384 -> 48
     EC.Curve.P521 -> 66
-    else          -> error("Unsupported EC curve: $this")
+    else -> unsupportedParameter("curve", name)
 }

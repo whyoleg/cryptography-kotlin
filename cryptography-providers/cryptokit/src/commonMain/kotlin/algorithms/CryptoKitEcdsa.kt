@@ -34,7 +34,7 @@ internal object CryptoKitEcdsa : ECDSA {
     private class KeyPairGenerator(
         private val curve: EC.Curve,
     ) : KeyGenerator<ECDSA.KeyPair> {
-        private val swiftCurve get() = curve.swiftEcCurve()
+        private val swiftCurve = curve.swiftEcCurve()
 
         override fun generateKeyBlocking(): ECDSA.KeyPair {
             val privateKey = DwcEcdsaPrivateKey.generateWithCurve(swiftCurve)
@@ -48,7 +48,7 @@ internal object CryptoKitEcdsa : ECDSA {
     private class PublicKeyDecoder(
         private val curve: EC.Curve,
     ) : Decoder<EC.PublicKey.Format, ECDSA.PublicKey> {
-        private val swiftCurve get() = curve.swiftEcCurve()
+        private val swiftCurve = curve.swiftEcCurve()
 
         override fun decodeFromByteArrayBlocking(format: EC.PublicKey.Format, bytes: ByteArray): ECDSA.PublicKey {
             return EcdsaPublicKey(curve, swiftTry { error ->
@@ -75,7 +75,7 @@ internal object CryptoKitEcdsa : ECDSA {
     private class PrivateKeyDecoder(
         private val curve: EC.Curve,
     ) : Decoder<EC.PrivateKey.Format, ECDSA.PrivateKey> {
-        private val swiftCurve get() = curve.swiftEcCurve()
+        private val swiftCurve = curve.swiftEcCurve()
 
         override fun decodeFromByteArrayBlocking(format: EC.PrivateKey.Format, bytes: ByteArray): ECDSA.PrivateKey {
             return EcdsaPrivateKey(curve, swiftTry { error ->

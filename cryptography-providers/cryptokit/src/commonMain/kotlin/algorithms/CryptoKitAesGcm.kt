@@ -19,7 +19,7 @@ internal object CryptoKitAesGcm : AES.GCM, BaseAes<AES.GCM.Key>() {
 
     private class AesGcmKey(key: ByteArray) : AES.GCM.Key, BaseKey(key) {
         override fun cipher(tagSize: BinarySize): IvAuthenticatedCipher {
-            require(tagSize == 16.bytes) { "GCM tag size must be 16 bytes, but was $tagSize" }
+            if (tagSize != 16.bytes) unsupportedParameter("tag size", tagSize)
             return AesGcmCipher(key, tagSize.inBytes)
         }
     }

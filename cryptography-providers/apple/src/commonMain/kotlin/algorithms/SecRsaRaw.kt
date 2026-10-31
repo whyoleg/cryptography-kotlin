@@ -25,14 +25,14 @@ internal object SecRsaRaw : SecRsa<RSA.RAW.PublicKey, RSA.RAW.PrivateKey, RSA.RA
 
     private class RsaRawPublicKey(
         publicKey: SecKey,
-        digest: CryptographyAlgorithmId<Digest>,
+        digest: SecRsaDigest,
     ) : RsaPublicKey(publicKey, digest), RSA.RAW.PublicKey {
         override fun encryptor(): Encryptor = RsaRawEncryptor(publicKey)
     }
 
     private class RsaRawPrivateKey(
         privateKey: SecKey,
-        digest: CryptographyAlgorithmId<Digest>,
+        digest: SecRsaDigest,
         publicKey: RSA.RAW.PublicKey?,
     ) : RsaPrivateKey(privateKey, digest, publicKey), RSA.RAW.PrivateKey {
         override fun decryptor(): Decryptor = RsaRawDecryptor(privateKey)

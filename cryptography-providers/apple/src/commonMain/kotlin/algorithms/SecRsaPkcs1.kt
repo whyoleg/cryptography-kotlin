@@ -25,18 +25,18 @@ internal object SecRsaPkcs1 : SecRsa<RSA.PKCS1.PublicKey, RSA.PKCS1.PrivateKey, 
 
     private class RsaPkcs1PublicKey(
         publicKey: SecKey,
-        digest: CryptographyAlgorithmId<Digest>,
+        digest: SecRsaDigest,
     ) : RsaPublicKey(publicKey, digest), RSA.PKCS1.PublicKey {
-        override fun signatureVerifier(): SignatureVerifier = SecSignatureVerifier(publicKey, hashAlgorithm(digest))
+        override fun signatureVerifier(): SignatureVerifier = SecSignatureVerifier(publicKey, digest.algorithm)
         override fun encryptor(): Encryptor = RsaPkcs1Encryptor(publicKey)
     }
 
     private class RsaPkcs1PrivateKey(
         privateKey: SecKey,
-        digest: CryptographyAlgorithmId<Digest>,
+        digest: SecRsaDigest,
         publicKey: RSA.PKCS1.PublicKey?,
     ) : RsaPrivateKey(privateKey, digest, publicKey), RSA.PKCS1.PrivateKey {
-        override fun signatureGenerator(): SignatureGenerator = SecSignatureGenerator(privateKey, hashAlgorithm(digest))
+        override fun signatureGenerator(): SignatureGenerator = SecSignatureGenerator(privateKey, digest.algorithm)
         override fun decryptor(): Decryptor = RsaPkcs1Decryptor(privateKey)
     }
 }
