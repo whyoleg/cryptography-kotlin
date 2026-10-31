@@ -101,14 +101,11 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
             "ChaCha20Poly1305AlgorithmTest",
             "EcdsaAlgorithmTest",
             "EcdhAlgorithmTest",
+            "EdDsaAlgorithmTest",
+            "XdhAlgorithmTest",
 
             // old tests, while they are not migrated
             "SupportedAlgorithmsTest",
-            "EdDsaTest",
-            "EdDsaCompatibilityTest",
-            "EdDsaTestvectorsTest",
-            "XdhCompatibilityTest",
-            "XdhTestvectorsTest",
             "DhTest",
             "DhCompatibilityTest",
             "DsaCompatibilityTest",
