@@ -206,6 +206,56 @@
         }
       ]
     },
+    "DSA": {
+      "unsupported": [
+        {
+          "description": "DSA is not supported",
+          "environments": [
+            "apple",
+            "cryptokit",
+            "webcrypto"
+          ]
+        }
+      ],
+      "limitations": [
+        {
+          "kind": "Fails",
+          "description": "DSA with SHA384 and SHA512 is not supported on old JDK",
+          "environments": [
+            "jdk.default/jdk-11",
+            "jdk.default/jdk-8"
+          ]
+        },
+        {
+          "kind": "Fails",
+          "description": "DSA without digest supports only messages of exactly 20 bytes",
+          "environments": [
+            "jdk.default"
+          ]
+        },
+        {
+          "kind": "Fails",
+          "description": "DSAGenParameterSpec is not supported",
+          "environments": [
+            "jdk.bc"
+          ]
+        },
+        {
+          "kind": "Fails",
+          "description": "SHA3 based HMAC and signatures are supported only since JDK 17 or with BouncyCastle",
+          "environments": [
+            "jdk.default/jdk-11"
+          ]
+        },
+        {
+          "kind": "Fails",
+          "description": "SHA3 digests are not supported on JDK 8 and Android without BouncyCastle",
+          "environments": [
+            "jdk.default/jdk-8"
+          ]
+        }
+      ]
+    },
     "ECDH": {
       "unsupported": [
         {

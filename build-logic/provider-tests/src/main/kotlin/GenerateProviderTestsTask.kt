@@ -68,9 +68,7 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
             "dev.whyoleg.cryptography.tests.*",
             "dev.whyoleg.cryptography.tests.algorithms.*",
             // old tests, while they are not migrated
-            "dev.whyoleg.cryptography.providers.tests.compatibility.*",
             "dev.whyoleg.cryptography.providers.tests.default.*",
-            "dev.whyoleg.cryptography.providers.tests.testvectors.*",
         )
 
         private val testClasses = listOf(
@@ -109,11 +107,10 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
             "RsaOaepAlgorithmTest",
             "RsaRawAlgorithmTest",
             "DhAlgorithmTest",
+            "DsaAlgorithmTest",
 
             // old tests, while they are not migrated
             "SupportedAlgorithmsTest",
-            "DsaCompatibilityTest",
-            "DsaTestvectorsTest",
         )
     }
 }
