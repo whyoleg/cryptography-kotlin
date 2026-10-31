@@ -18,4 +18,5 @@ dependencies {
     implementation(libs.apache.commons.compress)
     implementation("testtool:plugin")
     implementation(project(":teststorage"))
+    implementation(project(":provider-tests"))
 }

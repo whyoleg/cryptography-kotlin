@@ -21,4 +21,5 @@ dependencyResolutionManagement {
 
 projects("build-logic") {
     module("teststorage")
+    module("provider-tests")
 }

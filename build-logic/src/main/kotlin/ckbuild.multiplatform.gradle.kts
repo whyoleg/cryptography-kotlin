@@ -3,7 +3,7 @@
  */
 
 import ckbuild.*
-import ckbuild.tests.*
+import ckbuild.providertests.*
 import org.jetbrains.kotlin.gradle.plugin.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.*
 import org.jetbrains.kotlin.gradle.targets.js.ir.*

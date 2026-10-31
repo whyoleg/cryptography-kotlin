@@ -1,0 +1,50 @@
+/*
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ */
+
+import ckbuild.*
+
+plugins {
+    id("ckbuild.multiplatform")
+    id("org.jetbrains.kotlin.plugin.serialization")
+}
+
+kotlin {
+    allTargets(
+        supportsWasmWasi = false,
+    )
+
+    compilerOptions {
+        optIn.addAll(
+            OptIns.DelicateCryptographyApi,
+            OptIns.CryptographyProviderApi,
+
+            OptIns.ExperimentalKotlinTestApi,
+        )
+    }
+
+    sourceSets {
+        commonMain.dependencies {
+            api(projects.cryptographyTesthost)
+
+            api(projects.cryptographyCore)
+            api(projects.cryptographySerializationPem)
+            api(projects.cryptographySerializationAsn1)
+            api(projects.cryptographySerializationAsn1Modules)
+
+            api(libs.kotlinx.serialization.json)
+        }
+
+        // test runner deps
+        commonMain.dependencies {
+            api(kotlin("test"))
+            api(libs.kotlinx.coroutines.test)
+        }
+        jsMain.dependencies {
+            api(kotlin("test-js"))
+        }
+        jvmMain.dependencies {
+            api(kotlin("test-junit"))
+        }
+    }
+}

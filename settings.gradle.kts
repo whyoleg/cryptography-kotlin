@@ -58,6 +58,9 @@ projects("cryptography-kotlin") {
     // test apis: storage, env, platform
     module("cryptography-testhost")
 
+    // tests of core API, used to test providers
+    module("cryptography-tests")
+
     // providers
     folder("cryptography-providers", prefix = "cryptography-provider") {
         module("base", PUBLISHED_LIBRARY_WITHOUT_DOCS)

@@ -2,7 +2,7 @@
  * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
-package ckbuild.tests
+package ckbuild.providertests
 
 import org.gradle.api.*
 import org.gradle.api.file.*
@@ -65,6 +65,9 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
     private companion object {
         private val defaultImports = listOf(
             "dev.whyoleg.cryptography.*",
+            "dev.whyoleg.cryptography.tests.*",
+            "dev.whyoleg.cryptography.tests.algorithms.*",
+            // old tests, while they are not migrated
             "dev.whyoleg.cryptography.providers.tests.compatibility.*",
             "dev.whyoleg.cryptography.providers.tests.default.*",
             "dev.whyoleg.cryptography.providers.tests.testvectors.*",
@@ -72,26 +75,23 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
 
         private val testClasses = listOf(
             "DefaultProviderTest",
+            "Md5AlgorithmTest",
+            "Sha1AlgorithmTest",
+            "Sha224AlgorithmTest",
+            "Sha256AlgorithmTest",
+            "Sha384AlgorithmTest",
+            "Sha512AlgorithmTest",
+            "Sha3B224AlgorithmTest",
+            "Sha3B256AlgorithmTest",
+            "Sha3B384AlgorithmTest",
+            "Sha3B512AlgorithmTest",
+            "Ripemd160AlgorithmTest",
+
+            // old tests, while they are not migrated
             "SupportedAlgorithmsTest",
-
             "Pbkdf2CompatibilityTest",
-
             "HkdfCompatibilityTest",
             "HkdfTestvectorsTest",
-
-            "DigestTest",
-            "Md5CompatibilityTest",
-            "Sha1CompatibilityTest",
-            "Sha224CompatibilityTest",
-            "Sha256CompatibilityTest",
-            "Sha384CompatibilityTest",
-            "Sha512CompatibilityTest",
-            "Sha3B224CompatibilityTest",
-            "Sha3B256CompatibilityTest",
-            "Sha3B384CompatibilityTest",
-            "Sha3B512CompatibilityTest",
-            "Ripemd160CompatibilityTest",
-
             "AesCbcTest",
             "AesCbcCompatibilityTest",
             "AesCfb8Test",
@@ -110,30 +110,23 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
             "AesGcmCompatibilityTest",
             "AesCcmTest",
             "AesCcmCompatibilityTest",
-
             "ChaCha20Poly1305Test",
             "ChaCha20Poly1305CompatibilityTest",
-
             "HmacTest",
             "HmacCompatibilityTest",
             "HmacTestvectorsTest",
-
             "EcdsaTest",
             "EcdsaCompatibilityTest",
             "EcdhCompatibilityTest",
-
             "EdDsaTest",
             "EdDsaCompatibilityTest",
             "EdDsaTestvectorsTest",
             "XdhCompatibilityTest",
             "XdhTestvectorsTest",
-
             "DhTest",
             "DhCompatibilityTest",
-
             "DsaCompatibilityTest",
             "DsaTestvectorsTest",
-
             "RsaOaepTest",
             "RsaOaepCompatibilityTest",
             "RsaPkcs1Test",
