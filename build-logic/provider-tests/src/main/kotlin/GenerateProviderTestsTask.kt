@@ -96,15 +96,12 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
             "AesCfbAlgorithmTest",
             "AesCfb8AlgorithmTest",
             "AesOfbAlgorithmTest",
+            "AesGcmAlgorithmTest",
+            "AesCcmAlgorithmTest",
+            "ChaCha20Poly1305AlgorithmTest",
 
             // old tests, while they are not migrated
             "SupportedAlgorithmsTest",
-            "AesGcmTest",
-            "AesGcmCompatibilityTest",
-            "AesCcmTest",
-            "AesCcmCompatibilityTest",
-            "ChaCha20Poly1305Test",
-            "ChaCha20Poly1305CompatibilityTest",
             "EcdsaTest",
             "EcdsaCompatibilityTest",
             "EcdhCompatibilityTest",

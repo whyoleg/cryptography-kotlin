@@ -36,6 +36,24 @@
         }
       ]
     },
+    "AES-CCM": {
+      "unsupported": [
+        {
+          "description": "AES-CCM is not supported",
+          "environments": [
+            "apple",
+            "cryptokit",
+            "webcrypto"
+          ]
+        },
+        {
+          "description": "AES-CCM is supported only with BouncyCastle",
+          "environments": [
+            "jdk.default"
+          ]
+        }
+      ]
+    },
     "AES-CFB": {
       "unsupported": [
         {
@@ -106,6 +124,32 @@
         }
       ]
     },
+    "AES-GCM": {
+      "unsupported": [
+        {
+          "description": "AES-GCM is not supported",
+          "environments": [
+            "apple"
+          ]
+        }
+      ],
+      "limitations": [
+        {
+          "kind": "Fails",
+          "description": "Incremental functions are not supported",
+          "environments": [
+            "webcrypto"
+          ]
+        },
+        {
+          "kind": "Fails",
+          "description": "Only 128 bits tag is supported",
+          "environments": [
+            "cryptokit"
+          ]
+        }
+      ]
+    },
     "AES-OFB": {
       "unsupported": [
         {
@@ -113,6 +157,23 @@
           "environments": [
             "cryptokit",
             "webcrypto"
+          ]
+        }
+      ]
+    },
+    "ChaCha20-Poly1305": {
+      "unsupported": [
+        {
+          "description": "ChaCha20-Poly1305 is not supported",
+          "environments": [
+            "apple",
+            "webcrypto"
+          ]
+        },
+        {
+          "description": "ChaCha20-Poly1305 is supported only since JDK 11 or with BouncyCastle",
+          "environments": [
+            "jdk.default/jdk-8"
           ]
         }
       ]
