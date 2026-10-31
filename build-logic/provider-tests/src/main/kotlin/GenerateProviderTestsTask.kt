@@ -86,6 +86,8 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
             "Sha3B384AlgorithmTest",
             "Sha3B512AlgorithmTest",
             "Ripemd160AlgorithmTest",
+            "HmacAlgorithmTest",
+            "AesCmacAlgorithmTest",
 
             // old tests, while they are not migrated
             "SupportedAlgorithmsTest",
@@ -96,9 +98,6 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
             "AesCbcCompatibilityTest",
             "AesCfb8Test",
             "AesCfb8CompatibilityTest",
-            "AesCmacTest",
-            "AesCmacCompatibilityTest",
-            "AesCmacTestvectorsTest",
             "AesCtrTest",
             "AesCtrCompatibilityTest",
             "AesCfbTest",
@@ -112,9 +111,6 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
             "AesCcmCompatibilityTest",
             "ChaCha20Poly1305Test",
             "ChaCha20Poly1305CompatibilityTest",
-            "HmacTest",
-            "HmacCompatibilityTest",
-            "HmacTestvectorsTest",
             "EcdsaTest",
             "EcdsaCompatibilityTest",
             "EcdhCompatibilityTest",

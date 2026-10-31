@@ -10,6 +10,66 @@
     "webcrypto/nodejs"
   ],
   "suites": {
+    "AES-CMAC": {
+      "unsupported": [
+        {
+          "description": "AES-CMAC is not supported",
+          "environments": [
+            "apple",
+            "cryptokit",
+            "webcrypto"
+          ]
+        },
+        {
+          "description": "AES-CMAC is supported only with BouncyCastle",
+          "environments": [
+            "jdk.default"
+          ]
+        }
+      ]
+    },
+    "HMAC": {
+      "limitations": [
+        {
+          "kind": "Fails",
+          "description": "Incremental functions are not supported",
+          "environments": [
+            "webcrypto"
+          ]
+        },
+        {
+          "kind": "Fails",
+          "description": "SHA-224 is not supported",
+          "environments": [
+            "cryptokit",
+            "webcrypto"
+          ]
+        },
+        {
+          "kind": "Fails",
+          "description": "SHA3 based HMAC and signatures are supported only since JDK 17 or with BouncyCastle",
+          "environments": [
+            "jdk.default/jdk-11"
+          ]
+        },
+        {
+          "kind": "Fails",
+          "description": "SHA3 digests are not supported",
+          "environments": [
+            "apple",
+            "cryptokit",
+            "webcrypto"
+          ]
+        },
+        {
+          "kind": "Fails",
+          "description": "SHA3 digests are not supported on JDK 8 and Android without BouncyCastle",
+          "environments": [
+            "jdk.default/jdk-8"
+          ]
+        }
+      ]
+    },
     "MD5": {
       "unsupported": [
         {
