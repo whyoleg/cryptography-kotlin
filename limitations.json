@@ -178,6 +178,147 @@
         }
       ]
     },
+    "ECDH": {
+      "unsupported": [
+        {
+          "description": "ECDH is not supported",
+          "environments": [
+            "apple"
+          ]
+        }
+      ],
+      "limitations": [
+        {
+          "kind": "Fails",
+          "description": "Brainpool curves are supported only since JDK 11",
+          "environments": [
+            "jdk.default/jdk-8"
+          ]
+        },
+        {
+          "kind": "Fails",
+          "description": "Getting public key from private key is not supported in JDK without BouncyCastle",
+          "environments": [
+            "jdk.default"
+          ]
+        },
+        {
+          "kind": "Fails",
+          "description": "secp256k1 and Brainpool curves are not supported",
+          "environments": [
+            "cryptokit",
+            "webcrypto"
+          ]
+        },
+        {
+          "kind": "Fails",
+          "description": "secp256k1 and Brainpool curves are not supported since JDK 16",
+          "environments": [
+            "jdk.default/jdk-21"
+          ]
+        }
+      ]
+    },
+    "ECDSA": {
+      "limitations": [
+        {
+          "kind": "Fails",
+          "description": "Brainpool curves are supported only since JDK 11",
+          "environments": [
+            "jdk.default/jdk-8"
+          ]
+        },
+        {
+          "kind": "Fails",
+          "description": "Compressed public key format is not supported",
+          "environments": [
+            "apple"
+          ]
+        },
+        {
+          "kind": "Fails",
+          "description": "Decoding private key from RAW format is not supported",
+          "environments": [
+            "apple"
+          ]
+        },
+        {
+          "kind": "Fails",
+          "description": "ECDSA without digest is not supported",
+          "environments": [
+            "cryptokit",
+            "webcrypto"
+          ]
+        },
+        {
+          "kind": "Fails",
+          "description": "ECDSA without digest supports only messages up to 64 bytes",
+          "environments": [
+            "jdk.default"
+          ]
+        },
+        {
+          "kind": "Fails",
+          "description": "Getting public key from private key is not supported in JDK without BouncyCastle",
+          "environments": [
+            "jdk.default"
+          ]
+        },
+        {
+          "kind": "Fails",
+          "description": "Incremental functions are not supported",
+          "environments": [
+            "webcrypto"
+          ]
+        },
+        {
+          "kind": "Fails",
+          "description": "SHA3 based HMAC and signatures are supported only since JDK 17 or with BouncyCastle",
+          "environments": [
+            "jdk.default/jdk-11"
+          ]
+        },
+        {
+          "kind": "Fails",
+          "description": "SHA3 digests are not supported",
+          "environments": [
+            "apple",
+            "cryptokit",
+            "webcrypto"
+          ]
+        },
+        {
+          "kind": "Fails",
+          "description": "SHA3 digests are not supported on JDK 8 and Android without BouncyCastle",
+          "environments": [
+            "jdk.default/jdk-8"
+          ]
+        },
+        {
+          "kind": "Fails",
+          "description": "secp256k1 and Brainpool curves are not supported",
+          "environments": [
+            "apple",
+            "cryptokit",
+            "webcrypto"
+          ]
+        },
+        {
+          "kind": "Fails",
+          "description": "secp256k1 and Brainpool curves are not supported since JDK 16",
+          "environments": [
+            "jdk.default/jdk-21"
+          ]
+        },
+        {
+          "kind": "Lenient",
+          "description": "Public key point is not validated to be on the curve",
+          "environments": [
+            "jdk.default"
+          ]
+        }
+      ]
+    },
     "HKDF": {
       "limitations": [
         {
