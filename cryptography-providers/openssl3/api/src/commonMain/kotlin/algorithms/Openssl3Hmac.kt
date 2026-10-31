@@ -14,18 +14,27 @@ import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 import dev.whyoleg.cryptography.providers.openssl3.operations.*
 import kotlinx.cinterop.*
 
-internal object Openssl3Hmac : BaseHmac() {
+internal object Openssl3Hmac : BaseHmac<Openssl3Hmac.HmacDigest>() {
     val mac = NativeResource(checkError(EVP_MAC_fetch(null, "HMAC", null)), ::EVP_MAC_free)
 
-    override fun blockSize(digest: CryptographyAlgorithmId<Digest>): Int = blockSize(hashAlgorithmName(digest))
+    class HmacDigest(val name: String, val blockSize: Int)
 
-    override fun wrapKey(digest: CryptographyAlgorithmId<Digest>, rawKey: ByteArray): HMAC.Key = HmacKey(digest, rawKey)
+    override fun resolveDigest(digest: CryptographyAlgorithmId<Digest>): HmacDigest {
+        val name = hashAlgorithmName(digest)
+        return HmacDigest(name, blockSize(name))
+    }
+
+    override fun blockSize(digest: HmacDigest): Int = digest.blockSize
+
+    override fun wrapKey(digest: CryptographyAlgorithmId<Digest>, resolvedDigest: HmacDigest, rawKey: ByteArray): HMAC.Key =
+        HmacKey(digest, resolvedDigest, rawKey)
 
     private class HmacKey(
         digest: CryptographyAlgorithmId<Digest>,
+        resolvedDigest: HmacDigest,
         key: ByteArray,
     ) : BaseKey(digest, key) {
-        private val signature = HmacSignature(hashAlgorithmName(digest), key)
+        private val signature = HmacSignature(resolvedDigest.name, key)
         override fun signatureGenerator(): SignatureGenerator = signature
         override fun signatureVerifier(): SignatureVerifier = signature
     }

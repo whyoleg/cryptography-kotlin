@@ -12,44 +12,31 @@ import dev.whyoleg.cryptography.providers.base.algorithms.*
 import kotlinx.cinterop.*
 import platform.CoreCrypto.*
 
-internal object CCHmac : BaseHmac() {
-    override fun blockSize(digest: CryptographyAlgorithmId<Digest>): Int = when (digest) {
-        SHA1   -> CC_SHA1_BLOCK_BYTES
-        SHA224 -> CC_SHA224_BLOCK_BYTES
-        SHA256 -> CC_SHA256_BLOCK_BYTES
-        SHA384 -> CC_SHA384_BLOCK_BYTES
-        SHA512 -> CC_SHA512_BLOCK_BYTES
-        else   -> throw IllegalStateException("Unsupported hash algorithm: $digest")
+internal object CCHmac : BaseHmac<CCHmac.HmacDigest>() {
+    class HmacDigest(val algorithm: CCHmacAlgorithm, val digestSize: Int, val blockSize: Int)
+
+    override fun resolveDigest(digest: CryptographyAlgorithmId<Digest>): HmacDigest = when (digest) {
+        SHA1   -> HmacDigest(kCCHmacAlgSHA1, CC_SHA1_DIGEST_LENGTH, CC_SHA1_BLOCK_BYTES)
+        SHA224 -> HmacDigest(kCCHmacAlgSHA224, CC_SHA224_DIGEST_LENGTH, CC_SHA224_BLOCK_BYTES)
+        SHA256 -> HmacDigest(kCCHmacAlgSHA256, CC_SHA256_DIGEST_LENGTH, CC_SHA256_BLOCK_BYTES)
+        SHA384 -> HmacDigest(kCCHmacAlgSHA384, CC_SHA384_DIGEST_LENGTH, CC_SHA384_BLOCK_BYTES)
+        SHA512 -> HmacDigest(kCCHmacAlgSHA512, CC_SHA512_DIGEST_LENGTH, CC_SHA512_BLOCK_BYTES)
+        else   -> unsupportedParameter("hash algorithm", digest.name)
     }
 
-    override fun wrapKey(digest: CryptographyAlgorithmId<Digest>, rawKey: ByteArray): HMAC.Key = HmacKey(digest, rawKey)
+    override fun blockSize(digest: HmacDigest): Int = digest.blockSize
+
+    override fun wrapKey(digest: CryptographyAlgorithmId<Digest>, resolvedDigest: HmacDigest, rawKey: ByteArray): HMAC.Key =
+        HmacKey(digest, resolvedDigest, rawKey)
 
     private class HmacKey(
         digest: CryptographyAlgorithmId<Digest>,
+        resolvedDigest: HmacDigest,
         key: ByteArray,
     ) : BaseKey(digest, key) {
-        private val signature = HmacSignature(key, hmacAlgorithm(digest), digestSize(digest))
+        private val signature = HmacSignature(key, resolvedDigest.algorithm, resolvedDigest.digestSize)
         override fun signatureGenerator(): SignatureGenerator = signature
         override fun signatureVerifier(): SignatureVerifier = signature
-
-
-        private fun hmacAlgorithm(digest: CryptographyAlgorithmId<Digest>): CCHmacAlgorithm = when (digest) {
-            SHA1   -> kCCHmacAlgSHA1
-            SHA224 -> kCCHmacAlgSHA224
-            SHA256 -> kCCHmacAlgSHA256
-            SHA384 -> kCCHmacAlgSHA384
-            SHA512 -> kCCHmacAlgSHA512
-            else   -> throw IllegalStateException("Unsupported hash algorithm: $digest")
-        }
-
-        private fun digestSize(digest: CryptographyAlgorithmId<Digest>): Int = when (digest) {
-            SHA1   -> CC_SHA1_DIGEST_LENGTH
-            SHA224 -> CC_SHA224_DIGEST_LENGTH
-            SHA256 -> CC_SHA256_DIGEST_LENGTH
-            SHA384 -> CC_SHA384_DIGEST_LENGTH
-            SHA512 -> CC_SHA512_DIGEST_LENGTH
-            else   -> throw IllegalStateException("Unsupported hash algorithm: $digest")
-        }
     }
 }
 

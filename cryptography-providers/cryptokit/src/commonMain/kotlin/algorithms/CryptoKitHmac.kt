@@ -15,43 +15,31 @@ import platform.CoreCrypto.*
 import platform.Foundation.*
 
 @OptIn(UnsafeNumber::class)
-internal object CryptoKitHmac : BaseHmac() {
-    override fun blockSize(digest: CryptographyAlgorithmId<Digest>): Int = when (digest) {
-        MD5    -> CC_MD5_BLOCK_BYTES
-        SHA1   -> CC_SHA1_BLOCK_BYTES
-        SHA256 -> CC_SHA256_BLOCK_BYTES
-        SHA384 -> CC_SHA384_BLOCK_BYTES
-        SHA512 -> CC_SHA512_BLOCK_BYTES
-        else   -> throw IllegalStateException("Unsupported hash algorithm: $digest")
+internal object CryptoKitHmac : BaseHmac<CryptoKitHmac.HmacDigest>() {
+    class HmacDigest(val algorithm: DwcHashAlgorithm, val digestSize: Int, val blockSize: Int)
+
+    override fun resolveDigest(digest: CryptographyAlgorithmId<Digest>): HmacDigest = when (digest) {
+        MD5    -> HmacDigest(DwcHashAlgorithmMd5, CC_MD5_DIGEST_LENGTH, CC_MD5_BLOCK_BYTES)
+        SHA1   -> HmacDigest(DwcHashAlgorithmSha1, CC_SHA1_DIGEST_LENGTH, CC_SHA1_BLOCK_BYTES)
+        SHA256 -> HmacDigest(DwcHashAlgorithmSha256, CC_SHA256_DIGEST_LENGTH, CC_SHA256_BLOCK_BYTES)
+        SHA384 -> HmacDigest(DwcHashAlgorithmSha384, CC_SHA384_DIGEST_LENGTH, CC_SHA384_BLOCK_BYTES)
+        SHA512 -> HmacDigest(DwcHashAlgorithmSha512, CC_SHA512_DIGEST_LENGTH, CC_SHA512_BLOCK_BYTES)
+        else   -> unsupportedParameter("hash algorithm", digest.name)
     }
 
-    override fun wrapKey(digest: CryptographyAlgorithmId<Digest>, rawKey: ByteArray): HMAC.Key = HmacKey(digest, rawKey)
+    override fun blockSize(digest: HmacDigest): Int = digest.blockSize
+
+    override fun wrapKey(digest: CryptographyAlgorithmId<Digest>, resolvedDigest: HmacDigest, rawKey: ByteArray): HMAC.Key =
+        HmacKey(digest, resolvedDigest, rawKey)
 
     private class HmacKey(
         digest: CryptographyAlgorithmId<Digest>,
+        resolvedDigest: HmacDigest,
         key: ByteArray,
     ) : BaseKey(digest, key) {
-        private val signature = HmacSignature(key.toNSData(), hashAlgorithm(digest), digestSize(digest))
+        private val signature = HmacSignature(key.toNSData(), resolvedDigest.algorithm, resolvedDigest.digestSize)
         override fun signatureGenerator(): SignatureGenerator = signature
         override fun signatureVerifier(): SignatureVerifier = signature
-
-        private fun hashAlgorithm(digest: CryptographyAlgorithmId<Digest>): DwcHashAlgorithm = when (digest) {
-            MD5    -> DwcHashAlgorithmMd5
-            SHA1   -> DwcHashAlgorithmSha1
-            SHA256 -> DwcHashAlgorithmSha256
-            SHA384 -> DwcHashAlgorithmSha384
-            SHA512 -> DwcHashAlgorithmSha512
-            else   -> throw IllegalStateException("Unsupported hash algorithm: $digest")
-        }
-
-        private fun digestSize(digest: CryptographyAlgorithmId<Digest>): Int = when (digest) {
-            MD5    -> CC_MD5_DIGEST_LENGTH
-            SHA1   -> CC_SHA1_DIGEST_LENGTH
-            SHA256 -> CC_SHA256_DIGEST_LENGTH
-            SHA384 -> CC_SHA384_DIGEST_LENGTH
-            SHA512 -> CC_SHA512_DIGEST_LENGTH
-            else   -> throw IllegalStateException("Unsupported hash algorithm: $digest")
-        }
     }
 }
 

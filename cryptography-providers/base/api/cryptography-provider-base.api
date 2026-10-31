@@ -4,6 +4,12 @@ public final class dev/whyoleg/cryptography/providers/base/BytesKt {
 	public static final fun getEmptyByteArray ()[B
 }
 
+public final class dev/whyoleg/cryptography/providers/base/ParametersKt {
+	public static final fun invalidParameter (Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Void;
+	public static final fun unsupportedParameter (Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Throwable;)Ljava/lang/Void;
+	public static synthetic fun unsupportedParameter$default (Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Throwable;ILjava/lang/Object;)Ljava/lang/Void;
+}
+
 public abstract class dev/whyoleg/cryptography/providers/base/algorithms/BaseAes : dev/whyoleg/cryptography/algorithms/AES {
 	public fun <init> ()V
 	public final fun keyDecoder ()Ldev/whyoleg/cryptography/materials/Decoder;
@@ -46,10 +52,11 @@ public abstract class dev/whyoleg/cryptography/providers/base/algorithms/BaseHkd
 
 public abstract class dev/whyoleg/cryptography/providers/base/algorithms/BaseHmac : dev/whyoleg/cryptography/algorithms/HMAC {
 	public fun <init> ()V
-	protected abstract fun blockSize (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;)I
+	protected abstract fun blockSize (Ljava/lang/Object;)I
 	public final fun keyDecoder (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;)Ldev/whyoleg/cryptography/materials/Decoder;
 	public final fun keyGenerator (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;)Ldev/whyoleg/cryptography/operations/KeyGenerator;
-	protected abstract fun wrapKey (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;[B)Ldev/whyoleg/cryptography/algorithms/HMAC$Key;
+	protected abstract fun resolveDigest (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;)Ljava/lang/Object;
+	protected abstract fun wrapKey (Ldev/whyoleg/cryptography/CryptographyAlgorithmId;Ljava/lang/Object;[B)Ldev/whyoleg/cryptography/algorithms/HMAC$Key;
 }
 
 protected abstract class dev/whyoleg/cryptography/providers/base/algorithms/BaseHmac$BaseKey : dev/whyoleg/cryptography/algorithms/HMAC$Key {

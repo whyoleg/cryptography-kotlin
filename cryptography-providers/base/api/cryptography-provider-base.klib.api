@@ -103,6 +103,25 @@ abstract class <#A: dev.whyoleg.cryptography.algorithms/AES.Key> dev.whyoleg.cry
     }
 }
 
+abstract class <#A: kotlin/Any> dev.whyoleg.cryptography.providers.base.algorithms/BaseHmac : dev.whyoleg.cryptography.algorithms/HMAC { // dev.whyoleg.cryptography.providers.base.algorithms/BaseHmac|null[0]
+    constructor <init>() // dev.whyoleg.cryptography.providers.base.algorithms/BaseHmac.<init>|<init>(){}[0]
+
+    abstract fun blockSize(#A): kotlin/Int // dev.whyoleg.cryptography.providers.base.algorithms/BaseHmac.blockSize|blockSize(1:0){}[0]
+    abstract fun resolveDigest(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest>): #A // dev.whyoleg.cryptography.providers.base.algorithms/BaseHmac.resolveDigest|resolveDigest(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>){}[0]
+    abstract fun wrapKey(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest>, #A, kotlin/ByteArray): dev.whyoleg.cryptography.algorithms/HMAC.Key // dev.whyoleg.cryptography.providers.base.algorithms/BaseHmac.wrapKey|wrapKey(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>;1:0;kotlin.ByteArray){}[0]
+    final fun keyDecoder(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest>): dev.whyoleg.cryptography.materials/Decoder<dev.whyoleg.cryptography.algorithms/HMAC.Key.Format, dev.whyoleg.cryptography.algorithms/HMAC.Key> // dev.whyoleg.cryptography.providers.base.algorithms/BaseHmac.keyDecoder|keyDecoder(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>){}[0]
+    final fun keyGenerator(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest>): dev.whyoleg.cryptography.operations/KeyGenerator<dev.whyoleg.cryptography.algorithms/HMAC.Key> // dev.whyoleg.cryptography.providers.base.algorithms/BaseHmac.keyGenerator|keyGenerator(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>){}[0]
+
+    abstract inner class BaseKey : dev.whyoleg.cryptography.algorithms/HMAC.Key { // dev.whyoleg.cryptography.providers.base.algorithms/BaseHmac.BaseKey|null[0]
+        constructor <init>(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest>, kotlin/ByteArray) // dev.whyoleg.cryptography.providers.base.algorithms/BaseHmac.BaseKey.<init>|<init>(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>;kotlin.ByteArray){}[0]
+
+        final val key // dev.whyoleg.cryptography.providers.base.algorithms/BaseHmac.BaseKey.key|{}key[0]
+            final fun <get-key>(): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.algorithms/BaseHmac.BaseKey.key.<get-key>|<get-key>(){}[0]
+
+        final fun encodeToByteArrayBlocking(dev.whyoleg.cryptography.algorithms/HMAC.Key.Format): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.algorithms/BaseHmac.BaseKey.encodeToByteArrayBlocking|encodeToByteArrayBlocking(dev.whyoleg.cryptography.algorithms.HMAC.Key.Format){}[0]
+    }
+}
+
 abstract class dev.whyoleg.cryptography.providers.base.algorithms/BaseChaCha20Poly1305 : dev.whyoleg.cryptography.algorithms/ChaCha20Poly1305 { // dev.whyoleg.cryptography.providers.base.algorithms/BaseChaCha20Poly1305|null[0]
     constructor <init>() // dev.whyoleg.cryptography.providers.base.algorithms/BaseChaCha20Poly1305.<init>|<init>(){}[0]
 
@@ -125,24 +144,6 @@ abstract class dev.whyoleg.cryptography.providers.base.algorithms/BaseHkdf : dev
 
     abstract fun digestSize(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest>): kotlin/Int // dev.whyoleg.cryptography.providers.base.algorithms/BaseHkdf.digestSize|digestSize(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>){}[0]
     open fun secretDerivation(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest>, dev.whyoleg.cryptography/BinarySize, kotlin/ByteArray?, kotlin/ByteArray?): dev.whyoleg.cryptography.operations/SecretDerivation // dev.whyoleg.cryptography.providers.base.algorithms/BaseHkdf.secretDerivation|secretDerivation(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>;dev.whyoleg.cryptography.BinarySize;kotlin.ByteArray?;kotlin.ByteArray?){}[0]
-}
-
-abstract class dev.whyoleg.cryptography.providers.base.algorithms/BaseHmac : dev.whyoleg.cryptography.algorithms/HMAC { // dev.whyoleg.cryptography.providers.base.algorithms/BaseHmac|null[0]
-    constructor <init>() // dev.whyoleg.cryptography.providers.base.algorithms/BaseHmac.<init>|<init>(){}[0]
-
-    abstract fun blockSize(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest>): kotlin/Int // dev.whyoleg.cryptography.providers.base.algorithms/BaseHmac.blockSize|blockSize(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>){}[0]
-    abstract fun wrapKey(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest>, kotlin/ByteArray): dev.whyoleg.cryptography.algorithms/HMAC.Key // dev.whyoleg.cryptography.providers.base.algorithms/BaseHmac.wrapKey|wrapKey(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>;kotlin.ByteArray){}[0]
-    final fun keyDecoder(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest>): dev.whyoleg.cryptography.materials/Decoder<dev.whyoleg.cryptography.algorithms/HMAC.Key.Format, dev.whyoleg.cryptography.algorithms/HMAC.Key> // dev.whyoleg.cryptography.providers.base.algorithms/BaseHmac.keyDecoder|keyDecoder(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>){}[0]
-    final fun keyGenerator(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest>): dev.whyoleg.cryptography.operations/KeyGenerator<dev.whyoleg.cryptography.algorithms/HMAC.Key> // dev.whyoleg.cryptography.providers.base.algorithms/BaseHmac.keyGenerator|keyGenerator(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>){}[0]
-
-    abstract inner class BaseKey : dev.whyoleg.cryptography.algorithms/HMAC.Key { // dev.whyoleg.cryptography.providers.base.algorithms/BaseHmac.BaseKey|null[0]
-        constructor <init>(dev.whyoleg.cryptography/CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms/Digest>, kotlin/ByteArray) // dev.whyoleg.cryptography.providers.base.algorithms/BaseHmac.BaseKey.<init>|<init>(dev.whyoleg.cryptography.CryptographyAlgorithmId<dev.whyoleg.cryptography.algorithms.Digest>;kotlin.ByteArray){}[0]
-
-        final val key // dev.whyoleg.cryptography.providers.base.algorithms/BaseHmac.BaseKey.key|{}key[0]
-            final fun <get-key>(): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.algorithms/BaseHmac.BaseKey.key.<get-key>|<get-key>(){}[0]
-
-        final fun encodeToByteArrayBlocking(dev.whyoleg.cryptography.algorithms/HMAC.Key.Format): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.algorithms/BaseHmac.BaseKey.encodeToByteArrayBlocking|encodeToByteArrayBlocking(dev.whyoleg.cryptography.algorithms.HMAC.Key.Format){}[0]
-    }
 }
 
 abstract class dev.whyoleg.cryptography.providers.base.operations/BaseCipherFunction : dev.whyoleg.cryptography.providers.base.operations/CipherFunction, kotlin/AutoCloseable { // dev.whyoleg.cryptography.providers.base.operations/BaseCipherFunction|null[0]
@@ -309,6 +310,8 @@ final fun dev.whyoleg.cryptography.providers.base.materials/wrapPem(dev.whyoleg.
 final fun dev.whyoleg.cryptography.providers.base.materials/wrapPrivateKeyInfo(kotlin/Int, dev.whyoleg.cryptography.serialization.asn1.modules/AlgorithmIdentifier, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.materials/wrapPrivateKeyInfo|wrapPrivateKeyInfo(kotlin.Int;dev.whyoleg.cryptography.serialization.asn1.modules.AlgorithmIdentifier;kotlin.ByteArray){}[0]
 final fun dev.whyoleg.cryptography.providers.base.materials/wrapSubjectPublicKeyInfo(dev.whyoleg.cryptography.serialization.asn1.modules/AlgorithmIdentifier, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.materials/wrapSubjectPublicKeyInfo|wrapSubjectPublicKeyInfo(dev.whyoleg.cryptography.serialization.asn1.modules.AlgorithmIdentifier;kotlin.ByteArray){}[0]
 final fun dev.whyoleg.cryptography.providers.base/checkBounds(kotlin/Int, kotlin/Int, kotlin/Int) // dev.whyoleg.cryptography.providers.base/checkBounds|checkBounds(kotlin.Int;kotlin.Int;kotlin.Int){}[0]
+final fun dev.whyoleg.cryptography.providers.base/invalidParameter(kotlin/String, kotlin/Any?): kotlin/Nothing // dev.whyoleg.cryptography.providers.base/invalidParameter|invalidParameter(kotlin.String;kotlin.Any?){}[0]
+final fun dev.whyoleg.cryptography.providers.base/unsupportedParameter(kotlin/String, kotlin/Any?, kotlin/Throwable? = ...): kotlin/Nothing // dev.whyoleg.cryptography.providers.base/unsupportedParameter|unsupportedParameter(kotlin.String;kotlin.Any?;kotlin.Throwable?){}[0]
 
 // Targets: [native]
 final class <#A: kotlin/Any> dev.whyoleg.cryptography.providers.base/NativeResource : kotlin/AutoCloseable { // dev.whyoleg.cryptography.providers.base/NativeResource|null[0]

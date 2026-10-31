@@ -9,6 +9,7 @@ import dev.whyoleg.cryptography.BinarySize.Companion.bytes
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.base.materials.*
 
 @CryptographyProviderApi
@@ -50,8 +51,8 @@ public abstract class BaseAes<K : AES.Key> : AES<K> {
     }
 
     private fun requireAesKeySize(keySize: BinarySize) {
-        require(keySize == AES.Key.Size.B128 || keySize == AES.Key.Size.B192 || keySize == AES.Key.Size.B256) {
-            "AES key size must be 128, 192 or 256 bits"
+        if (keySize != AES.Key.Size.B128 && keySize != AES.Key.Size.B192 && keySize != AES.Key.Size.B256) {
+            invalidParameter("key size", keySize)
         }
     }
 }

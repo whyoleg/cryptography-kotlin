@@ -21,9 +21,11 @@ public abstract class BaseHkdf(provider: CryptographyProvider) : HKDF {
         salt: ByteArray?,
         info: ByteArray?,
     ): SecretDerivation {
+        // HMAC key decoder resolves the digest
+        val decoder = hmac.keyDecoder(digest)
         val digestSize = digestSize(digest)
         return HkdfSecretDerivation(
-            decoder = hmac.keyDecoder(digest),
+            decoder = decoder,
             digestSize = digestSize,
             outputSize = outputSize,
             salt = salt?.takeIf(ByteArray::isNotEmpty) ?: ByteArray(digestSize),

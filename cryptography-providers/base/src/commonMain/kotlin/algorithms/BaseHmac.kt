@@ -11,28 +11,38 @@ import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.materials.*
 
 @CryptographyProviderApi
-public abstract class BaseHmac : HMAC {
-    protected abstract fun wrapKey(digest: CryptographyAlgorithmId<Digest>, rawKey: ByteArray): HMAC.Key
-    protected abstract fun blockSize(digest: CryptographyAlgorithmId<Digest>): Int
+public abstract class BaseHmac<D : Any> : HMAC {
+    // resolves the digest into the provider-native representation, fails if the digest is not supported
+    protected abstract fun resolveDigest(digest: CryptographyAlgorithmId<Digest>): D
+    protected abstract fun blockSize(digest: D): Int
+    protected abstract fun wrapKey(digest: CryptographyAlgorithmId<Digest>, resolvedDigest: D, rawKey: ByteArray): HMAC.Key
 
-    final override fun keyDecoder(digest: CryptographyAlgorithmId<Digest>): Decoder<HMAC.Key.Format, HMAC.Key> = BaseKeyDecoder(digest)
+    final override fun keyDecoder(digest: CryptographyAlgorithmId<Digest>): Decoder<HMAC.Key.Format, HMAC.Key> =
+        BaseKeyDecoder(digest, resolveDigest(digest))
+
     final override fun keyGenerator(digest: CryptographyAlgorithmId<Digest>): KeyGenerator<HMAC.Key> =
-        BaseKeyGenerator(digest)
+        BaseKeyGenerator(digest, resolveDigest(digest))
 
-    private inner class BaseKeyDecoder(private val digest: CryptographyAlgorithmId<Digest>) : Decoder<HMAC.Key.Format, HMAC.Key> {
+    private inner class BaseKeyDecoder(
+        private val digest: CryptographyAlgorithmId<Digest>,
+        private val resolvedDigest: D,
+    ) : Decoder<HMAC.Key.Format, HMAC.Key> {
         override fun decodeFromByteArrayBlocking(format: HMAC.Key.Format, bytes: ByteArray): HMAC.Key {
             val rawKey = when (format) {
                 HMAC.Key.Format.RAW -> bytes.copyOf()
                 HMAC.Key.Format.JWK -> JsonWebKeys.decodeHmacKey(digest, bytes)
             }
-            return wrapKey(digest, rawKey)
+            return wrapKey(digest, resolvedDigest, rawKey)
         }
     }
 
-    private inner class BaseKeyGenerator(private val digest: CryptographyAlgorithmId<Digest>) : KeyGenerator<HMAC.Key> {
+    private inner class BaseKeyGenerator(
+        private val digest: CryptographyAlgorithmId<Digest>,
+        private val resolvedDigest: D,
+    ) : KeyGenerator<HMAC.Key> {
         override fun generateKeyBlocking(): HMAC.Key {
-            val key = CryptographySystem.getDefaultRandom().nextBytes(blockSize(digest))
-            return wrapKey(digest, key)
+            val key = CryptographySystem.getDefaultRandom().nextBytes(blockSize(resolvedDigest))
+            return wrapKey(digest, resolvedDigest, key)
         }
     }
 
