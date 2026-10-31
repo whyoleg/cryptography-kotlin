@@ -120,7 +120,7 @@ internal object Openssl3Dsa : DSA {
             }
 
             return when (format) {
-                DSA.SignatureFormat.DER -> derVerifier
+                DSA.SignatureFormat.DER -> DssDerSignatureVerifier(derVerifier, DSA_q_size(key))
                 DSA.SignatureFormat.RAW -> DssRawSignatureVerifier(derVerifier, DSA_q_size(key))
             }
         }

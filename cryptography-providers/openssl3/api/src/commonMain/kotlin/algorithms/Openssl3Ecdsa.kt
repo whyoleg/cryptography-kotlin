@@ -50,7 +50,7 @@ internal object Openssl3Ecdsa : Openssl3Ec<ECDSA.PublicKey, ECDSA.PrivateKey, EC
                 else -> EcdsaDigestSignatureVerifier(key, hashAlgorithmName(digest))
             }
             return when (format) {
-                ECDSA.SignatureFormat.DER -> derSignatureVerifier
+                ECDSA.SignatureFormat.DER -> DssDerSignatureVerifier(derSignatureVerifier, EC_order_size(key))
                 ECDSA.SignatureFormat.RAW -> DssRawSignatureVerifier(derSignatureVerifier, EC_order_size(key))
             }
         }

@@ -35,6 +35,7 @@ protected abstract class dev/whyoleg/cryptography/providers/base/algorithms/Base
 public final class dev/whyoleg/cryptography/providers/base/algorithms/BaseDssKt {
 	public static final fun convertDssDerSignatureToRaw (I[B)[B
 	public static final fun convertDssRawSignatureToDer (I[BII)[B
+	public static final fun isDssDerSignatureWellFormed (I[BII)Z
 }
 
 public abstract class dev/whyoleg/cryptography/providers/base/algorithms/BaseHkdf : dev/whyoleg/cryptography/algorithms/HKDF {
@@ -56,6 +57,11 @@ protected abstract class dev/whyoleg/cryptography/providers/base/algorithms/Base
 	public final fun encodeToByteArrayBlocking (Ldev/whyoleg/cryptography/algorithms/HMAC$Key$Format;)[B
 	public synthetic fun encodeToByteArrayBlocking (Ldev/whyoleg/cryptography/materials/EncodingFormat;)[B
 	protected final fun getKey ()[B
+}
+
+public final class dev/whyoleg/cryptography/providers/base/algorithms/DssDerSignatureVerifier : dev/whyoleg/cryptography/operations/SignatureVerifier {
+	public fun <init> (Ldev/whyoleg/cryptography/operations/SignatureVerifier;I)V
+	public fun createVerifyFunction ()Ldev/whyoleg/cryptography/operations/VerifyFunction;
 }
 
 public final class dev/whyoleg/cryptography/providers/base/algorithms/DssRawSignatureGenerator : dev/whyoleg/cryptography/operations/SignatureGenerator {

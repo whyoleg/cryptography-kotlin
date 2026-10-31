@@ -49,6 +49,65 @@ public fun convertDssRawSignatureToDer(
     return Der.encodeToByteArray(DssSignatureValue.serializer(), signatureValue)
 }
 
+// `false` if the signature is not a DER encoded `SEQUENCE { r INTEGER, s INTEGER }` with positive values of at most `orderSize` bytes.
+// Such signatures are invalid, but some providers fail on them instead of returning `false` from `tryVerify`.
+@CryptographyProviderApi
+public fun isDssDerSignatureWellFormed(
+    orderSize: Int,
+    derSignature: ByteArray,
+    startIndex: Int,
+    endIndex: Int,
+): Boolean {
+    checkBounds(derSignature.size, startIndex, endIndex)
+    val signatureValue = try {
+        Der.decodeFromByteArray(DssSignatureValue.serializer(), derSignature.copyOfRange(startIndex, endIndex))
+    } catch (_: Exception) {
+        return false
+    }
+
+    fun BigInt.isInRange(): Boolean = sign > 0 && magnitudeToByteArray().size <= orderSize
+    return signatureValue.r.isInRange() && signatureValue.s.isInRange()
+}
+
+// verifier of DER signatures, which returns `false` for malformed signatures instead of delegating them to `derVerifier`
+@CryptographyProviderApi
+public class DssDerSignatureVerifier(
+    private val derVerifier: SignatureVerifier,
+    private val orderSize: Int,
+) : SignatureVerifier {
+    override fun createVerifyFunction(): VerifyFunction = DerVerifyFunction(derVerifier.createVerifyFunction(), orderSize)
+
+    private class DerVerifyFunction(
+        private val derVerifyFunction: VerifyFunction,
+        private val orderSize: Int,
+    ) : VerifyFunction {
+        override fun update(source: ByteArray, startIndex: Int, endIndex: Int) {
+            derVerifyFunction.update(source, startIndex, endIndex)
+        }
+
+        override fun tryVerify(signature: ByteArray, startIndex: Int, endIndex: Int): Boolean {
+            // the state is reset in the same way as after verification
+            if (!isDssDerSignatureWellFormed(orderSize, signature, startIndex, endIndex)) {
+                derVerifyFunction.reset()
+                return false
+            }
+            return derVerifyFunction.tryVerify(signature, startIndex, endIndex)
+        }
+
+        override fun verify(signature: ByteArray, startIndex: Int, endIndex: Int) {
+            check(tryVerify(signature, startIndex, endIndex)) { "Invalid signature" }
+        }
+
+        override fun reset() {
+            derVerifyFunction.reset()
+        }
+
+        override fun close() {
+            derVerifyFunction.close()
+        }
+    }
+}
+
 @CryptographyProviderApi
 public class DssRawSignatureGenerator(
     private val derGenerator: SignatureGenerator,
@@ -102,6 +161,12 @@ public class DssRawSignatureVerifier(
 
         override fun tryVerify(signature: ByteArray, startIndex: Int, endIndex: Int): Boolean {
             checkBounds(signature.size, startIndex, endIndex)
+
+            // signature of an unexpected size is invalid; the state is reset in the same way as after verification
+            if (endIndex - startIndex != orderSize * 2) {
+                derVerifyFunction.reset()
+                return false
+            }
 
             return derVerifyFunction.tryVerify(
                 convertDssRawSignatureToDer(orderSize, signature, startIndex, endIndex),

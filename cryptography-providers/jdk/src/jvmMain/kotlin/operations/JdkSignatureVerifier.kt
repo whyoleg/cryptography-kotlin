@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2023-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.jdk.operations
@@ -7,6 +7,7 @@ package dev.whyoleg.cryptography.providers.jdk.operations
 import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.jdk.*
+import java.security.*
 import java.security.spec.*
 
 internal class JdkSignatureVerifier(
@@ -38,7 +39,14 @@ private class JdkVerifyFunction(
         checkBounds(signature.size, startIndex, endIndex)
         val jsignature = jsignature.access()
 
-        return jsignature.verify(signature, startIndex, endIndex - startIndex)
+        return try {
+            jsignature.verify(signature, startIndex, endIndex - startIndex)
+        } catch (_: SignatureException) {
+            // thrown for improperly encoded signatures (f.e. DSA/ECDSA values out of range);
+            // the state is not guaranteed to be reset in this case
+            reset()
+            false
+        }
     }
 
     override fun reset() {

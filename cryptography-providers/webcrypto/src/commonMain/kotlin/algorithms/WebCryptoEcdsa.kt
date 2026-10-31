@@ -78,6 +78,7 @@ private class EcdsaDerSignatureVerifier(
     private val curveOrderSize: Int,
 ) : SignatureVerifier {
     override suspend fun tryVerifySignature(data: ByteArray, signature: ByteArray): Boolean {
+        if (!isDssDerSignatureWellFormed(curveOrderSize, signature, 0, signature.size)) return false
         val rawSignature = convertDssDerSignatureToRaw(curveOrderSize, signature)
         return rawVerifier.tryVerifySignature(data, rawSignature)
     }

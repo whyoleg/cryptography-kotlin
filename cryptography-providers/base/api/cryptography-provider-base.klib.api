@@ -164,6 +164,12 @@ abstract class dev.whyoleg.cryptography.providers.base.operations/BaseCipherFunc
     open fun transformedSource(kotlinx.io/RawSource): kotlinx.io/RawSource // dev.whyoleg.cryptography.providers.base.operations/BaseCipherFunction.transformedSource|transformedSource(kotlinx.io.RawSource){}[0]
 }
 
+final class dev.whyoleg.cryptography.providers.base.algorithms/DssDerSignatureVerifier : dev.whyoleg.cryptography.operations/SignatureVerifier { // dev.whyoleg.cryptography.providers.base.algorithms/DssDerSignatureVerifier|null[0]
+    constructor <init>(dev.whyoleg.cryptography.operations/SignatureVerifier, kotlin/Int) // dev.whyoleg.cryptography.providers.base.algorithms/DssDerSignatureVerifier.<init>|<init>(dev.whyoleg.cryptography.operations.SignatureVerifier;kotlin.Int){}[0]
+
+    final fun createVerifyFunction(): dev.whyoleg.cryptography.operations/VerifyFunction // dev.whyoleg.cryptography.providers.base.algorithms/DssDerSignatureVerifier.createVerifyFunction|createVerifyFunction(){}[0]
+}
+
 final class dev.whyoleg.cryptography.providers.base.algorithms/DssRawSignatureGenerator : dev.whyoleg.cryptography.operations/SignatureGenerator { // dev.whyoleg.cryptography.providers.base.algorithms/DssRawSignatureGenerator|null[0]
     constructor <init>(dev.whyoleg.cryptography.operations/SignatureGenerator, kotlin/Int) // dev.whyoleg.cryptography.providers.base.algorithms/DssRawSignatureGenerator.<init>|<init>(dev.whyoleg.cryptography.operations.SignatureGenerator;kotlin.Int){}[0]
 
@@ -291,6 +297,7 @@ final val dev.whyoleg.cryptography.providers.base/EmptyByteArray // dev.whyoleg.
 final fun (kotlin/ByteArray).dev.whyoleg.cryptography.providers.base/ensureSizeExactly(kotlin/Int): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base/ensureSizeExactly|ensureSizeExactly@kotlin.ByteArray(kotlin.Int){}[0]
 final fun dev.whyoleg.cryptography.providers.base.algorithms/convertDssDerSignatureToRaw(kotlin/Int, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.algorithms/convertDssDerSignatureToRaw|convertDssDerSignatureToRaw(kotlin.Int;kotlin.ByteArray){}[0]
 final fun dev.whyoleg.cryptography.providers.base.algorithms/convertDssRawSignatureToDer(kotlin/Int, kotlin/ByteArray, kotlin/Int, kotlin/Int): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.algorithms/convertDssRawSignatureToDer|convertDssRawSignatureToDer(kotlin.Int;kotlin.ByteArray;kotlin.Int;kotlin.Int){}[0]
+final fun dev.whyoleg.cryptography.providers.base.algorithms/isDssDerSignatureWellFormed(kotlin/Int, kotlin/ByteArray, kotlin/Int, kotlin/Int): kotlin/Boolean // dev.whyoleg.cryptography.providers.base.algorithms/isDssDerSignatureWellFormed|isDssDerSignatureWellFormed(kotlin.Int;kotlin.ByteArray;kotlin.Int;kotlin.Int){}[0]
 final fun dev.whyoleg.cryptography.providers.base.materials/convertEcPrivateKeyFromPkcs8ToSec1(kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.materials/convertEcPrivateKeyFromPkcs8ToSec1|convertEcPrivateKeyFromPkcs8ToSec1(kotlin.ByteArray){}[0]
 final fun dev.whyoleg.cryptography.providers.base.materials/convertEcPrivateKeyFromSec1ToPkcs8(kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.materials/convertEcPrivateKeyFromSec1ToPkcs8|convertEcPrivateKeyFromSec1ToPkcs8(kotlin.ByteArray){}[0]
 final fun dev.whyoleg.cryptography.providers.base.materials/unwrapCurvePrivateKeyInfo(dev.whyoleg.cryptography.serialization.asn1/ObjectIdentifier, kotlin/ByteArray): kotlin/ByteArray // dev.whyoleg.cryptography.providers.base.materials/unwrapCurvePrivateKeyInfo|unwrapCurvePrivateKeyInfo(dev.whyoleg.cryptography.serialization.asn1.ObjectIdentifier;kotlin.ByteArray){}[0]
