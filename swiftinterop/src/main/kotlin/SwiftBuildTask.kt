@@ -64,7 +64,6 @@ abstract class SwiftBuildTask : DefaultTask() {
         val configuration = configuration.get()
 
         val buildDirectory = temporaryDir.resolve(".build")
-        val targetBuildDirectory = buildDirectory.resolve("$swiftTargetTriple/$configuration")
 
         val sdkPath = providers.exec {
             it.commandLine(
@@ -92,13 +91,14 @@ abstract class SwiftBuildTask : DefaultTask() {
         }
 
         fs.sync {
-            it.from(targetBuildDirectory.resolve("${swiftProduct}.build/include"))
+            val targetSuffix = if (swiftTargetTriple.sdk == SwiftSdk.macosx) "" else "-${swiftTargetTriple.sdk.sdk}"
+            it.from(buildDirectory.resolve("out/Intermediates.noindex/GeneratedModuleMaps$targetSuffix"))
             it.into(includeDirectory)
             it.include("*.h")
         }
 
         fs.sync {
-            it.from(targetBuildDirectory)
+            it.from(buildDirectory.resolve(configuration))
             it.into(libsDirectory)
             it.include("*.a")
         }
