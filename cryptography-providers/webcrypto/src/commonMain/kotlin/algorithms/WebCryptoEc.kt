@@ -7,6 +7,7 @@ package dev.whyoleg.cryptography.providers.webcrypto.algorithms
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.base.materials.*
 import dev.whyoleg.cryptography.providers.webcrypto.internal.*
 import dev.whyoleg.cryptography.providers.webcrypto.materials.*
@@ -25,20 +26,26 @@ internal sealed class WebCryptoEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateK
         keyPairWrapper(publicKeyWrapper.wrap(it.publicKey), privateKeyWrapper.wrap(it.privateKey))
     }
 
+    // WebCrypto supports only NIST curves
+    private fun resolveCurve(curve: EC.Curve): String = when (curve) {
+        EC.Curve.P256, EC.Curve.P384, EC.Curve.P521 -> curve.name
+        else                                        -> unsupportedParameter("curve", curve.name)
+    }
+
     final override fun publicKeyDecoder(curve: EC.Curve): Decoder<EC.PublicKey.Format, PublicK> = WebCryptoKeyDecoder(
-        algorithm = EcKeyAlgorithm(algorithmName, curve.name),
+        algorithm = EcKeyAlgorithm(algorithmName, resolveCurve(curve)),
         keyProcessor = EcPublicKeyProcessor,
         keyWrapper = publicKeyWrapper,
     )
 
     final override fun privateKeyDecoder(curve: EC.Curve): Decoder<EC.PrivateKey.Format, PrivateK> = WebCryptoKeyDecoder(
-        algorithm = EcKeyAlgorithm(algorithmName, curve.name),
+        algorithm = EcKeyAlgorithm(algorithmName, resolveCurve(curve)),
         keyProcessor = EcPrivateKeyProcessor,
         keyWrapper = privateKeyWrapper,
     )
 
     final override fun keyPairGenerator(curve: EC.Curve): KeyGenerator<KP> = WebCryptoAsymmetricKeyGenerator(
-        algorithm = EcKeyAlgorithm(algorithmName, curve.name),
+        algorithm = EcKeyAlgorithm(algorithmName, resolveCurve(curve)),
         keyUsages = keyPairUsages,
         keyPairWrapper = keyPairWrapper
     )

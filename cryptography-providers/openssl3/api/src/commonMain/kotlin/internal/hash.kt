@@ -6,6 +6,7 @@ package dev.whyoleg.cryptography.providers.openssl3.internal
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
+import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.openssl3.internal.cinterop.*
 
 
@@ -19,7 +20,7 @@ internal fun hashAlgorithmName(digest: CryptographyAlgorithmId<Digest>): String 
     SHA3_256 -> "SHA3-256"
     SHA3_384 -> "SHA3-384"
     SHA3_512 -> "SHA3-512"
-    else -> throw IllegalStateException("Unsupported hash algorithm: $digest")
+    else -> unsupportedParameter("hash algorithm", digest.name)
 }
 
 internal fun digestSize(hashAlgorithm: String): Int {
