@@ -4,6 +4,7 @@
 
 import ckbuild.*
 import ckbuild.docs.*
+import ckbuild.providertests.*
 
 plugins {
     id("ckbuild.dokka")
@@ -21,6 +22,8 @@ tasks.dokkaGeneratePublicationHtml {
 }
 
 val generateAlgorithmTables = tasks.register<GenerateAlgorithmTablesTask>("generateAlgorithmTables") {
+    mustRunAfter(tasks.named("updateTestLimitations"))
+    limitationsFile.set(testLimitationsFile())
     outputDirectory.set(file("docs/snippets/operations"))
 }
 

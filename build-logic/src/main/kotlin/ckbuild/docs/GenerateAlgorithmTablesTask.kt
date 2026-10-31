@@ -5,11 +5,16 @@
 package ckbuild.docs
 
 import ckbuild.docs.ProviderSupport.*
+import ckbuild.providertests.*
 import org.gradle.api.*
 import org.gradle.api.file.*
 import org.gradle.api.tasks.*
 
 abstract class GenerateAlgorithmTablesTask : DefaultTask() {
+
+    // `limitations.json`, see `UpdateTestLimitationsTask`
+    @get:InputFile
+    abstract val limitationsFile: RegularFileProperty
 
     @get:OutputDirectory
     abstract val outputDirectory: DirectoryProperty
@@ -20,11 +25,18 @@ abstract class GenerateAlgorithmTablesTask : DefaultTask() {
         outputDir.deleteRecursively()
         outputDir.mkdirs()
 
+        val limitations = readTestLimitations(limitationsFile.get().asFile)
+        limitations.checkCoverage()
+        val support = algorithms.values.flatten().associateWith { algorithm ->
+            Provider.entries.associateWith { provider -> limitations.support(algorithm, provider) }
+        }
+
         for (operation in Operation.entries) {
             outputDir.resolve(operation.snippetFile).writeText(
                 buildTable(
                     table = listOf(operation to algorithms.getValue(operation)),
-                    renderOperationHeaders = false
+                    renderOperationHeaders = false,
+                    support = { algorithm, provider -> support.getValue(algorithm).getValue(provider) },
                 )
             )
         }
@@ -32,7 +44,8 @@ abstract class GenerateAlgorithmTablesTask : DefaultTask() {
         outputDir.resolve("all-by-operation.md").writeText(
             buildTable(
                 table = algorithms.toList().sortedBy { it.first/*operation*/ },
-                renderOperationHeaders = true
+                renderOperationHeaders = true,
+                support = { algorithm, provider -> support.getValue(algorithm).getValue(provider) },
             )
         )
     }
@@ -83,23 +96,22 @@ private enum class Operation(
     KeyDerivation("Key Derivation", "primitives/operations/key-derivation.md", "key-derivation.md"),
 }
 
-private enum class Provider(val displayName: String) {
-    JDK("JDK"),
-    WebCrypto("WebCrypto"),
-    Apple("Apple"),
-    CryptoKit("CryptoKit"),
-    OpenSSL3("OpenSSL3"),
+// testProviders: providers of environments in `limitations.json`
+private enum class Provider(val displayName: String, vararg val testProviders: String) {
+    JDK("JDK", "jdk.default", "jdk.bc"),
+    WebCrypto("WebCrypto", "webcrypto"),
+    Apple("Apple", "apple"),
+
+    //    CryptoKit("CryptoKit", "cryptokit"), TODO: enable it back later on
+    OpenSSL3("OpenSSL3", "openssl3-3.0", "openssl3-3.x"),
 }
 
 private sealed class ProviderSupport {
     data object Supported : ProviderSupport()
-    data class Limited(val notes: List<String>) : ProviderSupport() {
-        constructor(vararg notes: String) : this(notes.toList())
 
-        init {
-            require(notes.isNotEmpty()) { "Limited notes cannot be empty" }
-        }
-    }
+    // `unsupported`: reasons why the algorithm is not supported in some environments, f.e. on older JDK
+    // `limitations`: limited operations, f.e. some curves or key formats
+    data class Limited(val unsupported: List<String>, val limitations: List<String>) : ProviderSupport()
 
     data object Unsupported : ProviderSupport()
 }
@@ -113,11 +125,10 @@ private data class Algorithm(
     val operation: Operation,
     val status: Status? = null,
     val apiPath: String,
-    val providers: Map<Provider, ProviderSupport>,
+    // test suite in `limitations.json`, from which the support of providers is derived
+    val suite: String = id,
 ) {
     init {
-        val missing = Provider.entries.toSet() - providers.keys
-        require(missing.isEmpty()) { "Algorithm '$id' is missing provider entries: $missing" }
         require(apiPath.isNotBlank()) { "Algorithm '$id' has an empty API path" }
     }
 }
@@ -129,113 +140,50 @@ private val algorithms = listOf(
         operation = Operation.AEAD,
         status = Status.Modern,
         apiPath = "-a-e-s/-g-c-m",
-        providers = mapOf(
-            Provider.JDK to Supported,
-            Provider.WebCrypto to Limited("192-bit keys may not be supported in some browsers"),
-            Provider.Apple to Unsupported,
-            Provider.CryptoKit to Limited("128-bit (default) tag only"),
-            Provider.OpenSSL3 to Supported,
-        ),
     ),
     Algorithm(
         id = "AES-CCM",
         operation = Operation.AEAD,
         apiPath = "-a-e-s/-c-c-m",
-        providers = mapOf(
-            Provider.JDK to Limited("Requires BouncyCastle"),
-            Provider.WebCrypto to Unsupported,
-            Provider.Apple to Unsupported,
-            Provider.CryptoKit to Unsupported,
-            Provider.OpenSSL3 to Supported,
-        ),
     ),
     Algorithm(
         id = "AES-CBC",
         operation = Operation.SymmetricEncryption,
         apiPath = "-a-e-s/-c-b-c",
-        providers = mapOf(
-            Provider.JDK to Supported,
-            Provider.WebCrypto to Limited("Only padding=true supported", "192-bit keys may not be supported in some browsers"),
-            Provider.Apple to Supported,
-            Provider.CryptoKit to Unsupported,
-            Provider.OpenSSL3 to Supported,
-        ),
     ),
     Algorithm(
         id = "AES-CTR",
         operation = Operation.SymmetricEncryption,
         apiPath = "-a-e-s/-c-t-r",
-        providers = mapOf(
-            Provider.JDK to Supported,
-            Provider.WebCrypto to Limited("192-bit keys may not be supported in some browsers"),
-            Provider.Apple to Supported,
-            Provider.CryptoKit to Unsupported,
-            Provider.OpenSSL3 to Supported,
-        ),
     ),
     Algorithm(
         id = "AES-CMAC",
         operation = Operation.MAC,
         apiPath = "-a-e-s/-c-m-a-c",
-        providers = mapOf(
-            Provider.JDK to Limited("Requires BouncyCastle"),
-            Provider.WebCrypto to Unsupported,
-            Provider.Apple to Unsupported,
-            Provider.CryptoKit to Unsupported,
-            Provider.OpenSSL3 to Supported,
-        ),
     ),
     Algorithm(
         id = "AES-ECB",
         operation = Operation.SymmetricEncryption,
         status = Status.Legacy,
         apiPath = "-a-e-s/-e-c-b",
-        providers = mapOf(
-            Provider.JDK to Supported,
-            Provider.WebCrypto to Unsupported,
-            Provider.Apple to Supported,
-            Provider.CryptoKit to Unsupported,
-            Provider.OpenSSL3 to Supported,
-        ),
     ),
     Algorithm(
         id = "AES-OFB",
         operation = Operation.SymmetricEncryption,
         status = Status.Delicate,
         apiPath = "-a-e-s/-o-f-b",
-        providers = mapOf(
-            Provider.JDK to Supported,
-            Provider.WebCrypto to Unsupported,
-            Provider.Apple to Supported,
-            Provider.CryptoKit to Unsupported,
-            Provider.OpenSSL3 to Supported,
-        ),
     ),
     Algorithm(
         id = "AES-CFB",
         operation = Operation.SymmetricEncryption,
         status = Status.Delicate,
         apiPath = "-a-e-s/-c-f-b",
-        providers = mapOf(
-            Provider.JDK to Supported,
-            Provider.WebCrypto to Unsupported,
-            Provider.Apple to Supported,
-            Provider.CryptoKit to Unsupported,
-            Provider.OpenSSL3 to Supported,
-        ),
     ),
     Algorithm(
         id = "AES-CFB8",
         operation = Operation.SymmetricEncryption,
         status = Status.Delicate,
         apiPath = "-a-e-s/-c-f-b8",
-        providers = mapOf(
-            Provider.JDK to Supported,
-            Provider.WebCrypto to Unsupported,
-            Provider.Apple to Supported,
-            Provider.CryptoKit to Unsupported,
-            Provider.OpenSSL3 to Supported,
-        ),
     ),
 
     // ChaCha20
@@ -244,13 +192,6 @@ private val algorithms = listOf(
         operation = Operation.AEAD,
         status = Status.Modern,
         apiPath = "-cha-cha20-poly1305",
-        providers = mapOf(
-            Provider.JDK to Limited("Requires JDK 11+; use BouncyCastle on older JDK or Android"),
-            Provider.WebCrypto to Unsupported,
-            Provider.Apple to Unsupported,
-            Provider.CryptoKit to Supported,
-            Provider.OpenSSL3 to Supported,
-        ),
     ),
 
     // RSA
@@ -258,63 +199,30 @@ private val algorithms = listOf(
         id = "RSA-OAEP",
         operation = Operation.PublicKeyEncryption,
         apiPath = "-r-s-a/-o-a-e-p",
-        providers = mapOf(
-            Provider.JDK to Supported,
-            Provider.WebCrypto to Supported,
-            Provider.Apple to Supported,
-            Provider.CryptoKit to Unsupported,
-            Provider.OpenSSL3 to Supported,
-        ),
     ),
     Algorithm(
         id = "RSA-PKCS1",
+        suite = "RSA-PKCS1-V1.5-encryption",
         operation = Operation.PublicKeyEncryption,
         status = Status.Legacy,
         apiPath = "-r-s-a/-p-k-c-s1",
-        providers = mapOf(
-            Provider.JDK to Supported,
-            Provider.WebCrypto to Unsupported,
-            Provider.Apple to Supported,
-            Provider.CryptoKit to Unsupported,
-            Provider.OpenSSL3 to Supported,
-        ),
     ),
     Algorithm(
         id = "RSA-RAW",
         operation = Operation.PublicKeyEncryption,
         status = Status.Legacy,
         apiPath = "-r-s-a/-r-a-w",
-        providers = mapOf(
-            Provider.JDK to Supported,
-            Provider.WebCrypto to Unsupported,
-            Provider.Apple to Supported,
-            Provider.CryptoKit to Unsupported,
-            Provider.OpenSSL3 to Supported,
-        ),
     ),
     Algorithm(
         id = "RSA-PSS",
         operation = Operation.Signing,
         apiPath = "-r-s-a/-p-s-s",
-        providers = mapOf(
-            Provider.JDK to Limited("Not available on Android; use BouncyCastle"),
-            Provider.WebCrypto to Supported,
-            Provider.Apple to Supported,
-            Provider.CryptoKit to Unsupported,
-            Provider.OpenSSL3 to Supported,
-        ),
     ),
     Algorithm(
         id = "RSA-PKCS1",
+        suite = "RSA-PKCS1-V1.5-signature",
         operation = Operation.Signing,
         apiPath = "-r-s-a/-p-k-c-s1",
-        providers = mapOf(
-            Provider.JDK to Supported,
-            Provider.WebCrypto to Supported,
-            Provider.Apple to Supported,
-            Provider.CryptoKit to Unsupported,
-            Provider.OpenSSL3 to Supported,
-        ),
     ),
 
     // EC
@@ -323,26 +231,12 @@ private val algorithms = listOf(
         operation = Operation.Signing,
         status = Status.Modern,
         apiPath = "-e-c-d-s-a",
-        providers = mapOf(
-            Provider.JDK to Supported,
-            Provider.WebCrypto to Limited("Doesn't support working with pre-hashed data"),
-            Provider.Apple to Supported,
-            Provider.CryptoKit to Limited("Doesn't support working with pre-hashed data"),
-            Provider.OpenSSL3 to Supported,
-        ),
     ),
     Algorithm(
         id = "ECDH",
         operation = Operation.KeyAgreement,
         status = Status.Modern,
         apiPath = "-e-c-d-h",
-        providers = mapOf(
-            Provider.JDK to Supported,
-            Provider.WebCrypto to Supported,
-            Provider.Apple to Unsupported,
-            Provider.CryptoKit to Supported,
-            Provider.OpenSSL3 to Supported,
-        ),
     ),
 
     // EdDSA & XDH
@@ -351,26 +245,12 @@ private val algorithms = listOf(
         operation = Operation.Signing,
         status = Status.Modern,
         apiPath = "-ed-d-s-a",
-        providers = mapOf(
-            Provider.JDK to Limited("Requires JDK 15+; use BouncyCastle on older JDK or Android"),
-            Provider.WebCrypto to Limited("Ed25519 only; browser support varies"),
-            Provider.Apple to Unsupported,
-            Provider.CryptoKit to Limited("Ed25519 only"),
-            Provider.OpenSSL3 to Supported,
-        ),
     ),
     Algorithm(
         id = "XDH",
         operation = Operation.KeyAgreement,
         status = Status.Modern,
         apiPath = "-x-d-h",
-        providers = mapOf(
-            Provider.JDK to Limited("Requires JDK 11+; use BouncyCastle on older JDK or Android"),
-            Provider.WebCrypto to Limited("X25519 only; browser support varies"),
-            Provider.Apple to Unsupported,
-            Provider.CryptoKit to Limited("X25519 only"),
-            Provider.OpenSSL3 to Supported,
-        ),
     ),
 
     // DH & DSA
@@ -378,100 +258,59 @@ private val algorithms = listOf(
         id = "DH",
         operation = Operation.KeyAgreement,
         apiPath = "-d-h",
-        providers = mapOf(
-            Provider.JDK to Supported,
-            Provider.WebCrypto to Unsupported,
-            Provider.Apple to Unsupported,
-            Provider.CryptoKit to Unsupported,
-            Provider.OpenSSL3 to Supported,
-        ),
     ),
     Algorithm(
         id = "DSA",
         operation = Operation.Signing,
         apiPath = "-d-s-a",
-        providers = mapOf(
-            Provider.JDK to Supported,
-            Provider.WebCrypto to Unsupported,
-            Provider.Apple to Unsupported,
-            Provider.CryptoKit to Unsupported,
-            Provider.OpenSSL3 to Supported,
-        ),
     ),
 
     // SHA
     Algorithm(
-        id = "SHA224",
+        id = "SHA-224",
         operation = Operation.Hashing,
         apiPath = "-s-h-a224",
-        providers = mapOf(
-            Provider.JDK to Supported,
-            Provider.WebCrypto to Unsupported,
-            Provider.Apple to Supported,
-            Provider.CryptoKit to Unsupported,
-            Provider.OpenSSL3 to Supported,
-        ),
     ),
     Algorithm(
-        id = "SHA256",
+        id = "SHA-256",
         operation = Operation.Hashing,
         apiPath = "-s-h-a256",
-        providers = mapOf(
-            Provider.JDK to Supported,
-            Provider.WebCrypto to Supported,
-            Provider.Apple to Supported,
-            Provider.CryptoKit to Supported,
-            Provider.OpenSSL3 to Supported,
-        ),
     ),
     Algorithm(
-        id = "SHA384",
+        id = "SHA-384",
         operation = Operation.Hashing,
         apiPath = "-s-h-a384",
-        providers = mapOf(
-            Provider.JDK to Supported,
-            Provider.WebCrypto to Supported,
-            Provider.Apple to Supported,
-            Provider.CryptoKit to Supported,
-            Provider.OpenSSL3 to Supported,
-        ),
     ),
     Algorithm(
-        id = "SHA512",
+        id = "SHA-512",
         operation = Operation.Hashing,
         apiPath = "-s-h-a512",
-        providers = mapOf(
-            Provider.JDK to Supported,
-            Provider.WebCrypto to Supported,
-            Provider.Apple to Supported,
-            Provider.CryptoKit to Supported,
-            Provider.OpenSSL3 to Supported,
-        ),
     ),
     Algorithm(
-        id = "SHA3",
+        id = "SHA3-224",
+        operation = Operation.Hashing,
+        apiPath = "-s-h-a3_224",
+    ),
+    Algorithm(
+        id = "SHA3-256",
         operation = Operation.Hashing,
         apiPath = "-s-h-a3_256",
-        providers = mapOf(
-            Provider.JDK to Supported,
-            Provider.WebCrypto to Unsupported,
-            Provider.Apple to Unsupported,
-            Provider.CryptoKit to Unsupported,
-            Provider.OpenSSL3 to Supported,
-        ),
     ),
     Algorithm(
-        id = "SHA1",
+        id = "SHA3-384",
+        operation = Operation.Hashing,
+        apiPath = "-s-h-a3_384",
+    ),
+    Algorithm(
+        id = "SHA3-512",
+        operation = Operation.Hashing,
+        apiPath = "-s-h-a3_512",
+    ),
+    Algorithm(
+        id = "SHA-1",
         operation = Operation.Hashing,
         status = Status.Legacy,
         apiPath = "-s-h-a1",
-        providers = mapOf(
-            Provider.JDK to Supported,
-            Provider.WebCrypto to Supported,
-            Provider.Apple to Supported,
-            Provider.CryptoKit to Supported,
-            Provider.OpenSSL3 to Supported,
-        ),
     ),
 
     // Legacy digests
@@ -480,26 +319,12 @@ private val algorithms = listOf(
         operation = Operation.Hashing,
         status = Status.Legacy,
         apiPath = "-m-d5",
-        providers = mapOf(
-            Provider.JDK to Supported,
-            Provider.WebCrypto to Unsupported,
-            Provider.Apple to Supported,
-            Provider.CryptoKit to Supported,
-            Provider.OpenSSL3 to Supported,
-        ),
     ),
     Algorithm(
-        id = "RIPEMD160",
+        id = "RIPEMD-160",
         operation = Operation.Hashing,
         status = Status.Delicate,
         apiPath = "-r-i-p-e-m-d160",
-        providers = mapOf(
-            Provider.JDK to Supported,
-            Provider.WebCrypto to Unsupported,
-            Provider.Apple to Unsupported,
-            Provider.CryptoKit to Unsupported,
-            Provider.OpenSSL3 to Supported,
-        ),
     ),
 
     // MAC
@@ -507,13 +332,6 @@ private val algorithms = listOf(
         id = "HMAC",
         operation = Operation.MAC,
         apiPath = "-h-m-a-c",
-        providers = mapOf(
-            Provider.JDK to Supported,
-            Provider.WebCrypto to Supported,
-            Provider.Apple to Supported,
-            Provider.CryptoKit to Supported,
-            Provider.OpenSSL3 to Supported,
-        ),
     ),
 
     // KDF
@@ -521,27 +339,55 @@ private val algorithms = listOf(
         id = "PBKDF2",
         operation = Operation.KeyDerivation,
         apiPath = "-p-b-k-d-f2",
-        providers = mapOf(
-            Provider.JDK to Supported,
-            Provider.WebCrypto to Supported,
-            Provider.Apple to Supported,
-            Provider.CryptoKit to Unsupported,
-            Provider.OpenSSL3 to Supported,
-        ),
     ),
     Algorithm(
         id = "HKDF",
         operation = Operation.KeyDerivation,
         apiPath = "-h-k-d-f",
-        providers = mapOf(
-            Provider.JDK to Supported,
-            Provider.WebCrypto to Supported,
-            Provider.Apple to Supported,
-            Provider.CryptoKit to Supported,
-            Provider.OpenSSL3 to Supported,
-        ),
     ),
 ).groupBy(Algorithm::operation)
+
+// endregion
+
+// region Support
+
+// every tested suite is documented and every documented algorithm is tested by every provider
+private fun TestLimitations.checkCoverage() {
+    val unknownProviders =
+        environments.keys.map { it.substringBefore('/') }.toSet() - Provider.entries.flatMap { it.testProviders.toList() }.toSet()
+    if (unknownProviders.isNotEmpty()) throw GradleException("Providers are not mapped to docs: $unknownProviders")
+
+    val suites = environments.values.flatMapTo(mutableSetOf()) { it.keys }
+    val documentedSuites = algorithms.values.flatten().mapTo(mutableSetOf(), Algorithm::suite)
+    if (suites != documentedSuites) throw GradleException(
+        "Documented algorithms don't match tested suites: undocumented=${suites - documentedSuites}, untested=${documentedSuites - suites}"
+    )
+}
+
+private fun TestLimitations.environments(provider: Provider): List<String> = provider.testProviders.flatMap(::environments)
+
+// - Unsupported: the suite is unsupported in all environments of the provider
+// - Limited: reasons why the suite is unsupported in some environments,
+//   and descriptions of failing (or lenient) operations, except for those failing because of other unsupported suites (f.e. digests),
+//   which are shown in their rows
+// - Supported: otherwise
+private fun TestLimitations.support(algorithm: Algorithm, provider: Provider): ProviderSupport {
+    val results = environments(provider).mapNotNull { environment ->
+        environments.getValue(environment)[algorithm.suite]?.let { environment to it }
+    }
+    if (results.isEmpty()) throw GradleException("'${algorithm.suite}' is not tested for $provider")
+    if (results.all { (_, limitations) -> limitations.unsupported.isNotEmpty() }) return Unsupported
+
+    val unsupported = results.flatMap { (_, limitations) -> limitations.unsupported }.distinct().sorted()
+    val limitations = results.flatMap { (environment, limitations) ->
+        val dependencies = environments.getValue(environment).values.flatMapTo(mutableSetOf()) { it.unsupported }
+        limitations.limitations.filter { it.kind != "Skipped" && it.description !in dependencies }.map { it.description }
+    }.distinct().sorted()
+    return when {
+        unsupported.isEmpty() && limitations.isEmpty() -> Supported
+        else                                           -> Limited(unsupported, limitations)
+    }
+}
 
 // endregion
 
@@ -550,6 +396,7 @@ private val algorithms = listOf(
 private fun buildTable(
     table: List<Pair<Operation, List<Algorithm>>>,
     renderOperationHeaders: Boolean,
+    support: (Algorithm, Provider) -> ProviderSupport,
 ): String = buildString {
     require(table.isNotEmpty()) { "Table must have at least one row" }
 
@@ -557,7 +404,7 @@ private fun buildTable(
         appendLine("| $main | ${Provider.entries.joinToString(" | ", transform = providerValue)} |")
     }
 
-    val footnotes = collectFootnotes(table)
+    val footnotes = mutableListOf<Pair<String, String>>()
 
     appendRow("Algorithm") { it.displayName }
     appendRow("---") { "---" }
@@ -566,11 +413,13 @@ private fun buildTable(
         if (renderOperationHeaders) appendRow(linkToOperation(operation)) { "" }
         algorithms.forEach { algorithm ->
             appendRow(linkToAlgorithm(algorithm)) { provider ->
-                when (val support = algorithm.providers.getValue(provider)) {
+                when (val support = support(algorithm, provider)) {
                     is Supported   -> ":white_check_mark:"
-                    is Limited     -> ":white_check_mark: ${
-                        support.notes.map(footnotes::getValue).sorted().joinToString(separator = " ") { "[^$it]" }
-                    }"
+                    is Limited -> {
+                        val id = "${algorithm.suite}-${provider.name}".lowercase()
+                        footnotes += id to footnote(algorithm, provider, support)
+                        ":white_check_mark: [^$id]"
+                    }
                     is Unsupported -> ":x:"
                 }
             }
@@ -579,26 +428,19 @@ private fun buildTable(
     appendFootnotes(footnotes)
 }
 
-private fun collectFootnotes(table: List<Pair<Operation, List<Algorithm>>>): Map<String, Int> = buildMap {
-    for ((_, algorithms) in table) {
-        for (algorithm in algorithms) {
-            for ((_, support) in algorithm.providers) {
-                if (support is Limited) {
-                    for (note in support.notes) {
-                        getOrPut(note) { size + 1 }
-                    }
-                }
-            }
-        }
-    }
+// one footnote per cell, shown as a tooltip on hover; reasons why the algorithm is not supported in some environments are bold
+private fun footnote(algorithm: Algorithm, provider: Provider, support: Limited): String = buildString {
+    appendLine("${algorithm.id} limitations in ${provider.displayName}:")
+    appendLine()
+    support.unsupported.forEach { appendLine("    - **$it**") }
+    support.limitations.forEach { appendLine("    - $it") }
 }
 
-private fun StringBuilder.appendFootnotes(footnotes: Map<String, Int>) {
+private fun StringBuilder.appendFootnotes(footnotes: List<Pair<String, String>>) {
     if (footnotes.isEmpty()) return
     appendLine()
-    for ((note, idx) in footnotes) {
-        appendLine("[^$idx]: $note")
-        appendLine()
+    for ((id, content) in footnotes) {
+        appendLine("[^$id]: $content")
     }
 }
 
