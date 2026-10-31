@@ -6,7 +6,6 @@ import cksettings.*
 
 pluginManagement {
     includeBuild("../build-settings")
-    includeBuild("../testtool")
 }
 
 plugins {

@@ -9,7 +9,6 @@ pluginManagement {
     includeBuild("build-settings")
 
     // nested gradle plugins
-    includeBuild("testtool")
     includeBuild("swiftinterop")
 }
 
@@ -64,7 +63,6 @@ projects("cryptography-kotlin") {
     // providers
     folder("cryptography-providers", prefix = "cryptography-provider") {
         module("base", PUBLISHED_LIBRARY_WITHOUT_DOCS)
-        module("tests")
 
         module("jdk", PUBLISHED_LIBRARY_WITHOUT_DOCS) {
             module("android-tests")

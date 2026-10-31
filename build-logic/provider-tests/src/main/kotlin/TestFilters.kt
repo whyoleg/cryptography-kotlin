@@ -24,15 +24,9 @@ fun Project.applyProviderTestFilters() {
         when (providerTestsStep) {
             // generate and validate data, without validation of the whole test storage
             "generate" -> TestFilters(
-                androidTestRegex = "^((?!(AlgorithmTest#restore|CompatibilityTest#(generateStep|generateStressStep|validateStep))$).)*$",
+                androidTestRegex = "^((?!AlgorithmTest#restore$).)*$",
                 kotlinTestFilter = {
-                    setExcludePatterns(
-                        "*AlgorithmTest.restore",
-                        // old tests, while they are not migrated
-                        "*CompatibilityTest.generateStep",
-                        "*CompatibilityTest.generateStressStep",
-                        "*CompatibilityTest.validateStep",
-                    )
+                    setExcludePatterns("*AlgorithmTest.restore")
                 }
             )
             // validate data in the test storage, f.e. merged from other platforms

@@ -4,15 +4,11 @@
 
 plugins {
     id("ckbuild.multiplatform")
-    // old tests, while they are not migrated
-    id("testtool.server")
     id("ckbuild.provider-tests")
 }
 
 kotlin {
     sourceSets.commonTest.dependencies {
         implementation(project(":cryptography-tests"))
-        // old tests, while they are not migrated
-        implementation(project(":cryptography-provider-tests"))
     }
 }

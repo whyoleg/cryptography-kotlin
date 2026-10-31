@@ -6,8 +6,8 @@ Agent-specific guidance for working with this repository. For full project docum
 
 - **Build all**: `just build`
 - **Build module**: `just build core` or `just build provider-jdk`
-- **Test JDK**: `just test-provider-jdk`
-- **Test with filter**: `just test-provider-jdk "*AesGcm*"`
+- **Test JDK**: `just test-provider jdk`
+- **Test an algorithm**: `just test-provider jdk aes-gcm`
 - **All commands**: `just --list` or see [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## Decision-Making Priorities
@@ -24,7 +24,8 @@ When implementing features, prioritize in this order:
 1. **Explore** - Understand existing code, look at similar algorithms/APIs
 2. **Plan** - Design the approach before implementing
 3. **Implement** - Follow existing patterns
-4. **Test** - All test types required for new algorithms (default, compatibility, testvectors)
+4. **Test** - New algorithms require a test suite in `cryptography-tests` (random data, test vectors, limitations) and updated
+   `limitations.json`
 5. **Document** - Update `docs/` if user-facing
 6. **Do not commit** - Leave commits to the user
 
