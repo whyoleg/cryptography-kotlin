@@ -6,6 +6,7 @@ package dev.whyoleg.cryptography.providers.jdk
 
 import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
+import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.random.*
 import java.util.concurrent.*
 
@@ -99,5 +100,5 @@ internal fun CryptographyAlgorithmId<Digest>.hashAlgorithmName(): String = when 
     SHA3_256 -> "SHA3-256"
     SHA3_384 -> "SHA3-384"
     SHA3_512 -> "SHA3-512"
-    else -> throw IllegalStateException("Unsupported hash algorithm: $this")
+    else -> unsupportedParameter("hash algorithm", name)
 }

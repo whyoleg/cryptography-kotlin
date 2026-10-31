@@ -11,6 +11,7 @@ import dev.whyoleg.cryptography.operations.*
 import dev.whyoleg.cryptography.providers.jdk.*
 import dev.whyoleg.cryptography.providers.jdk.operations.*
 import java.security.spec.*
+import java.util.concurrent.*
 
 internal class JdkRsaPss(
     state: JdkCryptographyState,
@@ -20,10 +21,20 @@ internal class JdkRsaPss(
         val _ = state.signature("RSASSA-PSS")
     }
 
-    override val wrapPublicKey: (JPublicKey, CryptographyAlgorithmId<Digest>) -> RSA.PSS.PublicKey = ::RsaPssPublicKey
-    override val wrapPrivateKey: (JPrivateKey, CryptographyAlgorithmId<Digest>, RSA.PSS.PublicKey?) -> RSA.PSS.PrivateKey =
+    override val wrapPublicKey: (JPublicKey, JdkRsaDigest) -> RSA.PSS.PublicKey = ::RsaPssPublicKey
+    override val wrapPrivateKey: (JPrivateKey, JdkRsaDigest, RSA.PSS.PublicKey?) -> RSA.PSS.PrivateKey =
         ::RsaPssPrivateKey
     override val wrapKeyPair: (RSA.PSS.PublicKey, RSA.PSS.PrivateKey) -> RSA.PSS.KeyPair = ::RsaPssKeyPair
+
+    private val digests = ConcurrentHashMap<CryptographyAlgorithmId<Digest>, JdkRsaDigest>()
+
+    // PSS uses `Signature` configured with the digest, the salt size depends on the key, so it's resolved only on first use
+    override fun resolveDigest(digest: CryptographyAlgorithmId<Digest>): JdkRsaDigest = digests.getOrPut(digest) {
+        val name = rsaHashAlgorithmName(digest)
+        val digestSize = state.messageDigest(name).use { it.digestLength }
+        state.signature("RSASSA-PSS").use { it.setParameter(pssParameters(name, digestSize)) }
+        JdkRsaDigest(digest, name)
+    }
 
     private class RsaPssKeyPair(
         override val publicKey: RSA.PSS.PublicKey,
@@ -32,36 +43,33 @@ internal class JdkRsaPss(
 
     private inner class RsaPssPublicKey(
         key: JPublicKey,
-        digest: CryptographyAlgorithmId<Digest>,
+        digest: JdkRsaDigest,
     ) : RSA.PSS.PublicKey, RsaPublicEncodableKey(key, digest) {
         override fun signatureVerifier(): SignatureVerifier {
-            val hashName = hashAlgorithmName(digest)
-            val digestSize = state.messageDigest(hashName).use { it.digestLength }
+            val digestSize = state.messageDigest(digest.name).use { it.digestLength }
             return signatureVerifier(digestSize.bytes)
         }
 
         override fun signatureVerifier(saltSize: BinarySize): SignatureVerifier {
-            val hashName = hashAlgorithmName(digest)
-            val parameters = PSSParameterSpec(hashName, "MGF1", MGF1ParameterSpec(hashName), saltSize.inBytes, 1)
-            return JdkSignatureVerifier(state, key, "RSASSA-PSS", parameters)
+            return JdkSignatureVerifier(state, key, "RSASSA-PSS", pssParameters(digest.name, saltSize.inBytes))
         }
     }
 
     private inner class RsaPssPrivateKey(
         key: JPrivateKey,
-        digest: CryptographyAlgorithmId<Digest>,
+        digest: JdkRsaDigest,
         publicKey: RSA.PSS.PublicKey?,
     ) : RSA.PSS.PrivateKey, RsaPrivateEncodableKey(key, digest, publicKey) {
         override fun signatureGenerator(): SignatureGenerator {
-            val hashName = hashAlgorithmName(digest)
-            val digestSize = state.messageDigest(hashName).use { it.digestLength }
+            val digestSize = state.messageDigest(digest.name).use { it.digestLength }
             return signatureGenerator(digestSize.bytes)
         }
 
         override fun signatureGenerator(saltSize: BinarySize): SignatureGenerator {
-            val hashName = hashAlgorithmName(digest)
-            val parameters = PSSParameterSpec(hashName, "MGF1", MGF1ParameterSpec(hashName), saltSize.inBytes, 1)
-            return JdkSignatureGenerator(state, key, "RSASSA-PSS", parameters)
+            return JdkSignatureGenerator(state, key, "RSASSA-PSS", pssParameters(digest.name, saltSize.inBytes))
         }
     }
 }
+
+private fun pssParameters(hashAlgorithmName: String, saltSize: Int): PSSParameterSpec =
+    PSSParameterSpec(hashAlgorithmName, "MGF1", MGF1ParameterSpec(hashAlgorithmName), saltSize, 1)

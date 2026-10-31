@@ -15,6 +15,7 @@ import dev.whyoleg.cryptography.serialization.pem.*
 import java.math.*
 import java.security.interfaces.*
 import java.security.spec.*
+import java.util.concurrent.*
 
 internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey<PublicK>, KP : EC.KeyPair<PublicK, PrivateK>>(
     protected val state: JdkCryptographyState,
@@ -27,11 +28,25 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey<Pub
         return state.algorithmParameters("EC").also { it.init(spec) }
     }
 
-    final override fun publicKeyDecoder(curve: EC.Curve): Decoder<EC.PublicKey.Format, PublicK> = EcPublicKeyDecoder(curve)
+    final override fun publicKeyDecoder(curve: EC.Curve): Decoder<EC.PublicKey.Format, PublicK> = EcPublicKeyDecoder(resolveCurve(curve))
 
-    final override fun privateKeyDecoder(curve: EC.Curve): Decoder<EC.PrivateKey.Format, PrivateK> = EcPrivateKeyDecoder(curve)
+    final override fun privateKeyDecoder(curve: EC.Curve): Decoder<EC.PrivateKey.Format, PrivateK> =
+        EcPrivateKeyDecoder(resolveCurve(curve))
 
-    final override fun keyPairGenerator(curve: EC.Curve): KeyGenerator<KP> = EcKeyPairGenerator(curve)
+    final override fun keyPairGenerator(curve: EC.Curve): KeyGenerator<KP> = EcKeyPairGenerator(resolveCurve(curve))
+
+    private val curves = ConcurrentHashMap<EC.Curve, JdkEcCurve>()
+
+    // known curve parameters are not enough (f.e. secp256k1 parameters are known since JDK 16, but keys can't be generated or used),
+    // so the curve is resolved by initializing the key pair generator
+    private fun resolveCurve(curve: EC.Curve): JdkEcCurve = curves.getOrPut(curve) {
+        val spec = ECGenParameterSpec(curve.jdkName)
+        state.keyPairGenerator("EC").use { it.initialize(spec, state.secureRandom) }
+        JdkEcCurve(curve, spec, algorithmParameters(spec))
+    }
+
+    // `spec` is used for key generation, `parameters` - for key decoding
+    private class JdkEcCurve(val curve: EC.Curve, val spec: ECGenParameterSpec, val parameters: JAlgorithmParameters)
 
     private val EC.Curve.jdkName: String
         get() = when (this) {
@@ -42,23 +57,24 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey<Pub
         }
 
     private inner class EcKeyPairGenerator(
-        private val curve: EC.Curve,
+        private val curve: JdkEcCurve,
     ) : JdkKeyPairGenerator<KP>(state, "EC") {
         override fun JKeyPairGenerator.init() {
-            initialize(ECGenParameterSpec(curve.jdkName), state.secureRandom)
+            initialize(curve.spec, state.secureRandom)
         }
 
         override fun JKeyPair.convert(): KP {
-            val publicKey = wrapPublicKey(public, curve)
-            val privateKey = wrapPrivateKey(private, curve, publicKey)
+            val publicKey = wrapPublicKey(public, curve.curve)
+            val privateKey = wrapPrivateKey(private, curve.curve, publicKey)
             return wrapKeyPair(publicKey, privateKey)
         }
     }
 
     private inner class EcPublicKeyDecoder(
-        private val curve: EC.Curve,
+        private val ecCurve: JdkEcCurve,
     ) : JdkPublicKeyDecoder<EC.PublicKey.Format, PublicK>(state, "EC") {
-        private val parameters = algorithmParameters(ECGenParameterSpec(curve.jdkName))
+        private val curve: EC.Curve get() = ecCurve.curve
+        private val parameters: JAlgorithmParameters get() = ecCurve.parameters
         private val curveName: String get() = parameters.curveName()
 
         fun fromPrivateKey(privateKey: ECPrivateKey): PublicK = decode(
@@ -102,9 +118,10 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey<Pub
     }
 
     private inner class EcPrivateKeyDecoder(
-        private val curve: EC.Curve,
+        private val ecCurve: JdkEcCurve,
     ) : JdkPrivateKeyDecoder<EC.PrivateKey.Format, PrivateK>(state, "EC") {
-        private val parameters = algorithmParameters(ECGenParameterSpec(curve.jdkName))
+        private val curve: EC.Curve get() = ecCurve.curve
+        private val parameters: JAlgorithmParameters get() = ecCurve.parameters
         private val curveName: String get() = parameters.curveName()
 
         override fun JPrivateKey.convert(): PrivateK = create(this, null)
@@ -128,7 +145,7 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey<Pub
             val privateKey = decodeRaw(
                 ECPrivateKeySpec(BigInteger(1, ecRawKey.privateKey), parameters)
             )
-            val publicKey = EcPublicKeyDecoder(curve).decodeFromRaw(ecRawKey.publicKey)
+            val publicKey = EcPublicKeyDecoder(ecCurve).decodeFromRaw(ecRawKey.publicKey)
             return wrapPrivateKey(privateKey, curve, publicKey)
         }
 
@@ -136,7 +153,7 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey<Pub
             val privateKey = decodeFromDerRaw(input)
             return create(
                 privateKey = privateKey,
-                publicKey = EcPublicKeyDecoder(curve).fromEncodedPrivateKey(input)
+                publicKey = EcPublicKeyDecoder(ecCurve).fromEncodedPrivateKey(input)
             )
         }
 
@@ -211,7 +228,7 @@ internal sealed class JdkEc<PublicK : EC.PublicKey, PrivateK : EC.PrivateKey<Pub
         override fun getPublicKeyBlocking(): PublicK {
             if (publicKey == null) {
                 val _ = key as ECPrivateKey
-                publicKey = EcPublicKeyDecoder(curve).fromPrivateKey(key)
+                publicKey = EcPublicKeyDecoder(resolveCurve(curve)).fromPrivateKey(key)
             }
             return publicKey!!
         }

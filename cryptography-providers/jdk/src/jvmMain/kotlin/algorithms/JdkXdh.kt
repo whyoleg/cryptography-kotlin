@@ -25,6 +25,7 @@ internal class JdkXdh(private val state: JdkCryptographyState) : XDH {
             XDH.Curve.X448   -> X448AlgorithmIdentifier
         }
 
+    // curves are resolved by JCA objects named after them, which are created by decoders and generators
     override fun publicKeyDecoder(curve: XDH.Curve): Decoder<XDH.PublicKey.Format, XDH.PublicKey> = PublicKeyDecoder(curve)
 
     override fun privateKeyDecoder(curve: XDH.Curve): Decoder<XDH.PrivateKey.Format, XDH.PrivateKey> = PrivateKeyDecoder(curve)

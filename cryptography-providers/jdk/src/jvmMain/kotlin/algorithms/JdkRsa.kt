@@ -9,6 +9,7 @@ import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.bigint.*
 import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.base.materials.*
 import dev.whyoleg.cryptography.providers.jdk.*
 import dev.whyoleg.cryptography.providers.jdk.materials.*
@@ -22,12 +23,15 @@ import java.security.spec.*
 internal sealed class JdkRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey<PublicK>, KP : RSA.KeyPair<PublicK, PrivateK>>(
     protected val state: JdkCryptographyState,
 ) : RSA<PublicK, PrivateK, KP> {
-    protected abstract val wrapPublicKey: (JPublicKey, CryptographyAlgorithmId<Digest>) -> PublicK
-    protected abstract val wrapPrivateKey: (JPrivateKey, CryptographyAlgorithmId<Digest>, PublicK?) -> PrivateK
+    protected abstract val wrapPublicKey: (JPublicKey, JdkRsaDigest) -> PublicK
+    protected abstract val wrapPrivateKey: (JPrivateKey, JdkRsaDigest, PublicK?) -> PrivateK
     protected abstract val wrapKeyPair: (PublicK, PrivateK) -> KP
 
+    // resolves the digest for the JCA objects used by the RSA variant, fails if the digest is not supported
+    protected abstract fun resolveDigest(digest: CryptographyAlgorithmId<Digest>): JdkRsaDigest
+
     //rsa JDK uses slightly different names for hash algorithms
-    protected open fun hashAlgorithmName(digest: CryptographyAlgorithmId<Digest>): String = when (digest) {
+    protected fun rsaHashAlgorithmName(digest: CryptographyAlgorithmId<Digest>): String = when (digest) {
         SHA1     -> "SHA-1"
         SHA224   -> "SHA-224"
         SHA256   -> "SHA-256"
@@ -37,15 +41,15 @@ internal sealed class JdkRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey<
         SHA3_256 -> "SHA3-256"
         SHA3_384 -> "SHA3-384"
         SHA3_512 -> "SHA3-512"
-        else -> throw IllegalStateException("Unsupported hash algorithm: $digest")
+        else -> unsupportedParameter("hash algorithm", digest.name)
     }
 
     final override fun privateKeyDecoder(digest: CryptographyAlgorithmId<Digest>): Decoder<RSA.PrivateKey.Format, PrivateK> {
-        return RsaPrivateKeyDecoder(digest)
+        return RsaPrivateKeyDecoder(resolveDigest(digest))
     }
 
     final override fun publicKeyDecoder(digest: CryptographyAlgorithmId<Digest>): Decoder<RSA.PublicKey.Format, PublicK> {
-        return RsaPublicKeyDecoder(digest)
+        return RsaPublicKeyDecoder(resolveDigest(digest))
     }
 
     final override fun keyPairGenerator(
@@ -57,11 +61,11 @@ internal sealed class JdkRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey<
             keySize.inBits,
             publicExponent.toJavaBigInteger(),
         )
-        return RsaKeyPairGenerator(rsaParameters, digest)
+        return RsaKeyPairGenerator(rsaParameters, resolveDigest(digest))
     }
 
     private inner class RsaPublicKeyDecoder(
-        private val digest: CryptographyAlgorithmId<Digest>,
+        private val digest: JdkRsaDigest,
     ) : JdkPublicKeyDecoder<RSA.PublicKey.Format, PublicK>(state, "RSA") {
         override fun JPublicKey.convert(): PublicK = wrapPublicKey(this, digest)
 
@@ -69,7 +73,7 @@ internal sealed class JdkRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey<
 
         override fun decodeFromByteArrayBlocking(format: RSA.PublicKey.Format, bytes: ByteArray): PublicK = when (format) {
             RSA.PublicKey.Format.JWK -> {
-                val components = JsonWebKeys.decodeRsaPublicKey(this@JdkRsa.id, digest, bytes)
+                val components = JsonWebKeys.decodeRsaPublicKey(this@JdkRsa.id, digest.id, bytes)
                 decode(RSAPublicKeySpec(BigInteger(1, components.n), BigInteger(1, components.e)))
             }
             else                     -> decodeFromDer(
@@ -88,13 +92,13 @@ internal sealed class JdkRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey<
     }
 
     private inner class RsaPrivateKeyDecoder(
-        private val digest: CryptographyAlgorithmId<Digest>,
+        private val digest: JdkRsaDigest,
     ) : JdkPrivateKeyDecoder<RSA.PrivateKey.Format, PrivateK>(state, "RSA") {
         override fun JPrivateKey.convert(): PrivateK = wrapPrivateKey(this, digest, null)
 
         override fun decodeFromByteArrayBlocking(format: RSA.PrivateKey.Format, bytes: ByteArray): PrivateK = when (format) {
             RSA.PrivateKey.Format.JWK -> {
-                val components = JsonWebKeys.decodeRsaPrivateKey(this@JdkRsa.id, digest, bytes)
+                val components = JsonWebKeys.decodeRsaPrivateKey(this@JdkRsa.id, digest.id, bytes)
                 val privateKey = decodeRaw(
                     RSAPrivateCrtKeySpec(
                         BigInteger(1, components.n),
@@ -127,7 +131,7 @@ internal sealed class JdkRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey<
 
     private inner class RsaKeyPairGenerator(
         private val keyGenParameters: RSAKeyGenParameterSpec,
-        private val digest: CryptographyAlgorithmId<Digest>,
+        private val digest: JdkRsaDigest,
     ) : JdkKeyPairGenerator<KP>(state, "RSA") {
         override fun JKeyPairGenerator.init() {
             initialize(keyGenParameters, state.secureRandom)
@@ -142,7 +146,7 @@ internal sealed class JdkRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey<
 
     protected abstract inner class RsaPublicEncodableKey(
         protected val key: JPublicKey,
-        protected val digest: CryptographyAlgorithmId<Digest>,
+        protected val digest: JdkRsaDigest,
     ) : JdkEncodableKey<RSA.PublicKey.Format>(key) {
 
         final override fun encodeToByteArrayBlocking(format: RSA.PublicKey.Format): ByteArray = when (format) {
@@ -150,7 +154,7 @@ internal sealed class JdkRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey<
                 val rsaKey = key as RSAPublicKey
                 JsonWebKeys.encodeRsaPublicKey(
                     algorithmId = this@JdkRsa.id,
-                    digest = digest,
+                    digest = digest.id,
                     n = rsaKey.modulus.toKotlinBigInt().magnitudeToByteArray(),
                     e = rsaKey.publicExponent.toKotlinBigInt().magnitudeToByteArray(),
                 )
@@ -167,7 +171,7 @@ internal sealed class JdkRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey<
 
     protected abstract inner class RsaPrivateEncodableKey(
         protected val key: JPrivateKey,
-        protected val digest: CryptographyAlgorithmId<Digest>,
+        protected val digest: JdkRsaDigest,
         private var publicKey: PublicK?,
     ) : JdkEncodableKey<RSA.PrivateKey.Format>(key), RSA.PrivateKey<PublicK> {
 
@@ -183,7 +187,7 @@ internal sealed class JdkRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey<
                 val rsaKey = key as RSAPrivateCrtKey
                 JsonWebKeys.encodeRsaPrivateKey(
                     algorithmId = this@JdkRsa.id,
-                    digest = digest,
+                    digest = digest.id,
                     n = rsaKey.modulus.toKotlinBigInt().magnitudeToByteArray(),
                     e = rsaKey.publicExponent.toKotlinBigInt().magnitudeToByteArray(),
                     d = rsaKey.privateExponent.toKotlinBigInt().magnitudeToByteArray(),
@@ -204,3 +208,6 @@ internal sealed class JdkRsa<PublicK : RSA.PublicKey, PrivateK : RSA.PrivateKey<
         }
     }
 }
+
+// `id` is used for encoding, `name` - by JCA objects of the RSA variant
+internal class JdkRsaDigest(val id: CryptographyAlgorithmId<Digest>, val name: String)

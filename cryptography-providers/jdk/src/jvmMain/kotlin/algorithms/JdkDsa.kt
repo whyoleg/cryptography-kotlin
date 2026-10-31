@@ -8,6 +8,7 @@ import dev.whyoleg.cryptography.*
 import dev.whyoleg.cryptography.algorithms.*
 import dev.whyoleg.cryptography.materials.*
 import dev.whyoleg.cryptography.operations.*
+import dev.whyoleg.cryptography.providers.base.*
 import dev.whyoleg.cryptography.providers.base.algorithms.*
 import dev.whyoleg.cryptography.providers.base.materials.*
 import dev.whyoleg.cryptography.providers.jdk.*
@@ -23,6 +24,13 @@ internal class JdkDsa(
 ) : DSA {
 
     override fun publicKeyDecoder(): Decoder<DSA.PublicKey.Format, DSA.PublicKey> = DsaPublicKeyDecoder()
+
+    // resolves the digest into the `Signature` algorithm name, fails if it's not supported
+    private fun resolveDigest(digest: CryptographyAlgorithmId<Digest>?): String {
+        val algorithm = digest.dsaSignatureAlgorithmName()
+        val _ = state.signature(algorithm)
+        return algorithm
+    }
 
     override fun privateKeyDecoder(): Decoder<DSA.PrivateKey.Format, DSA.PrivateKey> = DsaPrivateKeyDecoder()
 
@@ -81,6 +89,10 @@ internal class JdkDsa(
         private val primeSize: BinarySize,
         private val subprimeSize: BinarySize?,
     ) : JdkParametersGenerator<DSA.Parameters>(state, "DSA") {
+        init {
+            resolveSizes()
+        }
+
         override fun JAlgorithmParameterGenerator.init() {
             if (subprimeSize != null) {
                 // NOTE: DSAGenParameterSpec is not supported by BouncyCastle and Android
@@ -134,8 +146,7 @@ internal class JdkDsa(
             digest: CryptographyAlgorithmId<Digest>?,
             format: DSA.SignatureFormat,
         ): SignatureVerifier {
-            val algorithm = digest.dsaSignatureAlgorithmName()
-            val verifier = JdkSignatureVerifier(state, key, algorithm, null)
+            val verifier = JdkSignatureVerifier(state, key, resolveDigest(digest), null)
 
             return when (format) {
                 DSA.SignatureFormat.DER -> verifier
@@ -165,8 +176,7 @@ internal class JdkDsa(
             digest: CryptographyAlgorithmId<Digest>?,
             format: DSA.SignatureFormat,
         ): SignatureGenerator {
-            val algorithm = digest.dsaSignatureAlgorithmName()
-            val generator = JdkSignatureGenerator(state, key, algorithm, null)
+            val generator = JdkSignatureGenerator(state, key, resolveDigest(digest), null)
 
             return when (format) {
                 DSA.SignatureFormat.DER -> generator
@@ -193,7 +203,7 @@ private fun CryptographyAlgorithmId<Digest>?.dsaSignatureAlgorithmName(): String
     SHA3_256 -> "SHA3-256withDSA"
     SHA3_384 -> "SHA3-384withDSA"
     SHA3_512 -> "SHA3-512withDSA"
-    else     -> throw IllegalStateException("Unsupported hash algorithm for DSA: $this")
+    else -> unsupportedParameter("hash algorithm", name)
 }
 
 private fun BigInteger.byteSize(): Int = (bitLength() + 7) / 8

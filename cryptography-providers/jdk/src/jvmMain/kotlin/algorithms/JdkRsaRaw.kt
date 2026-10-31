@@ -17,10 +17,13 @@ import java.security.interfaces.*
 internal class JdkRsaRaw(
     state: JdkCryptographyState,
 ) : JdkRsa<RSA.RAW.PublicKey, RSA.RAW.PrivateKey, RSA.RAW.KeyPair>(state), RSA.RAW {
-    override val wrapPublicKey: (JPublicKey, CryptographyAlgorithmId<Digest>) -> RSA.RAW.PublicKey = ::RsaRawPublicKey
-    override val wrapPrivateKey: (JPrivateKey, CryptographyAlgorithmId<Digest>, RSA.RAW.PublicKey?) -> RSA.RAW.PrivateKey =
+    override val wrapPublicKey: (JPublicKey, JdkRsaDigest) -> RSA.RAW.PublicKey = ::RsaRawPublicKey
+    override val wrapPrivateKey: (JPrivateKey, JdkRsaDigest, RSA.RAW.PublicKey?) -> RSA.RAW.PrivateKey =
         ::RsaRawPrivateKey
     override val wrapKeyPair: (RSA.RAW.PublicKey, RSA.RAW.PrivateKey) -> RSA.RAW.KeyPair = ::RsaRawKeyPair
+
+    // RAW doesn't use the digest
+    override fun resolveDigest(digest: CryptographyAlgorithmId<Digest>): JdkRsaDigest = JdkRsaDigest(digest, digest.name)
 
     private class RsaRawKeyPair(
         override val publicKey: RSA.RAW.PublicKey,
@@ -29,14 +32,14 @@ internal class JdkRsaRaw(
 
     private inner class RsaRawPublicKey(
         key: JPublicKey,
-        digest: CryptographyAlgorithmId<Digest>,
+        digest: JdkRsaDigest,
     ) : RSA.RAW.PublicKey, RsaPublicEncodableKey(key, digest) {
         override fun encryptor(): Encryptor = RsaRawEncryptor(state, key)
     }
 
     private inner class RsaRawPrivateKey(
         key: JPrivateKey,
-        digest: CryptographyAlgorithmId<Digest>,
+        digest: JdkRsaDigest,
         publicKey: RSA.RAW.PublicKey?,
     ) : RSA.RAW.PrivateKey, RsaPrivateEncodableKey(key, digest, publicKey) {
         override fun decryptor(): Decryptor = RsaRawDecryptor(state, key)

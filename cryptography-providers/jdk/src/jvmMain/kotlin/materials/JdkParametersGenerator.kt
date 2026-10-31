@@ -17,6 +17,9 @@ internal abstract class JdkParametersGenerator<P>(
 
     protected abstract fun JAlgorithmParameters.convert(): P
 
+    // resolves sizes by initializing the generator without generation, fails if they are not supported
+    protected fun resolveSizes(): Unit = algorithmParameterGenerator.use { it.init() }
+
     final override fun generateParametersBlocking(): P = algorithmParameterGenerator.use {
         it.init()
         it.generateParameters()

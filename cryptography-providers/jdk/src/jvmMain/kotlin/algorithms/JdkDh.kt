@@ -138,6 +138,10 @@ internal class JdkDh(
         private val primeSize: BinarySize,
         private val privateValueSize: BinarySize?,
     ) : JdkParametersGenerator<DH.Parameters>(state, "DH") {
+        init {
+            resolveSizes()
+        }
+
         override fun JAlgorithmParameterGenerator.init() {
             if (privateValueSize != null) {
                 init(DHGenParameterSpec(primeSize.inBits, privateValueSize.inBits), state.secureRandom)

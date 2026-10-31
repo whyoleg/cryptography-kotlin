@@ -16,10 +16,17 @@ import javax.crypto.spec.*
 internal class JdkRsaOaep(
     state: JdkCryptographyState,
 ) : JdkRsa<RSA.OAEP.PublicKey, RSA.OAEP.PrivateKey, RSA.OAEP.KeyPair>(state), RSA.OAEP {
-    override val wrapPublicKey: (JPublicKey, CryptographyAlgorithmId<Digest>) -> RSA.OAEP.PublicKey = ::RsaOaepPublicKey
-    override val wrapPrivateKey: (JPrivateKey, CryptographyAlgorithmId<Digest>, RSA.OAEP.PublicKey?) -> RSA.OAEP.PrivateKey =
+    override val wrapPublicKey: (JPublicKey, JdkRsaDigest) -> RSA.OAEP.PublicKey = ::RsaOaepPublicKey
+    override val wrapPrivateKey: (JPrivateKey, JdkRsaDigest, RSA.OAEP.PublicKey?) -> RSA.OAEP.PrivateKey =
         ::RsaOaepPrivateKey
     override val wrapKeyPair: (RSA.OAEP.PublicKey, RSA.OAEP.PrivateKey) -> RSA.OAEP.KeyPair = ::RsaOaepKeyPair
+
+    // OAEP uses `MessageDigest` for both the OAEP and MGF1 digests
+    override fun resolveDigest(digest: CryptographyAlgorithmId<Digest>): JdkRsaDigest {
+        val name = rsaHashAlgorithmName(digest)
+        val _ = state.messageDigest(name)
+        return JdkRsaDigest(digest, name)
+    }
 
     private class RsaOaepKeyPair(
         override val publicKey: RSA.OAEP.PublicKey,
@@ -28,17 +35,17 @@ internal class JdkRsaOaep(
 
     private inner class RsaOaepPublicKey(
         key: JPublicKey,
-        digest: CryptographyAlgorithmId<Digest>,
+        digest: JdkRsaDigest,
     ) : RSA.OAEP.PublicKey, RsaPublicEncodableKey(key, digest) {
-        override fun encryptor(): AuthenticatedEncryptor = RsaOaepEncryptor(state, key, hashAlgorithmName(digest))
+        override fun encryptor(): AuthenticatedEncryptor = RsaOaepEncryptor(state, key, digest.name)
     }
 
     private inner class RsaOaepPrivateKey(
         key: JPrivateKey,
-        digest: CryptographyAlgorithmId<Digest>,
+        digest: JdkRsaDigest,
         publicKey: RSA.OAEP.PublicKey?,
     ) : RSA.OAEP.PrivateKey, RsaPrivateEncodableKey(key, digest, publicKey) {
-        override fun decryptor(): AuthenticatedDecryptor = RsaOaepDecryptor(state, key, hashAlgorithmName(digest))
+        override fun decryptor(): AuthenticatedDecryptor = RsaOaepDecryptor(state, key, digest.name)
     }
 }
 

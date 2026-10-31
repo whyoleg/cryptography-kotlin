@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright (c) 2024-2026 Oleg Yukhnevich. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package dev.whyoleg.cryptography.providers.jdk.algorithms
@@ -19,23 +19,25 @@ internal class JdkPbkdf2(
         outputSize: BinarySize,
         salt: ByteArray,
     ): SecretDerivation = JdkPbkdf2SecretDerivation(
-        state = state,
-        algorithm = "PBKDF2WithHmac${digest.hashAlgorithmName()}",
+        factory = resolveDigest(digest),
         salt = salt,
         iterations = iterations,
         outputSizeBits = outputSize.inBits
     )
+
+    // resolves the digest into the `SecretKeyFactory`, fails if it's not supported
+    private fun resolveDigest(digest: CryptographyAlgorithmId<Digest>): Pooled<JSecretKeyFactory> {
+        val algorithm = "PBKDF2WithHmac${digest.hashAlgorithmName()}"
+        return state.secretKeyFactory(algorithm)
+    }
 }
 
 private class JdkPbkdf2SecretDerivation(
-    state: JdkCryptographyState,
-    algorithm: String,
+    private val factory: Pooled<JSecretKeyFactory>,
     private val salt: ByteArray,
     private val iterations: Int,
     private val outputSizeBits: Int,
 ) : SecretDerivation {
-    private val factory = state.secretKeyFactory(algorithm)
-
     override fun deriveSecretToByteArrayBlocking(input: ByteArray): ByteArray {
         val spec = PBEKeySpec(
             /* password = */ input.decodeToString(throwOnInvalidSequence = true).toCharArray(),

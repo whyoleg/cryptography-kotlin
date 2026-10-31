@@ -17,6 +17,13 @@ internal class JdkEcdsa(state: JdkCryptographyState) : JdkEc<ECDSA.PublicKey, EC
     override val wrapPrivateKey: (JPrivateKey, EC.Curve, ECDSA.PublicKey?) -> ECDSA.PrivateKey = ::EcdsaPrivateKey
     override val wrapKeyPair: (ECDSA.PublicKey, ECDSA.PrivateKey) -> ECDSA.KeyPair = ::EcdsaKeyPair
 
+    // resolves the digest into the `Signature` algorithm name, fails if it's not supported
+    private fun resolveDigest(digest: CryptographyAlgorithmId<Digest>?): String {
+        val algorithm = digest.hashECAlgorithmName() + "withECDSA"
+        val _ = state.signature(algorithm)
+        return algorithm
+    }
+
     private class EcdsaKeyPair(
         override val publicKey: ECDSA.PublicKey,
         override val privateKey: ECDSA.PrivateKey,
@@ -27,7 +34,7 @@ internal class JdkEcdsa(state: JdkCryptographyState) : JdkEc<ECDSA.PublicKey, EC
         curve: EC.Curve,
     ) : ECDSA.PublicKey, BaseEcPublicKey(key, curve) {
         override fun signatureVerifier(digest: CryptographyAlgorithmId<Digest>?, format: ECDSA.SignatureFormat): SignatureVerifier {
-            val verifier = JdkSignatureVerifier(state, key, digest.hashECAlgorithmName() + "withECDSA", null)
+            val verifier = JdkSignatureVerifier(state, key, resolveDigest(digest), null)
             return when (format) {
                 ECDSA.SignatureFormat.DER -> verifier
                 ECDSA.SignatureFormat.RAW -> DssRawSignatureVerifier(verifier, (key as ECKey).params.curveOrderSize())
@@ -41,7 +48,7 @@ internal class JdkEcdsa(state: JdkCryptographyState) : JdkEc<ECDSA.PublicKey, EC
         publicKey: ECDSA.PublicKey?,
     ) : ECDSA.PrivateKey, BaseEcPrivateKey(key, curve, publicKey) {
         override fun signatureGenerator(digest: CryptographyAlgorithmId<Digest>?, format: ECDSA.SignatureFormat): SignatureGenerator {
-            val generator = JdkSignatureGenerator(state, key, digest.hashECAlgorithmName() + "withECDSA", null)
+            val generator = JdkSignatureGenerator(state, key, resolveDigest(digest), null)
             return when (format) {
                 ECDSA.SignatureFormat.DER -> generator
                 ECDSA.SignatureFormat.RAW -> DssRawSignatureGenerator(generator, (key as ECKey).params.curveOrderSize())

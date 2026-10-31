@@ -27,6 +27,7 @@ internal class JdkEdDsa(private val state: JdkCryptographyState) : EdDSA {
             EdDSA.Curve.Ed448   -> Ed448AlgorithmIdentifier
         }
 
+    // curves are resolved by JCA objects named after them, which are created by decoders and generators
     override fun publicKeyDecoder(curve: EdDSA.Curve): Decoder<EdDSA.PublicKey.Format, EdDSA.PublicKey> = PublicKeyDecoder(curve)
 
     override fun privateKeyDecoder(curve: EdDSA.Curve): Decoder<EdDSA.PrivateKey.Format, EdDSA.PrivateKey> = PrivateKeyDecoder(curve)
