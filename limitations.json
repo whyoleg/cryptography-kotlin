@@ -178,6 +178,34 @@
         }
       ]
     },
+    "DH": {
+      "unsupported": [
+        {
+          "description": "DH is not supported",
+          "environments": [
+            "apple",
+            "cryptokit",
+            "webcrypto"
+          ]
+        }
+      ],
+      "limitations": [
+        {
+          "kind": "Skipped",
+          "description": "DH parameter generation is very slow with BouncyCastle",
+          "environments": [
+            "jdk.bc"
+          ]
+        },
+        {
+          "kind": "Skipped",
+          "description": "DH parameter generation is very slow with OpenSSL",
+          "environments": [
+            "openssl3-3.x"
+          ]
+        }
+      ]
+    },
     "ECDH": {
       "unsupported": [
         {

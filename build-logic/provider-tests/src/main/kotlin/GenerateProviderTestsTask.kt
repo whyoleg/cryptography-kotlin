@@ -108,11 +108,10 @@ abstract class GenerateProviderTestsTask : DefaultTask() {
             "RsaPkcs1EncryptionAlgorithmTest",
             "RsaOaepAlgorithmTest",
             "RsaRawAlgorithmTest",
+            "DhAlgorithmTest",
 
             // old tests, while they are not migrated
             "SupportedAlgorithmsTest",
-            "DhTest",
-            "DhCompatibilityTest",
             "DsaCompatibilityTest",
             "DsaTestvectorsTest",
         )
